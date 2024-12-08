@@ -5021,7 +5021,13 @@ function updateVisibility() {
     function updateDamageCalculations() {
         // Get the currently selected skill from the dropdown
         const selectedSkill = document.getElementById('left-skill').value;
+        console.log('Selected skill:', selectedSkill);
+        console.log('Container exists:', !!document.getElementById(selectedSkill));
+        console.log('Container value:', document.getElementById(selectedSkill)?.value);
+        
         const skillName = selectedSkill.replace('container', '').toLowerCase();
+        console.log('Skill name after processing:', skillName);
+        
         
         // Get the current skill level from the corresponding container
         const currentContainer = document.getElementById(selectedSkill);
@@ -5039,7 +5045,7 @@ function updateVisibility() {
             document.getElementById('attackRatingOutput').textContent = `${attackRating}%`;
             
             // Update damage
-            const damage = skillInfo.damage || (skillInfo.lightningDamage ? `1-${skillInfo.lightningDamage}` : 0);
+            const damage = skillInfo.damage || (skillInfo.min ? `1-${skillInfo.max}` : 0);
             document.getElementById('damageOutput').textContent = damage;
             
             // Update mana cost
@@ -5066,8 +5072,9 @@ function updateVisibility() {
     });
 
     document.getElementById('str')?.addEventListener('input', updateDamageCalculations);
-    jabskills.addEventListener('input', updateVisibility);
-    poisonjavelinskills.addEventListener('input', updateVisibility);
+    jabskills?.addEventListener('input', updateVisibility);
+    poisonjavelinskills?.addEventListener('input', updateVisibility);
+    fendskills?.addEventListener('input', updateVisibility);
     javelinandspearmasteryskills?.addEventListener('input', updateVisibility);
 
     // Initial update
