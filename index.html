@@ -5018,6 +5018,22 @@ function updateVisibility() {
     const skillHandler = new SkillHandler();
     await skillHandler.loadSkillData();
 
+// Add this line to manually add fend to the correct place
+    skillHandler.skillData.amazon.javelinAndSpear.fend = skillHandler.skillData.amazon.javelinAndSpear.lightningBolt.fend;
+    delete skillHandler.skillData.amazon.javelinAndSpear.lightningBolt.fend;
+    skillHandler.skillData.amazon.javelinAndSpear.chargedStrike = skillHandler.skillData.amazon.javelinAndSpear.lightningBolt.chargedStrike;
+    delete skillHandler.skillData.amazon.javelinAndSpear.lightningBolt.chargedStrike;
+
+    console.log('Checking skills placement:', {
+        isChargedStrikeInRoot: !!skillHandler.skillData.amazon.javelinAndSpear.chargedStrike,
+        isChargedStrikeInLightningBolt: !!skillHandler.skillData.amazon.javelinAndSpear.lightningBolt.chargedStrike,
+        fullLightningBolt: skillHandler.skillData.amazon.javelinAndSpear.lightningBolt
+    });
+
+
+
+
+
     const skillNameMap = {
         'jabcontainer': 'jab',
         'poisonjavelincontainer': 'poisonJavelin',
