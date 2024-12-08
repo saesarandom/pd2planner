@@ -5018,64 +5018,79 @@ function updateVisibility() {
     const skillHandler = new SkillHandler();
     await skillHandler.loadSkillData();
 
+    // Map for converting skill names to match SkillHandler.js format
+    const skillNameMap = {
+        'jabcontainer': 'jab',
+        'poisonjavelincontainer': 'poisonJavelin',
+        'powerstrikecontainer': 'powerStrike',
+        'lightningboltcontainer': 'lightningBolt',
+        'fendcontainer': 'fend',
+        'chargedstrikecontainer': 'chargedStrike',
+        'plaguejavelincontainer': 'plagueJavelin',
+        'lightningstrikecontainer': 'lightningStrike',
+        'lightningfurycontainer': 'lightningFury'
+    };
+
     function updateDamageCalculations() {
-        // Get the currently selected skill from the dropdown
-        const selectedSkill = document.getElementById('left-skill').value;
-        console.log('Selected skill:', selectedSkill);
-        console.log('Container exists:', !!document.getElementById(selectedSkill));
-        console.log('Container value:', document.getElementById(selectedSkill)?.value);
+        const selectedSkillContainer = document.getElementById('left-skill').value;
+        const skillInput = document.getElementById(selectedSkillContainer);
         
-        const skillName = selectedSkill.replace('container', '').toLowerCase();
-        console.log('Skill name after processing:', skillName);
+        if (!skillInput) return;
+
+        const skillLevel = parseInt(skillInput.value) || 0;
+        // Use the map to get the correct skill name
+        const skillName = skillNameMap[selectedSkillContainer];
         
+        console.log('Calling getSkillInfo with:', {
+            class: 'amazon',
+            tree: 'javelinAndSpear',
+            skillName: skillName,
+            level: skillLevel
+        });
         
-        // Get the current skill level from the corresponding container
-        const currentContainer = document.getElementById(selectedSkill);
-        const skillValue = currentContainer ? parseInt(currentContainer.value, 10) || 0 : 0;
-        
-        // Get skill info for the selected skill
-        const skillInfo = skillHandler.getSkillInfo('amazon', 'javelinAndSpear', skillName, skillValue);
+        const skillInfo = skillHandler.getSkillInfo('amazon', 'javelinAndSpear', skillName, skillLevel);
+        console.log('Returned skill info:', skillInfo);
         
         if (skillInfo) {
-            // Update the display with the current skill's information
-            document.getElementById('jabValueOutput').textContent = skillValue;
+            document.getElementById('jabValueOutput').textContent = skillLevel;
             
-            // Update attack rating
+            // Attack Rating
             const attackRating = skillInfo.attackRating || 0;
             document.getElementById('attackRatingOutput').textContent = `${attackRating}%`;
             
-            // Update damage
-            const damage = skillInfo.damage || (skillInfo.min ? `1-${skillInfo.max}` : 0);
-            document.getElementById('damageOutput').textContent = damage;
+            // Handle different damage types
+            let damage = '0';
+            if (skillName === 'poisonJavelin' && skillInfo.poisonDamage) {
+                // For poison javelin, use the specific level's max damage
+                const maxDamage = skillInfo.poisonDamage.max[skillLevel - 1] || 0;
+                damage = maxDamage;
+            } else if (skillInfo.lightningDamage && skillInfo.lightningDamage.max) {
+                // For lightning skills
+                damage = `1-${skillInfo.lightningDamage.max[skillLevel - 1] || 0}`;
+            } else if (skillInfo.damage) {
+                // For regular damage
+                damage = skillInfo.damage;
+            }
             
-            // Update mana cost
+            document.getElementById('damageOutput').textContent = damage;
             document.getElementById('manaCostOutput').textContent = skillInfo.manaCost || 0;
         }
     }
 
-    // Listen for changes in the skill selector
+    // Event listeners
     const skillSelect = document.getElementById('left-skill');
     skillSelect.addEventListener('change', updateDamageCalculations);
 
-    // Listen for changes in all skill containers
-    ['jab', 'poisonjavelin', 'powerstrike', 'lightningbolt', 'fend', 'chargedstrike', 
-     'plaguejavelin', 'lightningstrike', 'lightningfury'].forEach(skill => {
-        const container = document.getElementById(`${skill}container`);
-        if (container) {
-            container.addEventListener('input', updateDamageCalculations);
-        }
+    // Listen for input changes on all skill inputs
+    const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"]');
+    skillInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const currentSkill = document.getElementById('left-skill').value;
+            if (input.id === currentSkill) {
+                updateDamageCalculations();
+            }
+        });
     });
-
-    // Keep your existing listeners
-    document.getElementById('weapons-dropdown')?.addEventListener('change', () => {
-        setTimeout(updateDamageCalculations, 0);
-    });
-
-    document.getElementById('str')?.addEventListener('input', updateDamageCalculations);
-    jabskills?.addEventListener('input', updateVisibility);
-    poisonjavelinskills?.addEventListener('input', updateVisibility);
-    fendskills?.addEventListener('input', updateVisibility);
-    javelinandspearmasteryskills?.addEventListener('input', updateVisibility);
 
     // Initial update
     updateDamageCalculations();
