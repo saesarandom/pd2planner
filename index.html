@@ -1428,8 +1428,8 @@ Defense
     
     <!-- UPDATE SKILLS// -->
     <div id="leftskill">
-      <label for="skill-select">Choose skill:</label>
-      <select id="skill-select">
+      <label for="left-skill">Choose skill:</label>
+      <select id="left-skill">
         <option value="jabcontainer">Jab</option>
         <option value="poisonjavelincontainer">Poison Javelin</option>
         <option value="powerstrikecontainer">Power Strike</option>
@@ -5013,54 +5013,66 @@ function updateVisibility() {
    
    <script src="https://saesarandom.github.io/pd2planner/SkillHandler.js"></script>
    <script>
-   document.addEventListener('DOMContentLoaded', async function() {
-       // Initialize the skill manager
-       const skillHandler = new SkillHandler();
-       await skillHandler.loadSkillData();
-   
-       function updateDamageCalculations() {
-           let poisonjavelinvalue = parseInt(document.getElementById('poisonjavelincontainer').value, 10) || 0;
-           const skillInfo = skillHandler.getSkillInfo('amazon', 'javelinAndSpear', 'poisonJavelin', poisonjavelinvalue);
-           
-           if (skillInfo) {
-               document.getElementById('jabValueOutput').textContent = skillInfo.level;
-               document.getElementById('attackRatingOutput').textContent = '0%';
-               
-               const updatedTotalMinDmg = parseInt(document.getElementById('onehandmindmgcontainer').textContent, 10) || 0;
-               const totalStr = parseInt(document.getElementById('straccr').textContent, 10) || 0;
-   
-               // For poison javelin, the damage is direct
-               const calculatedDamage = skillInfo.damage;
-   
-               document.getElementById('damageOutput').textContent = calculatedDamage;
-               document.getElementById('manaCostOutput').textContent = skillInfo.manaCost;
-           }
-       }
-   
-       // Add event listeners for all controls that affect damage calculation
-       document.getElementById('poisonjavelincontainer').addEventListener('input', function() {
-           updateVisibility();
-           updateDamageCalculations();
-       });
-   
-       document.getElementById('weapons-dropdown').addEventListener('change', function() {
-           setTimeout(updateDamageCalculations, 0);
-       });
-   
-       document.getElementById('str').addEventListener('input', updateDamageCalculations);
-   
-       // Keep your existing event listeners for other skills
-       jabskills.addEventListener('input', updateVisibility);
-       javelinandspearmasteryskills.addEventListener('input', updateVisibility);
+  
+  document.addEventListener('DOMContentLoaded', async function() {
+    const skillHandler = new SkillHandler();
+    await skillHandler.loadSkillData();
 
+    function updateDamageCalculations() {
+        // Get the currently selected skill from the dropdown
+        const selectedSkill = document.getElementById('left-skill').value;
+        const skillName = selectedSkill.replace('container', '').toLowerCase();
+        
+        // Get the current skill level from the corresponding container
+        const currentContainer = document.getElementById(selectedSkill);
+        const skillValue = currentContainer ? parseInt(currentContainer.value, 10) || 0 : 0;
+        
+        // Get skill info for the selected skill
+        const skillInfo = skillHandler.getSkillInfo('amazon', 'javelinAndSpear', skillName, skillValue);
+        
+        if (skillInfo) {
+            // Update the display with the current skill's information
+            document.getElementById('jabValueOutput').textContent = skillValue;
+            
+            // Update attack rating
+            const attackRating = skillInfo.attackRating || 0;
+            document.getElementById('attackRatingOutput').textContent = `${attackRating}%`;
+            
+            // Update damage
+            const damage = skillInfo.damage || (skillInfo.lightningDamage ? `1-${skillInfo.lightningDamage}` : 0);
+            document.getElementById('damageOutput').textContent = damage;
+            
+            // Update mana cost
+            document.getElementById('manaCostOutput').textContent = skillInfo.manaCost || 0;
+        }
+    }
 
+    // Listen for changes in the skill selector
+    const skillSelect = document.getElementById('left-skill');
+    skillSelect.addEventListener('change', updateDamageCalculations);
 
-       
+    // Listen for changes in all skill containers
+    ['jab', 'poisonjavelin', 'powerstrike', 'lightningbolt', 'fend', 'chargedstrike', 
+     'plaguejavelin', 'lightningstrike', 'lightningfury'].forEach(skill => {
+        const container = document.getElementById(`${skill}container`);
+        if (container) {
+            container.addEventListener('input', updateDamageCalculations);
+        }
+    });
 
+    // Keep your existing listeners
+    document.getElementById('weapons-dropdown')?.addEventListener('change', () => {
+        setTimeout(updateDamageCalculations, 0);
+    });
 
+    document.getElementById('str')?.addEventListener('input', updateDamageCalculations);
+    jabskills.addEventListener('input', updateVisibility);
+    poisonjavelinskills.addEventListener('input', updateVisibility);
+    javelinandspearmasteryskills?.addEventListener('input', updateVisibility);
 
-   }); 
-   
+    // Initial update
+    updateDamageCalculations();
+});
 
 // Dragging functionality (outside DOMContentLoaded)
 const javelinandspearskillscontainer = document.getElementById('javelinandspearskillscontainer');
