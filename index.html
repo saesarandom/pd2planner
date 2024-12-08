@@ -1430,10 +1430,15 @@ Defense
     <div id="leftskill">
       <label for="skill-select">Choose skill:</label>
       <select id="skill-select">
-        <option value="Jab">Jab</option>
-        <option value="Poison Javelin">Poison Javelin</option>
-        <option value="Power Strike">Power Strike</option>
-        <option value="Lightning Bolt">Lightning Bolt</option>
+        <option value="jabcontainer">Jab</option>
+        <option value="poisonjavelincontainer">Poison Javelin</option>
+        <option value="powerstrikecontainer">Power Strike</option>
+        <option value="lightningboltcontainer">Lightning Bolt</option>
+        <option value="fendcontainer">Fend</option>
+        <option value="chargedstrikecontainer">Charged Strike</option>
+        <option value="plaguejavelincontainer">Plague Javelin</option>
+        <option value="lightningstrikecontainer">Lightning Strike</option>
+        <option value="lightningfurycontainer">Lightning Fury</option>
       </select>
     </div>
     
@@ -5050,47 +5055,9 @@ function updateVisibility() {
 
 
 
-       const skillSelect = document.getElementById('skill-select');
-const skillOptions = skillSelect.options;
+       
 
-const jabContainer = document.getElementById('jabcontainer');
-const poisonJavelinContainer = document.getElementById('poisonjavelincontainer');
-const powerStrikeContainer = document.getElementById('powerstrikecontainer');
-const lightningBoltContainer = document.getElementById('lightningboltcontainer');
 
-jabContainer.addEventListener('input', updateSkillOptions);
-poisonJavelinContainer.addEventListener('input', updateSkillOptions);
-powerStrikeContainer.addEventListener('input', updateSkillOptions);
-lightningBoltContainer.addEventListener('input', updateSkillOptions);
-
-function updateSkillOptions() {
-  const jabValue = parseInt(jabContainer.value, 10);
-  const poisonJavelinValue = parseInt(poisonJavelinContainer.value, 10);
-  const powerStrikeValue = parseInt(powerStrikeContainer.value, 10);
-  const lightningBoltValue = parseInt(lightningBoltContainer.value, 10);
-
-  // Hide all options by default
-  for (let i = 0; i < skillOptions.length; i++) {
-    skillOptions[i].style.display = 'none';
-  }
-
-  // Show options based on skill values
-  if (jabValue > 0) {
-    skillOptions[0].style.display = 'block'; // Jab
-  }
-  if (poisonJavelinValue > 0) {
-    skillOptions[1].style.display = 'block'; // Poison Javelin
-  }
-  if (powerStrikeValue > 0) {
-    skillOptions[2].style.display = 'block'; // Power Strike
-  }
-  if (lightningBoltValue > 0) {
-    skillOptions[3].style.display = 'block'; // Lightning Bolt
-  }
-}
-
-// Call the updateSkillOptions function initially to hide all options
-updateSkillOptions();
 
    }); 
    
