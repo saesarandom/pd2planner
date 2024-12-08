@@ -140,13 +140,37 @@ class SkillHandler {
             "prerequisites": ["jab", "poisonJavelin", "powerStrike"],
           "synergies": ["powerStrike", "lightningFury"]
             
-      }
-    }
-  }
+      },
+
+ "fend": {
+          "name": "Fend",
+          "description": "Fending with javelins",
+          "maxLevel": 99,
+          "levelData": {
+            "attackRating": {
+              "base": 80,
+              "perLevel": 6,
+              "formula": "base + (perLevel * (level - 1))"
+            },
+            "damage": {
+              "base": 100,
+              "perLevel": 25,
+              "formula": "base + (perLevel * (level - 1))"
+            },
+            "manaCost": {
+              "base": 5,
+              "perLevel": 0,
+              "formula": "base + (perLevel * (level - 1))"
+            }
+          },
+          "prerequisites": ["jab", "javelinAndSpearMastery"],
+          "synergies": ["jab"]
+   },
 }
 }
-
-
+}
+}
+ 
 
 
 
@@ -162,7 +186,7 @@ class SkillHandler {
 
   
     getSkillInfo(className, treeName, skillName, level) {
-        if (!this.skillData || level < 1 || level > 60) {
+        if (!this.skillData || level < 1 || level > 99) {
             return null;
         }
     
@@ -203,4 +227,5 @@ class SkillHandler {
                 lightningDamage: skill.levelData.lightningDamage.max[level - 1] || 0
             })
         };
-    }}
+    }
+  }

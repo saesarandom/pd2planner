@@ -1001,7 +1001,7 @@ Resistance to fire %
 <option value="Wormskull">Wormskull</option>
 <option value="Howltusk">Howltusk</option>
 <option value="Undead Crown">Undead Crown</option>
-<option value="Peasant Crown" style="color: #9c1a7e;">Peasant Crown</option>
+<option value="Peasant Crown">Peasant Crown</option>
 <option value="Rockstopper">Rockstopper</option>
 <option value="Stealskull">Stealskull</option>
 <option value="Darksight Helm">Darksight Helm</option>
@@ -5073,22 +5073,34 @@ function updateVisibility() {
         //     container: selectedSkillContainer
         // });
 
+        console.log('Compare structures:', {
+    jabStructure: skillHandler.skillData.amazon.javelinAndSpear.jab,
+    fendStructure: skillHandler.skillData.amazon.javelinAndSpear.fend
+});
 
         console.log('allSkillsContainer content:', document.getElementById('allskillscontainer').textContent);
     console.log('allSkillsContainer value:', document.getElementById('allskillscontainer').value);
     const allSkillsValue = parseInt(document.getElementById('allskillscontainer').textContent || document.getElementById('allskillscontainer').value || 0);
+    const totalSkillLevel = skillLevel > 0 ? skillLevel + allSkillsValue : 0;
     console.log('Parsed allSkillsValue:', allSkillsValue);
     console.log('Current skillLevel:', skillLevel);
 
         
-        const skillInfo = skillHandler.getSkillInfo('amazon', 'javelinAndSpear', skillName, skillLevel);
+        const skillInfo = skillHandler.getSkillInfo('amazon', 'javelinAndSpear', skillName, totalSkillLevel);
         console.log('Received skillInfo:', skillInfo);
         
-        
+        //this part might be crucial when calculating OSKILLS!!!!!! - aka will need exceptions//
+        if (skillLevel === 0) {
+        document.getElementById('jabValueOutput').textContent = '0';
+        document.getElementById('attackRatingOutput').textContent = '0%';
+        document.getElementById('damageOutput').textContent = '0';
+        document.getElementById('manaCostOutput').textContent = '0';
+        return;
+    }
 
         if (skillInfo) {
 
-          const totalSkillLevel = skillLevel + allSkillsValue;
+          
 
             document.getElementById('jabValueOutput').textContent = totalSkillLevel;
             document.getElementById('attackRatingOutput').textContent = `${skillInfo.attackRating || 0}%`;
@@ -5127,7 +5139,7 @@ allSkillsContainer.addEventListener('change', updateDamageCalculations);
     });
 
     updateDamageCalculations();
-   
+    
 });
 
 // Dragging functionality (outside DOMContentLoaded)
