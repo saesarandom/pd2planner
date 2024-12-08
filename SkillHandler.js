@@ -172,17 +172,17 @@ class SkillHandler {
         }
     
         if (skillName === 'poisonJavelin') {
-            // Special handling for poison javelin
-            return {
-                level,
-                name: skill.name,
-                description: skill.description,
-                // Get the poison damage for this level (array is 0-based, so level-1)
-                damage: skill.levelData.poisonDamage.max[level - 1] || 0,
-                manaCost: skill.levelData.manaCost.base + 
-                         (skill.levelData.manaCost.perLevel * (level - 1))
-            };
-        }
+          return {
+              level,
+              name: skill.name,
+              description: skill.description,
+              damage: {
+                  min: skill.levelData.poisonDamage.min[level - 1] || 0,
+                  max: skill.levelData.poisonDamage.max[level - 1] || 0
+              },
+              manaCost: skill.levelData.manaCost.base + (skill.levelData.manaCost.perLevel * (level - 1))
+          };
+      }
     
         // For other skills that use the base/perLevel format
         const calculateValue = (data) => {

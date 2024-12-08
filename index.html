@@ -5031,24 +5031,20 @@ function updateVisibility() {
     };
 
     function getSkillDamage(skillInfo, skillName) {
-        if (!skillInfo) return '0';
+    console.log('SkillInfo for damage calculation:', {
+        skillName,
+        availableProperties: Object.keys(skillInfo),
+        fullSkillInfo: skillInfo
+    });
         
-        // For Power Strike
         if (skillName === 'powerStrike' && skillInfo.lightningDamage) {
             return `1-${skillInfo.lightningDamage}`;
         }
         
-        // For Poison Javelin
-        if (skillName === 'poisonJavelin') {
-            // Check if we have the poison damage array and level
-            if (skillInfo.level && skillInfo.poisonDamage?.min && skillInfo.poisonDamage?.max) {
-                const minDamage = skillInfo.poisonDamage.min[skillInfo.level - 1] || 0;
-                const maxDamage = skillInfo.poisonDamage.max[skillInfo.level - 1] || 0;
-                return `${minDamage}-${maxDamage}`;
-            }
-        }
+        if (skillName === 'poisonJavelin' && skillInfo.damage?.min !== undefined) {
+        return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
+    }
         
-        // For regular physical damage
         if (skillInfo.damage) {
             return skillInfo.damage;
         }
@@ -5065,7 +5061,15 @@ function updateVisibility() {
         const skillLevel = parseInt(skillInput.value) || 0;
         const skillName = skillNameMap[selectedSkillContainer];
         
+        // Log what we're sending to getSkillInfo
+        console.log('Getting skill info for:', {
+            skillName,
+            skillLevel,
+            container: selectedSkillContainer
+        });
+        
         const skillInfo = skillHandler.getSkillInfo('amazon', 'javelinAndSpear', skillName, skillLevel);
+        console.log('Received skillInfo:', skillInfo);
         
         if (skillInfo) {
             document.getElementById('jabValueOutput').textContent = skillLevel;
@@ -5075,7 +5079,6 @@ function updateVisibility() {
         }
     }
 
-    // Event Listeners
     const skillSelect = document.getElementById('left-skill');
     skillSelect.addEventListener('change', updateDamageCalculations);
 
@@ -5088,7 +5091,6 @@ function updateVisibility() {
         });
     });
 
-    // Initial update
     updateDamageCalculations();
 });
 
