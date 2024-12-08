@@ -5074,8 +5074,9 @@ function updateVisibility() {
         // });
 
         console.log('Compare structures:', {
-    jabStructure: skillHandler.skillData.amazon.javelinAndSpear.jab,
-    fendStructure: skillHandler.skillData.amazon.javelinAndSpear.fend
+          
+    fendExists: !!skillHandler.skillData.amazon.javelinAndSpear.fend,
+    fendData: skillHandler.skillData.amazon.javelinAndSpear.fend
 });
 
         console.log('allSkillsContainer content:', document.getElementById('allskillscontainer').textContent);
@@ -5120,6 +5121,11 @@ observer.observe(allSkillsContainer, {
     subtree: true,
     characterDataOldValue: true 
 });
+
+
+
+
+
 
 const skillSelect = document.getElementById('left-skill');
 skillSelect.addEventListener('change', updateDamageCalculations);
