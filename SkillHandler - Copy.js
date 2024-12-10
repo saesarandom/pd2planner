@@ -41,7 +41,7 @@ class SkillHandler {
           }
         },
         prerequisites: [],
-        synergies: ["jab,24", "javelinandspearmastery,24"]
+        synergies: ["plagueJavelin", "javelinAndSpearMastery"]
       },
       javelinAndSpearMastery: {
       name: "Javelin and Spear Mastery",
@@ -60,8 +60,7 @@ class SkillHandler {
                   32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33,
                   34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
               },
-              prerequisites: ["jab"],
-              synergies: ["poisonJavelin,24"]
+              prerequisites: ["jab"]
       },
       powerStrike: {
               name: "Power Strike",
@@ -141,7 +140,7 @@ class SkillHandler {
             }
           },
           prerequisites: ["jab", "javelinAndSpearMastery"],
-          synergies: ["jab,20"]
+          synergies: ["jab"]
       },
       chargedStrike: {
         name: "Charged Strike",
@@ -242,90 +241,68 @@ class SkillHandler {
 
   getSkillInfo(skillName, level) {
     if (!this.skillData || level < 0 || level > 99) {
-        return null;
+      return null;
     }
+
+    
 
     const skill = this.skillData[skillName];
     if (!skill) {
-        return null;
+      return null;
     }
 
     const calculateSynergyBonus = (mainSkill) => {
-      console.log('Checking synergies for skill:', mainSkill.name);
-      console.log('Synergies array:', mainSkill.synergies);
-      
       let synergyBonus = 0;
       if (mainSkill.synergies && mainSkill.synergies.length > 0) {
           mainSkill.synergies.forEach(synergy => {
+              // Check if synergy is a string and split it
               if (typeof synergy === 'string') {
-                  const parts = synergy.split(',').map(s => s.trim());
-                  const synergySkillName = parts[0];
-                  const synergyPercent = parts[1] || 0;
+                  const [synergySkillName, synergyPercent] = synergy.split(',').map(s => s.trim());
                   const synergyLevel = parseInt(document.getElementById(synergySkillName + 'container')?.value || 0);
                   
-
-
-                  
-                  console.log('Processing synergy:', {
-                      skillName: synergySkillName,
-                      percent: synergyPercent,
-                      level: synergyLevel,
-                      elementId: synergySkillName + 'container'
-                  });
-                  
-                  if (synergyLevel > 0 && !isNaN(parseInt(synergyPercent))) {
+                  if (synergyLevel > 0) {
                       synergyBonus += (synergyLevel * parseInt(synergyPercent));
-                      console.log(`Added bonus: ${synergyLevel} * ${synergyPercent} = ${synergyLevel * parseInt(synergyPercent)}`);
                   }
               }
           });
       }
-      const finalMultiplier = 1 + (synergyBonus / 100);
-      console.log('Final multiplier:', finalMultiplier);
-      return finalMultiplier;
-    };
-    if ((skillName === "poisonJavelin" || skillName === "plagueJavelin")) {
-       
-      
+      return 1 + (synergyBonus / 100); // Returns multiplier like 1.18 for 18%
+  };
+
+  const calculateValue = (data) => {
+      if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
+          return 0;
+      }
+      return data.base + data.perLevel * (level - 1);
+  };
+
+  if ((skillName === "poisonJavelin" || skillName === "plagueJavelin")) {
       const synergyMultiplier = calculateSynergyBonus(skill);
-      console.log('Poison skill synergy multiplier:', synergyMultiplier);
-        console.log('Original damage:', {
-            min: skill.levelData.poisonDamage.min[level - 1],
-            max: skill.levelData.poisonDamage.max[level - 1]
-        });
-        return {
-            level,
-            name: skill.name,
-            description: skill.description,
-            damage: {
-                min: (skill.levelData.poisonDamage.min[level - 1] || 0) * synergyMultiplier,
-                max: (skill.levelData.poisonDamage.max[level - 1] || 0) * synergyMultiplier
-            },
-            manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
-        };
-    }
+      return {
+          level,
+          name: skill.name,
+          description: skill.description,
+          damage: {
+              min: (skill.levelData.poisonDamage.min[level - 1] || 0) * synergyMultiplier,
+              max: (skill.levelData.poisonDamage.max[level - 1] || 0) * synergyMultiplier
+          },
+          manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
+      };
+  }
 
-    const calculateValue = (data) => {
-        if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
-            return 0;
-        }
-        return data.base + data.perLevel * (level - 1);
-    };
+  const baseDamage = skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0;
+  const synergyMultiplier = calculateSynergyBonus(skill);
 
-    // Calculate base values
-    const baseDamage = skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0;
-    const synergyMultiplier = calculateSynergyBonus(skill);
-
-    return {
-        level,
-        name: skill.name,
-        description: skill.description,
-        attackRating: calculateValue(skill.levelData.attackRating),
-        damage: Math.floor(baseDamage * synergyMultiplier),
-        manaCost: calculateValue(skill.levelData.manaCost),
-        ...(skill.levelData.lightningDamage && {
-            lightningDamage: skill.levelData.lightningDamage.max[level - 1] * synergyMultiplier || 0
-        })
-    };
+  return {
+      level,
+      name: skill.name,
+      description: skill.description,
+      attackRating: calculateValue(skill.levelData.attackRating),
+      damage: baseDamage * synergyMultiplier,
+      manaCost: calculateValue(skill.levelData.manaCost),
+      ...(skill.levelData.lightningDamage && {
+          lightningDamage: (skill.levelData.lightningDamage.max[level - 1] || 0) * synergyMultiplier
+      })
+  };
 }
 }
