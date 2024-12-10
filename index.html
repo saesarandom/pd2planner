@@ -5017,11 +5017,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     const skillHandler = new SkillHandler();
     await skillHandler.loadSkillData();
 
-    // Move skills to correct location
-    // delete skillHandler.skillData.amazon.javelinAndSpear.lightningBolt.fend;
-    // skillHandler.skillData.amazon.javelinAndSpear.chargedStrike = skillHandler.skillData.amazon.javelinAndSpear.lightningBolt.chargedStrike;
-    // delete skillHandler.skillData.amazon.javelinAndSpear.lightningBolt.chargedStrike;
-
     const skillNameMap = {
         'jabcontainer': 'jab',
         'poisonjavelincontainer': 'poisonJavelin',
@@ -5034,16 +5029,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         'lightningfurycontainer': 'lightningFury'
     };
 
-    // Only track visible skills
-    const skillLevels = {};
-    document.querySelectorAll('#javelinandspearskillscontainer input[type="number"]:not([attribute="hiddenSkill"])').forEach(input => {
-        const skillName = skillNameMap[input.id];
-        if (skillName) {
-            skillLevels[skillName] = 0;
-        }
-    });
+    // Debug log
+    console.log('Initial skillHandler:', skillHandler.skillData);
 
     function getSkillDamage(skillInfo, skillName) {
+        console.log('getSkillDamage called with:', { skillInfo, skillName });
+        
         if (skillName === 'powerStrike' && skillInfo.lightningDamage) {
             return `1-${skillInfo.lightningDamage}`;
         }
@@ -5064,44 +5055,57 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function updateDamageCalculations() {
-        const selectedSkillContainer = document.getElementById('left-skill').value;
-        const skillInput = document.getElementById(selectedSkillContainer);
-        
-        if (!skillInput) return;
-
-        const skillLevel = parseInt(skillInput.value) || 0;
-        const skillName = skillNameMap[selectedSkillContainer];
-        
-        const allSkillsValue = parseInt(document.getElementById('allskillscontainer').textContent || 
-                                      document.getElementById('allskillscontainer').value || 0);
-        const totalSkillLevel = skillLevel + allSkillsValue;
-
-        // Update skill level in our tracking object
-        if (skillName in skillLevels) {
-            skillLevels[skillName] = skillLevel;
-        }
-
-        if (skillLevel === 0) {
-            document.getElementById('jabValueOutput').textContent = '0';
-            document.getElementById('attackRatingOutput').textContent = '0%';
-            document.getElementById('damageOutput').textContent = '0';
-            document.getElementById('manaCostOutput').textContent = '0';
-            return;
-        }
-
-        const skillInfo = skillHandler.getSkillInfo('amazon', 'javelinAndSpear', skillName, totalSkillLevel);
-        
-        if (skillInfo) {
-            document.getElementById('jabValueOutput').textContent = totalSkillLevel;
-            document.getElementById('attackRatingOutput').textContent = `${skillInfo.attackRating || 0}%`;
-            document.getElementById('damageOutput').textContent = getSkillDamage(skillInfo, skillName);
-            document.getElementById('manaCostOutput').textContent = skillInfo.manaCost?.toFixed(1) || 0;
-        }
+    const selectedSkillContainer = document.getElementById('left-skill').value;
+    const skillInput = document.getElementById(selectedSkillContainer);
+    
+    console.log('Selected skill:', { selectedSkillContainer, skillInput });
+    
+    if (!skillInput) {
+        console.log('No skill input found');
+        return;
     }
 
-    // Set up observers and event listeners
+    const skillLevel = parseInt(skillInput.value) || 0;
+    const skillName = skillNameMap[selectedSkillContainer];
+    
+    console.log('Skill details:', { skillLevel, skillName });
+    
+    const allSkillsValue = parseInt(document.getElementById('allskillscontainer').textContent || 
+                                  document.getElementById('allskillscontainer').value || 0);
+    const totalSkillLevel = skillLevel + allSkillsValue;
+
+    console.log('Total skill level:', totalSkillLevel);
+
+    if (skillLevel === 0) {
+        console.log('Skill level is 0, resetting displays');
+        document.getElementById('jabValueOutput').textContent = '0';
+        document.getElementById('attackRatingOutput').textContent = '0%';
+        document.getElementById('damageOutput').textContent = '0';
+        document.getElementById('manaCostOutput').textContent = '0';
+        return;
+    }
+
+    // Use your original skill data structure
+    const skillInfo = skillHandler.getSkillInfo(skillName, totalSkillLevel);
+    // OR if your original structure needs the full path:
+    // const skillInfo = skillHandler.getSkillInfo('javelinAndSpear', skillName, totalSkillLevel);
+    
+    console.log('Skill info returned:', skillInfo);
+    
+    if (skillInfo) {
+        document.getElementById('jabValueOutput').textContent = totalSkillLevel;
+        document.getElementById('attackRatingOutput').textContent = `${skillInfo.attackRating || 0}%`;
+        document.getElementById('damageOutput').textContent = getSkillDamage(skillInfo, skillName);
+        document.getElementById('manaCostOutput').textContent = skillInfo.manaCost?.toFixed(1) || 0;
+    }
+}
+
     const allSkillsContainer = document.getElementById('allskillscontainer');
-    const observer = new MutationObserver(updateDamageCalculations);
+    const observer = new MutationObserver((mutations) => {
+        console.log('Mutation observed:', mutations);
+        updateDamageCalculations();
+    });
+    
     observer.observe(allSkillsContainer, { 
         childList: true, 
         characterData: true, 
@@ -5110,12 +5114,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     const skillSelect = document.getElementById('left-skill');
-    skillSelect.addEventListener('change', updateDamageCalculations);
+    skillSelect.addEventListener('change', function(e) {
+        console.log('Skill selected:', e.target.value);
+        updateDamageCalculations();
+    });
+    
     allSkillsContainer.addEventListener('change', updateDamageCalculations);
 
     const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"]');
     skillInputs.forEach(input => {
         input.addEventListener('input', function() {
+            console.log('Skill input changed:', input.id, input.value);
             if (input.id === document.getElementById('left-skill').value) {
                 updateDamageCalculations();
             }
@@ -5124,6 +5133,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     updateDamageCalculations();
 });
+
 
 
 

@@ -84,6 +84,30 @@ class SkillHandler {
         },
         prerequisites: ["jab", "powerStrike"],
         synergies: ["powerStrike", "lightningStrike"]
+      },
+      plagueJavelin: {
+        name: "Plague Javelin",
+        description: "Charged javelin attack",
+        maxLevel: 99,
+        levelData: {
+          attackRating: {
+            base: 50,
+            perLevel: 10,
+            formula: "base + (perLevel * (level - 1))"
+          },
+          damage: {
+            base: 100,
+            perLevel: 25,
+            formula: "base + (perLevel * (level - 1))"
+          },
+          manaCost: {
+            base: 7,
+            perLevel: 0.5,
+            formula: "base + (perLevel * (level - 1))"
+          }
+        },
+        prerequisites: ["jab", "powerStrike"],
+        synergies: ["powerStrike", "lightningStrike"]
       }
     };
   }
@@ -92,46 +116,84 @@ class SkillHandler {
     return Promise.resolve();
   }
 
-  getSkillInfo(skillName, level) {
-    if (!this.skillData || level < 1 || level > 99) {
-      return null;
-    }
+  // getSkillInfo(skillName, level) {
+  //   if (!this.skillData || level < 1 || level > 99) {
+  //     return null;
+  //   }
 
-    const skill = this.skillData[skillName];
-    if (!skill) {
-      return null;
-    }
 
-    if (skillName === "poisonJavelin") {
-      return {
-        level,
-        name: skill.name,
-        description: skill.description,
-        damage: {
-          min: skill.levelData.poisonDamage.min[level - 1] || 0,
-          max: skill.levelData.poisonDamage.max[level - 1] || 0
-        },
-        manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
-      };
-    }
 
-    const calculateValue = (data) => {
-      if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
-        return 0;
-      }
-      return data.base + data.perLevel * (level - 1);
-    };
+//     const skill = this.skillData[skillName];
+//     if (!skill) {
+//       return null;
+//     }
 
-    return {
-      level,
-      name: skill.name,
-      description: skill.description,
-      attackRating: calculateValue(skill.levelData.attackRating),
-      damage: skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0,
-      manaCost: calculateValue(skill.levelData.manaCost),
-      ...(skill.levelData.lightningDamage && {
-        lightningDamage: skill.levelData.lightningDamage.max[level - 1] || 0
-      })
-    };
+//     if (skillName === "poisonJavelin") {
+//       return {
+//         level,
+//         name: skill.name,
+//         description: skill.description,
+//         damage: {
+//           min: skill.levelData.poisonDamage.min[level - 1] || 0,
+//           max: skill.levelData.poisonDamage.max[level - 1] || 0
+//         },
+//         manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
+//       };
+//     }
+
+//     const calculateValue = (data) => {
+//       if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
+//         return 0;
+//       }
+//       return data.base + data.perLevel * (level - 1);
+//     };
+
+//     return {
+//       level,
+//       name: skill.name,
+//       description: skill.description,
+//       attackRating: calculateValue(skill.levelData.attackRating),
+//       damage: skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0,
+//       manaCost: calculateValue(skill.levelData.manaCost),
+//       ...(skill.levelData.lightningDamage && {
+//         lightningDamage: skill.levelData.lightningDamage.max[level - 1] || 0
+//       })
+//     };
+//   }
+// }
+
+getSkillInfo(skillName, level) {
+  console.log('GetSkillInfo called with:', {
+    skillName,
+    level,
+    hasSkillData: !!this.skillData,
+    skillExists: !!this.skillData[skillName],
+    actualSkill: this.skillData[skillName]
+  });
+
+  if (!this.skillData || level < 1 || level > 99) {
+    return null;
   }
+
+  const skill = this.skillData[skillName];
+  if (!skill) {
+    return null;
+  }
+
+  const calculateValue = (data) => {
+    if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
+      return 0;
+    }
+    return data.base + data.perLevel * (level - 1);
+  };
+
+  return {
+    level,
+    name: skill.name,
+    description: skill.description,
+    attackRating: calculateValue(skill.levelData.attackRating),
+    damage: skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0,
+    manaCost: calculateValue(skill.levelData.manaCost)
+  };
+}
 }
