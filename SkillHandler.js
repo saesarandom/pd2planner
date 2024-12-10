@@ -188,7 +188,25 @@ class SkillHandler {
         },
         prerequisites: ["jab", "powerStrike"],
         synergies: ["powerStrike", "lightningStrike"]
-        }
+        },
+        lightningStrike: {
+          name: "Lightning Strike",
+          description: "Chargedlightning javelin attack",
+          maxLevel: 99,
+          levelData: {
+            lightningDamage: {
+              min: 1,
+              max: [25,	35,	45,	55,	65,	75,	85,	95,	115,	135,	155,	175,	195,	215,	235,	255,	290,	325,	360,	395,	430,	465,	520,	575,	630,	685,	740,	795,	870,	945,	1020,	1095,	1170,	1245,	1320,	1395,	1470,	1545,	1620,	1695,	1770,	1845,	1920,	1995,	2070,	2145,	2220,	2295,	2370,	2445,	2520,	2595,	2670,	2745,	2820,	2895,	2970,	3045,	3120]
+            },
+            manaCost: {
+              base: 6,
+              perLevel: 0.25,
+              formula: "base + (perLevel * (level - 1))"
+            }
+          },
+          prerequisites: ["jab", "powerStrike", "chargedStrike"],
+          synergies: ["powerStrike", "chargedStrike"]
+          }
 
     };
     
