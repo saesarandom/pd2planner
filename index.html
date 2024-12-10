@@ -5070,7 +5070,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
     }
     
-    if ((skillName === "powerStrike" || skillName === "lightningBolt") && skillInfo.lightningDamage) {
+    if ((skillName === "powerStrike" || skillName === "lightningBolt") || skillName === "lightningStrike" || skillName === "lightningFury" && skillInfo.lightningDamage) {
         return `${skillInfo.lightningDamage.min || 1}-${skillInfo.lightningDamage}`;
     }
 

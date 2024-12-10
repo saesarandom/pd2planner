@@ -206,7 +206,25 @@ class SkillHandler {
           },
           prerequisites: ["jab", "powerStrike", "chargedStrike"],
           synergies: ["powerStrike", "chargedStrike"]
-          }
+          },
+          lightningFury: {
+            name: "Lightning Fury",
+            description: "Furious light attack",
+            maxLevel: 99,
+            levelData: {
+              lightningDamage: {
+                min: 1,
+                max: [65,	73,	81,	89,	97,	105,	113,	121,	130,	139,	148,	157,	166,	175,	184,	193,	203,	213,	223,	233,	243,	253,	264,	275,	286,	297,	308,	319,	331,	343,	355,	367,	379,	391,	403,	415,	427,	439,	451,	463,	475,	487,	499,	511,	523,	535,	547,	559,	571,	583,	595,	607,	619,	631,	643,	655,	667,	679,	691,	703]
+              },
+              manaCost: {
+                base: 5,
+                perLevel: 0.25,
+                formula: "base + (perLevel * (level - 1))"
+              }
+            },
+            prerequisites: ["jab", "powerStrike", "poisonJavelin", "lightningBolt", "plagueJavelin"],
+            synergies: ["powerStrike", "lightningBolt"]
+            }
 
     };
     
