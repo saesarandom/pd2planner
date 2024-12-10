@@ -5017,6 +5017,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     const skillHandler = new SkillHandler();
     await skillHandler.loadSkillData();
 
+
+
     const skillNameMap = {
         'jabcontainer': 'jab',
         'poisonjavelincontainer': 'poisonJavelin',
@@ -5029,8 +5031,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         'lightningfurycontainer': 'lightningFury'
     };
 
-    // Debug log
-    console.log('Initial skillHandler:', skillHandler.skillData);
+    if (!skillHandler.skillData || Object.keys(skillHandler.skillData).length < 5) {
+        console.warn('Skills not fully loaded');
+        return;
+    }
+    
 
     function getSkillDamage(skillInfo, skillName) {
         console.log('getSkillDamage called with:', { skillInfo, skillName });
