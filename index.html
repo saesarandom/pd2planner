@@ -5015,6 +5015,7 @@ function updateVisibility() {
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
     const skillHandler = new SkillHandler();
+    console.log("Final skillData:", Object.keys(skillHandler.skillData)); // 
     await skillHandler.loadSkillData();
 
     if (!skillHandler.skillData || Object.keys(skillHandler.skillData).length < 5) {
@@ -5022,7 +5023,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
     
-    console.log(skillHandler.skillData);
+    
 
 
     const skillNameMap = {
@@ -5119,10 +5120,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-    // Use your original skill data structure
+   
     const skillInfo = skillHandler.getSkillInfo(skillName, totalSkillLevel);
-    // OR if your original structure needs the full path:
-    // const skillInfo = skillHandler.getSkillInfo('javelinAndSpear', skillName, totalSkillLevel);
     
     console.log('Skill info returned:', skillInfo);
     
