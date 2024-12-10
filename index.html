@@ -5021,10 +5021,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.warn('Skills not fully loaded');
         return;
     }
+    
+    console.log(skillHandler.skillData);
+
 
     const skillNameMap = {
         'jabcontainer': 'jab',
         'poisonjavelincontainer': 'poisonJavelin',
+        'javelinandspearmasterycontainer': 'javelinAndSpearMastery',
         'powerstrikecontainer': 'powerStrike',
         'lightningboltcontainer': 'lightningBolt',
         'fendcontainer': 'fend',
@@ -5104,11 +5108,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     console.log('Total skill level:', totalSkillLevel);
 
-    if (!skillHandler.skillData || Object.keys(skillHandler.skillData).length < 5) {
-        console.warn('Skills not fully loaded');
-        return;
-    }
-    
+  
 
     if (skillLevel === 0) {
         console.log('Skill level is 0, resetting displays');
@@ -5165,6 +5165,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
 
+    
     updateDamageCalculations();
 });
 
