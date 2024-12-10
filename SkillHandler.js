@@ -43,7 +43,61 @@ class SkillHandler {
         prerequisites: [],
         synergies: ["plagueJavelin", "javelinAndSpearMastery"]
       },
-      lightningBolt: {
+      javelinAndSpearMastery: {
+      name: "Javelin and Spear Mastery",
+              description:
+                "Increases damage and critical hit chance with javelin and spear class weapons",
+              maxLevel: 99,
+              levelData: {
+                damage: {
+                  base: 40,
+                  perLevel: 15,
+                  formula: "base + (perLevel * (level - 1))",
+                },
+                criticalChance: [
+                  5, 9, 12, 15, 17, 19, 20, 21, 23, 23, 24, 25, 26, 26, 27, 28,
+                  28, 28, 29, 29, 29, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32,
+                  32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33,
+                  34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
+              },
+              prerequisites: ["jab"],
+            },
+      powerStrike: {
+              name: "Power Strike",
+              description: "Lightning enhanced massive attack",
+              maxLevel: 60,
+              levelData: {
+                attackRating: {
+                  base: 20,
+                  perLevel: 12,
+                  formula: "base + (perLevel * (level - 1))",
+                },
+                novaDamage: {
+                  min: 1,
+                  max: [
+                    3, 7, 11, 15, 19, 23, 27, 31, 39, 47, 55, 63, 71, 79, 87, 95,
+                    123, 151, 179, 207, 235, 263, 308, 353, 398, 443, 488, 533,
+                    595, 657, 719, 781, 843, 905, 967, 1029, 1091, 1153, 1215,
+                    1277, 1339, 1401, 1463, 1525, 1587, 1649, 1711, 1773, 1835,
+                    1897, 1959, 2021, 2083, 2145, 2207, 2269, 2331, 2393, 2455,
+                    2517]
+                },
+                lightningDamage: {
+                  min: 1,
+                  max: [
+                    1, 4, 7, 10, 13, 16, 19, 22, 27, 32, 37, 42, 47, 52, 57, 62,
+                    75, 88, 101, 114, 127, 140, 162, 184, 206, 228, 250, 272, 304,
+                    336, 368, 400, 432, 464, 496, 528, 560, 592, 624, 656, 688,
+                    720, 752, 784, 816, 848, 880, 912, 944, 976, 1008, 1040, 1072,
+                    1104, 1136, 1168, 1200, 1232, 1264, 1296]
+                },
+                manaCost: {
+                  base: 2,
+                  perLevel: 0.25,
+                  formula: "base + (perLevel * (level - 1))",
+                 }
+                },
+lightningBolt: {
         name: "Lightning Bolt",
         description: "Magically converts your javelin into a bolt of lightning, converts 100% of physical damage into lightning damage",
         maxLevel: 99,
@@ -60,6 +114,30 @@ class SkillHandler {
         },
         prerequisites: ["jab", "poisonJavelin", "powerStrike"],
         synergies: ["powerStrike", "lightningFury"]
+      },
+      fend: {
+        name: "Fend",
+        description: "Fending with javelins",
+        maxLevel: 99,
+        levelData: {
+          attackRating: {
+              base: 80,
+              perLevel: 6,
+              formula: "base + (perLevel * (level - 1))"
+            },
+            damage: {
+              base: 100,
+              perLevel: 25,
+              formula: "base + (perLevel * (level - 1))"
+            },
+            manaCost: {
+              base: 5,
+              perLevel: 0,
+              formula: "base + (perLevel * (level - 1))"
+            }
+          },
+          prerequisites: ["jab", "javelinAndSpearMastery"],
+          synergies: ["jab"]
       },
       chargedStrike: {
         name: "Charged Strike",
@@ -108,7 +186,7 @@ class SkillHandler {
         },
         prerequisites: ["jab", "powerStrike"],
         synergies: ["powerStrike", "lightningStrike"]
-      }
+      }}
     };
   }
 
@@ -118,44 +196,47 @@ class SkillHandler {
 
   getSkillInfo(skillName, level) {
     if (!this.skillData || level < 1 || level > 99) {
-        return null;
+      return null;
     }
+
+
 
     const skill = this.skillData[skillName];
     if (!skill) {
-        return null;
+      return null;
     }
 
-    const calculateValue = (data) => {
-        if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
-            return 0;
-        }
-        return data.base + data.perLevel * (level - 1);
-    };
-
-    // Base info for all skills
-    const result = {
+    if (skillName === "poisonJavelin") {
+      return {
         level,
         name: skill.name,
         description: skill.description,
-        attackRating: calculateValue(skill.levelData.attackRating),
-        manaCost: calculateValue(skill.levelData.manaCost)
-    };
-
-    // Handle different damage types
-    if (skillName === "poisonJavelin") {
-        result.damage = {
-            min: skill.levelData.poisonDamage.min[level - 1] || 0,
-            max: skill.levelData.poisonDamage.max[level - 1] || 0
-        };
-    } else if (skillName === "lightningBolt" || skillName === "powerStrike") {
-        result.damage = {
-            min: 1,
-            max: skill.levelData.lightningDamage.max[level - 1] || 0
-        };
-    } else if (skill.levelData.damage) {
-        result.damage = calculateValue(skill.levelData.damage);
+        damage: {
+          min: skill.levelData.poisonDamage.min[level - 1] || 0,
+          max: skill.levelData.poisonDamage.max[level - 1] || 0
+        },
+        manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
+      };
     }
 
-    return result;
-}}
+    const calculateValue = (data) => {
+      if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
+        return 0;
+      }
+      return data.base + data.perLevel * (level - 1);
+    };
+
+    return {
+      level,
+      name: skill.name,
+      description: skill.description,
+      attackRating: calculateValue(skill.levelData.attackRating),
+      damage: skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0,
+      manaCost: calculateValue(skill.levelData.manaCost),
+      ...(skill.levelData.lightningDamage && {
+        lightningDamage: skill.levelData.lightningDamage.max[level - 1] || 0
+      })
+    };
+  }
+}
+
