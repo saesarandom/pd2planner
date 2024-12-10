@@ -61,27 +61,27 @@ class SkillHandler {
                   34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
               },
               prerequisites: ["jab"],
-            },
+      },
       powerStrike: {
               name: "Power Strike",
               description: "Lightning enhanced massive attack",
-              maxLevel: 60,
+              maxLevel: 99,
               levelData: {
                 attackRating: {
                   base: 20,
                   perLevel: 12,
-                  formula: "base + (perLevel * (level - 1))",
+                  formula: "base + (perLevel * (level - 1))"
                 },
-                novaDamage: {
-                  min: 1,
-                  max: [
-                    3, 7, 11, 15, 19, 23, 27, 31, 39, 47, 55, 63, 71, 79, 87, 95,
-                    123, 151, 179, 207, 235, 263, 308, 353, 398, 443, 488, 533,
-                    595, 657, 719, 781, 843, 905, 967, 1029, 1091, 1153, 1215,
-                    1277, 1339, 1401, 1463, 1525, 1587, 1649, 1711, 1773, 1835,
-                    1897, 1959, 2021, 2083, 2145, 2207, 2269, 2331, 2393, 2455,
-                    2517]
-                },
+                // novaDamage: {
+                //   min: 1,
+                //   max: [
+                //     3, 7, 11, 15, 19, 23, 27, 31, 39, 47, 55, 63, 71, 79, 87, 95,
+                //     123, 151, 179, 207, 235, 263, 308, 353, 398, 443, 488, 533,
+                //     595, 657, 719, 781, 843, 905, 967, 1029, 1091, 1153, 1215,
+                //     1277, 1339, 1401, 1463, 1525, 1587, 1649, 1711, 1773, 1835,
+                //     1897, 1959, 2021, 2083, 2145, 2207, 2269, 2331, 2393, 2455,
+                //     2517]
+                // },
                 lightningDamage: {
                   min: 1,
                   max: [
@@ -94,10 +94,10 @@ class SkillHandler {
                 manaCost: {
                   base: 2,
                   perLevel: 0.25,
-                  formula: "base + (perLevel * (level - 1))",
+                  formula: "base + (perLevel * (level - 1))"
                  }
-                },
-lightningBolt: {
+      },
+      lightningBolt: {
         name: "Lightning Bolt",
         description: "Magically converts your javelin into a bolt of lightning, converts 100% of physical damage into lightning damage",
         maxLevel: 99,

@@ -5037,27 +5037,50 @@ document.addEventListener('DOMContentLoaded', async function() {
   
 
 
-    function getSkillDamage(skillInfo, skillName) {
-        console.log('getSkillDamage called with:', { skillInfo, skillName });
+    // function getSkillDamage(skillInfo, skillName) {
+    //     console.log('getSkillDamage called with:', { skillInfo, skillName });
         
-        if (skillName === 'powerStrike' && skillInfo.lightningDamage) {
-            return `1-${skillInfo.lightningDamage}`;
-        }
+    //     if (skillName === 'powerStrike' && skillInfo.lightningDamage) {
+    //         return `1-${skillInfo.lightningDamage}`;
+    //     }
         
-        if (skillName === 'poisonJavelin' && skillInfo.damage?.min !== undefined) {
-            return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
-        }
+    //     if (skillName === 'poisonJavelin' && skillInfo.damage?.min !== undefined) {
+    //         return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
+    //     }
         
-        if (skillName === 'lightningBolt' && skillInfo.lightningDamage) {
-            return `1-${skillInfo.lightningDamage}`;
-        }
+    //     if (skillName === 'lightningBolt' && skillInfo.lightningDamage) {
+    //         return `1-${skillInfo.lightningDamage}`;
+    //     }
 
-        if (skillInfo.damage) {
-            return skillInfo.damage;
-        }
+    //     if (skillInfo.damage) {
+    //         return skillInfo.damage;
+    //     }
         
-        return '0';
+    //     return '0';
+    // }
+
+
+    function getSkillDamage(skillInfo, skillName) {
+    if (skillName === "poisonJavelin" && skillInfo.damage?.min !== undefined) {
+        return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
     }
+    
+    if ((skillName === "powerStrike" || skillName === "lightningBolt") && skillInfo.lightningDamage) {
+        return `${skillInfo.lightningDamage.min || 1}-${skillInfo.lightningDamage}`;
+    }
+
+    // If damage is an object with min-max
+    if (skillInfo.damage && typeof skillInfo.damage === 'object') {
+        return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
+    }
+
+    // For regular damage numbers
+    if (skillInfo.damage) {
+        return skillInfo.damage;
+    }
+
+    return '0';
+}
 
     function updateDamageCalculations() {
     const selectedSkillContainer = document.getElementById('left-skill').value;
