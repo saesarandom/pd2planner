@@ -23,7 +23,7 @@ class SkillHandler {
           }
         },
         prerequisites: [],
-        synergies: ["fend", 18]
+        synergies: ["fend,18"]
       },
       poisonJavelin: {
         name: "Poison Javelin",
@@ -140,7 +140,7 @@ class SkillHandler {
             }
           },
           prerequisites: ["jab", "javelinAndSpearMastery"],
-          synergies: ["jab"]
+          synergies: ["jab,20"]
       },
       chargedStrike: {
         name: "Charged Strike",
@@ -241,65 +241,68 @@ class SkillHandler {
 
   getSkillInfo(skillName, level) {
     if (!this.skillData || level < 0 || level > 99) {
-      return null;
+        return null;
     }
-
-    
 
     const skill = this.skillData[skillName];
     if (!skill) {
-      return null;
+        return null;
     }
 
     const calculateSynergyBonus = (mainSkill) => {
-      let synergyBonus = 0;
-      if (mainSkill.synergies && mainSkill.synergies.length > 0) {
-          mainSkill.synergies.forEach(synergy => {
-              const [synergySkillName, synergyPercentage] = synergy; // For array format ["fend", 18]
-              const synergyLevel = parseInt(document.getElementById(synergySkillName + 'container')?.value || 0);
-              
-              if (synergyLevel > 0) {
-                  synergyBonus += (synergyLevel * synergyPercentage);
-              }
-          });
-      }
-      return 1 + (synergyBonus / 100); // Returns multiplier like 1.18 for 18%
-  };
+        let synergyBonus = 0;
+        if (mainSkill.synergies && mainSkill.synergies.length > 0) {
+            mainSkill.synergies.forEach(synergy => {
+                if (typeof synergy === 'string') {
+                    const parts = synergy.split(',').map(s => s.trim());
+                    const synergySkillName = parts[0];
+                    const synergyPercent = parts[1] || 0;
+                    const synergyLevel = parseInt(document.getElementById(synergySkillName + 'container')?.value || 0);
+                    
+                    if (synergyLevel > 0 && !isNaN(parseInt(synergyPercent))) {
+                        synergyBonus += (synergyLevel * parseInt(synergyPercent));
+                    }
+                }
+            });
+        }
+        return 1 + (synergyBonus / 100);
+    };
 
-  const calculateValue = (data) => {
-      if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
-          return 0;
-      }
-      return data.base + data.perLevel * (level - 1);
-  };
+    if ((skillName === "poisonJavelin" || skillName === "plagueJavelin")) {
+        const synergyMultiplier = calculateSynergyBonus(skill);
+        return {
+            level,
+            name: skill.name,
+            description: skill.description,
+            damage: {
+                min: (skill.levelData.poisonDamage.min[level - 1] || 0) * synergyMultiplier,
+                max: (skill.levelData.poisonDamage.max[level - 1] || 0) * synergyMultiplier
+            },
+            manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
+        };
+    }
 
-  if ((skillName === "poisonJavelin" || skillName === "plagueJavelin")) {
-      const synergyMultiplier = calculateSynergyBonus(skill);
-      return {
-          level,
-          name: skill.name,
-          description: skill.description,
-          damage: {
-              min: (skill.levelData.poisonDamage.min[level - 1] || 0) * synergyMultiplier,
-              max: (skill.levelData.poisonDamage.max[level - 1] || 0) * synergyMultiplier
-          },
-          manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
-      };
-  }
+    const calculateValue = (data) => {
+        if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
+            return 0;
+        }
+        return data.base + data.perLevel * (level - 1);
+    };
 
-  const baseDamage = skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0;
-  const synergyMultiplier = calculateSynergyBonus(skill);
+    // Calculate base values
+    const baseDamage = skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0;
+    const synergyMultiplier = calculateSynergyBonus(skill);
 
-  return {
-      level,
-      name: skill.name,
-      description: skill.description,
-      attackRating: calculateValue(skill.levelData.attackRating),
-      damage: baseDamage * synergyMultiplier,
-      manaCost: calculateValue(skill.levelData.manaCost),
-      ...(skill.levelData.lightningDamage && {
-          lightningDamage: (skill.levelData.lightningDamage.max[level - 1] || 0) * synergyMultiplier
-      })
-  };
+    return {
+        level,
+        name: skill.name,
+        description: skill.description,
+        attackRating: calculateValue(skill.levelData.attackRating),
+        damage: Math.floor(baseDamage * synergyMultiplier),
+        manaCost: calculateValue(skill.levelData.manaCost),
+        ...(skill.levelData.lightningDamage && {
+            lightningDamage: skill.levelData.lightningDamage.max[level - 1] * synergyMultiplier || 0
+        })
+    };
 }
 }

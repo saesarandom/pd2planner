@@ -5011,7 +5011,7 @@ function updateVisibility() {
   </script>
    
    
-   <script src="https://saesarandom.github.io/pd2planner/SkillHandler.js"></script>
+   <script src="SkillHandler.js"></script>></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
     const skillHandler = new SkillHandler();
@@ -5051,6 +5051,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         if (skillInfo.damage) {
+          console.log('Regular damage:', skillInfo.damage); 
             return skillInfo.damage;
         }
 
@@ -5090,17 +5091,25 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Set up ALL event listeners
     const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"]');
-    skillInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            const selectedSkill = skillNameMap[document.getElementById('left-skill').value];
-            const currentSkill = skillHandler.skillData[selectedSkill];
-            
-            if (input.id === document.getElementById('left-skill').value || 
-                (currentSkill?.synergies?.some(syn => syn[0] + 'container' === input.id))) {
-                updateDamageCalculations();
-            }
-        });
+skillInputs.forEach(input => {
+    input.addEventListener('input', function() {
+        // Get the currently selected skill
+        const selectedSkillContainer = document.getElementById('left-skill').value;
+        const selectedSkillName = skillNameMap[selectedSkillContainer];
+        const selectedSkill = skillHandler.skillData[selectedSkillName];
+
+        // Update if:
+        // 1. This is the currently selected skill OR
+        // 2. The changed skill is a synergy of the selected skill OR
+        // 3. The selected skill is a synergy of the changed skill
+        if (input.id === selectedSkillContainer || 
+            (selectedSkill?.synergies?.some(syn => (syn.split(',')[0] + 'container') === input.id)) ||
+            (skillHandler.skillData[skillNameMap[input.id]]?.synergies?.some(syn => 
+                (syn.split(',')[0] + 'container') === selectedSkillContainer))) {
+            updateDamageCalculations();
+        }
     });
+});
 
     const skillSelect = document.getElementById('left-skill');
     skillSelect.addEventListener('change', updateDamageCalculations);
