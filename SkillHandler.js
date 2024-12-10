@@ -23,7 +23,7 @@ class SkillHandler {
           }
         },
         prerequisites: [],
-        synergies: ["fend"]
+        synergies: ["fend", 18]
       },
       poisonJavelin: {
         name: "Poison Javelin",
@@ -251,37 +251,55 @@ class SkillHandler {
       return null;
     }
 
-    if ((skillName === "poisonJavelin" || skillName === "plagueJavelin")) {
-      return {
-        level,
-        name: skill.name,
-        description: skill.description,
-        damage: {
-          min: skill.levelData.poisonDamage.min[level - 1] || 0,
-          max: skill.levelData.poisonDamage.max[level - 1] || 0
-        },
-        manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
-      };
-    }
+    const calculateSynergyBonus = (mainSkill) => {
+      let synergyBonus = 0;
+      if (mainSkill.synergies && mainSkill.synergies.length > 0) {
+          mainSkill.synergies.forEach(synergy => {
+              const [synergySkillName, synergyPercentage] = synergy; // For array format ["fend", 18]
+              const synergyLevel = parseInt(document.getElementById(synergySkillName + 'container')?.value || 0);
+              
+              if (synergyLevel > 0) {
+                  synergyBonus += (synergyLevel * synergyPercentage);
+              }
+          });
+      }
+      return 1 + (synergyBonus / 100); // Returns multiplier like 1.18 for 18%
+  };
 
-    const calculateValue = (data) => {
+  const calculateValue = (data) => {
       if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
-        return 0;
+          return 0;
       }
       return data.base + data.perLevel * (level - 1);
-    };
+  };
 
-    return {
+  if ((skillName === "poisonJavelin" || skillName === "plagueJavelin")) {
+      const synergyMultiplier = calculateSynergyBonus(skill);
+      return {
+          level,
+          name: skill.name,
+          description: skill.description,
+          damage: {
+              min: (skill.levelData.poisonDamage.min[level - 1] || 0) * synergyMultiplier,
+              max: (skill.levelData.poisonDamage.max[level - 1] || 0) * synergyMultiplier
+          },
+          manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
+      };
+  }
+
+  const baseDamage = skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0;
+  const synergyMultiplier = calculateSynergyBonus(skill);
+
+  return {
       level,
       name: skill.name,
       description: skill.description,
       attackRating: calculateValue(skill.levelData.attackRating),
-      damage: skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0,
+      damage: baseDamage * synergyMultiplier,
       manaCost: calculateValue(skill.levelData.manaCost),
       ...(skill.levelData.lightningDamage && {
-        lightningDamage: skill.levelData.lightningDamage.max[level - 1] || 0
+          lightningDamage: (skill.levelData.lightningDamage.max[level - 1] || 0) * synergyMultiplier
       })
-    };
-  }
+  };
 }
-
+}

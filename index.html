@@ -5091,28 +5091,26 @@ document.addEventListener('DOMContentLoaded', async function() {
     const selectedSkillContainer = document.getElementById('left-skill').value;
     const skillInput = document.getElementById(selectedSkillContainer);
     
-    console.log('Selected skill:', { selectedSkillContainer, skillInput });
+    //console.log('Selected skill:', { selectedSkillContainer, skillInput });
     
-    if (!skillInput) {
-        console.log('No skill input found');
-        return;
-    }
+    if (!skillInput) return;
+    
 
     const skillLevel = parseInt(skillInput.value) || 0;
     const skillName = skillNameMap[selectedSkillContainer];
     
-    console.log('Skill details:', { skillLevel, skillName });
+    //console.log('Skill details:', { skillLevel, skillName });
     
     const allSkillsValue = parseInt(document.getElementById('allskillscontainer').textContent || 
                                   document.getElementById('allskillscontainer').value || 0);
     const totalSkillLevel = skillLevel + allSkillsValue;
 
-    console.log('Total skill level:', totalSkillLevel);
+    //console.log('Total skill level:', totalSkillLevel);
 
   
 
     if (skillLevel === 0) {
-        console.log('Skill level is 0, resetting displays');
+        //console.log('Skill level is 0, resetting displays');
         document.getElementById('jabValueOutput').textContent = '0';
         document.getElementById('attackRatingOutput').textContent = '0%';
         document.getElementById('damageOutput').textContent = '0';
@@ -5120,7 +5118,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-   
+    const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"]');
+    skillInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            // Now update even if the changed skill is a synergy of the selected skill
+            const currentSkill = skillHandler.skillData[skillNameMap[document.getElementById('left-skill').value]];
+            if (input.id === document.getElementById('left-skill').value || 
+                (currentSkill?.synergies?.some(syn => syn[0] + 'container' === input.id))) {
+                updateDamageCalculations();
+            }
+        });
+    });
     const skillInfo = skillHandler.getSkillInfo(skillName, totalSkillLevel);
     
     console.log('Skill info returned:', skillInfo);
