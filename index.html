@@ -5015,16 +5015,12 @@ function updateVisibility() {
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
     const skillHandler = new SkillHandler();
-    console.log("Final skillData:", Object.keys(skillHandler.skillData)); // 
     await skillHandler.loadSkillData();
 
     if (!skillHandler.skillData || Object.keys(skillHandler.skillData).length < 5) {
         console.warn('Skills not fully loaded');
         return;
     }
-    
-    
-
 
     const skillNameMap = {
         'jabcontainer': 'jab',
@@ -5039,114 +5035,78 @@ document.addEventListener('DOMContentLoaded', async function() {
         'lightningfurycontainer': 'lightningFury'
     };
 
-  
-
-
-    // function getSkillDamage(skillInfo, skillName) {
-    //     console.log('getSkillDamage called with:', { skillInfo, skillName });
-        
-    //     if (skillName === 'powerStrike' && skillInfo.lightningDamage) {
-    //         return `1-${skillInfo.lightningDamage}`;
-    //     }
-        
-    //     if (skillName === 'poisonJavelin' && skillInfo.damage?.min !== undefined) {
-    //         return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
-    //     }
-        
-    //     if (skillName === 'lightningBolt' && skillInfo.lightningDamage) {
-    //         return `1-${skillInfo.lightningDamage}`;
-    //     }
-
-    //     if (skillInfo.damage) {
-    //         return skillInfo.damage;
-    //     }
-        
-    //     return '0';
-    // }
-
-
     function getSkillDamage(skillInfo, skillName) {
-    if ((skillName === "poisonJavelin" || skillName === "plagueJavelin") && skillInfo.damage?.min !== undefined) {
-        return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
-    }
-    
-    if ((skillName === "powerStrike" || skillName === "lightningBolt") || skillName === "lightningStrike" || skillName === "lightningFury" && skillInfo.lightningDamage) {
-        return `${skillInfo.lightningDamage.min || 1}-${skillInfo.lightningDamage}`;
-    }
+        if ((skillName === "poisonJavelin" || skillName === "plagueJavelin") && skillInfo.damage?.min !== undefined) {
+            return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
+        }
+        
+        if ((skillName === "powerStrike" || skillName === "lightningBolt" || 
+             skillName === "lightningStrike" || skillName === "lightningFury") && 
+             skillInfo.lightningDamage) {
+            return `${skillInfo.lightningDamage.min || 1}-${skillInfo.lightningDamage}`;
+        }
 
-    // If damage is an object with min-max
-    if (skillInfo.damage && typeof skillInfo.damage === 'object') {
-        return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
-    }
+        if (skillInfo.damage && typeof skillInfo.damage === 'object') {
+            return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
+        }
 
-    // For regular damage numbers
-    if (skillInfo.damage) {
-        return skillInfo.damage;
-    }
+        if (skillInfo.damage) {
+            return skillInfo.damage;
+        }
 
-    return '0';
-}
+        return '0';
+    }
 
     function updateDamageCalculations() {
-    const selectedSkillContainer = document.getElementById('left-skill').value;
-    const skillInput = document.getElementById(selectedSkillContainer);
-    
-    //console.log('Selected skill:', { selectedSkillContainer, skillInput });
-    
-    if (!skillInput) return;
-    
+        const selectedSkillContainer = document.getElementById('left-skill').value;
+        const skillInput = document.getElementById(selectedSkillContainer);
+        
+        if (!skillInput) return;
 
-    const skillLevel = parseInt(skillInput.value) || 0;
-    const skillName = skillNameMap[selectedSkillContainer];
-    
-    //console.log('Skill details:', { skillLevel, skillName });
-    
-    const allSkillsValue = parseInt(document.getElementById('allskillscontainer').textContent || 
-                                  document.getElementById('allskillscontainer').value || 0);
-    const totalSkillLevel = skillLevel + allSkillsValue;
+        const skillLevel = parseInt(skillInput.value) || 0;
+        const skillName = skillNameMap[selectedSkillContainer];
+        
+        const allSkillsValue = parseInt(document.getElementById('allskillscontainer').textContent || 
+                                      document.getElementById('allskillscontainer').value || 0);
+        const totalSkillLevel = skillLevel + allSkillsValue;
 
-    //console.log('Total skill level:', totalSkillLevel);
+        if (skillLevel === 0) {
+            document.getElementById('jabValueOutput').textContent = '0';
+            document.getElementById('attackRatingOutput').textContent = '0%';
+            document.getElementById('damageOutput').textContent = '0';
+            document.getElementById('manaCostOutput').textContent = '0';
+            return;
+        }
 
-  
-
-    if (skillLevel === 0) {
-        //console.log('Skill level is 0, resetting displays');
-        document.getElementById('jabValueOutput').textContent = '0';
-        document.getElementById('attackRatingOutput').textContent = '0%';
-        document.getElementById('damageOutput').textContent = '0';
-        document.getElementById('manaCostOutput').textContent = '0';
-        return;
+        const skillInfo = skillHandler.getSkillInfo(skillName, totalSkillLevel);
+        
+        if (skillInfo) {
+            document.getElementById('jabValueOutput').textContent = totalSkillLevel;
+            document.getElementById('attackRatingOutput').textContent = `${skillInfo.attackRating || 0}%`;
+            document.getElementById('damageOutput').textContent = getSkillDamage(skillInfo, skillName);
+            document.getElementById('manaCostOutput').textContent = skillInfo.manaCost?.toFixed(1) || 0;
+        }
     }
 
+    // Set up ALL event listeners
     const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"]');
     skillInputs.forEach(input => {
         input.addEventListener('input', function() {
-            // Now update even if the changed skill is a synergy of the selected skill
-            const currentSkill = skillHandler.skillData[skillNameMap[document.getElementById('left-skill').value]];
+            const selectedSkill = skillNameMap[document.getElementById('left-skill').value];
+            const currentSkill = skillHandler.skillData[selectedSkill];
+            
             if (input.id === document.getElementById('left-skill').value || 
                 (currentSkill?.synergies?.some(syn => syn[0] + 'container' === input.id))) {
                 updateDamageCalculations();
             }
         });
     });
-    const skillInfo = skillHandler.getSkillInfo(skillName, totalSkillLevel);
-    
-    console.log('Skill info returned:', skillInfo);
-    
-    if (skillInfo) {
-        document.getElementById('jabValueOutput').textContent = totalSkillLevel;
-        document.getElementById('attackRatingOutput').textContent = `${skillInfo.attackRating || 0}%`;
-        document.getElementById('damageOutput').textContent = getSkillDamage(skillInfo, skillName);
-        document.getElementById('manaCostOutput').textContent = skillInfo.manaCost?.toFixed(1) || 0;
-    }
-}
+
+    const skillSelect = document.getElementById('left-skill');
+    skillSelect.addEventListener('change', updateDamageCalculations);
 
     const allSkillsContainer = document.getElementById('allskillscontainer');
-    const observer = new MutationObserver((mutations) => {
-        console.log('Mutation observed:', mutations);
-        updateDamageCalculations();
-    });
-    
+    const observer = new MutationObserver(updateDamageCalculations);
     observer.observe(allSkillsContainer, { 
         childList: true, 
         characterData: true, 
@@ -5154,25 +5114,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         characterDataOldValue: true 
     });
 
-    const skillSelect = document.getElementById('left-skill');
-    skillSelect.addEventListener('change', function(e) {
-        console.log('Skill selected:', e.target.value);
-        updateDamageCalculations();
-    });
-    
     allSkillsContainer.addEventListener('change', updateDamageCalculations);
 
-    const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"]');
-    skillInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            console.log('Skill input changed:', input.id, input.value);
-            if (input.id === document.getElementById('left-skill').value) {
-                updateDamageCalculations();
-            }
-        });
-    });
-
-    
+    // Initial calculation
     updateDamageCalculations();
 });
 
