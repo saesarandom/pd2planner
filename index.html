@@ -5066,7 +5066,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
     function getSkillDamage(skillInfo, skillName) {
-    if (skillName === "poisonJavelin" && skillInfo.damage?.min !== undefined) {
+    if ((skillName === "poisonJavelin" || skillName === "plagueJavelin") && skillInfo.damage?.min !== undefined) {
         return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
     }
     

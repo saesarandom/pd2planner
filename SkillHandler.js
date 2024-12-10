@@ -215,7 +215,7 @@ class SkillHandler {
       return null;
     }
 
-    if (skillName === "poisonJavelin") {
+    if ((skillName === "poisonJavelin" || skillName === "plagueJavelin")) {
       return {
         level,
         name: skill.name,
