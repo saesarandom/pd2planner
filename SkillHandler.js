@@ -116,84 +116,46 @@ class SkillHandler {
     return Promise.resolve();
   }
 
-  // getSkillInfo(skillName, level) {
-  //   if (!this.skillData || level < 1 || level > 99) {
-  //     return null;
-  //   }
-
-
-
-//     const skill = this.skillData[skillName];
-//     if (!skill) {
-//       return null;
-//     }
-
-//     if (skillName === "poisonJavelin") {
-//       return {
-//         level,
-//         name: skill.name,
-//         description: skill.description,
-//         damage: {
-//           min: skill.levelData.poisonDamage.min[level - 1] || 0,
-//           max: skill.levelData.poisonDamage.max[level - 1] || 0
-//         },
-//         manaCost: skill.levelData.manaCost.base + skill.levelData.manaCost.perLevel * (level - 1)
-//       };
-//     }
-
-//     const calculateValue = (data) => {
-//       if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
-//         return 0;
-//       }
-//       return data.base + data.perLevel * (level - 1);
-//     };
-
-//     return {
-//       level,
-//       name: skill.name,
-//       description: skill.description,
-//       attackRating: calculateValue(skill.levelData.attackRating),
-//       damage: skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0,
-//       manaCost: calculateValue(skill.levelData.manaCost),
-//       ...(skill.levelData.lightningDamage && {
-//         lightningDamage: skill.levelData.lightningDamage.max[level - 1] || 0
-//       })
-//     };
-//   }
-// }
-
-getSkillInfo(skillName, level) {
-  console.log('GetSkillInfo called with:', {
-    skillName,
-    level,
-    hasSkillData: !!this.skillData,
-    skillExists: !!this.skillData[skillName],
-    actualSkill: this.skillData[skillName]
-  });
-
-  if (!this.skillData || level < 1 || level > 99) {
-    return null;
-  }
-
-  const skill = this.skillData[skillName];
-  if (!skill) {
-    return null;
-  }
-
-  const calculateValue = (data) => {
-    if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
-      return 0;
+  getSkillInfo(skillName, level) {
+    if (!this.skillData || level < 1 || level > 99) {
+        return null;
     }
-    return data.base + data.perLevel * (level - 1);
-  };
 
-  return {
-    level,
-    name: skill.name,
-    description: skill.description,
-    attackRating: calculateValue(skill.levelData.attackRating),
-    damage: skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0,
-    manaCost: calculateValue(skill.levelData.manaCost)
-  };
-}
-}
+    const skill = this.skillData[skillName];
+    if (!skill) {
+        return null;
+    }
+
+    const calculateValue = (data) => {
+        if (!data || typeof data.base === "undefined" || typeof data.perLevel === "undefined") {
+            return 0;
+        }
+        return data.base + data.perLevel * (level - 1);
+    };
+
+    // Base info for all skills
+    const result = {
+        level,
+        name: skill.name,
+        description: skill.description,
+        attackRating: calculateValue(skill.levelData.attackRating),
+        manaCost: calculateValue(skill.levelData.manaCost)
+    };
+
+    // Handle different damage types
+    if (skillName === "poisonJavelin") {
+        result.damage = {
+            min: skill.levelData.poisonDamage.min[level - 1] || 0,
+            max: skill.levelData.poisonDamage.max[level - 1] || 0
+        };
+    } else if (skillName === "lightningBolt" || skillName === "powerStrike") {
+        result.damage = {
+            min: 1,
+            max: skill.levelData.lightningDamage.max[level - 1] || 0
+        };
+    } else if (skill.levelData.damage) {
+        result.damage = calculateValue(skill.levelData.damage);
+    }
+
+    return result;
+}}

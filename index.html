@@ -5081,6 +5081,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     console.log('Total skill level:', totalSkillLevel);
 
+    if (!skillHandler.skillData || Object.keys(skillHandler.skillData).length < 5) {
+        console.warn('Skills not fully loaded');
+        return;
+    }
+    
+
     if (skillLevel === 0) {
         console.log('Skill level is 0, resetting displays');
         document.getElementById('jabValueOutput').textContent = '0';
