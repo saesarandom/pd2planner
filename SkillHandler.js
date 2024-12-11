@@ -41,7 +41,7 @@ class SkillHandler {
           }
         },
         prerequisites: [],
-        synergies: ["jab,24", "javelinandspearmastery,24"]
+        synergies: ["plaguejavelin,24", "javelinandspearmastery,24"]
       },
       javelinAndSpearMastery: {
       name: "Javelin and Spear Mastery",
@@ -61,7 +61,7 @@ class SkillHandler {
                   34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
               },
               prerequisites: ["jab"],
-              synergies: ["poisonJavelin,24"]
+              synergies: []
       },
       powerStrike: {
               name: "Power Strike",
@@ -99,7 +99,7 @@ class SkillHandler {
                  }
                 },
                  prerequisites: ["jab"],
-                 synergies: []
+                 synergies: ["lightningstrike,20", "lightningbolt,20"]
       },
       lightningBolt: {
         name: "Lightning Bolt",
@@ -117,7 +117,7 @@ class SkillHandler {
           }
         },
         prerequisites: ["jab", "poisonJavelin", "powerStrike"],
-        synergies: ["powerStrike", "lightningFury"]
+        synergies: ["powerstrike,14", "lightningfury,14"]
       },
       fend: {
         name: "Fend",
@@ -165,7 +165,7 @@ class SkillHandler {
           }
         },
         prerequisites: ["jab", "powerStrike"],
-        synergies: ["powerStrike", "lightningStrike"]
+        synergies: ["powerstrike,8", "lightningstrike,8"]
       },
       plagueJavelin: {
         name: "Plague Javelin",
@@ -187,8 +187,8 @@ class SkillHandler {
             formula: "base + (perLevel * (level - 1))"
           }
         },
-        prerequisites: ["jab", "powerStrike"],
-        synergies: ["powerStrike", "lightningStrike"]
+        prerequisites: ["jab", "poisonJavelin", "powerStrike", "lightningBolt"],
+        synergies: ["poisonjavelin,12", "javelinandspearmastery,6"]
         },
         lightningStrike: {
           name: "Lightning Strike",
@@ -206,7 +206,7 @@ class SkillHandler {
             }
           },
           prerequisites: ["jab", "powerStrike", "chargedStrike"],
-          synergies: ["powerStrike", "chargedStrike"]
+          synergies: ["powerstrike,8", "chargedstrike,8"]
           },
           lightningFury: {
             name: "Lightning Fury",
@@ -224,7 +224,7 @@ class SkillHandler {
               }
             },
             prerequisites: ["jab", "powerStrike", "poisonJavelin", "lightningBolt", "plagueJavelin"],
-            synergies: ["powerStrike", "lightningBolt"]
+            synergies: ["powerstrike,3", "lightningbolt,3"]
             }
 
     };
@@ -263,7 +263,30 @@ class SkillHandler {
                   const synergyPercent = parts[1] || 0;
                   const synergyLevel = parseInt(document.getElementById(synergySkillName + 'container')?.value || 0);
                   
+const calculateSynergyBonus = (mainSkill) => {
+    let synergyBonus = 0;
+    if (mainSkill.synergies && mainSkill.synergies.length > 0) {
+        mainSkill.synergies.forEach(synergy => {
+            if (typeof synergy === 'string') {
+                const parts = synergy.split(',').map(s => s.trim());
+                const synergySkillName = parts[0];
+                const synergyPercent = parts[1] || 0;
+                const elementId = synergySkillName.toLowerCase() + 'container';
+                const synergyLevel = parseInt(document.getElementById(elementId)?.value || 0);
+                
+                // const elementId = synergySkillName.toLowerCase() + 'container';
+                // const synergyLevel = parseInt(document.getElementById(elementId)?.value || 0);
+                
+              
 
+                if (synergyLevel > 0 && !isNaN(parseInt(synergyPercent))) {
+                    synergyBonus += (synergyLevel * parseInt(synergyPercent));
+                }
+            }
+        });
+    }
+    return 1 + (synergyBonus / 100);
+};
 
                   
                   console.log('Processing synergy:', {
