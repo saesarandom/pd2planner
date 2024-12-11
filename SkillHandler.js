@@ -289,6 +289,17 @@ class SkillHandler {
         };
     }
 
+    if (skillName === "javelinAndSpearMastery") {
+      return {
+          level,
+          name: skill.name,
+          description: skill.description,
+          criticalChance: skill.levelData.criticalChance[level - 1] || 0    
+      };
+  }
+
+
+
     // Handle regular skills
     const baseDamage = skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0;
 

@@ -5072,6 +5072,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                                       document.getElementById('allskillscontainer').value || 0);
         const totalSkillLevel = skillLevel + allSkillsValue;
 
+        //const criticalhitValue =  parseInt(document.getElementById('criticalhitcontainer').value || 0);
+        const javelinandspearmasteryLevel = parseInt(document.getElementById('javelinandspearmasterycontainer').value || 0);
+if (javelinandspearmasteryLevel > 0) {
+    const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
+    document.getElementById('criticalhitcontainer').textContent = javelinandspearmasteryInfo?.criticalChance || '0'; //tu funguje textcontent
+} else {
+    document.getElementById('criticalhitcontainer').textContent = '0';
+}
+
         if (skillLevel === 0) {
             document.getElementById('jabValueOutput').textContent = '0';
             document.getElementById('attackRatingOutput').textContent = '0%';
@@ -5125,7 +5134,7 @@ skillInputs.forEach(input => {
     });
 
     allSkillsContainer.addEventListener('change', updateDamageCalculations);
-
+    //criticalhitValue.addEventListener('change', updateDamageCalculations);
     // Initial calculation
     updateDamageCalculations();
 });
