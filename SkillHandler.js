@@ -190,7 +190,7 @@ class SkillHandler {
         prerequisites: ["jab", "poisonJavelin", "powerStrike", "lightningBolt"],
         synergies: ["poisonjavelin,12", "javelinandspearmastery,6"]
         },
-        lightningStrike: {
+      lightningStrike: {
           name: "Lightning Strike",
           description: "Chargedlightning javelin attack",
           maxLevel: 99,
@@ -208,7 +208,7 @@ class SkillHandler {
           prerequisites: ["jab", "powerStrike", "chargedStrike"],
           synergies: ["powerstrike,8", "chargedstrike,8"]
           },
-          lightningFury: {
+      lightningFury: {
             name: "Lightning Fury",
             description: "Furious light attack",
             maxLevel: 99,
@@ -226,7 +226,7 @@ class SkillHandler {
             prerequisites: ["jab", "powerStrike", "poisonJavelin", "lightningBolt", "plagueJavelin"],
             synergies: ["powerstrike,3", "lightningbolt,3"]
             },
-          innerSight: {
+      innerSight: {
             name: "Inner Sight",
             description: "Illuminates nearby enemies",
             maxLevel: 99,
@@ -246,17 +246,17 @@ class SkillHandler {
             prerequisites: [],
             synergies: []
             },
-            criticalStrike: {
+      criticalStrike: {
               name: "Critical Strike",
               description: "Chance to 1.5x damage to enemy",
               maxLevel: 99,
               levelData: {
                 criticalChance: {
                   base: [15,	23,	30,	35,	40,	43,	46,	48,	51,	52,	54,	56,	57,	58,	59,	61,	61,	62,	63,	63,	64,	65,	65,	66,	66,	67,	68,	68,	68,	68,	69,	69,	70,	70,	70,	70,	70,	71,	71,	71,	71,	72,	72,	72,	72,	72,	72,	72,	73,	73,	73,	73,	73,	74,	74,	74,	74,	74,	74,	75],
-             },
+             }
             },
-          },
-          evade: {
+      },
+      evade: {
             name: "Evade",
             description: "Moving faster, chance to evade enemy attack",
             maxLevel: 99,
@@ -266,34 +266,37 @@ class SkillHandler {
               },
               movementSpeed: {
                 base: [-40, -65, -90, -115, -140, -165, -190, -215, -260, -305, -350, -395, -440, -485, -530, -575, -635, -695, -755, -815, -875, -935, -1015, -1095, -1175, -1255, -1335, -1415, -1515, -1615, -1715, -1815, -1915, -2015, -2115, -2215, -2315, -2415, -2515, -2615, -2715, -2815, -2915, -3015, -3115, -3215, -3315, -3415, -3515, -3615, -3715, -3815, -3915, -4015, -4115, -4215, -4315, -4415, -4515, -4615],
-              },
-            },
-            slowMovement: {
-              name: "Slow Movement",
-              description: "Slowing enemy attack speed to value and their movement speed",
-              maxLevel: 99,
-              levelData: {
-                movementSpeed: {
+              }
+      },
+      slowMovement: {
+            name: "Slow Movement",
+            description: "Slowing enemy attack speed to value and their movement speed",
+            maxLevel: 99,
+            levelData: {
+              movementSpeed: {
                   base: [-20,	-22,	-24,	-26,	-28,	-30,	-32,	-34,	-36,	-38,	-40,	-42,	-44,	-46,	-48,	-50,	-52,	-54,	-56,	-58,	-60,	-62,	-64,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65,	-65],
                 },
-                rangedSpeed: {
+              rangedSpeed: {
                   base: [75,	73,	71,	69,	67,	65,	63,	61,	59,	57,	55,	53,	51,	49,	47,	45,	44,	43,	42,	41,	40,	39,	38,	37,	36,	35,	34,	33,	32,	31,	30,	29,	28,	27,	26,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25,	25]
-                },
-              },
+                }
             },
-            pierce: {
-              name: "Pierce",
-              description: "Chance for attacks to pierce through",
-              maxLevel: 99,
-              levelData: {
-                pierceChance: {
+            prerequisites: ["innerSight"],
+            synergies: []
+      },
+      pierce: {
+            name: "Pierce",
+            description: "Chance for attacks to pierce through",
+            maxLevel: 99,
+            levelData: {
+              pierceChance: {
                   base: [30,	33,	36,	39,	42,	45,	48,	51,	53,	55,	57,	59,	61,	63,	65,	67,	69,	71,	73,	75,	77,	79,	80,	81,	82,	83,	84,	85,	86,	87,	88,	89,	90,	91,	92,	93,	94,	95,	96,	97,	98,	99,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100,	100]
-
+                }
               },
               prerequisites: ["criticalStrike"],
-            },
-          },
-          dodge: {
+              synergies: []
+            
+      },
+      dodge: {
             name: "Dodge",
             description: "Chance to dodge enemies attacks when attacking or standing still",
             maxLevel: 99,
@@ -302,12 +305,13 @@ class SkillHandler {
                 base: [6,	11,	15,	18,	20,	22,	24,	25,	26,	27,	28,	29,	30,	31,	31,	32,	32,	32,	33,	33,	34,	34,	34,	35,	35,	36,	36,	36,	36,	36,	36,	36,	37,	37,	37,	37,	37,	38,	38,	38,	38,	38,	38,	38,	38,	38,	38,	38,	39,	39,	39,	39,	39,	39,	39,	39,	39,	39,	39,	40],
               },
               cooldown: {
-                base: 0.16
-              },
-              prerequisites: ["innerSight", "avoid", "slowMovement"],
-            },
+                  base: 0.16
+              }
           },
-          decoy: {
+          prerequisites: ["innerSight", "avoid", "slowMovement"],
+          synergies: []
+      },
+      decoy: {
             name: "Decoy",
             description: "Summon attacking decoys",
             maxLevel: 99,
@@ -319,12 +323,13 @@ class SkillHandler {
               decoys: {
                 base: 1,
                 formula: "base + level/10"
+              }
               },
               prerequisites: ["innerSight", "slowMovement"],
               synergies: ["strafe,10", "valkyrie,10", "criticalStrike", "pierce", "penetrate"]
-            },
-          },
-          penetrate: {
+            
+      },
+      penetrate: {
             name: "Penetrate",
             description: "Increases your attack rating and lowers enemy def",
             maxLevel: 99,
@@ -338,9 +343,9 @@ class SkillHandler {
                 formula: "base + (perLevel * (level - 1))"
               },
               prerequisites: ["criticalStrike", "pierce"]
-            },
-          },
-          valkyrie: {
+            }
+      },
+      valkyrie: {
             name: "Valkyrie",
             description: "Summon attacking valkyrie companion",
             maxLevel: 99,
@@ -355,8 +360,27 @@ class SkillHandler {
               },
               prerequisites: ["innerSight", "slowMovement", "decoy"],
               synergies: ["decoy,20", "pierce,2", "penetrate,40", "powerStrike,20", "criticalStrike"]
+            }
+      },
+      magicArrow: {
+            name: "Magic Arrow",
+            description: "Creates a magical arrow or bolt that does extra damage",
+            maxLevel: 99,
+            levelData: {
+              damage: {
+                min: [2,	3,	5,	6,	8,	9,	11,	12,	16,	20,	24,	27,	31,	35,	39,	42,	54,	65,	76,	87,	99,	110,	132,	154,	176,	198,	220,	242,	275,	308,	341,	374,	407,	440,	473,	506,	539,	572,	605,	638,	671,	704,	737,	770,	803,	836,	869,	902,	935,	968,	1001,	1034,	1067,	1100,	1133,	1166,	1199,	1232,	1265,	1298],              
+                max: [3,	6,	8,	10,	12,	15,	17,	19,	24,	30,	35,	40,	45,	51,	56,	61,	74,	87,	99,	112,	125,	138,	162,	186,	210,	234,	258,	282,	317,	352,	387,	422,	457,	492,	527,	562,	597,	632,	667,	702,	737,	772,	807,	842,	877,	912,	947,	982,	1017,	1052,	1087,	1122,	1157,	1192,	1227,	1262,	1297,	1332,	1367,	1402]
+              },
+              manaCost: {
+                base: 2,
+                perLevel: 0.1,
+                formula: "base + (perLevel * (level - 1))"
+               }
+              },
+              prerequisites: [],
+              synergies: ["innerSight,20", "slowMovement,20", "guidedArrow,20"]
+            
             },
-          },
     }  
   }; 
  }
@@ -369,15 +393,41 @@ class SkillHandler {
 
   
 
+  // getSkillInfo(skillName, level) {
+  //   if (!this.skillData || level < 0 || level > 99) {
+  //       return null;
+  //   }
+
+  //   const skill = this.skillData[skillName];
+  //   if (!skill) {
+  //       return null;
+  //   }
+
   getSkillInfo(skillName, level) {
+    console.log('getSkillInfo called with:', {
+        skillName,
+        level,
+        skillExists: !!this.skillData[skillName],
+        availableSkills: Object.keys(this.skillData)
+    });
+
     if (!this.skillData || level < 0 || level > 99) {
+        console.log('Validation failed:', {
+            hasSkillData: !!this.skillData,
+            levelValid: level >= 0 && level <= 99
+        });
         return null;
     }
 
     const skill = this.skillData[skillName];
     if (!skill) {
+        console.log('Skill not found:', skillName);
         return null;
     }
+
+    console.log('Found skill data:', skill);
+
+
 
     const calculateSynergyBonus = (mainSkill) => {
         let synergyBonus = 0;
@@ -427,6 +477,18 @@ class SkillHandler {
       };
   }
 
+  if (skill.levelData.damage?.min && Array.isArray(skill.levelData.damage.min)) {
+    return {
+        level,
+        name: skill.name,
+        description: skill.description,
+        damage: {
+            min: skill.levelData.damage.min[level - 1] || 0,
+            max: skill.levelData.damage.max[level - 1] || 0
+        },
+        decoys: Math.floor(skill.levelData.decoys.base + level/10)  // Special handling for decoy count
+    };
+}
 
 
     // Handle regular skills

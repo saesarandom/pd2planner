@@ -1482,6 +1482,9 @@ Defense
         <option value="plaguejavelincontainer">Plague Javelin</option>
         <option value="lightningstrikecontainer">Lightning Strike</option>
         <option value="lightningfurycontainer">Lightning Fury</option>
+        <option value="decoycontainer">Decoy</option>
+        <option value="valkyriecontainer">Valkyrie</option>
+        <option value="magicarrowcontainer">Magic Arrow</option>
       </select>
     </div>
     
@@ -5075,7 +5078,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         'chargedstrikecontainer': 'chargedStrike',
         'plaguejavelincontainer': 'plagueJavelin',
         'lightningstrikecontainer': 'lightningStrike',
-        'lightningfurycontainer': 'lightningFury'
+        'lightningfurycontainer': 'lightningFury',
+        'innersightcontainer': 'innerSight',
+        'criticalstrikecontainer': 'criticalStrike',
+        'evadecontainer': 'evade',
+        'slowmovementcontainer': 'slowMovement',
+        'piercecontainer': 'pierce',
+        'dodgecontainer': 'dodge',
+        'decoycontainer': 'decoy',
+        'penetratecontainer': 'penetrate',
+        'valkyriecontainer': 'valkyrie',
+        'magicarrowcontainer': 'magicArrow'
     };
 
     function getSkillDamage(skillInfo, skillName) {
@@ -5130,7 +5143,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const deadlyStrike = parseInt(document.getElementById('deadlystrikecontainer').value || 0);
     console.log('Processing Deadly Strike:', deadlyStrike);
     
-    const totalDeadlyStrike = Number(document.getElementById('deadlystrikecontainer').value);
+    const totalDeadlyStrike = deadlyStrike;
     const totalCriticalHit = criticalHitValue / 100;
     const totalWeaponMastery = parseInt(document.getElementById('weaponmasterycontainer').value || 0) / 100;
 
@@ -5177,30 +5190,64 @@ deadlyStrikeElement.addEventListener('input', function() {
     }
 
     // Set up ALL event listeners
-    const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"]');
+    const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"], #passiveskillscontainer input[type="number"], #bowandcrossbowskillscontainer input[type="number"]');
+
 skillInputs.forEach(input => {
     input.addEventListener('input', function() {
-        // Get the currently selected skill
-        const selectedSkillContainer = document.getElementById('left-skill').value;
-        const selectedSkillName = skillNameMap[selectedSkillContainer];
-        const selectedSkill = skillHandler.skillData[selectedSkillName];
+        // First, let's get and validate all our variables
+        const currentInput = {
+            inputId: input.id,
+            parentContainer: input.closest('div').id,
+            value: input.value
+        };
+        console.log('Skill input changed:', currentInput);
 
-        // Update if:
-        // 1. This is the currently selected skill OR
-        // 2. The changed skill is a synergy of the selected skill OR
-        // 3. The selected skill is a synergy of the changed skill
-        if (input.id === selectedSkillContainer || 
-            (selectedSkill?.synergies?.some(syn => (syn.split(',')[0] + 'container') === input.id)) ||
-            (skillHandler.skillData[skillNameMap[input.id]]?.synergies?.some(syn => 
-                (syn.split(',')[0] + 'container') === selectedSkillContainer))) {
-            updateDamageCalculations();
-            skillInputs.forEach(input => {
-    input.addEventListener('input', function() {
-        updateDamageCalculations();
-        //updateCriticalHit();
-    });
-});
+        try {
+            const selectedSkillContainer = document.getElementById('left-skill')?.value;
+            const selectedSkillName = skillNameMap[selectedSkillContainer];
+            
+            console.log('Selection info:', {
+                container: selectedSkillContainer,
+                mappedName: selectedSkillName,
+                skillExists: !!skillHandler.skillData[selectedSkillName]
+            });
+
+            if (!selectedSkillContainer || !selectedSkillName) {
+                console.warn('Missing selection info');
+                return;
+            }
+
+            // Now proceed with the update logic
+            const selectedSkill = skillHandler.skillData[selectedSkillName];
+            if (input.id === selectedSkillContainer || 
+                (selectedSkill?.synergies?.some(syn => (syn.split(',')[0] + 'container') === input.id)) ||
+                (skillHandler.skillData[skillNameMap[input.id]]?.synergies?.some(syn => 
+                    (syn.split(',')[0] + 'container') === selectedSkillContainer))) {
+                updateDamageCalculations();
+            }
+        } catch (error) {
+            console.error('Error in skill input handler:', error);
         }
+      
+    
+  
+
+    
+
+        //updateCriticalHit();
+
+
+
+
+
+
+
+       
+
+        
+    
+
+        
     });
 });
 
