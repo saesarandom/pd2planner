@@ -5117,6 +5117,12 @@ skillInputs.forEach(input => {
             (skillHandler.skillData[skillNameMap[input.id]]?.synergies?.some(syn => 
                 (syn.split(',')[0] + 'container') === selectedSkillContainer))) {
             updateDamageCalculations();
+            skillInputs.forEach(input => {
+    input.addEventListener('input', function() {
+        updateDamageCalculations();
+        updateCriticalHit();
+    });
+});
         }
     });
 });
