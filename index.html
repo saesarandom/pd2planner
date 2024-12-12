@@ -787,6 +787,48 @@ input[type=number] {
   font-family: bahnschrift condensed;
 }
 
+.criticalhitcontainer input {
+  position: absolute;
+  width: 5pc;
+  color: rgba(51, 51, 107, 0.55);
+  font-size: 15px; 
+  left: 33px;
+  top: 20px;
+  text-shadow: rebeccapurple 0 0 25px,  0 0 3px rgb(40, 40, 94);;
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    display: inline-block;
+}
+
+.criticalhitcontainer input:focus {
+    outline: none;
+}
+
+.deadlystrikecontainer input {
+  position: absolute;
+  width: 5pc;
+  color: rgba(51, 51, 107, 0.55);
+  font-size: 15px; 
+  left: -733px;
+  top: -115px;
+  text-shadow: rebeccapurple 0 0 25px,  0 0 3px rgb(40, 40, 94);;
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    display: inline-block;
+}
+
 option { background-color: rgb(196, 196, 192); }
 select:has(option[value="Biggins Bonnet"]:checked), option[value="Biggins Bonnet"] { background-color: rgb(186, 174, 82); }
 select:has(option[value="Tarnhelm"]:checked), option[value="Tarnhelm"] { background-color: rgb(186, 174, 82); }
@@ -1376,8 +1418,8 @@ Defense
 <div class="flatpoisoncontainer">Poison Dmg<div id="flatpoisoncontainer"></div>
 <div class="flatmagiccontainer">Magic Dmg<div id="flatmagiccontainer"></div>
 
-<div class="criticalhitcontainer">Critical Hit<div id="criticalhitcontainer"></div>
-<div class="deadlystrikecontainer">Deadly Strike<div id="deadlystrikecontainer"></div>
+<div class="criticalhitcontainer">Critical Hit<input id="criticalhitcontainer" type="text" readonly value="0"></div>
+<div class="deadlystrikecontainer">Deadly Strike<input id="deadlystrikecontainer" type="text" readonly value="0"></div>
 <div class="weaponmasterycontainer">Weapon Mastery<div id="weaponmasterycontainer"></div>
 </div>
 <div class="crithitmultipliercontainer">Crit Hit dmg multiplier<div id="crithitmultipliercontainer"></div>
@@ -5074,12 +5116,47 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         //const criticalhitValue =  parseInt(document.getElementById('criticalhitcontainer').value || 0);
         const javelinandspearmasteryLevel = parseInt(document.getElementById('javelinandspearmasterycontainer').value || 0);
-if (javelinandspearmasteryLevel > 0) {
-    const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
-    document.getElementById('criticalhitcontainer').textContent = javelinandspearmasteryInfo?.criticalChance || '0'; //tu funguje textcontent
-} else {
-    document.getElementById('criticalhitcontainer').textContent = '0';
-}
+    let criticalHitValue = 0;
+    let deadlyStrikeValue = 0;
+
+    if (javelinandspearmasteryLevel > 0) {
+        const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
+        criticalHitValue = javelinandspearmasteryInfo?.criticalChance || 0;
+        console.log('Critical Hit Value from mastery:', criticalHitValue);
+    }
+    document.getElementById('criticalhitcontainer').value = criticalHitValue;
+
+    deadlyStrikeValue =  document.getElementById('deadlystrikecontainer') || 0;
+    const deadlyStrike = parseInt(document.getElementById('deadlystrikecontainer').value || 0);
+    console.log('Processing Deadly Strike:', deadlyStrike);
+    
+    const totalDeadlyStrike = Number(document.getElementById('deadlystrikecontainer').value);
+    const totalCriticalHit = criticalHitValue / 100;
+    const totalWeaponMastery = parseInt(document.getElementById('weaponmasterycontainer').value || 0) / 100;
+
+    console.log('Pre-calculation values:', {
+        deadlyStrike,
+        criticalHitValue,
+        totalDeadlyStrike,
+        totalCriticalHit,
+        totalWeaponMastery
+    });
+
+    const totalCritMultiplier = 0.5 * (1 - (1 - totalDeadlyStrike) * (1 - totalCriticalHit) * (1 - totalWeaponMastery)) + 1;
+    console.log('Calculated multiplier:', totalCritMultiplier);
+
+    document.getElementById('crithitmultipliercontainer').value = totalCritMultiplier.toFixed(3);
+
+   
+    const deadlyStrikeElement = document.getElementById('deadlystrikecontainer');
+// Listen for changes to deadly strike
+deadlyStrikeElement.addEventListener('input', function() {
+    console.log('Deadly Strike changed to:', this.value);
+    updateDamageCalculations();
+});
+
+
+
 
         if (skillLevel === 0) {
             document.getElementById('jabValueOutput').textContent = '0';
@@ -5120,7 +5197,7 @@ skillInputs.forEach(input => {
             skillInputs.forEach(input => {
     input.addEventListener('input', function() {
         updateDamageCalculations();
-        updateCriticalHit();
+        //updateCriticalHit();
     });
 });
         }
