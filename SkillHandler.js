@@ -323,6 +323,11 @@ class SkillHandler {
                 min: [35,	39,	43,	47,	51,	55,	59,	63,	69,	75,	81,	87,	93,	99,	105,	111,	120,	129,	138,	147,	156,	165,	177,	189,	201,	213,	225,	237,	252,	267,	282,	297,	312,	327,	342,	357,	372,	387,	402,	417,	432,	447,	462,	477,	492,	507,	522,	537,	552,	567,	582,	597,	612,	627,	642,	657,	672,	687,	702,	717],
                 max: [50,	56,	62,	68,	74,	80,	86,	92,	100,	108,	116,	124,	132,	140,	148,	156,	167,	178,	189,	200,	211,	222,	236,	250,	264,	278,	292,	306,	323,	340,	357,	374,	391,	408,	425,	442,	459,	476,	493,	510,	527,	544,	561,	578,	595,	612,	629,	646,	663,	680,	697,	714,	731,	748,	765,	782,	799,	816,	833,	850]
               },
+              manaCost: {
+                base: 2,
+                perLevel: 0.1,
+                formula: "base + (perLevel * (level - 1))"
+              },
               decoys: {
                 base: 1,
                 formula: "base + level/10"
@@ -381,10 +386,88 @@ class SkillHandler {
                }
               },
               prerequisites: [],
-              synergies: ["innerSight,20", "slowMovement,20", "guidedArrow,20"]
+              synergies: ["innersight,20", "slowmovement,20", "guidedarrow,20"]
             
-            }
-    
+            },
+            multipleShot: {
+              name: "Multiple Shot",
+              description: "Summon fuuuuuueerag valkyrie companion",
+              maxLevel: 99,
+              levelData: {
+                damage: {
+                  base: 40,
+                  perLevel: 10,
+                  formula:  "base + (perLevel * (level - 1))"             
+                },
+                multipleShots: {
+                  base: 5,
+                  perLevel: 1,
+                  formula: "base + (perLevel * (level/2))"
+                },
+                manaCost: {
+                  base: 1.5,
+                  perLevel: 0.1,
+                  formula: "base + (perLevel * (level - 1))"
+                 }
+              },
+                prerequisites: ["magicArrow"],
+                synergies: []
+              },
+              fireArrow: {
+                name: "Fire Arrow",
+                description: "Creates a fire arrow or bolt that does extra damage",
+                maxLevel: 99,
+                levelData: {
+                  fireDamage: {
+                    min: [8,	12,	15,	19,	22,	26,	29,	33,	39,	45,	51,	57,	63,	69,	75,	81,	97,	113,	129,	145,	161,	177,	209,	241,	273,	305,	337,	369,	417,	465,	513,	561,	609,	657,	705,	753,	801,	849,	897,	945,	993,	1041,	1089,	1137,	1185,	1233,	1281,	1329,	1377,	1425,	1473,	1521,	1569,	1617,	1665,	1713,	1761,	1809,	1857,	1905],              
+                    max: [12,	16,	21,	25,	30,	34,	39,	43,	61,	78,	96,	113,	131,	148,	166,	183,	201,	218,	236,	253,	271,	288,	323,	358,	393,	428,	463,	498,	551,	603,	656,	708,	761,	813,	866,	918,	971,	1023,	1076,	1128,	1181,	1233,	1286,	1338,	1391,	1443,	1496,	1548,	1601,	1653,	1706,	1758,	1811,	1863,	1916,	1968,	2021,	2073,	2126,	2178]
+                  },
+                  manaCost: {
+                    base: 1.5,
+                    perLevel: 0.1,
+                    formula: "base + (perLevel * (level - 1))"
+                   }
+                  },
+                  prerequisites: ["magicArrow"],
+                  synergies: ["magicarrow,18", "immolationarrow,18"]
+        
+                },
+              coldArrow: {
+                name: "Cold Arrow",
+                description: "Creates a cold arrow or bolt that does extra damage",
+                maxLevel: 99,
+                levelData: {
+                  coldDamage: {
+                    min: [7,	9,	11,	13,	15,	17,	19,	21,	26,	31,	36,	41,	46,	51,	56,	61,	76,	91,	106,	121,	136,	151,	181,	211,	241,	271,	301,	331,	376,	421,	466,	511,	556,	601,	646,	691,	736,	781,	826,	871,	916,	961,	1006,	1051,	1096,	1141,	1186,	1231,	1276,	1321,	1366,	1411,	1456,	1501,	1546,	1591,	1636,	1681,	1726,	1771],              
+                    max: [10,	14,	18,	22,	26,	30,	34,	38,	44,	50,	56,	62,	68,	74,	80,	86,	102,	118,	134,	150,	166,	182,	214,	246,	278,	310,	342,	374,	422,	470,	518,	566,	614,	662,	710,	758,	806,	854,	902,	950,	998,	1046,	1094,	1142,	1190,	1238,	1286,	1334,	1382,	1430,	1478,	1526,	1574,	1622,	1670,	1718,	1766,	1814,	1862,	1910]
+                  },
+                  manaCost: {
+                    base: 1.5,
+                    perLevel: 0.1,
+                    formula: "base + (perLevel * (level - 1))"
+                   }
+                  },
+                  prerequisites: ["magicArrow"],
+                  synergies: ["magicarrow,17", "icearrow,17"]
+                },
+                iceArrow: {
+                  name: "Ice Arrow",
+                  description: "Creates a ice arrow or bolt that does extra damage",
+                  maxLevel: 99,
+                  levelData: {
+                    coldDamage: {
+                      min: [22,	32,	42,	52,	62,	72,	82,	92,	106,	120,	134,	148,	162,	176,	190,	204,	228,	252,	276,	300,	324,	348,	382,	416,	450,	484,	518,	552,	596,	640,	684,	728,	772,	816,	860,	904,	948,	992,	1036,	1080,	1124,	1168,	1212,	1256,	1300,	1344,	1388,	1432,	1476,	1520,	1564,	1608,	1652,	1696,	1740,	1784,	1828,	1872,	1916,	1960],              
+                      max: [36,	47,	58,	69,	80,	91,	102,	113,	129,	145,	161,	177,	193,	209,	225,	241,	267,	293,	319,	345,	371,	397,	433,	469,	505,	541,	577,	613,	659,	705,	751,	797,	843,	889,	935,	981,	1027,	1073,	1119,	1165,	1211,	1257,	1303,	1349,	1395,	1441,	1487,	1533,	1579,	1625,	1671,	1717,	1763,	1809,	1855,	1901,	1947,	1993,	2039,	2085]
+                    },
+                    manaCost: {
+                      base: 3,
+                      perLevel: 0,
+                      formula: "base + (perLevel * (level - 1))"
+                     }
+                    },
+                    prerequisites: ["magicArrow", "coldArrow"],
+                    synergies: ["magicarrow,16", "coldarrow,10", "freezingArrow,10"]
+   }
   }
  }
 
@@ -471,6 +554,21 @@ class SkillHandler {
         };
     }
 
+    //handle fire type skills
+
+    if (skillName === "fireArrow" ) {
+      return {
+          level,
+          name: skill.name,
+          description: skill.description,
+          damage: {
+              min: Math.floor((skill.levelData.fireDamage.min[level - 1] || 0) * synergyMultiplier),
+              max: Math.floor((skill.levelData.fireDamage.max[level - 1] || 0) * synergyMultiplier)
+          },
+          manaCost: calculateValue(skill.levelData.manaCost)
+      };
+  }
+
     if (skillName === "javelinAndSpearMastery") {
       return {
           level,
@@ -486,12 +584,15 @@ class SkillHandler {
         name: skill.name,
         description: skill.description,
         damage: {
-            min: skill.levelData.damage.min[level - 1] || 0,
-            max: skill.levelData.damage.max[level - 1] || 0
-        },
-        decoys: Math.floor(skill.levelData.decoys.base + level/10)  // Special handling for decoy count
-    };
-}
+            min: Math.floor(skill.levelData.damage.min[level - 1] * synergyMultiplier) || 0,
+            max: Math.floor(skill.levelData.damage.max[level - 1] * synergyMultiplier) || 0
+          },
+          ...(skillName === "decoy" && {
+              decoys: Math.floor(skill.levelData.decoys.base + level/10)
+          }),
+          manaCost: skill.levelData.manaCost.base + (skill.levelData.manaCost.perLevel * (level - 1))
+      };
+  }
 
 
     // Handle regular skills
