@@ -5210,9 +5210,50 @@ deadlyStrikeElement.addEventListener('input', function() {
     // Set up ALL event listeners
     const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"], #passiveskillscontainer input[type="number"], #bowandcrossbowskillscontainer input[type="number"]');
 
+function showWarning(message, isError = false) {
+    const warningDiv = document.createElement('div');
+    warningDiv.style.position = 'fixed';
+    warningDiv.style.top = '10px';
+    warningDiv.style.right = '10px';
+    warningDiv.style.padding = '10px';
+    warningDiv.style.backgroundColor = isError ? '#ff6b6b' : '#ffd93d';
+    warningDiv.style.color = isError ? 'white' : 'black';
+    warningDiv.style.borderRadius = '5px';
+    warningDiv.textContent = message;
+    document.body.appendChild(warningDiv);
+
+    setTimeout(() => warningDiv.remove(), 3000);
+}
+
+// Separate level change listener
+document.getElementById('lvlValue').addEventListener('input', function() {
+    checkSkillPoints();
+});
+
+function checkSkillPoints() {
+    const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
+    const maxPoints = (currentLevel) + 11;
+    
+    let totalPointsUsed = 0;
+    skillInputs.forEach(skillInput => {
+        totalPointsUsed += parseInt(skillInput.value || 0);
+    });
+
+    const remainingPoints = maxPoints - totalPointsUsed;
+    
+    if (totalPointsUsed > maxPoints) {
+        showWarning(`Exceeded maximum skill points (${maxPoints})!`, true);
+        return false;
+    } else if (remainingPoints === 0) {
+        showWarning('You have used all available skill points!');
+    } else if (remainingPoints <= lvlValue.value / 7) {
+        showWarning(`Only ${remainingPoints} skill points remaining!`);
+    }
+    return true;
+}
+
 skillInputs.forEach(input => {
     input.addEventListener('input', function() {
-        // First, let's get and validate all our variables
         const currentInput = {
             inputId: input.id,
             parentContainer: input.closest('div').id,
@@ -5220,52 +5261,34 @@ skillInputs.forEach(input => {
         };
         console.log('Skill input changed:', currentInput);
 
-        try {
-            const selectedSkillContainer = document.getElementById('left-skill')?.value;
-            const selectedSkillName = skillNameMap[selectedSkillContainer];
-            
-            console.log('Selection info:', {
-                container: selectedSkillContainer,
-                mappedName: selectedSkillName,
-                skillExists: !!skillHandler.skillData[selectedSkillName]
-            });
-
-            if (!selectedSkillContainer || !selectedSkillName) {
-                console.warn('Missing selection info');
-                return;
-            }
-
-            // Now proceed with the update logic
-            const selectedSkill = skillHandler.skillData[selectedSkillName];
-            if (input.id === selectedSkillContainer || 
-                (selectedSkill?.synergies?.some(syn => (syn.split(',')[0] + 'container') === input.id)) ||
-                (skillHandler.skillData[skillNameMap[input.id]]?.synergies?.some(syn => 
-                    (syn.split(',')[0] + 'container') === selectedSkillContainer))) {
-                updateDamageCalculations();
-            }
-        } catch (error) {
-            console.error('Error in skill input handler:', error);
+        // Check points limit
+        if (!checkSkillPoints()) {
+            input.value = parseInt(input.value) - 1;
+            return;
         }
-      
-    
-  
 
-    
-
-        //updateCriticalHit();
-
-
-
-
-
-
-
-       
-
+        const selectedSkillContainer = document.getElementById('left-skill')?.value;
+        const selectedSkillName = skillNameMap[selectedSkillContainer];
         
-    
+        console.log('Selection info:', {
+            container: selectedSkillContainer,
+            mappedName: selectedSkillName,
+            skillExists: !!skillHandler.skillData[selectedSkillName]
+        });
 
-        
+        if (!selectedSkillContainer || !selectedSkillName) {
+            console.warn('Missing selection info');
+            return;
+        }
+
+        // Update logic
+        const selectedSkill = skillHandler.skillData[selectedSkillName];
+        if (input.id === selectedSkillContainer || 
+            (selectedSkill?.synergies?.some(syn => (syn.split(',')[0] + 'container') === input.id)) ||
+            (skillHandler.skillData[skillNameMap[input.id]]?.synergies?.some(syn => 
+                (syn.split(',')[0] + 'container') === selectedSkillContainer))) {
+            updateDamageCalculations();
+        }
     });
 });
 
@@ -5282,8 +5305,7 @@ skillInputs.forEach(input => {
     });
 
     allSkillsContainer.addEventListener('change', updateDamageCalculations);
-    //criticalhitValue.addEventListener('change', updateDamageCalculations);
-    // Initial calculation
+    
     updateDamageCalculations();
 });
 
