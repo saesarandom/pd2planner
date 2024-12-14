@@ -761,7 +761,9 @@ width: 16cap;
 }  
 
 #magicarrowcontainer, #multipleshotcontainer, #firearrowcontainer, #coldarrowcontainer, #icearrowcontainer,
-#guidedarrowcontainer, #explodingarrowcontainer, #strafecontainer, #immolationarrowcontainer, #freezingarrowcontainer, #fireblastcontainer, #shockwebcontainer { 
+#guidedarrowcontainer, #explodingarrowcontainer, #strafecontainer, #immolationarrowcontainer, #freezingarrowcontainer, #fireblastcontainer, #shockwebcontainer,
+#tigerstrikecontainer, #dragontaloncontainer, #dragonclawcontainer, #fistsoffirecontainer, #cobrastrikecontainer,
+#clawsofthundercontainer, #dragontailcontainer, #dragonflightcontainer, #bladesoficecontainer, #phoenixstrikecontainer { 
   position: absolute;
   width: 42px;
   color: rgb(255, 255, 255);
@@ -840,7 +842,7 @@ height: auto;
 width: 12cap;
 }
 
-#trapskillscontainer {
+#martialartskillscontainer {
     top: 2020px;
     left: 1px;
 }
@@ -850,7 +852,7 @@ width: 12cap;
     left: 240px;
 }
 
-#martialartskillscontainer {
+#trapskillscontainer {
     top: 2020px;
     left: 420px;
 }
@@ -1493,17 +1495,30 @@ Defense
       <div>Freezing Arrow:<input min="0" max="20" type="number" id="freezingarrowcontainer" class="hiddenSkill"></div></div>
     </div>  
 
+
+    <div id="martialartskillscontainer" class="skill-container">
+      <div>Tiger Strike:<input type="number" min="0" max="20" value="0" id="tigerstrikecontainer"></div>
+      <div>Dragon Talon:<input type="number" min="0" max="20" value="0" id="dragontaloncontainer"></div>
+      <div>Fists of Fire:<input type="number" min="0" max="20" value="0" id="fistsoffirecontainer"></div>
+      <div>Cobra Strike:<input type="number" min="0" max="20" value="0" id="cobrastrikecontainer"></div>
+      <div>Claws of Thunder:<input type="number" min="0" max="20" value="0" id="clawsofthundercontainer"></div>
+      <div>Dragon Tail:<input type="number" min="0" max="20" value="0" id="dragontailcontainer"></div>
+      <div>Dragon Flight:<input type="number" min="0" max="20" value="0" id="dragonflightcontainer"></div>
+      <div>Blades of Ice:<input type="number" min="0" max="20" value="0" id="bladesoficecontainer"></div>
+      <div>Phoenix Strike:<input type="number" min="0" max="20" value="0" id="phoenixstrikecontainer"></div>
+  </div>
+
+  <div id="shadowskillscontainer" class="skill-container">
+    <!-- shadow skills -->
+</div>
+
     <div id="trapskillscontainer" class="skill-container">
       <div>Fire Blast:<input type="number" min="0" max="20" value="0" id="fireblastcontainer"></div>
       <div>Shock Web:<input type="number" min="0" max="20" value="0" id="shockwebcontainer"></div></div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
-    <div id="shadowskillscontainer" class="skill-container">
-      <!-- shadow skills -->
-  </div>
+
   
-  <div id="martialartskillscontainer" class="skill-container">
-      <!-- martial arts skills -->
-  </div>
+ 
     
     <!-- UPDATE SKILLS// -->
     <div id="leftskill">
@@ -5235,6 +5250,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         'strafecontainer': 'strafe',
         'immolationarrowcontainer': 'immolationArrow',
         'freezingarrowcontainer': 'freezingArrow',
+        'tigerstrikecontainer': 'tigerStrike',
+        'dragontaloncontainer': 'dragonTalon',
+        'dragonclawcontainer': 'dragonClaw',
+        'fistsoffirecontainer': 'fistsOfFire',
+        'cobrastrikecontainer': 'cobraStrike',
+        'clawsofthunderwcontainer': 'clawsOfThunder',
+        'dragontailcontainer': 'dragonTail',
+        'dragonflightcontainer': 'dragonFlight',
+        'bladesoficecontainer': 'bladesOfIce',
+        'phoenixstrikecontainer': 'phoenixStrike',
         'fireblastcontainer': 'fireBlast'
     };
 
@@ -5465,7 +5490,17 @@ skillInputs.forEach(input => {
         { value: 'plaguejavelincontainer', text: 'Plague Javelin' },
         { value: 'lightningstrikecontainer', text: 'Lightning Strike' },
         { value: 'decoycontainer', text: 'Decoy' },
-        { value: 'penetratecontainer', text: 'Valkyrie' }
+        { value: 'valkyriecontainer', text: 'Valkyrie' },
+        { value: 'magicarrowcontainer', text: 'Magic Arrow' },
+        { value: 'multipleshotcontainer', text: 'Multiple Shot' },
+        { value: 'firearrowcontainer', text: 'Fire Arrow' },
+        { value: 'coldarrowcontainer', text: 'Cold Arrow' },
+        { value: 'icearrowcontainer', text: 'Ice Arrow' },
+        { value: 'guidedarrowcontainer', text: 'Guided Arrow' },
+        { value: 'explodingarrowcontainer', text: 'Exploding Arrow' },
+        { value: 'strafecontainer', text: 'Strafe' },
+        { value: 'immolationarrowcontainer', text: 'Immolation Arrow' },
+        { value: 'freezingarrowcontainer', text: 'Freezing Arrow' }
     ];
 
     // Add initial Amazon skills to dropdown
@@ -5554,9 +5589,31 @@ function updateSkillDropdown(className) {
             { value: 'plaguejavelincontainer', text: 'Plague Javelin' },
             { value: 'lightningstrikecontainer', text: 'Lightning Strike' },
             { value: 'decoycontainer', text: 'Decoy' },
-            { value: 'penetratecontainer', text: 'Valkyrie' }
+            { value: 'valkyriecontainer', text: 'Valkyrie' },
+            { value: 'magicarrowcontainer', text: 'Magic Arrow' },
+            { value: 'multipleshotcontainer', text: 'Multiple Shot' },
+            { value: 'firearrowcontainer', text: 'Fire Arrow' },
+            { value: 'coldarrowcontainer', text: 'Cold Arrow' },
+            { value: 'icearrowcontainer', text: 'Ice Arrow' },
+            { value: 'guidedarrowcontainer', text: 'Guided Arrow' },
+            { value: 'explodingarrowcontainer', text: 'Exploding Arrow' },
+            { value: 'strafecontainer', text: 'Strafe' },
+            { value: 'immolationarrowcontainer', text: 'Immolation Arrow' },
+            { value: 'freezingarrowcontainer', text: 'Freezing Arrow' }
         ],
         assassin: [
+            { value: 'tigerstrikecontainer', text: 'Tiger Strike' },
+            { value: 'dragontaloncontainer', text: 'Dragon Talon' },
+            { value: 'dragonclawcontainer', text: 'Dragon Claw' },
+            { value: 'fistsoffirecontainer', text: 'Fists of Fire' },
+            { value: 'cobrastrikecontainer', text: 'Cobra Strike' },
+            { value: 'clawsofthundercontainer', text: 'Claws of Thunder' },
+            { value: 'dragontailcontainer', text: 'Dragon Tail' },
+            { value: 'dragonflightcontainer', text: 'Dragon Flight' },
+            { value: 'bladesoficecontainer', text: 'Blades of Ice' },
+            { value: 'phoenixstrikecontainer', text: 'Phoenix Strike' },
+            { value: 'psychichammercontainer', text: 'Psychic Hammer' },
+            { value: 'mindblastcontainer', text: 'Mind Blast' },
             { value: 'fireblastcontainer', text: 'Fire Blast' },
             { value: 'shockwebcontainer', text: 'Shock Web' },
             { value: 'bladesentinelcontainer', text: 'Blade Sentinel' },

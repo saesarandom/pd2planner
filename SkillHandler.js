@@ -571,6 +571,187 @@ class SkillHandler {
                 prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
+              tigerStrike: {
+                name: "Tiger Strike",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    damage: {
+                        base: 150,
+                        perLevel: 75,
+                        formula: "base + (perLevel * (level - 1))"
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              dragonTalon: {
+                name: "Dragon Talon",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              dragonClaw: {
+                name: "Dragon Claw",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              fistsOfFire: {
+                name: "Fists of Fire",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              cobraStrike: {
+                name: "Cobra Strike",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              clawsOfThunder: {
+                name: "Claws of Thunder",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              dragonTail: {
+                name: "Dragon Tail",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              dragonFlight: {
+                name: "Dragon Flight",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              bladesOfIce: {
+                name: "Blades of Ice",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              phoenixStrike: {
+                name: "Phoenix Strike",
+                description: "Summon lay trap blasting fire",
+                maxLevel: 99,
+                levelData: {
+                    fireDamage: {
+                        min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                        max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                        },
+                    manaCost: {
+                        base: 2,
+                        perLevel: 0.1,
+                        formula: "base + (perLevel * (level/2))"
+                    }
+                },
+                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                synergies: ["coldarrow,6", "icearrow,6"]
+              },
               fireBlast: {
                   name: "Fire Blast",
                   description: "Summon lay trap blasting fire",
@@ -588,27 +769,31 @@ class SkillHandler {
                   },
                   prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
                   synergies: ["coldarrow,6", "icearrow,6"]
+                },
+                shockWeb: {
+                    name: "Shock Web",
+                    description: "Summon lay trap blasting elemental fire",
+                    maxLevel: 99,
+                    levelData: {
+                        lightningDamage: {
+                            min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                            max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                            },
+                        manaCost: {
+                            base: 2,
+                            perLevel: 0.1,
+                            formula: "base + (perLevel * (level/2))"
+                        }
+                    },
+                    prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                    synergies: ["coldarrow,6", "icearrow,6"]
           }
   }
  }
 
-
- 
   async loadSkillData() {
     return Promise.resolve();
   }
-
-  
-
-  // getSkillInfo(skillName, level) {
-  //   if (!this.skillData || level < 0 || level > 99) {
-  //       return null;
-  //   }
-
-  //   const skill = this.skillData[skillName];
-  //   if (!skill) {
-  //       return null;
-  //   }
 
   getSkillInfo(skillName, level) {
     console.log('getSkillInfo called with:', {
