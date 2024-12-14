@@ -677,7 +677,7 @@ class SkillHandler {
 
     //handle fire type skills
 
-    if (skillName === "fireArrow" ) {
+    if ((skillName === "fireArrow" || skillName === "fireBlast")) {
       return {
           level,
           name: skill.name,
