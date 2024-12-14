@@ -570,6 +570,24 @@ class SkillHandler {
                 },
                 prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
                 synergies: ["coldarrow,6", "icearrow,6"]
+              },
+              fireBlast: {
+                  name: "Fire Blast",
+                  description: "Summon lay trap blasting fire",
+                  maxLevel: 99,
+                  levelData: {
+                      fireDamage: {
+                          min: [2,	3,	4,	5,	6,	7,	8,	9,	11,	13,	15,	17,	19,	21,	23,	25,	29,	33,	37,	41,	45,	49,	58,	67,	76,	85,	94,	103,	114,	126,	137,	149,	160,	172,	183,	195,	206,	218,	229,	241,	252,	264,	275,	287,	298,	310,	321,	333,	344,	356,	367,	379,	390,	402,	413,	425,	436,	448,	459,	471],
+                          max: [3,	4,	6,	7,	9,	10,	12,	13,	16,	18,	21,	23,	26,	28,	31,	33,	38,	43,	48,	53,	58,	63,	73,	83,	93,	103,	113,	123,	136,	148,	161,	173,	186,	198,	211,	223,	236,	248,	261,	273,	286,	298,	311,	323,	336,	348,	361,	373,	386,	398,	411,	423,	436,	448,	461,	473,	486,	498,	511,	523]
+                          },
+                      manaCost: {
+                          base: 2,
+                          perLevel: 0.1,
+                          formula: "base + (perLevel * (level/2))"
+                      }
+                  },
+                  prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                  synergies: ["coldarrow,6", "icearrow,6"]
           }
   }
  }

@@ -1430,7 +1430,7 @@ Defense
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br>
-<div id="javelinandspearskillscontainer">
+<div id="javelinandspearskillscontainer" class="skill-container amazon-skills">
   <div>Jab<input min="0" max="20" type="number" id="jabcontainer"></div>
   <div>Poison Javelin:<input min="0" max="20" type="number" id="poisonjavelincontainer"></div>
   <div>Javelin and Spear Mastery:<input min="0" max="20" type="number" id="javelinandspearmasterycontainer" class="hiddenSkill"></div>
@@ -1467,7 +1467,17 @@ Defense
       <div>Freezing Arrow:<input min="0" max="20" type="number" id="freezingarrowcontainer" class="hiddenSkill"></div></div>
     </div>  
 
+    <div id="trapskillscontainer" class="skill-container assassin-skills" style="display: none;">
+      <div>Fire Blast:<input type="number" min="0" max="20" value="0" id="fireblastcontainer"></div>
+      <div>Shock Web:<input type="number" min="0" max="20" value="0" id="shockwebcontainer"></div></div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
+    <div id="shadowskillscontainer">
+      <!-- shadow skills -->
+  </div>
+  
+  <div id="martialartscontainer">
+      <!-- martial arts skills -->
+  </div>
     
     <!-- UPDATE SKILLS// -->
     <div id="leftskill">
@@ -5106,7 +5116,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         'explodingarrowcontainer': 'explodingArrow',
         'strafecontainer': 'strafe',
         'immolationarrowcontainer': 'immolationArrow',
-        'freezingarrowcontainer': 'freezingArrow'
+        'freezingarrowcontainer': 'freezingArrow',
+        'fireblastcontainer': 'fireBlast'
     };
 
     function getSkillDamage(skillInfo, skillName) {
@@ -5208,7 +5219,7 @@ deadlyStrikeElement.addEventListener('input', function() {
     }
 
     // Set up ALL event listeners
-    const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"], #passiveskillscontainer input[type="number"], #bowandcrossbowskillscontainer input[type="number"]');
+    const skillInputs = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"], #passiveskillscontainer input[type="number"], #bowandcrossbowskillscontainer input[type="number"], #trapskillscontainer input[type="number"], #shadowskillscontainer input[type="number"], #martialartscontainer input[type="number"]');
 
 function showWarning(message, isError = false) {
     const warningDiv = document.createElement('div');
@@ -5235,10 +5246,24 @@ function checkSkillPoints() {
     const maxPoints = (currentLevel) + 11;
     
     let totalPointsUsed = 0;
-    skillInputs.forEach(skillInput => {
-        totalPointsUsed += parseInt(skillInput.value || 0);
-    });
 
+    const allSkillInputs = document.querySelectorAll(`
+            #javelinandspearskillscontainer input[type="number"], 
+            #passiveskillscontainer input[type="number"], 
+            #bowandcrossbowskillscontainer input[type="number"],
+            #trapskillscontainer input[type="number"],
+            #shadowskillscontainer input[type="number"],
+            #martialartscontainer input[type="number"]
+        `);
+
+    // skillInputs.forEach(skillInput => {
+    //     totalPointsUsed += parseInt(skillInput.value || 0);
+    // });
+
+    allSkillInputs.forEach(skillInput => {
+            totalPointsUsed += parseInt(skillInput.value || 0);
+        });
+      
     const remainingPoints = maxPoints - totalPointsUsed;
     
     if (totalPointsUsed > maxPoints) {
@@ -5280,6 +5305,7 @@ skillInputs.forEach(input => {
             console.warn('Missing selection info');
             return;
         }
+        updateDamageCalculations();
 
         // Update logic
         const selectedSkill = skillHandler.skillData[selectedSkillName];
@@ -5307,10 +5333,177 @@ skillInputs.forEach(input => {
     allSkillsContainer.addEventListener('change', updateDamageCalculations);
     
     updateDamageCalculations();
+  });
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Amazon dropdown
+    const skillDropdown = document.getElementById('left-skill');
+    skillDropdown.innerHTML = '';
+    
+    const amazonSkills = [
+        { value: 'jabcontainer', text: 'Jab' },
+        { value: 'poisonjavelincontainer', text: 'Poison Javelin' },
+        { value: 'powerstrikecontainer', text: 'Power Strike' },
+        { value: 'lightningboltcontainer', text: 'Lightning Bolt' },
+        { value: 'fendcontainer', text: 'Fend' },
+        { value: 'chargedstrikecontainer', text: 'Charged Strike' },
+        { value: 'plaguejavelincontainer', text: 'Plague Javelin' },
+        { value: 'lightningstrikecontainer', text: 'Lightning Strike' },
+        { value: 'decoycontainer', text: 'Decoy' },
+        { value: 'penetratecontainer', text: 'Valkyrie' }
+    ];
+
+    // Add initial Amazon skills to dropdown
+    amazonSkills.forEach(skill => {
+        const option = document.createElement('option');
+        option.value = skill.value;
+        option.textContent = skill.text;
+        skillDropdown.appendChild(option);
+    });
+
+    // Hide Assassin containers initially
+    const assassinContainers = [
+        'trapskillscontainer',
+        'shadowskillscontainer',
+        'martialartscontainer'
+    ];
+    
+    assassinContainers.forEach(containerId => {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.style.display = 'none';
+        }
+    });
+
+    // Make Amazon containers visible by default
+    document.getElementById('javelinandspearskillscontainer').style.display = 'block';
+    document.getElementById('passiveskillscontainer').style.display = 'block';
+    document.getElementById('bowandcrossbowskillscontainer').style.display = 'block';
 });
 
+// Class change handler
+document.querySelector('.menucontainer').addEventListener('change', function(e) {
+    const selectedClass = e.target.value.toLowerCase();
+    resetAllSkillInputs();
+    switchSkillContainers(selectedClass);
+    updateSkillDropdown(selectedClass);
+    // updateDamageCalculations();
+    const selectedSkill = document.getElementById('left-skill').value;
+    if (selectedSkill) {
+        document.getElementById(selectedSkill).value = "0";
+        updateDamageCalculations();
+    }
+});
 
+function resetAllSkillInputs() {
+    // Reset Amazon skills
+    const amazonSkills = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"], #passiveskillscontainer input[type="number"], #bowandcrossbowskillscontainer input[type="number"]');
+    
+    // Reset Assassin skills
+    const assassinSkills = document.querySelectorAll('#trapskillscontainer input[type="number"], #shadowskillscontainer input[type="number"], #martialartscontainer input[type="number"]');
+    
+    // Reset all inputs
+    [...amazonSkills, ...assassinSkills].forEach(input => {
+        input.value = "0";
+    });
 
+    // Reset display values
+    document.getElementById('jabValueOutput').textContent = '0';
+    document.getElementById('attackRatingOutput').textContent = '0%';
+    document.getElementById('damageOutput').textContent = '0';
+    document.getElementById('manaCostOutput').textContent = '0';
+}
+
+function updateSkillDropdown(className) {
+  console.log('Updating dropdown for class:', className); // Debug log
+    const skillDropdown = document.getElementById('left-skill');
+    if (!skillDropdown) {
+        console.error('Dropdown not found');
+        return;
+      }
+
+    //   while (skillDropdown.firstChild) {
+    //     skillDropdown.removeChild(skillDropdown.firstChild);
+    // }
+    skillDropdown.innerHTML = '';
+
+    const skillOptions = {
+        amazon: [
+            { value: 'jabcontainer', text: 'Jab' },
+            { value: 'poisonjavelincontainer', text: 'Poison Javelin' },
+            { value: 'powerstrikecontainer', text: 'Power Strike' },
+            { value: 'lightningboltcontainer', text: 'Lightning Bolt' },
+            { value: 'fendcontainer', text: 'Fend' },
+            { value: 'chargedstrikecontainer', text: 'Charged Strike' },
+            { value: 'plaguejavelincontainer', text: 'Plague Javelin' },
+            { value: 'lightningstrikecontainer', text: 'Lightning Strike' },
+            { value: 'decoycontainer', text: 'Decoy' },
+            { value: 'penetratecontainer', text: 'Valkyrie' }
+        ],
+        assassin: [
+            { value: 'fireblastcontainer', text: 'Fire Blast' },
+            { value: 'shockwebcontainer', text: 'Shock Web' },
+            { value: 'bladesentinelcontainer', text: 'Blade Sentinel' },
+            { value: 'chargedboltsentrycontainer', text: 'Charged Bolt Sentry' },
+            { value: 'wakeoffirecontainer', text: 'Wake of Fire' },
+            { value: 'bladefurycontainer', text: 'Blade Fury' },
+            { value: 'lightningsentrycontainer', text: 'Lightning Sentry' },
+            { value: 'wakeofinfernocontainer', text: 'Wake of Inferno' },
+            { value: 'deathsentrycontainer', text: 'Death Sentry' }
+        ]
+    };
+
+    console.log('Available options:', skillOptions[className]); // Debug log
+    const options = skillOptions[className] || [];
+    options.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.text;
+        skillDropdown.appendChild(option);
+
+    });
+
+     // Force select first option and trigger change event
+     if (skillDropdown.options.length > 0) {
+        skillDropdown.selectedIndex = 0;
+        skillDropdown.dispatchEvent(new Event('change'));
+    
+}
+}
+
+function switchSkillContainers(className) {
+    // Hide all skill containers first
+    const allSkillContainers = [
+        document.getElementById('javelinandspearskillscontainer'),
+        document.getElementById('passiveskillscontainer'),
+        document.getElementById('bowandcrossbowskillscontainer'),
+        document.getElementById('trapskillscontainer'),
+        document.getElementById('shadowskillscontainer'),
+        document.getElementById('martialartscontainer')
+    ];
+
+    allSkillContainers.forEach(container => {
+        if (container) {
+            container.style.display = 'none';
+        }
+    });
+
+    // Show containers based on class
+    switch(className.toLowerCase()) {
+        case 'amazon':
+            document.getElementById('javelinandspearskillscontainer').style.display = 'block';
+            document.getElementById('passiveskillscontainer').style.display = 'block';
+            document.getElementById('bowandcrossbowskillscontainer').style.display = 'block';
+            break;
+        case 'assassin':
+            document.getElementById('trapskillscontainer').style.display = 'block';
+            document.getElementById('shadowskillscontainer').style.display = 'block';
+            document.getElementById('martialartscontainer').style.display = 'block';
+            break;
+    }
+}
+updateSkillDropdown(className)
 
 // Dragging functionality (outside DOMContentLoaded)
 const javelinandspearskillscontainer = document.getElementById('javelinandspearskillscontainer');
