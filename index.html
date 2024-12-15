@@ -767,7 +767,8 @@ width: 16cap;
 #bladesentinelcontainer, #chargedboltsentrycontainer, #wakeoffirecontainer, #bladefurycontainer, #bladeshieldcontainer,
 #lightningsentrycontainer, #wakeofinfernocontainer, #chainlightningsentrycontainer, #deathsentrycontainer,
 #clawanddaggermasterycontainer, #psychichammercontainer, #burstofspeedcontainer, #weaponblockcontainer, #cloakofshadowscontainer,
-#mindblastcontainer, #fadecontainer, #shadowwarriorcontainer, #shadowmastercontainer, #venomcontainer { 
+#mindblastcontainer, #fadecontainer, #shadowwarriorcontainer, #shadowmastercontainer, #venomcontainer,
+#howlcontainer, #findpotioncontainer, #shoutcontainer { 
   position: absolute;
   width: 42px;
   color: rgb(255, 255, 255);
@@ -835,7 +836,8 @@ input[type=number] {
     display: inline-block;
 }
 
-#trapskillscontainer, #shadowskillscontainer, #martialartskillscontainer {
+#trapskillscontainer, #shadowskillscontainer, #martialartskillscontainer, #warcriesskillscontainer, #combatmasteriesskillscontainer,
+#combatskillsskillscontainer {
     position: absolute;
     cursor: move;
     border: 1px solid #2ad010;
@@ -846,17 +848,17 @@ height: auto;
 width: 12cap;
 }
 
-#martialartskillscontainer {
+#martialartskillscontainer, #warcriesskillscontainer {
     top: 2020px;
     left: 1px;
 }
 
-#shadowskillscontainer {
+#shadowskillscontainer, #combatmasteriesskillscontainer {
     top: 2020px;
     left: 240px;
 }
 
-#trapskillscontainer {
+#trapskillscontainer, #combatskillsskillscontainer {
     top: 2020px;
     left: 420px;
 }
@@ -1545,6 +1547,23 @@ Defense
     
     
     </div>
+
+    <div id="warcriesskillscontainer" class="skill-container">
+      <div>Howl:<input type="number" min="0" max="20" value="0" id="howlcontainer"></div>
+      <div>Find Potion:<input type="number" min="0" max="20" value="0" id="findpotioncontainer"></div>
+      <div>Shout:<input type="number" min="0" max="20" value="0" id="shoutcontainer"></div>
+      <div>War Cry:<input type="number" min="0" max="20" value="0" id="warcrycontainer" class="hiddenSkill"></div>
+      <div>Find Item:<input type="number" min="0" max="20" value="0" id="finditemcontainer" class="hiddenSkill"></div>
+      <div>Taunt:<input type="number" min="0" max="20" value="0" id="tauntcontainer" class="hiddenSkill"></div>
+      <div>Battle Orders:<input type="number" min="0" max="20" value="0" id="battleorderscontainer" class="hiddenSkill"></div>
+      <div>Grim Ward:<input type="number" min="0" max="20" value="0" id="grimwardcontainer" class="hiddenSkill"></div>
+      <div>Battle Command:<input type="number" min="0" max="20" value="0" id="battlecommandcontainer" class="hiddenSkill"></div>
+      <div>Battle Cry:<input type="number" min="0" max="20" value="0" id="battlecrycontainer" class="hiddenSkill"></div></div>
+      
+
+      <div id="combatmasteriesskillscontainer" class="skill-container"></div></div>
+
+      <div id="combatskillsskillscontainer" class="skill-container"></div></div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
 
   
@@ -5200,7 +5219,8 @@ function addDragHandlers() {
         'bowandcrossbowskillscontainer',
         'trapskillscontainer',
         'shadowskillscontainer',
-        'martialartskillscontainer'
+        'martialartskillscontainer',
+        'warcriesskillscontainer'
     ];
 
     containers.forEach(id => {
@@ -5302,7 +5322,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         'lightningsentrycontainer': 'lightningSentry',
         'wakeofinfernocontainer': 'wakeOfInferno',
         'chainlightningsentrycontainer': 'chainLightningSentry',
-        'deathsentrycontainer': 'deathSentry'
+        'howlcontainer': 'howl',
+        'findpotioncontainer': 'findPotion',
+        'shoutcontainer': 'shout'
 
     };
 
@@ -5439,7 +5461,10 @@ function checkSkillPoints() {
             #bowandcrossbowskillscontainer input[type="number"],
             #trapskillscontainer input[type="number"],
             #shadowskillscontainer input[type="number"],
-            #martialartskillscontainer input[type="number"]
+            #martialartskillscontainer input[type="number"],
+            #warcriesskillscontainer input[type="number"],
+            #combatmasteriesskillscontainer input[type="number"],
+            #combatskillsskillscontainer input[type="number"]
         `);
 
     allSkillInputs.forEach(skillInput => {
@@ -5519,85 +5544,33 @@ skillInputs.forEach(input => {
 
 
   document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Amazon dropdown
-    const skillDropdown = document.getElementById('left-skill');
-    skillDropdown.innerHTML = '';
-    
-    const amazonSkills = [
-        { value: 'jabcontainer', text: 'Jab' },
-        { value: 'poisonjavelincontainer', text: 'Poison Javelin' },
-        { value: 'powerstrikecontainer', text: 'Power Strike' },
-        { value: 'lightningboltcontainer', text: 'Lightning Bolt' },
-        { value: 'fendcontainer', text: 'Fend' },
-        { value: 'chargedstrikecontainer', text: 'Charged Strike' },
-        { value: 'plaguejavelincontainer', text: 'Plague Javelin' },
-        { value: 'lightningstrikecontainer', text: 'Lightning Strike' },
-        { value: 'decoycontainer', text: 'Decoy' },
-        { value: 'valkyriecontainer', text: 'Valkyrie' },
-        { value: 'magicarrowcontainer', text: 'Magic Arrow' },
-        { value: 'multipleshotcontainer', text: 'Multiple Shot' },
-        { value: 'firearrowcontainer', text: 'Fire Arrow' },
-        { value: 'coldarrowcontainer', text: 'Cold Arrow' },
-        { value: 'icearrowcontainer', text: 'Ice Arrow' },
-        { value: 'guidedarrowcontainer', text: 'Guided Arrow' },
-        { value: 'explodingarrowcontainer', text: 'Exploding Arrow' },
-        { value: 'strafecontainer', text: 'Strafe' },
-        { value: 'immolationarrowcontainer', text: 'Immolation Arrow' },
-        { value: 'freezingarrowcontainer', text: 'Freezing Arrow' }
-    ];
-
-    // Add initial Amazon skills to dropdown
-    amazonSkills.forEach(skill => {
-        const option = document.createElement('option');
-        option.value = skill.value;
-        option.textContent = skill.text;
-        skillDropdown.appendChild(option);
-    });
-
-    // Hide Assassin containers initially
-    const assassinContainers = [
-        'trapskillscontainer',
-        'shadowskillscontainer',
-        'martialartskillscontainer'
-    ];
-    
-    assassinContainers.forEach(containerId => {
-        const container = document.getElementById(containerId);
-        if (container) {
-            container.style.display = 'none';
-        }
-    });
-
-    // Make Amazon containers visible by default
-    document.getElementById('javelinandspearskillscontainer').style.display = 'block';
-    document.getElementById('passiveskillscontainer').style.display = 'block';
-    document.getElementById('bowandcrossbowskillscontainer').style.display = 'block';
+    const defaultClass = 'amazon';
+    updateSkillDropdown(defaultClass);
+    switchSkillContainers(defaultClass);
 });
 
-// Class change handler
 document.querySelector('.menucontainer').addEventListener('change', function(e) {
     const selectedClass = e.target.value.toLowerCase();
     resetAllSkillInputs();
     switchSkillContainers(selectedClass);
     updateSkillDropdown(selectedClass);
     
- 
     const selectedSkill = document.getElementById('left-skill').value;
     if (selectedSkill) {
         document.getElementById(selectedSkill).value = "0";
-        
     }
 });
-
 function resetAllSkillInputs() {
     // Reset Amazon skills
     const amazonSkills = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"], #passiveskillscontainer input[type="number"], #bowandcrossbowskillscontainer input[type="number"]');
     
     // Reset Assassin skills
     const assassinSkills = document.querySelectorAll('#trapskillscontainer input[type="number"], #shadowskillscontainer input[type="number"], #martialartskillscontainer input[type="number"]');
+
+    const barbarianSkills = document.querySelectorAll('#warcriesskillscontainer input[type="number"], #combatmasteriesskillscontainer input[type="number"], #combatskillsskillscontainer input[type="number"]');
     
     // Reset all inputs
-    [...amazonSkills, ...assassinSkills].forEach(input => {
+    [...amazonSkills, ...assassinSkills, ...barbarianSkills].forEach(input => {
         input.value = "0";
     });
 
@@ -5609,16 +5582,12 @@ function resetAllSkillInputs() {
 }
 
 function updateSkillDropdown(className) {
-  console.log('Updating dropdown for class:', className); // Debug log
     const skillDropdown = document.getElementById('left-skill');
     if (!skillDropdown) {
         console.error('Dropdown not found');
         return;
-      }
+    }
 
-    //   while (skillDropdown.firstChild) {
-    //     skillDropdown.removeChild(skillDropdown.firstChild);
-    // }
     skillDropdown.innerHTML = '';
 
     const skillOptions = {
@@ -5667,25 +5636,34 @@ function updateSkillDropdown(className) {
             { value: 'wakeofinfernocontainer', text: 'Wake of Inferno' },
             { value: 'chainlightningsentrycontainer', text: 'Chain Lightning Sentry' },
             { value: 'deathsentrycontainer', text: 'Death Sentry' }
+        ],
+        barbarian: [
+            { value: 'warcrycontainer', text: 'War Cry' },
+            { value: 'bashcontainer', text: 'Bash' },
+            { value: 'doubleswingcontainer', text: 'Double Swing' },
+            { value: 'frenzycontainer', text: 'Frenzy' },
+            { value: 'stuncontainer', text: 'Stun' },
+            { value: 'concentratecontainer', text: 'Concentrate' },
+            { value: 'doublethrowcontainer', text: 'Double Throw' },
+            { value: 'leapattackcontainer', text: 'Leap Attack' },
+            { value: 'berserkcontainer', text: 'Berserk' },
+            { value: 'whirlwindcontainer', text: 'Whirlwind' }
         ]
     };
 
-    console.log('Available options:', skillOptions[className]); // Debug log
     const options = skillOptions[className] || [];
     options.forEach(opt => {
         const option = document.createElement('option');
         option.value = opt.value;
         option.textContent = opt.text;
         skillDropdown.appendChild(option);
-
     });
 
-     // Force select first option and trigger change event
-     if (skillDropdown.options.length > 0) {
+    // Force select first option and trigger change event
+    if (skillDropdown.options.length > 0) {
         skillDropdown.selectedIndex = 0;
         skillDropdown.dispatchEvent(new Event('change'));
-    
-}
+    }
 }
 
 function switchSkillContainers(className) {
@@ -5696,7 +5674,10 @@ function switchSkillContainers(className) {
         document.getElementById('bowandcrossbowskillscontainer'),
         document.getElementById('trapskillscontainer'),
         document.getElementById('shadowskillscontainer'),
-        document.getElementById('martialartskillscontainer')
+        document.getElementById('martialartskillscontainer'),
+        document.getElementById('warcriesskillscontainer'),
+        document.getElementById('combatmasteriesskillscontainer'),
+        document.getElementById('combatskillsskillscontainer')
     ];
 
     allSkillContainers.forEach(container => {
@@ -5717,9 +5698,13 @@ function switchSkillContainers(className) {
             document.getElementById('shadowskillscontainer').style.display = 'block';
             document.getElementById('martialartskillscontainer').style.display = 'block';
             break;
+        case 'barbarian':
+            document.getElementById('warcriesskillscontainer').style.display = 'block';
+            document.getElementById('combatmasteriesskillscontainer').style.display = 'block';
+            document.getElementById('combatskillsskillscontainer').style.display = 'block';
+            break;
     }
 }
-updateSkillDropdown(className)
 
 </script>
   
