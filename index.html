@@ -763,13 +763,17 @@ width: 16cap;
 #magicarrowcontainer, #multipleshotcontainer, #firearrowcontainer, #coldarrowcontainer, #icearrowcontainer,
 #guidedarrowcontainer, #explodingarrowcontainer, #strafecontainer, #immolationarrowcontainer, #freezingarrowcontainer, #fireblastcontainer, #shockwebcontainer,
 #tigerstrikecontainer, #dragontaloncontainer, #dragonclawcontainer, #fistsoffirecontainer, #cobrastrikecontainer,
-#clawsofthundercontainer, #dragontailcontainer, #dragonflightcontainer, #bladesoficecontainer, #phoenixstrikecontainer { 
+#clawsofthundercontainer, #dragontailcontainer, #dragonflightcontainer, #bladesoficecontainer, #phoenixstrikecontainer,
+#bladesentinelcontainer, #chargedboltsentrycontainer, #wakeoffirecontainer, #bladefurycontainer, #bladeshieldcontainer,
+#lightningsentrycontainer, #wakeofinfernocontainer, #chainlightningsentrycontainer, #deathsentrycontainer,
+#clawanddaggermasterycontainer, #psychichammercontainer, #burstofspeedcontainer, #weaponblockcontainer, #cloakofshadowscontainer,
+#mindblastcontainer, #fadecontainer, #shadowwarriorcontainer, #shadowmastercontainer, #venomcontainer { 
   position: absolute;
   width: 42px;
   color: rgb(255, 255, 255);
   font-size: 14px;
   text-align: center; 
-  border:0.5px solid #08a39e;
+  border: 0.5px solid #08a39e;
   
   
 }  
@@ -1499,22 +1503,48 @@ Defense
     <div id="martialartskillscontainer" class="skill-container">
       <div>Tiger Strike:<input type="number" min="0" max="20" value="0" id="tigerstrikecontainer"></div>
       <div>Dragon Talon:<input type="number" min="0" max="20" value="0" id="dragontaloncontainer"></div>
+      <div>Dragon Claw:<input type="number" min="0" max="20" value="0" id="dragonclawcontainer" class="hiddenSkill"></div>
       <div>Fists of Fire:<input type="number" min="0" max="20" value="0" id="fistsoffirecontainer"></div>
-      <div>Cobra Strike:<input type="number" min="0" max="20" value="0" id="cobrastrikecontainer"></div>
-      <div>Claws of Thunder:<input type="number" min="0" max="20" value="0" id="clawsofthundercontainer"></div>
-      <div>Dragon Tail:<input type="number" min="0" max="20" value="0" id="dragontailcontainer"></div>
-      <div>Dragon Flight:<input type="number" min="0" max="20" value="0" id="dragonflightcontainer"></div>
-      <div>Blades of Ice:<input type="number" min="0" max="20" value="0" id="bladesoficecontainer"></div>
-      <div>Phoenix Strike:<input type="number" min="0" max="20" value="0" id="phoenixstrikecontainer"></div>
+      <div>Cobra Strike:<input type="number" min="0" max="20" value="0" id="cobrastrikecontainer" class="hiddenSkill"></div>
+      <div>Claws of Thunder:<input type="number" min="0" max="20" value="0" id="clawsofthundercontainer" class="hiddenSkill"></div>
+      <div>Dragon Tail:<input type="number" min="0" max="20" value="0" id="dragontailcontainer" class="hiddenSkill"></div>
+      <div>Dragon Flight:<input type="number" min="0" max="20" value="0" id="dragonflightcontainer" class="hiddenSkill"></div>
+      <div>Blades of Ice:<input type="number" min="0" max="20" value="0" id="bladesoficecontainer" class="hiddenSkill"></div>
+      <div>Phoenix Strike:<input type="number" min="0" max="20" value="0" id="phoenixstrikecontainer" class="hiddenSkill"></div>
   </div>
 
   <div id="shadowskillscontainer" class="skill-container">
-    <!-- shadow skills -->
+      <div>Claw and Dagger Mastery:<input type="number" min="0" max="20" value="0" id="clawanddaggermasterycontainer"></div>
+      <div>Psychic Hammer:<input type="number" min="0" max="20" value="0" id="psychichammercontainer"></div>
+      <div>Burst of Speed:<input type="number" min="0" max="20" value="0" id="burstofspeedcontainer" class="hiddenSkill"></div>
+      <div>Weapon Block:<input type="number" min="0" max="20" value="0" id="weaponblockcontainer" class="hiddenSkill"></div>
+      <div>Cloak of Shadows:<input type="number" min="0" max="20" value="0" id="cloakofshadowscontainer" class="hiddenSkill"></div>
+      <div>Mind Blast:<input type="number" min="0" max="20" value="0" id="mindblastcontainer" class="hiddenSkill"></div>
+      <div>Fade:<input type="number" min="0" max="20" value="0" id="fadecontainer" class="hiddenSkill"></div>
+      <div>Shadow Warrior:<input type="number" min="0" max="20" value="0" id="shadowwarriorcontainer" class="hiddenSkill"></div>
+      <div>Shadow Master:<input type="number" min="0" max="20" value="0" id="shadowmastercontainer" class="hiddenSkill"></div>
+      <div>Venom:<input type="number" min="0" max="20" value="0" id="venomcontainer" class="hiddenSkill"></div></div>
 </div>
 
     <div id="trapskillscontainer" class="skill-container">
       <div>Fire Blast:<input type="number" min="0" max="20" value="0" id="fireblastcontainer"></div>
-      <div>Shock Web:<input type="number" min="0" max="20" value="0" id="shockwebcontainer"></div></div>
+      <div>Shock Web:<input type="number" min="0" max="20" value="0" id="shockwebcontainer"></div>
+      <div>Blade Sentinel:<input type="number" min="0" max="20" value="0" id="bladesentinelcontainer"></div>
+      <div>Charged Bolt Sentry:<input type="number" min="0" max="20" value="0" id="chargedboltsentrycontainer" class="hiddenSkill"></div>
+      <div>Wake of Fire:<input type="number" min="0" max="20" value="0" id="wakeoffirecontainer" class="hiddenSkill"></div>
+      <div>Blade Fury:<input type="number" min="0" max="20" value="0" id="bladefurycontainer" class="hiddenSkill"></div>
+      <div>Blade Shield:<input type="number" min="0" max="20" value="0" id="bladeshieldcontainer" class="hiddenSkill"></div>
+      <div>Lightning Sentry:<input type="number" min="0" max="20" value="0" id="lightningsentrycontainer" class="hiddenSkill"></div>
+      <div>Wake of Inferno:<input type="number" min="0" max="20" value="0" id="wakeofinfernocontainer" class="hiddenSkill"></div>
+      <div>Chain Light Sentry:<input type="number" min="0" max="20" value="0" id="chainlightningsentrycontainer" class="hiddenSkill"></div>
+      <div>Death Sentry:<input type="number" min="0" max="20" value="0" id="deathsentrycontainer" class="hiddenSkill"></div>
+    
+    
+    
+    
+    
+    
+    </div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
 
   
@@ -5071,13 +5101,13 @@ function updateVisibility() {
         valkyrieskills.value = valkyrievalue;
         magicarrowskills.value = magicarrowvalue;
         multipleshotskills.value = multipleshotvalue;
-        firearrowskills.value =firearrowvalue;
+        firearrowskills.value = firearrowvalue;
         coldarrowskills.value = coldarrowvalue;
-        icearrowskills.value =icearrowvalue;
+        icearrowskills.value = icearrowvalue;
         guidedarrowskills.value = guidedarrowvalue;
-        explodingarrowskills.value =explodingarrowvalue;
+        explodingarrowskills.value = explodingarrowvalue;
         strafeskills.value = strafevalue;
-        immolationarrowskills.value =immolationarrowvalue;
+        immolationarrowskills.value = immolationarrowvalue;
         freezingarrowskills.value = freezingarrowvalue;
       };
      
@@ -5260,7 +5290,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         'dragonflightcontainer': 'dragonFlight',
         'bladesoficecontainer': 'bladesOfIce',
         'phoenixstrikecontainer': 'phoenixStrike',
-        'fireblastcontainer': 'fireBlast'
+        'psychichammercontainer': 'psychicHammer',
+        'mindblastcontainer': 'mindBlast',
+        'fireblastcontainer': 'fireBlast',
+        'shockwebcontainer': 'shockWeb',
+        'bladesentinelcontainer': 'bladeSentinel',
+        'chargedboltsentrycontainer': 'chargedBoltSentry',
+        'wakeoffirecontainer': 'wakeOfFury',
+        'bladefurycontainer': 'bladeFury',
+        'bladeshieldcontainer': 'bladeShield',
+        'lightningsentrycontainer': 'lightningSentry',
+        'wakeofinfernocontainer': 'wakeOfInferno',
+        'chainlightningsentrycontainer': 'chainLightningSentry',
+        'deathsentrycontainer': 'deathSentry'
+
     };
 
     function getSkillDamage(skillInfo, skillName) {
@@ -5622,6 +5665,7 @@ function updateSkillDropdown(className) {
             { value: 'bladefurycontainer', text: 'Blade Fury' },
             { value: 'lightningsentrycontainer', text: 'Lightning Sentry' },
             { value: 'wakeofinfernocontainer', text: 'Wake of Inferno' },
+            { value: 'chainlightningsentrycontainer', text: 'Chain Lightning Sentry' },
             { value: 'deathsentrycontainer', text: 'Death Sentry' }
         ]
     };

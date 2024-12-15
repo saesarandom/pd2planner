@@ -581,14 +581,18 @@ class SkillHandler {
                         perLevel: 75,
                         formula: "base + (perLevel * (level - 1))"
                         },
+                    attackRating: {
+                          base: 25,
+                          perLevel: 15,
+                          formula: "base + (perLevel * (level - 1))"
+                        },
                     manaCost: {
-                        base: 2,
-                        perLevel: 0.1,
-                        formula: "base + (perLevel * (level/2))"
+                        base: 1,  
+                        formula: "base * 1"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
-                synergies: ["coldarrow,6", "icearrow,6"]
+                prerequisites: [],
+                synergies: []
               },
               dragonTalon: {
                 name: "Dragon Talon",
