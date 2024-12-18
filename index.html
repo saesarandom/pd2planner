@@ -683,7 +683,7 @@ margin-left: 11px;
 
 }
 
-.hiddenSkill6, .hiddenSkill12, .hiddenSkill18, .hiddenSkill24, .hiddenSkill30 {
+.hiddenSkill, .hiddenSkill6, .hiddenSkill12, .hiddenSkill18, .hiddenSkill24, .hiddenSkill30 {
 display: none;
 }
 
@@ -4036,7 +4036,7 @@ if (select_Class.value === "Amazon") {
   enrValue = Math.min(Math.max(parseInt(document.getElementById('enr').value, 10) || 15, 15), 530);
   
   let sumStats = 95 - (vitValue + strValue + dexValue + enrValue) + ( 5 * startLvlValue) - 5
-  console.log(sumStats)
+  
 
 
 
@@ -4978,65 +4978,68 @@ function updateVisibility() {
         let freezingarrowvalue = Math.min(Math.max(parseInt(freezingarrowskills.value, 10) || 0, 0), 20);
  
         
-        function checkLevelRequirement(level, requiredLevel, ...skillValues) {
-    // Check if character level meets requirement AND all skill conditions are met
-    return level >= requiredLevel && skillValues.every(value => value > 0);
-}
-
-const startLvlValue = parseInt(document.getElementById('startLvlValue').value);
-
-function updateSkills() {
-
-
-          if (checkLevelRequirement(startLvlValue, 6, jabvalue)) {
-              javelinandspearmasteryskills.classList.remove('hiddenSkill6');
-              powerstrikeskills.classList.remove('hiddenSkill6');
-          } else {
-              javelinandspearmasteryskills.classList.add('hiddenSkill6');
-              powerstrikeskills.classList.add('hiddenSkill6');
-              
-              
-          }
-
+       
         
-          if (checkLevelRequirement(startLvlValue, 12, jabvalue, poisonjavelinvalue, powerstrikevalue)) {
+    
+        const level = parseInt(document.getElementById('lvlValue').value) || 1;
+        console.log('Current level:', level); // Debug log
+    
+  console.log(level);
+    if (jabvalue > 0 && level > 5) {
+        javelinandspearmasteryskills.classList.remove('hiddenSkill6');
+        powerstrikeskills.classList.remove('hiddenSkill6');
+    } else {
+        javelinandspearmasteryskills.classList.add('hiddenSkill6');
+        powerstrikeskills.classList.add('hiddenSkill6');
+    }
+
+   
+   
+    document.getElementById('lvlValue').addEventListener('input', updateVisibility);
+
+
+
+
+       
+
+          if (jabvalue > 0 && poisonjavelinvalue > 0 && powerstrikevalue > 0 && level > 11) {
             lightningboltskills.classList.remove('hiddenSkill12');
         } else {
             lightningboltskills.classList.add('hiddenSkill12');
             fendskills.classList.add('hiddenSkill12');
         }
 
-        if (jabvalue > 0 && javelinandspearmasteryvalue > 0) {
+        if (jabvalue > 0 && javelinandspearmasteryvalue > 0 && level > 11) {
             fendskills.classList.remove('hiddenSkill12');
         } else {
             fendskills.classList.add('hiddenSkill12');
         }
 
-        if (jabvalue > 0 && powerstrikevalue > 0) {
+        if (jabvalue > 0 && powerstrikevalue > 0 && level > 17) {
             chargedstrikeskills.classList.remove('hiddenSkill18');
         } else {
             chargedstrikeskills.classList.add('hiddenSkill18');
         }
 
-        if (jabvalue > 0 && poisonjavelinvalue > 0 && powerstrikevalue > 0 && lightningboltvalue > 0) {
+        if (jabvalue > 0 && poisonjavelinvalue > 0 && powerstrikevalue > 0 && lightningboltvalue > 0 && level > 17) {
             plaguejavelinskills.classList.remove('hiddenSkill18');
         } else {
             plaguejavelinskills.classList.add('hiddenSkill18');
         }
 
-        if (jabvalue > 0 &&  powerstrikevalue > 0 && chargedstrikevalue > 0) {
+        if (jabvalue > 0 &&  powerstrikevalue > 0 && chargedstrikevalue > 0 && level > 23) {
             lightningstrikeskills.classList.remove('hiddenSkill24');
         } else {
             lightningstrikeskills.classList.add('hiddenSkill24');
         }
 
-        if (jabvalue > 0 && poisonjavelinvalue > 0 && powerstrikevalue > 0 && lightningboltvalue > 0 && plaguejavelinvalue > 0) {
+        if (jabvalue > 0 && poisonjavelinvalue > 0 && powerstrikevalue > 0 && lightningboltvalue > 0 && plaguejavelinvalue > 0 && level > 29) {
             lightningfuryskills.classList.remove('hiddenSkill30');
         } else {
             lightningfuryskills.classList.add('hiddenSkill30');
         }
 
-        if (innersightvalue > 0) {
+        if (innersightvalue > 0 && level > 5) {
               evadeskills.classList.remove('hiddenSkill6');
               slowmovementskills.classList.remove('hiddenSkill6');
               
@@ -5049,40 +5052,40 @@ function updateSkills() {
           }
        
 
-          if (innersightvalue > 0 && evadevalue > 0 && slowmovementvalue > 0) {
+          if (innersightvalue > 0 && evadevalue > 0 && slowmovementvalue > 0 && level > 11) {
             dodgeskills.classList.remove('hiddenSkill12');
         } else {
             dodgeskills.classList.add('hiddenSkill12');
            
         }
 
-        if (innersightvalue > 0 && slowmovementvalue > 0) {
+        if (innersightvalue > 0 && slowmovementvalue > 0 && level > 11) {
             decoyskills.classList.remove('hiddenSkill12');
         } else {
             decoyskills.classList.add('hiddenSkill12');
         }
 
-        if (criticalstrikevalue > 0) {
+        if (criticalstrikevalue > 0 && level > 17) {
             pierceskills.classList.remove('hiddenSkill18');
         } else {
             pierceskills.classList.add('hiddenSkill18');
         }
 
 
-        if (criticalstrikevalue > 0 && piercevalue > 0) {
+        if (criticalstrikevalue > 0 && piercevalue > 0 && level > 23) {
             penetrateskills.classList.remove('hiddenSkill24');
         } else {
             penetrateskills.classList.add('hiddenSkill24');
         }
 
-        if (innersightvalue > 0 && slowmovementvalue > 0 && decoyvalue > 0) {
+        if (innersightvalue > 0 && slowmovementvalue > 0 && decoyvalue > 0 && level > 29) {
             valkyrieskills.classList.remove('hiddenSkill30');
         } else {
             valkyrieskills.classList.add('hiddenSkill30');
         }
 
 
-        if (magicarrowvalue > 0) {
+        if (magicarrowvalue > 0 && level > 5) {
               multipleshotskills.classList.remove('hiddenSkill6');
               
               firearrowskills.classList.remove('hiddenSkill6');
@@ -5099,46 +5102,46 @@ function updateSkills() {
           }
        
 
-          if (magicarrowvalue > 0 && firearrowvalue > 0) {
+          if (magicarrowvalue > 0 && firearrowvalue > 0 && level > 11) {
             explodingarrowskills.classList.remove('hiddenSkill12');
         } else {
             explodingarrowskills.classList.add('hiddenSkill12');
            
         }
 
-        if (magicarrowvalue > 0 && coldarrowvalue > 0) {
+        if (magicarrowvalue > 0 && coldarrowvalue > 0 && level > 11) {
             icearrowskills.classList.remove('hiddenSkill12');
         } else {
             icearrowskills.classList.add('hiddenSkill12');
         }
 
-        if (magicarrowvalue > 0 && multipleshotvalue > 0) {
+        if (magicarrowvalue > 0 && multipleshotvalue > 0 && level > 17) {
             guidedarrowskills.classList.remove('hiddenSkill18');
         } else {
             guidedarrowskills.classList.add('hiddenSkill18');
         }
 
-        if (magicarrowvalue > 0 && multipleshotvalue > 0 && guidedarrowvalue > 0) {
+        if (magicarrowvalue > 0 && multipleshotvalue > 0 && guidedarrowvalue > 0 && level > 17) {
             strafeskills.classList.remove('hiddenSkill18');
         } else {
             strafeskills.classList.add('hiddenSkill18');
         }
 
 
-        if (magicarrowvalue > 0 && firearrowvalue > 0 && explodingarrowvalue > 0) {
+        if (magicarrowvalue > 0 && firearrowvalue > 0 && explodingarrowvalue > 0 && level > 23) {
             immolationarrowskills.classList.remove('hiddenSkill24');
         } else {
             immolationarrowskills.classList.add('hiddenSkill24');
         }
 
-        if (magicarrowvalue > 0 && coldarrowvalue > 0 && icearrowvalue > 0) {
+        if (magicarrowvalue > 0 && coldarrowvalue > 0 && icearrowvalue > 0 && level > 29) {
             freezingarrowskills.classList.remove('hiddenSkill30');
         } else {
             freezingarrowskills.classList.add('hiddenSkill30');
         }
-      }
+      
 
-      updateSkills(startLvlValue);  // Pass your level variable here
+      
 
 
 
@@ -5208,10 +5211,9 @@ function updateSkills() {
    
   </script>
    
-   
+ 
    <script src="SkillHandler.js"></script>
 <script>
-
 
 const dragState = {
     isDragging: false,
@@ -5280,10 +5282,11 @@ function addDragHandlers() {
             container.removeEventListener('mousedown', onMouseDown);
             container.addEventListener('mousedown', onMouseDown);
             
-            console.log(`Drag handler added to ${id}`);
+            
         }
     });
 }
+
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', function() {
@@ -5314,6 +5317,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.warn('Skills not fully loaded');
         return;
     }
+
+  
 
     const skillNameMap = {
         'jabcontainer': 'jab',
@@ -5389,7 +5394,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         if (skillInfo.damage) {
-          console.log('Regular damage:', skillInfo.damage); 
+           
             return skillInfo.damage;
         }
 
@@ -5417,28 +5422,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (javelinandspearmasteryLevel > 0) {
         const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
         criticalHitValue = javelinandspearmasteryInfo?.criticalChance || 0;
-        console.log('Critical Hit Value from mastery:', criticalHitValue);
+        
     }
     document.getElementById('criticalhitcontainer').value = criticalHitValue;
 
     deadlyStrikeValue =  document.getElementById('deadlystrikecontainer') || 0;
     const deadlyStrike = parseInt(document.getElementById('deadlystrikecontainer').value || 0);
-    console.log('Processing Deadly Strike:', deadlyStrike);
     
     const totalDeadlyStrike = deadlyStrike;
     const totalCriticalHit = criticalHitValue / 100;
     const totalWeaponMastery = parseInt(document.getElementById('weaponmasterycontainer').value || 0) / 100;
 
-    console.log('Pre-calculation values:', {
-        deadlyStrike,
-        criticalHitValue,
-        totalDeadlyStrike,
-        totalCriticalHit,
-        totalWeaponMastery
-    });
+   
 
     const totalCritMultiplier = 0.5 * (1 - (1 - totalDeadlyStrike) * (1 - totalCriticalHit) * (1 - totalWeaponMastery)) + 1;
-    console.log('Calculated multiplier:', totalCritMultiplier);
+    
 
     document.getElementById('crithitmultipliercontainer').value = totalCritMultiplier.toFixed(3);
 
@@ -5446,7 +5444,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const deadlyStrikeElement = document.getElementById('deadlystrikecontainer');
 // Listen for changes to deadly strike
 deadlyStrikeElement.addEventListener('input', function() {
-    console.log('Deadly Strike changed to:', this.value);
+    
     updateDamageCalculations();
 });
 
@@ -5536,7 +5534,7 @@ skillInputs.forEach(input => {
             parentContainer: input.closest('div').id,
             value: input.value
         };
-        console.log('Skill input changed:', currentInput);
+        
 
         // Check points limit
         if (!checkSkillPoints()) {
@@ -5547,11 +5545,7 @@ skillInputs.forEach(input => {
         const selectedSkillContainer = document.getElementById('left-skill')?.value;
         const selectedSkillName = skillNameMap[selectedSkillContainer];
         
-        console.log('Selection info:', {
-            container: selectedSkillContainer,
-            mappedName: selectedSkillName,
-            skillExists: !!skillHandler.skillData[selectedSkillName]
-        });
+       
 
         if (!selectedSkillContainer || !selectedSkillName) {
             console.warn('Missing selection info');
