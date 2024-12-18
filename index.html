@@ -1482,26 +1482,26 @@ Defense
   <div id="passiveskillscontainer" class="skill-container">
     <div>Inner Sight:<input min="0" max="20" type="number" id="innersightcontainer"></div>
     <div>Critical Strike:<input min="0" max="20" type="number" id="criticalstrikecontainer"></div>
-    <div>Evade:<input min="0" max="20" type="number" id="evadecontainer" class="hiddenSkill"></div>
-    <div>Slow Movement:<input min="0" max="20" type="number" id="slowmovementcontainer" class="hiddenSkill"></div>
-    <div>Pierce:<input min="0" max="20" type="number" id="piercecontainer" class="hiddenSkill"></div>
-    <div>Dodge:<input min="0" max="20" type="number" id="dodgecontainer" class="hiddenSkill"></div>
-    <div>Decoy:<input min="0" max="20" type="number" id="decoycontainer" class="hiddenSkill"></div>
-    <div>Penetrate:<input min="0" max="20" type="number" id="penetratecontainer" class="hiddenSkill"></div>
-    <div>Valkyrie:<input min="0" max="20" type="number" id="valkyriecontainer" class="hiddenSkill"></div></div>
+    <div>Evade:<input min="0" max="20" type="number" id="evadecontainer" class="hiddenSkill6"></div>
+    <div>Slow Movement:<input min="0" max="20" type="number" id="slowmovementcontainer" class="hiddenSkill12"></div>
+    <div>Pierce:<input min="0" max="20" type="number" id="piercecontainer" class="hiddenSkill12"></div>
+    <div>Dodge:<input min="0" max="20" type="number" id="dodgecontainer" class="hiddenSkill18"></div>
+    <div>Decoy:<input min="0" max="20" type="number" id="decoycontainer" class="hiddenSkill18"></div>
+    <div>Penetrate:<input min="0" max="20" type="number" id="penetratecontainer" class="hiddenSkill24"></div>
+    <div>Valkyrie:<input min="0" max="20" type="number" id="valkyriecontainer" class="hiddenSkill30"></div></div>
     
 
     <div id="bowandcrossbowskillscontainer" class="skill-container">
       <div>Magic Arrow:<input min="0" max="20" type="number" id="magicarrowcontainer"></div>
-      <div>Multiple Shot:<input min="0" max="20" type="number" id="multipleshotcontainer" class="hiddenSkill"></div>
-      <div>Fire Arrow:<input min="0" max="20" type="number" id="firearrowcontainer" class="hiddenSkill"></div>
-      <div>Cold Arrow:<input min="0" max="20" type="number" id="coldarrowcontainer" class="hiddenSkill"></div>
-      <div>Ice Arrow:<input min="0" max="20" type="number" id="icearrowcontainer" class="hiddenSkill"></div>
-      <div>Guided Arrow:<input min="0" max="20" type="number" id="guidedarrowcontainer" class="hiddenSkill"></div>
-      <div>Exploding Arrow:<input min="0" max="20" type="number" id="explodingarrowcontainer" class="hiddenSkill"></div>
-      <div>Strafe:<input min="0" max="20" type="number" id="strafecontainer" class="hiddenSkill"></div>
-      <div>Immolation Arrow:<input min="0" max="20" type="number" id="immolationarrowcontainer" class="hiddenSkill"></div>
-      <div>Freezing Arrow:<input min="0" max="20" type="number" id="freezingarrowcontainer" class="hiddenSkill"></div></div>
+      <div>Multiple Shot:<input min="0" max="20" type="number" id="multipleshotcontainer" class="hiddenSkill6"></div>
+      <div>Fire Arrow:<input min="0" max="20" type="number" id="firearrowcontainer" class="hiddenSkill6"></div>
+      <div>Cold Arrow:<input min="0" max="20" type="number" id="coldarrowcontainer" class="hiddenSkill6"></div>
+      <div>Ice Arrow:<input min="0" max="20" type="number" id="icearrowcontainer" class="hiddenSkill12"></div>
+      <div>Guided Arrow:<input min="0" max="20" type="number" id="guidedarrowcontainer" class="hiddenSkill18"></div>
+      <div>Exploding Arrow:<input min="0" max="20" type="number" id="explodingarrowcontainer" class="hiddenSkill18"></div>
+      <div>Strafe:<input min="0" max="20" type="number" id="strafecontainer" class="hiddenSkill24"></div>
+      <div>Immolation Arrow:<input min="0" max="20" type="number" id="immolationarrowcontainer" class="hiddenSkill30"></div>
+      <div>Freezing Arrow:<input min="0" max="20" type="number" id="freezingarrowcontainer" class="hiddenSkill30"></div></div>
     </div>  
 
 
@@ -5006,14 +5006,16 @@ function updateVisibility() {
             lightningboltskills.classList.remove('hiddenSkill12');
         } else {
             lightningboltskills.classList.add('hiddenSkill12');
-            fendskills.classList.add('hiddenSkill12');
+            fendskills.classList.add('hiddenSkill18');
         }
 
-        if (jabvalue > 0 && javelinandspearmasteryvalue > 0 && level > 11) {
-            fendskills.classList.remove('hiddenSkill12');
+        if (jabvalue > 0 && javelinandspearmasteryvalue > 0 && level > 17) {
+            fendskills.classList.remove('hiddenSkill18');
         } else {
-            fendskills.classList.add('hiddenSkill12');
+            fendskills.classList.add('hiddenSkill18');
         }
+
+        
 
         if (jabvalue > 0 && powerstrikevalue > 0 && level > 17) {
             chargedstrikeskills.classList.remove('hiddenSkill18');
@@ -5027,10 +5029,10 @@ function updateVisibility() {
             plaguejavelinskills.classList.add('hiddenSkill18');
         }
 
-        if (jabvalue > 0 &&  powerstrikevalue > 0 && chargedstrikevalue > 0 && level > 23) {
-            lightningstrikeskills.classList.remove('hiddenSkill24');
+        if (jabvalue > 0 &&  powerstrikevalue > 0 && chargedstrikevalue > 0 && level > 29) {
+            lightningstrikeskills.classList.remove('hiddenSkill30');
         } else {
-            lightningstrikeskills.classList.add('hiddenSkill24');
+            lightningstrikeskills.classList.add('hiddenSkill30');
         }
 
         if (jabvalue > 0 && poisonjavelinvalue > 0 && powerstrikevalue > 0 && lightningboltvalue > 0 && plaguejavelinvalue > 0 && level > 29) {
@@ -5039,36 +5041,36 @@ function updateVisibility() {
             lightningfuryskills.classList.add('hiddenSkill30');
         }
 
-        if (innersightvalue > 0 && level > 5) {
+        if (innersightvalue > 0 && level > 11) {
               evadeskills.classList.remove('hiddenSkill6');
-              slowmovementskills.classList.remove('hiddenSkill6');
+              slowmovementskills.classList.remove('hiddenSkill12');
               
           } else {
               evadeskills.classList.add('hiddenSkill6');
-              slowmovementskills.classList.add('hiddenSkill6');
+              slowmovementskills.classList.add('hiddenSkill12');
               
               
               
           }
        
 
-          if (innersightvalue > 0 && evadevalue > 0 && slowmovementvalue > 0 && level > 11) {
-            dodgeskills.classList.remove('hiddenSkill12');
+          if (innersightvalue > 0 && evadevalue > 0 && slowmovementvalue > 0 && level > 17) {
+            dodgeskills.classList.remove('hiddenSkill18');
         } else {
-            dodgeskills.classList.add('hiddenSkill12');
+            dodgeskills.classList.add('hiddenSkill18');
            
         }
 
-        if (innersightvalue > 0 && slowmovementvalue > 0 && level > 11) {
-            decoyskills.classList.remove('hiddenSkill12');
+        if (innersightvalue > 0 && slowmovementvalue > 0 && level > 17) {
+            decoyskills.classList.remove('hiddenSkill18');
         } else {
-            decoyskills.classList.add('hiddenSkill12');
+            decoyskills.classList.add('hiddenSkill18');
         }
 
-        if (criticalstrikevalue > 0 && level > 17) {
-            pierceskills.classList.remove('hiddenSkill18');
+        if (criticalstrikevalue > 0 && level > 11) {
+            pierceskills.classList.remove('hiddenSkill12');
         } else {
-            pierceskills.classList.add('hiddenSkill18');
+            pierceskills.classList.add('hiddenSkill12');
         }
 
 
@@ -5102,10 +5104,10 @@ function updateVisibility() {
           }
        
 
-          if (magicarrowvalue > 0 && firearrowvalue > 0 && level > 11) {
-            explodingarrowskills.classList.remove('hiddenSkill12');
+          if (magicarrowvalue > 0 && firearrowvalue > 0 && level > 17) {
+            explodingarrowskills.classList.remove('hiddenSkill18');
         } else {
-            explodingarrowskills.classList.add('hiddenSkill12');
+            explodingarrowskills.classList.add('hiddenSkill18');
            
         }
 
@@ -5121,17 +5123,17 @@ function updateVisibility() {
             guidedarrowskills.classList.add('hiddenSkill18');
         }
 
-        if (magicarrowvalue > 0 && multipleshotvalue > 0 && guidedarrowvalue > 0 && level > 17) {
-            strafeskills.classList.remove('hiddenSkill18');
+        if (magicarrowvalue > 0 && multipleshotvalue > 0 && guidedarrowvalue > 0 && level > 23) {
+            strafeskills.classList.remove('hiddenSkill24');
         } else {
-            strafeskills.classList.add('hiddenSkill18');
+            strafeskills.classList.add('hiddenSkill24');
         }
 
 
-        if (magicarrowvalue > 0 && firearrowvalue > 0 && explodingarrowvalue > 0 && level > 23) {
-            immolationarrowskills.classList.remove('hiddenSkill24');
+        if (magicarrowvalue > 0 && firearrowvalue > 0 && explodingarrowvalue > 0 && level > 29) {
+            immolationarrowskills.classList.remove('hiddenSkill30');
         } else {
-            immolationarrowskills.classList.add('hiddenSkill24');
+            immolationarrowskills.classList.add('hiddenSkill30');
         }
 
         if (magicarrowvalue > 0 && coldarrowvalue > 0 && icearrowvalue > 0 && level > 29) {
