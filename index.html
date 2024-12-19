@@ -1,5 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PD2 Character Planner</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="class-select">
+                <select id="classSelect">
+                    <!-- Classes populated by JS -->
+                </select>
+            </div>
+            <div class="level-select">
+                <input type="number" id="levelInput" min="1" max="99" value="1">
+            </div>
+        </header>
+
+        <main>
+            <section id="stats"></section>
+            <section id="equipment"></section>
+            <section id="skills"></section>
+        </main>
+    </div>
+
+    <script src="js/data/items.js"></script>
+    <script src="js/data/weapons.js"></script>
+    <script src="js/data/armor.js"></script>
+    <script src="js/data/jewelry.js"></script>
+    <script src="js/data/skills.js"></script>
+    <script src="js/skills/SkillManager.js"></script>
+    <script src="js/skills/Skill.js"></script>
+    <script src="js/skills/SkillTree.js"></script>
+    <script src="js/skills/data/amazon.js"></script>
+    <script src="js/skills/data/assassin.js"></script>
+    <script src="js/skills/data/barbarian.js"></script>
+    <script src="js/skills/data/druid.js"></script>
+    <script src="js/skills/data/necromancer.js"></script>
+    <script src="js/skills/data/paladin.js"></script>
+    <script src="js/skills/data/sorceress.js"></script>
+    <script src="js/data/classes.js"></script>
+    <script src="js/components/Equipment.js"></script>
+    <script src="js/components/SkillTree.js"></script>
+    <script src="js/components/Stats.js"></script>
+    <script src="js/utils/calculations.js"></script>
+    <script src="js/utils/events.js"></script>
+    <script src="js/main.js"></script>
+    <script type="module">
+        export const ITEM_SLOTS = {
+            WEAPON: 'weapon',
+            OFFHAND: 'offhand',
+            HELM: 'helm',
+            ARMOR: 'armor',
+            BELT: 'belt',
+            GLOVES: 'gloves',
+            BOOTS: 'boots',
+            AMULET: 'amulet',
+            RING1: 'ring1',
+            RING2: 'ring2'
+        };
+
+        export const ITEM_QUALITIES = {
+            NORMAL: 'normal',
+            MAGIC: 'magic',
+            RARE: 'rare',
+            UNIQUE: 'unique',
+            SET: 'set',
+            CRAFTED: 'crafted'
+        };
+
+        export const CLASS_REQUIREMENTS = {
+            amazon: {
+                weaponTypes: ['bow', 'crossbow', 'javelin', 'spear'],
+                armorTypes: ['light', 'medium'],
+                primaryStats: ['dexterity', 'strength']
+            },
+            // ... other classes
+        };
+
+        export const STAT_LIMITS = {
+            min: 0,
+            max: 999,
+            baseMin: {
+                strength: 1,
+                dexterity: 1,
+                vitality: 1,
+                energy: 1
+            }
+        };
+
+        export class Item {
+            constructor(data) {
+                this.id = data.id;
+                this.name = data.name;
+                this.type = data.type;
+                this.quality = data.quality;
+                this.required = {
+                    level: data.requiredLevel || 1,
+                    strength: data.requiredStrength || 0,
+                    dexterity: data.requiredDexterity || 0
+                };
+                this.stats = data.stats || {};
+                this.sockets = {
+                    max: data.maxSockets || 0,
+                    current: []
+                };
+            }
+
+            addSocket(gem) {
+                if (this.sockets.current.length < this.sockets.max) {
+                    this.sockets.current.push(gem);
+                    return true;
+                }
+                return false;
+            }
+
+            calculateStats() {
+                let totalStats = { ...this.stats };
+                this.sockets.current.forEach(gem => {
+                    Object.entries(gem.stats).forEach(([stat, value]) => {
+                        totalStats[stat] = (totalStats[stat] || 0) + value;
+                    });
+                });
+                return totalStats;
+            }
+        }
+    </script>
+    <script type="module">
+        import { Character } from './components/Character.js';
+
+        export class Character {
+            static CLASS_TYPES = {
+                AMAZON: 'amazon',
+                ASSASSIN: 'assassin',
+                BARBARIAN: 'barbarian',
+                DRUID: 'druid',
+                NECROMANCER: 'necromancer',
+                PALADIN: 'paladin',
+                SORCERESS: 'sorceress'
+            };
+
+            constructor(classType = 'amazon', level = 1) {
+                this.classType = classType;
+                this.level = level;
+                this.baseStats = {
+                    strength: 20,
+                    dexterity: 25,
+                    vitality: 20,
+                    energy: 15
+                };
+                this.bonusStats = {
+                    strength: 0,
+                    dexterity: 0,
+                    vitality: 0,
+                    energy: 0
+                };
+                this.skillPoints = 0;
+                this.statPoints = 0;
+                this.initializeClass();
+            }
+
+            initializeClass() {
+                const classStats = {
+                    amazon: { strength: 20, dexterity: 25, vitality: 20, energy: 15 },
+                    assassin: { strength: 20, dexterity: 20, vitality: 20, energy: 25 },
+                    barbarian: { strength: 30, dexterity: 20, vitality: 25, energy: 10 },
+                    druid: { strength: 15, dexterity: 20, vitality: 25, energy: 20 },
+                    necromancer: { strength: 15, dexterity: 25, vitality: 15, energy: 25 },
+                    paladin: { strength: 25, dexterity: 20, vitality: 25, energy: 15 },
+                    sorceress: { strength: 10, dexterity: 25, vitality: 10, energy: 35 }
+                };
+
+                this.baseStats = classStats[this.classType];
+                this.calculateStats();
+            }
+
+            setLevel(newLevel) {
+                if (newLevel >= 1 && newLevel <= 99) {
+                    const oldLevel = this.level;
+                    this.level = newLevel;
+                    const levelDiff = newLevel - oldLevel;
+                    this.skillPoints += levelDiff;
+                    this.statPoints += levelDiff * 5;
+                    this.calculateStats();
+                    return true;
+                }
+                return false;
+            }
+
+            addStat(statType, points) {
+                if (this.statPoints >= points && this.baseStats[statType]) {
+                    this.baseStats[statType] += points;
+                    this.statPoints -= points;
+                    this.calculateStats();
+                    return true;
+                }
+                return false;
+            }
+
+            calculateStats() {
+                this.derivedStats = {
+                    life: this.calculateLife(),
+                    mana: this.calculateMana(),
+                    stamina: this.calculateStamina()
+                };
+            }
+
+            calculateLife() {
+                const baseLife = {
+                    amazon: 50,
+                    assassin: 50,
+                    barbarian: 55,
+                    druid: 55,
+                    necromancer: 45,
+                    paladin: 55,
+                    sorceress: 40
+                }[this.classType];
+
+                return baseLife + (this.getTotalStat('vitality') * 4) + ((this.level - 1) * 2);
+            }
+
+            calculateMana() {
+                const baseMana = {
+                    amazon: 15,
+                    assassin: 25,
+                    barbarian: 10,
+                    druid: 20,
+                    necromancer: 25,
+                    paladin: 15,
+                    sorceress: 35
+                }[this.classType];
+
+                return baseMana + (this.getTotalStat('energy') * 1.5);
+            }
+
+            calculateStamina() {
+                return 50 + (this.getTotalStat('vitality') * 1);
+            }
+
+            getTotalStat(statType) {
+                return (this.baseStats[statType] || 0) + (this.bonusStats[statType] || 0);
+            }
+        }
+        import { SkillTree } from './components/SkillTree.js';
+        import { Equipment } from './components/Equipment.js';
+        import { Stats } from './components/Stats.js';
+        import { ITEM_SLOTS } from '../../data/items/itemTypes.js';
+                                        class Equipment {
+                                            constructor() {
+                                                this.slots = Object.fromEntries(
+                                                    Object.values(ITEM_SLOTS).map(slot => [slot, null])
+                                                );
+                                                this.callbacks = new Set();
+                                            }
+                                
+                                            equip(item, slot) {
+                                                if (!this.validateItem(item, slot)) {
+                                                    return false;
+                                                }
+                                
+                                                this.slots[slot] = new Item(item);
+                                                this.notifyChange();
+                                                return true;
+                                            }
+                                
+                                            unequip(slot) {
+                                                if (this.slots[slot]) {
+                                                    const item = this.slots[slot];
+                                                    this.slots[slot] = null;
+                                                    this.notifyChange();
+                                                    return item;
+                                                }
+                                                return null;
+                                            }
+                                
+                                            calculateTotalStats() {
+                                                const stats = {};
+                                                Object.values(this.slots).forEach(item => {
+                                                    if (item) {
+                                                        const itemStats = item.calculateStats();
+                                                        Object.entries(itemStats).forEach(([stat, value]) => {
+                                                            stats[stat] = (stats[stat] || 0) + value;
+                                                        });
+                                                    }
+                                                });
+                                                return stats;
+                                            }
+                                
+                                            validateItem(item, slot) {
+                                                // Validation logic here
+                                                return true;
+                                            }
+                                
+                                            onEquipmentChange(callback) {
+                                                this.callbacks.add(callback);
+                                            }
+                                
+                                            notifyChange() {
+                                                this.callbacks.forEach(callback => callback(this.calculateTotalStats()));
+                                            }
+                                        }
+                                
+                                        class EventManager {
+        
+                                        class EventManager {
+            constructor() {
+                this.events = {};
+            }
+        
+            on(event, callback) {
+                if (!this.events[event]) {
+                    this.events[event] = [];
+                }
+                this.events[event].push(callback);
+            }
+        
+            emit(event, data) {
+                if (this.events[event]) {
+                    this.events[event].forEach(callback => callback(data));
+                }
+            }
+        }
+        
+                                        class StateManager {
+                    constructor() {
+                        this.state = {
+                            characterClass: null,
+                            characterLevel: 1,
+                            skills: {},
+                            equipment: {},
+                            stats: {}
+                        };
+                    }
+                
+                    set(key, value) {
+                        this.state[key] = value;
+                        localStorage.setItem('pd2planner', JSON.stringify(this.state));
+                    }
+                
+                    get(key) {
+                        return this.state[key];
+                    }
+                
+                    init() {
+                        const saved = localStorage.getItem('pd2planner');
+                        if (saved) {
+                            this.state = JSON.parse(saved);
+                        }
+                    }
+                }
+                
+                                class GameEngine {
+            constructor() {
+                this.state = new StateManager();
+                this.events = new EventManager();
+                this.character = null;
+                this.skills = null;
+                this.equipment = null;
+            }
+        
+            init() {
+                this.state.init();
+                this.loadCharacter();
+                this.loadSkills();
+                this.loadEquipment();
+                this.bindEvents();
+            }
+        
+            loadCharacter() {
+                const savedClass = this.state.get('characterClass') || 'amazon';
+                const savedLevel = this.state.get('characterLevel') || 1;
+                this.character = new Character(savedClass, savedLevel);
+            }
+        
+            bindEvents() {
+                this.events.on('character:levelChange', this.onLevelChange.bind(this));
+                this.events.on('character:classChange', this.onClassChange.bind(this));
+                this.events.on('skills:update', this.onSkillsUpdate.bind(this));
+            }
+        }
+        
+                class GameManager {
+            constructor() {
+                this.character = null;
+                this.skillTree = new SkillTree();
+                this.equipment = new Equipment();
+                this.stats = new Stats();
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.createCharacter();
+            }
+
+            createCharacter(className = 'amazon') {
+                this.character = new Character(className);
+                this.updateUI();
+            }
+
+            setupEventListeners() {
+                document.getElementById('characterClass').addEventListener('change', (e) => {
+                    this.createCharacter(e.target.value);
+                });
+
+                document.getElementById('level').addEventListener('input', (e) => {
+                    this.character.setLevel(parseInt(e.target.value));
+                    this.updateUI();
+                });
+            }
+
+            updateUI() {
+                this.stats.render(this.character);
+                this.skillTree.render(this.character);
+                this.equipment.render(this.character);
+            }
+        }
+
+        window.gameManager = new GameManager();
+    </script>
+</body>
+</html>
 <html>
 <style>
+:root {
+    --primary-color: #e00808;
+    --background-color: #120707;
+    --text-color: #f1eaf7;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Bahnschrift Condensed', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    gap: 20px;
+    padding: 20px;
+}
+
+input[type="number"] {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+    padding: 5px;
+    width: 60px;
+}
+
+.stats-panel, .skills-panel, .equipment-panel {
+    border: 1px solid var(--primary-color);
+    padding: 15px;
+    background-color: rgba(18, 7, 7, 0.9);
+}
 
 body {
 		display: flex;
@@ -840,7 +1300,7 @@ input[type=number] {
 }
 
 #trapskillscontainer, #shadowskillscontainer, #martialartskillscontainer, #warcriesskillscontainer, #combatmasteriesskillscontainer,
-#combatskillsskillscontainer {
+#combatskillsskillscontainer, #elementalskillsskillscontainer, #shapeshiftingskillsskillscontainer, #summoningskillsskillscontainer {
     position: absolute;
     cursor: move;
     border: 1px solid RGB(50, 50, 50); /* #2ad010 */
@@ -851,17 +1311,17 @@ height: auto;
 width: 12cap;
 }
 
-#martialartskillscontainer, #warcriesskillscontainer {
+#martialartskillscontainer, #warcriesskillscontainer , #elementalskillsskillscontainer {
     top: 2020px;
     left: 1px;
 }
 
-#shadowskillscontainer, #combatmasteriesskillscontainer {
+#shadowskillscontainer, #combatmasteriesskillscontainer, #shapeshiftingskillsskillscontainer {
     top: 2020px;
     left: 240px;
 }
 
-#trapskillscontainer, #combatskillsskillscontainer {
+#trapskillscontainer, #combatskillsskillscontainer, #summoningskillsskillscontainer {
     top: 2020px;
     left: 420px;
 }
@@ -1551,6 +2011,11 @@ Defense
     
     </div>
 
+    
+
+
+
+
     <div id="warcriesskillscontainer" class="skill-container">
       <div>Howl:<input type="number" min="0" max="20" value="0" id="howlcontainer"></div>
       <div>Find Potion:<input type="number" min="0" max="20" value="0" id="findpotioncontainer"></div>
@@ -1591,6 +2056,51 @@ Defense
     
     
     
+    </div>
+
+
+
+    <div id="elementalskillsskillscontainer" class="skill-container">
+      <div>Firestorm:<input type="number" min="0" max="20" value="0" id="firestormcontainer"></div>
+      <div>Arctic Blast:<input type="number" min="0" max="20" value="0" id="arcticblastcontainer"></div>
+      <div>Molten Boulder:<input type="number" min="0" max="20" value="0" id="moltenbouldercontainer" class="hiddenSkill6"></div>
+      <div>Cyclone Armor:<input type="number" min="0" max="20" value="0" id="cyclonearmorcontainer" class="hiddenSkill6"></div>
+      <div>Fissure:<input type="number" min="0" max="20" value="0" id="fissurecontainer" class="hiddenSkill12"></div>
+      <div>Twister:<input type="number" min="0" max="20" value="0" id="twistercontainer" class="hiddenSkill12"></div>
+      <div>Gust:<input type="number" min="0" max="20" value="0" id="gustcontainer" class="hiddenSkill18"></div>
+      <div>Volcano:<input type="number" min="0" max="20" value="0" id="volcanocontainer" class="hiddenSkill24"></div>
+      <div>Tornado:<input type="number" min="0" max="20" value="0" id="tornadocontainer" class="hiddenSkill24"></div>
+      <div>Hurricane:<input type="number" min="0" max="20" value="0" id="hurricanecontainer" class="hiddenSkill30"></div>
+      <div>Armageddon:<input type="number" min="0" max="20" value="0" id="armageddoncontainer" class="hiddenSkill30"></div>
+    </div>
+
+    <div id="shapeshiftingskillsskillscontainer" class="skill-container">
+      <div>Werewolf:<input type="number" min="0" max="20" value="0" id="werewolfcontainer"></div>
+      <div>Werebear:<input type="number" min="0" max="20" value="0" id="werebearcontainer"></div>
+      <div>Lycanthropy:<input type="number" min="0" max="20" value="0" id="lycantropycontainer" class="hiddenSkill6"></div>
+      <div>Feral Rage:<input type="number" min="0" max="20" value="0" id="feralragecontainer" class="hiddenSkill6"></div>
+      <div>Maul:<input type="number" min="0" max="20" value="0" id="maulcontainer" class="hiddenSkill12"></div>
+      <div>Hunger:<input type="number" min="0" max="20" value="0" id="hungercontainer" class="hiddenSkill12"></div>
+      <div>Rabies:<input type="number" min="0" max="20" value="0" id="rabiescontainer" class="hiddenSkill18"></div>
+      <div>Shock Wave:<input type="number" min="0" max="20" value="0" id="shockwavecontainer" class="hiddenSkill24"></div>
+      <div>Fire Claws:<input type="number" min="0" max="20" value="0" id="fireclawscontainer" class="hiddenSkill24"></div>
+      <div>Fury:<input type="number" min="0" max="20" value="0" id="furycontainer" class="hiddenSkill30"></div>
+      
+    </div>
+
+    <div id="summoningskillsskillscontainer" class="skill-container">
+      <div>Raven:<input type="number" min="0" max="20" value="0" id="ravencontainer"></div>
+      <div>Poison Creeper:<input type="number" min="0" max="20" value="0" id="poisoncreepercontainer"></div>
+      <div>Heart of Wolverine:<input type="number" min="0" max="20" value="0" id="heartofwolverinecontainer" class="hiddenSkill6"></div>
+      <div>Cyclone Armor:<input type="number" min="0" max="20" value="0" id="cyclonearmorcontainer" class="hiddenSkill6"></div>
+      <div>Summon Spirit Wolf:<input type="number" min="0" max="20" value="0" id="summonspiritwolfcontainer" class="hiddenSkill6"></div>
+      <div>Carrion Vine:<input type="number" min="0" max="20" value="0" id="carrionvinecontainer" class="hiddenSkill12"></div>
+      <div>Spirit of Barbs:<input type="number" min="0" max="20" value="0" id="spiritofbarbscontainer" class="hiddenSkill12"></div>
+      <div>Summon Dire Wolf<input type="number" min="0" max="20" value="0" id="summondirewolfcontainer" class="hiddenSkill18"></div>
+      <div>Solar Creeper:<input type="number" min="0" max="20" value="0" id="solarcreepercontainer" class="hiddenSkill24"></div>
+      <div>Oak Sage:<input type="number" min="0" max="20" value="0" id="oaksagecontainer" class="hiddenSkill24"></div>
+      <div>Summon Grizzly:<input type="number" min="0" max="20" value="0" id="summongrizzlycontainer" class="hiddenSkill30"></div>
+      
     </div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
 
@@ -5269,7 +5779,10 @@ function addDragHandlers() {
         'martialartskillscontainer',
         'warcriesskillscontainer',
         'combatmasteriesskillscontainer',
-        'combatskillsskillscontainer'
+        'combatskillsskillscontainer',
+        'elementalskillsskillscontainer',
+        'shapeshiftingskillsskillscontainer',
+        'summoningskillsskillscontainer'
     ];
 
     containers.forEach(id => {
@@ -5718,7 +6231,10 @@ function switchSkillContainers(className) {
         document.getElementById('martialartskillscontainer'),
         document.getElementById('warcriesskillscontainer'),
         document.getElementById('combatmasteriesskillscontainer'),
-        document.getElementById('combatskillsskillscontainer')
+        document.getElementById('combatskillsskillscontainer'),
+        document.getElementById('elementalskillsskillscontainer'),
+        document.getElementById('shapeshiftingskillsskillscontainer'),
+        document.getElementById('summoningskillsskillscontainer')
     ];
 
     allSkillContainers.forEach(container => {
@@ -5743,6 +6259,11 @@ function switchSkillContainers(className) {
             document.getElementById('warcriesskillscontainer').style.display = 'block';
             document.getElementById('combatmasteriesskillscontainer').style.display = 'block';
             document.getElementById('combatskillsskillscontainer').style.display = 'block';
+            break;
+        case 'druid':
+            document.getElementById('elementalskillsskillscontainer').style.display = 'block';
+            document.getElementById('shapeshiftingskillsskillscontainer').style.display = 'block';
+            document.getElementById('summoningskillsskillscontainer').style.display = 'block';
             break;
     }
 }
