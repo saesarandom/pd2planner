@@ -1353,7 +1353,7 @@ width: 12cap;
 #offensiveaurasskillscontainer, #defensiveaurasskillscontainer, #combatpalaskillsskillscontainer {
     position: absolute;
     cursor: move;
-    border: 1px solid RGB(102, 0, 153); /* #2ad010 */
+    border: 1px solid RGB(255, 255, 204); /* #2ad010 */
     padding: 30px;
     z-index: 1000; 
 background-color: #080707, 0.66; 
@@ -1361,17 +1361,28 @@ height: auto;
 width: 12cap;
 }
 
-#martialartskillscontainer, #warcriesskillscontainer , #elementalskillsskillscontainer, #summoningspellsskillscontainer, #defensiveaurasskillscontainer {
+#coldspellsskillscontainer, #lightningspellsskillscontainer, #firespellsskillscontainer {
+    position: absolute;
+    cursor: move;
+    border: 1px solid RGB(0, 0, 255); /* #2ad010 */
+    padding: 30px;
+    z-index: 1000; 
+background-color: #080707, 0.66; 
+height: auto;
+width: 12cap;
+}
+
+#martialartskillscontainer, #warcriesskillscontainer , #elementalskillsskillscontainer, #summoningspellsskillscontainer, #defensiveaurasskillscontainer, #coldspellsskillscontainer {
     top: 2020px;
     left: 1px;
 }
 
-#shadowskillscontainer, #combatmasteriesskillscontainer, #shapeshiftingskillsskillscontainer, #poisonandbonespellsskillscontainer, #offensiveaurasskillscontainer {
+#shadowskillscontainer, #combatmasteriesskillscontainer, #shapeshiftingskillsskillscontainer, #poisonandbonespellsskillscontainer, #offensiveaurasskillscontainer, #lightningspellsskillscontainer {
     top: 2020px;
     left: 240px;
 }
 
-#trapskillscontainer, #combatskillsskillscontainer, #summoningskillsskillscontainer, #cursesskillscontainer, #combatpalaskillsskillscontainer {
+#trapskillscontainer, #combatskillsskillscontainer, #summoningskillsskillscontainer, #cursesskillscontainer, #combatpalaskillsskillscontainer, #firespellsskillscontainer {
     top: 2020px;
     left: 420px;
 }
@@ -2243,6 +2254,52 @@ Defense
       <div>Holy Nova:<input type="number" min="0" max="20" value="0" id="lowerresistcontainer" class="hiddenSkill30"></div>
     </div>
 
+
+    <div id="coldspellsskillscontainer" class="skill-container">
+      <div>Ice Bolt:<input type="number" min="0" max="20" value="0" id="amplifydamagecontainer"></div>
+      <div>Cold Enchant:<input type="number" min="0" max="20" value="0" id="cursemasterycontainer"></div>
+      <div>Frost Nova:<input type="number" min="0" max="20" value="0" id="dimvisioncontainer" class="hiddenSkill6"></div>
+      <div>Ice Blast:<input type="number" min="0" max="20" value="0" id="darkpactcontainer" class="hiddenSkill6"></div>
+      <div>Shiver Armor:<input type="number" min="0" max="20" value="0" id="ironmaidencontainer" class="hiddenSkill6"></div>
+      <div>Glacial Spike:<input type="number" min="0" max="20" value="0" id="lifetapcontainer" class="hiddenSkill12"></div>
+      <div>Chilling Armor:<input type="number" min="0" max="20" value="0" id="terrorscontainer" class="hiddenSkill12"></div>
+      <div>Ice Barrage:<input type="number" min="0" max="20" value="0" id="weakencontainer" class="hiddenSkill18"></div>
+      <div>Blizzard:<input type="number" min="0" max="20" value="0" id="confusecontainer" class="hiddenSkill24"></div>
+      <div>Frozen Orb:<input type="number" min="0" max="20" value="0" id="attractcontainer" class="hiddenSkill24"></div>
+      <div>Cold Mastery:<input type="number" min="0" max="20" value="0" id="decrepifycontainer" class="hiddenSkill30"></div>
+      
+    </div>
+
+
+    <div id="lightningspellsskillscontainer" class="skill-container">
+      <div>Charged Bolt:<input type="number" min="0" max="20" value="0" id="amplifydamagecontainer"></div>
+      <div>Telekinesis:<input type="number" min="0" max="20" value="0" id="cursemasterycontainer"></div>
+      <div>Static Field:<input type="number" min="0" max="20" value="0" id="dimvisioncontainer" class="hiddenSkill6"></div>
+      <div>Nova:<input type="number" min="0" max="20" value="0" id="darkpactcontainer" class="hiddenSkill6"></div>
+      <div>Lightning:<input type="number" min="0" max="20" value="0" id="ironmaidencontainer" class="hiddenSkill6"></div>
+      <div>Teleport:<input type="number" min="0" max="20" value="0" id="lifetapcontainer" class="hiddenSkill12"></div>
+      <div>Chain Lightning:<input type="number" min="0" max="20" value="0" id="terrorscontainer" class="hiddenSkill12"></div>
+      <div>Thunder Storm:<input type="number" min="0" max="20" value="0" id="weakencontainer" class="hiddenSkill18"></div>
+      <div>Energy Shield:<input type="number" min="0" max="20" value="0" id="confusecontainer" class="hiddenSkill24"></div>
+      <div>Lightning Mastery:<input type="number" min="0" max="20" value="0" id="attractcontainer" class="hiddenSkill24"></div>
+      
+    </div>
+
+    <div id="firespellsskillscontainer" class="skill-container">
+      <div>Fire Bolt:<input type="number" min="0" max="20" value="0" id="amplifydamagecontainer"></div>
+      <div>Warmth:<input type="number" min="0" max="20" value="0" id="cursemasterycontainer"></div>
+      <div>Inferno:<input type="number" min="0" max="20" value="0" id="dimvisioncontainer" class="hiddenSkill6"></div>
+      <div>Blaze:<input type="number" min="0" max="20" value="0" id="darkpactcontainer" class="hiddenSkill6"></div>
+      <div>Fire Wall:<input type="number" min="0" max="20" value="0" id="ironmaidencontainer" class="hiddenSkill6"></div>
+      <div>Fire Ball:<input type="number" min="0" max="20" value="0" id="lifetapcontainer" class="hiddenSkill12"></div>
+      <div>Lesser Hydra:<input type="number" min="0" max="20" value="0" id="terrorscontainer" class="hiddenSkill12"></div>
+      <div>Enchant Fire:<input type="number" min="0" max="20" value="0" id="weakencontainer" class="hiddenSkill18"></div>
+      <div>Meteor:<input type="number" min="0" max="20" value="0" id="confusecontainer" class="hiddenSkill24"></div>
+      <div>Combustion:<input type="number" min="0" max="20" value="0" id="attractcontainer" class="hiddenSkill24"></div>
+      <div>Hydra:<input type="number" min="0" max="20" value="0" id="decrepifycontainer" class="hiddenSkill30"></div>
+      <div>Fire Mastery:<input type="number" min="0" max="20" value="0" id="lowerresistcontainer" class="hiddenSkill30"></div>
+      
+    </div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
 
   
@@ -5929,7 +5986,11 @@ function addDragHandlers() {
         'summoningspellsskillscontainer',
         'offensiveaurasskillscontainer',
         'defensiveaurasskillscontainer',
-        'combatpalaskillsskillscontainer'      
+        'combatpalaskillsskillscontainer',
+        'coldspellsskillscontainer',
+        'lightningspellsskillscontainer',
+        'firespellsskillscontainer'
+
 
 
     ];
@@ -6172,9 +6233,18 @@ function checkSkillPoints() {
             #warcriesskillscontainer input[type="number"],
             #combatmasteriesskillscontainer input[type="number"],
             #combatskillsskillscontainer input[type="number"],
+            #elementalskillsskillscontainer input[type="number"],
+            #shapeshiftingskillsskillscontainer input[type="number"],
+            #summoningskillsskillscontainer input[type="number"],
+            #poisonandbonespellsskillscontainer input[type="number"],
+            #cursesskillscontainer input[type="number"],
+            #summoningspellsskillscontainer input[type="number"],
             #offensiveaurasskillscontainer input[type="number"],
             #defensiveaurasskillscontainer input[type="number"],
-            #combatpalaskillsskillscontainer input[type="number"]
+            #combatpalaskillsskillscontainer input[type="number"],
+            #coldspellsskillscontainer input[type="number"],
+            #lightningspellsskillscontainer input[type="number"],
+            #firespellsskillscontainer input[type="number"]
 
         `);
 
@@ -6278,8 +6348,9 @@ function resetAllSkillInputs() {
     const druidSkills = document.querySelectorAll('#elementalskillsskillscontainer input[type="number"], #shapeshiftingskillsskillscontainer input[type="number"], #summoningskillsskillscontainer input[type="number"]');
     const necromancerSkills = document.querySelectorAll('#poisonandbonespellsskillscontainer input[type="number"], #cursesskillscontainer input[type="number"], #summoningspellsskillscontainer input[type="number"]');
     const paladinSkills = document.querySelectorAll('#offensiveaurasskillscontainer input[type="number"], #defensiveaurasskillscontainer input[type="number"], #combatpalaskillsskillscontainer input[type="number"]');
+    const sorceressSkills = document.querySelectorAll('#coldspellsskillscontainer input[type="number"], #lightningspellsskillscontainer input[type="number"], #firespellsskillscontainer input[type="number"]');
     // Reset all inputs
-    [...amazonSkills, ...assassinSkills, ...barbarianSkills, ...druidSkills, ...necromancerSkills, ...paladinSkills].forEach(input => {
+    [...amazonSkills, ...assassinSkills, ...barbarianSkills, ...druidSkills, ...necromancerSkills, ...paladinSkills, ...sorceressSkills].forEach(input => {
         input.value = "0";
     });
 
@@ -6382,13 +6453,13 @@ function updateSkillDropdown(className) {
             { value: 'summondirewolfcontainer', text: 'Summon Dire Wolf' },
             { value: 'summongrizzlycontainer', text: 'Summon Grizzly' },
             { value: 'poisoncreepercontainer', text: 'Poison Creeper' }
-            ],
-            necromancer: [
-                { value: 'amplifydamagecontainer', text: 'Amplify Damage' },
-                { value: 'teethcontainer', text: 'Teeth' },
-                { value: 'claygolemcontainer', text: 'Clay Golem' },
-                { value: 'ironmaidencontainer', text: 'Iron Maiden' },
-                { value: 'terrorcontainer', text: 'Terror' },
+        ],
+        necromancer: [
+            { value: 'amplifydamagecontainer', text: 'Amplify Damage' },
+            { value: 'teethcontainer', text: 'Teeth' },
+            { value: 'claygolemcontainer', text: 'Clay Golem' },
+            { value: 'ironmaidencontainer', text: 'Iron Maiden' },
+            { value: 'terrorcontainer', text: 'Terror' },
                 { value: 'boneprisoncontainer', text: 'Bone Prison' },
                 { value: 'decrepifycontainer', text: 'Decrepify' },
                 { value: 'darkpactcontainer', text: 'Dark Pact' },
@@ -6400,7 +6471,25 @@ function updateSkillDropdown(className) {
                 { value: 'bonespiritcontainer', text: 'Bone Spirit' },
                 { value: 'corpseexplosioncontainer', text: 'Corpse Explosion' },
                 { value: 'bloodgolemcontainer', text: 'Blood Golem' }
-                 ]  
+        ],
+        paladin: [
+                { value: 'sacrificecontainer', text: 'Sacrifice' },
+                { value: 'smitecontainer', text: 'Smite' },
+                { value: 'holyboltcontainer', text: 'Holy Bolt' },
+                { value: 'zealcontainer', text: 'Zeal' },
+                { value: 'chargecontainer', text: 'Charge' },
+                { value: 'vengeancecontainer', text: 'Vengeance' },
+                    { value: 'blessedhammercontainer', text: 'Blessed Hammer' },
+                    { value: 'conversioncontainer', text: 'Conversion' },
+                    { value: 'holyshieldcontainer', text: 'Holy Shield' },
+                    
+                    { value: 'fistoftheheavenscontainer', text: 'Fist of the Heavens' },
+                    
+                    { value: 'holyfirecontainer', text: 'Holy Fire' },
+                    { value: 'holyfreezecontainer', text: 'Holy Freeze' },
+                    { value: 'holyshockcontainer', text: 'Holy Shock' }
+                    
+                    ]
             
     };
 
@@ -6439,7 +6528,10 @@ function switchSkillContainers(className) {
         document.getElementById('summoningspellsskillscontainer'),
         document.getElementById('offensiveaurasskillscontainer'),
         document.getElementById('defensiveaurasskillscontainer'),
-        document.getElementById('combatpalaskillsskillscontainer')
+        document.getElementById('combatpalaskillsskillscontainer'),
+        document.getElementById('coldspellsskillscontainer'),
+        document.getElementById('lightningspellsskillscontainer'),
+        document.getElementById('firespellsskillscontainer')
     ];
 
     allSkillContainers.forEach(container => {
@@ -6474,6 +6566,16 @@ function switchSkillContainers(className) {
             document.getElementById('poisonandbonespellsskillscontainer').style.display = 'block';
             document.getElementById('cursesskillscontainer').style.display = 'block';
             document.getElementById('summoningspellsskillscontainer').style.display = 'block';
+            break;
+        case 'paladin':
+            document.getElementById('offensiveaurasskillscontainer').style.display = 'block';
+            document.getElementById('defensiveaurasskillscontainer').style.display = 'block';
+            document.getElementById('combatpalaskillsskillscontainer').style.display = 'block';
+            break;
+        case 'sorceress':
+            document.getElementById('coldspellsskillscontainer').style.display = 'block';
+            document.getElementById('lightningspellsskillscontainer').style.display = 'block';
+            document.getElementById('firespellsskillscontainer').style.display = 'block';
             break;
     }
 }
