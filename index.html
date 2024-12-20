@@ -1338,18 +1338,28 @@ width: 12cap;
 }
 
 
+#summoningspellsskillscontainer, #poisonandbonespellsskillscontainer, #cursesskillscontainer {
+    position: absolute;
+    cursor: move;
+    border: 1px solid RGB(102, 0, 153); /* #2ad010 */
+    padding: 30px;
+    z-index: 1000; 
+background-color: #080707, 0.66; 
+height: auto;
+width: 12cap;
+}
 
-#martialartskillscontainer, #warcriesskillscontainer , #elementalskillsskillscontainer {
+#martialartskillscontainer, #warcriesskillscontainer , #elementalskillsskillscontainer, #summoningspellsskillscontainer {
     top: 2020px;
     left: 1px;
 }
 
-#shadowskillscontainer, #combatmasteriesskillscontainer, #shapeshiftingskillsskillscontainer {
+#shadowskillscontainer, #combatmasteriesskillscontainer, #shapeshiftingskillsskillscontaine, #poisonandbonespellsskillscontainer {
     top: 2020px;
     left: 240px;
 }
 
-#trapskillscontainer, #combatskillsskillscontainer, #summoningskillsskillscontainer {
+#trapskillscontainer, #combatskillsskillscontainer, #summoningskillsskillscontainer, #cursesskillscontainer {
     top: 2020px;
     left: 420px;
 }
@@ -2129,6 +2139,51 @@ Defense
       <div>Oak Sage:<input type="number" min="0" max="20" value="0" id="oaksagecontainer" class="hiddenSkill24"></div>
       <div>Summon Grizzly:<input type="number" min="0" max="20" value="0" id="summongrizzlycontainer" class="hiddenSkill30"></div>
       
+    </div>
+
+    <div id="summoningspellsskillscontainer" class="skill-container">
+      <div>Raise Skeleton Warrior:<input type="number" min="0" max="20" value="0" id="raiseskeletonwarriorcontainer"></div>
+      <div>Skeleton Mastery:<input type="number" min="0" max="20" value="0" id="skeletonmasterycontainer"></div>
+      <div>Clay Golem:<input type="number" min="0" max="20" value="0" id="claygolemcontainer" class="hiddenSkill6"></div>
+      <div>Raise Skeletal Mage:<input type="number" min="0" max="20" value="0" id="raiseskeletalmagecontainer" class="hiddenSkill6"></div>
+      <div>Golem Mastery:<input type="number" min="0" max="20" value="0" id="golemmasterycontainer" class="hiddenSkill6"></div>
+      <div>Blood Golem:<input type="number" min="0" max="20" value="0" id="bloodgolemcontainer" class="hiddenSkill12"></div>
+      <div>Blood Warp:<input type="number" min="0" max="20" value="0" id="bloodwarpcontainer" class="hiddenSkill12"></div>
+      <div>Iron Golem:<input type="number" min="0" max="20" value="0" id="irongolemcontainer" class="hiddenSkill18"></div>
+      <div>Raise Skeleton Archer:<input type="number" min="0" max="20" value="0" id="raiseskeletonarchercontainer" class="hiddenSkill24"></div>
+      <div>Fire Golem:<input type="number" min="0" max="20" value="0" id="firegolemcontainer" class="hiddenSkill24"></div>
+      <div>Revive:<input type="number" min="0" max="20" value="0" id="revivecontainer" class="hiddenSkill30"></div>
+      
+    </div>
+
+    <div id="poisonandbonespellsskillscontainer" class="skill-container">
+      <div>Teeth:<input type="number" min="0" max="20" value="0" id="teethcontainer"></div>
+      <div>Poison Strike:<input type="number" min="0" max="20" value="0" id="poisonstrikecontainer"></div>
+      <div>Bone Armor:<input type="number" min="0" max="20" value="0" id="bonearmorcontainer" class="hiddenSkill6"></div>
+      <div>Corpse Explosion:<input type="number" min="0" max="20" value="0" id="corpseexplosioncontainer" class="hiddenSkill6"></div>
+      <div>Bone Wall:<input type="number" min="0" max="20" value="0" id="bonewallcontainer" class="hiddenSkill6"></div>
+      <div>Desecrate:<input type="number" min="0" max="20" value="0" id="desecratecontainer" class="hiddenSkill12"></div>
+      <div>Bone Spear:<input type="number" min="0" max="20" value="0" id="bonespearcontainer" class="hiddenSkill12"></div>
+      <div>Bone Prison:<input type="number" min="0" max="20" value="0" id="boneprisoncontainer" class="hiddenSkill18"></div>
+      <div>Poison Nova:<input type="number" min="0" max="20" value="0" id="poisonnovacontainer" class="hiddenSkill24"></div>
+      <div>Bone Spirit:<input type="number" min="0" max="20" value="0" id="bonespiritcontainer" class="hiddenSkill24"></div>
+      
+      
+    </div>
+
+    <div id="cursesskillscontainer" class="skill-container">
+      <div>Amplify Damage:<input type="number" min="0" max="20" value="0" id="amplifydamagecontainer"></div>
+      <div>Curse Mastery:<input type="number" min="0" max="20" value="0" id="cursemasterycontainer"></div>
+      <div>Dim Vision:<input type="number" min="0" max="20" value="0" id="dimvisioncontainer" class="hiddenSkill6"></div>
+      <div>Dark Pact:<input type="number" min="0" max="20" value="0" id="darkpactcontainer" class="hiddenSkill6"></div>
+      <div>Iron Maiden:<input type="number" min="0" max="20" value="0" id="ironmaidencontainer" class="hiddenSkill6"></div>
+      <div>Life Tap:<input type="number" min="0" max="20" value="0" id="lifetapcontainer" class="hiddenSkill12"></div>
+      <div>Terror:<input type="number" min="0" max="20" value="0" id="terrorscontainer" class="hiddenSkill12"></div>
+      <div>Weaken:<input type="number" min="0" max="20" value="0" id="weakencontainer" class="hiddenSkill18"></div>
+      <div>Confuse:<input type="number" min="0" max="20" value="0" id="confusecontainer" class="hiddenSkill24"></div>
+      <div>Attract:<input type="number" min="0" max="20" value="0" id="attractcontainer" class="hiddenSkill24"></div>
+      <div>Decrepify:<input type="number" min="0" max="20" value="0" id="decrepifycontainer" class="hiddenSkill30"></div>
+      <div>Lower Resist:<input type="number" min="0" max="20" value="0" id="lowerresistcontainer" class="hiddenSkill30"></div>
     </div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
 
@@ -5810,7 +5865,12 @@ function addDragHandlers() {
         'combatskillsskillscontainer',
         'elementalskillsskillscontainer',
         'shapeshiftingskillsskillscontainer',
-        'summoningskillsskillscontainer'
+        'summoningskillsskillscontainer',
+        'poisonandbonespellsskillscontainer',
+        'cursesskillscontainer',
+        'summoningspellsskillscontainer'
+
+
     ];
 
     containers.forEach(id => {
@@ -6262,7 +6322,10 @@ function switchSkillContainers(className) {
         document.getElementById('combatskillsskillscontainer'),
         document.getElementById('elementalskillsskillscontainer'),
         document.getElementById('shapeshiftingskillsskillscontainer'),
-        document.getElementById('summoningskillsskillscontainer')
+        document.getElementById('summoningskillsskillscontainer'),
+        document.getElementById('poisonandbonespellsskillscontainer'),
+        document.getElementById('cursesskillscontainer'),
+        document.getElementById('summoningspellsskillscontainer')
     ];
 
     allSkillContainers.forEach(container => {
@@ -6292,6 +6355,11 @@ function switchSkillContainers(className) {
             document.getElementById('elementalskillsskillscontainer').style.display = 'block';
             document.getElementById('shapeshiftingskillsskillscontainer').style.display = 'block';
             document.getElementById('summoningskillsskillscontainer').style.display = 'block';
+            break;
+        case 'necromancer':
+            document.getElementById('poisonandbonespellsskillscontainer').style.display = 'block';
+            document.getElementById('cursesskillscontainer').style.display = 'block';
+            document.getElementById('summoningspellsskillscontainer').style.display = 'block';
             break;
     }
 }
