@@ -36,14 +36,17 @@
         
         }
 
-        .particle-type1 {
+        .particle.type1 {
             background-image: url('./whiteaxe.png');
         }
 
-        .particle-type2 {
+        .particle.type2 {
             background-image: url('./redaxe2.png');
         }
         
+        .particle.type3 {
+            background-image: url('./sword.png');
+        }
 
         @keyframes float {
             0% {
@@ -97,14 +100,19 @@
     <script>
         function createParticles() {
             const container = document.querySelector('.particles-container');
-            const particleTypes = ['particle-type1', 'particle-type2'];
+            
             function spawnParticle() {
                 if (!document.body.classList.contains('moody')) return;
                 
+                
+                
                 const particle = document.createElement('div');
-                // Randomly select particle type
-                const particleType = particleTypes[Math.floor(Math.random() * particleTypes.length)];
-                particle.className = `particle ${particleType}`;
+
+                particle.classList.add('particle');
+
+                // Randomly select and add particle type
+                const randomType = Math.floor(Math.random() * 3) + 1;
+                particle.classList.add('type' + randomType);
                 
                 const size = Math.random() * 60 + 12;
                 particle.style.width = `${size}px`;
@@ -2112,10 +2120,10 @@ Defense
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br>
 <div id="javelinandspearskillscontainer" class="skill-container">
-  <div>Jab<input min="0" max="20" type="number" id="jabcontainer"></div>
-  <div>Poison Javelin:<input min="0" max="20" type="number" id="poisonjavelincontainer"></div>
-  <div>Javelin and Spear Mastery:<input min="0" max="20" type="number" id="javelinandspearmasterycontainer" class="hiddenSkill6"></div>
-  <div>Power Strike:<input min="0" max="20" type="number" id="powerstrikecontainer" class="hiddenSkill6"></div>
+  <div>Jab<input min="0" max="20" type="number" id="jabcontainer" data-skill-level="1"></div>
+  <div>Poison Javelin:<input min="0" max="20" type="number" id="poisonjavelincontainer" data-skill-level="1"></div>
+  <div>Javelin and Spear Mastery:<input min="0" max="20" type="number" id="javelinandspearmasterycontainer" class="hiddenSkill6" data-skill-level="6"></div>
+  <div>Power Strike:<input min="0" max="20" type="number" id="powerstrikecontainer" class="hiddenSkill6" data-skill-level="6"></div>
   <div>Lightning Bolt:<input min="0" max="20" type="number" id="lightningboltcontainer" class="hiddenSkill12"></div>
   <div>Fend:<input min="0" max="20" type="number" id="fendcontainer" class="hiddenSkill18"></div>
   <div>Charged Strike:<input min="0" max="20" type="number" id="chargedstrikecontainer" class="hiddenSkill18"></div>
@@ -6109,6 +6117,7 @@ function updateVisibility() {
    
  
    <script src="SkillHandler.js"></script>
+   <script src="SkillRestriction.js"></script>
 <script>
 
 const dragState = {
