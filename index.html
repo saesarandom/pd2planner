@@ -25,13 +25,25 @@
 
         .particle {
             position: absolute;
-            background: var(--mist-blue);
-            border-radius: 50%;
+            width: 60px;
+            height: 60px;
             opacity: 0;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px var(--glow-color);
+            transition: transform 0.2s;
+            
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         
         }
+
+        .particle-type1 {
+            background-image: url('./whiteaxe.png');
+        }
+
+        .particle-type2 {
+            background-image: url('./redaxe2.png');
+        }
+        
 
         @keyframes float {
             0% {
@@ -80,22 +92,21 @@
 <script src="js/data/jewelry.js"></script>
 <script src="js/data/skills.js"></script>
 
-<script>
-  
 
-</script>
     
     <script>
         function createParticles() {
             const container = document.querySelector('.particles-container');
-            
+            const particleTypes = ['particle-type1', 'particle-type2'];
             function spawnParticle() {
                 if (!document.body.classList.contains('moody')) return;
                 
                 const particle = document.createElement('div');
-                particle.className = 'particle';
+                // Randomly select particle type
+                const particleType = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+                particle.className = `particle ${particleType}`;
                 
-                const size = Math.random() * 20 + 12;
+                const size = Math.random() * 60 + 12;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 
