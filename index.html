@@ -5,13 +5,121 @@
     <title>PD2 Character Planner</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/components.css">
+    
+    <style>
+        :root {
+            --mist-blue: #aec3d2;
+            --glow-color: rgba(67, 233, 11, 0.9);
+        }
+
+        .particles-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--mist-blue);
+            border-radius: 50%;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px var(--glow-color);
+        
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(-50%, -50%) translateY(0) scale(1);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(-50%, -50%) translateY(-100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        body.moody .particles-container {
+            display: block;
+        }
+    </style>
 </head>
 <body>
+    <div class="particles-container"></div>
+    <button onclick="document.body.classList.toggle('moody')" style="position: fixed; top: 10px; right: 10px; z-index: 10000;">
+        Load Theme
+    </button>
+    
     <div id="app">
         <header>
-            <!-- <div class="class-select">
-                <select id="classSelect"> -->
-                    <!-- Classes populated by JS -->
+         
+      
+    <!-- <main>
+        <section id="stats">
+            <div>Strength: <span id="strength">20</span></div>
+            <div>Dexterity: <span id="dexterity">25</span></div>
+            <div>Vitality: <span id="vitality">20</span></div>
+            <div>Energy: <span id="energy">15</span></div>
+        </section>
+        <section id="equipment"></section>
+        <section id="skills"></section>
+    </main> -->
+</div>
+
+<script src="js/data/items.js"></script>
+<script src="js/data/weapons.js"></script>
+<script src="js/data/armor.js"></script>
+<script src="js/data/jewelry.js"></script>
+<script src="js/data/skills.js"></script>
+
+<script>
+  
+
+</script>
+    
+    <script>
+        function createParticles() {
+            const container = document.querySelector('.particles-container');
+            
+            function spawnParticle() {
+                if (!document.body.classList.contains('moody')) return;
+                
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 20 + 12;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                particle.style.animation = `float ${Math.random() * 3 + 2}s ease-out`;
+                
+                container.appendChild(particle);
+                
+                particle.addEventListener('animationend', () => {
+                    particle.remove();
+                });
+            }
+
+            setInterval(spawnParticle, 35);
+        }
+
+        createParticles();
+    </script>
+</body>
+</html>
                 </select>
             <!-- </div>
             <!-- <div class="level-select">
@@ -130,122 +238,123 @@
             }
         }
     </script>
-    <script type="module">
-        import { Character } from './components/Character.js';
+    <script>
+    // <!-- <script type="module">
+    //     import { Character } from './components/Character.js';
 
-        export class Character {
-            static CLASS_TYPES = {
-                AMAZON: 'amazon',
-                ASSASSIN: 'assassin',
-                BARBARIAN: 'barbarian',
-                DRUID: 'druid',
-                NECROMANCER: 'necromancer',
-                PALADIN: 'paladin',
-                SORCERESS: 'sorceress'
-            };
+    //     export class Character {
+    //         static CLASS_TYPES = {
+    //             AMAZON: 'amazon',
+    //             ASSASSIN: 'assassin',
+    //             BARBARIAN: 'barbarian',
+    //             DRUID: 'druid',
+    //             NECROMANCER: 'necromancer',
+    //             PALADIN: 'paladin',
+    //             SORCERESS: 'sorceress'
+    //         };
 
-            constructor(classType = 'amazon', level = 1) {
-                this.classType = classType;
-                this.level = level;
-                this.baseStats = {
-                    strength: 20,
-                    dexterity: 25,
-                    vitality: 20,
-                    energy: 15
-                };
-                this.bonusStats = {
-                    strength: 0,
-                    dexterity: 0,
-                    vitality: 0,
-                    energy: 0
-                };
-                this.skillPoints = 0;
-                this.statPoints = 0;
-                this.initializeClass();
-            }
+    //         constructor(classType = 'amazon', level = 1) {
+    //             this.classType = classType;
+    //             this.level = level;
+    //             this.baseStats = {
+    //                 strength: 20,
+    //                 dexterity: 25,
+    //                 vitality: 20,
+    //                 energy: 15
+    //             };
+    //             this.bonusStats = {
+    //                 strength: 0,
+    //                 dexterity: 0,
+    //                 vitality: 0,
+    //                 energy: 0
+    //             };
+    //             this.skillPoints = 0;
+    //             this.statPoints = 0;
+    //             this.initializeClass();
+    //         }
 
-            initializeClass() {
-                const classStats = {
-                    amazon: { strength: 20, dexterity: 25, vitality: 20, energy: 15 },
-                    assassin: { strength: 20, dexterity: 20, vitality: 20, energy: 25 },
-                    barbarian: { strength: 30, dexterity: 20, vitality: 25, energy: 10 },
-                    druid: { strength: 15, dexterity: 20, vitality: 25, energy: 20 },
-                    necromancer: { strength: 15, dexterity: 25, vitality: 15, energy: 25 },
-                    paladin: { strength: 25, dexterity: 20, vitality: 25, energy: 15 },
-                    sorceress: { strength: 10, dexterity: 25, vitality: 10, energy: 35 }
-                };
+    //         initializeClass() {
+    //             const classStats = {
+    //                 amazon: { strength: 20, dexterity: 25, vitality: 20, energy: 15 },
+    //                 assassin: { strength: 20, dexterity: 20, vitality: 20, energy: 25 },
+    //                 barbarian: { strength: 30, dexterity: 20, vitality: 25, energy: 10 },
+    //                 druid: { strength: 15, dexterity: 20, vitality: 25, energy: 20 },
+    //                 necromancer: { strength: 15, dexterity: 25, vitality: 15, energy: 25 },
+    //                 paladin: { strength: 25, dexterity: 20, vitality: 25, energy: 15 },
+    //                 sorceress: { strength: 10, dexterity: 25, vitality: 10, energy: 35 }
+    //             };
 
-                this.baseStats = classStats[this.classType];
-                this.calculateStats();
-            }
+    //             this.baseStats = classStats[this.classType];
+    //             this.calculateStats();
+    //         }
 
-            setLevel(newLevel) {
-                if (newLevel >= 1 && newLevel <= 99) {
-                    const oldLevel = this.level;
-                    this.level = newLevel;
-                    const levelDiff = newLevel - oldLevel;
-                    this.skillPoints += levelDiff;
-                    this.statPoints += levelDiff * 5;
-                    this.calculateStats();
-                    return true;
-                }
-                return false;
-            }
+    //         setLevel(newLevel) {
+    //             if (newLevel >= 1 && newLevel <= 99) {
+    //                 const oldLevel = this.level;
+    //                 this.level = newLevel;
+    //                 const levelDiff = newLevel - oldLevel;
+    //                 this.skillPoints += levelDiff;
+    //                 this.statPoints += levelDiff * 5;
+    //                 this.calculateStats();
+    //                 return true;
+    //             }
+    //             return false;
+    //         }
 
-            addStat(statType, points) {
-                if (this.statPoints >= points && this.baseStats[statType]) {
-                    this.baseStats[statType] += points;
-                    this.statPoints -= points;
-                    this.calculateStats();
-                    return true;
-                }
-                return false;
-            }
+    //         addStat(statType, points) {
+    //             if (this.statPoints >= points && this.baseStats[statType]) {
+    //                 this.baseStats[statType] += points;
+    //                 this.statPoints -= points;
+    //                 this.calculateStats();
+    //                 return true;
+    //             }
+    //             return false;
+    //         }
 
-            calculateStats() {
-                this.derivedStats = {
-                    life: this.calculateLife(),
-                    mana: this.calculateMana(),
-                    stamina: this.calculateStamina()
-                };
-            }
+    //         calculateStats() {
+    //             this.derivedStats = {
+    //                 life: this.calculateLife(),
+    //                 mana: this.calculateMana(),
+    //                 stamina: this.calculateStamina()
+    //             };
+    //         }
 
-            calculateLife() {
-                const baseLife = {
-                    amazon: 50,
-                    assassin: 50,
-                    barbarian: 55,
-                    druid: 55,
-                    necromancer: 45,
-                    paladin: 55,
-                    sorceress: 40
-                }[this.classType];
+    //         calculateLife() {
+    //             const baseLife = {
+    //                 amazon: 50,
+    //                 assassin: 50,
+    //                 barbarian: 55,
+    //                 druid: 55,
+    //                 necromancer: 45,
+    //                 paladin: 55,
+    //                 sorceress: 40
+    //             }[this.classType];
 
-                return baseLife + (this.getTotalStat('vitality') * 4) + ((this.level - 1) * 2);
-            }
+    //             return baseLife + (this.getTotalStat('vitality') * 4) + ((this.level - 1) * 2);
+    //         } -->
 
-            calculateMana() {
-                const baseMana = {
-                    amazon: 15,
-                    assassin: 25,
-                    barbarian: 10,
-                    druid: 20,
-                    necromancer: 25,
-                    paladin: 15,
-                    sorceress: 35
-                }[this.classType];
+    //         calculateMana() {
+    //             const baseMana = {
+    //                 amazon: 15,
+    //                 assassin: 25,
+    //                 barbarian: 10,
+    //                 druid: 20,
+    //                 necromancer: 25,
+    //                 paladin: 15,
+    //                 sorceress: 35
+    //             }[this.classType];
 
-                return baseMana + (this.getTotalStat('energy') * 1.5);
-            }
+    //             return baseMana + (this.getTotalStat('energy') * 1.5);
+    //         }
 
-            calculateStamina() {
-                return 50 + (this.getTotalStat('vitality') * 1);
-            }
+    //         calculateStamina() {
+    //             return 50 + (this.getTotalStat('vitality') * 1);
+    //         }
 
-            getTotalStat(statType) {
-                return (this.baseStats[statType] || 0) + (this.bonusStats[statType] || 0);
-            }
-        }
+    //         getTotalStat(statType) {
+    //             return (this.baseStats[statType] || 0) + (this.bonusStats[statType] || 0);
+    //         }
+    //     }
         import { SkillTree } from './components/SkillTree.js';
         import { Equipment } from './components/Equipment.js';
         import { Stats } from './components/Stats.js';
@@ -1706,6 +1815,9 @@ Resistance to fire %
     <option value="Spire of Lazarus">Spire of Lazarus</option>
     <option value="The Salamander">The Salamander</option>
     <option value="The Iron Jang Bong">The Iron Jang Bong</option>
+    <option value="Knell Striker">Knell Striker</option>
+    <option value="Rust Handle">Rust Handle</option>
+    <option value="Stormeye">Stormeye</option>
 
   </select>
   <div id="weapon-info"></div>
@@ -4815,6 +4927,7 @@ if (select_Class.value === "Amazon") {
   document.getElementById('dex').value = 25;
   document.getElementById('enr').value = 15;
   disableInputs();
+  updateValues();
 
     } 
   
@@ -4847,6 +4960,7 @@ if (select_Class.value === "Amazon") {
   document.getElementById('dex').value = 20;
   document.getElementById('enr').value = 25;
   disableInputs();
+  updateValues();
 
     } 
 
@@ -4880,7 +4994,7 @@ if (select_Class.value === "Amazon") {
   document.getElementById('dex').value = 20;
   document.getElementById('enr').value = 10;
   disableInputs();
-
+updateValues();
     } 
 
 } else if (select_Class.value === "Druid") {
@@ -4912,6 +5026,7 @@ if (select_Class.value === "Amazon") {
   document.getElementById('dex').value = 20;
   document.getElementById('enr').value = 20;
   disableInputs();
+updateValues();
 
     } 
 
@@ -4944,7 +5059,7 @@ if (select_Class.value === "Amazon") {
   document.getElementById('dex').value = 25;
   document.getElementById('enr').value = 25;
   disableInputs();
-
+updateValues();
     } 
 
 } else if (select_Class.value === "Paladin") {
@@ -4976,7 +5091,7 @@ if (select_Class.value === "Amazon") {
   document.getElementById('dex').value = 20;
   document.getElementById('enr').value = 15;
   disableInputs();
-
+updateValues();
     } 
 
 } else {
