@@ -19,7 +19,7 @@ function createWarningDiv() {
     div.style.backgroundColor = '#fff';
     div.style.border = '1px solid #ccc';
     div.style.borderRadius = '4px';
-    div.style.zIndex = '2';
+    div.style.zIndex = '3';
     document.body.appendChild(div);
     return div;
 }

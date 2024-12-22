@@ -6391,8 +6391,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Calculate total base damage
     const totalStr = parseInt(document.getElementById('strcontainer')?.textContent || 0);
     if (totalStr > 0) {
-        totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
-        totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
+        totalMinDmg = Math.floor(totalMinDmg );
+        totalMaxDmg = Math.floor(totalMaxDmg );
     }
    
    document.getElementById('str').addEventListener('input', updateDamageCalculations);
