@@ -800,28 +800,22 @@ class SkillHandler {
   }
 
   getSkillInfo(skillName, level) {
-    console.log('getSkillInfo called with:', {
-        skillName,
-        level,
-        skillExists: !!this.skillData[skillName],
-        availableSkills: Object.keys(this.skillData)
-    });
+    
 
-    if (!this.skillData || level < 0 || level > 99) {
-        console.log('Validation failed:', {
-            hasSkillData: !!this.skillData,
-            levelValid: level >= 0 && level <= 99
-        });
-        return null;
-    }
+    // if (!this.skillData || level < 0 || level > 99) {
+    //     console.log('Validation failed:', {
+    //         hasSkillData: !!this.skillData,
+    //         levelValid: level >= 0 && level <= 99
+    //     });
+    //     return null;
+    // }
 
     const skill = this.skillData[skillName];
-    if (!skill) {
-        console.log('Skill not found:', skillName);
-        return null;
-    }
+    if (!skill || level === 0) return null;
+    
 
-    console.log('Found skill data:', skill);
+    
+
 
 
 
@@ -844,9 +838,13 @@ class SkillHandler {
     };
 
     const calculateValue = (data) => {
-        if (!data?.base || !data?.perLevel) return 0;
-        return data.base + data.perLevel * (level - 1);
-    };
+      // For skills with base + perLevel formula
+      if (data?.base && data?.perLevel) {
+          const calculated = data.base + data.perLevel * (level - 1);
+          console.log('Calculated formula damage:', calculated);
+          return calculated;
+        }
+      };
 
     const synergyMultiplier = calculateSynergyBonus(skill);
 
@@ -906,7 +904,21 @@ class SkillHandler {
 
 
     // Handle regular skills
-    const baseDamage = skill.levelData.damage ? calculateValue(skill.levelData.damage) : 0;
+    if (skill.levelData?.damage?.base && skill.levelData?.damage?.perLevel) {
+      return {
+          level,
+          name: skill.name,
+          description: skill.description,
+          damage: {
+              min: Math.floor((skill.levelData.damage.base + 
+                  skill.levelData.damage.perLevel * (level - 1)) * synergyMultiplier),
+              max: Math.floor((skill.levelData.damage.base + 
+                  skill.levelData.damage.perLevel * (level - 1)) * synergyMultiplier)
+          },
+          manaCost: calculateValue(skill.levelData.manaCost),
+          attackRating: Math.floor(calculateValue(skill.levelData.attackRating))
+      };
+  }
 
     return {
         level,

@@ -55,17 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const skillAvailabilityLevel = getSkillAvailabilityLevel(this);
             const maxAllowedPoints = getMaxAllowedPoints(currentLevel, skillAvailabilityLevel);
 
-            console.log('Input changed:', {
-                skill: this.id,
-                newValue,
-                currentLevel,
-                skillAvailabilityLevel,
-                maxAllowedPoints
-            });
+            
 
             // If trying to put too many points
             if (newValue > maxAllowedPoints) {
-                console.log('Restricting points:', {maxAllowedPoints});
+                
                 this.value = maxAllowedPoints;
                 showWarning(`Cannot exceed ${maxAllowedPoints} point${maxAllowedPoints !== 1 ? 's' : ''} in this skill at level ${currentLevel}!`, true);
                 e.preventDefault();
@@ -101,13 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const maxAllowedPoints = getMaxAllowedPoints(currentLevel, skillAvailabilityLevel);
             const currentValue = parseInt(input.value) || 0;
 
-            console.log('Level changed:', {
-                skill: input.id,
-                currentValue,
-                currentLevel,
-                skillAvailabilityLevel,
-                maxAllowedPoints
-            });
+            
 
             if (currentValue > maxAllowedPoints) {
                 input.value = maxAllowedPoints;

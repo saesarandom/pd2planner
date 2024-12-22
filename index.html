@@ -5145,6 +5145,32 @@ document.getElementById('enr').value = 35;
 disableInputs();
 
   } 
+  
+  function updateDamageCalculations() {
+    const selectedSkillContainer = document.getElementById('left-skill')?.value;
+    const selectedSkillName = skillNameMap[selectedSkillContainer];
+    const currentSkillLevel = parseInt(document.getElementById(selectedSkillContainer)?.value || 0);
+    
+    // Get skill damage
+    const skillDamage = skillHandler.getSkillDamage(selectedSkillName, currentSkillLevel);
+    console.log(skillDamage)
+    // Calculate total damage
+    let totalMinDmg = baseDamage.min + skillDamage.min;
+    let totalMaxDmg = baseDamage.max + skillDamage.max;
+    
+    // Apply strength bonus
+    totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
+    totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
+    
+    // Update UI
+    document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg}`;
+}
+
+// Add event listeners
+document.getElementById('left-skill').addEventListener('change', updateDamageCalculations);
+document.querySelectorAll('[id$="skillscontainer"] input[type="number"]').forEach(input => {
+    input.addEventListener('input', updateDamageCalculations);
+});
 
 } 
 
@@ -5271,6 +5297,8 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     let totalOw = 0;
     let totalOwDmg = (7*startLvlValue/5) * 2 * startLvlValue /64
     let totalCb = 0;
+    
+    
    
     let totalPiercePhys = 0;
     let totalPierceFire = 0;
@@ -5298,6 +5326,13 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     const ringOneData = itemList[ringOneDropdown.value];
     const ringTwoData = itemList[ringTwoDropdown.value];
     const amuletData = itemList[amuletDropdown.value];
+
+    console.log('Before weapon calc:', {
+    totalMinDmg,
+    totalMaxDmg,
+    weaponMin: weaponData?.properties?.onehandmin,
+    weaponMax: weaponData?.properties?.onehandmax
+});
 
     if (helmData) {
       totalLife += helmData.properties.tolife || 0;
@@ -5386,8 +5421,8 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
       totalLightRes += (weaponData.properties.ligres) || 0 + (weaponData.properties.allres) || 0;
       totalPoisonRes += (weaponData.properties.poisres) || 0 + (weaponData.properties.allres) || 0;
       totalCurseRes += weaponData.properties.curres || 0;
-      totalMinDmg += weaponData.properties.onehandmin || 0;
-      totalMaxDmg += weaponData.properties.onehandmax || 0;
+      totalMinDmg = weaponData.properties.onehandmin || 0;
+  	  totalMaxDmg = weaponData.properties.onehandmax || 0;
       totalTwoMinDmg += weaponData.properties.twohandmin || 0;
       totalTwoMaxDmg += weaponData.properties.twohandmax || 0;
       totalStr += weaponData.properties.str || 0;
@@ -5684,9 +5719,18 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     totalBlock = Math.min(Math.floor((block + block2) * (totalDex - 15) / (startLvlValue * 2)), 75);
   }
 
+  
+
 
   totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
   totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
+console.log('Final damage calc:', {
+    totalMinDmg,
+    totalMaxDmg,
+    totalStr,
+    
+});
+  
   totalTwoMinDmg = Math.floor(totalTwoMinDmg * (1 + totalStr * 1.1/100));
   totalTwoMaxDmg = Math.floor(totalTwoMaxDmg * (1 + totalStr * 1.1/100));
   totalCritMultiplier = 0.5 * (1 - (1 - totalDeadlyStrike) * (1 - totalCriticalHit) * (1 - totalWeaponMastery)) + 1;
@@ -5719,7 +5763,6 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
   }
 
  
-
 
 
 
@@ -5884,9 +5927,9 @@ function updateVisibility() {
         
     
         const level = parseInt(document.getElementById('lvlValue').value) || 1;
-        console.log('Current level:', level); // Debug log
+        
     
-  console.log(level);
+  
     if (jabvalue > 0 && level > 5) {
         javelinandspearmasteryskills.classList.remove('hiddenSkill6');
         powerstrikeskills.classList.remove('hiddenSkill6');
