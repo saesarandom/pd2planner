@@ -802,13 +802,7 @@ class SkillHandler {
   getSkillInfo(skillName, level) {
     
 
-    // if (!this.skillData || level < 0 || level > 99) {
-    //     console.log('Validation failed:', {
-    //         hasSkillData: !!this.skillData,
-    //         levelValid: level >= 0 && level <= 99
-    //     });
-    //     return null;
-    // }
+  
 
     const skill = this.skillData[skillName];
     if (!skill || level === 0) return null;
