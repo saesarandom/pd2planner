@@ -5724,12 +5724,9 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
 
   totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
   totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
-console.log('Final damage calc:', {
-    totalMinDmg,
-    totalMaxDmg,
-    totalStr,
+
     
-});
+
   
   totalTwoMinDmg = Math.floor(totalTwoMinDmg * (1 + totalStr * 1.1/100));
   totalTwoMaxDmg = Math.floor(totalTwoMaxDmg * (1 + totalStr * 1.1/100));
@@ -6379,8 +6376,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Get skill info and damage
    
 
-    let totalMinDmg = baseMinDmg + skillMinDmg;
-    let totalMaxDmg = baseMaxDmg + skillMaxDmg;
+    let totalMinDmg = baseMinDmg * (1+skillMinDmg/100);
+    let totalMaxDmg = baseMaxDmg * (1+skillMaxDmg/100);
 
     if (skillInfo) {
         // Changed from levelOutput to jabValueOutput and using currentSkillLevel
@@ -6397,7 +6394,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
         totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
     }
-    
+   
+   document.getElementById('str').addEventListener('input', updateDamageCalculations);
+   document.getElementById('weapons-dropdown').addEventListener('change', function() {
+        updateVisibility();
+        updateDamageCalculations();
+    });
+  
     console.log('Final damage:', totalMinDmg, totalMaxDmg);
 
     // if (skillInfo?.damage) {
@@ -6417,7 +6420,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             skillDmg: `${skillMinDmg}-${skillMaxDmg}`,
             finalDmg: `${totalMinDmg}-${totalMaxDmg}`
         });
-        document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg}`;
+        document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg)}-${Math.floor(totalMaxDmg)}`
         document.getElementById('attackRatingOutput').textContent = 
             `${Math.floor(skillInfo.attackRating || 0)}%`;
         document.getElementById('manaCostOutput').textContent = 
