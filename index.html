@@ -6365,6 +6365,83 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function updateDamageCalculations() {
+    const selectedSkillContainer = document.getElementById('left-skill')?.value;
+    const selectedSkillName = skillNameMap[selectedSkillContainer];
+    const currentSkillLevel = parseInt(document.getElementById(selectedSkillContainer)?.value || 0);
+    const skillInfo = skillHandler.getSkillInfo(selectedSkillName, currentSkillLevel);
+    
+    let baseMinDmg = parseInt(document.getElementById('onehandmindmgcontainer')?.textContent || 0);
+    let baseMaxDmg = parseInt(document.getElementById('onehandmaxdmgcontainer')?.textContent || 0);
+    const skillMinDmg = skillInfo?.damage?.min || 0;
+    const skillMaxDmg = skillInfo?.damage?.max || 0;
+    console.log('Base weapon damage:', baseMinDmg, baseMaxDmg);
+
+    // Get skill info and damage
+   
+
+    let totalMinDmg = baseMinDmg + skillMinDmg;
+    let totalMaxDmg = baseMaxDmg + skillMaxDmg;
+
+    if (skillInfo) {
+        // Changed from levelOutput to jabValueOutput and using currentSkillLevel
+        document.getElementById('jabValueOutput').textContent = currentSkillLevel;
+        // ...rest of the code...
+    }
+
+    
+    console.log('Skill damage:', skillMinDmg, skillMaxDmg);
+
+    // Calculate total base damage
+    const totalStr = parseInt(document.getElementById('strcontainer')?.textContent || 0);
+    if (totalStr > 0) {
+        totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
+        totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
+    }
+    
+    console.log('Final damage:', totalMinDmg, totalMaxDmg);
+
+    // if (skillInfo?.damage) {
+    //   totalMinDmg += (skillInfo.damage.min || 0);
+    //   totalMaxDmg += (skillInfo.damage.max || 0);
+
+
+    //   console.log('Base damage values:', {
+    //     minElement: onehandmindmg,
+    //     maxElement: onehandmaxdmg,
+    //     minValue: totalMinDmg,
+    //     maxValue: totalMaxDmg
+    // });
+        
+        console.log('Damage calculation:', {
+            baseDmg: `${baseMinDmg}-${baseMaxDmg}`,
+            skillDmg: `${skillMinDmg}-${skillMaxDmg}`,
+            finalDmg: `${totalMinDmg}-${totalMaxDmg}`
+        });
+        document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg}`;
+        document.getElementById('attackRatingOutput').textContent = 
+            `${Math.floor(skillInfo.attackRating || 0)}%`;
+        document.getElementById('manaCostOutput').textContent = 
+            Math.floor(skillInfo.manaCost || 0);
+    
+}
+
+// Ensure event binding
+document.getElementById('left-skill').addEventListener('change', updateDamageCalculations);
+document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
+    .forEach(input => input.addEventListener('input', updateDamageCalculations));
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    {
         const selectedSkillContainer = document.getElementById('left-skill').value;
         const skillInput = document.getElementById(selectedSkillContainer);
         
@@ -6408,6 +6485,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Listen for changes to deadly strike
 deadlyStrikeElement.addEventListener('input', function() {
     
+
+
+  
     updateDamageCalculations();
 });
 
