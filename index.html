@@ -2120,7 +2120,7 @@ Defense
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br>
 <div id="javelinandspearskillscontainer" class="skill-container">
-  <div>Jab<input min="0" max="20" type="number" id="jabcontainer" data-skill-level="1"></div>
+  <div>Jab<input min="0" max="20" type="number" id="jabcontainer"></div>
   <div>Poison Javelin:<input min="0" max="20" type="number" id="poisonjavelincontainer"></div>
   <div>Javelin and Spear Mastery:<input min="0" max="20" type="number" id="javelinandspearmasterycontainer" class="hiddenSkill6"></div>
   <div>Power Strike:<input min="0" max="20" type="number" id="powerstrikecontainer" class="hiddenSkill6"></div>
@@ -4597,8 +4597,8 @@ Defense
    "properties": {
     "reqlvl": 29,
     "allsk": 1,
-    "lightdmgmin": 1,
-    "lightdmgmax": 120,
+    "colddmgmin": 15,
+    "colddmgmax": 45,
     "tomana": 40,
     "maxmana": 20
 
@@ -5724,7 +5724,7 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
 
   totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
   totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
-
+  totalFlatColdDmg += (ringOneData.properties.colddmgmin/2 + ringOneData.properties.colddmgmax/2) || 0;
     
 
   
@@ -6378,7 +6378,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     let totalMinDmg = baseMinDmg * (1+skillMinDmg/100);
     let totalMaxDmg = baseMaxDmg * (1+skillMaxDmg/100);
-
+      let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
     if (skillInfo) {
         // Changed from levelOutput to jabValueOutput and using currentSkillLevel
         document.getElementById('jabValueOutput').textContent = currentSkillLevel;
@@ -6387,12 +6387,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     
     console.log('Skill damage:', skillMinDmg, skillMaxDmg);
+    console.log('Total FLAT DMG:', totalFlatColdDmg);
 
     // Calculate total base damage
-    const totalStr = parseInt(document.getElementById('strcontainer')?.textContent || 0);
+    const totalStr = parseInt(document.getElementById('str')?.textContent || 0);
     if (totalStr > 0) {
-        totalMinDmg = Math.floor(totalMinDmg );
-        totalMaxDmg = Math.floor(totalMaxDmg );
+        totalMinDmg = Math.floor(totalMinDmg  + totalFlatColdDmg);
+        totalMaxDmg = Math.floor(totalMaxDmg  + totalFlatColdDmg);
+        
     }
    
    document.getElementById('str').addEventListener('input', updateDamageCalculations);
@@ -6400,7 +6402,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         updateVisibility();
         updateDamageCalculations();
     });
-  
+    document.getElementById('ringsone-dropdown').addEventListener('change', function() {
+        updateVisibility();
+        updateDamageCalculations();
+    });
+    document.getElementById('ringstwo-dropdown').addEventListener('change', function() {
+        updateVisibility();
+        updateDamageCalculations();
+    });
     console.log('Final damage:', totalMinDmg, totalMaxDmg);
 
     // if (skillInfo?.damage) {
@@ -6420,11 +6429,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             skillDmg: `${skillMinDmg}-${skillMaxDmg}`,
             finalDmg: `${totalMinDmg}-${totalMaxDmg}`
         });
-        document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg)}-${Math.floor(totalMaxDmg)}`
-        document.getElementById('attackRatingOutput').textContent = 
-            `${Math.floor(skillInfo.attackRating || 0)}%`;
-        document.getElementById('manaCostOutput').textContent = 
-            Math.floor(skillInfo.manaCost || 0);
+        document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg + totalFlatColdDmg)}-${Math.floor(totalMaxDmg + totalFlatColdDmg)}`;
+        document.getElementById('attackRatingOutput').textContent = `${Math.floor(skillInfo.attackRating || 0)}%`;
+        document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0);
     
 }
 
