@@ -5724,7 +5724,7 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
 
   totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
   totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
-  totalFlatColdDmg += (ringOneData.properties.colddmgmin/2 + ringOneData.properties.colddmgmax/2) || 0;
+  
     
 
   
@@ -6379,6 +6379,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     let totalMinDmg = baseMinDmg * (1+skillMinDmg/100);
     let totalMaxDmg = baseMaxDmg * (1+skillMaxDmg/100);
       let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
+      let totalFlatLightDmg = parseInt(document.getElementById('flatlightcontainer')?.textContent || 0);
+      let totalFlatFireDmg = parseInt(document.getElementById('flatfirecontainer')?.textContent || 0);
+      let totalFlatMagicDmg = parseInt(document.getElementById('flatmagiccontainer')?.textContent || 0);
     if (skillInfo) {
         // Changed from levelOutput to jabValueOutput and using currentSkillLevel
         document.getElementById('jabValueOutput').textContent = currentSkillLevel;
@@ -6429,7 +6432,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             skillDmg: `${skillMinDmg}-${skillMaxDmg}`,
             finalDmg: `${totalMinDmg}-${totalMaxDmg}`
         });
-        document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg + totalFlatColdDmg)}-${Math.floor(totalMaxDmg + totalFlatColdDmg)}`;
+        document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}-${Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}`;
         document.getElementById('attackRatingOutput').textContent = `${Math.floor(skillInfo.attackRating || 0)}%`;
         document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0);
     
