@@ -7,7 +7,6 @@ class DPSSimulator {
     }
 
     createUI() {
-        // Create container for DPS display
         const container = document.createElement('div');
         container.id = 'dps-display';
         container.style.cssText = `
@@ -22,12 +21,10 @@ class DPSSimulator {
             z-index: 1000;
         `;
 
-        // Create DPS text display
         const dpsText = document.createElement('div');
         dpsText.id = 'current-dps';
         dpsText.textContent = 'DPS: 0';
 
-        // Create control button
         const controlButton = document.createElement('button');
         controlButton.id = 'dps-control';
         controlButton.textContent = 'Start DPS';
@@ -45,7 +42,6 @@ class DPSSimulator {
         container.appendChild(controlButton);
         document.body.appendChild(container);
 
-        // Add event listener to button
         controlButton.addEventListener('click', () => {
             if (this.isRunning) {
                 this.stop();
@@ -56,9 +52,7 @@ class DPSSimulator {
     }
 
     setupObservers() {
-        // Observe changes in damage containers
-        const minDmgContainer = document.getElementById('onehandmindmgcontainer');
-        const maxDmgContainer = document.getElementById('onehandmaxdmgcontainer');
+        const damageOutput = document.getElementById('damageOutput');
 
         const observer = new MutationObserver(() => {
             if (this.isRunning) {
@@ -72,23 +66,26 @@ class DPSSimulator {
             subtree: true
         };
 
-        if (minDmgContainer) observer.observe(minDmgContainer, observerConfig);
-        if (maxDmgContainer) observer.observe(maxDmgContainer, observerConfig);
+        if (damageOutput) observer.observe(damageOutput, observerConfig);
+    }
+
+    parseDamageRange(damageText) {
+        const [min, max] = damageText.split('-').map(num => parseInt(num.trim()));
+        return { min: min || 0, max: max || 0 };
     }
 
     calculateDPS() {
-        const minDmg = parseInt(document.getElementById('onehandmindmgcontainer')?.textContent || 0);
-        const maxDmg = parseInt(document.getElementById('onehandmaxdmgcontainer')?.textContent || 0);
+        const damageText = document.getElementById('damageOutput')?.textContent || '0-0';
+        const { min: minDmg, max: maxDmg } = this.parseDamageRange(damageText);
         const critChance = parseFloat(document.getElementById('criticalhitcontainer')?.value || 0) / 100;
         const critMultiplier = parseFloat(document.getElementById('crithitmultipliercontainer')?.textContent || 1);
 
         let totalDamage = 0;
-        const iterations = 100; // Number of hits to average
+        const iterations = 1;
 
         for (let i = 0; i < iterations; i++) {
             let damage = Math.floor(Math.random() * (maxDmg - minDmg + 1)) + minDmg;
             
-            // Apply critical hit
             if (Math.random() < critChance) {
                 damage *= critMultiplier;
             }
@@ -109,7 +106,7 @@ class DPSSimulator {
         this.intervalId = setInterval(() => {
             const dps = this.calculateDPS();
             document.getElementById('current-dps').textContent = `DPS: ${dps}`;
-        }, 100);
+        }, 1000);
     }
 
     stop() {
