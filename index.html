@@ -2120,7 +2120,7 @@ Defense
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br>
 <div id="javelinandspearskillscontainer" class="skill-container">
-  <div>Jab<input min="0" max="20" type="number" id="jabcontainer"></div>
+  <div>Jab:<input min="0" max="20" type="number" id="jabcontainer"></div>
   <div>Poison Javelin:<input min="0" max="20" type="number" id="poisonjavelincontainer"></div>
   <div>Javelin and Spear Mastery:<input min="0" max="20" type="number" id="javelinandspearmasterycontainer" class="hiddenSkill6"></div>
   <div>Power Strike:<input min="0" max="20" type="number" id="powerstrikecontainer" class="hiddenSkill6"></div>
@@ -5153,7 +5153,7 @@ disableInputs();
     
     // Get skill damage
     const skillDamage = skillHandler.getSkillDamage(selectedSkillName, currentSkillLevel);
-    console.log(skillDamage)
+    
     // Calculate total damage
     let totalMinDmg = baseDamage.min + skillDamage.min;
     let totalMaxDmg = baseDamage.max + skillDamage.max;
@@ -5327,12 +5327,6 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     const ringTwoData = itemList[ringTwoDropdown.value];
     const amuletData = itemList[amuletDropdown.value];
 
-    console.log('Before weapon calc:', {
-    totalMinDmg,
-    totalMaxDmg,
-    weaponMin: weaponData?.properties?.onehandmin,
-    weaponMax: weaponData?.properties?.onehandmax
-});
 
     if (helmData) {
       totalLife += helmData.properties.tolife || 0;
@@ -6158,6 +6152,7 @@ function updateVisibility() {
  
    <script src="SkillHandler.js"></script>
    <script src="skillRestriction.js"></script>
+   <script src="DPSSimulator.js"></script>
 <script>
 
 const dragState = {
@@ -6371,7 +6366,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let baseMaxDmg = parseInt(document.getElementById('onehandmaxdmgcontainer')?.textContent || 0);
     const skillMinDmg = skillInfo?.damage?.min || 0;
     const skillMaxDmg = skillInfo?.damage?.max || 0;
-    console.log('Base weapon damage:', baseMinDmg, baseMaxDmg);
+    
 
     // Get skill info and damage
    
@@ -6389,10 +6384,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     
-    console.log('Skill damage:', skillMinDmg, skillMaxDmg);
-    console.log('Total FLAT DMG:', totalFlatColdDmg);
-
-    // Calculate total base damage
+  
     
     if (totalStr > 0) {
         totalMinDmg = Math.floor(totalMinDmg  + totalFlatColdDmg);
@@ -6401,37 +6393,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
    
    document.getElementById('str').addEventListener('input', updateDamageCalculations);
-   document.getElementById('weapons-dropdown').addEventListener('change', function() {
+   ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {
+    document.getElementById(id).addEventListener('change', function() {
         updateVisibility();
         updateDamageCalculations();
     });
-    document.getElementById('ringsone-dropdown').addEventListener('change', function() {
-        updateVisibility();
-        updateDamageCalculations();
-    });
-    document.getElementById('ringstwo-dropdown').addEventListener('change', function() {
-        updateVisibility();
-        updateDamageCalculations();
-    });
-    console.log('Final damage:', totalMinDmg, totalMaxDmg);
-
-    // if (skillInfo?.damage) {
-    //   totalMinDmg += (skillInfo.damage.min || 0);
-    //   totalMaxDmg += (skillInfo.damage.max || 0);
-
-
-    //   console.log('Base damage values:', {
-    //     minElement: onehandmindmg,
-    //     maxElement: onehandmaxdmg,
-    //     minValue: totalMinDmg,
-    //     maxValue: totalMaxDmg
-    // });
-        
-        console.log('Damage calculation:', {
-            baseDmg: `${baseMinDmg}-${baseMaxDmg}`,
-            skillDmg: `${skillMinDmg}-${skillMaxDmg}`,
-            finalDmg: `${totalMinDmg}-${totalMaxDmg}`
-        });
+});
+    
+   
         document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}-${Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}`;
         document.getElementById('attackRatingOutput').textContent = `${Math.floor(skillInfo.attackRating || 0)}%`;
         document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0).toFixed(1);
@@ -6443,18 +6412,24 @@ document.getElementById('left-skill').addEventListener('change', updateDamageCal
 document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
     .forEach(input => input.addEventListener('input', updateDamageCalculations));
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+  
     {
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
         const selectedSkillContainer = document.getElementById('left-skill').value;
         const skillInput = document.getElementById(selectedSkillContainer);
         
