@@ -4233,7 +4233,14 @@ Defense
     "smitedmgmin": 1,
     "smitedmgmax": 3,
     "defense": 39,
-    "block1": 40
+    "block1": 40,
+    "fbr": 40,
+    "block": 20,
+    "edef": 40,
+    "str": 2,
+    "vit": 10,
+    "enr": 10,
+    "dur": 12
   }
 },
 
@@ -4243,16 +4250,30 @@ Defense
     "smitedmgmin": 2,
     "smitedmgmax": 3,
     "defense": 46,
-    "block1": 55
+    "block1": 55,
+    "block": 30,
+    "mindmg": 4,
+    "maxdmg": 8,
+    "blind": 1,
+    "edef": 50,
+    "dex": 10,
+    "tolife": 20,
+    "dur": 15 //nev im, jestli tohle je gg
   }
 },
 
 "Swordback Hold": {
       "description": "Swordback Hold<br> Spiked Shield<br> Base Smite Damage: 9 to 16, Avg 12.5<br> Base Maximum Sockets: 2 (3 for upgraded elite versions)<br> Defense: 51<br> Block: 50% (Dru/Nec/Sor), 55% (Ama/Ass/Bar), 60% (Pal)<br> Required Strength: 30<br> Required Level: 15<br> 20% Increased Chance of Blocking<br> 50% Chance of Open Wounds<br> +8 Open Wounds Damage per Second<br> +60% Enhanced Defense<br> +10 Defense<br> Attacker Takes Damage of 32<br>",
     "properties": {
-    "smitedmgmin": 9,
-    "smitedmgmax": 16,
-    "defense": 51
+      "smitedmgmin": 9,
+        "smitedmgmax": 16,
+        "defense": 51,
+        "block1": 50,
+        "block": 20,
+        "openwounds": 50,
+        "owdmg": 8,
+        "edef": 60,
+        "thorns": 32
 
   }
 },
@@ -6244,6 +6265,7 @@ function updateVisibility() {
    <script src="SkillHandler.js"></script>
    <script src="skillRestriction.js"></script>
    <script src="DPSSimulator.js"></script>
+   <script src="enhancedDamage.js"></script>
 <script>
 
 const dragState = {
@@ -6447,6 +6469,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         return '0';
     }
 
+
+
+
+    
+
+
+
+
+
     function updateDamageCalculations() {
     const selectedSkillContainer = document.getElementById('left-skill')?.value;
     const selectedSkillName = skillNameMap[selectedSkillContainer];
@@ -6482,6 +6513,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         totalMaxDmg =+ Math.floor(totalMaxDmg  + totalFlatColdDmg);
         
     }
+
+    totalMinDmg = damageCalculator.applyToDamage(baseMinDmg, skillMinDmg);
+    totalMaxDmg = damageCalculator.applyToDamage(baseMaxDmg, skillMaxDmg);
    
    document.getElementById('str').addEventListener('input', updateDamageCalculations);
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {
