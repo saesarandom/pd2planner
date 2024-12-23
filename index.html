@@ -5722,8 +5722,8 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
   
 
 
-  totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
-  totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
+  totalMinDmg = Math.floor(totalMinDmg);
+  totalMaxDmg = Math.floor(totalMaxDmg);
   
     
 
@@ -6375,9 +6375,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Get skill info and damage
    
-
-    let totalMinDmg = baseMinDmg * (1+skillMinDmg/100);
-    let totalMaxDmg = baseMaxDmg * (1+skillMaxDmg/100);
+    const totalStr = parseInt(document.getElementById('str')?.textContent || 0);
+    let totalMinDmg = baseMinDmg * (1+skillMinDmg/100  + totalStr * 1.1/100);
+    let totalMaxDmg = baseMaxDmg * (1+skillMaxDmg/100 + totalStr * 1.1/100);
       let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
       let totalFlatLightDmg = parseInt(document.getElementById('flatlightcontainer')?.textContent || 0);
       let totalFlatFireDmg = parseInt(document.getElementById('flatfirecontainer')?.textContent || 0);
@@ -6393,7 +6393,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('Total FLAT DMG:', totalFlatColdDmg);
 
     // Calculate total base damage
-    const totalStr = parseInt(document.getElementById('str')?.textContent || 0);
+    
     if (totalStr > 0) {
         totalMinDmg = Math.floor(totalMinDmg  + totalFlatColdDmg);
         totalMaxDmg = Math.floor(totalMaxDmg  + totalFlatColdDmg);
@@ -6434,7 +6434,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
         document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}-${Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}`;
         document.getElementById('attackRatingOutput').textContent = `${Math.floor(skillInfo.attackRating || 0)}%`;
-        document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0);
+        document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0).toFixed(1);
     
 }
 
