@@ -1849,6 +1849,12 @@ Resistance to fire %
 
 <option value="Pelta Lunata">Pelta Lunata</option>
 <option value="Umbral Disk">Umbral Disk</option>
+<option value="Swordback Hold">Swordback Hold</option>
+<option value="Steelclash">Steelclash</option>
+<option value="Wall of the Eyeless">Wall of the Eyeless</option>
+<option value="Bverrit Keep">Bverrit Keep</option>
+<option value="The Ward">The Ward</option>
+<option value="Visceratuant">Visceratuant</option>
 </select>
 <div id="off-info"></div>
 </div>
@@ -4233,11 +4239,76 @@ Defense
 
 "Umbral Disk": {
       "description": "Umbral Disk<br> Small Shield<br> Base Smite Damage: 2 to 3, Avg 2.5<br> Defense: 46<br> Block: 55% (Dru/Nec/Sor), 60% (Ama/Ass/Bar), 65% (Pal)<br> Required Strength: 22<br> Required Level: 9<br> 30% Increased Chance of Blocking<br> Adds 4-8 Damage<br> Hit Blinds Target<br> +50% Enhanced Defense<br> +30 Defense<br> +10 to Dexterity<br> +20 to Life<br> +15 Durability<br>",
-   "properties": {
+  "properties": {
     "smitedmgmin": 2,
     "smitedmgmax": 3,
     "defense": 46,
     "block1": 55
+  }
+},
+
+"Swordback Hold": {
+      "description": "Swordback Hold<br> Spiked Shield<br> Base Smite Damage: 9 to 16, Avg 12.5<br> Base Maximum Sockets: 2 (3 for upgraded elite versions)<br> Defense: 51<br> Block: 50% (Dru/Nec/Sor), 55% (Ama/Ass/Bar), 60% (Pal)<br> Required Strength: 30<br> Required Level: 15<br> 20% Increased Chance of Blocking<br> 50% Chance of Open Wounds<br> +8 Open Wounds Damage per Second<br> +60% Enhanced Defense<br> +10 Defense<br> Attacker Takes Damage of 32<br>",
+    "properties": {
+    "smitedmgmin": 9,
+    "smitedmgmax": 16,
+    "defense": 51
+
+  }
+},
+
+"Steelclash": {
+      "description": "Steelclash<br> Kite Shield<br> Base Smite Damage: 4 to 11, Avg 7.5<br> Defense: 58<br> Block: 53% (Dru/Nec/Sor), 58% (Ama/Ass/Bar), 63% (Pal)<br> Required Strength: 47<br> Required Level: 17<br> +1 to All Skills<br> +20% Faster Block Rate<br> 25% Increased Chance of Blocking<br> +100% Enhanced Defense<br> +20 Defense<br> All Resistances +10<br> +3 to Light Radius<br> +20 Durability<br>",
+  "properties": {
+    "smitedmgmin": 4,
+    "smitedmgmax": 11
+  }
+},
+
+"Wall of the Eyeless": {
+      "description": "Wall of the Eyeless<br> Bone Shield<br> Base Smite Damage: 5 to 10, Avg 7.5<br> Base Maximum Sockets: 2 (3 for upgraded elite versions)<br> Defense: 53<br> Block: 40% (Dru/Nec/Sor), 45% (Ama/Ass/Bar), 50% (Pal)<br> Required Strength: 25<br> Required Level: 20<br> +20% Faster Cast Rate<br> 3% Mana Stolen per Hit<br> +40% Enhanced Defense<br> +10 Defense<br> Cold Resist +20%<br> Fire Resist +20%<br> Poison Resist +20%<br> +5 to Mana after each Kill<br>",
+   "properties": {
+    "smitedmgmin": 5,
+    "smitedmgmax": 10,
+    "defense": 53
+  }
+},
+
+"Bverrit Keep": {
+      "description": "Bverrit Keep<br> Tower Shield<br> Base Smite Damage: 5 to 23, Avg 14<br> Defense: 87<br> Block: 54% (Dru/Nec/Sor), 59% (Ama/Ass/Bar), 64% (Pal)<br> Required Strength: 75<br> Required Level: 19<br> 10% Increased Chance of Blocking<br> +120% Enhanced Defense<br> +30 Defense<br> +15 to Strength<br> Fire Resist +50%<br> Physical Damage Taken Reduced by 10%<br> Magic Damage Taken Reduced by 5<br> +100 Durability<br>",
+    "properties": {
+    "smitedmgmin": 2,
+    "smitedmgmax": 3,
+    "defense": 46,
+    "block1": 55
+  }
+},
+
+"The Ward": {
+      "description": "The Ward<br> Gothic Shield<br> Base Smite Damage: 4 to 11, Avg 7.5<br> Defense: 112<br> Block: 46% (Dru/Nec/Sor), 51% (Ama/Ass/Bar), 56% (Pal)<br> Required Strength: 60<br> Required Level: 26<br> 10% Increased Chance of Blocking<br> +100% Enhanced Defense<br> +40 Defense<br> +10 to Strength<br> All Resistances +50<br> Magic Damage Taken Reduced by 2<br>",
+   "properties": {
+    "smitedmgmin": 4,
+    "smitedmgmax": 11,
+    "defense": 112,
+    "block1": 46
+  }
+},
+
+"Visceratuant": {
+      "description": "Visceratuant<br> Defender<br> Base Smite Damage: 10 to 15, Avg 12.5<br> Base Maximum Sockets: 1 (2 for upgraded versions)<br> Defense: 125<br> Block: 60% (Dru/Nec/Sor), 65% (Ama/Ass/Bar), 70% (Pal)<br> Required Strength: 38<br> Required Level: 28<br> +1 to Sorceress Skills<br> +30% Faster Block Rate<br> 30% Increased Chance of Blocking<br> +10% to Lightning Skill Damage<br> +150% Enhanced Defense<br> Attacker Takes Lightning Damage of 50<br>",
+   "properties": {
+    "smitedmgmin": 10,
+    "smitedmgmax": 15,
+    "defense": 125,
+    "block1": 60,
+    "fbr": 30,
+    "block": 30,
+    "lightskill": 10,
+    "edef": 150,
+    "atligdmg": 50, //who knows if these are correct
+    "allsk": 1,
+    "reqstr": 38,
+    "reqlvl": 28
   }
 },
 
@@ -4582,12 +4653,13 @@ Defense
 "Dwarf Star": {
       "description": "Dwarf Star<br> Ring<br> Required Level: 45<br> 5% Increased Chance of Blocking<br> +5 to Life<br> +50 Maximum Stamina<br> Fire Absorb 6%<br> Magic Damage Taken Reduced by 15<br> 100% Extra Gold from Monsters<br>",
    "properties": {
-    "reqlvl": 29,
-    "allsk": 1,
-    "lightdmgmin": 1,
-    "lightdmgmax": 120,
-    "tomana": 40,
-    "maxmana": 20
+    "reqlvl": 45,
+    "block1": 5,
+    "tolife": 5,
+    "maxstamina": 50,
+    "fireabs": 6,
+    "mdr": 15,
+    "goldfind": 100
 
   }
 },
@@ -4595,12 +4667,13 @@ Defense
 "Raven Frost": {
       "description": "Raven Frost<br> Ring<br> Required Level: 45<br> +250 to Attack Rating<br> Adds 15-45 Cold Damage<br> +20 to Dexterity<br> +40 to Mana<br> Cold Absorb 5%<br> Cannot Be Frozen<br>",
    "properties": {
-    "reqlvl": 29,
-    "allsk": 1,
+    "reqlvl": 45,
+    "toatt": 250,
     "colddmgmin": 15,
     "colddmgmax": 45,
+    "dex": 20,
     "tomana": 40,
-    "maxmana": 20
+    "coldabs": 5
 
   }
 },
@@ -4608,12 +4681,11 @@ Defense
 "Bul-Kathos' Wedding Band": {
       "description": "Bul-Kathos' Wedding Band<br> Ring<br> Required Level: 58<br> +1 to All Skills<br> 5% Life Stolen per Hit<br> +[0-49] to Life (+0.5 per Character Level)<br> +50 Maximum Stamina<br>",
    "properties": {
-    "reqlvl": 29,
+    "reqlvl": 58,
     "allsk": 1,
-    "lightdmgmin": 1,
-    "lightdmgmax": 120,
-    "tomana": 40,
-    "maxmana": 20
+    "lleech": 5,
+    "tolifeperlevel": 0.5,
+    "maxstamina": 50
 
   }
 },
@@ -4621,12 +4693,12 @@ Defense
 "Carrion Wind": {
       "description": "Carrion Wind<br> Ring<br> Required Level: 60<br> 8% Chance to Cast Level 30 Twister on Striking<br> 6% Life Stolen per Hit<br> +160 Defense vs. Missile<br> Poison Resist +55%<br> Attacker Takes Damage of 300<br> Level 11 Poison Creeper (35 Charges)<br>",
    "properties": {
-    "reqlvl": 29,
-    "allsk": 1,
-    "lightdmgmin": 1,
-    "lightdmgmax": 120,
-    "tomana": 40,
-    "maxmana": 20
+    "reqlvl": 60,
+    "twisterctcstruck": (8, 30),
+    "lleech": 6,
+    "defvsmiss": 160,
+    "poisres": 55,
+    "atdmg": 300 //poison creeper charged not implementd!
 
   }
 },
@@ -4634,12 +4706,15 @@ Defense
 "Nature's Peace": {
       "description": "Nature's Peace<br> Ring<br> Required Level: 69<br> Prevent Monster Heal<br> Slain Monsters Rest in Peace<br> +3% to Maximum Poison Resist<br> +3% to Maximum Cold Resist<br> +3% to Maximum Lightning Resist<br> +3% to Maximum Fire Resist<br> Physical Damage Taken Reduced by 11<br> Level 5 Oak Sage (27 Charges)<br>",
    "properties": {
-    "reqlvl": 29,
-    "allsk": 1,
-    "lightdmgmin": 1,
-    "lightdmgmax": 120,
-    "tomana": 40,
-    "maxmana": 20
+    "reqlvl": 69,
+    "monheal": 1,
+    "slainmonstersrip": 1,
+    "maxpoisres": 3,
+    "maxcoldres": 3,
+    "maxlightres": 3,
+    "maxfireres": 3,
+    "pdr": 11,
+    "oaksagesk": 5 //charges not implemented
 
   }
 },
@@ -4647,12 +4722,12 @@ Defense
 "Wisp Projector": {
       "description": "Wisp Projector<br> Ring<br> Required Level: 76<br> +1 to All Skills<br> Lightning Absorb 6%<br> 20% Better Chance of Getting Magic Items<br> Level 7 Spirit of Barbs (11 Charges)<br> Level 5 Heart of Wolverine (13 Charges)<br>",
    "properties": {
-    "reqlvl": 29,
+    "reqlvl": 76,
     "allsk": 1,
-    "lightdmgmin": 1,
-    "lightdmgmax": 120,
-    "tomana": 40,
-    "maxmana": 20
+    "lightabs": 6,
+    "magicfind": 20,
+    "spiritofbarbssk": 7, //charges not implemented
+    "heartofwolverinesk": 5 //charges not implemented
 
   }
 },
@@ -4660,12 +4735,28 @@ Defense
 "Kadala's Heirloom": {
       "description": "Kadala's Heirloom<br> Ring<br> Required Level: 75<br> +1 to Fire Skills<br> Cold Resist -20%<br> Fire Resist +40%<br> or<br> +1 to Cold Skills<br> Fire Resist -20%<br> Cold Resist +40%<br> or<br> +1 to Lightning Skills<br> Poison Resist -20%<br> Lightning Resist +40%<br> or<br> +1 to Poison Skills<br> Lightning Resist -20%<br> Poison Resist +40%<br> or<br> +1 to Magic Skills<br> All Resistances -5%<br> Magic Damage Taken Reduced by 10<br> or<br> +30% Enhanced Damage<br> All Resistances -5%<br> Physical Damage Taken Reduced by 10<br> 60% Extra Gold from Monsters<br> 25% Better Chance of Getting Magic Items<br> Reduces all Vendor Prices 10%<br>",
    "properties": {
-    "reqlvl": 29,
-    "allsk": 1,
-    "lightdmgmin": 1,
-    "lightdmgmax": 120,
-    "tomana": 40,
-    "maxmana": 20
+    "reqlvl": 75,
+    "firesk": 1,
+    "coldres": -20,
+    "firres": 40,
+    "coldsk": 1,
+    "firres": -20,
+    "coldres": 40,
+    "lightningsk": 1,
+    "poisres": -20,
+    "lightres": 40,
+    "poisonsk": 1,
+    "lightres": -20,
+    "poisres": 40,
+    "magicsk": 1,
+    "allres": -5,
+    "mdr": 10,
+    "edmg": 30,
+    "allres": -5,
+    "pdr": 10,
+    "goldfind": 60,
+    "magicfind": 25,
+    "vendor": 10 //this ring not implemented, needd to come with 3 versions to fix
 
   }
 },
@@ -4886,7 +4977,7 @@ document.addEventListener('DOMContentLoaded', function() {
         options = ['Pelta Lunata', 'Massive Axe of Thunder', 'Merciless Savagery'];
         break;
       default:
-        options = ['Pelta Lunata', 'Umbral Disk'];
+        options = ['Pelta Lunata', 'Umbral Disk', 'Swordback Hold', 'Steelclash', 'Wall of the Eyeless', 'Bverrit Keep', 'The Ward', 'Visceratuant'];
         break;
     }
 
@@ -6370,7 +6461,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Get skill info and damage
    
-    const totalStr = parseInt(document.getElementById('str')?.textContent || 0);
+    let totalStr = parseInt(document.getElementById('straccr')?.textContent || 0);
     let totalMinDmg = baseMinDmg * (1+skillMinDmg/100  + totalStr * 1.1/100);
     let totalMaxDmg = baseMaxDmg * (1+skillMaxDmg/100 + totalStr * 1.1/100);
       let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
@@ -6387,8 +6478,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   
     
     if (totalStr > 0) {
-        totalMinDmg = Math.floor(totalMinDmg  + totalFlatColdDmg);
-        totalMaxDmg = Math.floor(totalMaxDmg  + totalFlatColdDmg);
+        totalMinDmg =+ Math.floor(totalMinDmg  + totalFlatColdDmg);
+        totalMaxDmg =+ Math.floor(totalMaxDmg  + totalFlatColdDmg);
         
     }
    

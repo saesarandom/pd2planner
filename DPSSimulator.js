@@ -11,14 +11,14 @@ class DPSSimulator {
         container.id = 'dps-display';
         container.style.cssText = `
             position: fixed;
-            top: 20px;
+            top: 80px;
             right: 20px;
             padding: 15px;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
             border-radius: 5px;
             font-family: monospace;
-            z-index: 1000;
+            
         `;
 
         const dpsText = document.createElement('div');
