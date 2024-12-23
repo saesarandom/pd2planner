@@ -1618,7 +1618,8 @@ select:has(option[value="The Patriarch"]:checked), option[value="The Patriarch"]
 select:has(option[value="Gull"]:checked), option[value="Gull"] { background-color: rgb(186, 174, 82); }
 select:has(option[value="The Diggler"]:checked), option[value="The Diggler"] { background-color: rgb(186, 174, 82); } 
 select:has(option[value="The Jade Tan Do"]:checked), option[value="The Jade Tan Do"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Spectral Shard"]:checked), option[value="Spectral Shard"] { background-color: rgb(186, 174, 82); } 
+select:has(option[value="Spectral Shard"]:checked), option[value="Spectral Shard"] { background-color: rgb(186, 174, 82); }
+select:has(option[value="The Gidbinn"]:checked), option[value="The Gidbinn"] { background-color: rgb(186, 174, 82); }  
 select:has(option[value="The Dragon Chang"]:checked), option[value="The Dragon Chang"] { background-color: rgb(186, 174, 82); }
 select:has(option[value="Razortine"]:checked), option[value="Razortine"] { background-color: rgb(186, 174, 82); } 
 select:has(option[value="Bloodthief"]:checked), option[value="Bloodthief"] { background-color: rgb(186, 174, 82); }
@@ -1653,6 +1654,12 @@ select:has(option[value="Leadcrow"]:checked), option[value="Leadcrow"] { backgro
 select:has(option[value="Ichorsting"]:checked), option[value="Ichorsting"] { background-color: rgb(186, 174, 82); }
 select:has(option[value="Hellcast"]:checked), option[value="Hellcast"] { background-color: rgb(186, 174, 82); }
 select:has(option[value="Doomslinger"]:checked), option[value="Doomslinger"] { background-color: rgb(186, 174, 82); }
+select:has(option[value="Rust Handle"]:checked), option[value="Rust Handle"] { background-color: rgb(186, 174, 82); }
+select:has(option[value="Knell Striker"]:checked), option[value="Knell Striker"] { background-color: rgb(186, 174, 82); }
+select:has(option[value="Stormeye"]:checked), option[value="Stormeye"] { background-color: rgb(186, 174, 82); }
+select:has(option[value="True Silver"]:checked), option[value="True Silver"] { background-color: rgb(186, 174, 82); }
+select:has(option[value="Mage Slayer"]:checked), option[value="Mage Slayer"] { background-color: rgb(186, 174, 82); }
+select:has(option[value="Tempest"]:checked), option[value="Tempest"] { background-color: rgb(186, 174, 82); }
 
 
 </style>
@@ -1807,6 +1814,7 @@ Resistance to fire %
     <option value="The Diggler">The Diggler</option>
     <option value="The Jade Tan Do">The Jade Tan Do</option>  
     <option value="Spectral Shard">Spectral Shard</option>
+    <option value="The Gidbinn">The Gidbinn</option>
     <option value="The Dragon Chang">The Dragon Chang</option>
     <option value="Razortine">Razortine</option>
     <option value="Bloodthief">Bloodthief</option>
@@ -1837,6 +1845,16 @@ Resistance to fire %
     <option value="Knell Striker">Knell Striker</option>
     <option value="Rust Handle">Rust Handle</option>
     <option value="Stormeye">Stormeye</option>
+    <option value="True Silver">True Silver</option>
+    <option value="Mage Slayer">Mage Slayer</option>
+    <option value="Tempest">Tempest</option>	
+
+  
+
+
+
+
+
 
   </select>
   <div id="weapon-info"></div>
@@ -3632,6 +3650,19 @@ Defense
   }
 },
 
+"The Gidbinn": {
+      "description": "The Gidbinn<br>One-Hand Damage: 3 to 7, Avg 5<br>Speed Modifier: -20<br>Maximum Sockets: 0<br>Required Strength: 15<br>Required Dexterity: 25<br>Required Level: None<br>",
+   "properties": {
+    "onehandmin": 3,
+    "onehandmax": 7,
+    "speed": -20,
+    "reqstr": 15,
+    "reqdex": 25
+  }
+},
+
+
+
 "The Dragon Chang": {
       "description": "The Dragon Chang<br> Spear<br> Base Speed Modifier: -10<br> Base Melee Range: 4<br> Two-Hand Damage: 13 to 15, Avg 14<br> Required Dexterity: 20<br> Required Level: 8<br> +10 to Minimum Damage<br> +35 to Attack Rating<br> +100% Damage to Undead<br> Adds 3-6 Fire Damage<br> +6 to Javelin and Spear Mastery (Amazon Only)<br> +2 to Light Radius<br>",
    "properties": {
@@ -4223,6 +4254,64 @@ Defense
     "resistlightningsk": 5,
     "repl": 10,
     "dmgtoun": 50 
+  }
+},
+
+"True Silver": {
+      "description": "True Silver<br>Maiden Javelin<br>Base Speed Modifier: -10<br>Throw Damage: 13 to 270, Avg 141.5<br>Melee Damage: 17 to 252, Avg 134.5<br>Required Strength: 33<br>Required Dexterity: 47<br>Required Level: 20<br>+40% Increased Attack Speed<br>+120% Enhanced Damage<br>+[2-222] to Maximum Damage (+2.25 per Character Level)<br>15% Chance of Crushing Blow<br>45% Better Chance of Getting Magic Items<br>",
+    "properties": {
+    "speed": -10,
+    "throwmin": 13,
+    "throwmax": 270,
+    "onehandmin": 17,
+    "onehandmax": 252,
+    "reqstr": 33,
+    "reqdex": 47,
+    "reqlvl": 20,
+    "ias": 40,
+    "edmg": 120,
+    "maxdmgperlevel": 2.25, //asi tu nevim jestli to jde
+    "cb": 15,
+    "magicfind": 45
+  }
+},
+
+"Mage Slayer": {
+      "description": "Mage Slayer<br>Quhab<br>Base Speed Modifier: 0<br>One-Hand Damage: 15 to 121, Avg 68<br>Required Strength: 57<br>Required Dexterity: 57<br>Required Level: 27<br>+20% Faster Hit Recovery<br>+[2-247]% Enhanced Maximum Damage (+2.5% per Character Level)<br>Adds 10-25 Damage<br>+2 to Dragon Flight (Assassin Only)<br>+15 to Strength<br>Physical Damage Taken Reduced by 15%<br>+6 to Light Radius<br>",
+    "properties": {
+    "speed": 0,
+    "onehandmin": 15,
+    "onehandmax": 121,
+    "reqstr": 57,
+    "reqdex": 57,
+    "reqlvl": 27,
+    "fhr": 20,
+    "edmg": 247,
+    "maxdmgperlevel": 2.5,
+    "tomindmg": 10,
+    "tomaxdmg": 25,
+    "dragonflightsk": 2,
+    "str": 15,
+    "pdr": 15,
+    "ligrad": 6
+  }
+},
+
+"Tempest": {
+      "description": "Tempest<br>Glowing Orb<br>Base Speed Modifier: -10<br>One-Hand Damage: 8 to 21, Avg 14.5<br>Required Level: 25<br>Level 16 Energy Shield When Equipped*<br>8% Chance to Cast Level 12 Frost Nova when Struck<br>+2 to All Skills<br>+30% Faster Cast Rate<br>+145 to Mana<br>Increase Maximum Mana 20%<br>Regenerate Mana 30%<br>",
+    "properties": {
+    "speed": -10,
+    "onehandmin": 8,
+    "onehandmax": 21,
+    "reqlvl": 25,
+    "energyshield": 16,
+    "ctcfrostnovacast": (8, 12),
+    "allskills": 2,
+    "fcr": 30,
+    "mana": 145,
+    "maxmana": 20,
+    "regmana": 30
+
   }
 },
 //shields/
@@ -6514,23 +6603,47 @@ document.addEventListener('DOMContentLoaded', async function() {
         
     }
 
-    totalMinDmg = damageCalculator.applyToDamage(baseMinDmg, skillMinDmg);
-    totalMaxDmg = damageCalculator.applyToDamage(baseMaxDmg, skillMaxDmg);
+    totalMinDmg = damageCalculator.applyToDamage(baseMinDmg, skillMinDmg, totalStr * 1.1/100);
+    totalMaxDmg = damageCalculator.applyToDamage(baseMaxDmg, skillMaxDmg, totalStr * 1.1/100);
    
-   document.getElementById('str').addEventListener('input', updateDamageCalculations);
-   ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {
-    document.getElementById(id).addEventListener('change', function() {
-        updateVisibility();
-        updateDamageCalculations();
-    });
-});
-    
+     document.getElementById('straccr').addEventListener('input', updateDamageCalculations);    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {     document.getElementById(id).addEventListener('change', function() {                 updateDamageCalculations();     }); });
    
         document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}-${Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}`;
         document.getElementById('attackRatingOutput').textContent = `${Math.floor(skillInfo.attackRating || 0)}%`;
         document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0).toFixed(1);
     
 }
+
+// function setupEquipmentListeners() {
+//     const equipmentSlots = ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'];
+//     const strInput = document.getElementById('str');
+    
+//     // Remove existing listeners if any
+//     equipmentSlots.forEach(id => {
+//         const element = document.getElementById(id);
+//         element.replaceWith(element.cloneNode(true));
+//     });
+    
+//     // Add optimized listeners with debouncing
+//     let debounceTimer;
+//     const debouncedUpdate = () => {
+//         clearTimeout(debounceTimer);
+//         debounceTimer = setTimeout(() => {
+//             updateVisibility();
+//             updateDamageCalculations();
+//         }, 100);
+//     };
+
+//     // Add new listeners
+//     equipmentSlots.forEach(id => {
+//         document.getElementById(id).addEventListener('change', debouncedUpdate);
+//     });
+//     strInput.addEventListener('input', debouncedUpdate);
+// }
+
+// // Call this on page load
+// document.addEventListener('DOMContentLoaded', setupEquipmentListeners);
+
 
 // Ensure event binding
 document.getElementById('left-skill').addEventListener('change', updateDamageCalculations);
@@ -6539,7 +6652,6 @@ document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
     
   
     {
-
 
 
 

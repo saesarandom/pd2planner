@@ -23,9 +23,9 @@ class EnhancedDamageCalculator {
         }, 0) / 100;
     }
 
-    applyToDamage(baseDamage, skillModifier) {
+    applyToDamage(baseDamage, skillModifier, strengthModifier) {
         const enhancedDamage = this.calculateTotal();
-        return baseDamage * (1 + skillModifier/100  + enhancedDamage);
+        return baseDamage * (1 + skillModifier/100 + strengthModifier + enhancedDamage);
     }
 }
 
