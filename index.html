@@ -68,7 +68,8 @@
     </style>
 </head>
 <body>
-    <div class="particles-container"></div>
+
+ 
     <button onclick="document.body.classList.toggle('moody')" style="position: fixed; top: 10px; right: 10px; z-index: 10000;">
         Load Theme
     </button>
@@ -98,6 +99,11 @@
 
     
     <script>
+
+import { FlatPropertyHandler } from './flatProperties.js';
+import { PercentPropertyHandler } from './percentProperties.js';
+import { LevelPropertyHandler } from './levelProperties.js';
+import { SkillPropertyHandler } from './skillProperties.js';
         function createParticles() {
             const container = document.querySelector('.particles-container');
             
@@ -549,6 +555,41 @@
                 this.equipment.render(this.character);
             }
         }
+
+
+        class PropertyManager {
+    static containers = [
+        'helms-dropdown', 'armors-dropdown', 'weapons-dropdown',
+        'offs-dropdown', 'gloves-dropdown', 'belts-dropdown',
+        'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown',
+        'amulets-dropdown'
+    ];
+
+    static updateProperties() {
+        const charLevel = parseInt(document.getElementById('lvlValue').value) || 1;
+        
+        // Get all property totals
+        const flatTotals = FlatPropertyHandler.calculateTotal(itemList, this.containers);
+        const percentTotals = PercentPropertyHandler.calculateTotal(itemList, this.containers);
+        const levelTotals = LevelPropertyHandler.calculatePerLevel(itemList, this.containers, charLevel);
+        const skillTotals = SkillPropertyHandler.calculateSkillBonuses(itemList, this.containers);
+
+        // Update UI
+        this.updateUI(flatTotals, percentTotals, levelTotals, skillTotals);
+    }
+
+    static updateUI(flat, percent, level, skill) {
+        // Update all container values
+        Object.keys(flat).forEach(prop => {
+            document.getElementById(`${prop}container`)?.textContent = flat[prop];
+        });
+        Object.keys(percent).forEach(prop => {
+            document.getElementById(`${prop}container`)?.textContent = percent[prop];
+        });
+        // ... update other properties
+    }
+}
+
 
         window.gameManager = new GameManager();
     </script>
@@ -4270,7 +4311,7 @@ Defense
     "reqlvl": 20,
     "ias": 40,
     "edmg": 120,
-    "maxdmgperlevel": 2.25, //asi tu nevim jestli to jde
+    "maxdmgperlvl": 2.25, //asi tu nevim jestli to jde
     "cb": 15,
     "magicfind": 45
   }
@@ -4287,7 +4328,7 @@ Defense
     "reqlvl": 27,
     "fhr": 20,
     "edmg": 247,
-    "maxdmgperlevel": 2.5,
+    "maxdmgperlvl": 2.5,
     "tomindmg": 10,
     "tomaxdmg": 25,
     "dragonflightsk": 2,
@@ -6614,35 +6655,36 @@ document.addEventListener('DOMContentLoaded', async function() {
     
 }
 
-// function setupEquipmentListeners() {
-//     const equipmentSlots = ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'];
-//     const strInput = document.getElementById('str');
+function setupEquipmentListeners() {
+    const equipmentSlots = ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'];
+    const strInput = document.getElementById('str');
     
-//     // Remove existing listeners if any
-//     equipmentSlots.forEach(id => {
-//         const element = document.getElementById(id);
-//         element.replaceWith(element.cloneNode(true));
-//     });
+    // Remove existing listeners if any
+    equipmentSlots.forEach(id => {
+        const element = document.getElementById(id);
+        element.replaceWith(element.cloneNode(true));
+    });
     
-//     // Add optimized listeners with debouncing
-//     let debounceTimer;
-//     const debouncedUpdate = () => {
-//         clearTimeout(debounceTimer);
-//         debounceTimer = setTimeout(() => {
-//             updateVisibility();
-//             updateDamageCalculations();
-//         }, 100);
-//     };
+    // Add optimized listeners with debouncing
+    let debounceTimer;
+    const debouncedUpdate = () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            updateVisibility();
+            updateDamageCalculations();
+            PropertyManager.updateProperties();
+        }, 100);
+    };
 
-//     // Add new listeners
-//     equipmentSlots.forEach(id => {
-//         document.getElementById(id).addEventListener('change', debouncedUpdate);
-//     });
-//     strInput.addEventListener('input', debouncedUpdate);
-// }
+    // Add new listeners
+    equipmentSlots.forEach(id => {
+        document.getElementById(id).addEventListener('change', debouncedUpdate);
+    });
+    strInput.addEventListener('input', debouncedUpdate);
+}
 
-// // Call this on page load
-// document.addEventListener('DOMContentLoaded', setupEquipmentListeners);
+// Call this on page load
+document.addEventListener('DOMContentLoaded', setupEquipmentListeners);
 
 
 // Ensure event binding
