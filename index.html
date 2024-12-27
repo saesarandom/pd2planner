@@ -636,7 +636,7 @@ body {
 		display: flex;
     font-family: bahnschrift condensed;
 		flex-direction: column;
-		width: 200%;
+		width: 300%;
 		min-width: auto;
 		background-color: rgba(0,0,0);
 		margin: auto;
@@ -668,6 +668,62 @@ body {
   font-size: 18px;
 }
 
+.inventorycontainer {
+  
+  position: absolute;
+  margin-top: -320px;
+  left: 1280px;
+  display: grid;
+  gap: 2px;
+  padding: 1px;
+  border: 2px solid rgb(131, 32, 32);
+  background-color: rgb(10, 30, 37);
+  grid-template-rows: repeat(4, 74px);
+  grid-template-columns: repeat(10, 74px)
+}
+
+
+.charm1 {
+  padding: 4px;
+  border: 1px solid rgb(203, 246, 123);
+  background-color: rgb(10, 30, 37);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 12px; /* Reduce this value to make the text smaller */
+  text-align: center; /* Ensures the text stays centered */
+  line-height: 1; /* Adjust line height for better spacing */
+  overflow: hidden; /* Ensures text doesn't overflow if it's too long */
+  word-wrap: break-word; /* Breaks long words to avoid overflow */
+  white-space: normal; /* Allows wrapping of text */
+}
+
+
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 3px;
+  background-color: rgb(8, 8, 8);
+  border: 2px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 4;
+  display: none;
+  font-size: 13px
+}
+
+.modal.active {
+  display: block;
+}
+
+.modal button {
+  margin: 5px;
+  padding: 10px;
+}
 
 .slider:hover {
   opacity: 1;
@@ -2178,6 +2234,65 @@ Defense
 </div>
 <div class="crithitmultipliercontainer">Crit Hit dmg multiplier<div id="crithitmultipliercontainer"></div>
 </div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
+
+<div class="inventorycontainer">
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+  <div class="charm1"></div>
+</div>
+
+<!-- Modal -->
+<div id="charmModal" class="modal">
+  <h3>Choose Charm Type</h3>
+  <button data-type="Small Charm">Small Charm</button>
+  <button data-type="Large Charm">Large Charm</button>
+  <button data-type="Grand Charm">Grand Charm</button>
+  <h3>Choose Properties</h3>
+  <button data-property="Stalwart">Stalwart (+20-30 Defense)</button>
+  <button data-property="Steel">Steel (+25-36 Attack Rating)</button>
+  <button data-property="Cobalt">Cobalt (+8-9% Cold Resistance)</button>
+  <br>
+  <button id="closeModal">Cancel</button>
+</div>
+
+
 
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
@@ -7164,6 +7279,44 @@ function switchSkillContainers(className) {
             break;
     }
 }
+
+
+const gridItems = document.querySelectorAll('.charm1');
+const modal = document.getElementById('charmModal');
+const closeModal = document.getElementById('closeModal');
+
+let selectedItem = null;
+
+// Open modal when grid item is clicked
+gridItems.forEach((item) => {
+  item.addEventListener('click', () => {
+    selectedItem = item;
+    modal.classList.add('active');
+  });
+});
+
+// Handle charm type and property selection
+modal.addEventListener('click', (event) => {
+  if (event.target.dataset.type) {
+    // Set the charm type
+    const charmType = event.target.dataset.type;
+    selectedItem.textContent = charmType;
+  } else if (event.target.dataset.property) {
+    // Set the charm property
+    const charmProperty = event.target.dataset.property;
+    const propertyDescription = {
+      Stalwart: "(+20-30 Defense)",
+      Steel: "(+25-36 Attack Rating)",
+      Cobalt: "(+8-9% Cold Resistance)"
+    };
+    selectedItem.textContent += ` ${propertyDescription[charmProperty] || ""}`;
+  }
+});
+
+// Close modal
+closeModal.addEventListener('click', () => {
+  modal.classList.remove('active');
+});
 //(204, 51, 0) barb
 //RGB: (34, 139, 34) dru
 //RGB: (102, 0, 153) necro
