@@ -674,30 +674,47 @@ body {
   margin-top: -320px;
   left: 1280px;
   display: grid;
-  gap: 2px;
   padding: 1px;
-  border: 2px solid rgb(131, 32, 32);
-  background-color: rgb(10, 30, 37);
-  grid-template-rows: repeat(4, 74px);
-  grid-template-columns: repeat(10, 74px)
+  background-color: rgb(0, 0, 0);
+  grid-template-rows: repeat(4, minmax(74px, 74px));
+  grid-template-columns: repeat(10, minmax(74px, 74px));
+  
+  /* Prevent any auto-sizing */
+  grid-auto-flow: dense;
+  grid-auto-rows: 0;
+  grid-auto-columns: 0;
+  
+  /* Border and background */
+  border: 1px solid rgb(164, 19, 19);
+  background-color: rgb(0, 0, 0);
+  overflow: hidden;
+  box-sizing: border-box;
+
 }
 
 
 .charm1 {
-  padding: 4px;
-  border: 1px solid rgb(203, 246, 123);
-  background-color: rgb(10, 30, 37);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 1px solid rgb(164, 19, 19); /* Empty container */
+  background-color: transparent;
+  width: 74px;
+  height: 74px;
+  min-width: 74px;
+  min-height: 74px;
+  max-width: 74px;
+  max-height: 74px;
   cursor: pointer;
-  color: white;
-  font-size: 12px; /* Reduce this value to make the text smaller */
-  text-align: center; /* Ensures the text stays centered */
-  line-height: 1; /* Adjust line height for better spacing */
-  overflow: hidden; /* Ensures text doesn't overflow if it's too long */
-  word-wrap: break-word; /* Breaks long words to avoid overflow */
-  white-space: normal; /* Allows wrapping of text */
+  
+  /* Ensure border is included in size */
+  box-sizing: border-box;
+  
+  /* Prevent any margin collapse */
+  margin: 0;
+  padding: 0;
+  position: relative; /* Add this */
+  white-space: normal; /* Add this */
+  word-wrap: break-word; /* Add this */
+  font-size: 12px; /* Add this to make text smaller */
+
 }
 
 
@@ -724,6 +741,29 @@ body {
   margin: 5px;
   padding: 10px;
 }
+
+/* Small Charm: 1 row, 1 column */
+.small-charm {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+/* Large Charm: 1 row, 2 columns */
+.large-charm {
+  grid-column: span 1;
+  grid-row: span 2;
+  height: 148px; 
+  z-index: 1; 
+}
+
+/* Grand Charm: 1 row, 3 columns */
+.grand-charm {
+  grid-column: span 1;
+  grid-row: span 3;
+  height: 222px;
+  z-index: 1; 
+}
+
 
 .slider:hover {
   opacity: 1;
@@ -2246,6 +2286,7 @@ Defense
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
+  <div class="charm1"></div> 
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
@@ -2258,6 +2299,7 @@ Defense
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
+  <div class="charm1"></div> 
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
@@ -2267,29 +2309,30 @@ Defense
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
+  <div class="charm1"></div>  
+  <div class="charm1"></div>  
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
-  <div class="charm1"></div>
-  <div class="charm1"></div>
-  <div class="charm1"></div>
-  <div class="charm1"></div>
+  
+  
 </div>
 
 <!-- Modal -->
 <div id="charmModal" class="modal">
-  <h3>Choose Charm Type</h3>
-  <button data-type="Small Charm">Small Charm</button>
-  <button data-type="Large Charm">Large Charm</button>
-  <button data-type="Grand Charm">Grand Charm</button>
-  <h3>Choose Properties</h3>
-  <button data-property="Stalwart">Stalwart (+20-30 Defense)</button>
-  <button data-property="Steel">Steel (+25-36 Attack Rating)</button>
-  <button data-property="Cobalt">Cobalt (+8-9% Cold Resistance)</button>
-  <br>
-  <button id="closeModal">Cancel</button>
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2>Choose Charm Type</h2>
+    <button data-type="small-charm">Small Charm</button>
+    <button data-type="large-charm">Large Charm</button>
+    <button data-type="grand-charm">Grand Charm</button>
+    <h3>Properties</h3>
+    <button data-property="Stalwart">Stalwart (+20-30 Defense)</button>
+    <button data-property="Steel">Steel (+25-36 Attack Rating)</button>
+    <button data-property="Cobalt">Cobalt (+8-9% Cold Resistance)</button>
+  </div>
 </div>
 
 
@@ -7281,42 +7324,171 @@ function switchSkillContainers(className) {
 }
 
 
-const gridItems = document.querySelectorAll('.charm1');
+
+const inventory = document.querySelector('.inventorycontainer');
+inventory.innerHTML = ''; // Clear existing slots
+
+// Create exactly 40 slots
+for (let i = 0; i < 40; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'charm1';
+    // Add data attribute for position tracking
+    slot.dataset.position = i;
+    inventory.appendChild(slot);
+}
+
+// Modified placement validation
+function getSlotPosition(slot) {
+    const index = parseInt(slot.dataset.position);
+    return {
+        row: Math.floor(index / 10) + 1,
+        column: (index % 10) + 1
+    };
+}
+
 const modal = document.getElementById('charmModal');
 const closeModal = document.getElementById('closeModal');
+let selectedSlot = null;
 
-let selectedItem = null;
-
-// Open modal when grid item is clicked
-gridItems.forEach((item) => {
-  item.addEventListener('click', () => {
-    selectedItem = item;
-    modal.classList.add('active');
-  });
-});
-
-// Handle charm type and property selection
-modal.addEventListener('click', (event) => {
-  if (event.target.dataset.type) {
-    // Set the charm type
-    const charmType = event.target.dataset.type;
-    selectedItem.textContent = charmType;
-  } else if (event.target.dataset.property) {
-    // Set the charm property
-    const charmProperty = event.target.dataset.property;
-    const propertyDescription = {
-      Stalwart: "(+20-30 Defense)",
-      Steel: "(+25-36 Attack Rating)",
-      Cobalt: "(+8-9% Cold Resistance)"
-    };
-    selectedItem.textContent += ` ${propertyDescription[charmProperty] || ""}`;
+// Open modal when a grid slot is clicked
+inventory.addEventListener('click', (event) => {
+  if (event.target.classList.contains('charm1')) {
+    selectedSlot = event.target;
+    modal.style.display = 'block';
   }
 });
 
 // Close modal
 closeModal.addEventListener('click', () => {
-  modal.classList.remove('active');
+  modal.style.display = 'none';
 });
+
+// Assign charm type and properties
+
+
+function checkOverlap(selectedSlot, charmType) {
+    const slots = Array.from(inventory.children);
+    const index = slots.indexOf(selectedSlot);
+    const column = index % 10;
+    const row = Math.floor(index / 10);
+    
+    // Determine how many rows this charm will occupy
+    const rowSpan = charmType === 'small-charm' ? 1 : 
+                   charmType === 'large-charm' ? 2 : 3;
+    
+    // Check each row this charm would occupy
+    for (let i = 0; i < rowSpan; i++) {
+        const checkIndex = index + (i * 10);
+        if (checkIndex >= slots.length) return false; // Out of bounds
+        
+        const checkSlot = slots[checkIndex];
+        if (checkSlot !== selectedSlot && 
+            (checkSlot.classList.contains('large-charm') || 
+             checkSlot.classList.contains('grand-charm'))) {
+            return false; // Overlaps with existing charm
+        }
+        
+        // Check slots above for existing large/grand charms
+        if (row - 1 >= 0 && i === 0) {
+            const aboveSlot = slots[index - 10];
+            if (aboveSlot && 
+                ((aboveSlot.classList.contains('large-charm') && row <= 2) || 
+                 (aboveSlot.classList.contains('grand-charm') && row <= 3))) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+modal.addEventListener('click', (event) => {
+    if (event.target.dataset.type) {
+        const charmType = event.target.dataset.type;
+        const index = Array.from(inventory.children).indexOf(selectedSlot);
+        const row = Math.floor(index / 10) + 1;
+        
+        // Check row constraints
+        if ((charmType === 'large-charm' && row === 4) || 
+            (charmType === 'grand-charm' && row > 2)) {
+            alert('Cannot place charm here - invalid row');
+            return;
+        }
+        
+        // Check for overlaps
+        if (!checkOverlap(selectedSlot, charmType)) {
+            alert('Cannot place charm here - would overlap with existing charm');
+            return;
+        }
+        
+        // Proceed with placement if all checks pass
+        selectedSlot.className = 'charm1';
+        selectedSlot.classList.add(charmType);
+        selectedSlot.textContent = charmType.replace('-', ' ');
+    
+    
+    // Add text content as a separate div
+    const textDiv = document.createElement('div');
+    textDiv.style.padding = '2px';
+    textDiv.textContent = charmType.replace('-', ' ');
+    selectedSlot.appendChild(textDiv);
+  }
+
+  if (event.target.dataset.property) {
+    const charmProperty = event.target.dataset.property;
+    const propertyDescription = {
+      Stalwart: '(+20-30 Defense)',
+      Steel: '(+25-36 Attack Rating)',
+      Cobalt: '(+8-9% Cold Resistance)',
+    };
+    
+    const textDiv = selectedSlot.querySelector('div');
+    textDiv.textContent += ` ${propertyDescription[charmProperty] || ''}`;
+    modal.style.display = 'none';
+  }
+});
+//these following code probably can be ignored, i just want to set condition that large charms cannot be put on row 4 and grand charm cannot be put on row 3 and 4)
+// const GRID_ROWS = 4;
+// const GRID_COLUMNS = 10;
+
+// // Function to validate placement you can probably ignore
+// function canPlaceCharm(type, startRow, startColumn) {
+//   // Determine the span of the charm based on its type
+//   const span = type === 'small-charm' ? 1 : type === 'large-charm' ? 2 : 3;
+
+//   // Check if the charm stays within grid bounds
+//   if (startRow + span - 1 > GRID_ROWS || startColumn > GRID_COLUMNS) {
+//     return false; // Out of bounds
+//   }
+
+//   return true;
+// }
+
+// // Example usage . you can ignore this..
+// function addCharm(type, startRow, startColumn) {
+//   // Validate placement
+//   if (!canPlaceCharm(type, startRow, startColumn)) {
+//     alert('Cannot place charm: Out of grid bounds!');
+//     return;
+//   }
+
+//   // If placement is valid, add the charm
+//   const charm = document.createElement('div');
+//   charm.classList.add('charm1', type);
+//   charm.style.gridRow = `${startRow} / span ${type === 'small-charm' ? 1 : type === 'large-charm' ? 2 : 3}`;
+//   charm.style.gridColumn = `${startColumn} / span 1`;
+//   inventory.appendChild(charm);
+// }
+
+// addCharm('grand-charm', 3, 1); // Invalid: Would span beyond row 4, shows alert
 //(204, 51, 0) barb
 //RGB: (34, 139, 34) dru
 //RGB: (102, 0, 153) necro
