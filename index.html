@@ -682,10 +682,10 @@ body {
   /* Fixed dimensions */
   width: 740px;    /* Exactly 10 columns * 74px */
   height: 296px;
-  /* Prevent any auto-sizing */
+  /* Prevent any auto-sizing 
   grid-auto-flow: dense;
   grid-auto-rows: 0;
-  grid-auto-columns: 0;
+  grid-auto-columns: 0;*/
   
   /* Border and background */
   border: 1px solid rgb(164, 19, 19);
@@ -745,28 +745,48 @@ body {
   padding: 10px;
 }
 
+.close {
+    color: rgb(164, 19, 19);
+    float: right;
+    font-size: 64px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;   /* Added some padding for better clickability */
+    line-height: 35px; /* Helps with vertical alignment */
+}
+
+.close:hover {
+    color: rgb(200, 30, 30);
+}
+
 /* Small Charm: 1 row, 1 column */
 .small-charm {
-  grid-column: span 1;
-  grid-row: span 1;
+  /* grid-column: auto;
+  grid-row-start: auto;
+  grid-row-end: span 1; */
   height: 74px;
   z-index: 1;
+  background-color: rgb(94, 5, 49);
 }
 
 /* Large Charm: 1 row, 2 columns */
 .large-charm {
-  grid-column: span 1;
-  grid-row: span 2;
+  /* grid-column: auto;
+  grid-row-start: auto;
+  grid-row-end: span 2; */
   height: 148px; 
   z-index: 1; 
+  background-color: rgb(56, 189, 85);
 }
 
 /* Grand Charm: 1 row, 3 columns */
 .grand-charm {
-  grid-column: span 1;
-  grid-row: span 3;
+  /* grid-column: auto;
+  grid-row-start: auto;
+  grid-row-end: span 3; */
   height: 222px;
   z-index: 1; 
+  background-color: rgb(50, 24, 119);
 }
 
 
@@ -2337,7 +2357,7 @@ Defense
     <button data-property="Stalwart">Stalwart (+20-30 Defense)</button>
     <button data-property="Steel">Steel (+25-36 Attack Rating)</button>
     <button data-property="Cobalt">Cobalt (+8-9% Cold Resistance)</button>
-    <button id="closeModal">Close</button>
+    
   </div>
 </div>
 
@@ -7335,8 +7355,8 @@ const inventory = document.querySelector('.inventorycontainer');
 const modal = document.getElementById('charmModal');
 const closeModal = document.getElementById('closeModal');
 let selectedSlot = null;
-const gridState = Array(40).fill(null);
 
+// Basic event listeners
 inventory.addEventListener('click', (event) => {
     if (event.target.classList.contains('charm1')) {
         selectedSlot = event.target;
@@ -7352,100 +7372,43 @@ function getGridPosition(element) {
     return Array.from(inventory.children).indexOf(element);
 }
 
-
-
-
-function removeCharm(position) {    // Add this here
+function removeCharm(position) {
     const slot = inventory.children[position];
-    
-    // Clear all affected positions
-    if (slot.classList.contains('grand-charm')) {
-        gridState[position] = null;
-        gridState[position + 10] = null;
-        gridState[position + 20] = null;
-    } else if (slot.classList.contains('large-charm')) {
-        gridState[position] = null;
-        gridState[position + 10] = null;
-    } else {
-        gridState[position] = null;
-    }
-    
-    slot.className = 'charm1';
-    slot.textContent = '';
-}
-
-
-
-
-
-
-function isValidPlacement(position, charmType) {
-    const row = Math.floor(position / 10);
-    
-    // Row restrictions
-    if (charmType === 'grand-charm' && row > 1) return false;
-    if (charmType === 'large-charm' && row > 2) return false;
-    
-    // Small charm check
-    if (charmType === 'small-charm') {
-        return gridState[position] === null ? [position] : false;
-    }
-
-    // Check needed slots
-    const slots = [position];
-    if (charmType === 'large-charm') slots.push(position + 10);
-    if (charmType === 'grand-charm') slots.push(position + 10, position + 20);
-
-    // Validate all needed slots
-    for (const slot of slots) {
-        if (slot >= 40 || gridState[slot] !== null) return false;
-    }
-    
-    return slots;
-}
-
-function clearColumn(column) {
-    for (let row = 0; row < 4; row++) {
-        const position = row * 10 + column;
-        const slot = inventory.children[position];
-        if (slot) {
-            if (slot.classList.contains('small-charm') ||
-                slot.classList.contains('large-charm') ||
-                slot.classList.contains('grand-charm')) {
-                removeCharm(position);
-            }
-        }
+    if (slot) {
+        slot.className = 'charm1';
+        slot.textContent = '';
+        slot.style.gridRow = '';
+        slot.style.gridColumn = '';
     }
 }
 
+function validateColumn(column) {
+    const columnSlots = [];
+    for(let row = 0; row < 4; row++) {
+        columnSlots.push(inventory.children[row * 10 + column]);
+    }
 
-
-function validateGrid() {
-    // Check each position in the grid
-    for (let i = 0; i < 40; i++) {
-        const row = Math.floor(i / 10);
-        const slot = inventory.children[i];
-        
-        // Check for invalid grand charms (only allowed in rows 0-1)
+    // Remove invalid charms
+    columnSlots.forEach((slot, row) => {
         if (slot.classList.contains('grand-charm') && row > 1) {
-            removeCharm(i);
-            continue;
+            removeCharm(row * 10 + column);
         }
-        
-        // Check for invalid large charms (only allowed in rows 0-2)
         if (slot.classList.contains('large-charm') && row > 2) {
-            removeCharm(i);
-            continue;
+            removeCharm(row * 10 + column);
         }
-    }
+    });
+
+    // Remove overlapping charms
+    columnSlots.forEach((slot, row) => {
+        if (slot.classList.contains('grand-charm')) {
+            if (row + 1 < 4) removeCharm((row + 1) * 10 + column);
+            if (row + 2 < 4) removeCharm((row + 2) * 10 + column);
+        }
+        if (slot.classList.contains('large-charm')) {
+            if (row + 1 < 4) removeCharm((row + 1) * 10 + column);
+        }
+    });
 }
-
-
-
-
-
-
-
 
 modal.addEventListener('click', (event) => {
     if (!selectedSlot) return;
@@ -7453,31 +7416,27 @@ modal.addEventListener('click', (event) => {
     if (event.target.dataset.type) {
         const charmType = event.target.dataset.type;
         const position = getGridPosition(selectedSlot);
-        const column = position % 10;
+        const row = Math.floor(position / 10);
         
-        // Clear column and place new charm
-        clearColumn(column);
-        selectedSlot.className = 'charm1';
+        // Basic row validation
+        if ((charmType === 'grand-charm' && row > 1) || 
+            (charmType === 'large-charm' && row > 2)) {
+            return;
+        }
+
+        removeCharm(position);
         selectedSlot.classList.add(charmType);
         selectedSlot.textContent = charmType.replace('-', ' ');
-        
-        // Update grid state
-        if (charmType === 'grand-charm') {
-            gridState[position] = charmType;
-            gridState[position + 10] = charmType;
-            gridState[position + 20] = charmType;
-        } else if (charmType === 'large-charm') {
-            gridState[position] = charmType;
-            gridState[position + 10] = charmType;
-        } else {
-            gridState[position] = charmType;
-        }
-        
-        // Validate entire grid after placement
-        validateGrid();
+        validateColumn(position % 10);
     }
 
     if (event.target.dataset.property) {
+        if (!selectedSlot.classList.contains('small-charm') && 
+            !selectedSlot.classList.contains('large-charm') && 
+            !selectedSlot.classList.contains('grand-charm')) {
+            return;
+        }
+
         const charmProperty = event.target.dataset.property;
         const propertyDescription = {
             Stalwart: '(+20-30 Defense)',
@@ -7488,12 +7447,6 @@ modal.addEventListener('click', (event) => {
         selectedSlot.textContent += ` ${propertyDescription[charmProperty] || ''}`;
         modal.classList.remove('active');
     }
-});
-
-validateGrid();
-// Initialize on page load
-window.addEventListener('load', () => {
-    gridState.fill(null);
 });
 
 
