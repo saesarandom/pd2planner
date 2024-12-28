@@ -2393,9 +2393,12 @@ Defense
   <div class="modal-content">
     <span id="closeModal" class="close">&times;</span>
     <h2>Choose Charm Type</h2>
+    <div class="charm-types">
+      </div>
     <button data-type="small-charm">Small Charm</button>
     <button data-type="large-charm">Large Charm</button>
     <button data-type="grand-charm">Grand Charm</button>
+    <div class="prefixproperties" style="display: none;">
     <h3>Properties</h3>
     <div class="propertycontainer">
       <button data-property="Stout">Stout</button>
@@ -2453,6 +2456,26 @@ Defense
       <span id="fineValue">8</span>
     </div>
   </div>
+
+
+
+  <div class="suffixproperties" style="display: none;">
+    <h3>Suffix</h3>
+    <div class="propertycontainer">
+      <button data-property="OfVita">Of Vita</button>
+      <input type="range" id="ofVitaRange" min="16" max="20" value="16" class="propertyrange">
+      <span id="ofVitaValue">16</span>
+    </div>
+    
+      <div class="propertycontainer">
+        <button data-property="Blah">OfBlah</button>
+        <input type="range" id="blahRange" min="16" max="27" value="16" class="propertyrange">
+        <span id="blahValue">16</span>
+      </div>
+    </div>
+
+
+
 </div>
     
 </div>
@@ -7604,6 +7627,82 @@ inventory.addEventListener('click', (e) => {
 
 closeModal.addEventListener('click', () => modal.classList.remove('active'));
 
+const selectedProperties = {
+  prefix: null,
+  suffix: null
+};
+
+// Property descriptions
+const descriptions = {
+  Stout: 'Defense',
+  Stout2: 'Defense',
+  Burly: 'Defense',
+  Stalwart: 'Defense',
+  Red: 'to Minimum Damage',
+  Jagged: 'to Maximum Damage',
+  Bronze: 'to Attack Rating',
+  Bronze2: 'to Attack Rating',
+  Iron: 'to Attack Rating',
+  Steel: 'to Attack Rating',
+  Fine: 'to Maximum Damage and Attack Rating',
+  OfVita: 'to Life',
+  Blah: 'to Mana'
+};
+
+// Add event listeners for all range sliders
+document.querySelectorAll('.propertyrange').forEach(slider => {
+  slider.addEventListener('input', function() {
+    // Get the corresponding value span (remove 'Range' from id and add 'Value')
+    const valueId = this.id.replace('Range', 'Value');
+    const valueSpan = document.getElementById(valueId);
+    if (valueSpan) {
+      valueSpan.textContent = this.value;
+    }
+  });
+});
+
+// Add confirm buttons to modal
+const modalContent = document.querySelector('.modal-content');
+const confirmButtonsDiv = document.createElement('div');
+confirmButtonsDiv.id = 'confirmButtons';
+confirmButtonsDiv.style.display = 'none';
+confirmButtonsDiv.innerHTML = `
+  <button id="confirmProperties" class="confirm-btn">Confirm Properties</button>
+  <button id="cancelProperties" class="confirm-btn">Cancel</button>
+`;
+modalContent.appendChild(confirmButtonsDiv);
+
+// Style the buttons
+const style = document.createElement('style');
+style.textContent = `
+  .confirm-btn {
+    margin: 5px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #4a4a4a;
+    color: white;
+  }
+  .confirm-btn:hover {
+    background-color: #666;
+  }
+  .property-button {
+    background-color: #333;
+    color: white;
+    border: 1px solid #666;
+    margin: 2px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  .property-button.selected {
+    background-color: #666;
+    border-color: #999;
+  }
+`;
+document.head.appendChild(style);
+
+// Update modal event listener
 modal.addEventListener('click', (e) => {
   if (!selectedSlot) return;
   
@@ -7626,32 +7725,96 @@ modal.addEventListener('click', (e) => {
     
     markSlotsBelow(position, charmType);
     validateColumn(position % 10);
+    
+    document.querySelector('.prefixproperties').style.display = 'block';
+    document.querySelector('.suffixproperties').style.display = 'block';
+    document.querySelector('.charm-types').style.display = 'none';
+    confirmButtonsDiv.style.display = 'block';
   }
 
-  if (e.target.dataset.property && selectedSlot.classList.contains('charm1')) {
+  if (e.target.dataset.property) {
     const prop = e.target.dataset.property;
-    const value = document.getElementById(`${prop.toLowerCase()}Value`).textContent;
-    let charmName = selectedSlot.textContent.split(' ').slice(0, 2).join(' ');
+    // Check if the clicked button is within prefixproperties or suffixproperties
+    const isPrefixProperty = e.target.closest('.prefixproperties') !== null;
+    const isSuffixProperty = e.target.closest('.suffixproperties') !== null;
     
-    const descriptions = {
-      Stout: 'Defense',
-      Stout2: 'Defense',
-      Burly: 'Defense',
-      Stalwart: 'Defense',
-      Red: 'to Minimum Damage',
-      Jagged: 'to Maximum Damage',
-      Bronze: 'to Attack Rating',
-      Bronze2: 'to Attack Rating',
-      Iron: 'to Attack Rating',
-      Steel: 'to Attack Rating',
-      Fine: 'to Maximum Damage and Attack Rating'
-    };
-
-    selectedSlot.textContent = `${charmName} +${value} ${descriptions[prop]}`;
-    modal.classList.remove('active');
+    if (isPrefixProperty) {
+      selectedProperties.prefix = {
+        property: prop,
+        value: document.getElementById(`${prop.toLowerCase()}Value`).textContent
+      };
+      // Clear selection in prefix section
+      document.querySelectorAll('.prefixproperties button').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+    } else if (isSuffixProperty) {
+      selectedProperties.suffix = {
+        property: prop,
+        value: document.getElementById(`${prop.toLowerCase()}Value`).textContent
+      };
+      // Clear selection in suffix section
+      document.querySelectorAll('.suffixproperties button').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+    }
+    
+    // Add selected class to clicked button
+    e.target.classList.add('selected');
   }
 });
 
+// Add confirm properties handler
+document.getElementById('confirmProperties').addEventListener('click', () => {
+  if (!selectedSlot || (!selectedProperties.prefix && !selectedProperties.suffix)) return;
+  
+  let charmName = selectedSlot.textContent.split(' ').slice(0, 2).join(' ');
+  let description = '';
+  
+  if (selectedProperties.prefix) {
+    description += `+${selectedProperties.prefix.value} ${descriptions[selectedProperties.prefix.property]} `;
+  }
+  
+  if (selectedProperties.suffix) {
+    description += `+${selectedProperties.suffix.value} ${descriptions[selectedProperties.suffix.property]}`;
+  }
+  
+  selectedSlot.textContent = `${charmName} ${description.trim()}`;
+  
+  // Reset selections and close modal
+  selectedProperties.prefix = null;
+  selectedProperties.suffix = null;
+  modal.classList.remove('active');
+  document.querySelector('.prefixproperties').style.display = 'none';
+  document.querySelector('.suffixproperties').style.display = 'none';
+  document.querySelector('.charm-types').style.display = 'block';
+  confirmButtonsDiv.style.display = 'none';
+  
+  // Remove selected class from all buttons
+  document.querySelectorAll('.property-button').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+});
+
+// Add cancel properties handler
+document.getElementById('cancelProperties').addEventListener('click', () => {
+  selectedProperties.prefix = null;
+  selectedProperties.suffix = null;
+  modal.classList.remove('active');
+  document.querySelector('.prefixproperties').style.display = 'none';
+  document.querySelector('.suffixproperties').style.display = 'none';
+  document.querySelector('.charm-types').style.display = 'block';
+  confirmButtonsDiv.style.display = 'none';
+  
+  // Remove selected class from all buttons
+  document.querySelectorAll('.property-button').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+});
+
+// Add styling to property buttons
+document.querySelectorAll('[data-property]').forEach(button => {
+  button.classList.add('property-button');
+});
 </script>
   
 </body>
