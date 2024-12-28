@@ -695,6 +695,16 @@ body {
 
 }
 
+.propertycontainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.propertyrange {
+  width: 100px;
+}
 
 .charm1 {
   border: 1px solid rgb(164, 19, 19); /* Empty container */
@@ -2353,10 +2363,24 @@ Defense
     <button data-type="small-charm">Small Charm</button>
     <button data-type="large-charm">Large Charm</button>
     <button data-type="grand-charm">Grand Charm</button>
-    <h3>Properties</h3>
-    <button data-property="Stalwart">Stalwart (+20-30 Defense)</button>
-    <button data-property="Steel">Steel (+25-36 Attack Rating)</button>
-    <button data-property="Cobalt">Cobalt (+8-9% Cold Resistance)</button>
+    <<h3>Properties</h3>
+    <div class="propertycontainer">
+      <button data-property="Stalwart">Stalwart</button>
+      <input type="range" id="stalwartRange" min="20" max="30" value="25" class="propertyrange">
+      <span id="stalwartValue">20</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Steel">Steel</button>
+      <input type="range" id="steelRange" min="25" max="36" value="30" class="propertyrange">
+      <span id="steelValue">25</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Cobalt">Cobalt</button>
+      <input type="range" id="cobaltRange" min="8" max="9" value="8" class="propertyrange">
+      <span id="cobaltValue">8</span>
+    </div>
+  </div>
+</div>
     
   </div>
 </div>
@@ -7357,6 +7381,18 @@ const closeModal = document.getElementById('closeModal');
 let selectedSlot = null;
 
 // Basic event listeners
+
+document.getElementById('stalwartRange').addEventListener('input', (e) => {
+  document.getElementById('stalwartValue').textContent = e.target.value;
+});
+document.getElementById('steelRange').addEventListener('input', (e) => {
+  document.getElementById('steelValue').textContent = e.target.value;
+});
+document.getElementById('cobaltRange').addEventListener('input', (e) => {
+  document.getElementById('cobaltValue').textContent = e.target.value;
+});
+
+
 inventory.addEventListener('click', (event) => {
     if (event.target.classList.contains('charm1')) {
         selectedSlot = event.target;
@@ -7426,7 +7462,9 @@ modal.addEventListener('click', (event) => {
 
         removeCharm(position);
         selectedSlot.classList.add(charmType);
-        selectedSlot.textContent = charmType.replace('-', ' ');
+        selectedSlot.textContent = charmType.split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
         validateColumn(position % 10);
     }
 
@@ -7438,58 +7476,18 @@ modal.addEventListener('click', (event) => {
         }
 
         const charmProperty = event.target.dataset.property;
-        const propertyDescription = {
-            Stalwart: '(+20-30 Defense)',
-            Steel: '(+25-36 Attack Rating)',
-            Cobalt: '(+8-9% Cold Resistance)',
+        const propertyDescriptions = {
+          Stalwart: `+${document.getElementById('stalwartValue').textContent} Defense`,
+            Steel: `+${document.getElementById('steelValue').textContent} Attack Rating`,
+            Cobalt: `+${document.getElementById('cobaltValue').textContent}% Cold Resistance`
         };
 
-        selectedSlot.textContent += ` ${propertyDescription[charmProperty] || ''}`;
+        let charmName = selectedSlot.textContent.split(' ').slice(0, 2).join(' ');
+        selectedSlot.textContent = `${charmName} ${propertyDescriptions[charmProperty]}`;
         modal.classList.remove('active');
     }
 });
 
-
- 
-//these following code probably can be ignored, i just want to set condition that large charms cannot be put on row 4 and grand charm cannot be put on row 3 and 4)
-// const GRID_ROWS = 4;
-// const GRID_COLUMNS = 10;
-
-// // Function to validate placement you can probably ignore
-// function canPlaceCharm(type, startRow, startColumn) {
-//   // Determine the span of the charm based on its type
-//   const span = type === 'small-charm' ? 1 : type === 'large-charm' ? 2 : 3;
-
-//   // Check if the charm stays within grid bounds
-//   if (startRow + span - 1 > GRID_ROWS || startColumn > GRID_COLUMNS) {
-//     return false; // Out of bounds
-//   }
-
-//   return true;
-// }
-
-// // Example usage . you can ignore this..
-// function addCharm(type, startRow, startColumn) {
-//   // Validate placement
-//   if (!canPlaceCharm(type, startRow, startColumn)) {
-//     alert('Cannot place charm: Out of grid bounds!');
-//     return;
-//   }
-
-//   // If placement is valid, add the charm
-//   const charm = document.createElement('div');
-//   charm.classList.add('charm1', type);
-//   charm.style.gridRow = `${startRow} / span ${type === 'small-charm' ? 1 : type === 'large-charm' ? 2 : 3}`;
-//   charm.style.gridColumn = `${startColumn} / span 1`;
-//   inventory.appendChild(charm);
-// }
-
-// addCharm('grand-charm', 3, 1); // Invalid: Would span beyond row 4, shows alert
-//(204, 51, 0) barb
-//RGB: (34, 139, 34) dru
-//RGB: (102, 0, 153) necro
-//(255, 255, 204) pala
-//(0, 0, 255) sorc
 </script>
   
 </body>
