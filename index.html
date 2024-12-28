@@ -704,6 +704,9 @@ body {
 
 .propertyrange {
   width: 100px;
+  accent-color: red;
+  appearance: none;
+  background: rgb(22, 21, 21);
 }
 
 .charm1 {
@@ -719,7 +722,7 @@ body {
   
   /* Ensure border is included in size */
   box-sizing: border-box;
-  
+  text-align: center;
   /* Prevent any margin collapse */
   margin: 0;
   padding: 0;
@@ -727,7 +730,9 @@ body {
   white-space: normal; /* Add this */
   word-wrap: break-word; /* Add this */
   font-size: 12px; /* Add this to make text smaller */
-
+  justify-content: center !important;
+  align-items: center;
+  display: flex;
 }
 
 
@@ -745,6 +750,17 @@ body {
   display: none;
   font-size: 13px
 }
+
+.modal-content {
+  background: rgb(0, 0, 0);
+  padding: 20px;
+  border-radius: 5px;
+  max-height: 80vh;  /* Maximum height of 80% of viewport */
+  overflow-y: auto;  /* Enable vertical scrolling */
+  width: 90%;
+  max-width: 500px;  /* Maximum width */
+}
+
 
 .modal.active {
   display: block;
@@ -769,36 +785,53 @@ body {
     color: rgb(200, 30, 30);
 }
 
-/* Small Charm: 1 row, 1 column */
+
 .small-charm {
   /* grid-column: auto;
   grid-row-start: auto;
   grid-row-end: span 1; */
   height: 74px;
-  z-index: 1;
+  
   background-color: rgb(94, 5, 49);
 }
 
-/* Large Charm: 1 row, 2 columns */
+
 .large-charm {
   /* grid-column: auto;
   grid-row-start: auto;
   grid-row-end: span 2; */
   height: 148px; 
-  z-index: 1; 
+  
   background-color: rgb(56, 189, 85);
 }
 
-/* Grand Charm: 1 row, 3 columns */
+
 .grand-charm {
   /* grid-column: auto;
   grid-row-start: auto;
   grid-row-end: span 3; */
   height: 222px;
-  z-index: 1; 
+   
   background-color: rgb(50, 24, 119);
 }
 
+.marked-large {
+  background-color: rgba(15, 214, 58, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 24px !important;
+  color: white !important;
+}
+
+.marked-grand {
+  background-color: rgba(101, 73, 176, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 24px !important;
+  color: white !important;
+}
 
 .slider:hover {
   opacity: 1;
@@ -2363,26 +2396,66 @@ Defense
     <button data-type="small-charm">Small Charm</button>
     <button data-type="large-charm">Large Charm</button>
     <button data-type="grand-charm">Grand Charm</button>
-    <<h3>Properties</h3>
+    <h3>Properties</h3>
+    <div class="propertycontainer">
+      <button data-property="Stout">Stout</button>
+      <input type="range" id="stoutRange" min="1" max="1" value="1" class="propertyrange">
+      <span id="stoutValue">1</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Stout2">Stout</button>
+      <input type="range" id="stout2Range" min="4" max="8" value="4" class="propertyrange">
+      <span id="stout2Value">4</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Burly">Burly</button>
+      <input type="range" id="burlyRange" min="15" max="20" value="15" class="propertyrange">
+      <span id="burlyValue">15</span>
+    </div>
     <div class="propertycontainer">
       <button data-property="Stalwart">Stalwart</button>
-      <input type="range" id="stalwartRange" min="20" max="30" value="25" class="propertyrange">
+      <input type="range" id="stalwartRange" min="20" max="30" value="20" class="propertyrange">
       <span id="stalwartValue">20</span>
     </div>
     <div class="propertycontainer">
-      <button data-property="Steel">Steel</button>
-      <input type="range" id="steelRange" min="25" max="36" value="30" class="propertyrange">
-      <span id="steelValue">25</span>
+      <button data-property="Red">Red</button>
+      <input type="range" id="redRange" min="8" max="9" value="8" class="propertyrange">
+      <span id="redValue">8</span>
     </div>
     <div class="propertycontainer">
-      <button data-property="Cobalt">Cobalt</button>
-      <input type="range" id="cobaltRange" min="8" max="9" value="8" class="propertyrange">
-      <span id="cobaltValue">8</span>
+      <button data-property="Jagged">Jagged</button>
+      <input type="range" id="jaggedRange" min="8" max="9" value="8" class="propertyrange">
+      <span id="jaggedValue">8</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Bronze">Bronze</button>
+      <input type="range" id="bronzeRange" min="8" max="9" value="8" class="propertyrange">
+      <span id="bronzeValue">8</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Bronze2">Bronze</button>
+      <input type="range" id="bronze2Range" min="8" max="9" value="8" class="propertyrange">
+      <span id="bronze2Value">8</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Iron">Iron</button>
+      <input type="range" id="ironRange" min="8" max="9" value="8" class="propertyrange">
+      <span id="ironValue">8</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Steel">Steel</button>
+      <input type="range" id="steelRange" min="8" max="9" value="8" class="propertyrange">
+      <span id="steelValue">8</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Fine">Fine</button>
+      <input type="range" id="fineRange" min="8" max="9" value="8" class="propertyrange">
+      <span id="fineValue">8</span>
     </div>
   </div>
 </div>
     
-  </div>
+</div>
 </div>
 
 
@@ -7379,113 +7452,204 @@ const inventory = document.querySelector('.inventorycontainer');
 const modal = document.getElementById('charmModal');
 const closeModal = document.getElementById('closeModal');
 let selectedSlot = null;
+let draggedCharm = null;
 
-// Basic event listeners
-
-document.getElementById('stalwartRange').addEventListener('input', (e) => {
-  document.getElementById('stalwartValue').textContent = e.target.value;
-});
-document.getElementById('steelRange').addEventListener('input', (e) => {
-  document.getElementById('steelValue').textContent = e.target.value;
-});
-document.getElementById('cobaltRange').addEventListener('input', (e) => {
-  document.getElementById('cobaltValue').textContent = e.target.value;
-});
-
-
-inventory.addEventListener('click', (event) => {
-    if (event.target.classList.contains('charm1')) {
-        selectedSlot = event.target;
-        modal.classList.add('active');
+function isSlotAvailable(position, charmType) {
+  const row = Math.floor(position / 10);
+  const slotsNeeded = charmType === 'grand-charm' ? 3 : charmType === 'large-charm' ? 2 : 1;
+  
+  for(let i = 0; i < slotsNeeded; i++) {
+    const checkPosition = position + (i * 10);
+    if (checkPosition >= 40) return false;
+    
+    const slot = inventory.children[checkPosition];
+    if (slot && (slot.textContent !== '' && slot.textContent !== 'X')) {
+      return false;
     }
-});
+  }
 
-closeModal.addEventListener('click', () => {
-    modal.classList.remove('active');
-});
+  const currentSlot = inventory.children[position];
+  return !(currentSlot && currentSlot.textContent === 'X');
+}
 
-function getGridPosition(element) {
-    return Array.from(inventory.children).indexOf(element);
+function markSlotsBelow(position, charmType) {
+  const row = Math.floor(position / 10);
+  
+  if (charmType === 'large-charm' && row < 3) {
+    const slotBelow = inventory.children[position + 10];
+    if (slotBelow) {
+      slotBelow.textContent = 'X';
+      slotBelow.style.color = 'red';
+      slotBelow.style.backgroundColor = 'rgba(56, 189, 85, 0.5)';
+      slotBelow.style.fontSize = '24px';
+    }
+  }
+  else if (charmType === 'grand-charm' && row < 2) {
+    const slot1Below = inventory.children[position + 10];
+    const slot2Below = inventory.children[position + 20];
+    if (slot1Below) {
+      slot1Below.textContent = 'X';
+      slot1Below.style.color = 'red';
+      slot1Below.style.backgroundColor = 'rgba(50, 24, 119, 0.5)';
+      slot1Below.style.fontSize = '24px';
+    }
+    if (slot2Below) {
+      slot2Below.textContent = 'X';
+      slot2Below.style.color = 'red';
+      slot2Below.style.backgroundColor = 'rgba(50, 24, 119, 0.5)';
+      slot2Below.style.fontSize = '24px';
+    }
+  }
 }
 
 function removeCharm(position) {
-    const slot = inventory.children[position];
-    if (slot) {
-        slot.className = 'charm1';
-        slot.textContent = '';
-        slot.style.gridRow = '';
-        slot.style.gridColumn = '';
+  const slot = inventory.children[position];
+  if (slot) {
+    slot.className = 'charm1';
+    slot.textContent = '';
+    slot.style.backgroundColor = '';
+    slot.style.color = '';
+    slot.style.fontSize = '';
+    
+    const slot1Below = inventory.children[position + 10];
+    const slot2Below = inventory.children[position + 20];
+    if (slot1Below) {
+      slot1Below.className = 'charm1';
+      slot1Below.textContent = '';
+      slot1Below.style.backgroundColor = '';
+      slot1Below.style.color = '';
+      slot1Below.style.fontSize = '';
     }
+    if (slot2Below) {
+      slot2Below.className = 'charm1';
+      slot2Below.textContent = '';
+      slot2Below.style.backgroundColor = '';
+      slot2Below.style.color = '';
+      slot2Below.style.fontSize = '';
+    }
+  }
 }
 
 function validateColumn(column) {
-    const columnSlots = [];
-    for(let row = 0; row < 4; row++) {
-        columnSlots.push(inventory.children[row * 10 + column]);
+  const columnSlots = [];
+  for(let row = 0; row < 4; row++) {
+    columnSlots.push(inventory.children[row * 10 + column]);
+  }
+
+  const validBackgroundCells = new Set();
+
+  columnSlots.forEach((slot, row) => {
+    if (slot.textContent && slot.textContent !== 'X') {
+      if (slot.classList.contains('large-charm') && row <= 2) {
+        validBackgroundCells.add(row);
+        validBackgroundCells.add(row + 1);
+      } else if (slot.classList.contains('grand-charm') && row <= 1) {
+        validBackgroundCells.add(row);
+        validBackgroundCells.add(row + 1);
+        validBackgroundCells.add(row + 2);
+      }
     }
+  });
 
-    // Remove invalid charms
-    columnSlots.forEach((slot, row) => {
-        if (slot.classList.contains('grand-charm') && row > 1) {
-            removeCharm(row * 10 + column);
-        }
-        if (slot.classList.contains('large-charm') && row > 2) {
-            removeCharm(row * 10 + column);
-        }
-    });
-
-    // Remove overlapping charms
-    columnSlots.forEach((slot, row) => {
-        if (slot.classList.contains('grand-charm')) {
-            if (row + 1 < 4) removeCharm((row + 1) * 10 + column);
-            if (row + 2 < 4) removeCharm((row + 2) * 10 + column);
-        }
-        if (slot.classList.contains('large-charm')) {
-            if (row + 1 < 4) removeCharm((row + 1) * 10 + column);
-        }
-    });
+  columnSlots.forEach((slot, row) => {
+    if (!validBackgroundCells.has(row) && slot.textContent === 'X') {
+      slot.className = 'charm1';
+      slot.textContent = '';
+      slot.style.backgroundColor = '';
+      slot.style.color = '';
+      slot.style.fontSize = '';
+    }
+  });
 }
 
-modal.addEventListener('click', (event) => {
-    if (!selectedSlot) return;
+inventory.addEventListener('contextmenu', e => e.preventDefault());
+
+inventory.addEventListener('mousedown', (e) => {
+  if (e.button === 2 && e.target.classList.contains('charm1') && e.target.textContent && e.target.textContent !== 'X') {
+    draggedCharm = {
+      text: e.target.textContent,
+      classes: [...e.target.classList]
+    };
+  }
+});
+
+inventory.addEventListener('mouseup', (e) => {
+  if (draggedCharm && e.target.classList.contains('charm1')) {
+    const position = Array.from(inventory.children).indexOf(e.target);
+    const row = Math.floor(position / 10);
+    const charmType = draggedCharm.classes.find(cls => cls === 'large-charm' || cls === 'grand-charm');
     
-    if (event.target.dataset.type) {
-        const charmType = event.target.dataset.type;
-        const position = getGridPosition(selectedSlot);
-        const row = Math.floor(position / 10);
-        
-        // Basic row validation
-        if ((charmType === 'grand-charm' && row > 1) || 
-            (charmType === 'large-charm' && row > 2)) {
-            return;
-        }
-
-        removeCharm(position);
-        selectedSlot.classList.add(charmType);
-        selectedSlot.textContent = charmType.split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-        validateColumn(position % 10);
+    if ((charmType === 'grand-charm' && row > 1) ||
+        (charmType === 'large-charm' && row > 2) ||
+        !isSlotAvailable(position, charmType)) {
+      draggedCharm = null;
+      return;
     }
 
-    if (event.target.dataset.property) {
-        if (!selectedSlot.classList.contains('small-charm') && 
-            !selectedSlot.classList.contains('large-charm') && 
-            !selectedSlot.classList.contains('grand-charm')) {
-            return;
-        }
+    e.target.textContent = draggedCharm.text;
+    draggedCharm.classes.forEach(cls => e.target.classList.add(cls));
+    
+    if (charmType) markSlotsBelow(position, charmType);
+    validateColumn(position % 10);
+  }
+  draggedCharm = null;
+});
 
-        const charmProperty = event.target.dataset.property;
-        const propertyDescriptions = {
-          Stalwart: `+${document.getElementById('stalwartValue').textContent} Defense`,
-            Steel: `+${document.getElementById('steelValue').textContent} Attack Rating`,
-            Cobalt: `+${document.getElementById('cobaltValue').textContent}% Cold Resistance`
-        };
+inventory.addEventListener('click', (e) => {
+  if (e.target.classList.contains('charm1') && e.target.textContent !== 'X') {
+    selectedSlot = e.target;
+    modal.classList.add('active');
+  }
+});
 
-        let charmName = selectedSlot.textContent.split(' ').slice(0, 2).join(' ');
-        selectedSlot.textContent = `${charmName} ${propertyDescriptions[charmProperty]}`;
-        modal.classList.remove('active');
+closeModal.addEventListener('click', () => modal.classList.remove('active'));
+
+modal.addEventListener('click', (e) => {
+  if (!selectedSlot) return;
+  
+  if (e.target.dataset.type) {
+    const charmType = e.target.dataset.type;
+    const position = Array.from(inventory.children).indexOf(selectedSlot);
+    const row = Math.floor(position / 10);
+    
+    if ((charmType === 'grand-charm' && row > 1) || 
+        (charmType === 'large-charm' && row > 2) ||
+        !isSlotAvailable(position, charmType)) {
+      return;
     }
+
+    removeCharm(position);
+    selectedSlot.classList.add(charmType);
+    selectedSlot.textContent = charmType.split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+    
+    markSlotsBelow(position, charmType);
+    validateColumn(position % 10);
+  }
+
+  if (e.target.dataset.property && selectedSlot.classList.contains('charm1')) {
+    const prop = e.target.dataset.property;
+    const value = document.getElementById(`${prop.toLowerCase()}Value`).textContent;
+    let charmName = selectedSlot.textContent.split(' ').slice(0, 2).join(' ');
+    
+    const descriptions = {
+      Stout: 'Defense',
+      Stout2: 'Defense',
+      Burly: 'Defense',
+      Stalwart: 'Defense',
+      Red: 'to Minimum Damage',
+      Jagged: 'to Maximum Damage',
+      Bronze: 'to Attack Rating',
+      Bronze2: 'to Attack Rating',
+      Iron: 'to Attack Rating',
+      Steel: 'to Attack Rating',
+      Fine: 'to Maximum Damage and Attack Rating'
+    };
+
+    selectedSlot.textContent = `${charmName} +${value} ${descriptions[prop]}`;
+    modal.classList.remove('active');
+  }
 });
 
 </script>
