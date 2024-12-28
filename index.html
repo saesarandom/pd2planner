@@ -752,13 +752,18 @@ body {
 }
 
 .modal-content {
+  /* display: flex; */
   background: rgb(0, 0, 0);
-  padding: 20px;
+  padding: 5px;
   border-radius: 5px;
   max-height: 80vh;  /* Maximum height of 80% of viewport */
   overflow-y: auto;  /* Enable vertical scrolling */
+  
   width: 90%;
-  max-width: 500px;  /* Maximum width */
+  max-width: 400px;  /* Maximum width */
+  /* flex-wrap: wrap;
+  box-sizing: border-box;
+  white-space: nowrap; */
 }
 
 
@@ -767,8 +772,8 @@ body {
 }
 
 .modal button {
-  margin: 5px;
-  padding: 10px;
+  margin: 3px;
+  padding: 5px;
 }
 
 .close {
@@ -815,7 +820,7 @@ body {
   background-color: rgb(50, 24, 119);
 }
 
-.marked-large {
+/* .marked-large {
   background-color: rgba(15, 214, 58, 0.5) !important;
   display: flex !important;
   align-items: center !important;
@@ -831,7 +836,7 @@ body {
   justify-content: center !important;
   font-size: 24px !important;
   color: white !important;
-}
+} */
 
 .slider:hover {
   opacity: 1;
@@ -2399,7 +2404,7 @@ Defense
     <button data-type="large-charm">Large Charm</button>
     <button data-type="grand-charm">Grand Charm</button>
     <div class="prefixproperties" style="display: none;">
-    <h3>Properties</h3>
+    <h3>Prefix</h3>
     <div class="propertycontainer">
       <button data-property="Stout">Stout</button>
       <input type="range" id="stoutRange" min="1" max="1" value="1" class="propertyrange">
@@ -2422,49 +2427,233 @@ Defense
     </div>
     <div class="propertycontainer">
       <button data-property="Red">Red</button>
-      <input type="range" id="redRange" min="8" max="9" value="8" class="propertyrange">
-      <span id="redValue">8</span>
+      <input type="range" id="redRange" min="1" max="1" value="1" class="propertyrange">
+      <span id="redValue">1</span>
     </div>
     <div class="propertycontainer">
       <button data-property="Jagged">Jagged</button>
-      <input type="range" id="jaggedRange" min="8" max="9" value="8" class="propertyrange">
-      <span id="jaggedValue">8</span>
+      <input type="range" id="jaggedRange" min="1" max="1" value="1" class="propertyrange">
+      <span id="jaggedValue">1</span>
     </div>
     <div class="propertycontainer">
       <button data-property="Bronze">Bronze</button>
-      <input type="range" id="bronzeRange" min="8" max="9" value="8" class="propertyrange">
+      <input type="range" id="bronzeRange" min="2" max="4" value="2" class="propertyrange">
       <span id="bronzeValue">8</span>
     </div>
     <div class="propertycontainer">
       <button data-property="Bronze2">Bronze</button>
-      <input type="range" id="bronze2Range" min="8" max="9" value="8" class="propertyrange">
+      <input type="range" id="bronze2Range" min="6" max="12" value="6" class="propertyrange">
       <span id="bronze2Value">8</span>
     </div>
     <div class="propertycontainer">
       <button data-property="Iron">Iron</button>
-      <input type="range" id="ironRange" min="8" max="9" value="8" class="propertyrange">
-      <span id="ironValue">8</span>
+      <input type="range" id="ironRange" min="13" max="24" value="13" class="propertyrange">
+      <span id="ironValue">13</span>
     </div>
     <div class="propertycontainer">
       <button data-property="Steel">Steel</button>
-      <input type="range" id="steelRange" min="8" max="9" value="8" class="propertyrange">
-      <span id="steelValue">8</span>
+      <input type="range" id="steelRange" min="25" max="36" value="25" class="propertyrange">
+      <span id="steelValue">25</span>
     </div>
     <div class="propertycontainer">
       <button data-property="Fine">Fine</button>
-      <input type="range" id="fineRange" min="8" max="9" value="8" class="propertyrange">
-      <span id="fineValue">8</span>
+      <input type="range" id="fineRange" min="1" max="3" value="1" class="propertyrange">
+      <span id="fineValue">1</span>
     </div>
+    <div class="propertycontainer">
+      <button data-property="Lizards">Lizard's</button>
+      <input type="range" id="lizardsRange" min="1" max="2" value="1" class="propertyrange">
+      <span id="lizardsValue">1</span>
+    </div>
+    <div class="propertycontainer">
+      <button data-property="Lizards2">Lizard's</button>
+      <input type="range" id="lizards2Range" min="3" max="7" value="3" class="propertyrange">
+      <span id="lizards2Value">3</span>
+    </div>
+      <div class="propertycontainer">
+        <button data-property="Snakes">Snake's</button>
+        <input type="range" id="snakesRange" min="8" max="12" value="8" class="propertyrange">
+        <span id="snakesValue">8</span>
+    </div>
+      <div class="propertycontainer">
+        <button data-property="Serpents">Serpent's</button>
+        <input type="range" id="serpentsRange" min="13" max="17" value="13" class="propertyrange">
+        <span id="serpentsValue">13</span>
+    </div>
+      <div class="propertycontainer">
+        <button data-property="Shimmering">Shimmering</button>
+        <input type="range" id="shimmeringRange" min="3" max="5" value="3" class="propertyrange">
+        <span id="shimmeringValue">3</span>
+    </div>
+      <div class="propertycontainer">
+        <button data-property="Azure">Azure</button>
+        <input type="range" id="azureRange" min="3" max="5" value="3" class="propertyrange">
+      <span id="azureValue">3</span>
+   </div>
+   <div class="propertycontainer">
+    <button data-property="Lapis">Lapis</button>
+    <input type="range" id="lapisRange" min="6" max="7" value="6" class="propertyrange">
+  <span id="lapisValue">6</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Cobalt">Cobalt</button>
+  <input type="range" id="cobaltRange" min="8" max="9" value="8" class="propertyrange">
+<span id="cobaltValue">8</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Sapphire">Sapphire</button>
+  <input type="range" id="sapphireRange" min="10" max="11" value="10" class="propertyrange">
+<span id="sapphireValue">10</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Crimson">Crimson</button>
+  <input type="range" id="crimsonRange" min="3" max="5" value="3" class="propertyrange">
+<span id="crimsonValue">3</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Russet">Russet</button>
+  <input type="range" id="russetRange" min="6" max="7" value="6" class="propertyrange">
+<span id="russetValue">6</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Garnet">Garnet</button>
+  <input type="range" id="garnetRange" min="8" max="9" value="8" class="propertyrange">
+<span id="garnetValue">8</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Ruby">Ruby</button>
+  <input type="range" id="rubyRange" min="10" max="11" value="10" class="propertyrange">
+<span id="rubyValue">10</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Tangerine">Tangerine</button>
+  <input type="range" id="tangerineRange" min="3" max="5" value="3" class="propertyrange">
+<span id="tangerineValue">3</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Ocher">Ocher</button>
+  <input type="range" id="ocherRange" min="6" max="7" value="6" class="propertyrange">
+<span id="ocherValue">6</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Coral">Coral</button>
+  <input type="range" id="coralRange" min="8" max="9" value="8" class="propertyrange">
+<span id="coralValue">8</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Amber">Amber</button>
+  <input type="range" id="amberRange" min="10" max="11" value="10" class="propertyrange">
+<span id="amberValue">10</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Beryl">Beryl</button>
+  <input type="range" id="berylRange" min="3" max="5" value="3" class="propertyrange">
+<span id="berylValue">3</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Viridian">Viridian</button>
+  <input type="range" id="viridianRange" min="6" max="7" value="6" class="propertyrange">
+<span id="viridianValue">6</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Jade">Jade</button>
+  <input type="range" id="jadeRange" min="8" max="9" value="8" class="propertyrange">
+<span id="jadeValue">8</span>
+</div>   
+<div class="propertycontainer">
+  <button data-property="Emerald">Emerald</button>
+  <input type="range" id="emeraldRange" min="10" max="11" value="10" class="propertyrange">
+<span id="emeraldValue">10</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Snowy">Snowy</button>
+  <input type="range" id="snowyRange" min="2" max="4" value="2" class="propertyrange">
+<span id="snowyValue">2</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Shivering">Shivering</button>
+  <input type="range" id="shiveringRange" min="4" max="8" value="4" class="propertyrange">
+<span id="shiveringValue">4</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Boreal">Boreal</button>
+  <input type="range" id="borealRange" min="8" max="16" value="8" class="propertyrange">
+<span id="borealValue">8</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Hibernal">Hibernal</button>
+  <input type="range" id="hibernalRange" min="13" max="27" value="13" class="propertyrange">
+<span id="hibernalValue">13</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Fiery">Fiery</button>
+  <input type="range" id="fieryRange" min="1" max="3" value="1" class="propertyrange">
+<span id="fieryValue">1</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Smoldering">Smoldering</button>
+  <input type="range" id="smolderingRange" min="3" max="10" value="3" class="propertyrange">
+<span id="smolderingValue">3</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Smoking">Smoking</button>
+  <input type="range" id="smokingRange" min="9" max="19" value="8" class="propertyrange">
+<span id="smokingValue">9</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Flaming">Flaming</button>
+  <input type="range" id="flamingRange" min="19" max="29" value="19" class="propertyrange">
+<span id="flamingValue">19</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Static">Static</button>
+  <input type="range" id="staticRange" min="1" max="11" value="1" class="propertyrange">
+<span id="staticValue">1</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Glowing">Glowing</button>
+  <input type="range" id="glowingRange" min="1" max="17" value="1" class="propertyrange">
+<span id="glowingValue">1</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Arcing">Arcing</button>
+  <input type="range" id="arcingRange" min="1" max="30" value="1" class="propertyrange">
+<span id="arcingValue">1</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Shocking">Shocking</button>
+  <input type="range" id="shockingRange" min="1" max="50" value="1" class="propertyrange">
+<span id="shockingValue">1</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Septic">Septic</button>
+  <input type="range" id="septicRange" min="4" max="4" value="4" class="propertyrange">
+<span id="septicValue">4</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Foul">Foul</button> 
+  <input type="range" id="foulRange" min="13" max="13" value="13" class="propertyrange">
+<span id="foulValue">13</span>
+</div>
+<div class="propertycontainer">
+  <button data-property="Toxic">Toxic</button>
+  <input type="range" id="toxicRange" min="25" max="25" value="25" class="propertyrange">
+<span id="toxicValue">25</span> 
+</div>
+<div class="propertycontainer">
+  <button data-property="Pestilent">Pestilent</button>
+  <input type="range" id="pestilentRange" min="65" max="65" value="65" class="propertyrange">
+<span id="pestilentValue">65</span>
   </div>
-
+</div>
 
 
   <div class="suffixproperties" style="display: none;">
     <h3>Suffix</h3>
     <div class="propertycontainer">
-      <button data-property="OfVita">Of Vita</button>
-      <input type="range" id="ofVitaRange" min="16" max="20" value="16" class="propertyrange">
-      <span id="ofVitaValue">16</span>
+      <button data-property="Ofvita">Of Vita</button>
+      <input type="range" id="ofvitaRange" min="16" max="20" value="16" class="propertyrange">
+      <span id="ofvitaValue">16</span>
     </div>
     
       <div class="propertycontainer">
@@ -7644,8 +7833,45 @@ const descriptions = {
   Bronze2: 'to Attack Rating',
   Iron: 'to Attack Rating',
   Steel: 'to Attack Rating',
-  Fine: 'to Maximum Damage and Attack Rating',
-  OfVita: 'to Life',
+  Fine: 'to Maximum Damage/AttR',
+  Lizards: 'to Mana',
+  Lizards2: 'to Mana',
+  Snakes: 'to Mana',
+  Serpents: 'to Mana',
+  Shimmering: 'to All Resistances',
+  Azure: '% to Cold Resist',
+  Lapis: '% to Cold Resist',
+  Cobalt: '% to Cold Resist',
+  Sapphire: '% to Cold Resist',
+  Crimson: '% to Fire Resist',
+  Russet: '% to Fire Resist',
+  Garnet: '% to Fire Resist',
+  Ruby: '% to Fire Resist',
+  Tangerine: '% to Lightning Resist',
+  Ocher: '% to Lightning Resist',
+  Coral: '% to Lightning Resist',
+  Amber: '% to Lightning Resist',
+  Beryl: '% to Poison Resist',
+  Viridian: '% to Poison Resist',
+  Jade: '% to Poison Resist',
+  Emerald: '% to Poison Resist',
+  Snowy: 'Cold Damage',
+  Shivering: 'Cold Damage',
+  Boreal: 'Cold Damage',
+  Hibernal: 'Cold Damage',
+  Fiery: 'Fire Damage',
+  Smoldering: 'Fire Damage',
+  Smoking: 'Fire Damage',
+  Flaming: 'Fire Damage',
+  Static: 'Lightning Damage',
+  Glowing: 'Lightning Damage',
+  Arcing: 'Lightning Damage',
+  Shocking: 'Lightning Damage',
+  Septic: 'Poison Damage',
+  Foul: 'Poison Damage',
+  Toxic: 'Poison Damage',
+  Pestilent: 'Poison Damage',
+  Ofvita: 'to Life',
   Blah: 'to Mana'
 };
 
