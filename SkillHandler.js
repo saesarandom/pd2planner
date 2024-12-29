@@ -844,17 +844,19 @@ class SkillHandler {
 
     // Handle poison type skills
     if ((skillName === "poisonJavelin" || skillName === "plagueJavelin")) {
-        return {
-            level,
-            name: skill.name,
-            description: skill.description,
-            damage: {
-                min: Math.floor((skill.levelData.poisonDamage.min[level - 1] || 0) * synergyMultiplier),
-                max: Math.floor((skill.levelData.poisonDamage.max[level - 1] || 0) * synergyMultiplier)
-            },
-            manaCost: calculateValue(skill.levelData.manaCost)
-        };
-    }
+      return {
+          level,
+          name: skill.name,
+          description: skill.description,
+          damage: {
+              type: 'poison',
+              min: Math.floor((skill.levelData.poisonDamage.min[level - 1] || 0) * synergyMultiplier),
+              max: Math.floor((skill.levelData.poisonDamage.max[level - 1] || 0) * synergyMultiplier)
+          },
+          manaCost: calculateValue(skill.levelData.manaCost)
+          
+      };
+  }
 
     //handle fire type skills
 
@@ -864,12 +866,32 @@ class SkillHandler {
           name: skill.name,
           description: skill.description,
           damage: {
+              type: 'fire',
               min: Math.floor((skill.levelData.fireDamage.min[level - 1] || 0) * synergyMultiplier),
               max: Math.floor((skill.levelData.fireDamage.max[level - 1] || 0) * synergyMultiplier)
           },
-          manaCost: calculateValue(skill.levelData.manaCost)
+          manaCost: calculateValue(skill.levelData.manaCost),
+          attackRating: Math.floor(calculateValue(skill.levelData.attackRating))
       };
   }
+
+  // Handle lightning damage skills
+  if (skillName === "lightningStrike" || skillName === "lightningBolt" || 
+    skillName === "powerStrike" || skillName === "lightningFury") {
+    return {
+        level,
+        name: skill.name,
+        description: skill.description,
+        damage: {
+            type: 'lightning',
+            min: 1, // Lightning skills always have min damage of 1
+            max: Math.floor((skill.levelData.lightningDamage.max[level - 1] || 0) * synergyMultiplier)
+        },
+        manaCost: calculateValue(skill.levelData.manaCost),
+        attackRating: calculateValue(skill.levelData.attackRating)
+    };
+}
+
 
     if (skillName === "javelinAndSpearMastery") {
       return {

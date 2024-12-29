@@ -146,3 +146,90 @@ updateVisibility();
 
 
 
+function handleSkillKeyDown(e) {
+    // Allow backspace, delete, and arrow keys
+    if (e.key === 'Backspace' || e.key === 'Delete' || e.key.includes('Arrow')) {
+        return true;
+    }
+
+    // Only allow numbers
+    if (!/^\d$/.test(e.key)) {
+        e.preventDefault();
+        return false;
+    }
+
+    const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
+    const skillAvailabilityLevel = getSkillAvailabilityLevel(this);
+    const maxAllowedPoints = getMaxAllowedPoints(currentLevel, skillAvailabilityLevel);
+    
+    // Calculate what the new value would be
+    const newValue = parseInt(this.value + e.key) || 0;
+    
+    // Check if it would exceed skill-specific limit
+    if (skillAvailabilityLevel > currentLevel || newValue > maxAllowedPoints) {
+        e.preventDefault();
+        showWarning(`Cannot exceed ${maxAllowedPoints} points in this skill at level ${currentLevel}!`, true);
+        return false;
+    }
+
+    // Check total points
+    const skillInputs = document.querySelectorAll('[id$="skillscontainer"] input[type="number"]');
+    const currentTotal = Array.from(skillInputs)
+        .reduce((sum, inp) => sum + (parseInt(inp.value) || 0), 0);
+    const maxTotal = currentLevel + 11;
+    
+    if (currentTotal - (parseInt(this.value) || 0) + newValue > maxTotal) {
+        e.preventDefault();
+        showWarning(`Cannot exceed ${maxTotal} total skill points!`, true);
+        return false;
+    }
+}
+
+function handleSkillInput(e) {
+    const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
+    const skillAvailabilityLevel = getSkillAvailabilityLevel(this);
+    const maxAllowedPoints = getMaxAllowedPoints(currentLevel, skillAvailabilityLevel);
+    
+    let newValue = parseInt(this.value) || 0;
+    
+    // Check skill-specific limit
+    if (newValue > maxAllowedPoints) {
+        this.value = maxAllowedPoints;
+        newValue = maxAllowedPoints;
+        showWarning(`Cannot exceed ${maxAllowedPoints} points in this skill at level ${currentLevel}!`, true);
+    }
+
+    // Check total points
+    const skillInputs = document.querySelectorAll('[id$="skillscontainer"] input[type="number"]');
+    const currentTotal = Array.from(skillInputs)
+        .reduce((sum, inp) => sum + (parseInt(inp.value) || 0), 0);
+    const maxTotal = currentLevel + 11;
+    
+    if (currentTotal > maxTotal) {
+        this.value = Math.max(0, newValue - (currentTotal - maxTotal));
+        showWarning(`Cannot exceed ${maxTotal} total skill points!`, true);
+    }
+
+    // Update remaining points warning
+    const remainingPoints = maxTotal - currentTotal;
+    if (remainingPoints === 0) {
+        showWarning('You have used all available skill points!', false);
+    } else if (remainingPoints <= currentLevel / 7) {
+        showWarning(`Only ${remainingPoints} skill points remaining!`, false);
+    }
+
+    // Update damage calculations if needed
+    if (this.id === document.getElementById('left-skill')?.value) {
+        updateDamageCalculations();
+    }
+}
+
+// Add this to the bottom of your existing DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', function() {
+    const skillInputs = document.querySelectorAll('[id$="skillscontainer"] input[type="number"]');
+    
+    skillInputs.forEach(input => {
+        input.addEventListener('keydown', handleSkillKeyDown);
+        input.addEventListener('input', handleSkillInput);
+    });
+});

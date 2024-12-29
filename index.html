@@ -6059,7 +6059,7 @@ disableInputs();
     const selectedSkillContainer = document.getElementById('left-skill')?.value;
     const selectedSkillName = skillNameMap[selectedSkillContainer];
     const currentSkillLevel = parseInt(document.getElementById(selectedSkillContainer)?.value || 0);
-    
+    const skillInfo = skillHandler.getSkillInfo(selectedSkillName, currentSkillLevel);
     // Get skill damage
     const skillDamage = skillHandler.getSkillDamage(selectedSkillName, currentSkillLevel);
     
@@ -6071,8 +6071,32 @@ disableInputs();
     totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
     totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
     
+
+    if (skillInfo) {
+        if (skillInfo.damage.type === 'poison') {
+            // For poison damage, display direct values
+            document.getElementById('damageOutput').textContent = 
+                `${skillInfo.damage.min}-${skillInfo.damage.max} poison damage over 2 seconds`;
+        } else if (skillInfo.lightningDamage) {
+            // For lightning damage
+            document.getElementById('damageOutput').textContent = 
+                `1-${skillInfo.lightningDamage} lightning`;
+        } else {
+            // For physical/weapon-based skills
+            let totalMinDmg = baseMinDmg * (1 + (skillInfo.damage?.min || 0)/100 + totalStr * 1.1/100);
+            let totalMaxDmg = baseMaxDmg * (1 + (skillInfo.damage?.max || 0)/100 + totalStr * 1.1/100);
+            document.getElementById('damageOutput').textContent = 
+                `${Math.floor(totalMinDmg)}-${Math.floor(totalMaxDmg)}`;
+        }
+    }
+
+
+
+console.log(skillInfo.damage.min);
+
+
     // Update UI
-    document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg}`;
+//     document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg}`;
 }
 
 // Add event listeners
@@ -6080,6 +6104,15 @@ document.getElementById('left-skill').addEventListener('change', updateDamageCal
 document.querySelectorAll('[id$="skillscontainer"] input[type="number"]').forEach(input => {
     input.addEventListener('input', updateDamageCalculations);
 });
+
+function setupSkillListeners() {
+    document.querySelectorAll('[id$="container"]').forEach(input => {
+        input.addEventListener('input', updateDamageCalculations);
+    });
+}
+
+// Call this on page load
+document.addEventListener('DOMContentLoaded', setupSkillListeners);
 
 } 
 
@@ -7243,28 +7276,28 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     };
 
-    function getSkillDamage(skillInfo, skillName) {
-        if ((skillName === "poisonJavelin" || skillName === "plagueJavelin") && skillInfo.damage?.min !== undefined) {
-            return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
-        }
+    // function getSkillDamage(skillInfo, skillName) {
+    //     if ((skillName === "poisonJavelin" || skillName === "plagueJavelin") && skillInfo.damage?.min !== undefined) {
+    //         return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
+    //     }
         
-        if ((skillName === "powerStrike" || skillName === "lightningBolt" || 
-             skillName === "lightningStrike" || skillName === "lightningFury") && 
-             skillInfo.lightningDamage) {
-            return `${skillInfo.lightningDamage.min || 1}-${skillInfo.lightningDamage}`;
-        }
+    //     if ((skillName === "powerStrike" || skillName === "lightningBolt" || 
+    //          skillName === "lightningStrike" || skillName === "lightningFury") && 
+    //          skillInfo.lightningDamage) {
+    //         return `${skillInfo.lightningDamage.min || 1}-${skillInfo.lightningDamage}`;
+    //     }
 
-        if (skillInfo.damage && typeof skillInfo.damage === 'object') {
-            return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
-        }
+    //     if (skillInfo.damage && typeof skillInfo.damage === 'object') {
+    //         return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
+    //     }
 
-        if (skillInfo.damage) {
+    //     if (skillInfo.damage) {
            
-            return skillInfo.damage;
-        }
+    //         return skillInfo.damage;
+    //     }
 
-        return '0';
-    }
+    //     return '0';
+    // }
 
 
 
@@ -7283,45 +7316,61 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     let baseMinDmg = parseInt(document.getElementById('onehandmindmgcontainer')?.textContent || 0);
     let baseMaxDmg = parseInt(document.getElementById('onehandmaxdmgcontainer')?.textContent || 0);
-    const skillMinDmg = skillInfo?.damage?.min || 0;
-    const skillMaxDmg = skillInfo?.damage?.max || 0;
-    
-
-    // Get skill info and damage
-   
     let totalStr = parseInt(document.getElementById('straccr')?.textContent || 0);
-    let totalMinDmg = baseMinDmg * (1+skillMinDmg/100  + totalStr * 1.1/100);
-    let totalMaxDmg = baseMaxDmg * (1+skillMaxDmg/100 + totalStr * 1.1/100);
-      let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
-      let totalFlatLightDmg = parseInt(document.getElementById('flatlightcontainer')?.textContent || 0);
-      let totalFlatFireDmg = parseInt(document.getElementById('flatfirecontainer')?.textContent || 0);
-      let totalFlatMagicDmg = parseInt(document.getElementById('flatmagiccontainer')?.textContent || 0);
-    if (skillInfo) {
-        // Changed from levelOutput to jabValueOutput and using currentSkillLevel
+    
+    // Get flat damage additions
+    let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
+    let totalFlatLightDmg = parseInt(document.getElementById('flatlightcontainer')?.textContent || 0);
+    let totalFlatFireDmg = parseInt(document.getElementById('flatfirecontainer')?.textContent || 0);
+    let totalFlatMagicDmg = parseInt(document.getElementById('flatmagiccontainer')?.textContent || 0);
+
+    if (skillInfo && skillInfo.damage) {
+        // Handle different damage types
+        switch(skillInfo.damage.type) {
+            case 'poison':
+                document.getElementById('damageOutput').textContent = 
+                    `${skillInfo.damage.min}-${skillInfo.damage.max} Poison Damage`;
+                break;
+
+            case 'lightning':
+                document.getElementById('damageOutput').textContent = 
+                    `${skillInfo.damage.min}-${skillInfo.damage.max} Lightning Damage`;
+                break;
+
+                case 'cold':
+                document.getElementById('damageOutput').textContent = 
+                    `${skillInfo.damage.min}-${skillInfo.damage.max} Cold Damage`;
+                break;
+
+                case 'fire':
+                document.getElementById('damageOutput').textContent = 
+                    `${skillInfo.damage.min}-${skillInfo.damage.max} Fire Damage`;
+                break;
+
+            default:
+                // Physical/enhanced damage skills with flat damage additions
+                let totalMinDmg = baseMinDmg;
+                let totalMaxDmg = baseMaxDmg;
+                
+                if (typeof skillInfo.damage === 'object') {
+                    totalMinDmg = Math.floor(baseMinDmg * (1 + skillInfo.damage.min/100 + totalStr * 1.1/100));
+                    totalMaxDmg = Math.floor(baseMaxDmg * (1 + skillInfo.damage.max/100 + totalStr * 1.1/100));
+                }
+                
+                // Add flat damages
+                totalMinDmg = Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg);
+                totalMaxDmg = Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg);
+                
+                document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg} Phys/Ele Damage`;
+                break;
+        }
+
+        // Update other displays
         document.getElementById('jabValueOutput').textContent = currentSkillLevel;
-        // ...rest of the code...
-    }
-
-    
-  
-    
-    if (totalStr > 0) {
-        totalMinDmg =+ Math.floor(totalMinDmg  + totalFlatColdDmg);
-        totalMaxDmg =+ Math.floor(totalMaxDmg  + totalFlatColdDmg);
-        
-    }
-
-    totalMinDmg = damageCalculator.applyToDamage(baseMinDmg, skillMinDmg, totalStr * 1.1/100);
-    totalMaxDmg = damageCalculator.applyToDamage(baseMaxDmg, skillMaxDmg, totalStr * 1.1/100);
-   
-     document.getElementById('straccr').addEventListener('input', updateDamageCalculations);    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {     document.getElementById(id).addEventListener('change', function() {                 updateDamageCalculations();     }); });
-   
-        document.getElementById('damageOutput').textContent = `${Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}-${Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg)}`;
-        document.getElementById('attackRatingOutput').textContent = `${Math.floor(skillInfo.attackRating || 0)}%`;
+        document.getElementById('attackRatingOutput').textContent = `${skillInfo.attackRating || 0}%`;
         document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0).toFixed(1);
-    
+    }
 }
-
 function setupEquipmentListeners() {
     const equipmentSlots = ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'];
     const strInput = document.getElementById('str');
@@ -7506,15 +7555,18 @@ function checkSkillPoints() {
       
     const remainingPoints = maxPoints - totalPointsUsed;
     
-    if (totalPointsUsed > maxPoints) {
-        showWarning(`Exceeded maximum skill points (${maxPoints})!`, true);
-        return false;
-    } else if (remainingPoints === 0) {
-        showWarning('You have used all available skill points!');
-    } else if (remainingPoints <= lvlValue.value / 7) {
-        showWarning(`Only ${remainingPoints} skill points remaining!`);
-    }
-    return true;
+    document.addEventListener('DOMContentLoaded', function() {
+    const skillInputs = document.querySelectorAll('[id$="skillscontainer"] input[type="number"]');
+    
+    skillInputs.forEach(input => {
+        // Add event listeners for both input and keydown events
+        input.addEventListener('input', handleSkillInput);
+        input.addEventListener('keydown', handleKeyDown);
+        input.addEventListener('paste', handlePaste);
+    });
+});
+
+
 }
 
 skillInputs.forEach(input => {
@@ -7590,6 +7642,10 @@ document.querySelector('.menucontainer').addEventListener('change', function(e) 
     }
 });
 function resetAllSkillInputs() {
+  const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+        levelInput.value = "1";
+    }
     // Reset Amazon skills
     const amazonSkills = document.querySelectorAll('#javelinandspearskillscontainer input[type="number"], #passiveskillscontainer input[type="number"], #bowandcrossbowskillscontainer input[type="number"]');
     
@@ -7611,6 +7667,8 @@ function resetAllSkillInputs() {
     document.getElementById('attackRatingOutput').textContent = '0%';
     document.getElementById('damageOutput').textContent = '0';
     document.getElementById('manaCostOutput').textContent = '0';
+    
+    
 }
 
 function updateSkillDropdown(className) {
@@ -7632,6 +7690,7 @@ function updateSkillDropdown(className) {
             { value: 'chargedstrikecontainer', text: 'Charged Strike' },
             { value: 'plaguejavelincontainer', text: 'Plague Javelin' },
             { value: 'lightningstrikecontainer', text: 'Lightning Strike' },
+            { value: 'lightningfurycontainer', text: 'Lightning Fury' },
             { value: 'decoycontainer', text: 'Decoy' },
             { value: 'valkyriecontainer', text: 'Valkyrie' },
             { value: 'magicarrowcontainer', text: 'Magic Arrow' },
