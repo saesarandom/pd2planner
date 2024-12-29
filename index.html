@@ -837,6 +837,23 @@ body {
   color: white !important;
 } */
 
+#saveButton {
+  display: flex;
+    align-items: center;
+    font-family: bahnschrift condensed;
+    justify-content: center; /* Added to center content horizontally */
+    background-color: #010201;
+    color: rgb(159, 11, 11);
+    opacity: 1;
+    margin-left: 284px;
+    box-shadow: 8px 15px 40px yellow;
+    height: 90px;
+    width: 120px;
+    cursor: pointer;
+    padding: 0; /* Remove padding to maintain exact dimensions */
+    box-sizing: border-box; 
+}
+
 .slider:hover {
   opacity: 1;
 }
@@ -8259,5 +8276,65 @@ document.querySelectorAll('[data-property]').forEach(button => {
 });
 </script>
   
+<button id="saveButton">Save as hexcode HTML</button>
+
+<script>
+     function generateHexCode() {
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let hexCode = "";
+            for (let i = 0; i < 7; i++) {
+                hexCode += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return hexCode;
+        }
+
+    document.getElementById("saveButton").addEventListener("click", () => {
+        
+        const inputs = document.querySelectorAll("input, select, textarea");
+        inputs.forEach(input => {
+                if (input.tagName === "SELECT") {
+                    
+                    const selectedValue = input.value;
+                    input.querySelectorAll("option").forEach(option => {
+                        if (option.value === selectedValue) {
+                            option.setAttribute("selected", "selected");
+                        } else {
+                            option.removeAttribute("selected");
+                        }
+                    });
+                } else {
+                    input.setAttribute("value", input.value); 
+                }
+            });
+
+
+        
+        const clonedDocument = document.documentElement.cloneNode(true);
+
+        
+        const doctype = new XMLSerializer().serializeToString(document.doctype);
+        const html = clonedDocument.outerHTML;
+        const fullHTML = `${doctype}\n${html}`;
+
+        
+        const hexCode = generateHexCode();
+
+        
+        const blob = new Blob([fullHTML], { type: "text/html" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${hexCode}.html`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        alert(`File saved as ${hexCode}.html`);
+    });
+</script>
+
+
+
+
+
 </body>
 </html>
