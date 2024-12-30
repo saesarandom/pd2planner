@@ -2892,14 +2892,14 @@ Defense
     <div id="martialartskillscontainer" class="skill-container">
       <div>Tiger Strike:<input type="number" min="0" max="20" value="0" id="tigerstrikecontainer"></div>
       <div>Dragon Talon:<input type="number" min="0" max="20" value="0" id="dragontaloncontainer"></div>
-      <div>Dragon Claw:<input type="number" min="0" max="20" value="0" id="dragonclawcontainer" class="hiddenSkill"></div>
-      <div>Fists of Fire:<input type="number" min="0" max="20" value="0" id="fistsoffirecontainer"></div>
-      <div>Cobra Strike:<input type="number" min="0" max="20" value="0" id="cobrastrikecontainer" class="hiddenSkill"></div>
-      <div>Claws of Thunder:<input type="number" min="0" max="20" value="0" id="clawsofthundercontainer" class="hiddenSkill"></div>
-      <div>Dragon Tail:<input type="number" min="0" max="20" value="0" id="dragontailcontainer" class="hiddenSkill"></div>
-      <div>Dragon Flight:<input type="number" min="0" max="20" value="0" id="dragonflightcontainer" class="hiddenSkill"></div>
-      <div>Blades of Ice:<input type="number" min="0" max="20" value="0" id="bladesoficecontainer" class="hiddenSkill"></div>
-      <div>Phoenix Strike:<input type="number" min="0" max="20" value="0" id="phoenixstrikecontainer" class="hiddenSkill"></div>
+      <div>Dragon Claw:<input type="number" min="0" max="20" value="0" id="dragonclawcontainer" class="hiddenSkill6"></div>
+      <div>Fists of Fire:<input type="number" min="0" max="20" value="0" id="fistsoffirecontainer" class="hiddenSkill6"></div>
+      <div>Cobra Strike:<input type="number" min="0" max="20" value="0" id="cobrastrikecontainer" class="hiddenSkill12"></div>
+      <div>Claws of Thunder:<input type="number" min="0" max="20" value="0" id="clawsofthundercontainer" class="hiddenSkill18"></div>
+      <div>Dragon Tail:<input type="number" min="0" max="20" value="0" id="dragontailcontainer" class="hiddenSkill18"></div>
+      <div>Dragon Flight:<input type="number" min="0" max="20" value="0" id="dragonflightcontainer" class="hiddenSkill24"></div>
+      <div>Blades of Ice:<input type="number" min="0" max="20" value="0" id="bladesoficecontainer" class="hiddenSkill24"></div>
+      <div>Phoenix Strike:<input type="number" min="0" max="20" value="0" id="phoenixstrikecontainer" class="hiddenSkill30"></div>
   </div>
 
   <div id="shadowskillscontainer" class="skill-container">
@@ -6822,6 +6822,17 @@ const explodingarrowskills = document.getElementById('explodingarrowcontainer');
 const strafeskills = document.getElementById('strafecontainer');
 const immolationarrowskills = document.getElementById('immolationarrowcontainer');
 const freezingarrowskills = document.getElementById('freezingarrowcontainer');
+const tigerstrikeskills = document.getElementById('tigerstrikecontainer');
+const cobrastrikeskills = document.getElementById('cobrastrikecontainer');
+const phoenixstrikeskills = document.getElementById('phoenixstrikecontainer');
+const dragontalonskills = document.getElementById('dragontaloncontainer');
+const fistsoffireskills = document.getElementById('fistsoffirecontainer');
+const clawsofthunderskills = document.getElementById('clawsofthundercontainer');
+const dragonclawskills = document.getElementById('dragonclawcontainer');
+const dragontailskills = document.getElementById('dragontailcontainer');
+const dragonflightskills = document.getElementById('dragonflightcontainer');
+const bladesoficeskills = document.getElementById('bladesoficecontainer');
+
 
 function updateVisibility() {
         
@@ -6854,7 +6865,30 @@ function updateVisibility() {
         let strafevalue = Math.min(Math.max(parseInt(strafeskills.value, 10) || 0, 0), 20);
         let immolationarrowvalue = Math.min(Math.max(parseInt(immolationarrowskills.value, 10) || 0, 0), 20);
         let freezingarrowvalue = Math.min(Math.max(parseInt(freezingarrowskills.value, 10) || 0, 0), 20);
- 
+let tigerstrikevalue = Math.min(Math.max(parseInt(tigerstrikeskills.value, 10) || 0, 0), 20);
+let cobrastrikevalue = Math.min(Math.max(parseInt(cobrastrikeskills.value, 10) || 0, 0), 20);
+let dragontalonvalue = Math.min(Math.max(parseInt(dragontalonskills.value, 10) || 0, 0), 20);
+let fistsoffirevalue = Math.min(Math.max(parseInt(fistsoffireskills.value, 10) || 0, 0), 20);
+let clawsofthundervalue = Math.min(Math.max(parseInt(clawsofthunderskills.value, 10) || 0, 0), 20);
+let dragonclawvalue = Math.min(Math.max(parseInt(dragonclawskills.value, 10) || 0, 0), 20);
+let dragontailvalue = Math.min(Math.max(parseInt(dragontailskills.value, 10) || 0, 0), 20);
+let dragonflightvalue = Math.min(Math.max(parseInt(dragonflightskills.value, 10) || 0, 0), 20);
+let bladesoficevalue = Math.min(Math.max(parseInt(bladesoficeskills.value, 10) || 0, 0), 20);
+let phoenixstrikevalue = Math.min(Math.max(parseInt(phoenixstrikeskills.value, 10) || 0, 0), 20);
+      
+console.log('Current skill levels:', {
+    tigerStrike: tigerstrikevalue,
+    cobraStrike: cobrastrikevalue,
+    dragonTalon: dragontalonvalue,
+    fistsOfFire: fistsoffirevalue,
+    clawsOfThunder: clawsofthundervalue,
+    dragonClaw: dragonclawvalue,
+    dragonTail: dragontailvalue,
+    dragonFlight: dragonflightvalue,
+    bladesOfIce: bladesoficevalue,
+    phoenixStrike: phoenixstrikevalue
+    
+  });
         
        
         
@@ -7021,7 +7055,70 @@ function updateVisibility() {
         }
       
 
+      //assa skills tree
+
       
+
+if (dragontalonvalue > 0 && level > 5) {
+    console.log('Dragon Claw should be visible:', {
+        dragonTalonValue: dragontalonvalue,
+        level: level,
+        condition: 'dragontalonvalue > 0 && level > 5'
+    });
+    dragonclawskills.classList.remove('hiddenSkill6');
+  } else {
+    console.log('Dragon Claw should be hidden:', {
+        dragonTalonValue: dragontalonvalue,
+        level: level,
+        condition: 'dragontalonvalue > 0 && level > 5'
+    });
+    dragonclawskills.classList.add('hiddenSkill6');
+}
+
+// if (level > 5) {
+//     fistsoffireskills.classList.remove('hiddenSkill6');
+// } else {
+//     fistsoffireskills.classList.add('hiddenSkill6');
+// }
+
+// if (tigerstrikevalue > 0 && level > 11) {
+//     cobrastrikeskills.classList.remove('hiddenSkill12');
+// } else {
+//     cobrastrikeskills.classList.add('hiddenSkill12');
+// }
+
+// if (fistsoffirevalue > 0 && level > 17) {
+//     clawsofthunderskills.classList.remove('hiddenSkill18');
+// } else {
+//     clawsofthunderskills.classList.add('hiddenSkill18');
+// }
+
+// if (dragontalonvalue > 0 && dragonclawvalue > 0 && level > 17) {
+//     dragontailskills.classList.remove('hiddenSkill18');
+// } else {
+//     dragontailskills.classList.add('hiddenSkill18');
+// }
+
+// if (dragontalonvalue > 0 && dragonclawvalue > 0 && dragontailvalue > 0 && level > 23) {
+//     dragonflightskills.classList.remove('hiddenSkill24');
+// } else {
+//     dragonflightskills.classList.add('hiddenSkill24');
+// }
+
+// if (fistsoffirevalue > 0 && clawsofthundervalue > 0 && level > 23) {
+//     bladesoficeskills.classList.remove('hiddenSkill24');
+// } else {
+//     bladesoficeskills.classList.add('hiddenSkill24');
+// }
+
+// if (tigerstrikevalue > 0 && fistsoffirevalue > 0 && cobrastrikevalue > 0 && 
+//     clawsofthundervalue > 0 && bladesoficevalue > 0 && level > 29) {
+//     phoenixstrikeskills.classList.remove('hiddenSkill30');
+// } else {
+//     phoenixstrikeskills.classList.add('hiddenSkill30');
+// }
+
+document.getElementById('lvlValue').addEventListener('input', updateVisibility);
 
 
 
@@ -7054,6 +7151,13 @@ function updateVisibility() {
         strafeskills.value = strafevalue;
         immolationarrowskills.value = immolationarrowvalue;
         freezingarrowskills.value = freezingarrowvalue;
+        tigerstrikeskills.value = tigerstrikevalue;
+        cobrastrikeskills.value = cobrastrikevalue;
+        phoenixstrikeskills.value = phoenixstrikevalue;
+        dragontalonskills.value = dragontalonvalue;
+        fistsoffireskills.value = fistsoffirevalue;
+        clawsofthunderskills.value = clawsofthundervalue;
+        dragonclawskills.value = dragonclawvalue;
       };
      
     
@@ -7087,6 +7191,18 @@ function updateVisibility() {
    strafeskills.addEventListener('input', updateVisibility);
    immolationarrowskills.addEventListener('input', updateVisibility);
    freezingarrowskills.addEventListener('input', updateVisibility);
+   tigerstrikeskills.addEventListener('input', updateVisibility);
+cobrastrikeskills.addEventListener('input', updateVisibility);
+phoenixstrikeskills.addEventListener('input', updateVisibility);
+dragontalonskills.addEventListener('input', updateVisibility);
+fistsoffireskills.addEventListener('input', updateVisibility);
+clawsofthunderskills.addEventListener('input', updateVisibility);
+dragonclawskills.addEventListener('input', updateVisibility);
+dragontailskills.addEventListener('input', updateVisibility);
+dragonflightskills.addEventListener('input', updateVisibility);
+bladesoficeskills.addEventListener('input', updateVisibility);
+  
+  
    
    
   </script>

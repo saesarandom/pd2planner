@@ -609,7 +609,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: [],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               dragonClaw: {
@@ -627,7 +627,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: ["tigerStrike"],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               fistsOfFire: {
@@ -645,7 +645,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: [],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               cobraStrike: {
@@ -663,7 +663,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: [],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               clawsOfThunder: {
@@ -681,7 +681,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: [],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               dragonTail: {
@@ -699,7 +699,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: [],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               dragonFlight: {
@@ -717,7 +717,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: [],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               bladesOfIce: {
@@ -735,7 +735,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: [],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               phoenixStrike: {
@@ -753,7 +753,7 @@ class SkillHandler {
                         formula: "base + (perLevel * (level/2))"
                     }
                 },
-                prerequisites: ["magicArrow", "coldArrow", "iceArrow"],
+                prerequisites: [],
                 synergies: ["coldarrow,6", "icearrow,6"]
               },
               fireBlast: {
