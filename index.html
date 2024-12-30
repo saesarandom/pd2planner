@@ -855,6 +855,114 @@ body {
     box-sizing: border-box; 
 }
 
+
+      .auth-container {
+        position: relative;
+        left: -640px;
+            width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            background: rgb(34, 28, 28);
+            border-radius: 8px;
+            
+        }
+
+        .form-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+}
+
+.welcome-message {
+            padding: 50px;
+            background: #033a72;
+            border-radius: 4px;
+            text-align: center;
+          }
+
+          .profile-container {
+        background: rgb(7, 4, 4);
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 23px 54px rgb(167, 11, 210);
+        display: none;
+    }
+
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid #d5acac;
+        margin-bottom: 20px;
+    }
+
+    .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 16px;
+        color: #ddc8c8;
+        background-color: #0b0c0b;
+    }
+
+    .tab.active {
+        color: #007bff;
+        border-bottom: 2px solid #007bff;
+        
+    }
+
+    .tab-content {
+        display: none;
+        
+    }
+
+    .tab-content.active {
+        display: block;
+        background-color: #010201;
+    }
+
+    .profile-info {
+        margin-bottom: 20px;
+        
+    }
+
+    .achievement {
+        padding: 10px;
+        margin: 5px 0;
+        background: #c9ced3;
+        border-radius: 4px;
+        background-color: #010201;
+    }
+
+    .settings-option {
+        margin: 15px 0;
+    }
+
+    .settings-option label {
+        display: block;
+        margin-bottom: 5px;
+        
+    }
+
+
+
+
+
+
+
 .slider:hover {
   opacity: 1;
 }
@@ -7213,6 +7321,7 @@ bladesoficeskills.addEventListener('input', updateVisibility);
    <script src="skillRestriction.js"></script>
    <script src="DPSSimulator.js"></script>
    <script src="enhancedDamage.js"></script>
+    <script src="login.js"></script>
 <script>
 
 const dragState = {
@@ -8508,7 +8617,271 @@ document.querySelectorAll('[data-property]').forEach(button => {
     });
 </script>
 
+<br><br><br><br><br>
 
+<div class="auth-container">
+  <!-- Login Form -->
+  <form id="loginForm" onsubmit="handleLogin(event)">
+      <h2>Login</h2>
+      <input type="text" id="loginInput" placeholder="Email or Username" required>
+      <input type="password" id="passwordInput" placeholder="Password" required>
+      <button type="submit">Login</button>
+  </form>
+
+  <!-- Welcome Message -->
+  <div id="welcomeMsg" class="welcome-message" style="display: none;">
+      Welcome, <span id="userDisplay"></span>!
+      <button onclick="handleLogout()" id="logoutBtn">Logout</button>
+  </div>
+
+  <div id="passwordError" class="error-message">
+    Password must be at least 10 characters long and contain at least one number
+</div>
+
+
+<div class="profile-container" id="profileContainer">
+  <div class="tabs">
+      <button class="tab active" onclick="showTab('profile')">Profile</button>
+      <button class="tab" onclick="showTab('achievements')">Achievements</button>
+      <button class="tab" onclick="showTab('settings')">Settings</button>
+  </div>
+
+  <div id="profileTab" class="tab-content active">
+      <div class="profile-info">
+          <h2>Profile</h2>
+          <p>Username: <span id="profileUsername"></span></p>
+          <p>Member since: <span id="profileCreatedAt"></span></p>
+      </div>
+  </div>
+
+  <div id="achievementsTab" class="tab-content">
+      <h2>Achievements</h2>
+      <div id="achievementsList">
+          <!-- Achievements will be loaded here -->
+      </div>
+  </div>
+
+  <div id="settingsTab" class="tab-content">
+      <h2>Settings</h2>
+      <div class="settings-option">
+          <label>
+              Theme:
+              <select id="themeSelect">
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+              </select>
+          </label>
+      </div>
+      <div class="settings-option">
+          <label>
+              <input type="checkbox" id="notificationsToggle">
+              Enable Notifications
+          </label>
+      </div>
+      <button onclick="saveSettings()">Save Settings</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+  <!-- Signup Form -->
+  <form id="signupForm" onsubmit="handleSignup(event)">
+      <h2>Sign Up</h2>
+      <input type="email" id="signupEmail" placeholder="Email" required>
+      <input type="text" id="signupUsername" placeholder="Username" required>
+      <input type="password" id="signupPassword" placeholder="Password" required>
+      <button type="submit">Sign Up</button>
+  </form>
+</div>
+
+<script>
+  // Your existing JavaScript code here
+  async function handleSignup(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('signupEmail').value;
+    const username = document.getElementById('signupUsername').value;
+    const password = document.getElementById('signupPassword').value;
+    const passwordError = document.getElementById('passwordError');
+    
+    // Password validation
+    if (password.length < 10 || !/\d/.test(password)) {
+        passwordError.style.display = 'block';
+        return;
+    }
+    passwordError.style.display = 'none';
+    
+    try {
+        const response = await fetch('http://localhost:3000/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, username, password })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert('Signup successful! Please login.');
+            document.getElementById('signupForm').reset();
+        } else {
+            alert(data.error || 'Signup failed');
+        }
+    } catch (error) {
+        console.error('Signup error:', error);
+        alert('Signup failed');
+    }
+}
+
+  function handleLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      updateUIState();
+  }
+
+  async function handleLogin(event) {
+    event.preventDefault(); // Make sure this line is here!
+    console.log('Login attempted');
+    
+    const login = document.getElementById('loginInput').value;
+    const password = document.getElementById('passwordInput').value;
+    console.log('Attempting login for:', login);
+    
+    try {
+        const response = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ login, password })
+        });
+
+        const data = await response.json();
+        console.log('Login response:', data);
+        
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('username', data.username);
+            updateUIState(data.username);
+            alert('Login successful!');
+        } else {
+            alert('Login failed');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Login failed');
+    }
+}
+
+function updateUIState(username = null) {
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const welcomeMsg = document.getElementById('welcomeMsg');
+    const profileContainer = document.getElementById('profileContainer');
+
+    if (username) {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'none';
+        welcomeMsg.style.display = 'block';
+        profileContainer.style.display = 'block';
+        loadProfileData();
+    } else {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'block';
+        welcomeMsg.style.display = 'none';
+        profileContainer.style.display = 'none';
+    }
+}
+
+// Add these new functions
+async function loadProfileData() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:3000/profile', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+        
+        document.getElementById('profileUsername').textContent = data.username;
+        document.getElementById('profileCreatedAt').textContent = new Date(data.createdAt).toLocaleDateString();
+        
+        // Load achievements
+        const achievementsList = document.getElementById('achievementsList');
+        achievementsList.innerHTML = data.achievements.length ? 
+            data.achievements.map(a => `
+                <div class="achievement">
+                    <strong>${a.name}</strong>
+                    <span>Unlocked: ${new Date(a.unlockedAt).toLocaleDateString()}</span>
+                </div>
+            `).join('') :
+            '<p>No achievements yet</p>';
+            
+        // Load settings
+        document.getElementById('themeSelect').value = data.settings.theme;
+        document.getElementById('notificationsToggle').checked = data.settings.notifications;
+    } catch (error) {
+        console.error('Error loading profile:', error);
+    }
+}
+
+function showTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(`${tabName}Tab`).classList.add('active');
+    document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+}
+
+async function saveSettings() {
+    const token = localStorage.getItem('token');
+    const settings = {
+        theme: document.getElementById('themeSelect').value,
+        notifications: document.getElementById('notificationsToggle').checked
+    };
+    
+    try {
+        const response = await fetch('http://localhost:3000/profile/settings', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(settings)
+        });
+        
+        if (response.ok) {
+            alert('Settings saved successfully');
+        }
+    } catch (error) {
+        console.error('Error saving settings:', error);
+        alert('Failed to save settings');
+    }
+}
+
+
+  // Check auth state on page load
+  window.onload = () => {
+      const username = localStorage.getItem('username');
+      if (username) {
+          updateUIState(username);
+      }
+  };
+
+
+  
+</script>
 
 
 
