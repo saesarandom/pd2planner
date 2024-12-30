@@ -66,6 +66,7 @@
             display: block;
         }
     </style>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="72048bb5-a72a-4c78-9750-4c1c9a17e30c"></script>
 </head>
 <body>
 
@@ -7075,48 +7076,48 @@ if (dragontalonvalue > 0 && level > 5) {
     dragonclawskills.classList.add('hiddenSkill6');
 }
 
-// if (level > 5) {
-//     fistsoffireskills.classList.remove('hiddenSkill6');
-// } else {
-//     fistsoffireskills.classList.add('hiddenSkill6');
-// }
+if (level > 5) {
+    fistsoffireskills.classList.remove('hiddenSkill6');
+} else {
+    fistsoffireskills.classList.add('hiddenSkill6');
+}
 
-// if (tigerstrikevalue > 0 && level > 11) {
-//     cobrastrikeskills.classList.remove('hiddenSkill12');
-// } else {
-//     cobrastrikeskills.classList.add('hiddenSkill12');
-// }
+if (tigerstrikevalue > 0 && level > 11) {
+    cobrastrikeskills.classList.remove('hiddenSkill12');
+} else {
+    cobrastrikeskills.classList.add('hiddenSkill12');
+}
 
-// if (fistsoffirevalue > 0 && level > 17) {
-//     clawsofthunderskills.classList.remove('hiddenSkill18');
-// } else {
-//     clawsofthunderskills.classList.add('hiddenSkill18');
-// }
+if (fistsoffirevalue > 0 && level > 17) {
+    clawsofthunderskills.classList.remove('hiddenSkill18');
+} else {
+    clawsofthunderskills.classList.add('hiddenSkill18');
+}
 
-// if (dragontalonvalue > 0 && dragonclawvalue > 0 && level > 17) {
-//     dragontailskills.classList.remove('hiddenSkill18');
-// } else {
-//     dragontailskills.classList.add('hiddenSkill18');
-// }
+if (dragontalonvalue > 0 && dragonclawvalue > 0 && level > 17) {
+    dragontailskills.classList.remove('hiddenSkill18');
+} else {
+    dragontailskills.classList.add('hiddenSkill18');
+}
 
-// if (dragontalonvalue > 0 && dragonclawvalue > 0 && dragontailvalue > 0 && level > 23) {
-//     dragonflightskills.classList.remove('hiddenSkill24');
-// } else {
-//     dragonflightskills.classList.add('hiddenSkill24');
-// }
+if (dragontalonvalue > 0 && dragonclawvalue > 0 && dragontailvalue > 0 && level > 23) {
+    dragonflightskills.classList.remove('hiddenSkill24');
+} else {
+    dragonflightskills.classList.add('hiddenSkill24');
+}
 
-// if (fistsoffirevalue > 0 && clawsofthundervalue > 0 && level > 23) {
-//     bladesoficeskills.classList.remove('hiddenSkill24');
-// } else {
-//     bladesoficeskills.classList.add('hiddenSkill24');
-// }
+if (fistsoffirevalue > 0 && clawsofthundervalue > 0 && level > 23) {
+    bladesoficeskills.classList.remove('hiddenSkill24');
+} else {
+    bladesoficeskills.classList.add('hiddenSkill24');
+}
 
-// if (tigerstrikevalue > 0 && fistsoffirevalue > 0 && cobrastrikevalue > 0 && 
-//     clawsofthundervalue > 0 && bladesoficevalue > 0 && level > 29) {
-//     phoenixstrikeskills.classList.remove('hiddenSkill30');
-// } else {
-//     phoenixstrikeskills.classList.add('hiddenSkill30');
-// }
+if (tigerstrikevalue > 0 && fistsoffirevalue > 0 && cobrastrikevalue > 0 && 
+    clawsofthundervalue > 0 && bladesoficevalue > 0 && level > 29) {
+    phoenixstrikeskills.classList.remove('hiddenSkill30');
+} else {
+    phoenixstrikeskills.classList.add('hiddenSkill30');
+}
 
 document.getElementById('lvlValue').addEventListener('input', updateVisibility);
 
