@@ -61,7 +61,7 @@ const achievementValidators = {
       const [fireRes, coldRes, lightRes, poisonRes] = values;
       return fireRes >= 75 && coldRes >= 75 && lightRes >= 75 && poisonRes >= 75;
   },
-  'charm-master': (values) => values[0] >= 40
+  'charm-master': (values) => values[0] >= 20
 };
 
 const achievementNames = {
@@ -247,7 +247,35 @@ app.put('/profile/settings', auth, async (req, res) => {
 
 
 
+app.post('/signup', async (req, res) => {
+    try {
+        const { email, username, password } = req.body;
+        
+        // Check if user exists
+        const existingUser = await User.findOne({
+            $or: [{ email }, { username }]
+        });
+        
+        if (existingUser) {
+            return res.status(400).json({ 
+                error: 'Email or username already exists' 
+            });
+        }
 
+        // Hash password and create user
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({
+            email,
+            username,
+            password: hashedPassword
+        });
+        
+        await user.save();
+        res.status(201).json({ message: 'User created successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Signup failed' });
+    }
+});
 
 
 

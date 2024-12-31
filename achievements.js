@@ -22,7 +22,7 @@ const ACHIEVEMENTS = {
         id: 'charm-master',
         name: 'Charm Collector',
         description: 'Fill your inventory with charms',
-        check: (charmCount) => charmCount >= 40
+        check: (charmCount) => charmCount >= 20
     }
 };
 
