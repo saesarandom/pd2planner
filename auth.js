@@ -6,175 +6,261 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/auth_demo', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 }).then(() => {
-  console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB');
 }).catch(err => {
-  console.error('MongoDB connection error:', err);
+    console.error('MongoDB connection error:', err);
 });
 
+// User model
+const User = mongoose.model('User', {
+    email: { type: String, unique: true, required: true },
+    username: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
+    achievements: [{
+        name: String,
+        unlockedAt: Date
+    }],
+    settings: {
+        theme: { type: String, default: 'light' },
+        notifications: { type: Boolean, default: true }
+    }
+});
 
-function validatePassword(password) {
-  return password.length >= 10 && /\d/.test(password);
+// Auth middleware
+function auth(req, res, next) {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.userData = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).json({ error: 'Authentication failed' });
+    }
 }
 
-// Update your signup endpoint
-app.post('/signup', async (req, res) => {
-  try {
-      const { email, username, password } = req.body;
 
-      // Validate password
-      if (!validatePassword(password)) {
-          return res.status(400).json({ 
-              error: 'Password must be at least 10 characters long and contain at least one number' 
-          });
+const achievementValidators = {
+  'flying-start': (values) => values[0] === 99,
+  'max-stats': (values) => {
+        const value = Number(values[0]);
+        console.log('Validating max-stats:', value);
+        return value >= 400;  // Changed to 400
+      },
+  'perfect-res': (values) => {
+      const [fireRes, coldRes, lightRes, poisonRes] = values;
+      return fireRes >= 75 && coldRes >= 75 && lightRes >= 75 && poisonRes >= 75;
+  },
+  'charm-master': (values) => values[0] >= 40
+};
+
+const achievementNames = {
+  'flying-start': 'Off to a flying start',
+  'max-stats': 'Peak Performance',
+  'perfect-res': 'Elemental Master',
+  'charm-master': 'Charm Collector'
+};
+
+
+
+
+
+
+// Achievement route - placing it before other routes
+app.post('/achievement/:id', auth, async (req, res) => {
+  try {
+      const achievementId = req.params.id;
+      const { value, values } = req.body;
+      
+      // Debug logging
+      console.log('Achievement request:', {
+          achievementId,
+          value,
+          values,
+          body: req.body
+      });
+      
+      // Convert single value to array format for consistency
+      const valuesArray = values || [value];
+      
+      // Debug logging
+      console.log('Checking validator:', {
+          achievementId,
+          hasValidator: achievementValidators.hasOwnProperty(achievementId),
+          validators: Object.keys(achievementValidators)
+      });
+
+      // Check if this is a valid achievement type
+      if (!achievementValidators[achievementId]) {
+          console.log('Invalid achievement type:', achievementId);
+          return res.status(400).json({ error: 'Invalid achievement type' });
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-      
-      const user = new User({
-          email,
-          username,
-          password: hashedPassword
+      // Debug validation
+      console.log('Validating achievement:', {
+          achievementId,
+          values: valuesArray,
+          result: achievementValidators[achievementId](valuesArray)
       });
-      
-      await user.save();
-      res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-      res.status(400).json({ error: 'Username or email already exists' });
-  }
-});
 
-// Updated User model with both email and username
-const User = mongoose.model('User', {
-  email: { type: String, unique: true, required: true },
-  username: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-  achievements: [{
-      name: String,
-      unlockedAt: Date
-  }],
-  settings: {
-      theme: { type: String, default: 'light' },
-      notifications: { type: Boolean, default: true }
-      // Add more settings as needed
-  }
-});
+      // Validate the achievement conditions
+      if (!achievementValidators[achievementId](valuesArray)) {
+          return res.json({ message: 'Keep trying!' });
+      }
 
-// Add these new routes
-app.get('/profile', auth, async (req, res) => {
-  try {
       const user = await User.findById(req.userData.userId);
-      res.json({
-          username: user.username,
-          createdAt: user.createdAt,
-          achievements: user.achievements,
-          settings: user.settings
-      });
+      
+      // Check if user already has this achievement
+      const hasAchievement = user.achievements.some(a => a.name === achievementNames[achievementId]);
+      
+      if (!hasAchievement) {
+          user.achievements.push({
+              name: achievementNames[achievementId],
+              unlockedAt: new Date()
+          });
+          await user.save();
+          res.json({ message: 'Achievement unlocked!' });
+      } else {
+          res.json({ message: '' });
+      }
   } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch profile' });
+      console.error('Achievement error:', error);
+      res.status(500).json({ error: 'Failed to process achievement' });
   }
 });
 
-app.put('/profile/settings', auth, async (req, res) => {
+app.post('/achievement/:id', auth, async (req, res) => {
   try {
-      const user = await User.findByIdAndUpdate(
-          req.userData.userId,
-          { settings: req.body },
-          { new: true }
-      );
-      res.json({ settings: user.settings });
+      const achievementId = req.params.id;
+      const { value, values } = req.body;
+      
+      // Convert single value to array format for consistency
+      const valuesArray = values || [value];
+      
+      // Check if this is a valid achievement type
+      if (!achievementValidators[achievementId]) {
+          return res.status(400).json({ error: 'Invalid achievement type' });
+      }
+
+      // Validate the achievement conditions
+      if (!achievementValidators[achievementId](valuesArray)) {
+          return res.json({ message: 'Keep trying!' });
+      }
+
+      const user = await User.findById(req.userData.userId);
+      
+      // Check if user already has this achievement
+      const hasAchievement = user.achievements.some(a => a.name === achievementNames[achievementId]);
+      
+      if (!hasAchievement) {
+          user.achievements.push({
+              name: achievementNames[achievementId],
+              unlockedAt: new Date()
+          });
+          await user.save();
+          res.json({ message: 'Achievement unlocked!' });
+      } else {
+          // Silently acknowledge without message for already unlocked achievements
+          res.json({ message: '' });
+      }
   } catch (error) {
-      res.status(500).json({ error: 'Failed to update settings' });
+      console.error('Achievement error:', error);
+      res.status(500).json({ error: 'Failed to process achievement' });
   }
 });
 
-// Signup endpoint
-app.post('/signup', async (req, res) => {
-  try {
-    const { email, username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
-    const user = new User({
-      email,
-      username,
-      password: hashedPassword
-    });
-    
-    await user.save();
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    res.status(400).json({ error: 'Username or email already exists' });
-  }
-});
 
-// Login endpoint (can login with either email or username)
+
+
+
+// Login route
 app.post('/login', async (req, res) => {
-  try {
-    const { login, password } = req.body; // login can be email or username
-    const user = await User.findOne({
-      $or: [
-        { email: login },
-        { username: login }
-      ]
-    });
-    
-    if (!user) {
-      return res.status(401).json({ error: 'Authentication failed' });
+    try {
+        const { login, password } = req.body;
+        const user = await User.findOne({
+            $or: [
+                { email: login },
+                { username: login }
+            ]
+        });
+        
+        if (!user) {
+            return res.status(401).json({ error: 'Authentication failed' });
+        }
+        
+        const validPassword = await bcrypt.compare(password, user.password);
+        
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Authentication failed' });
+        }
+        
+        const token = jwt.sign(
+            { userId: user._id, username: user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+        
+        res.json({ token, username: user.username });
+    } catch (error) {
+        res.status(500).json({ error: 'Login failed' });
     }
-    
-    const validPassword = await bcrypt.compare(password, user.password);
-    
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Authentication failed' });
-    }
-    
-    const token = jwt.sign(
-      { 
-        userId: user._id,
-        username: user.username // Include username in token
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-    
-    res.json({ 
-      token,
-      username: user.username // Return username for display
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Login failed' });
-  }
 });
 
-// Get user profile (protected route)
+// Profile route
 app.get('/profile', auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.userData.userId);
-    res.json({ 
-      username: user.username,
-      // email not included in response for privacy
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get profile' });
-  }
+    try {
+        const user = await User.findById(req.userData.userId);
+        res.json({
+            username: user.username,
+            createdAt: user.createdAt,
+            achievements: user.achievements,
+            settings: user.settings
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch profile' });
+    }
 });
 
-function auth(req, res, next) {
-  try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userData = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ error: 'Authentication failed' });
-  }
-}
+// Settings route
+app.put('/profile/settings', auth, async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(
+            req.userData.userId,
+            { settings: req.body },
+            { new: true }
+        );
+        res.json({ settings: user.settings });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update settings' });
+    }
+});
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
