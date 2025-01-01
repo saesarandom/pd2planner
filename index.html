@@ -503,6 +503,11 @@ body {
         display: none;
     }
 
+#userDisplay {
+    color: #007bff;
+    font-size: 16px;
+  }
+
     .tabs {
         display: flex;
         border-bottom: 1px solid #d5acac;
@@ -2615,14 +2620,14 @@ Defense
   <div id="shadowskillscontainer" class="skill-container">
       <div>Claw and Dagger Mastery:<input type="number" min="0" max="20" value="0" id="clawanddaggermasterycontainer"></div>
       <div>Psychic Hammer:<input type="number" min="0" max="20" value="0" id="psychichammercontainer"></div>
-      <div>Burst of Speed:<input type="number" min="0" max="20" value="0" id="burstofspeedcontainer" class="hiddenSkill"></div>
-      <div>Weapon Block:<input type="number" min="0" max="20" value="0" id="weaponblockcontainer" class="hiddenSkill"></div>
-      <div>Cloak of Shadows:<input type="number" min="0" max="20" value="0" id="cloakofshadowscontainer" class="hiddenSkill"></div>
-      <div>Mind Blast:<input type="number" min="0" max="20" value="0" id="mindblastcontainer" class="hiddenSkill"></div>
-      <div>Fade:<input type="number" min="0" max="20" value="0" id="fadecontainer" class="hiddenSkill"></div>
-      <div>Shadow Warrior:<input type="number" min="0" max="20" value="0" id="shadowwarriorcontainer" class="hiddenSkill"></div>
-      <div>Shadow Master:<input type="number" min="0" max="20" value="0" id="shadowmastercontainer" class="hiddenSkill"></div>
-      <div>Venom:<input type="number" min="0" max="20" value="0" id="venomcontainer" class="hiddenSkill"></div></div>
+      <div>Burst of Speed:<input type="number" min="0" max="20" value="0" id="burstofspeedcontainer" class="hiddenSkill6"></div>
+      <div>Weapon Block:<input type="number" min="0" max="20" value="0" id="weaponblockcontainer" class="hiddenSkill12"></div>
+      <div>Cloak of Shadows:<input type="number" min="0" max="20" value="0" id="cloakofshadowscontainer" class="hiddenSkill12"></div>
+      <div>Mind Blast:<input type="number" min="0" max="20" value="0" id="mindblastcontainer" class="hiddenSkill18"></div>
+      <div>Fade:<input type="number" min="0" max="20" value="0" id="fadecontainer" class="hiddenSkill18"></div>
+      <div>Shadow Warrior:<input type="number" min="0" max="20" value="0" id="shadowwarriorcontainer" class="hiddenSkill18"></div>
+      <div>Shadow Master:<input type="number" min="0" max="20" value="0" id="shadowmastercontainer" class="hiddenSkill30"></div>
+      <div>Venom:<input type="number" min="0" max="20" value="0" id="venomcontainer" class="hiddenSkill30"></div></div>
 </div>
 
     <div id="trapskillscontainer" class="skill-container">
@@ -6552,6 +6557,23 @@ const dragonclawskills = document.getElementById('dragonclawcontainer');
 const dragontailskills = document.getElementById('dragontailcontainer');
 const dragonflightskills = document.getElementById('dragonflightcontainer');
 const bladesoficeskills = document.getElementById('bladesoficecontainer');
+const burstofspeedskills = document.getElementById('burstofspeedcontainer');
+const weaponblockskills = document.getElementById('weaponblockcontainer');
+const cloakofshadowsskills = document.getElementById('cloakofshadowscontainer');
+const mindblastskills = document.getElementById('mindblastcontainer');
+const fadeskills = document.getElementById('fadecontainer');
+const shadowwarriorskills = document.getElementById('shadowwarriorcontainer');
+const shadowmasterskills = document.getElementById('shadowmastercontainer');
+const venomskills = document.getElementById('venomcontainer');
+const clawanddaggermasteryskills = document.getElementById('clawanddaggermasterycontainer');
+const psychichammerskills = document.getElementById('psychichammercontainer');
+
+
+
+
+
+
+
 
 
 function updateVisibility() {
@@ -6595,6 +6617,17 @@ let dragontailvalue = Math.min(Math.max(parseInt(dragontailskills.value, 10) || 
 let dragonflightvalue = Math.min(Math.max(parseInt(dragonflightskills.value, 10) || 0, 0), 20);
 let bladesoficevalue = Math.min(Math.max(parseInt(bladesoficeskills.value, 10) || 0, 0), 20);
 let phoenixstrikevalue = Math.min(Math.max(parseInt(phoenixstrikeskills.value, 10) || 0, 0), 20);
+let clawanddaggermasteryvalue = Math.min(Math.max(parseInt(clawanddaggermasteryskills.value, 10) || 0, 0), 20);
+let psychichammervalue = Math.min(Math.max(parseInt(psychichammerskills.value, 10) || 0, 0), 20);
+let burstofspeedvalue = Math.min(Math.max(parseInt(burstofspeedskills.value, 10) || 0, 0), 20);
+let weaponblockvalue = Math.min(Math.max(parseInt(weaponblockskills.value, 10) || 0, 0), 20);
+let cloakofshadowsvalue = Math.min(Math.max(parseInt(cloakofshadowsskills.value, 10) || 0, 0), 20);
+let mindblastvalue = Math.min(Math.max(parseInt(mindblastskills.value, 10) || 0, 0), 20);
+let fadevalue = Math.min(Math.max(parseInt(fadeskills.value, 10) || 0, 0), 20);
+let shadowwarriorvalue = Math.min(Math.max(parseInt(shadowwarriorskills.value, 10) || 0, 0), 20);
+let shadowmastervalue = Math.min(Math.max(parseInt(shadowmasterskills.value, 10) || 0, 0), 20);
+let venomvalue = Math.min(Math.max(parseInt(venomskills.value, 10) || 0, 0), 20);
+
       
 console.log('Current skill levels:', {
     tigerStrike: tigerstrikevalue,
@@ -6838,6 +6871,69 @@ if (tigerstrikevalue > 0 && fistsoffirevalue > 0 && cobrastrikevalue > 0 &&
     phoenixstrikeskills.classList.add('hiddenSkill30');
 }
 
+
+
+if (level > 5) {
+    burstofspeedskills.classList.remove('hiddenSkill6');
+    
+} else {
+    burstofspeedskills.classList.add('hiddenSkill6');
+    
+}
+
+if (clawanddaggermasteryvalue > 0 && level > 11) {
+    weaponblockskills.classList.remove('hiddenSkill12');
+    
+} else {
+    weaponblockskills.classList.add('hiddenSkill12');
+    
+}
+
+if (psychichammervalue > 0 && level > 11) {
+    cloakofshadowsskills.classList.remove('hiddenSkill12');
+} else {
+    cloakofshadowsskills.classList.add('hiddenSkill12');
+}
+
+
+if (psychichammervalue > 0 && cloakofshadowsvalue > 0 && level > 17) {
+    mindblastskills.classList.remove('hiddenSkill18');
+} else {
+    mindblastskills.classList.add('hiddenSkill18');
+}
+
+if (clawanddaggermasteryvalue > 0 && burstofspeedvalue > 0 && level > 17) {
+   
+    fadeskills.classList.remove('hiddenSkill18');
+} else {
+    
+    fadeskills.classList.add('hiddenSkill18');
+}
+
+if (psychichammervalue > 0 && cloakofshadowsvalue > 0 && clawanddaggermasteryvalue > 0 && weaponblockvalue > 0 && level > 17) {
+    shadowwarriorskills.classList.remove('hiddenSkill18');
+} else {
+    shadowwarriorskills.classList.add('hiddenSkill18');
+}
+
+if (psychichammervalue > 0 && cloakofshadowsvalue > 0 && clawanddaggermasteryvalue > 0 && weaponblockvalue > 0 && shadowwarriorvalue > 0 && level > 29) {
+    shadowmasterskills.classList.remove('hiddenSkill30');
+} else {
+    shadowmasterskills.classList.add('hiddenSkill30');
+}
+
+if (clawanddaggermasteryvalue > 0 && burstofspeedvalue > 0 && fadevalue > 0 & level > 29) {
+    venomskills.classList.remove('hiddenSkill30');
+} else {
+    venomskills.classList.add('hiddenSkill30');
+}
+
+
+
+
+
+
+
 document.getElementById('lvlValue').addEventListener('input', updateVisibility);
 
 
@@ -6878,6 +6974,8 @@ document.getElementById('lvlValue').addEventListener('input', updateVisibility);
         fistsoffireskills.value = fistsoffirevalue;
         clawsofthunderskills.value = clawsofthundervalue;
         dragonclawskills.value = dragonclawvalue;
+        
+
       };
      
     
@@ -6921,6 +7019,17 @@ dragonclawskills.addEventListener('input', updateVisibility);
 dragontailskills.addEventListener('input', updateVisibility);
 dragonflightskills.addEventListener('input', updateVisibility);
 bladesoficeskills.addEventListener('input', updateVisibility);
+clawanddaggermasteryskills.addEventListener('input', updateVisibility);
+psychichammerskills.addEventListener('input', updateVisibility);
+burstofspeedskills.addEventListener('input', updateVisibility);
+weaponblockskills.addEventListener('input', updateVisibility);
+cloakofshadowsskills.addEventListener('input', updateVisibility);
+mindblastskills.addEventListener('input', updateVisibility);
+fadeskills.addEventListener('input', updateVisibility);
+shadowwarriorskills.addEventListener('input', updateVisibility);
+shadowmasterskills.addEventListener('input', updateVisibility);
+venomskills.addEventListener('input', updateVisibility);
+
   
   
    
@@ -7117,37 +7226,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         'shoutcontainer': 'shout'
 
     };
-
-    // function getSkillDamage(skillInfo, skillName) {
-    //     if ((skillName === "poisonJavelin" || skillName === "plagueJavelin") && skillInfo.damage?.min !== undefined) {
-    //         return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
-    //     }
-        
-    //     if ((skillName === "powerStrike" || skillName === "lightningBolt" || 
-    //          skillName === "lightningStrike" || skillName === "lightningFury") && 
-    //          skillInfo.lightningDamage) {
-    //         return `${skillInfo.lightningDamage.min || 1}-${skillInfo.lightningDamage}`;
-    //     }
-
-    //     if (skillInfo.damage && typeof skillInfo.damage === 'object') {
-    //         return `${skillInfo.damage.min}-${skillInfo.damage.max}`;
-    //     }
-
-    //     if (skillInfo.damage) {
-           
-    //         return skillInfo.damage;
-    //     }
-
-    //     return '0';
-    // }
-
-
-
-
-    
-
-
-
 
 
     function updateDamageCalculations() {
