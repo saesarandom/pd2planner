@@ -2685,7 +2685,8 @@ Defense
       <div>Stun:<input type="number" min="0" max="20" value="0" id="stuncontainer" class="hiddenSkill6"></div>
       <div>Concentrate:<input type="number" min="0" max="20" value="0" id="concentratecontainer" class="hiddenSkill12"></div>
       <div>Double Throw:<input type="number" min="0" max="20" value="0" id="doublethrowcontainer" class="hiddenSkill12"></div>
-      <div>Leap Attack:<input type="number" min="0" max="20" value="0" id="leapattackcontainer" class="hiddenSkill12"></div>
+      <div>Leap:<input type="number" min="0" max="20" value="0" id="leapcontainer" class="hiddenSkill12"></div>
+      <div>Leap Attack:<input type="number" min="0" max="20" value="0" id="leapattackcontainer" class="hiddenSkill24"></div>
       <div>Berserk:<input type="number" min="0" max="20" value="0" id="berserkcontainer" class="hiddenSkill24"></div>
       <div>Whirlwind:<input type="number" min="0" max="20" value="0" id="whirlwindcontainer" class="hiddenSkill30"></div>
     
@@ -6578,6 +6579,35 @@ const lightningsentryskills = document.getElementById('lightningsentrycontainer'
 const wakeofinfernoskills = document.getElementById('wakeofinfernocontainer');  
 const chainlightningsentryskills = document.getElementById('chainlightningsentrycontainer');
 const deathsentryskills = document.getElementById('deathsentrycontainer');
+const howlskills = document.getElementById('howlcontainer');
+const findpotionskills = document.getElementById('findpotioncontainer');
+const shoutskills = document.getElementById('shoutcontainer');
+const warcryskills = document.getElementById('warcrycontainer');
+const finditemskills = document.getElementById('finditemcontainer');
+const tauntskills = document.getElementById('tauntcontainer');
+const battleordersskills = document.getElementById('battleorderscontainer');
+const grimwardskills = document.getElementById('grimwardcontainer');
+const battlecommandskills = document.getElementById('battlecommandcontainer');
+const battlecryskills = document.getElementById('battlecrycontainer');
+const generalmasteryskills = document.getElementById('generalmasterycontainer');
+const throwingmasteryskills = document.getElementById('throwingmasterycontainer');
+const polearmandspearmasteryskills = document.getElementById('polearmandspearmasterycontainer');
+const combatreflexesskills = document.getElementById('combatreflexescontainer');
+const ironskinskills = document.getElementById('ironskincontainer');
+const increasedspeedskills = document.getElementById('increasedspeedcontainer');
+const naturalresistanceskills = document.getElementById('naturalresistancecontainer');
+const deepwoundsskills = document.getElementById('deepwoundscontainer');
+const bashskills = document.getElementById('bashcontainer');
+const doubleswingskills = document.getElementById('doubleswingcontainer');
+const frenzyskills = document.getElementById('frenzycontainer');
+const stunskills = document.getElementById('stuncontainer');
+const concentrateskills = document.getElementById('concentratecontainer');
+const doublethrowskills = document.getElementById('doublethrowcontainer');
+const leapskills = document.getElementById('leapcontainer');
+const leapattackskills = document.getElementById('leapattackcontainer');
+const berserkskills = document.getElementById('berserkcontainer');
+const whirlwindskills = document.getElementById('whirlwindcontainer');
+
 
 
 
@@ -6648,6 +6678,35 @@ let lightningsentryvalue = Math.min(Math.max(parseInt(lightningsentryskills.valu
 let wakeofinfernovalue = Math.min(Math.max(parseInt(wakeofinfernoskills.value, 10) || 0, 0), 20);
 let chainlightningsentryvalue = Math.min(Math.max(parseInt(chainlightningsentryskills.value, 10) || 0, 0), 20);
 let deathsentryvalue = Math.min(Math.max(parseInt(deathsentryskills.value, 10) || 0, 0), 20);
+let howlvalue = Math.min(Math.max(parseInt(howlskills.value, 10) || 0, 0), 20);
+let findpotionvalue = Math.min(Math.max(parseInt(findpotionskills.value, 10) || 0, 0), 20);
+let shoutvalue = Math.min(Math.max(parseInt(shoutskills.value, 10) || 0, 0), 20);
+let warcryvalue = Math.min(Math.max(parseInt(warcryskills.value, 10) || 0, 0), 20);
+let finditemvalue = Math.min(Math.max(parseInt(finditemskills.value, 10) || 0, 0), 20);
+let tauntvalue = Math.min(Math.max(parseInt(tauntskills.value, 10) || 0, 0), 20);
+let battleordersvalue = Math.min(Math.max(parseInt(battleordersskills.value, 10) || 0, 0), 20);
+let grimwardvalue = Math.min(Math.max(parseInt(grimwardskills.value, 10) || 0, 0), 20);
+let battlecommandvalue = Math.min(Math.max(parseInt(battlecommandskills.value, 10) || 0, 0), 20);
+let battlecryvalue = Math.min(Math.max(parseInt(battlecryskills.value, 10) || 0, 0), 20);
+let generalmasteryvalue = Math.min(Math.max(parseInt(generalmasteryskills.value, 10) || 0, 0), 20);
+let throwingmasteryvalue = Math.min(Math.max(parseInt(throwingmasteryskills.value, 10) || 0, 0), 20);
+let polearmandspearmasteryvalue = Math.min(Math.max(parseInt(polearmandspearmasteryskills.value, 10) || 0, 0), 20);
+let combatreflexesvalue = Math.min(Math.max(parseInt(combatreflexesskills.value, 10) || 0, 0), 20);
+let ironskinvalue = Math.min(Math.max(parseInt(ironskinskills.value, 10) || 0, 0), 20);
+let increasedspeedvalue = Math.min(Math.max(parseInt(increasedspeedskills.value, 10) || 0, 0), 20);
+let naturalresistancevalue = Math.min(Math.max(parseInt(naturalresistanceskills.value, 10) || 0, 0), 20);
+let deepwoundsvalue = Math.min(Math.max(parseInt(deepwoundsskills.value, 10) || 0, 0), 20);
+let bashvalue = Math.min(Math.max(parseInt(bashskills.value, 10) || 0, 0), 20);
+let doubleswingvalue = Math.min(Math.max(parseInt(doubleswingskills.value, 10) || 0, 0), 20);
+let frenzyvalue = Math.min(Math.max(parseInt(frenzyskills.value, 10) || 0, 0), 20);
+let stunvalue = Math.min(Math.max(parseInt(stunskills.value, 10) || 0, 0), 20);
+let concentratevalue = Math.min(Math.max(parseInt(concentrateskills.value, 10) || 0, 0), 20);
+let doublethrowvalue = Math.min(Math.max(parseInt(doublethrowskills.value, 10) || 0, 0), 20);
+let leapvalue = Math.min(Math.max(parseInt(leapskills.value, 10) || 0, 0), 20);
+let leapattackvalue = Math.min(Math.max(parseInt(leapattackskills.value, 10) || 0, 0), 20);
+let berserkvalue = Math.min(Math.max(parseInt(berserkskills.value, 10) || 0, 0), 20);
+let whirlwindvalue = Math.min(Math.max(parseInt(whirlwindskills.value, 10) || 0, 0), 20);
+
 
 
 
@@ -7090,17 +7149,19 @@ if (level > 5) {
 if (doubleswingvalue > 0 && level > 11) {
     concentrateskills.classList.remove('hiddenSkill12');
     doublethrowskills.classList.remove('hiddenSkill12');
-    leapattackskills.classList.remove('hiddenSkill12');
+    leapskills.classList.remove('hiddenSkill12');
 } else {
     concentrateskills.classList.add('hiddenSkill12');
     doublethrowskills.classList.add('hiddenSkill12');
-    leapattackskills.classList.add('hiddenSkill12');
+    leapskills.classList.add('hiddenSkill12');
 }
 
 if (concentratevalue > 0 && level > 23) {
     berserkskills.classList.remove('hiddenSkill24');
+    leapattackskills.classList.remove('hiddenSkill12');
 } else {
     berserkskills.classList.add('hiddenSkill24');
+    leapattackskills.classList.add('hiddenSkill12');
 }
 
 if (berserkvalue > 0 && level > 29) {
@@ -7217,6 +7278,35 @@ lightningsentryskills.addEventListener('input', updateVisibility);
 wakeofinfernoskills.addEventListener('input', updateVisibility);
 chainlightningsentryskills.addEventListener('input', updateVisibility);
 deathsentryskills.addEventListener('input', updateVisibility);
+howlskills.addEventListener('input', updateVisibility);
+findpotionskills.addEventListener('input', updateVisibility);
+shoutskills.addEventListener('input', updateVisibility);
+warcryskills.addEventListener('input', updateVisibility);
+finditemskills.addEventListener('input', updateVisibility);
+tauntskills.addEventListener('input', updateVisibility);
+battleordersskills.addEventListener('input', updateVisibility);
+grimwardskills.addEventListener('input', updateVisibility);
+battlecommandskills.addEventListener('input', updateVisibility);
+battlecryskills.addEventListener('input', updateVisibility);
+generalmasteryskills.addEventListener('input', updateVisibility);
+throwingmasteryskills.addEventListener('input', updateVisibility);
+polearmandspearmasteryskills.addEventListener('input', updateVisibility);
+combatreflexesskills.addEventListener('input', updateVisibility);
+ironskinskills.addEventListener('input', updateVisibility);
+increasedspeedskills.addEventListener('input', updateVisibility);
+naturalresistanceskills.addEventListener('input', updateVisibility);
+deepwoundsskills.addEventListener('input', updateVisibility);
+bashskills.addEventListener('input', updateVisibility);
+doubleswingskills.addEventListener('input', updateVisibility);
+frenzyskills.addEventListener('input', updateVisibility);
+stunskills.addEventListener('input', updateVisibility);
+concentrateskills.addEventListener('input', updateVisibility);
+doublethrowskills.addEventListener('input', updateVisibility);
+leapskills.addEventListener('input', updateVisibility);
+leapattackskills.addEventListener('input', updateVisibility);
+berserkskills.addEventListener('input', updateVisibility);
+whirlwindskills.addEventListener('input', updateVisibility);
+
   
   
    
