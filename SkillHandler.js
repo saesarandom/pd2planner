@@ -1256,11 +1256,15 @@ class SkillHandler {
     }
 
     if (skillName === "javelinAndSpearMastery") {
+      const currentCritValue =
+        document.getElementById("criticalhitcontainer")?.value || 0;
+      const critChance =
+        skill.levelData.criticalChance[level - 1] || currentCritValue;
       return {
         level,
         name: skill.name,
         description: skill.description,
-        criticalChance: skill.levelData.criticalChance[level - 1] || 0,
+        criticalChance: critChance,
       };
     }
 

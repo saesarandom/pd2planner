@@ -1303,7 +1303,18 @@ width: 16cap;
 #howlcontainer, #findpotioncontainer, #shoutcontainer, #generalmasterycontainer, #throwingmasterycontainer,
 #polearmandspearmasterycontainer, #combatreflexescontainer, #ironskincontainer, #increasedspeedcontainer, #naturalresistancecontainer,
 #deepwoundscontainer, #bashcontainer, #doubleswingcontainer, #frenzycontainer, #stuncontainer, #concentratecontainer, #doublethrowcontainer,
-#leapcontainer, #leapattackcontainer, #berserkcontainer, #whirlwindcontainer { 
+#leapcontainer, #leapattackcontainer, #berserkcontainer, #whirlwindcontainer, #firestormcontainer, #arcticblastcontainer, #moltenbouldercontainer, #cyclonearmorcontainer, #fissurecontainer, #twistercontainer, #gustcontainer,
+#volcanocontainer, #tornadocontainer, #hurricanecontainer, #armageddoncontainer, #werewolfcontainer, #werebearcontainer, #lycantropycontainer, #feralragecontainer, #maulcontainer, #hungercontainer, #rabiescontainer,
+#shockwavecontainer, #fireclawscontainer, #furycontainer, #ravencontainer, #poisoncreepercontainer, #heartofwolverinecontainer, #summonspiritwolfcontainer, #carrionvinecontainer, #spiritofbarbscontainer, #summondirewolfcontainer,
+#solarcreepercontainer, #oaksagecontainer, #summongrizzlycontainer, #raiseskeletonwarriorcontainer, #skeletonmasterycontainer, #claygolemcontainer, #raiseskeletalmagecontainer, #golemmasterycontainer, #bloodgolemcontainer, #bloodwarpcontainer,
+#irongolemcontainer, #raiseskeletonarchercontainer, #firegolemcontainer, #revivecontainer, #teethcontainer, #poisonstrikecontainer, #bonearmorcontainer, #corpseexplosioncontainer, #bonewallcontainer, #desecratecontainer, #bonespearcontainer, #boneprisoncontainer,
+#poisonnovacontainer, #bonespiritcontainer, #amplifydamagecontainer, #cursemasterycontainer, #dimvisioncontainer, #darkpactcontainer, #ironmaidencontainer, #lifetapcontainer, #terrorcontainer, #weakencontainer, #confusecontainer, #attractcontainer, #decrepifycontainer, #lowerresistcontainer,
+#prayercontainer, #resistfirecontainer, #resistcoldcontainer, #resistlightningcontainer, #defiancecontainer, #cleansingcontainer, #vigorcontainer, #meditationcontainer, #redemptioncontainer, #salvationcontainer,
+#mightcontainer, #holyfirecontainer, #thornscontainer, #blessedaimcontainer, #concentrationcontainer, #holyfreezecontainer, #holyshockcontainer, #sanctuarycontainer, #fanaticismcontainer, #convictioncontainer, #sacrificecontainer, 
+#holyboltcontainer, #smitecontainer, #zealcontainer, #holylightcontainer, #chargecontainer, #vengeancecontainer, #blessedhammercontainer, #holyswordcontainer, #joustcontainer, #fistofheavenscontainer, #holyshieldcontainer, #holynovacontainer, #iceboltcontainer,
+#coldenchantcontainer, #frostnovacontainer, #iceblastcontainer, #shiverarmorcontainer, #glacialspikecontainer, #chillingarmorcontainer, #icebarragecontainer, #blizzardcontainer, #frozenorbcontainer, #coldmasterycontainer, 
+#chargedboltcontainer, #telekinesiscontainer, #staticfieldcontainer, #novacontainer, #lightningcontainer, #teleportcontainer, #chainlightningcontainer, #thunderstormcontainer, #energyshieldcontainer, #lightningmasterycontainer, #fireboltcontainer, #warmthcontainer, #infernocontainer, #blazecontainer, 
+#firewallcontainer, #fireballcontainer, #lesserhydracontainer, #enchantfirecontainer, #meteorcontainer, #combustioncontainer, #hydracontainer, #firemasterycontainer { 
   position: absolute;
   width: 42px;
   color: rgb(255, 255, 255);
@@ -2072,8 +2083,8 @@ Defense
 <div class="flatpoisoncontainer">Poison Dmg<div id="flatpoisoncontainer"></div>
 <div class="flatmagiccontainer">Magic Dmg<div id="flatmagiccontainer"></div>
 
-<div class="criticalhitcontainer">Critical Hit<input id="criticalhitcontainer" type="text" readonly value="0"></div>
-<div class="deadlystrikecontainer">Deadly Strike<input id="deadlystrikecontainer" type="text" readonly value="0"></div>
+<div class="criticalhitcontainer">Critical Hit<div id="criticalhitcontainer"></div>
+<div class="deadlystrikecontainer">Deadly Strike<div id="deadlystrikecontainer"></div>
 <div class="weaponmasterycontainer">Weapon Mastery<div id="weaponmasterycontainer"></div>
 </div>
 <div class="crithitmultipliercontainer">Crit Hit dmg multiplier<div id="crithitmultipliercontainer"></div>
@@ -7411,7 +7422,7 @@ if (level > 5) {
 if (generalmasteryvalue > 0 && level > 11) {
     combatreflexesskills.classList.remove('hiddenSkill12');
 } else {
-    combatreflexesskills.classList.add('hiddenSkill12');
+  combatreflexesskills.classList.add('hiddenSkill12');
 }
 
 if (combatreflexesvalue > 0 && level > 17) {
@@ -8145,6 +8156,7 @@ skillvalues.forEach(skillvalue => {
  
    <script src="SkillHandler.js"></script>
    <script src="skillRestriction.js"></script>
+    <script src="skillUpdates.js"></script>
    <script src="DPSSimulator.js"></script>
    <script src="enhancedDamage.js"></script>
     <script src="login.js"></script>
@@ -8531,11 +8543,12 @@ document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
     let deadlyStrikeValue = 0;
 
     if (javelinandspearmasteryLevel > 0) {
-        const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
-        criticalHitValue = javelinandspearmasteryInfo?.criticalChance || 0;
-        
-    }
-    document.getElementById('criticalhitcontainer').value = criticalHitValue;
+    const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
+    console.log('Javelin Mastery Info:', javelinandspearmasteryInfo);
+    criticalHitValue = javelinandspearmasteryInfo?.criticalChance || 0;
+    console.log('Critical Hit Value:', criticalHitValue);
+}
+document.getElementById('criticalhitcontainer').value = criticalHitValue;
 
     deadlyStrikeValue =  document.getElementById('deadlystrikecontainer') || 0;
     const deadlyStrike = parseInt(document.getElementById('deadlystrikecontainer').value || 0);
@@ -9484,7 +9497,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
 </script>
 
 <br><br><br><br><br>
-
+<iframe src="https://ptb.discord.com/widget?id=284432411553562624&theme=dark" width="250" height="300" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 <div class="auth-container">
   <!-- Login Form -->
   <form id="loginForm" onsubmit="handleLogin(event)">
@@ -9750,6 +9763,12 @@ async function saveSettings() {
 </script>
 
 
-
+<script>
+  document.getElementById('lvlValue').addEventListener('input', function() {
+      const currentCritValue = document.getElementById('criticalhitcontainer').value;
+      updateVisibility();
+      document.getElementById('criticalhitcontainer').value = currentCritValue;
+  });
+  </script>
 </body>
 </html>
