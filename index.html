@@ -5536,22 +5536,51 @@ document.addEventListener('DOMContentLoaded', function() {
     
   }
   
-const skillHandler = new SkillHandler();
+
+
+
+
+  const skillHandler = {
+    getSkillInfo: function(skillName, level) {
+        if (skillName === 'javelinAndSpearMastery') {
+            return {
+                criticalChance: [5, 9, 12, 15, 17, 19, 20, 21, 23, 23, 24, 25, 26, 26, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35][level - 1]
+            };
+        }
+        if (skillName === 'criticalStrike') {
+            return {
+                criticalChance: [15, 23, 30, 35, 40, 43, 46, 48, 51, 52, 54, 56, 57, 58, 59, 61, 61, 62, 63, 63, 64, 65, 65, 66, 66, 67, 68, 68, 68, 68, 69, 69, 70, 70, 70, 70, 70, 71, 71, 71, 71, 72, 72, 72, 72, 72, 72, 72, 73, 73, 73, 73, 73, 74, 74, 74, 74, 74, 74, 75][level - 1]
+            };
+        }
+        return null;
+    }
+};
 
 // Debug function
 function updateCriticalAndDeadly() {
     try {
-        // Get mastery level
+        // Get mastery level and critical strike level
         const masteryLevel = parseInt(document.getElementById('javelinandspearmasterycontainer')?.value || 0);
+        const criticalStrikeLevel = parseInt(document.getElementById('criticalstrikecontainer')?.value || 0);
         
-        // Get critical hit value from mastery
+        // Get critical hit values from both sources
         let criticalHitValue = 0;
         if (masteryLevel > 0) {
             const masteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', masteryLevel);
             criticalHitValue = masteryInfo?.criticalChance || 0;
         }
 
-        // Get deadly strike and multiply by 100
+        // Add critical strike bonus if skilled
+        if (criticalStrikeLevel > 0) {
+    const criticalStrikeInfo = skillHandler.getSkillInfo('criticalStrike', criticalStrikeLevel);
+    console.log('Critical Strike Level:', criticalStrikeLevel);
+    console.log('Critical Strike Info:', criticalStrikeInfo);
+    console.log('Before adding critical chance:', criticalHitValue);
+    criticalHitValue += criticalStrikeInfo?.criticalChance || 0;
+    console.log('After adding critical chance:', criticalHitValue);
+}
+
+        // Get deadly strike and weapon mastery
         const deadlyStrike = (parseFloat(document.getElementById('deadlystrikecontainer')?.textContent || 0));
         const weaponMastery = parseFloat(document.getElementById('weaponmasterycontainer')?.textContent || 0);
 
@@ -5561,7 +5590,6 @@ function updateCriticalAndDeadly() {
                                     (1 - weaponMastery/100)) + 1;
 
         // Update UI
-        document.getElementById('deadlystrikecontainer').textContent = deadlyStrike.toFixed(2);
         document.getElementById('criticalhitcontainer').textContent = criticalHitValue.toFixed(2);
         document.getElementById('crithitmultipliercontainer').textContent = critMultiplier.toFixed(3);
     } catch (error) {
@@ -5581,8 +5609,10 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('enr')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('deadlystrikecontainer')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('weaponmasterycontainer')?.addEventListener('input', updateCriticalAndDeadly);
-    document.getElementById('amuletDropdown')?.addEventListener('change', updateCriticalAndDeadly);
+    document.getElementById('amulets-dropdown')?.addEventListener('change', updateCriticalAndDeadly);
     document.getElementById('javelinandspearmasterycontainer')?.addEventListener('input', updateCriticalAndDeadly);
+    document.getElementById('criticalstrikecontainer')?.addEventListener('input', updateCriticalAndDeadly);
+    document.getElementById('criticalhitcontainer')?.addEventListener('input', updateCriticalAndDeadly);
     
     updateCriticalAndDeadly();
    

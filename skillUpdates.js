@@ -68,6 +68,10 @@ class SkillUpdates {
 
   updateCritMultiplier() {
     const stats = this.convertStatsToNumbers();
+
+    stats.criticalhitcontainer = Math.min(stats.criticalhitcontainer, 75);
+    stats.deadlystrikecontainer = Math.min(stats.deadlystrikecontainer, 0.75);
+
     const critMultiplier =
       0.5 *
         (1 -
@@ -93,21 +97,24 @@ class SkillUpdates {
       newValue
     );
     if (masteryInfo) {
-      const criticalHit = masteryInfo.criticalChance || 0;
-
-      // Only update if the current value is different
-      const currentCritValue = parseFloat(
-        document.getElementById("criticalhitcontainer").value || 0
+      const criticalStrikeLevel = parseInt(
+        document.getElementById("criticalstrikecontainer")?.value || 0
       );
-      if (currentCritValue !== criticalHit) {
-        document.getElementById("criticalhitcontainer").textContent =
-          criticalHit.toFixed(2);
-        this.updateCritMultiplier();
-      }
+      const criticalStrikeInfo = this.skillHandler.getSkillInfo(
+        "criticalStrike",
+        criticalStrikeLevel
+      );
 
-      if (typeof updateDamageCalculations === "function") {
-        updateDamageCalculations();
-      }
+      const totalCritical =
+        ((masteryInfo.criticalChance || 0) +
+          (criticalStrikeInfo?.criticalChance || 0)) /
+        100;
+      document.getElementById("criticalhitcontainer").textContent = Math.min(
+        totalCritical,
+        0.75
+      ).toFixed(2);
+
+      this.updateCritMultiplier();
     }
   }
 
