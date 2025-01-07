@@ -94,11 +94,14 @@ class SkillUpdates {
     );
     if (masteryInfo) {
       const criticalHit = masteryInfo.criticalChance || 0;
-      const criticalHitContainer = document.getElementById(
-        "criticalhitcontainer"
+
+      // Only update if the current value is different
+      const currentCritValue = parseFloat(
+        document.getElementById("criticalhitcontainer").value || 0
       );
-      if (criticalHitContainer) {
-        criticalHitContainer.textContent = criticalHit.toFixed(2);
+      if (currentCritValue !== criticalHit) {
+        document.getElementById("criticalhitcontainer").textContent =
+          criticalHit.toFixed(2);
         this.updateCritMultiplier();
       }
 

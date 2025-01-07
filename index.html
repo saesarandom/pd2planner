@@ -5539,7 +5539,25 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateValues() {
     let startLvlValue = Math.min(Math.max(parseInt(lvlInput.value, 10) || 1, 1), 99);
     lvlInput.value = startLvlValue;
+    const javelinandspearmasteryLevel = parseInt(document.getElementById('javelinandspearmasterycontainer').value || 0);
+  let criticalHitValue = 0;
 
+  if (javelinandspearmasteryLevel > 0) {
+    const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
+    console.log('Javelin Mastery Info:', javelinandspearmasteryInfo);
+    criticalHitValue = javelinandspearmasteryInfo?.criticalChance || 0;
+    console.log('Critical Hit Value:', criticalHitValue);
+  }
+
+
+
+
+  
+  // Only update if the current value is different
+  const currentCritValue = parseFloat(document.getElementById('criticalhitcontainer').value || 0);
+  if (currentCritValue !== criticalHitValue) {
+    document.getElementById('criticalhitcontainer').value = criticalHitValue;
+  }
 
 
 
@@ -6426,6 +6444,11 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     document.getElementById('ringsone-info').innerHTML = ringOneData.description;
     document.getElementById('ringstwo-info').innerHTML = ringTwoData.description;
     document.getElementById('amulet-info').innerHTML = amuletData.description;
+
+
+   
+
+
     calculateBlock(totalLifeAccr, totalDefense, totalStr, totalDex, totalVit, totalEnr, totalBlock, totalIas, totalFcr, totalFrw, totalFhr, totalCbf, totalPlr, totalDr, totalPdr, totalMdr, totalFireRes, totalColdRes, totalLightRes, totalPoisonRes, totalCurseRes, totalMinDmg, totalMaxDmg, totalTwoMinDmg, totalTwoMaxDmg, totalAllSkill, totalMagicFind, totalGoldFind, totalOw, totalOwDmg, totalCb, totalCbDmg,
       totalPiercePhys, totalPierceFire, totalPierceCold, totalPierceLight, totalPiercePoison, totalPierceMagic, totalFlatFireDmg, totalFlatColdDmg, totalFlatLightDmg, totalFlatMagicDmg, totalFlatPoisonDmg, totalCriticalHit, totalDeadlyStrike, totalWeaponMastery, totalCritMultiplier
     );
@@ -6754,46 +6777,6 @@ const firemasteryskills = document.getElementById('firemasterycontainer');
 
 
 
-function debugNecroSkills() {
-    const raiseSkeletonWarrior = document.getElementById('raiseskeletonwarriorcontainer');
-    const skeletonMastery = document.getElementById('skeletonmasterycontainer');
-    
-    console.log('Necro Skills Debug:');
-    console.log('Teezh value:', teethvalue || 'not found');
-    console.log('Skeleton Mastery value:', skeletonmastery?.value || 'not found');
-    
-    // Check skill values used in conditions
-    let teethvalue = Math.min(Math.max(parseInt(teethvalue, 10) || 0, 0), 20);
-    let skeletonmasteryvalue = Math.min(Math.max(parseInt(skeletonmastery?.value, 10) || 0, 0), 20);
-    
-    console.log('Processed values:');
-    console.log('teethrvalue:', teethvalue);
-    console.log('skeletonmasteryvalue:', skeletonmasteryvalue);
-}
-
-// Add event listeners specifically for Necro skills
-function initNecroSkillListeners() {
-    const necroSkills = [
-        'teethcontainer',
-        'skeletonmasterycontainer'
-    ];
-    
-    necroSkills.forEach(skillId => {
-        const skillElement = document.getElementById(skillId);
-        if (skillElement) {
-            skillElement.addEventListener('input', function() {
-                console.log(`${skillId} changed to:`, this.value);
-                updateVisibility();
-                debugNecroSkills();
-            });
-        } else {
-            console.warn(`Skill element not found: ${skillId}`);
-        }
-    });
-}
-
-
-
 function updateVisibility() {
         
         let jabvalue = Math.min(Math.max(parseInt(jabskills.value, 10) || 0, 0), 20);
@@ -7041,6 +7024,28 @@ console.log('Current skill levels:', {
         const level = parseInt(document.getElementById('lvlValue').value) || 1;
         
     
+
+        const javelinandspearmasteryLevel = parseInt(document.getElementById('javelinandspearmasterycontainer').value || 0);
+let criticalHitValue = 0;
+
+if (javelinandspearmasteryLevel > 0) {
+    const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
+    console.log('Javelin Mastery Info:', javelinandspearmasteryInfo);
+    criticalHitValue = javelinandspearmasteryInfo?.criticalChance || 0;
+    console.log('Critical Hit Value:', criticalHitValue);
+}
+
+// Only update if the current value is different
+const currentCritValue = parseInt(document.getElementById('criticalhitcontainer').value || 0);
+if (currentCritValue !== criticalHitValue) {
+    document.getElementById('criticalhitcontainer').value = criticalHitValue;
+}
+
+
+
+
+
+
   
     if (jabvalue > 0 && level > 5) {
         javelinandspearmasteryskills.classList.remove('hiddenSkill6');
@@ -8539,30 +8544,30 @@ document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
 
         //const criticalhitValue =  parseInt(document.getElementById('criticalhitcontainer').value || 0);
         const javelinandspearmasteryLevel = parseInt(document.getElementById('javelinandspearmasterycontainer').value || 0);
-    let criticalHitValue = 0;
-    let deadlyStrikeValue = 0;
+  let criticalHitValue = 0;
 
-    if (javelinandspearmasteryLevel > 0) {
+  if (javelinandspearmasteryLevel > 0) {
     const javelinandspearmasteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', javelinandspearmasteryLevel);
-    console.log('Javelin Mastery Info:', javelinandspearmasteryInfo);
     criticalHitValue = javelinandspearmasteryInfo?.criticalChance || 0;
-    console.log('Critical Hit Value:', criticalHitValue);
-}
-document.getElementById('criticalhitcontainer').value = criticalHitValue;
+  }
 
-    deadlyStrikeValue =  document.getElementById('deadlystrikecontainer') || 0;
-    const deadlyStrike = parseInt(document.getElementById('deadlystrikecontainer').value || 0);
-    
-    const totalDeadlyStrike = deadlyStrike;
-    const totalCriticalHit = criticalHitValue / 100;
-    const totalWeaponMastery = parseInt(document.getElementById('weaponmasterycontainer').value || 0) / 100;
+  // Only update if the current value is different
+  const currentCritValue = parseInt(document.getElementById('criticalhitcontainer').value || 0);
+  if (currentCritValue !== criticalHitValue) {
+    document.getElementById('criticalhitcontainer').value = criticalHitValue;
+  }
 
-   
+// Get deadly strike value correctly
+deadlyStrikeValue = parseFloat(document.getElementById('deadlystrikecontainer').value || 0);
 
-    const totalCritMultiplier = 0.5 * (1 - (1 - totalDeadlyStrike) * (1 - totalCriticalHit) * (1 - totalWeaponMastery)) + 1;
-    
+const totalDeadlyStrike = deadlyStrikeValue;
+const totalCriticalHit = criticalHitValue / 100;
+const totalWeaponMastery = parseFloat(document.getElementById('weaponmasterycontainer').value || 0) / 100;
 
-    document.getElementById('crithitmultipliercontainer').value = totalCritMultiplier.toFixed(3);
+const totalCritMultiplier = 0.5 * (1 - (1 - totalDeadlyStrike) * (1 - totalCriticalHit) * (1 - totalWeaponMastery)) + 1;
+document.getElementById('crithitmultipliercontainer').value = totalCritMultiplier.toFixed(3);
+
+
 
    
     const deadlyStrikeElement = document.getElementById('deadlystrikecontainer');
@@ -9764,10 +9769,56 @@ async function saveSettings() {
 
 
 <script>
-  document.getElementById('lvlValue').addEventListener('input', function() {
-      const currentCritValue = document.getElementById('criticalhitcontainer').value;
-      updateVisibility();
-      document.getElementById('criticalhitcontainer').value = currentCritValue;
+ document.addEventListener('DOMContentLoaded', () => {
+    const skillHandler = new SkillHandler();
+    const javelinandspearmasteryContainer = document.getElementById('javelinandspearmasterycontainer');
+    const criticalHitContainer = document.getElementById('criticalhitcontainer');
+    const lvlValue = document.getElementById('lvlValue');
+
+    function updateCriticalHit() {
+        const masteryLevel = parseInt(javelinandspearmasteryContainer.value || 0);
+        const currentLevel = parseInt(lvlValue.value || 1);
+
+        let critValue = 0;
+
+        try {
+            const masteryInfo = skillHandler.getSkillInfo('javelinAndSpearMastery', masteryLevel);
+
+            if (masteryInfo && masteryInfo.criticalChance) {
+                critValue += masteryInfo.criticalChance;
+            }
+
+            criticalHitContainer.value = critValue.toFixed(2);
+            criticalHitContainer.setAttribute('value', critValue.toFixed(2));
+        } catch (error) {
+            console.error('Error updating critical hit:', error);
+        }
+    }
+
+    const triggerElements = [
+        javelinandspearmasteryContainer,
+        lvlValue,
+        document.getElementById('selectClass'),
+        document.getElementById('helms-dropdown'),
+        document.getElementById('armors-dropdown'),
+        document.getElementById('weapons-dropdown'),
+        document.getElementById('offs-dropdown'),
+        document.getElementById('gloves-dropdown'),
+        document.getElementById('belts-dropdown'),
+        document.getElementById('boots-dropdown'),
+        document.getElementById('ringsone-dropdown'),
+        document.getElementById('ringstwo-dropdown'),
+        document.getElementById('amulets-dropdown')
+    ];
+
+    triggerElements.forEach(el => {
+        if (el) {
+            el.addEventListener('change', updateCriticalHit);
+            el.addEventListener('input', updateCriticalHit);
+        }
+    });
+
+    updateCriticalHit();
   });
   </script>
 </body>
