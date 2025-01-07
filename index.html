@@ -5580,6 +5580,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('vit')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('enr')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('deadlystrikecontainer')?.addEventListener('input', updateCriticalAndDeadly);
+    document.getElementById('weaponmasterycontainer')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('amuletDropdown')?.addEventListener('change', updateCriticalAndDeadly);
     document.getElementById('javelinandspearmasterycontainer')?.addEventListener('input', updateCriticalAndDeadly);
     
@@ -8465,6 +8466,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     let baseMaxDmg = parseInt(document.getElementById('onehandmaxdmgcontainer')?.textContent || 0);
     let totalStr = parseInt(document.getElementById('straccr')?.textContent || 0);
     
+
+    const critMultiplier = parseFloat(document.getElementById('crithitmultipliercontainer')?.textContent || 1);
+
+    baseMinDmg = Math.floor(baseMinDmg * (1 + totalStr * 1.1/100));
+    baseMaxDmg = Math.floor(baseMaxDmg * (1 + totalStr * 1.1/100));
+    
     // Get flat damage additions
     let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
     let totalFlatLightDmg = parseInt(document.getElementById('flatlightcontainer')?.textContent || 0);
@@ -8500,8 +8507,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 let totalMaxDmg = baseMaxDmg;
                 
                 if (typeof skillInfo.damage === 'object') {
-                    totalMinDmg = Math.floor(baseMinDmg * (1 + skillInfo.damage.min/100 + totalStr * 1.1/100));
-                    totalMaxDmg = Math.floor(baseMaxDmg * (1 + skillInfo.damage.max/100 + totalStr * 1.1/100));
+                    totalMinDmg = Math.floor(baseMinDmg * (1 + skillInfo.damage.min/100 + totalStr * 1.1/100) * critMultiplier);
+                    totalMaxDmg = Math.floor(baseMaxDmg * (1 + skillInfo.damage.max/100 + totalStr * 1.1/100) * critMultiplier);
                 }
                 
                 // Add flat damages
