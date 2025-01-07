@@ -8507,7 +8507,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     let totalFlatLightDmg = parseInt(document.getElementById('flatlightcontainer')?.textContent || 0);
     let totalFlatFireDmg = parseInt(document.getElementById('flatfirecontainer')?.textContent || 0);
     let totalFlatMagicDmg = parseInt(document.getElementById('flatmagiccontainer')?.textContent || 0);
-
+    let totalFlatPoisonDmg = parseInt(document.getElementById('flatpoisoncontainer')?.textContent || 0);
     if (skillInfo && skillInfo.damage) {
         // Handle different damage types
         switch(skillInfo.damage.type) {
@@ -8542,8 +8542,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 
                 // Add flat damages
-                totalMinDmg = Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg);
-                totalMaxDmg = Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg);
+                totalMinDmg = Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg + totalFlatPoisonDmg);
+                totalMaxDmg = Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg + totalFlatPoisonDmg);
                 
                 document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg} Phys/Ele Damage`;
                 break;
@@ -9900,5 +9900,55 @@ async function saveSettings() {
     updateCriticalHit();
   });
   </script>
+  <script>
+function updatePoisonFromCharms() {
+   // Get base poison damage from equipped items
+   let basePoison = 0;
+   ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 
+    'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 
+    'ringstwo-dropdown', 'amulets-dropdown'].forEach(slot => {
+       const item = itemList[document.getElementById(slot)?.value];
+       if(item?.properties?.poisondmg) {
+           basePoison += item.properties.poisondmg / (item.properties.poisontime || 1);
+       }
+   });
+
+   // Add charm poison damage 
+   let totalPoison = basePoison;
+   document.querySelector('.inventorycontainer')?.querySelectorAll('.charm1').forEach(charm => {
+       if(charm.textContent && !charm.textContent.includes('X')) {
+           const match = charm.textContent.match(/\+(\d+) Poison Damage/);
+           if(match) totalPoison += parseInt(match[1])/2;
+       }
+   });
+
+   // Keep numeric value in container
+   const container = document.getElementById('flatpoisoncontainer');
+   container.setAttribute('data-value', totalPoison);
+   container.textContent = totalPoison.toFixed(1);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+   const observer = new MutationObserver(updatePoisonFromCharms);
+   observer.observe(document.querySelector('.inventorycontainer'), {
+       childList: true, 
+       subtree: true,
+       characterData: true
+   });
+
+   // Track equipment and charm changes
+   ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown',
+    'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
+    'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {
+       document.getElementById(id)?.addEventListener('change', updatePoisonFromCharms);
+       document.getElementById('lvlValue').addEventListener('input', updatePoisonFromCharms);
+       document.getElementById('str').addEventListener('input', updatePoisonFromCharms);
+       document.getElementById('dex').addEventListener('input', updatePoisonFromCharms);
+       document.getElementById('vit').addEventListener('input', updatePoisonFromCharms);
+       document.getElementById('enr').addEventListener('input', updatePoisonFromCharms);
+   });
+});
+</script>
+
 </body>
 </html>
