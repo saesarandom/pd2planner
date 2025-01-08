@@ -1623,6 +1623,28 @@ select:has(option[value="Tempest"]:checked), option[value="Tempest"] { backgroun
   background-size: cover;
   background-repeat: no-repeat; 
 }
+
+#buff1 {
+  position: absolute;
+  left: 1200px;
+  top: 20px;
+  width: 38px;
+  height: 38px;
+   
+  background-size: contain;
+  background-repeat: no-repeat; 
+}
+
+#buff2 {
+  position: absolute;
+  left: 1240px;
+  top: 20px;
+  width: 38px;
+  height: 38px;
+  
+  background-size: contain;
+  background-repeat: no-repeat; 
+}
 </style>
 <html>
 <body>
@@ -10021,22 +10043,26 @@ document.addEventListener('DOMContentLoaded', () => {
    });
 });
 </script>
+
+
+
+
 <div class="hirelingcontainer">Mercenary Class
   <select id="mercclass">
-    <option value="option1">No Mercenary</option>
-    <option value="option1">A1 Fire (Vigor)</option>
-    <option value="option2">A1 Cold (Meditation)</option>
-    <option value="option2">A1 Magic (Slow Movement)</option>
-    <option value="option2">A2 Defensive (Defiance)</option>
-    <option value="option2">A2 Offensive (Blessed Aim)</option>
-    <option value="option2">A2 Combat (Thorns)</option>
-    <option value="option2">A3 Fire (Cleansing)</option>
-    <option value="option2">A3 Cold (Prayer)</option>
-    <option value="option2">A3 Lightning (Holy Shock)</option>
-    <option value="option2">A4 Light (Sanctuary)</option>
-    <option value="option2">A4 Dark (Amplify Damage)</option>
-    <option value="option2">A5 Combat (Might)</option>
-    <option value="option2">A5 Warcries (Battle Orders)</option>
+    <option value="No Mercenary">No Mercenary</option>
+    <option value="A1 Fire (Vigor)">A1 Fire (Vigor)</option>
+    <option value="A1 Cold (Meditation)">A1 Cold (Meditation)</option>
+    <option value="A1 Magic (Slow Movement)">A1 Magic (Slow Movement)</option>
+    <option value="A2 Defensive (Defiance)">A2 Defensive (Defiance)</option>
+    <option value="A2 Offensive (Blessed Aim)">A2 Offensive (Blessed Aim)</option>
+    <option value="A2 Combat (Thorns)">A2 Combat (Thorns)</option>
+    <option value="A3 Fire (Cleansing)">A3 Fire (Cleansing)</option>
+    <option value="A3 Cold (Prayer)">A3 Cold (Prayer)</option>
+    <option value="A3 Lightning (Holy Shock)">A3 Lightning (Holy Shock)</option>
+    <option value="A4 Light (Sanctuary)">A4 Light (Sanctuary)</option>
+    <option value="A4 Dark (Amplify Damage)">A4 Dark (Amplify Damage)</option>
+    <option value="A5 Combat (Might)">A5 Combat (Might)</option>
+    <option value="A5 Warcries (Battle Orders)">A5 Warcries (Battle Orders)</option>
   </select>
   <div class="merclvl">
     Mercenary Level
@@ -10045,11 +10071,79 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="mercdifficulty">
     Hired Difficulty
   <select id="mercdiff">
-    <option value="option1">Normal</option>
-    <option value="option1">Nightmare</option>
-    <option value="option2">Hell</option>
+    <option value="Normal">Normal</option>
+    <option value="Nightmare">Nightmare</option>
+    <option value="Hell">Hell</option>
   </select>
   </div>
 </div>
+<div id="buff1"></div>
+<div id="buff2"></div>
+<div id="buff3"></div>
+<div id="buff4"></div>
+<div id="buff5"></div>
+<div id="buff6"></div>
+<div id="buff7"></div>
+<div id="buff8"></div>
+<div id="buff9"></div>
+<div id="buff10"></div>
+
+
+
+
+
+
+
+<script>
+const mercbuff = document.getElementById('mercclass');
+const buffs = document.querySelectorAll('[id^="buff"]');
+const merclvlValue = document.getElementById('merclvlValue');
+
+function getNextFreeBuffSlot() {
+ for (let i = 0; i < buffs.length; i++) {
+   if (!buffs[i].style.backgroundImage) {
+     return buffs[i];
+   }
+ }
+ return null;
+}
+
+function clearAllBuffs() {
+ buffs.forEach(buff => buff.style.backgroundImage = '');
+}
+
+mercbuff.addEventListener('change', (e) => {
+ clearAllBuffs();
+ const selectedValue = e.target.value;
+
+ if (selectedValue === 'A1 Fire (Vigor)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/vigor2.png")';
+ } else if (selectedValue === 'A1 Cold (Meditation)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/meditation2.png")';
+  } else if (selectedValue === 'A2 Defensive (Defiance)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/defiance2.png")';
+  } else if (selectedValue === 'A2 Offensive (Blessed Aim)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/blessedaim2.png")';
+ }
+ 
+ // Check level after merc buff is set
+ if (parseInt(merclvlValue.value) > 10) {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/holyshock2.png")';
+ }
+});
+
+merclvlValue.addEventListener('input', () => {
+ clearAllBuffs();
+ mercbuff.dispatchEvent(new Event('change'));
+});
+  </script>
+
+
+
 </body>
 </html>
