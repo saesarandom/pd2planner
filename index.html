@@ -9901,51 +9901,114 @@ async function saveSettings() {
   });
   </script>
   <script>
-function updatePoisonFromCharms() {
-   // Get base poison damage from equipped items
-   let basePoison = 0;
+function updateInventoryStats() {
+   let baseStats = {poison: 0, cold: 0, light: 0, fire: 0};
+   
+   // Get equipment stats from dropdowns
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 
     'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 
     'ringstwo-dropdown', 'amulets-dropdown'].forEach(slot => {
-       const item = itemList[document.getElementById(slot)?.value];
-       if(item?.properties?.poisondmg) {
-           basePoison += item.properties.poisondmg / (item.properties.poisontime || 1);
+      const item = itemList[document.getElementById(slot)?.value];
+       if(item?.properties) {
+           // Poison
+           if(item.properties.poisondmg && item.properties.poisontime) {
+               baseStats.poison += item.properties.poisondmg / item.properties.poisontime;
+           }
+           // Cold
+           if(item.properties.colddmgmin && item.properties.colddmgmax) {
+               baseStats.cold += (item.properties.colddmgmin + item.properties.colddmgmax) / 2;
+           }
+           // Lightning
+           if(item.properties.lightdmgmin && item.properties.lightdmgmax) {
+               baseStats.light += (item.properties.lightdmgmin + item.properties.lightdmgmax) / 2;
+           }
+           // Fire
+           if(item.properties.firedmgmin && item.properties.firedmgmax) {
+               baseStats.fire += (item.properties.firedmgmin + item.properties.firedmgmax) / 2;
+           }
        }
    });
 
-   // Add charm poison damage 
-   let totalPoison = basePoison;
-   document.querySelector('.inventorycontainer')?.querySelectorAll('.charm1').forEach(charm => {
-       if(charm.textContent && !charm.textContent.includes('X')) {
-           const match = charm.textContent.match(/\+(\d+) Poison Damage/);
-           if(match) totalPoison += parseInt(match[1])/2;
-       }
-   });
+   // Get charm stats
+   document.querySelectorAll('.charm1').forEach(charm => {
+       if(!charm.textContent || charm.textContent.includes('X')) return;
+       console.log('Charm text:', charm.textContent); // Debug line
+    const text = charm.textContent;
+    
+     // Cold damage
+     const coldMatch = text.match(/\+(\d+)\s+Cold\s+Damage/);
+    if(coldMatch) {
+        baseStats.cold += parseInt(coldMatch[1]) / 2;
+    }
+    
+    // Poison damage
+    const poisonMatch = text.match(/\+(\d+)\s+Poison\s+Damage/);
+    if(poisonMatch) {
+        baseStats.poison += parseInt(poisonMatch[1]) / 2;
+    }
 
-   // Keep numeric value in container
-   const container = document.getElementById('flatpoisoncontainer');
-   container.setAttribute('data-value', totalPoison);
-   container.textContent = totalPoison.toFixed(1);
+    const fireMatch = text.match(/\+(\d+)\s+Fire\s+Damage/);
+    if(fireMatch) {
+        baseStats.fire += parseInt(fireMatch[1]) / 2;
+    }
+
+
+    const lightMatch = text.match(/\+(\d+)\s+Lightning\s+Damage/);
+    if(lightMatch) {
+        baseStats.light += parseInt(lightMatch[1]) / 2;
+    }
+
+});
+
+   
+
+   // Update containers
+   document.getElementById('flatpoisoncontainer').textContent = baseStats.poison.toFixed(1);
+   document.getElementById('flatcoldcontainer').textContent = baseStats.cold.toFixed(1);
+   document.getElementById('flatfirecontainer').textContent = baseStats.fire.toFixed(1);
+   document.getElementById('flatlightcontainer').textContent = baseStats.light.toFixed(1);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-   const observer = new MutationObserver(updatePoisonFromCharms);
+   const observer = new MutationObserver(updateInventoryStats);
    observer.observe(document.querySelector('.inventorycontainer'), {
-       childList: true, 
-       subtree: true,
+       childList: true,
+       subtree: true, 
        characterData: true
    });
+
+   document.querySelectorAll('select[id$="-dropdown"]').forEach(select => {
+       select.addEventListener('change', updateInventoryStats);
+   });
+
+   updateInventoryStats();
+
 
    // Track equipment and charm changes
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown',
     'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
     'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {
-       document.getElementById(id)?.addEventListener('change', updatePoisonFromCharms);
-       document.getElementById('lvlValue').addEventListener('input', updatePoisonFromCharms);
-       document.getElementById('str').addEventListener('input', updatePoisonFromCharms);
-       document.getElementById('dex').addEventListener('input', updatePoisonFromCharms);
-       document.getElementById('vit').addEventListener('input', updatePoisonFromCharms);
-       document.getElementById('enr').addEventListener('input', updatePoisonFromCharms);
+       document.getElementById(id)?.addEventListener('change', updateInventoryStats);
+       document.getElementById('lvlValue').addEventListener('input', updateInventoryStats);
+       document.getElementById('str').addEventListener('input', updateInventoryStats);
+       document.getElementById('dex').addEventListener('input', updateInventoryStats);
+       document.getElementById('vit').addEventListener('input', updateInventoryStats);
+       document.getElementById('enr').addEventListener('input', updateInventoryStats);
+
+       const containers = {
+       poison: document.getElementById('flatpoisoncontainer'),
+       cold: document.getElementById('flatcoldcontainer'),
+       light: document.getElementById('flatlightcontainer'),
+       fire: document.getElementById('flatfirecontainer')
+   };
+
+   Object.entries(containers).forEach(([type, container]) => {
+       if(container) container.textContent = baseStats[type].toFixed(1);
+   });
+
+
+
+
    });
 });
 </script>
