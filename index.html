@@ -584,7 +584,7 @@ body {
             padding: 10px;
             background-color: #120707;
             font-size: 15px;
-            margin-left: 62px;
+            margin-left: 12px;
 }
 
 #armor-info {
@@ -616,7 +616,7 @@ body {
             padding: 10px;
             background-color: #120707;
             font-size: 15px;
-            margin-left: 122px;
+            margin-left: 62px;
 }
 
 #glove-info {
@@ -701,7 +701,7 @@ color: rgb(241, 234, 247);
 	
 
 margin-top: 10px;
-margin-right: 400px;
+margin-right: 1080px;
 font-size: 25px;
 
 color: rgb(100, 139, 248);
@@ -736,7 +736,7 @@ text-align: center;
 .groupoffs {   
     overflow: hidden;
   display: block; 
-margin-left: -30px;
+margin-left: -90px;
 margin-top: 336px;
 font-size: 25px;  
 width: 100%;
@@ -1613,7 +1613,16 @@ select:has(option[value="True Silver"]:checked), option[value="True Silver"] { b
 select:has(option[value="Mage Slayer"]:checked), option[value="Mage Slayer"] { background-color: rgb(186, 174, 82); }
 select:has(option[value="Tempest"]:checked), option[value="Tempest"] { background-color: rgb(186, 174, 82); }
 
-
+.hirelingcontainer {
+  position: absolute;
+  left: 1247px;
+  top: 900px;
+  width: 700px;
+  height: 600px;
+  background-image: url('/img/mercback.png'); 
+  background-size: cover;
+  background-repeat: no-repeat; 
+}
 </style>
 <html>
 <body>
@@ -1659,17 +1668,17 @@ Stats
 <input type="number" min="15" max="530" value="15" id="enr">Energy<span id="enraccr"></span><br>
 </div>	
 
-<div class="blockcontainer">
+<div class="blockcontainer" style="display: none;">
 Block chance %
 <input type="number" min="0" max="75" value="0" id="blockValue"> 
 </div>	
 
-<div class="gethitcontainer">
+<div class="gethitcontainer" style="display: none;">
 Chance to get hit %
 <input type="number" min="1" max="100" value="50" id="getHitValue">
 </div>	
 
-<div class="firerescontainer">
+<div class="firerescontainer" style="display: none;">
 Resistance to fire %
 <input type="number" min="-100" max="90" value="0" id="fireResValue">
 </div>
@@ -2889,7 +2898,7 @@ Defense
       <div>Fire Mastery:<input type="number" min="0" max="20" value="0" id="firemasterycontainer" class="hiddenSkill30"></div>
       
     </div>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
   
  
@@ -10012,6 +10021,35 @@ document.addEventListener('DOMContentLoaded', () => {
    });
 });
 </script>
-
+<div class="hirelingcontainer">Mercenary Class
+  <select id="mercclass">
+    <option value="option1">No Mercenary</option>
+    <option value="option1">A1 Fire (Vigor)</option>
+    <option value="option2">A1 Cold (Meditation)</option>
+    <option value="option2">A1 Magic (Slow Movement)</option>
+    <option value="option2">A2 Defensive (Defiance)</option>
+    <option value="option2">A2 Offensive (Blessed Aim)</option>
+    <option value="option2">A2 Combat (Thorns)</option>
+    <option value="option2">A3 Fire (Cleansing)</option>
+    <option value="option2">A3 Cold (Prayer)</option>
+    <option value="option2">A3 Lightning (Holy Shock)</option>
+    <option value="option2">A4 Light (Sanctuary)</option>
+    <option value="option2">A4 Dark (Amplify Damage)</option>
+    <option value="option2">A5 Combat (Might)</option>
+    <option value="option2">A5 Warcries (Battle Orders)</option>
+  </select>
+  <div class="merclvl">
+    Mercenary Level
+    <input type="number" min="1" max="99" value="1" id="merclvlValue">
+  </div>
+  <div class="mercdifficulty">
+    Hired Difficulty
+  <select id="mercdiff">
+    <option value="option1">Normal</option>
+    <option value="option1">Nightmare</option>
+    <option value="option2">Hell</option>
+  </select>
+  </div>
+</div>
 </body>
 </html>
