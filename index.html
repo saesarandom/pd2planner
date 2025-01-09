@@ -10122,14 +10122,37 @@ mercbuff.addEventListener('change', (e) => {
  } else if (selectedValue === 'A1 Cold (Meditation)') {
    let slot = getNextFreeBuffSlot();
    if (slot) slot.style.backgroundImage = 'url("img/meditation2.png")';
+  } else if (selectedValue === 'A1 Magic (Slow Movement)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/slowmovement2.png")';
   } else if (selectedValue === 'A2 Defensive (Defiance)') {
    let slot = getNextFreeBuffSlot();
    if (slot) slot.style.backgroundImage = 'url("img/defiance2.png")';
   } else if (selectedValue === 'A2 Offensive (Blessed Aim)') {
    let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/blessedaim2.png")';
- }
- 
+   if (slot) slot.style.backgroundImage = 'url("img/blessedaim2.png")'; 
+  } else if (selectedValue === 'A2 Combat (Thorns)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/thorns2.png")'; 
+  } else if (selectedValue === 'A3 Fire (Cleansing)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/cleansing2.png")'; 
+  } else if (selectedValue === 'A3 Cold (Prayer)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/prayer2.png")'; 
+  } else if (selectedValue === 'A3 Lightning (Holyshock)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/holyshock2.png")'; 
+  } else if (selectedValue === 'A4 Light (Sanctuary)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/sanctuary2.png")'; 
+  } else if (selectedValue === 'A4 Dark (Amplify Damage)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/amplifydamage2.png")'; 
+  } else if (selectedValue === 'A5 Combat (Might)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/might2.png")'; 
+  }
  // Check level after merc buff is set
  if (parseInt(merclvlValue.value) > 10) {
    let slot = getNextFreeBuffSlot();
