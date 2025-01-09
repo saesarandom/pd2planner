@@ -8542,25 +8542,40 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (skillInfo && skillInfo.damage) {
         // Handle different damage types
         switch(skillInfo.damage.type) {
-            case 'poison':
+          case 'poison':
+                const poisonMin = Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+                const poisonMax = Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
                 document.getElementById('damageOutput').textContent = 
-                    `${skillInfo.damage.min}-${skillInfo.damage.max} Poison Damage`;
-                break;
+                    `${poisonMin}-${poisonMax} Poison Damage`;
+                    break;
 
-            case 'lightning':
+          case 'lightning':
+                const lightningMin =  Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+                const lightningMax =  Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
                 document.getElementById('damageOutput').textContent = 
-                    `${skillInfo.damage.min}-${skillInfo.damage.max} Lightning Damage`;
-                break;
+                    `${lightningMin}-${lightningMax} Lightning Damage`;
+                    break;
 
                 case 'cold':
+                const coldMin =  Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+                const coldMax =  Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
                 document.getElementById('damageOutput').textContent = 
-                    `${skillInfo.damage.min}-${skillInfo.damage.max} Cold Damage`;
-                break;
+                    `${coldMin}-${coldMax} Cold Damage`;
+                    break;
 
                 case 'fire':
+                const fireMin =  Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+                const fireMax =  Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
                 document.getElementById('damageOutput').textContent = 
-                    `${skillInfo.damage.min}-${skillInfo.damage.max} Fire Damage`;
-                break;
+                    `${fireMin}-${fireMax} Fire Damage`;
+                    break; 
+                    
+                case 'magic':  
+                const magicMin =  Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+                const magicMax =  Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
+                document.getElementById('damageOutput').textContent = 
+                    `${magicMin}-${magicMax} Magic Damage`;
+                    break;  
 
             default:
                 // Physical/enhanced damage skills with flat damage additions
@@ -9624,7 +9639,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
 
   <!-- Welcome Message -->
   <div id="welcomeMsg" class="welcome-message" style="display: none;">
-      Welcome, <span id="userDisplay"></span>!
+      Welcome, so there is not much to do right now... except you can try to unlock 2 achievements while building your character! <span id="userDisplay"></span>
       <button onclick="handleLogout()" id="logoutBtn">Logout</button>
   </div>
 

@@ -1157,7 +1157,10 @@ class SkillHandler {
     if (!skill || level === 0) return null;
 
     const calculateSynergyBonus = (mainSkill) => {
+      console.log("Calculating synergies for:", mainSkill.name);
+      console.log("Synergies:", mainSkill.synergies);
       let synergyBonus = 0;
+
       if (mainSkill.synergies?.length > 0) {
         mainSkill.synergies.forEach((synergy) => {
           if (typeof synergy === "string") {
@@ -1169,12 +1172,22 @@ class SkillHandler {
               document.getElementById(elementId)?.value || 0
             );
 
+            console.log("Checking synergy:", {
+              skillName: synergySkillName,
+              elementId: elementId,
+              level: synergyLevel,
+              percent: synergyPercent,
+            });
+
             if (synergyLevel > 0 && !isNaN(parseInt(synergyPercent))) {
-              synergyBonus += synergyLevel * parseInt(synergyPercent);
+              const bonus = synergyLevel * parseInt(synergyPercent);
+              console.log(`Adding bonus: ${bonus} from ${synergySkillName}`);
+              synergyBonus += bonus;
             }
           }
         });
       }
+      console.log("Total synergy bonus:", synergyBonus);
       return synergyBonus;
     };
 
@@ -1192,6 +1205,8 @@ class SkillHandler {
     if (skillName === "poisonJavelin" || skillName === "plagueJavelin") {
       const baseMin = skill.levelData.poisonDamage.min[level - 1] || 0;
       const baseMax = skill.levelData.poisonDamage.max[level - 1] || 0;
+      const synergyBonus = calculateSynergyBonus(skill);
+
       return {
         level,
         name: skill.name,
@@ -1200,6 +1215,7 @@ class SkillHandler {
           type: "poison",
           min: baseMin,
           max: baseMax,
+          base: baseMax, // Add this to use in damage calculation
           synergyBonus: synergyBonus,
         },
         manaCost: calculateValue(skill.levelData.manaCost),
