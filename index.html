@@ -9933,7 +9933,7 @@ async function saveSettings() {
   </script>
   <script>
 function updateInventoryStats() {
-   let baseStats = {poison: 0, cold: 0, light: 0, fire: 0};
+   let baseStats = {poison: 0, cold: 0, light: 0, fire: 0, maxdam: 0};
    
    // Get equipment stats from dropdowns
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 
@@ -9957,6 +9957,9 @@ function updateInventoryStats() {
            if(item.properties.firedmgmin && item.properties.firedmgmax) {
                baseStats.fire += (item.properties.firedmgmin + item.properties.firedmgmax) / 2;
            }
+           if(item.properties.onehandmax) {
+           baseStats.maxdam += item.properties.onehandmax;
+       }
        }
    });
 
@@ -9989,6 +9992,17 @@ function updateInventoryStats() {
         baseStats.light += parseInt(lightMatch[1]) / 2;
     }
 
+    const fineMatch = text.match(/\+(\d+)\s+to Maximum Damage\/AttR/);
+if(fineMatch) {
+    baseStats.maxdam += parseInt(fineMatch[1]);
+}
+        
+        
+        
+
+
+
+
 });
 
    
@@ -9998,6 +10012,8 @@ function updateInventoryStats() {
    document.getElementById('flatcoldcontainer').textContent = baseStats.cold.toFixed(1);
    document.getElementById('flatfirecontainer').textContent = baseStats.fire.toFixed(1);
    document.getElementById('flatlightcontainer').textContent = baseStats.light.toFixed(1);
+   
+   document.getElementById('onehandmaxdmgcontainer').textContent = baseStats.maxdam.toFixed(0);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10025,7 +10041,8 @@ document.addEventListener('DOMContentLoaded', () => {
        document.getElementById('dex').addEventListener('input', updateInventoryStats);
        document.getElementById('vit').addEventListener('input', updateInventoryStats);
        document.getElementById('enr').addEventListener('input', updateInventoryStats);
-
+       document.getElementById('damageOutput').addEventListener('input', updateInventoryStats);
+        document.getElementById('onehandmaxdmgcontainer').addEventListener('input', updateInventoryStats);
        const containers = {
        poison: document.getElementById('flatpoisoncontainer'),
        cold: document.getElementById('flatcoldcontainer'),
@@ -10140,7 +10157,7 @@ mercbuff.addEventListener('change', (e) => {
   } else if (selectedValue === 'A3 Cold (Prayer)') {
    let slot = getNextFreeBuffSlot();
    if (slot) slot.style.backgroundImage = 'url("img/prayer2.png")'; 
-  } else if (selectedValue === 'A3 Lightning (Holyshock)') {
+  } else if (selectedValue === 'A3 Lightning (Holy Shock)') {
    let slot = getNextFreeBuffSlot();
    if (slot) slot.style.backgroundImage = 'url("img/holyshock2.png")'; 
   } else if (selectedValue === 'A4 Light (Sanctuary)') {
