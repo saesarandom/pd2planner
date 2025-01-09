@@ -1210,7 +1210,7 @@ margin-left: 11px;
   font-size: 15px; 
   left: 186px;
   top: 0px;
-  text-shadow: 4px 3px 0px #1bb01b, 4px 3px 2px rgba(0,0,0,0.15);
+  text-shadow: 1px 1px 8px #1bb01b, 1px 0px 0px rgba(0,0,0,0.15);
 
 }
 
@@ -1267,6 +1267,7 @@ display: none;
 #dodgecontainer, #decoycontainer, #penetratecontainer, #valkyriecontainer { 
   position: absolute;
   width: 42px;
+  height: 8px;
   color: rgb(255, 255, 255);
   font-size: 14px; 
   /* left: 5cm; */
@@ -1317,6 +1318,7 @@ width: 16cap;
 #firewallcontainer, #fireballcontainer, #lesserhydracontainer, #enchantfirecontainer, #meteorcontainer, #combustioncontainer, #hydracontainer, #firemasterycontainer { 
   position: absolute;
   width: 42px;
+  height: 8px;
   color: rgb(255, 255, 255);
   font-size: 14px;
   text-align: center; 
@@ -1831,7 +1833,7 @@ Resistance to fire %
     <option value="True Silver">True Silver</option>
     <option value="Mage Slayer">Mage Slayer</option>
     <option value="Tempest">Tempest</option>	
-
+    <option value="Spraynard Trash Eth True Silver">Spraynard Trash Eth True Silver</option>	
   
 
 
@@ -2418,6 +2420,36 @@ Defense
   <input type="range" id="pestilentRange" min="65" max="65" value="65" class="propertyrange">
 <span id="pestilentValue">65</span>
   </div>
+
+  <div class="propertycontainer">
+    <button data-property="Customforty">Custom 40 max dmg</button>
+    <input type="range" id="customfortyRange" min="1" max="40" value="1" class="propertyrange">
+  <span id="customfortyValue">1</span>
+    </div>
+
+    <div class="propertycontainer">
+      <button data-property="Customeighty">Custom 80 max dmg</button>
+      <input type="range" id="customeightyRange" min="41" max="80" value="41" class="propertyrange">
+    <span id="customeightyValue">41</span>
+      </div>
+
+      <div class="propertycontainer">
+        <button data-property="Customhundredtwenty">Custom 120 max dmg</button>
+        <input type="range" id="customhundredtwentyRange" min="81" max="120" value="81" class="propertyrange">
+      <span id="customhundredtwentyValue">81</span>
+        </div>
+
+        <div class="propertycontainer">
+          <button data-property="Custommin">Custom Minimum Damage</button>
+          <input type="range" id="customminRange" min="1" max="200" value="1" class="propertyrange">
+        <span id="customminValue">1</span>
+          </div>
+
+          <div class="propertycontainer">
+            <button data-property="Customlife">Custom Life</button>
+            <input type="range" id="customlifeRange" min="81" max="200" value="1" class="propertyrange">
+          <span id="customlifeValue">1</span>
+            </div>
 </div>
 
 
@@ -4781,6 +4813,17 @@ Defense
 },
 //shields/
 
+"Spraynard Trash Eth True Silver": {
+      "description": "Bad True Silver",
+    "properties": {
+    "speed": -10,
+    "onehandmin": 106,
+    "onehandmax": 210
+    
+
+  }
+},
+
 "Pelta Lunata": {
       "description": "Pelta Lunata<br> Buckler<br> Base Smite Damage: 1 to 3, Avg 2<br> Base Maximum Sockets: 1 (2 for upgraded elite versions)<br> Defense: 39<br> Block: 40% (Dru/Nec/Sor), 45% (Ama/Ass/Bar), 50% (Pal)<br> Required Strength: 12<br> Required Level: 2<br> +40% Faster Block Rate<br> 20% Increased Chance of Blocking<br> +40% Enhanced Defense<br> +30 Defense<br> +2 to Strength<br> +10 to Vitality<br> +10 to Energy<br> +12 Durability<br>",
    "properties": {
@@ -5604,11 +5647,10 @@ function updateCriticalAndDeadly() {
         // Add critical strike bonus if skilled
         if (criticalStrikeLevel > 0) {
     const criticalStrikeInfo = skillHandler.getSkillInfo('criticalStrike', criticalStrikeLevel);
-    console.log('Critical Strike Level:', criticalStrikeLevel);
-    console.log('Critical Strike Info:', criticalStrikeInfo);
-    console.log('Before adding critical chance:', criticalHitValue);
+   
+    
     criticalHitValue += criticalStrikeInfo?.criticalChance || 0;
-    console.log('After adding critical chance:', criticalHitValue);
+    
 }
 
         // Get deadly strike and weapon mastery
@@ -6878,14 +6920,58 @@ const combustionskills = document.getElementById('combustioncontainer');
 const hydraskills = document.getElementById('hydracontainer');
 const firemasteryskills = document.getElementById('firemasterycontainer');
 
+function showAllSkillsBonus() {
+    const totalAllSkill = parseInt(document.getElementById('allskillscontainer').textContent || 0);
+    if (totalAllSkill <= 0) {
+        document.querySelectorAll('.skill-bonus').forEach(el => el.remove());
+        return;
+    }
 
+    // Find all inputs with values > 0 within .skill-container
+    document.querySelectorAll('.skill-container input[type="number"]').forEach(input => {
+        if (parseInt(input.value) > 0) {
+            // Create or update bonus display
+            let bonus = input.parentElement.querySelector('.skill-bonus');
+            if (!bonus) {
+                bonus = document.createElement('div');
+                bonus.className = 'skill-bonus';
+                bonus.style.cssText = `
+                    display: inline;
+                    color: #00ff00;
+                    margin-left: 60px;
+                    position: absolute;
+                `;
+                input.parentElement.appendChild(bonus);
+            }
+            // Calculate total value (original value + all skills bonus)
+            const originalValue = parseInt(input.value);
+            const totalValue = originalValue + totalAllSkill;
+            bonus.textContent = `${totalValue}`;
+        }
+    });
+}
 
+// Only watch allskillscontainer for changes
+const allSkillsContainer = document.getElementById('allskillscontainer');
+if (allSkillsContainer) {
+    new MutationObserver(showAllSkillsBonus).observe(allSkillsContainer, {
+        characterData: true,
+        subtree: true
+    });
+}
+
+// Update display when skill values change
+document.querySelectorAll('.skill-container input[type="number"]').forEach(input => {
+    input.addEventListener('change', showAllSkillsBonus);
+});
 function updateVisibility() {
+
+  let totalAllSkill = parseInt(document.getElementById('allskillscontainer').textContent || 0);
         
-        let jabvalue = Math.min(Math.max(parseInt(jabskills.value, 10) || 0, 0), 20);
-        let poisonjavelinvalue = Math.min(Math.max(parseInt(poisonjavelinskills.value, 10) || 0, 0), 20);
-        let javelinandspearmasteryvalue = Math.min(Math.max(parseInt(javelinandspearmasteryskills.value, 10) || 0, 0), 20);
-        let powerstrikevalue = Math.min(Math.max(parseInt(powerstrikeskills.value, 10) || 0, 0), 20);
+  let jabvalue = Math.min(Math.max((parseInt(jabskills.value, 10) || 0) + totalAllSkill, 0), 20);
+    let poisonjavelinvalue = Math.min(Math.max((parseInt(poisonjavelinskills.value, 10) || 0) + totalAllSkill, 0), 20);
+    let javelinandspearmasteryvalue = Math.min(Math.max((parseInt(javelinandspearmasteryskills.value, 10) || 0) + totalAllSkill, 0), 20);
+    let powerstrikevalue = Math.min(Math.max((parseInt(powerstrikeskills.value, 10) || 0) + totalAllSkill, 0), 20);
         let lightningboltvalue = Math.min(Math.max(parseInt(lightningboltskills.value, 10) || 0, 0), 20);
         let fendvalue = Math.min(Math.max(parseInt(fendskills.value, 10) || 0, 0), 20);
         let chargedstrikevalue = Math.min(Math.max(parseInt(chargedstrikeskills.value, 10) || 0, 0), 20);
@@ -7107,19 +7193,7 @@ let hydravalue = Math.min(Math.max(parseInt(hydraskills.value, 10) || 0, 0), 20)
 let firemasteryvalue = Math.min(Math.max(parseInt(firemasteryskills.value, 10) || 0, 0), 20);
 
       
-console.log('Current skill levels:', {
-    tigerStrike: tigerstrikevalue,
-    cobraStrike: cobrastrikevalue,
-    dragonTalon: dragontalonvalue,
-    fistsOfFire: fistsoffirevalue,
-    clawsOfThunder: clawsofthundervalue,
-    dragonClaw: dragonclawvalue,
-    dragonTail: dragontailvalue,
-    dragonFlight: dragonflightvalue,
-    bladesOfIce: bladesoficevalue,
-    phoenixStrike: phoenixstrikevalue
-    
-  });
+
         
        
         
@@ -7315,18 +7389,10 @@ document.getElementById('javelinandspearmasterycontainer').addEventListener('inp
       
 
 if (dragontalonvalue > 0 && level > 5) {
-    console.log('Dragon Claw should be visible:', {
-        teethvalue: teethvalue,
-        level: level,
-        condition: 'teethvalue'
-    });
+    
     dragonclawskills.classList.remove('hiddenSkill6');
   } else {
-    console.log('Dragon Claw should be hidden:', {
-        dragonTalonValue: dragontalonvalue,
-        level: level,
-        condition: 'dragontalonvalue > 0 && level > 5'
-    });
+    
     dragonclawskills.classList.add('hiddenSkill6');
 }
 
@@ -7763,11 +7829,7 @@ if ((raiseskeletonarchervalue > 0 || firegolemvalue > 0) && level > 29) {
 // Poison and Bone Spells
 if (level > 5) {
     bonearmorcontainer.classList.remove('hiddenSkill6');
-    console.log('Bone armor should be visible:', {
-        bonearmorvalue: bonearmorvalue,
-        level: level,
-        condition: 'level > 5'
-    });
+    
     corpseexplosioncontainer.classList.remove('hiddenSkill6');
     bonewallcontainer.classList.remove('hiddenSkill6');
 } else {
@@ -8063,7 +8125,8 @@ if (meteorvalue > 0 && combustionvalue > 0 && level > 29) {
     firemasterycontainer.classList.add('hiddenSkill30');
 }
 
-
+updateSkillDisplay();
+   
 
 document.getElementById('lvlValue').addEventListener('input', updateVisibility);
 
@@ -8111,151 +8174,14 @@ document.getElementById('lvlValue').addEventListener('input', updateVisibility);
      
     
    
-//   jabskills.addEventListener('input', updateVisibility);
-//    poisonjavelinskills.addEventListener('input', updateVisibility);
-//    javelinandspearmasteryskills.addEventListener('input', updateVisibility);
-//    powerstrikeskills.addEventListener('input', updateVisibility);
-//    lightningboltskills.addEventListener('input', updateVisibility);
-//    fendskills.addEventListener('input', updateVisibility);
-//    chargedstrikeskills.addEventListener('input', updateVisibility);
-//    plaguejavelinskills.addEventListener('input', updateVisibility);
-//    lightningstrikeskills.addEventListener('input', updateVisibility);
-//    lightningfuryskills.addEventListener('input', updateVisibility);
-//    innersightskills.addEventListener('input', updateVisibility);
-//    criticalstrikeskills.addEventListener('input', updateVisibility);
-//    evadeskills.addEventListener('input', updateVisibility);
-//    slowmovementskills.addEventListener('input', updateVisibility);
-//    pierceskills.addEventListener('input', updateVisibility);
-//    dodgeskills.addEventListener('input', updateVisibility);
-//    decoyskills.addEventListener('input', updateVisibility);
-//    penetrateskills.addEventListener('input', updateVisibility);
-//    valkyrieskills.addEventListener('input', updateVisibility);
-//    magicarrowskills.addEventListener('input', updateVisibility);
-//    multipleshotskills.addEventListener('input', updateVisibility);
-//    firearrowskills.addEventListener('input', updateVisibility);
-//    coldarrowskills.addEventListener('input', updateVisibility);
-//    icearrowskills.addEventListener('input', updateVisibility);
-//    guidedarrowskills.addEventListener('input', updateVisibility);
-//    explodingarrowskills.addEventListener('input', updateVisibility);
-//    strafeskills.addEventListener('input', updateVisibility);
-//    immolationarrowskills.addEventListener('input', updateVisibility);
-//    freezingarrowskills.addEventListener('input', updateVisibility);
-//    tigerstrikeskills.addEventListener('input', updateVisibility);
-// cobrastrikeskills.addEventListener('input', updateVisibility);
-// phoenixstrikeskills.addEventListener('input', updateVisibility);
-// dragontalonskills.addEventListener('input', updateVisibility);
-// fistsoffireskills.addEventListener('input', updateVisibility);
-// clawsofthunderskills.addEventListener('input', updateVisibility);
-// dragonclawskills.addEventListener('input', updateVisibility);
-// dragontailskills.addEventListener('input', updateVisibility);
-// dragonflightskills.addEventListener('input', updateVisibility);
-// bladesoficeskills.addEventListener('input', updateVisibility);
-// clawanddaggermasteryskills.addEventListener('input', updateVisibility);
-// psychichammerskills.addEventListener('input', updateVisibility);
-// burstofspeedskills.addEventListener('input', updateVisibility);
-// weaponblockskills.addEventListener('input', updateVisibility);
-// cloakofshadowsskills.addEventListener('input', updateVisibility);
-// mindblastskills.addEventListener('input', updateVisibility);
-// fadeskills.addEventListener('input', updateVisibility);
-// shadowwarriorskills.addEventListener('input', updateVisibility);
-// shadowmasterskills.addEventListener('input', updateVisibility);
-// venomskills.addEventListener('input', updateVisibility);
-// fireblastskills.addEventListener('input', updateVisibility);
-// shockwebskills.addEventListener('input', updateVisibility);
-// bladesentinelskills.addEventListener('input', updateVisibility);
-// chargedboltsentryskills.addEventListener('input', updateVisibility);
-// wakeoffireskills.addEventListener('input', updateVisibility);
-// bladefuryskills.addEventListener('input', updateVisibility);
-// bladeshieldskills.addEventListener('input', updateVisibility);
-// lightningsentryskills.addEventListener('input', updateVisibility);  
-// wakeofinfernoskills.addEventListener('input', updateVisibility);
-// chainlightningsentryskills.addEventListener('input', updateVisibility);
-// deathsentryskills.addEventListener('input', updateVisibility);
-// howlskills.addEventListener('input', updateVisibility);
-// findpotionskills.addEventListener('input', updateVisibility);
-// shoutskills.addEventListener('input', updateVisibility);
-// warcryskills.addEventListener('input', updateVisibility);
-// finditemskills.addEventListener('input', updateVisibility);
-// tauntskills.addEventListener('input', updateVisibility);
-// battleordersskills.addEventListener('input', updateVisibility);
-// grimwardskills.addEventListener('input', updateVisibility);
-// battlecommandskills.addEventListener('input', updateVisibility);
-// battlecryskills.addEventListener('input', updateVisibility);
-// generalmasteryskills.addEventListener('input', updateVisibility);
-// throwingmasteryskills.addEventListener('input', updateVisibility);
-// polearmandspearmasteryskills.addEventListener('input', updateVisibility);
-// combatreflexesskills.addEventListener('input', updateVisibility);
-// ironskinskills.addEventListener('input', updateVisibility);
-// increasedspeedskills.addEventListener('input', updateVisibility);
-// naturalresistanceskills.addEventListener('input', updateVisibility);
-// deepwoundsskills.addEventListener('input', updateVisibility);
-// bashskills.addEventListener('input', updateVisibility);
-// doubleswingskills.addEventListener('input', updateVisibility);
-// frenzyskills.addEventListener('input', updateVisibility);
-// stunskills.addEventListener('input', updateVisibility);
-// concentrateskills.addEventListener('input', updateVisibility);
-// doublethrowskills.addEventListener('input', updateVisibility);
-// leapskills.addEventListener('input', updateVisibility);
-// leapattackskills.addEventListener('input', updateVisibility);
-// berserkskills.addEventListener('input', updateVisibility);
-// whirlwindskills.addEventListener('input', updateVisibility);
-// firestormskills.addEventListener('input', updateVisibility);
-// arcticblastskills.addEventListener('input', updateVisibility);
-// moltenboulderskills.addEventListener('input', updateVisibility);
-// cyclonearmorskills.addEventListener('input', updateVisibility);
-// fissureskills.addEventListener('input', updateVisibility);
-// twisterskills.addEventListener('input', updateVisibility);
-// gustskills.addEventListener('input', updateVisibility);
-// volcanoskills.addEventListener('input', updateVisibility);
-// tornadoskills.addEventListener('input', updateVisibility);
-// hurricaneskills.addEventListener('input', updateVisibility);
-// armageddonskills.addEventListener('input', updateVisibility);
-// ravenskills.addEventListener('input', updateVisibility);
-// poisoncreeperskills.addEventListener('input', updateVisibility);
-// heartofwolverineskills.addEventListener('input', updateVisibility);
-// summonspiritwolfskills.addEventListener('input', updateVisibility);
-// carrionvineskills.addEventListener('input', updateVisibility);
-// spiritofbarbsskills.addEventListener('input', updateVisibility);
-// summondirewolfskills.addEventListener('input', updateVisibility);
-// solarcreeperskills.addEventListener('input', updateVisibility);
-// oaksageskills.addEventListener('input', updateVisibility);
-// summongrizzlyskills.addEventListener('input', updateVisibility);
-// werewolfskills.addEventListener('input', updateVisibility);
-// werebearskills.addEventListener('input', updateVisibility);
-// lycantropyskills.addEventListener('input', updateVisibility);
-// feralrageskills.addEventListener('input', updateVisibility);
-// maulskills.addEventListener('input', updateVisibility);
-// hungerskills.addEventListener('input', updateVisibility);
-// rabiesskills.addEventListener('input', updateVisibility);
-// shockwaveskills.addEventListener('input', updateVisibility);
-// fireclawsskills.addEventListener('input', updateVisibility);
-// furyskills.addEventListener('input', updateVisibility);
-// raiseskeletonwarriorskills.addEventListener('input', updateVisibility);
-// skeletonmasteryskills.addEventListener('input', updateVisibility);
-// claygolemskills.addEventListener('input', updateVisibility);
-// raiseskeletalmageskills.addEventListener('input', updateVisibility);
-// golemmasteryskills.addEventListener('input', updateVisibility);
-// bloodgolemskills.addEventListener('input', updateVisibility);
-// bloodwarpskills.addEventListener('input', updateVisibility);
-// irongolemskills.addEventListener('input', updateVisibility);
-// raiseskeletonarcherskills.addEventListener('input', updateVisibility);
-// firegolemskills.addEventListener('input', updateVisibility);
-// reviveskills.addEventListener('input', updateVisibility);
-// teethskills.addEventListener('input', updateVisibility);
-// poisonstrikeskills.addEventListener('input', updateVisibility);
-// bonearmorskills.addEventListener('input', updateVisibility);
-// corpseexplosionskills.addEventListener('input', updateVisibility);
-// bonewallskills.addEventListener('input', updateVisibility);
-// desecrateskills.addEventListener('input', updateVisibility);
-// bonespearskills.addEventListener('input', updateVisibility);
-// boneprisonskills.addEventListener('input', updateVisibility);
-// poisonnovaskills.addEventListener('input', updateVisibility);
-// bonespiritskills.addEventListener('input', updateVisibility);
 
 
 const skillvalues = document.querySelectorAll('[id$="container"]');
 skillvalues.forEach(skillvalue => {
     skillvalue.addEventListener('input', updateVisibility);
+
+
+    
 });
   
    
@@ -8266,6 +8192,7 @@ skillvalues.forEach(skillvalue => {
    <script src="SkillHandler.js"></script>
    <script src="skillRestriction.js"></script>
     <script src="skillUpdates.js"></script>
+
    <script src="DPSSimulator.js"></script>
    <!-- <script src="enhancedDamage.js"></script> -->
     <script src="login.js"></script>
@@ -8315,7 +8242,7 @@ function onMouseDown(event) {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
     
-    // Prevent default behavior
+    
     event.preventDefault();
 }
 
@@ -8355,7 +8282,7 @@ function addDragHandlers() {
             container.style.zIndex = '1000';
             container.style.userSelect = 'none';
             
-            // Remove existing listener before adding new one
+            
             container.removeEventListener('mousedown', onMouseDown);
             container.addEventListener('mousedown', onMouseDown);
             
@@ -9369,7 +9296,12 @@ const descriptions = {
   Ofstrength2: 'to Strength', 
   Ofdexterity: 'to Dexterity',
   Ofdexterity2: 'to Dexterity',
-  Ofinertia: '% to FRW'
+  Ofinertia: '% to FRW',
+  Customforty: 'to Maximum Damage/AttR',
+  Customeighty: 'to Maximum Damage/AttR',
+  Customhundredtwenty: 'to Maximum Damage/AttR',
+  Custommin: 'to Minimum Damage',
+  Customlife: 'Life'
 
 };
 
@@ -9981,7 +9913,7 @@ function updateInventoryStats() {
    // Get charm stats
    document.querySelectorAll('.charm1').forEach(charm => {
        if(!charm.textContent || charm.textContent.includes('X')) return;
-       console.log('Charm text:', charm.textContent); // Debug line
+       
     const text = charm.textContent;
     
      // Cold damage
@@ -10076,6 +10008,8 @@ document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
 });
 </script>
 
+
+</script>
 
 
 

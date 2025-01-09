@@ -201,6 +201,10 @@ function handleSkillKeyDown(e) {
 }
 
 function handleSkillInput(e) {
+  // If this change is from displaying all skills bonus, ignore restrictions
+  if (e.target.dataset.isAllSkillsUpdate) {
+    return;
+  }
   const currentLevel = parseInt(document.getElementById("lvlValue").value) || 1;
   const skillAvailabilityLevel = getSkillAvailabilityLevel(this);
   const maxAllowedPoints = getMaxAllowedPoints(
