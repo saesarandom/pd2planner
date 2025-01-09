@@ -1626,7 +1626,7 @@ select:has(option[value="Tempest"]:checked), option[value="Tempest"] { backgroun
 
 #buff1 {
   position: absolute;
-  left: 1200px;
+  left: 1350px;
   top: 20px;
   width: 38px;
   height: 38px;
@@ -1637,7 +1637,7 @@ select:has(option[value="Tempest"]:checked), option[value="Tempest"] { backgroun
 
 #buff2 {
   position: absolute;
-  left: 1240px;
+  left: 1390px;
   top: 20px;
   width: 38px;
   height: 38px;
@@ -8267,9 +8267,10 @@ skillvalues.forEach(skillvalue => {
    <script src="skillRestriction.js"></script>
     <script src="skillUpdates.js"></script>
    <script src="DPSSimulator.js"></script>
-   <script src="enhancedDamage.js"></script>
+   <!-- <script src="enhancedDamage.js"></script> -->
     <script src="login.js"></script>
     <script src="achievements.js"></script>
+    <!-- <script src="damageCalculator.js"></script> -->
     
       
       
@@ -8530,8 +8531,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const critMultiplier = parseFloat(document.getElementById('crithitmultipliercontainer')?.textContent || 1);
 
-    baseMinDmg = Math.floor(baseMinDmg * (1 + totalStr * 1.1/100));
-    baseMaxDmg = Math.floor(baseMaxDmg * (1 + totalStr * 1.1/100));
+    
     
     // Get flat damage additions
     let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
@@ -8568,8 +8568,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 let totalMaxDmg = baseMaxDmg;
                 
                 if (typeof skillInfo.damage === 'object') {
-                    totalMinDmg = Math.floor(baseMinDmg * (1 + skillInfo.damage.min/100 + totalStr * 1.1/100) * critMultiplier);
-                    totalMaxDmg = Math.floor(baseMaxDmg * (1 + skillInfo.damage.max/100 + totalStr * 1.1/100) * critMultiplier);
+                  totalMinDmg = Math.floor(baseMinDmg * (1 + skillInfo.damage.min/100 + skillInfo.damage.synergyBonus/100 + totalStr * 1.1/100 * critMultiplier));
+                  totalMaxDmg = Math.floor(baseMaxDmg * (1 + skillInfo.damage.min/100 + skillInfo.damage.synergyBonus/100 + totalStr * 1.1/100 * critMultiplier));
                 }
                 
                 // Add flat damages
@@ -10041,8 +10041,9 @@ document.addEventListener('DOMContentLoaded', () => {
        document.getElementById('dex').addEventListener('input', updateInventoryStats);
        document.getElementById('vit').addEventListener('input', updateInventoryStats);
        document.getElementById('enr').addEventListener('input', updateInventoryStats);
-       document.getElementById('damageOutput').addEventListener('input', updateInventoryStats);
-        document.getElementById('onehandmaxdmgcontainer').addEventListener('input', updateInventoryStats);
+       document.getElementById('left-skill')?.addEventListener('change', updateInventoryStats);
+document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
+    .forEach(input => input.addEventListener('input', updateInventoryStats));
        const containers = {
        poison: document.getElementById('flatpoisoncontainer'),
        cold: document.getElementById('flatcoldcontainer'),
@@ -10055,8 +10056,7 @@ document.addEventListener('DOMContentLoaded', () => {
    });
 
 
-
-
+   
    });
 });
 </script>

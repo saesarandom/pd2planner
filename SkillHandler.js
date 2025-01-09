@@ -1175,11 +1175,10 @@ class SkillHandler {
           }
         });
       }
-      return 1 + synergyBonus / 100;
+      return synergyBonus;
     };
 
     const calculateValue = (data) => {
-      // For skills with base + perLevel formula
       if (data?.base && data?.perLevel) {
         const calculated = data.base + data.perLevel * (level - 1);
         console.log("Calculated formula damage:", calculated);
@@ -1187,44 +1186,39 @@ class SkillHandler {
       }
     };
 
-    const synergyMultiplier = calculateSynergyBonus(skill);
+    const synergyBonus = calculateSynergyBonus(skill);
 
     // Handle poison type skills
     if (skillName === "poisonJavelin" || skillName === "plagueJavelin") {
+      const baseMin = skill.levelData.poisonDamage.min[level - 1] || 0;
+      const baseMax = skill.levelData.poisonDamage.max[level - 1] || 0;
       return {
         level,
         name: skill.name,
         description: skill.description,
         damage: {
           type: "poison",
-          min: Math.floor(
-            (skill.levelData.poisonDamage.min[level - 1] || 0) *
-              synergyMultiplier
-          ),
-          max: Math.floor(
-            (skill.levelData.poisonDamage.max[level - 1] || 0) *
-              synergyMultiplier
-          ),
+          min: baseMin,
+          max: baseMax,
+          synergyBonus: synergyBonus,
         },
         manaCost: calculateValue(skill.levelData.manaCost),
       };
     }
 
-    //handle fire type skills
-
+    // Handle fire type skills
     if (skillName === "fireArrow" || skillName === "fireBlast") {
+      const baseMin = skill.levelData.fireDamage.min[level - 1] || 0;
+      const baseMax = skill.levelData.fireDamage.max[level - 1] || 0;
       return {
         level,
         name: skill.name,
         description: skill.description,
         damage: {
           type: "fire",
-          min: Math.floor(
-            (skill.levelData.fireDamage.min[level - 1] || 0) * synergyMultiplier
-          ),
-          max: Math.floor(
-            (skill.levelData.fireDamage.max[level - 1] || 0) * synergyMultiplier
-          ),
+          min: baseMin,
+          max: baseMax,
+          synergyBonus: synergyBonus,
         },
         manaCost: calculateValue(skill.levelData.manaCost),
         attackRating: Math.floor(calculateValue(skill.levelData.attackRating)),
@@ -1238,17 +1232,16 @@ class SkillHandler {
       skillName === "powerStrike" ||
       skillName === "lightningFury"
     ) {
+      const baseMax = skill.levelData.lightningDamage.max[level - 1] || 0;
       return {
         level,
         name: skill.name,
         description: skill.description,
         damage: {
           type: "lightning",
-          min: 1, // Lightning skills always have min damage of 1
-          max: Math.floor(
-            (skill.levelData.lightningDamage.max[level - 1] || 0) *
-              synergyMultiplier
-          ),
+          min: 1,
+          max: baseMax,
+          synergyBonus: synergyBonus,
         },
         manaCost: calculateValue(skill.levelData.manaCost),
         attackRating: calculateValue(skill.levelData.attackRating),
@@ -1277,14 +1270,9 @@ class SkillHandler {
         name: skill.name,
         description: skill.description,
         damage: {
-          min:
-            Math.floor(
-              skill.levelData.damage.min[level - 1] * synergyMultiplier
-            ) || 0,
-          max:
-            Math.floor(
-              skill.levelData.damage.max[level - 1] * synergyMultiplier
-            ) || 0,
+          min: skill.levelData.damage.min[level - 1] || 0,
+          max: skill.levelData.damage.max[level - 1] || 0,
+          synergyBonus: synergyBonus,
         },
         ...(skillName === "decoy" && {
           decoys: Math.floor(skill.levelData.decoys.base + level / 10),
@@ -1297,40 +1285,25 @@ class SkillHandler {
 
     // Handle regular skills
     if (skill.levelData?.damage?.base && skill.levelData?.damage?.perLevel) {
+      const baseDamageMin =
+        skill.levelData.damage.base +
+        skill.levelData.damage.perLevel * (level - 1);
+      const baseDamageMax =
+        skill.levelData.damage.base +
+        skill.levelData.damage.perLevel * (level - 1);
+
       return {
         level,
         name: skill.name,
         description: skill.description,
         damage: {
-          min: Math.floor(
-            (skill.levelData.damage.base +
-              skill.levelData.damage.perLevel * (level - 1)) *
-              synergyMultiplier
-          ),
-          max: Math.floor(
-            (skill.levelData.damage.base +
-              skill.levelData.damage.perLevel * (level - 1)) *
-              synergyMultiplier
-          ),
+          min: baseDamageMin,
+          max: baseDamageMax,
+          synergyBonus: synergyBonus,
         },
         manaCost: calculateValue(skill.levelData.manaCost),
         attackRating: Math.floor(calculateValue(skill.levelData.attackRating)),
       };
     }
-
-    return {
-      level,
-      name: skill.name,
-      description: skill.description,
-      attackRating: Math.floor(calculateValue(skill.levelData.attackRating)),
-      damage: Math.floor(baseDamage * synergyMultiplier),
-      manaCost: calculateValue(skill.levelData.manaCost),
-      ...(skill.levelData.lightningDamage && {
-        lightningDamage:
-          Math.floor(
-            skill.levelData.lightningDamage.max[level - 1] * synergyMultiplier
-          ) || 0,
-      }),
-    };
   }
 }
