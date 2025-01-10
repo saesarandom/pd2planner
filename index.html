@@ -858,6 +858,12 @@ Defense
             <input type="range" id="customlifeRange" min="81" max="200" value="1" class="propertyrange">
           <span id="customlifeValue">1</span>
             </div>
+
+            <div class="propertycontainer">
+              <button data-property="Customallskills">Custom All skills</button>
+              <input type="range" id="customallskillsRange" min="1" max="40" value="1" class="propertyrange">
+            <span id="customallskillsValue">1</span>
+              </div>
 </div>
 
 
@@ -1914,10 +1920,10 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     let totalDr = 0;
     let totalPdr = 0;
     let totalMdr = 0;
-    let totalFireRes = 0;
-    let totalColdRes = 0;
-    let totalLightRes = 0;
-    let totalPoisonRes = 0;
+    let totalFireRes = 30;
+    let totalColdRes = 30;
+    let totalLightRes = 30;
+    let totalPoisonRes = 30;
     let totalCurseRes = 0;
     let totalMinDmg = 0;
     let totalMaxDmg = 0;
@@ -1929,6 +1935,10 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     let totalOw = 0;
     let totalOwDmg = (7*startLvlValue/5) * 2 * startLvlValue /64
     let totalCb = 0;
+    let totalMaxFireRes = 0;
+    let totalMaxColdRes = 0;
+    let totalMaxLightRes = 0;
+    let totalMaxPoisonRes = 0;
     
     
    
@@ -1995,6 +2005,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (helmData.properties.poisondmg / helmData.properties.poisontime) || 0;
       totalFlatMagicDmg += (helmData.properties.magicdmgmin/2 + helmData.properties.magicdmgmax/2) || 0;
       totalEDMG += helmData.properties.edmg || 0;
+      totalMaxFireRes += helmData.properties.maxfirres || 0;
     }
     if (armorData) {
       totalLife += armorData.properties.tolife || 0;
@@ -2032,6 +2043,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalDeadlyStrike += armorData.properties.deadlyperlvl*startLvlValue/100 + armorData.properties.deadly || 0; 
       totalWeaponMastery += armorData.properties.weaponmasterysk || 0;
       totalEDMG += armorData.properties.edmg || 0; 
+      totalMaxFireRes += armorData.properties.maxfirres || 0;
     }
     if (weaponData) {
       totalLife += weaponData.properties.tolife || 0;
@@ -2073,6 +2085,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalCriticalHit += weaponData.properties.criticalsk || 0;
       totalDeadlyStrike += (weaponData.properties.deadlyperlvl*startLvlValue/100) || 0 + (weaponData.properties.deadly/100) || 0; 
       totalWeaponMastery += weaponData.properties.weaponmasterysk || 0;
+      totalMaxFireRes += weaponData.properties.maxfirres || 0;
       
     }
     if (offData?.properties?.defense > 0) {
@@ -2103,6 +2116,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (offData.properties.poisondmg / offData.properties.poisontime) || 0;
       totalFlatMagicDmg += (offData.properties.magicdmgmin/2 + offData.properties.magicdmgmax/2) || 0;
       totalEDMG += offData.properties.edmg || 0;
+      totalMaxFireRes += offData.properties.maxfirres || 0;
     } else {
       totalDefense += offData.properties.todef;
       totalLife += offData.properties.tolife || 0;
@@ -2132,6 +2146,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatLightDmg += (offData.properties.lightdmgmin/2 + offData.properties.lightdmgmax/2) || 0;
       totalFlatPoisonDmg += (offData.properties.poisondmg / offData.properties.poisontime) || 0;
       totalFlatMagicDmg += (offData.properties.magicdmgmin/2 + offData.properties.magicdmgmax/2) || 0;
+      totalMaxFireRes += offData.properties.maxfirres || 0;
     }
     if (gloveData) {
       totalLife += gloveData.properties.tolife || 0;
@@ -2166,6 +2181,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (gloveData.properties.poisondmg / gloveData.properties.poisontime) || 0;
       totalFlatMagicDmg += (gloveData.properties.magicdmgmin/2 + gloveData.properties.magicdmgmax/2) || 0;
       totalEDMG += gloveData.properties.edmg || 0;
+      totalMaxFireRes += gloveData.properties.maxfirres || 0;
     }
 
     if (beltData) {
@@ -2201,6 +2217,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (beltData.properties.poisondmg / beltData.properties.poisontime) || 0;
       totalFlatMagicDmg += (beltData.properties.magicdmgmin/2 + beltData.properties.magicdmgmax/2) || 0;
       totalEDMG += beltData.properties.edmg || 0;
+      totalMaxFireRes += beltData.properties.maxfirres || 0;
     }
 
     if (bootData) {
@@ -2236,6 +2253,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (bootData.properties.poisondmg / bootData.properties.poisontime) || 0;
       totalFlatMagicDmg += (bootData.properties.magicdmgmin/2 + bootData.properties.magicdmgmax/2) || 0;
       totalEDMG += bootData.properties.edmg || 0;
+      totalMaxFireRes += bootData.properties.maxfirres || 0;
     }
 
     if (ringOneData) {
@@ -2271,6 +2289,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (ringOneData.properties.poisondmg / ringOneData.properties.poisontime) || 0;
       totalFlatMagicDmg += (ringOneData.properties.magicdmgmin/2 + ringOneData.properties.magicdmgmax/2) || 0;
       totalEDMG += ringOneData.properties.edmg || 0;
+      totalMaxFireRes += ringOneData.properties.maxfirres || 0;
     }
 
     if (ringTwoData) {
@@ -2306,6 +2325,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (ringTwoData.properties.poisondmg / ringTwoData.properties.poisontime) || 0;
       totalFlatMagicDmg += (ringTwoData.properties.magicdmgmin/2 + ringTwoData.properties.magicdmgmax/2) || 0;
       totalEDMG += ringTwoData.properties.edmg || 0;
+      totalMaxFireRes += ringTwoData.properties.maxfirres || 0;
     }
 
     if (amuletData) {
@@ -2345,6 +2365,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalDeadlyStrike += amuletData.properties.deadlyperlvl*startLvlValue/100 || 0; 
       totalWeaponMastery += amuletData.properties.weaponmasterysk || 0; 
       totalEDMG += amuletData.properties.edmg || 0;
+      totalMaxFireRes += amuletData.properties.maxfirres || 0;
     }
 
     let block = helmData?.properties.block || 0;
@@ -5080,7 +5101,8 @@ const descriptions = {
   Customeighty: 'to Maximum Damage/AttR',
   Customhundredtwenty: 'to Maximum Damage/AttR',
   Custommin: 'to Minimum Damage',
-  Customlife: 'Life'
+  Customlife: 'Life',
+  Customallskills: 'to All Skills'
 
 };
 
@@ -5633,7 +5655,15 @@ async function saveSettings() {
   </script>
   <script>
 function updateInventoryStats() {
-   let baseStats = {poison: 0, cold: 0, light: 0, fire: 0, maxdam: 0, mindam: 0};
+   let baseStats = {
+     poison: 0, 
+     cold: 0, 
+     light: 0, 
+     fire: 0, 
+     maxdam: 0, 
+     mindam: 0,
+     allskills: 0
+   };
    
    // Process equipped items
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 
@@ -5663,6 +5693,11 @@ function updateInventoryStats() {
            
            if(item.properties.onehandmin) {
                baseStats.mindam += item.properties.onehandmin;
+           }
+
+           // Add all skills bonus
+           if(item.properties.allsk) {
+               baseStats.allskills += item.properties.allsk;
            }
        }
    });
@@ -5702,6 +5737,12 @@ function updateInventoryStats() {
        if(mindamMatch) {
            baseStats.mindam += parseInt(mindamMatch[1]);
        }
+
+       // Check for all skills on charms if they exist
+       const allSkillsMatch = text.match(/\+(\d+)\s+to All Skills/);
+       if(allSkillsMatch) {
+           baseStats.allskills += parseInt(allSkillsMatch[1]);
+       }
    });
 
    // Update damage and elemental containers
@@ -5711,6 +5752,7 @@ function updateInventoryStats() {
    document.getElementById('flatlightcontainer').textContent = baseStats.light.toFixed(1);
    document.getElementById('onehandmaxdmgcontainer').textContent = baseStats.maxdam.toFixed(0);
    document.getElementById('onehandmindmgcontainer').textContent = baseStats.mindam.toFixed(0);
+   document.getElementById('allskillscontainer').textContent = baseStats.allskills.toFixed(0);
 }
 
 // Initialize event listeners
@@ -5742,7 +5784,6 @@ document.addEventListener('DOMContentLoaded', () => {
    // Initial update
    updateInventoryStats();
 });
-
 
 
 
@@ -5960,7 +6001,38 @@ function updateResistanceDisplay() {
     return;
   }
 
-  const maxResist = 75;
+  // Calculate total max resistances from equipment
+  let totalMaxFireRes = 75;
+  let totalMaxColdRes = 75;
+  let totalMaxLightRes = 75;
+  let totalMaxPoisonRes = 75;
+
+  // Get all equipment data
+  const equipmentSlots = {
+    helm: document.getElementById('helms-dropdown'),
+    armor: document.getElementById('armors-dropdown'),
+    weapon: document.getElementById('weapons-dropdown'),
+    off: document.getElementById('offs-dropdown'),
+    gloves: document.getElementById('gloves-dropdown'),
+    belt: document.getElementById('belts-dropdown'),
+    boots: document.getElementById('boots-dropdown'),
+    ringOne: document.getElementById('ringsone-dropdown'),
+    ringTwo: document.getElementById('ringstwo-dropdown'),
+    amulet: document.getElementById('amulets-dropdown')
+  };
+
+  // Calculate total max resistances from all equipment
+  Object.entries(equipmentSlots).forEach(([slot, element]) => {
+    if (element && element.value) {
+      const itemData = itemList[element.value];
+      if (itemData?.properties) {
+        totalMaxFireRes += itemData.properties.maxfirres || 0;
+        totalMaxColdRes += itemData.properties.maxcoldres || 0;
+        totalMaxLightRes += itemData.properties.maxlightres || 0;
+        totalMaxPoisonRes += itemData.properties.maxpoisonres || 0;
+      }
+    }
+  });
 
   // Add styles for the glow effects
   const style = document.createElement('style');
@@ -5984,17 +6056,25 @@ function updateResistanceDisplay() {
   `;
   document.head.appendChild(style);
 
-  // For each container, preserve original content and add max resist with glow
-  Object.entries(containers).forEach(([type, container]) => {
-    const originalValue = container.textContent;
-    
-    if (originalValue && !originalValue.includes('/')) {
-      container.innerHTML = `<span class="resist-${type}">${originalValue}</span>/<span class="resist-${type}">${maxResist}</span>`;
-    }
-  });
+  // Update each resistance container with current and max values
+  if (containers.fire.textContent && !containers.fire.textContent.includes('/')) {
+    containers.fire.innerHTML = `<span class="resist-fire">${containers.fire.textContent}</span>/<span class="resist-fire">${totalMaxFireRes}</span>`;
+  }
+  
+  if (containers.cold.textContent && !containers.cold.textContent.includes('/')) {
+    containers.cold.innerHTML = `<span class="resist-cold">${containers.cold.textContent}</span>/<span class="resist-cold">${totalMaxColdRes}</span>`;
+  }
+  
+  if (containers.light.textContent && !containers.light.textContent.includes('/')) {
+    containers.light.innerHTML = `<span class="resist-light">${containers.light.textContent}</span>/<span class="resist-light">${totalMaxLightRes}</span>`;
+  }
+  
+  if (containers.poison.textContent && !containers.poison.textContent.includes('/')) {
+    containers.poison.innerHTML = `<span class="resist-poison">${containers.poison.textContent}</span>/<span class="resist-poison">${totalMaxPoisonRes}</span>`;
+  }
 }
 
-// Rest of the code remains the same
+// The rest of the event listeners remain the same
 const elementsToWatch = [
   'lvlValue',
   'str',
@@ -6150,6 +6230,9 @@ mercbuff.addEventListener('change', (e) => {
   } else if (selectedValue === 'A5 Combat (Might)') {
    let slot = getNextFreeBuffSlot();
    if (slot) slot.style.backgroundImage = 'url("img/might2.png")'; 
+  } else if (selectedValue === 'A5 Warcries (Battle Orders)') {
+   let slot = getNextFreeBuffSlot();
+   if (slot) slot.style.backgroundImage = 'url("img/battleorders2.png")'; 
   }
 
  if (parseInt(merclvlValue.value) > 10) {
