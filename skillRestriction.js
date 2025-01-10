@@ -266,7 +266,6 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   if (javelinMasteryInput) {
     javelinMasteryInput.addEventListener("input", function () {
-      console.log("Javelin Mastery changed:", this.value);
       if (typeof updateDamageCalculations === "function") {
         updateDamageCalculations();
       }

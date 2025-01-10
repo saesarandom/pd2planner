@@ -118,21 +118,13 @@ body {
   position: absolute;
   margin-top: -320px;
   left: 1280px;
-
   display: grid;
   padding: 1px;
   background-color: rgb(0, 0, 0);
   grid-template-rows: repeat(4, minmax(74px, 74px));
   grid-template-columns: repeat(10, minmax(74px, 74px));
-  /* Fixed dimensions */
-  width: 740px; /* Exactly 10 columns * 74px */
+  width: 740px;
   height: 296px;
-  /* Prevent any auto-sizing 
-  grid-auto-flow: dense;
-  grid-auto-rows: 0;
-  grid-auto-columns: 0;*/
-
-  /* Border and background */
   border: 1px solid rgb(164, 19, 19);
   background-color: rgb(0, 0, 0);
   overflow: hidden;
@@ -154,7 +146,7 @@ body {
 }
 
 .charm1 {
-  border: 1px solid rgb(164, 19, 19); /* Empty container */
+  border: 1px solid rgb(164, 19, 19);
   background-color: transparent;
   width: 74px;
   height: 74px;
@@ -163,17 +155,14 @@ body {
   max-width: 74px;
   max-height: 74px;
   cursor: pointer;
-
-  /* Ensure border is included in size */
   box-sizing: border-box;
   text-align: center;
-  /* Prevent any margin collapse */
   margin: 0;
   padding: 0;
-  position: relative; /* Add this */
-  white-space: normal; /* Add this */
-  word-wrap: break-word; /* Add this */
-  font-size: 12px; /* Add this to make text smaller */
+  position: relative;
+  white-space: normal;
+  word-wrap: break-word;
+  font-size: 12px;
   justify-content: center !important;
   align-items: center;
   display: flex;
@@ -181,11 +170,12 @@ body {
 
 .modal {
   position: fixed;
+  font-family: monospace;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 3px;
-  background-color: rgb(8, 8, 8);
+  background-color: rgb(109, 107, 107);
   border: 2px solid black;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   z-index: 4;
@@ -194,8 +184,7 @@ body {
 }
 
 .modal-content {
-  /* display: flex; */
-  background: rgb(0, 0, 0);
+  background: rgb(5, 5, 5);
   padding: 5px;
   border-radius: 5px;
   max-height: 80vh;
@@ -208,9 +197,11 @@ body {
   display: block;
 }
 
-.modal button {
+.modal button:hover {
   margin: 3px;
   padding: 5px;
+  box-shadow: 0 0 25px 4px rgba(8, 8, 230, 0.8);
+  transform: scale(1.1);
 }
 
 .close {
@@ -246,7 +237,7 @@ body {
   display: flex;
   align-items: center;
   font-family: bahnschrift condensed;
-  justify-content: center; /* Added to center content horizontally */
+  justify-content: center;
   background-color: #010201;
   color: rgb(159, 11, 11);
   opacity: 1;
@@ -255,7 +246,7 @@ body {
   height: 90px;
   width: 120px;
   cursor: pointer;
-  padding: 0; /* Remove padding to maintain exact dimensions */
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -365,7 +356,7 @@ body {
 }
 
 #startLvlValue {
-  color: white; /* Set the text color to red */
+  color: white;
 }
 
 #helm-info {
@@ -1003,13 +994,13 @@ body {
 }
 
 #javelinandspearskillscontainer {
-  position: absolute; /* Allows for movement */
-  top: 2020px; /* Initial position */
-  left: 1px; /* Initial position */
-  border: 1px solid RGB(255, 204, 102); /* Optional styling */
-  padding: 30px; /* Optional styling */
-  background-color: #080707, 0.66; /* Optional styling */
-  cursor: move; /* Change cursor to indicate it's movable */
+  position: absolute;
+  top: 2020px;
+  left: 1px;
+  border: 1px solid RGB(255, 204, 102);
+  padding: 30px;
+  background-color: #080707, 0.66;
+  cursor: move;
   height: auto;
 }
 
@@ -1033,13 +1024,13 @@ body {
 }
 
 #passiveskillscontainer {
-  position: absolute; /* Allows for movement */
-  top: 2020px; /* Initial position */
-  left: 240px; /* Initial position */
-  border: 1px solid RGB(255, 204, 102); /* Optional styling */
-  padding: 30px; /* Optional styling */
-  background-color: #080707, 0.66; /* Optional styling */
-  cursor: move; /* Change cursor to indicate it's movable */
+  position: absolute;
+  top: 2020px;
+  left: 240px;
+  border: 1px solid RGB(255, 204, 102);
+  padding: 30px;
+  background-color: #080707, 0.66;
+  cursor: move;
   height: auto;
   width: 9cap;
 }
@@ -1058,7 +1049,6 @@ body {
   height: 8px;
   color: rgb(255, 255, 255);
   font-size: 14px;
-  /* left: 5cm; */
   text-align: center;
   border: 0.5px solid #08a39e;
 }
@@ -1339,8 +1329,7 @@ input[type="number"] {
 #martialartskillscontainer {
   position: absolute;
   cursor: move;
-  border: 1px solid RGB(50, 50, 50); /* #2ad010 */
-  padding: 30px;
+  border: 1px solid RGB(50, 50, 50);
   z-index: 1000;
   background-color: #080707, 0.66;
   height: auto;
@@ -1352,7 +1341,7 @@ input[type="number"] {
 #combatskillsskillscontainer {
   position: absolute;
   cursor: move;
-  border: 1px solid RGB(204, 51, 0); /* #2ad010 */
+  border: 1px solid RGB(204, 51, 0);
   padding: 30px;
   z-index: 1000;
   background-color: #080707, 0.66;
@@ -1365,7 +1354,7 @@ input[type="number"] {
 #summoningskillsskillscontainer {
   position: absolute;
   cursor: move;
-  border: 1px solid RGB(34, 139, 34); /* #2ad010 */
+  border: 1px solid RGB(34, 139, 34);
   padding: 30px;
   z-index: 1000;
   background-color: #080707, 0.66;
@@ -1378,7 +1367,7 @@ input[type="number"] {
 #cursesskillscontainer {
   position: absolute;
   cursor: move;
-  border: 1px solid RGB(102, 0, 153); /* #2ad010 */
+  border: 1px solid RGB(102, 0, 153);
   padding: 30px;
   z-index: 1000;
   background-color: #080707, 0.66;
@@ -1391,7 +1380,7 @@ input[type="number"] {
 #combatpalaskillsskillscontainer {
   position: absolute;
   cursor: move;
-  border: 1px solid RGB(255, 255, 204); /* #2ad010 */
+  border: 1px solid RGB(255, 255, 204);
   padding: 30px;
   z-index: 1000;
   background-color: #080707, 0.66;
@@ -1404,7 +1393,7 @@ input[type="number"] {
 #firespellsskillscontainer {
   position: absolute;
   cursor: move;
-  border: 1px solid RGB(0, 0, 255); /* #2ad010 */
+  border: 1px solid RGB(0, 0, 255);
   padding: 30px;
   z-index: 1000;
   background-color: #080707, 0.66;

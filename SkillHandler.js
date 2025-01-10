@@ -170,11 +170,11 @@ class SkillHandler {
         description: "Charged javelin attack",
         maxLevel: 99,
         levelData: {
-          attackRating: {
-            base: 30,
-            perLevel: 3,
-            formula: "base + (perLevel * (level - 1))",
-          },
+          // attackRating: {
+          //   base: 30,
+          //   perLevel: 3,
+          //   formula: "base + (perLevel * (level - 1))",
+          // },
           lightningDamage: {
             min: 1,
             max: [
@@ -186,8 +186,8 @@ class SkillHandler {
             ],
           },
           manaCost: {
-            base: 6,
-            perLevel: 0,
+            base: 3,
+            perLevel: 0.25,
             formula: "base + (perLevel * (level - 1))",
           },
         },
