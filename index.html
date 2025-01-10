@@ -5633,15 +5633,14 @@ async function saveSettings() {
   </script>
   <script>
 function updateInventoryStats() {
-   let baseStats = {poison: 0, cold: 0, light: 0, fire: 0, maxdam: 0};
+   let baseStats = {poison: 0, cold: 0, light: 0, fire: 0, maxdam: 0, mindam: 0};
    
-  
+   // Process equipped items
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 
     'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 
     'ringstwo-dropdown', 'amulets-dropdown'].forEach(slot => {
       const item = itemList[document.getElementById(slot)?.value];
        if(item?.properties) {
-           
            if(item.properties.poisondmg && item.properties.poisontime) {
                baseStats.poison += item.properties.poisondmg / item.properties.poisontime;
            }
@@ -5657,63 +5656,64 @@ function updateInventoryStats() {
            if(item.properties.firedmgmin && item.properties.firedmgmax) {
                baseStats.fire += (item.properties.firedmgmin + item.properties.firedmgmax) / 2;
            }
+           
            if(item.properties.onehandmax) {
-           baseStats.maxdam += item.properties.onehandmax;
-       }
+               baseStats.maxdam += item.properties.onehandmax;
+           }
+           
+           if(item.properties.onehandmin) {
+               baseStats.mindam += item.properties.onehandmin;
+           }
        }
    });
 
-  
+   // Process charms for non-life stats first
    document.querySelectorAll('.charm1').forEach(charm => {
        if(!charm.textContent || charm.textContent.includes('X')) return;
        
-    const text = charm.textContent;
-    
-    
-     const coldMatch = text.match(/\+(\d+)\s+Cold\s+Damage/);
-    if(coldMatch) {
-        baseStats.cold += parseInt(coldMatch[1]) / 2;
-    }
-    
-    
-    const poisonMatch = text.match(/\+(\d+)\s+Poison\s+Damage/);
-    if(poisonMatch) {
-        baseStats.poison += parseInt(poisonMatch[1]) / 2;
-    }
+       const text = charm.textContent;
+       
+       const coldMatch = text.match(/\+(\d+)\s+Cold\s+Damage/);
+       if(coldMatch) {
+           baseStats.cold += parseInt(coldMatch[1]) / 2;
+       }
+       
+       const poisonMatch = text.match(/\+(\d+)\s+Poison\s+Damage/);
+       if(poisonMatch) {
+           baseStats.poison += parseInt(poisonMatch[1]) / 2;
+       }
 
-    const fireMatch = text.match(/\+(\d+)\s+Fire\s+Damage/);
-    if(fireMatch) {
-        baseStats.fire += parseInt(fireMatch[1]) / 2;
-    }
+       const fireMatch = text.match(/\+(\d+)\s+Fire\s+Damage/);
+       if(fireMatch) {
+           baseStats.fire += parseInt(fireMatch[1]) / 2;
+       }
 
+       const lightMatch = text.match(/\+(\d+)\s+Lightning\s+Damage/);
+       if(lightMatch) {
+           baseStats.light += parseInt(lightMatch[1]) / 2;
+       }
 
-    const lightMatch = text.match(/\+(\d+)\s+Lightning\s+Damage/);
-    if(lightMatch) {
-        baseStats.light += parseInt(lightMatch[1]) / 2;
-    }
+       const maxdamMatch = text.match(/\+(\d+)\s+to Maximum Damage\/AttR/);
+       if(maxdamMatch) {
+           baseStats.maxdam += parseInt(maxdamMatch[1]);
+       }
+       
+       const mindamMatch = text.match(/\+(\d+)\s+to Minimum Damage/);
+       if(mindamMatch) {
+           baseStats.mindam += parseInt(mindamMatch[1]);
+       }
+   });
 
-    const fineMatch = text.match(/\+(\d+)\s+to Maximum Damage\/AttR/);
-if(fineMatch) {
-    baseStats.maxdam += parseInt(fineMatch[1]);
-}
-        
-        
-        
-
-
-
-
-});
-
-
+   // Update damage and elemental containers
    document.getElementById('flatpoisoncontainer').textContent = baseStats.poison.toFixed(1);
    document.getElementById('flatcoldcontainer').textContent = baseStats.cold.toFixed(1);
    document.getElementById('flatfirecontainer').textContent = baseStats.fire.toFixed(1);
    document.getElementById('flatlightcontainer').textContent = baseStats.light.toFixed(1);
-   
    document.getElementById('onehandmaxdmgcontainer').textContent = baseStats.maxdam.toFixed(0);
+   document.getElementById('onehandmindmgcontainer').textContent = baseStats.mindam.toFixed(0);
 }
 
+// Initialize event listeners
 document.addEventListener('DOMContentLoaded', () => {
    const observer = new MutationObserver(updateInventoryStats);
    observer.observe(document.querySelector('.inventorycontainer'), {
@@ -5722,41 +5722,108 @@ document.addEventListener('DOMContentLoaded', () => {
        characterData: true
    });
 
+   // Add listeners to dropdowns
    document.querySelectorAll('select[id$="-dropdown"]').forEach(select => {
        select.addEventListener('change', updateInventoryStats);
    });
 
+   // Add listeners to all relevant inputs
+   ['lvlValue', 'str', 'dex', 'vit', 'enr', 'left-skill'].forEach(id => {
+       const element = document.getElementById(id);
+       if (element) {
+           element.addEventListener('input', updateInventoryStats);
+       }
+   });
+
+   // Add listeners to skill containers
+   document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
+       .forEach(input => input.addEventListener('input', updateInventoryStats));
+
+   // Initial update
    updateInventoryStats();
-
-
-   ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown',
-    'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
-    'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {
-       document.getElementById(id)?.addEventListener('change', updateInventoryStats);
-       document.getElementById('lvlValue').addEventListener('input', updateInventoryStats);
-       document.getElementById('str').addEventListener('input', updateInventoryStats);
-       document.getElementById('dex').addEventListener('input', updateInventoryStats);
-       document.getElementById('vit').addEventListener('input', updateInventoryStats);
-       document.getElementById('enr').addEventListener('input', updateInventoryStats);
-       document.getElementById('left-skill')?.addEventListener('change', updateInventoryStats);
-document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
-    .forEach(input => input.addEventListener('input', updateInventoryStats));
-       const containers = {
-       poison: document.getElementById('flatpoisoncontainer'),
-       cold: document.getElementById('flatcoldcontainer'),
-       light: document.getElementById('flatlightcontainer'),
-       fire: document.getElementById('flatfirecontainer')
-   };
-
-   Object.entries(containers).forEach(([type, container]) => {
-       if(container) container.textContent = baseStats[type].toFixed(1);
-   });
-
-
-   
-   });
 });
+
+
+
+
+
+
+
 </script>
+
+
+<script>
+function updateLifeFromCharms() {
+  let totalCharmLife = 0;
+  
+  // Get all charms in the inventory
+  document.querySelectorAll('.charm1').forEach(charm => {
+    if (!charm.textContent || charm.textContent.includes('X')) return;
+    
+    const text = charm.textContent;
+    
+    // Match all variations of life bonus text
+    const lifePatterns = [
+      /\+(\d+)\s+Life/,
+      /\+(\d+)\s+to Life/,
+      /\+(\d+)\s+Maximum Life/
+    ];
+    
+    for (const pattern of lifePatterns) {
+      const match = text.match(pattern);
+      if (match) {
+        totalCharmLife += parseInt(match[1]);
+        break;
+      }
+    }
+  });
+
+  // Get current life display
+  const lifeDisplay = document.getElementById('lifeValue');
+  if (!lifeDisplay) return;
+  
+  // Create or update charm life display
+  let charmLifeDisplay = document.getElementById('charmLifeValue');
+  if (!charmLifeDisplay) {
+    charmLifeDisplay = document.createElement('span');
+    charmLifeDisplay.id = 'charmLifeValue';
+    charmLifeDisplay.style.marginLeft = '10px';
+    charmLifeDisplay.style.color = '#888';
+    lifeDisplay.parentNode.insertBefore(charmLifeDisplay, lifeDisplay.nextSibling);
+  }
+  
+  // Update charm life display
+  charmLifeDisplay.textContent = `Charm Life: +${totalCharmLife}`;
+}
+
+// Add this to existing event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  // Watch for changes to inventory
+  const observer = new MutationObserver(updateLifeFromCharms);
+  const inventoryContainer = document.querySelector('.inventorycontainer');
+  
+  if (inventoryContainer) {
+    observer.observe(inventoryContainer, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+  }
+
+  // Initial update
+  updateLifeFromCharms();
+});
+
+</script>
+
+
+
+
+
+
+
+
+
 
 <script>
 function showAllSkillsBonus() {
