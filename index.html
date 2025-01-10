@@ -3,1659 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <title>PD2 Character Planner</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/components.css">
-    
-    <style>
-        :root {
-            --mist-blue: #aec3d2;
-            --glow-color: rgba(67, 233, 11, 0.9);
-        }
-
-        .particles-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9998;
-        }
-
-        .particle {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            opacity: 0;
-            transition: transform 0.2s;
-            
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        
-        }
-
-        .particle.type1 {
-            background-image: url('./whiteaxe.png');
-        }
-
-        .particle.type2 {
-            background-image: url('./redaxe2.png');
-        }
-        
-        .particle.type3 {
-            background-image: url('./sword.png');
-        }
-
-        @keyframes float {
-            0% {
-                transform: translate(-50%, -50%) translateY(0) scale(1);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translate(-50%, -50%) translateY(-100px) scale(0);
-                opacity: 0;
-            }
-        }
-
-        body.moody .particles-container {
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="72048bb5-a72a-4c78-9750-4c1c9a17e30c"></script>
-</head>
-<body>
-
- 
-    <button onclick="document.body.classList.toggle('moody')" style="position: fixed; top: 10px; right: 10px; z-index: 10000;">
-        Load Theme
-    </button>
     
-    <div id="app">
-        <header>
-         
-      
-    <!-- <main>
-        <section id="stats">
-            <div>Strength: <span id="strength">20</span></div>
-            <div>Dexterity: <span id="dexterity">25</span></div>
-            <div>Vitality: <span id="vitality">20</span></div>
-            <div>Energy: <span id="energy">15</span></div>
-        </section>
-        <section id="equipment"></section>
-        <section id="skills"></section>
-    </main> -->
-</div>
 
 
-
-
-    
-    <script>
-
-import { FlatPropertyHandler } from './flatProperties.js';
-import { PercentPropertyHandler } from './percentProperties.js';
-import { LevelPropertyHandler } from './levelProperties.js';
-import { SkillPropertyHandler } from './skillProperties.js';
-        function createParticles() {
-            const container = document.querySelector('.particles-container');
-            
-            function spawnParticle() {
-                if (!document.body.classList.contains('moody')) return;
-                
-                
-                
-                const particle = document.createElement('div');
-
-                particle.classList.add('particle');
-
-                // Randomly select and add particle type
-                const randomType = Math.floor(Math.random() * 3) + 1;
-                particle.classList.add('type' + randomType);
-                
-                const size = Math.random() * 60 + 12;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                particle.style.left = `${x}px`;
-                particle.style.top = `${y}px`;
-                
-                particle.style.animation = `float ${Math.random() * 3 + 2}s ease-out`;
-                
-                container.appendChild(particle);
-                
-                particle.addEventListener('animationend', () => {
-                    particle.remove();
-                });
-            }
-
-            setInterval(spawnParticle, 35);
-        }
-
-        createParticles();
-    </script>
-</body>
-</html>
-                
-
-        
-
-  
-
-    
-    
-    <script>
-   
-    
-       
-            
-                              
-
-          
-
-        class PropertyManager {
-    static containers = [
-        'helms-dropdown', 'armors-dropdown', 'weapons-dropdown',
-        'offs-dropdown', 'gloves-dropdown', 'belts-dropdown',
-        'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown',
-        'amulets-dropdown'
-    ];
-
-    static updateProperties() {
-        const charLevel = parseInt(document.getElementById('lvlValue').value) || 1;
-        
-        // Get all property totals
-        const flatTotals = FlatPropertyHandler.calculateTotal(itemList, this.containers);
-        const percentTotals = PercentPropertyHandler.calculateTotal(itemList, this.containers);
-        const levelTotals = LevelPropertyHandler.calculatePerLevel(itemList, this.containers, charLevel);
-        const skillTotals = SkillPropertyHandler.calculateSkillBonuses(itemList, this.containers);
-
-        // Update UI
-        this.updateUI(flatTotals, percentTotals, levelTotals, skillTotals);
-    }
-
-    static updateUI(flat, percent, level, skill) {
-        // Update all container values
-        Object.keys(flat).forEach(prop => {
-            document.getElementById(`${prop}container`)?.textContent = flat[prop];
-        });
-        Object.keys(percent).forEach(prop => {
-            document.getElementById(`${prop}container`)?.textContent = percent[prop];
-        });
-        // ... update other properties
-    }
-}
-
-
-        window.gameManager = new GameManager();
-    </script>
-</body>
-</html>
-<html>
-<style>
-:root {
-    --primary-color: #e00808;
-    --background-color: #120707;
-    --text-color: #f1eaf7;
-}
-
-body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: 'Bahnschrift Condensed', sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-.main-content {
-    display: grid;
-    grid-template-columns: 300px 1fr 300px;
-    gap: 20px;
-    padding: 20px;
-}
-
-input[type="number"] {
-    background: transparent;
-    color: var(--text-color);
-    border: 1px solid var(--primary-color);
-    padding: 5px;
-    width: 60px;
-}
-
-.stats-panel, .skills-panel, .equipment-panel {
-    border: 1px solid var(--primary-color);
-    padding: 15px;
-    background-color: rgba(18, 7, 7, 0.9);
-}
-
-body {
-		display: flex;
-    font-family: bahnschrift condensed;
-		flex-direction: column;
-		width: 300%;
-		min-width: auto;
-		background-color: rgba(0,0,0);
-		margin: auto;
-		margin-top: 10px;
-		margin-bottom: 10px;
-    color: rgb(243, 241, 242)
-	}
-	
-
-.slidecontainer {
-  width: 100%;
-  color: rgb(255, 255, 255);
-  position: relative;
-  top: -80px;
-  left: 125px;
-}
-
-.menucontainer {
-  width: 100%;
-  color: rgb(255, 255, 255);
-}
-
-.lifecontainer {
-  width: 100%;
-  color: rgb(241, 37, 37);
-  position: relative;
-  top: -165px;
-  left: 295px;
-  font-size: 18px;
-}
-
-.inventorycontainer {
-  
-  position: absolute;
-  margin-top: -320px;
-  left: 1280px;
-
-  display: grid;
-  padding: 1px;
-  background-color: rgb(0, 0, 0);
-  grid-template-rows: repeat(4, minmax(74px, 74px));
-  grid-template-columns: repeat(10, minmax(74px, 74px));
-  /* Fixed dimensions */
-  width: 740px;    /* Exactly 10 columns * 74px */
-  height: 296px;
-  /* Prevent any auto-sizing 
-  grid-auto-flow: dense;
-  grid-auto-rows: 0;
-  grid-auto-columns: 0;*/
-  
-  /* Border and background */
-  border: 1px solid rgb(164, 19, 19);
-  background-color: rgb(0, 0, 0);
-  overflow: hidden;
-  box-sizing: border-box;
-
-}
-
-.propertycontainer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-.propertyrange {
-  width: 100px;
-  accent-color: red;
-  appearance: none;
-  background: rgb(22, 21, 21);
-}
-
-.charm1 {
-  border: 1px solid rgb(164, 19, 19); /* Empty container */
-  background-color: transparent;
-  width: 74px;
-  height: 74px;
-  min-width: 74px;
-  min-height: 74px;
-  max-width: 74px;
-  max-height: 74px;
-  cursor: pointer;
-  
-  /* Ensure border is included in size */
-  box-sizing: border-box;
-  text-align: center;
-  /* Prevent any margin collapse */
-  margin: 0;
-  padding: 0;
-  position: relative; /* Add this */
-  white-space: normal; /* Add this */
-  word-wrap: break-word; /* Add this */
-  font-size: 12px; /* Add this to make text smaller */
-  justify-content: center !important;
-  align-items: center;
-  display: flex;
-}
-
-
-
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 3px;
-  background-color: rgb(8, 8, 8);
-  border: 2px solid black;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 4;
-  display: none;
-  font-size: 13px
-}
-
-.modal-content {
-  /* display: flex; */
-  background: rgb(0, 0, 0);
-  padding: 5px;
-  border-radius: 5px;
-  max-height: 80vh;  /* Maximum height of 80% of viewport */
-  overflow-y: auto;  /* Enable vertical scrolling */
-  width: 90%;
-  max-width: 400px;  /* Maximum width */
-  /* flex-wrap: wrap;
-  box-sizing: border-box;
-  white-space: nowrap; */
-}
-
-
-.modal.active {
-  display: block;
-}
-
-.modal button {
-  margin: 3px;
-  padding: 5px;
-}
-
-.close {
-    color: rgb(164, 19, 19);
-    float: right;
-    font-size: 64px;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 0 5px;   /* Added some padding for better clickability */
-    line-height: 35px; /* Helps with vertical alignment */
-}
-
-.close:hover {
-    color: rgb(200, 30, 30);
-}
-
-
-.small-charm {
-  /* grid-column: auto;
-  grid-row-start: auto;
-  grid-row-end: span 1; */
-  height: 74px;
-  
-  background-color: rgb(94, 5, 49);
-}
-
-
-.large-charm {
-  /* grid-column: auto;
-  grid-row-start: auto;
-  grid-row-end: span 2; */
-  height: 148px; 
-  
-  background-color: rgb(56, 189, 85);
-}
-
-
-.grand-charm {
-  /* grid-column: auto;
-  grid-row-start: auto;
-  grid-row-end: span 3; */
-  height: 222px;
-   
-  background-color: rgb(50, 24, 119);
-}
-
-/* .marked-large {
-  background-color: rgba(15, 214, 58, 0.5) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 24px !important;
-  color: white !important;
-}
-
-.marked-grand {
-  background-color: rgba(101, 73, 176, 0.5) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 24px !important;
-  color: white !important;
-} */
-
-#saveButton {
-  display: flex;
-    align-items: center;
-    font-family: bahnschrift condensed;
-    justify-content: center; /* Added to center content horizontally */
-    background-color: #010201;
-    color: rgb(159, 11, 11);
-    opacity: 1;
-    margin-left: 284px;
-    box-shadow: 8px 15px 40px yellow;
-    height: 90px;
-    width: 120px;
-    cursor: pointer;
-    padding: 0; /* Remove padding to maintain exact dimensions */
-    box-sizing: border-box; 
-}
-
-
-      .auth-container {
-        position: relative;
-        left: -1040px;
-            width: 400px;
-            margin: 40px auto;
-            padding: 20px;
-            background: rgb(34, 28, 28);
-            border-radius: 8px;
-            
-        }
-
-        .form-title {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .error-message {
-    color: #dc3545;
-    font-size: 14px;
-    margin-top: 5px;
-    display: none;
-}
-
-.welcome-message {
-            padding: 50px;
-            background: #033a72;
-            border-radius: 4px;
-            text-align: center;
-          }
-
-          .profile-container {
-        background: rgb(7, 4, 4);
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 23px 54px rgb(167, 11, 210);
-        display: none;
-    }
-
-#userDisplay {
-    color: #007bff;
-    font-size: 16px;
-  }
-
-    .tabs {
-        display: flex;
-        border-bottom: 1px solid #d5acac;
-        margin-bottom: 20px;
-    }
-
-    .tab {
-        padding: 10px 20px;
-        cursor: pointer;
-        border: none;
-        background: none;
-        font-size: 16px;
-        color: #ddc8c8;
-        background-color: #0b0c0b;
-    }
-
-    .tab.active {
-        color: #007bff;
-        border-bottom: 2px solid #007bff;
-        
-    }
-
-    .tab-content {
-        display: none;
-        
-    }
-
-    .tab-content.active {
-        display: block;
-        background-color: #010201;
-    }
-
-    .profile-info {
-        margin-bottom: 20px;
-        
-    }
-
-    .achievement {
-        padding: 10px;
-        margin: 5px 0;
-        background: #c9ced3;
-        border-radius: 4px;
-        background-color: #010201;
-    }
-
-    .settings-option {
-        margin: 15px 0;
-    }
-
-    .settings-option label {
-        display: block;
-        margin-bottom: 5px;
-        
-    }
-
-
-
-
-
-
-
-.slider:hover {
-  opacity: 1;
-}
-
-#startLvlValue {
-    color: white; /* Set the text color to red */
-}
-	
-#helm-info {
-  position: absolute;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: 12px;
-}
-
-#armor-info {
-          position: absolute;
-          margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: 102px;
-            
-            
-}
-
-#weapon-info {
-  position: absolute;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: 82px;
-}
-
-#off-info {
-  position: absolute;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: 62px;
-}
-
-#glove-info {
-  position: absolute;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: 52px;
-}
-
-#belt-info {
-  position: absolute;
-  display: block;
-  width: max-content;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: auto;
-}
-
-#boot-info {
-  position: absolute;
-  display: block;
-  width: max-content;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: 5px;
-}
-
-#ringsone-info {
-  position: absolute;
-  display: block;
-  width: max-content;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: auto;
-}
-
-#ringstwo-info {
-  position: absolute;
-  display: block;
-  width: max-content;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: auto;
-}
-
-
-#amulet-info {
-  position: absolute;
-  display: block;
-  width: max-content;
-            margin-top: 10px;
-            border: 1px solid #e00808;
-            padding: 10px;
-            background-color: #120707;
-            font-size: 15px;
-            margin-left: auto;
-}
-
-.total-life {
-margin-top: 30px;
-font-size: 12px;
-width: 33%;
-color: rgb(241, 234, 247);
-}
-
-.grouphelms {
-	
-
-margin-top: 10px;
-margin-right: 1080px;
-font-size: 25px;
-
-color: rgb(100, 139, 248);
-text-align: center;
-}      
-        
-        
-.grouparmors { 
-overflow: hidden;
-  display: block;         
-margin-left: 325px;
-margin-top: -30px;
-font-size: 25px;  
-width: max-content;
-color: rgb(100, 139, 248);
-text-align: center;
-}   
-
-
- .groupweapons {
-	overflow: hidden;
-  display: block;         
-margin-left: 690px;
-margin-top: -88px;
-font-size: 25px;  
-width: max-content;
-color: rgb(100, 139, 248);
-text-align: center;
-}  
-
-
-.groupoffs {   
-    overflow: hidden;
-  display: block; 
-margin-left: -90px;
-margin-top: 336px;
-font-size: 25px;  
-width: 100%;
-color: rgb(100, 139, 248);
-text-align: center;
-}  
-
-.groupgloves { 
-    overflow: hidden;
-  display: block;
-margin-left: -395px;
-margin-top: 415px;
-font-size: 25px;  
-width: max-content;
-color: rgb(100, 139, 248);
-text-align: center;
-}  
-
-.groupbelts { 
-  overflow: hidden;
-  display: block;
-    margin-left: 6px;
-    margin-top: -30px;
-    font-size: 25px;  
-    width: max-content;
-    color: rgb(100, 139, 248);
-    text-align: center;
-    }  
-
-  .groupboots { 
-  overflow: hidden;
-  display: block;
-    margin-left: -815px;
-    margin-top: 440px;
-    font-size: 25px;  
-    width: max-content;
-    color: rgb(100, 139, 248);
-    text-align: center;
-    }  
-
-    .groupringsone { 
-  
-  display: block;
-    margin-left: -315px;
-    margin-top: -30px;
-    font-size: 25px;  
-    width: max-content;
-    color: rgb(100, 139, 248);
-    text-align: center;
-    }  
-
-    .groupringstwo { 
-  
-  display: block;
-    margin-left: -15px;
-    margin-top: -30px;
-    font-size: 25px;  
-    width: max-content;
-    color: rgb(100, 139, 248);
-    text-align: center;
-    }  
-
-    .groupamulets { 
-  
-  display: block;
-    margin-left: -555px;
-    margin-top: 330px;
-    font-size: 25px;  
-    width: max-content;
-    color: rgb(100, 139, 248);
-    text-align: center;
-    }  
-
-#blockValue, #getHitValue, #fireResValue {  
-font-size: 15px;  
-width: fit-content;
-color: rgb(143, 144, 155);
-margin-left: 11px;
-            
-}   
-.polyrellife {
-  position: absolute;
-  font-family: bahnschrift condensed;
-  width: 100%;
-  color: rgb(218, 14, 75);
-  font-size: 19px;
-  text-align: center;
-  left: 490px;
-  top: 20px;
-  
-}
-	
-.statcontainer {
-  font-family: bahnschrift condensed;
-  margin-top: -10ch;
-  width: 100%;
-  color: rgb(153, 147, 149);
-  font-size: 16px; 
-  margin-left: 1ch;
-}
-
-.defensecontainer { 
-  position: absolute;
-  width: 100%;
-  color: rgb(255, 255, 255);
-  font-size: 16px; 
-  left: -140px;
-  top: 20px;
-}
-
-.realblockcontainer { 
-  position: absolute;
-  width: 100%;
-  color: rgb(255, 255, 255);
-  font-size: 16px; 
-  left: 70px;
-  top: 0px;
-}
-
-.iascontainer { 
-  position: absolute;
-  width: 100%;
-  color: rgb(255, 255, 255);
-  font-size: 16px; 
-  left: 70px;
-  top: 0px;
-}
-
-.fcrcontainer { 
-  position: absolute;
-  width: 100%;
-  color: rgb(255, 255, 255);
-  font-size: 16px; 
-  left: 70px;
-  top: 0px;
-}
-
-.frwcontainer { 
-  position: absolute;
-  width: 100%;
-  color: rgb(255, 255, 255);
-  font-size: 16px; 
-  left: 70px;
-  top: 0px;
-}
-
-.fhrcontainer { 
-  position: absolute;
-  width: 100%;
-  color: rgb(255, 255, 255);
-  font-size: 16px; 
-  left: 70px;
-  top: 0px;
-}
-
-.cbfcontainer { 
-  position: absolute;
-  width: 100%;
-  color: rgb(16, 13, 181);
-  font-size: 16px; 
-  left: 70px;
-  top: 0px;
-}
-
-.plrcontainer { 
-  position: absolute;
-  width: 100%;
-  color: rgb(30, 182, 96);
-  font-size: 16px; 
-  left: 70px;
-  top: 0px;
-}
-
-.drcontainer { 
-  position: absolute;
-  width: fit-content;
-  color: rgb(189, 189, 189);
-  font-size: 16px; 
-  left: 70px;
-  top: 50px;
-}
-
-.pdrcontainer { 
-  position: absolute;
-  width: fit-content;
-  color: rgb(189, 189, 189);
-  font-size: 16px; 
-  left: 160px;
-  top: 0px;
-}
-
-.mdrcontainer { 
-  position: absolute;
-  width: fit-content;
-  color: rgb(189, 189, 189);
-  font-size: 16px; 
-  left: 70px;
-  top: 0px;
-}
-
-.fireresistcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(189, 189, 189);
-  font-size: 17px; 
-  left: 70px;
-  top: 0px;
-}
-.coldresistcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(189, 189, 189);
-  font-size: 17px; 
-  left: 90px;
-  top: 0px;
-}
-.lightresistcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(189, 189, 189);
-  font-size: 17px; 
-  left: 90px;
-  top: 0px;
-}
-.poisonresistcontainer { 
-  position: absolute;
-  width: 6pc;
-  color: rgb(189, 189, 189);
-  font-size: 17px; 
-  left: 90px;
-  top: 0px;
-}
-
-.curseresistcontainer { 
-  position: absolute;
-  width: 6pc;
-  color: rgb(189, 189, 189);
-  font-size: 17px; 
-  left: 95px;
-  top: 0px;
-}
-
-.onehandmindmgcontainer { 
-  position: absolute;
-  width: 6pc;
-  color: rgb(189, 189, 189);
-  font-size: 15px; 
-  left: -405px;
-  top: 155px;
-}
-
-.onehandmaxdmgcontainer { 
-  position: absolute;
-  width: 6pc;
-  color: rgb(189, 189, 189);
-  font-size: 15px; 
-  left: 80px;
-  top: 0px;
-}
-
-.twohandmindmgcontainer { 
-  position: absolute;
-  width: 6pc;
-  color: rgb(189, 189, 189);
-  font-size: 15px; 
-  left: 80px;
-  top: 0px;
-}
-
-.twohandmaxdmgcontainer { 
-  position: absolute;
-  width: 6pc;
-  color: rgb(189, 189, 189);
-  font-size: 15px; 
-  left: 80px;
-  top: 0px;
-}
-
-.allskillscontainer { 
-  position: absolute;
-  width: auto;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: -585px;
-  top: -115px;
-}
-
-.magicfindcontainer { 
-  position: absolute;
-  width: 4pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 54px;
-  top: 0px;
-}
-
-.goldfindcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 54px;
-  top: 0px;
-}
-
-.owcontainer { 
-  position: absolute;
-  width: 4pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 54px;
-  top: 0px;
-}
-
-.owdmgcontainer { 
-  position: absolute;
-  width: 4pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 54px;
-  top: 0px;
-}
-
-.cbcontainer { 
-  position: absolute;
-  width: 4pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 54px;
-  top: 0px;
-}
-
-.cbdmgcontainer { 
-  position: absolute;
-  width: 4pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 54px;
-  top: 0px;
-}
-
-.piercephyscontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 54px;
-  top: 0px;
-}
-
-.piercefirecontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 74px;
-  top: 0px;
-}
-
-.piercecoldcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 74px;
-  top: 0px;
-}
-
-.piercelightcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 74px;
-  top: 0px;
-}
-
-.piercepoisoncontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 74px;
-  top: 0px;
-}
-
-.piercemagiccontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(122, 101, 101);
-  font-size: 14px; 
-  left: 74px;
-  top: 0px;
-}
-
-.flatfirecontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(226, 24, 24);
-  font-size: 16px; 
-  left: 0px;
-  top: 36px;
-}
-
-.flatcoldcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(19, 8, 223);
-  font-size: 16px; 
-  left: 0px;
-  top: 36px;
-}
-
-.flatlightcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(208, 211, 9);
-  font-size: 16px; 
-  left: 0px;
-  top: 36px;
-}
-.flatpoisoncontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(13, 241, 78);
-  font-size: 16px; 
-  left: 0px;
-  top: 36px;
-}
-.flatmagiccontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgb(188, 188, 245);
-  font-size: 16px; 
-  left: 0px;
-  top: 36px;
-}
-
-.criticalhitcontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgba(51, 51, 107, 0.55);
-  font-size: 14px; 
-  left: -784px;
-  top: -136px;
-  text-shadow: rebeccapurple 0 0 25px,  0 0 3px rgb(40, 40, 94);;
-}
-
-.deadlystrikecontainer { 
-  position: absolute;
-  width: 5pc;
-  color: rgba(51, 51, 107, 0.55);
-  font-size: 14px; 
-  left: 86px;
-  top: 0px;
-}
-
-.weaponmasterycontainer { 
-  position: absolute;
-  width: 6pc;
-  color: rgba(51, 51, 107, 0.55);
-  font-size: 14px; 
-  left: 86px;
-  top: 0px;
-}
-
-.crithitmultipliercontainer { 
-  position: absolute;
-  width: 15cap;
-  color: rgb(35, 139, 77);
-  font-size: 15px; 
-  left: 186px;
-  top: 0px;
-  text-shadow: 1px 1px 8px #1bb01b, 1px 0px 0px rgba(0,0,0,0.15);
-
-}
-
-.hiddenSkill, .hiddenSkill6, .hiddenSkill12, .hiddenSkill18, .hiddenSkill24, .hiddenSkill30 {
-display: none;
-}
-
-
-#javelinandspearskillscontainer {
-            position: absolute; /* Allows for movement */
-            top: 2020px; /* Initial position */
-            left: 1px; /* Initial position */
-            border: 1px solid RGB(255, 204, 102);  /* Optional styling */
-            padding: 30px; /* Optional styling */
-            background-color: #080707, 0.66; /* Optional styling */
-            cursor: move; /* Change cursor to indicate it's movable */
-            height: auto;
-          }    
-         
-
-
-
-#jabcontainer, #poisonjavelincontainer, #javelinandspearmasterycontainer, #powerstrikecontainer,
- #lightningboltcontainer, #fendcontainer, #chargedstrikecontainer, #plaguejavelincontainer,
- #lightningstrikecontainer, #lightningfurycontainer { 
-  position: absolute;
-  width:  42px;
-  height: 8px;
-  color: rgb(248, 248, 248);
-  font-size: 14px; 
-  text-align: center;
-  border: 0.5px solid #08a39e;
-  
-}
-
-
-
-
-        #passiveskillscontainer {
-            position: absolute; /* Allows for movement */
-            top: 2020px; /* Initial position */
-            left: 240px; /* Initial position */
-            border: 1px solid RGB(255, 204, 102);  /* Optional styling */
-            padding: 30px; /* Optional styling */
-            background-color: #080707, 0.66; /* Optional styling */
-            cursor: move; /* Change cursor to indicate it's movable */
-            height: auto;
-            width: 9cap;
-          }    
-         
-          
-
-#innersightcontainer, #criticalstrikecontainer, #evadecontainer, #slowmovementcontainer, #piercecontainer,
-#dodgecontainer, #decoycontainer, #penetratecontainer, #valkyriecontainer { 
-  position: absolute;
-  width: 42px;
-  height: 8px;
-  color: rgb(255, 255, 255);
-  font-size: 14px; 
-  /* left: 5cm; */
-  text-align: center;
-  border: 0.5px solid #08a39e;
-  
-}  
-
-
-
-
-
-
-               #bowandcrossbowskillscontainer {
-position: absolute; 
-top: 2020px; 
-left: 420px;
-border: 1px solid RGB(255, 204, 102); 
-padding: 30px; 
-background-color: #080707, 0.66; 
-cursor: move; 
-height: auto;
-width: 16cap;
-}  
-
-#magicarrowcontainer, #multipleshotcontainer, #firearrowcontainer, #coldarrowcontainer, #icearrowcontainer,
-#guidedarrowcontainer, #explodingarrowcontainer, #strafecontainer, #immolationarrowcontainer, #freezingarrowcontainer, #fireblastcontainer, #shockwebcontainer,
-#tigerstrikecontainer, #dragontaloncontainer, #dragonclawcontainer, #fistsoffirecontainer, #cobrastrikecontainer,
-#clawsofthundercontainer, #dragontailcontainer, #dragonflightcontainer, #bladesoficecontainer, #phoenixstrikecontainer,
-#bladesentinelcontainer, #chargedboltsentrycontainer, #wakeoffirecontainer, #bladefurycontainer, #bladeshieldcontainer,
-#lightningsentrycontainer, #wakeofinfernocontainer, #chainlightningsentrycontainer, #deathsentrycontainer,
-#clawanddaggermasterycontainer, #psychichammercontainer, #burstofspeedcontainer, #weaponblockcontainer, #cloakofshadowscontainer,
-#mindblastcontainer, #fadecontainer, #shadowwarriorcontainer, #shadowmastercontainer, #venomcontainer,
-#howlcontainer, #findpotioncontainer, #shoutcontainer, #generalmasterycontainer, #throwingmasterycontainer,
-#polearmandspearmasterycontainer, #combatreflexescontainer, #ironskincontainer, #increasedspeedcontainer, #naturalresistancecontainer,
-#deepwoundscontainer, #bashcontainer, #doubleswingcontainer, #frenzycontainer, #stuncontainer, #concentratecontainer, #doublethrowcontainer,
-#leapcontainer, #leapattackcontainer, #berserkcontainer, #whirlwindcontainer, #firestormcontainer, #arcticblastcontainer, #moltenbouldercontainer, #cyclonearmorcontainer, #fissurecontainer, #twistercontainer, #gustcontainer,
-#volcanocontainer, #tornadocontainer, #hurricanecontainer, #armageddoncontainer, #werewolfcontainer, #werebearcontainer, #lycantropycontainer, #feralragecontainer, #maulcontainer, #hungercontainer, #rabiescontainer,
-#shockwavecontainer, #fireclawscontainer, #furycontainer, #ravencontainer, #poisoncreepercontainer, #heartofwolverinecontainer, #summonspiritwolfcontainer, #carrionvinecontainer, #spiritofbarbscontainer, #summondirewolfcontainer,
-#solarcreepercontainer, #oaksagecontainer, #summongrizzlycontainer, #raiseskeletonwarriorcontainer, #skeletonmasterycontainer, #claygolemcontainer, #raiseskeletalmagecontainer, #golemmasterycontainer, #bloodgolemcontainer, #bloodwarpcontainer,
-#irongolemcontainer, #raiseskeletonarchercontainer, #firegolemcontainer, #revivecontainer, #teethcontainer, #poisonstrikecontainer, #bonearmorcontainer, #corpseexplosioncontainer, #bonewallcontainer, #desecratecontainer, #bonespearcontainer, #boneprisoncontainer,
-#poisonnovacontainer, #bonespiritcontainer, #amplifydamagecontainer, #cursemasterycontainer, #dimvisioncontainer, #darkpactcontainer, #ironmaidencontainer, #lifetapcontainer, #terrorcontainer, #weakencontainer, #confusecontainer, #attractcontainer, #decrepifycontainer, #lowerresistcontainer,
-#prayercontainer, #resistfirecontainer, #resistcoldcontainer, #resistlightningcontainer, #defiancecontainer, #cleansingcontainer, #vigorcontainer, #meditationcontainer, #redemptioncontainer, #salvationcontainer,
-#mightcontainer, #holyfirecontainer, #thornscontainer, #blessedaimcontainer, #concentrationcontainer, #holyfreezecontainer, #holyshockcontainer, #sanctuarycontainer, #fanaticismcontainer, #convictioncontainer, #sacrificecontainer, 
-#holyboltcontainer, #smitecontainer, #zealcontainer, #holylightcontainer, #chargecontainer, #vengeancecontainer, #blessedhammercontainer, #holyswordcontainer, #joustcontainer, #fistofheavenscontainer, #holyshieldcontainer, #holynovacontainer, #iceboltcontainer,
-#coldenchantcontainer, #frostnovacontainer, #iceblastcontainer, #shiverarmorcontainer, #glacialspikecontainer, #chillingarmorcontainer, #icebarragecontainer, #blizzardcontainer, #frozenorbcontainer, #coldmasterycontainer, 
-#chargedboltcontainer, #telekinesiscontainer, #staticfieldcontainer, #novacontainer, #lightningcontainer, #teleportcontainer, #chainlightningcontainer, #thunderstormcontainer, #energyshieldcontainer, #lightningmasterycontainer, #fireboltcontainer, #warmthcontainer, #infernocontainer, #blazecontainer, 
-#firewallcontainer, #fireballcontainer, #lesserhydracontainer, #enchantfirecontainer, #meteorcontainer, #combustioncontainer, #hydracontainer, #firemasterycontainer { 
-  position: absolute;
-  width: 42px;
-  height: 8px;
-  color: rgb(255, 255, 255);
-  font-size: 14px;
-  text-align: center; 
-  border: 0.5px solid #08a39e;
-  
-  
-}  
-
-#straccr, #dexaccr, #vitaccr, #enraccr  {
-
-  width: 100%;
-  color: rgb(203, 198, 236);
-  font-size: 20px; 
-  margin-left: 10px;
-  
-}
-
-input[type=number] {
-  background: black;
-  color: rgb(217, 217, 207);
-  font-family: bahnschrift condensed;
-}
-
-.criticalhitcontainer input {
-  position: absolute;
-  width: 5pc;
-  color: rgba(51, 51, 107, 0.55);
-  font-size: 15px; 
-  left: 33px;
-  top: 20px;
-  text-shadow: rebeccapurple 0 0 25px,  0 0 3px rgb(40, 40, 94);;
-    border: none;
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    width: auto;
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-    display: inline-block;
-}
-
-.criticalhitcontainer input:focus {
-    outline: none;
-}
-
-.deadlystrikecontainer input {
-  position: absolute;
-  width: 5pc;
-  color: rgba(51, 51, 107, 0.55);
-  font-size: 15px; 
-  left: -733px;
-  top: -115px;
-  text-shadow: rebeccapurple 0 0 25px,  0 0 3px rgb(40, 40, 94);;
-    border: none;
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    width: auto;
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-    display: inline-block;
-}
-
-#trapskillscontainer, #shadowskillscontainer, #martialartskillscontainer {
-    position: absolute;
-    cursor: move;
-    border: 1px solid RGB(50, 50, 50); /* #2ad010 */
-    padding: 30px;
-    z-index: 1000; 
-background-color: #080707, 0.66; 
-height: auto;
-width: 12cap;
-}
-
-
-#warcriesskillscontainer, #combatmasteriesskillscontainer,
-#combatskillsskillscontainer {
-position: absolute;
-    cursor: move;
-    border: 1px solid RGB(204, 51, 0); /* #2ad010 */
-    padding: 30px;
-    z-index: 1000; 
-background-color: #080707, 0.66; 
-height: auto;
-width: 12cap;
-}
-
-#elementalskillsskillscontainer, #shapeshiftingskillsskillscontainer, #summoningskillsskillscontainer {
-   position: absolute;
-    cursor: move;
-    border: 1px solid RGB(34, 139, 34); /* #2ad010 */
-    padding: 30px;
-    z-index: 1000; 
-background-color: #080707, 0.66; 
-height: auto;
-width: 12cap;
-}
-
-
-#summoningspellsskillscontainer, #poisonandbonespellsskillscontainer, #cursesskillscontainer {
-    position: absolute;
-    cursor: move;
-    border: 1px solid RGB(102, 0, 153); /* #2ad010 */
-    padding: 30px;
-    z-index: 1000; 
-background-color: #080707, 0.66; 
-height: auto;
-width: 12cap;
-}
-
-
-#offensiveaurasskillscontainer, #defensiveaurasskillscontainer, #combatpalaskillsskillscontainer {
-    position: absolute;
-    cursor: move;
-    border: 1px solid RGB(255, 255, 204); /* #2ad010 */
-    padding: 30px;
-    z-index: 1000; 
-background-color: #080707, 0.66; 
-height: auto;
-width: 12cap;
-}
-
-#coldspellsskillscontainer, #lightningspellsskillscontainer, #firespellsskillscontainer {
-    position: absolute;
-    cursor: move;
-    border: 1px solid RGB(0, 0, 255); /* #2ad010 */
-    padding: 30px;
-    z-index: 1000; 
-background-color: #080707, 0.66; 
-height: auto;
-width: 12cap;
-}
-
-#martialartskillscontainer, #warcriesskillscontainer , #elementalskillsskillscontainer, #summoningspellsskillscontainer, #defensiveaurasskillscontainer, #coldspellsskillscontainer {
-    top: 2020px;
-    left: 1px;
-}
-
-#shadowskillscontainer, #combatmasteriesskillscontainer, #shapeshiftingskillsskillscontainer, #poisonandbonespellsskillscontainer, #offensiveaurasskillscontainer, #lightningspellsskillscontainer {
-    top: 2020px;
-    left: 240px;
-}
-
-#trapskillscontainer, #combatskillsskillscontainer, #summoningskillsskillscontainer, #cursesskillscontainer, #combatpalaskillsskillscontainer, #firespellsskillscontainer {
-    top: 2020px;
-    left: 420px;
-}
-
-option { background-color: rgb(196, 196, 192); }
-select:has(option[value="Biggins Bonnet"]:checked), option[value="Biggins Bonnet"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Tarnhelm"]:checked), option[value="Tarnhelm"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Coif of Glory"]:checked), option[value="Coif of Glory"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Duskeep"]:checked), option[value="Duskeep"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Face of Horror"]:checked), option[value="The Face of Horror"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Wormskull"]:checked), option[value="Wormskull"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Howltusk"]:checked), option[value="Howltusk"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Undead Crown"]:checked), option[value="Undead Crown"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Peasant Crown"]:checked), option[value="Peasant Crown"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Rockstopper"]:checked), option[value="Rockstopper"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Stealskull"]:checked), option[value="Stealskull"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Darksight Helm"]:checked), option[value="Darksight Helm"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Blackhorn's Face"]:checked), option[value="Blackhorn's Face"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Valkyrie Wing"]:checked), option[value="Valkyrie Wing"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Crown of Thieves"]:checked), option[value="Crown of Thieves"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Greyform"]:checked), option[value="Greyform"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Blinkbat's Form"]:checked), option[value="Blinkbat's Form"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Centurion"]:checked), option[value="The Centurion"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Twitchthroe"]:checked), option[value="Twitchthroe"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Darkglow"]:checked), option[value="Darkglow"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Hawkmail"]:checked), option[value="Hawkmail"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Sparking Mail"]:checked), option[value="Sparking Mail"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Venom Ward"]:checked), option[value="Venom Ward"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Iceblink"]:checked), option[value="Iceblink"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Boneflesh"]:checked), option[value="Boneflesh"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Rockfleece"]:checked), option[value="Rockfleece"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Rattlecage"]:checked), option[value="Rattlecage"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Heavenly Garb"]:checked), option[value="Heavenly Garb"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Goldskin"]:checked), option[value="Goldskin"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Silks of the Victor"]:checked), option[value="Silks of the Victor"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Spirit Shroud"]:checked), option[value="Spirit Shroud"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Vipermagi"]:checked), option[value="Vipermagi"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Gnasher"]:checked), option[value="The Gnasher"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Bladebone"]:checked), option[value="Bladebone"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Skull Splitter"]:checked), option[value="Skull Splitter"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Rakescar"]:checked), option[value="Rakescar"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Axe of Fechmar"]:checked), option[value="Axe of Fechmar"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Goreshovel"]:checked), option[value="Goreshovel"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Chieftain"]:checked), option[value="The Chieftain"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Brainhew"]:checked), option[value="Brainhew"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Humongous"]:checked), option[value="Humongous"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Felloak"]:checked), option[value="Felloak"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Stoutnail"]:checked), option[value="Stoutnail"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Crushflange"]:checked), option[value="Crushflange"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Bloodrise"]:checked), option[value="Bloodrise"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The General's Tan Do Li Ga"]:checked), option[value="The General's Tan Do Li Ga"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Pelta Lunata"]:checked), option[value="Pelta Lunata"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Umbral Disk"]:checked), option[value="Umbral Disk"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Lenymo"]:checked), option[value="Lenymo"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Snakecord"]:checked), option[value="Snakecord"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Nightsmoke"]:checked), option[value="Nightsmoke"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Goldwrap"]:checked), option[value="Goldwrap"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Bladebuckle"]:checked), option[value="Bladebuckle"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="String of Ears"]:checked), option[value="String of Ears"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Hand of Broc"]:checked), option[value="The Hand of Broc"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Bloodfist"]:checked), option[value="Bloodfist"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Chance Guards"]:checked), option[value="Chance Guards"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Magefist"]:checked), option[value="Magefist"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Frostburn"]:checked), option[value="Frostburn"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Ironstone"]:checked), option[value="Ironstone"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Bonesnap"]:checked), option[value="Bonesnap"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Upped Bonesnap"]:checked), option[value="Upped Bonesnap"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Steeldriver"]:checked), option[value="Steeldriver"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Rixot's Keen"]:checked), option[value="Rixot's Keen"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Blood Crescent"]:checked), option[value="Blood Crescent"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Hotspur"]:checked), option[value="Hotspur"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Gorefoot"]:checked), option[value="Gorefoot"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Treads of Cthon"]:checked), option[value="Treads of Cthon"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Goblin Toe"]:checked), option[value="Goblin Toe"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Tearhaunch"]:checked), option[value="Tearhaunch"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Infernostride"]:checked), option[value="Infernostride"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Nagelring"]:checked), option[value="Nagelring"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Manald Heal"]:checked), option[value="Manald Heal"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Stone of Jordan"]:checked), option[value="The Stone of Jordan"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Nokozan Relic"]:checked), option[value="Nokozan Relic"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Eye of Etlich"]:checked), option[value="The Eye of Etlich"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Mahim-Oak Curio"]:checked), option[value="The Mahim-Oak Curio"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Saracen's Chance"]:checked), option[value="Saracen's Chance"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Crescent Moon"]:checked), option[value="Crescent Moon"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="The Cat's Eye"]:checked), option[value="The Cat's Eye"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Atma's Scarab"]:checked), option[value="Atma's Scarab"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Highlord's Wrath"]:checked), option[value="Highlord's Wrath"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Rising Sun"]:checked), option[value="The Rising Sun"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Seraph's Hymn"]:checked), option[value="Seraph's Hymn"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Mara's Caleidoscope"]:checked), option[value="Mara's Caleidoscope"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Metalgrid"]:checked), option[value="Metalgrid"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Third Eye"]:checked), option[value="The Third Eye"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Amulet of the Viper"]:checked), option[value="Amulet of the Viper"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Skewer of Krintiz"]:checked), option[value="Skewer of Krintiz"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Gleamscythe"]:checked), option[value="Gleamscythe"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Griswold's Edge"]:checked), option[value="Griswold's Edge"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Hellplague"]:checked), option[value="Hellplague"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Culwen's Point"]:checked), option[value="Culwen's Point"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Shadowfang"]:checked), option[value="Shadowfang"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Soulflay"]:checked), option[value="Soulflay"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Kinemil's Awl"]:checked), option[value="Kinemil's Awl"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Blacktongue"]:checked), option[value="Blacktongue"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Ripsaw"]:checked), option[value="Ripsaw"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Patriarch"]:checked), option[value="The Patriarch"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Gull"]:checked), option[value="Gull"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Diggler"]:checked), option[value="The Diggler"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="The Jade Tan Do"]:checked), option[value="The Jade Tan Do"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Spectral Shard"]:checked), option[value="Spectral Shard"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Gidbinn"]:checked), option[value="The Gidbinn"] { background-color: rgb(186, 174, 82); }  
-select:has(option[value="The Dragon Chang"]:checked), option[value="The Dragon Chang"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Razortine"]:checked), option[value="Razortine"] { background-color: rgb(186, 174, 82); } 
-select:has(option[value="Bloodthief"]:checked), option[value="Bloodthief"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Lance of Yaggai"]:checked), option[value="Lance of Yaggai"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Tannr Gorerod"]:checked), option[value="The Tannr Gorerod"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Dimoak's Hew"]:checked), option[value="Dimoak's Hew"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Steelgoad"]:checked), option[value="Steelgoad"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Battlebranch"]:checked), option[value="The Battlebranch"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Woestave"]:checked), option[value="Woestave"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Grim Reaper"]:checked), option[value="The Grim Reaper"] { background-color: rgb(186, 174, 82); }  
-select:has(option[value="Dwarf Star"]:checked), option[value="Dwarf Star"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Raven Frost"]:checked), option[value="Raven Frost"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Bul-Kathos' Wedding Band"]:checked), option[value="Bul-Kathos' Wedding Band"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Carrion Wind"]:checked), option[value="Carrion Wind"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Nature's Peace"]:checked), option[value="Nature's Peace"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Wisp Projector"]:checked), option[value="Wisp Projector"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Kadala's Heirloom"]:checked), option[value="Kadala's Heirloom"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Bane Ash"]:checked), option[value="Bane Ash"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Serpent Lord"]:checked), option[value="Serpent Lord"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Spire of Lazarus"]:checked), option[value="Spire of Lazarus"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Salamander"]:checked), option[value="The Salamander"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="The Iron Jang Bong"]:checked), option[value="The Iron Jang Bong"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Pluckeye"]:checked), option[value="Pluckeye"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Witherstring"]:checked), option[value="Witherstring"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Raven Claw"]:checked), option[value="Raven Claw"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Rogue's Bow"]:checked), option[value="Rogue's Bow"] { background-color: rgb(186, 174, 82); }  
-select:has(option[value="Stormstrike"]:checked), option[value="Stormstrike"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Wizendraw"]:checked), option[value="Wizendraw"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Hellclap"]:checked), option[value="Hellclap"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Blastbark"]:checked), option[value="Blastbark"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Leadcrow"]:checked), option[value="Leadcrow"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Ichorsting"]:checked), option[value="Ichorsting"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Hellcast"]:checked), option[value="Hellcast"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Doomslinger"]:checked), option[value="Doomslinger"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Rust Handle"]:checked), option[value="Rust Handle"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Knell Striker"]:checked), option[value="Knell Striker"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Stormeye"]:checked), option[value="Stormeye"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="True Silver"]:checked), option[value="True Silver"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Mage Slayer"]:checked), option[value="Mage Slayer"] { background-color: rgb(186, 174, 82); }
-select:has(option[value="Tempest"]:checked), option[value="Tempest"] { background-color: rgb(186, 174, 82); }
-
-.hirelingcontainer {
-  position: absolute;
-  left: 1247px;
-  top: 900px;
-  width: 700px;
-  height: 600px;
-  background-image: url('/img/mercback.png'); 
-  background-size: cover;
-  background-repeat: no-repeat; 
-}
-
-#buff1 {
-  position: absolute;
-  left: 1350px;
-  top: 20px;
-  width: 38px;
-  height: 38px;
-   
-  background-size: contain;
-  background-repeat: no-repeat; 
-}
-
-#buff2 {
-  position: absolute;
-  left: 1390px;
-  top: 20px;
-  width: 38px;
-  height: 38px;
-  
-  background-size: contain;
-  background-repeat: no-repeat; 
-}
-</style>
 <html>
 <body>
-
+  <button onclick="document.body.classList.toggle('moody')" style="position: fixed; top: 10px; right: 10px; z-index: 10000;">
+    Load Theme
+</button>
 <div>
 <div class="polyrellife">Polynomial Relative Life<div id="polyrellife"></div>
 <br>
 </div>
   
+<script>
+
+ 
+          function createParticles() {
+              const container = document.querySelector('.particles-container');
+              
+              function spawnParticle() {
+                  if (!document.body.classList.contains('moody')) return;
+                  
+                  
+                  
+                  const particle = document.createElement('div');
+  
+                  particle.classList.add('particle');
+  
+                  // Randomly select and add particle type
+                  const randomType = Math.floor(Math.random() * 3) + 1;
+                  particle.classList.add('type' + randomType);
+                  
+                  const size = Math.random() * 60 + 12;
+                  particle.style.width = `${size}px`;
+                  particle.style.height = `${size}px`;
+                  
+                  const x = Math.random() * window.innerWidth;
+                  const y = Math.random() * window.innerHeight;
+                  particle.style.left = `${x}px`;
+                  particle.style.top = `${y}px`;
+                  
+                  particle.style.animation = `float ${Math.random() * 3 + 2}s ease-out`;
+                  
+                  container.appendChild(particle);
+                  
+                  particle.addEventListener('animationend', () => {
+                      particle.remove();
+                  });
+              }
+  
+              setInterval(spawnParticle, 35);
+          }
+  
+          createParticles();
+      </script>
+
+
+
+
 <div class="menucontainer">
 <h4>Class</h4>
 <select id="selectClass">
@@ -2954,10 +1362,6 @@ Defense
     </div>
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-  
- 
-    
-    <!-- UPDATE SKILLS// -->
     <div id="leftskill">
       <label for="left-skill">Choose skill:</label>
       <select id="left-skill">
@@ -2985,21 +1389,13 @@ Defense
       </select>
     </div>
     
-    <div id="jabValueDisplay">Skill Level: <span id="jabValueOutput">0</span></div> <!-- Display area -->
-
-
-    <div id="jabValueDisplay">
-  
+    <div id="jabValueDisplay">Skill Level: <span id="jabValueOutput">0</span></div> 
       Attack Rating: <span id="attackRatingOutput">0</span><br>
       Damage: <span id="damageOutput">0</span><br>
       Mana Cost: <span id="manaCostOutput">0</span>
   </div>
 
-
 <script>
-
-  
-
 	 const itemList = {
     "Biggins Bonnet": {
     "description": "Biggin's Bonnet<br>Unique Cap<br>Defense: 19<br>Required Level: 3<br>+50% Enhanced Damage<br>50 to Attack Rating<br>+14 Defense<br>+15 to Life<br>+15 to Mana<br>",
@@ -5581,10 +3977,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const ringTwoDropdown = document.getElementById('ringstwo-dropdown');
   const amuletDropdown = document.getElementById('amulets-dropdown');
   function updateOffDropdown() {
-    // Clear current options
+   
     offDropdown.innerHTML = '';
 
-    // Define options based on selected class
+
     let options = [];
     switch (selectClass.value) {
       
@@ -5599,7 +3995,6 @@ document.addEventListener('DOMContentLoaded', function() {
         break;
     }
 
-    // Populate the valueOptions dropdown
     options.forEach(option => {
       const opt = document.createElement('option');
       opt.value = option;
@@ -5653,16 +4048,15 @@ function updateCriticalAndDeadly() {
     
 }
 
-        // Get deadly strike and weapon mastery
         const deadlyStrike = (parseFloat(document.getElementById('deadlystrikecontainer')?.textContent || 0));
         const weaponMastery = parseFloat(document.getElementById('weaponmasterycontainer')?.textContent || 0);
 
-        // Calculate crit multiplier
+
         const critMultiplier = 0.5 * (1 - (1 - deadlyStrike) * 
                                     (1 - criticalHitValue/100) * 
                                     (1 - weaponMastery/100)) + 1;
 
-        // Update UI
+       
         document.getElementById('criticalhitcontainer').textContent = criticalHitValue.toFixed(2);
         document.getElementById('crithitmultipliercontainer').textContent = critMultiplier.toFixed(3);
     } catch (error) {
@@ -5670,11 +4064,9 @@ function updateCriticalAndDeadly() {
     }
 }
 
-// Add listeners for all stat changes
 window.addEventListener('DOMContentLoaded', () => {
     
-    
-    // Add listeners for level and mastery
+
     document.getElementById('lvlValue')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('str')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('dex')?.addEventListener('input', updateCriticalAndDeadly);
@@ -5694,24 +4086,6 @@ window.addEventListener('DOMContentLoaded', () => {
   function updateValues() {
     let startLvlValue = Math.min(Math.max(parseInt(lvlInput.value, 10) || 1, 1), 99);
     lvlInput.value = startLvlValue;
-  // Replace the critical hit calculation section with:
-  
-  
-
-
-
-  
-  
-
-
-
-
-
-
-
-
-
-    
 
     let vitValue = Math.min(Math.max(parseInt(document.getElementById('vit').value, 10) || 15, 15), 530);
     let strValue = Math.min(Math.max(parseInt(document.getElementById('str').value, 10) || 15, 15), 530);
@@ -5744,9 +4118,6 @@ if (select_Class.value === "Amazon") {
   let sumStats = 95 - (vitValue + strValue + dexValue + enrValue) + ( 5 * startLvlValue) - 5
   
 
-
-
-  //calculateSumStats();
   if (sumStats <= 0) {
   document.getElementById('vit').value = 20;
   document.getElementById('str').value = 20;
@@ -5820,7 +4191,7 @@ if (select_Class.value === "Amazon") {
   document.getElementById('dex').value = 20;
   document.getElementById('enr').value = 10;
   disableInputs();
-updateValues();
+  updateValues();
     } 
 
 } else if (select_Class.value === "Druid") {
@@ -5852,7 +4223,7 @@ updateValues();
   document.getElementById('dex').value = 20;
   document.getElementById('enr').value = 20;
   disableInputs();
-updateValues();
+  updateValues();
 
     } 
 
@@ -5885,7 +4256,7 @@ updateValues();
   document.getElementById('dex').value = 25;
   document.getElementById('enr').value = 25;
   disableInputs();
-updateValues();
+  updateValues();
     } 
 
 } else if (select_Class.value === "Paladin") {
@@ -5917,7 +4288,7 @@ updateValues();
   document.getElementById('dex').value = 20;
   document.getElementById('enr').value = 15;
   disableInputs();
-updateValues();
+  updateValues();
     } 
 
 } else {
@@ -5970,26 +4341,26 @@ disableInputs();
     document.getElementById('manaCostOutput').textContent = (skillValues.manaCost || 0).toFixed(1);
   }
 
-    // Calculate total damage
+  
     let totalMinDmg = baseDamage.min + skillDamage.min;
     let totalMaxDmg = baseDamage.max + skillDamage.max;
     
-    // Apply strength bonus
+  
     totalMinDmg = Math.floor(totalMinDmg * (1 + totalStr * 1.1/100));
     totalMaxDmg = Math.floor(totalMaxDmg * (1 + totalStr * 1.1/100));
     
 
     if (skillInfo) {
         if (skillInfo.damage.type === 'poison') {
-            // For poison damage, display direct values
+            
             document.getElementById('damageOutput').textContent = 
                 `${skillInfo.damage.min}-${skillInfo.damage.max} poison damage over 2 seconds`;
         } else if (skillInfo.lightningDamage) {
-            // For lightning damage
+            
             document.getElementById('damageOutput').textContent = 
                 `1-${skillInfo.lightningDamage} lightning`;
         } else {
-            // For physical/weapon-based skills
+            
             let totalMinDmg = baseMinDmg * (1 + (skillInfo.damage?.min || 0)/100 + totalStr * 1.1/100);
             let totalMaxDmg = baseMaxDmg * (1 + (skillInfo.damage?.max || 0)/100 + totalStr * 1.1/100);
             document.getElementById('damageOutput').textContent = 
@@ -5998,15 +4369,8 @@ disableInputs();
     }
 
 
-
-
-
-
-    // Update UI
-//     document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg}`;
 }
 
-// Add event listeners
 document.getElementById('left-skill').addEventListener('change', updateDamageCalculations);
 document.querySelectorAll('[id$="skillscontainer"] input[type="number"]').forEach(input => {
     input.addEventListener('input', updateDamageCalculations);
@@ -6018,12 +4382,10 @@ function setupSkillListeners() {
     });
 }
 
-// Call this on page load
+
 document.addEventListener('DOMContentLoaded', setupSkillListeners);
 
 } 
-
- 
 
 
   function calculateSumStats() {
@@ -6043,7 +4405,6 @@ document.addEventListener('DOMContentLoaded', setupSkillListeners);
         enableInputs();
     
 }
-
 
 
 function disableInputs() {
@@ -6083,8 +4444,6 @@ document.getElementById('enr').addEventListener('input', () => {
     }
 
   
-  
-
     function calculateCbDmg(startLvlValue) {
     if (startLvlValue >= 1 && startLvlValue < 10) {
         return 33.33 * startLvlValue + 66.67;
@@ -6102,19 +4461,9 @@ document.getElementById('enr').addEventListener('input', () => {
 }
 
 
-
-
-
-
-
-
-
-
-
 let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
 
-
-    
+ 
 
     let totalStr = strValue;
     let totalDex = dexValue;
@@ -7171,7 +5520,7 @@ let firemasteryvalue = Math.min(Math.max(parseInt(firemasteryskills.value, 10) |
 
         const skillHandler = new SkillHandler();
 
-// Replace critical hit section
+
 function updateCriticalHit() {
     const javelinandspearmasteryLevel = parseInt(document.getElementById('javelinandspearmasterycontainer').value || 0);
     let criticalHitValue = 0;
@@ -7187,7 +5536,6 @@ function updateCriticalHit() {
     }
 }
 
-// Add event listener
 document.getElementById('javelinandspearmasterycontainer').addEventListener('input', updateCriticalHit);
 
 
@@ -9537,7 +7885,6 @@ document.querySelectorAll('[data-property]').forEach(button => {
 <br><br><br><br><br>
 <iframe src="https://ptb.discord.com/widget?id=284432411553562624&theme=dark" width="250" height="300" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 <div class="auth-container">
-  <!-- Login Form -->
   <form id="loginForm" onsubmit="handleLogin(event)">
       <h2>Login</h2>
       <input type="text" id="loginInput" placeholder="Email or Username" required>
@@ -9545,7 +7892,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
       <button type="submit">Login</button>
   </form>
 
-  <!-- Welcome Message -->
+
   <div id="welcomeMsg" class="welcome-message" style="display: none;">
       Welcome, so there is not much to do right now... except you can try to unlock 2 achievements while building your character! <span id="userDisplay"></span>
       <button onclick="handleLogout()" id="logoutBtn">Logout</button>
@@ -9574,7 +7921,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
   <div id="achievementsTab" class="tab-content">
       <h2>Achievements</h2>
       <div id="achievementsList">
-          <!-- Achievements will be loaded here -->
+         
       </div>
   </div>
 
@@ -9600,12 +7947,6 @@ document.querySelectorAll('[data-property]').forEach(button => {
 </div>
 
 
-
-
-
-
-
-  <!-- Signup Form -->
   <form id="signupForm" onsubmit="handleSignup(event)">
       <h2>Sign Up</h2>
       <input type="email" id="signupEmail" placeholder="Email" required>
@@ -9858,25 +8199,25 @@ async function saveSettings() {
 function updateInventoryStats() {
    let baseStats = {poison: 0, cold: 0, light: 0, fire: 0, maxdam: 0};
    
-   // Get equipment stats from dropdowns
+  
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 
     'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 
     'ringstwo-dropdown', 'amulets-dropdown'].forEach(slot => {
       const item = itemList[document.getElementById(slot)?.value];
        if(item?.properties) {
-           // Poison
+           
            if(item.properties.poisondmg && item.properties.poisontime) {
                baseStats.poison += item.properties.poisondmg / item.properties.poisontime;
            }
-           // Cold
+           
            if(item.properties.colddmgmin && item.properties.colddmgmax) {
                baseStats.cold += (item.properties.colddmgmin + item.properties.colddmgmax) / 2;
            }
-           // Lightning
+           
            if(item.properties.lightdmgmin && item.properties.lightdmgmax) {
                baseStats.light += (item.properties.lightdmgmin + item.properties.lightdmgmax) / 2;
            }
-           // Fire
+           
            if(item.properties.firedmgmin && item.properties.firedmgmax) {
                baseStats.fire += (item.properties.firedmgmin + item.properties.firedmgmax) / 2;
            }
@@ -9886,19 +8227,19 @@ function updateInventoryStats() {
        }
    });
 
-   // Get charm stats
+  
    document.querySelectorAll('.charm1').forEach(charm => {
        if(!charm.textContent || charm.textContent.includes('X')) return;
        
     const text = charm.textContent;
     
-     // Cold damage
+    
      const coldMatch = text.match(/\+(\d+)\s+Cold\s+Damage/);
     if(coldMatch) {
         baseStats.cold += parseInt(coldMatch[1]) / 2;
     }
     
-    // Poison damage
+    
     const poisonMatch = text.match(/\+(\d+)\s+Poison\s+Damage/);
     if(poisonMatch) {
         baseStats.poison += parseInt(poisonMatch[1]) / 2;
@@ -9928,9 +8269,7 @@ if(fineMatch) {
 
 });
 
-   
 
-   // Update containers
    document.getElementById('flatpoisoncontainer').textContent = baseStats.poison.toFixed(1);
    document.getElementById('flatcoldcontainer').textContent = baseStats.cold.toFixed(1);
    document.getElementById('flatfirecontainer').textContent = baseStats.fire.toFixed(1);
@@ -9954,7 +8293,6 @@ document.addEventListener('DOMContentLoaded', () => {
    updateInventoryStats();
 
 
-   // Track equipment and charm changes
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown',
     'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
     'ringstwo-dropdown', 'amulets-dropdown'].forEach(id => {
@@ -9992,10 +8330,10 @@ function showAllSkillsBonus() {
         return;
     }
 
-    // Find all inputs with values > 0 within .skill-container
+   
     document.querySelectorAll('.skill-container input[type="number"]').forEach(input => {
         if (parseInt(input.value) > 0) {
-            // Create or update bonus display
+           
             let bonus = input.parentElement.querySelector('.skill-bonus');
             if (!bonus) {
                 bonus = document.createElement('div');
@@ -10008,7 +8346,7 @@ function showAllSkillsBonus() {
                 `;
                 input.parentElement.appendChild(bonus);
             }
-            // Calculate total value (original value + all skills bonus)
+            
             const originalValue = parseInt(input.value);
             const totalSkills = originalValue + totalAllSkill;
             bonus.textContent = `${totalSkills}`;
@@ -10016,7 +8354,7 @@ function showAllSkillsBonus() {
     });
 }
 
-// Only watch allskillscontainer for changes
+
 const allSkillsContainer = document.getElementById('allskillscontainer');
 if (allSkillsContainer) {
     new MutationObserver(showAllSkillsBonus).observe(allSkillsContainer, {
@@ -10025,7 +8363,7 @@ if (allSkillsContainer) {
     });
 }
 
-// Update display when skill values change
+
 document.querySelectorAll('.skill-container input[type="number"]').forEach(input => {
     input.addEventListener('change', showAllSkillsBonus);
 });
@@ -10120,11 +8458,6 @@ document.querySelectorAll('.skill-container input[type="number"]').forEach(input
 <div id="buff10"></div>
 
 
-
-
-
-
-
 <script>
 const mercbuff = document.getElementById('mercclass');
 const buffs = document.querySelectorAll('[id^="buff"]');
@@ -10184,7 +8517,7 @@ mercbuff.addEventListener('change', (e) => {
    let slot = getNextFreeBuffSlot();
    if (slot) slot.style.backgroundImage = 'url("img/might2.png")'; 
   }
- // Check level after merc buff is set
+
  if (parseInt(merclvlValue.value) > 10) {
    let slot = getNextFreeBuffSlot();
    if (slot) slot.style.backgroundImage = 'url("img/holyshock2.png")';
@@ -10195,9 +8528,6 @@ merclvlValue.addEventListener('input', () => {
  clearAllBuffs();
  mercbuff.dispatchEvent(new Event('change'));
 });
-  </script>
-
-
-
+</script>
 </body>
 </html>
