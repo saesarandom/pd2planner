@@ -5782,28 +5782,50 @@ function updateLifeFromCharms() {
   const lifeDisplay = document.getElementById('lifeValue');
   if (!lifeDisplay) return;
   
-  // Create or update charm life display
-  let charmLifeDisplay = document.getElementById('charmLifeValue');
-  if (!charmLifeDisplay) {
-    charmLifeDisplay = document.createElement('span');
-    charmLifeDisplay.id = 'charmLifeValue';
-    charmLifeDisplay.style.marginLeft = '10px';
-    charmLifeDisplay.style.color = '#888';
-    lifeDisplay.parentNode.insertBefore(charmLifeDisplay, lifeDisplay.nextSibling);
+  // Extract current base life value
+  const currentLifeMatch = lifeDisplay.textContent.match(/Life:\s*(\d+)/);
+  const currentLife = currentLifeMatch ? parseInt(currentLifeMatch[1]) : 0;
+
+  // Create or update total life display
+  let totalLifeDisplay = document.getElementById('totalLifeValue');
+  if (!totalLifeDisplay) {
+    totalLifeDisplay = document.createElement('span');
+    totalLifeDisplay.id = 'totalLifeValue';
+    totalLifeDisplay.style.marginLeft = '10px';
+    totalLifeDisplay.style.color = '#888';
+    lifeDisplay.parentNode.insertBefore(totalLifeDisplay, lifeDisplay.nextSibling);
   }
   
-  // Update charm life display
-  charmLifeDisplay.textContent = `Charm Life: +${totalCharmLife}`;
+  // Update total life display
+  const totalLife = currentLife + totalCharmLife;
+  totalLifeDisplay.textContent = `Total Life: ${totalLife}`;
 }
 
 // Add this to existing event listeners
 document.addEventListener('DOMContentLoaded', () => {
+  // Create a MutationObserver that updates total life for multiple scenarios
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList' || mutation.type === 'characterData') {
+        updateLifeFromCharms();
+      }
+    });
+  });
+
   // Watch for changes to inventory
-  const observer = new MutationObserver(updateLifeFromCharms);
   const inventoryContainer = document.querySelector('.inventorycontainer');
-  
   if (inventoryContainer) {
     observer.observe(inventoryContainer, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+  }
+
+  // Watch for changes to base life value
+  const lifeDisplay = document.getElementById('lifeValue');
+  if (lifeDisplay) {
+    observer.observe(lifeDisplay, {
       childList: true,
       subtree: true,
       characterData: true
@@ -5915,6 +5937,115 @@ document.querySelectorAll('.skill-container input[type="number"]').forEach(input
 </script>
 
 
+
+
+
+
+
+
+
+
+<script>
+function updateResistanceDisplay() {
+  // Get the existing containers
+  const containers = {
+    fire: document.getElementById('fireresistcontainer'),
+    cold: document.getElementById('coldresistcontainer'),
+    light: document.getElementById('lightresistcontainer'),
+    poison: document.getElementById('poisonresistcontainer')
+  };
+
+  // Check if containers exist before proceeding
+  if (!containers.fire || !containers.cold || !containers.light || !containers.poison) {
+    return;
+  }
+
+  const maxResist = 75;
+
+  // Add styles for the glow effects
+  const style = document.createElement('style');
+  style.textContent = `
+    .resist-fire {
+      color: #ff0000;
+      text-shadow: 0 0 5px #ff0000;
+    }
+    .resist-cold {
+      color: #00c4ff;
+      text-shadow: 0 0 5px #00c4ff;
+    }
+    .resist-light {
+      color: #ffd700;
+      text-shadow: 0 0 5px #ffd700;
+    }
+    .resist-poison {
+      color: #00ff00;
+      text-shadow: 0 0 5px #00ff00;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // For each container, preserve original content and add max resist with glow
+  Object.entries(containers).forEach(([type, container]) => {
+    const originalValue = container.textContent;
+    
+    if (originalValue && !originalValue.includes('/')) {
+      container.innerHTML = `<span class="resist-${type}">${originalValue}</span>/<span class="resist-${type}">${maxResist}</span>`;
+    }
+  });
+}
+
+// Rest of the code remains the same
+const elementsToWatch = [
+  'lvlValue',
+  'str',
+  'dex',
+  'vit',
+  'enr',
+  'helms-dropdown',
+  'armors-dropdown',
+  'weapons-dropdown',
+  'offs-dropdown',
+  'gloves-dropdown',
+  'belts-dropdown',
+  'boots-dropdown',
+  'ringsone-dropdown',
+  'ringstwo-dropdown',
+  'amulets-dropdown'
+];
+
+elementsToWatch.forEach(elementId => {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.addEventListener('change', () => {
+      setTimeout(updateResistanceDisplay, 0);
+    });
+    element.addEventListener('input', () => {
+      setTimeout(updateResistanceDisplay, 0);
+    });
+  }
+});
+
+const resistanceContainers = ['fireresistcontainer', 'coldresistcontainer', 'lightresistcontainer', 'poisonresistcontainer'];
+
+resistanceContainers.forEach(containerId => {
+  const container = document.getElementById(containerId);
+  if (container) {
+    const observer = new MutationObserver(() => {
+      if (!container.textContent.includes('/')) {
+        setTimeout(updateResistanceDisplay, 0);
+      }
+    });
+    
+    observer.observe(container, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+  }
+});
+
+document.addEventListener('DOMContentLoaded', updateResistanceDisplay);
+</script>
 </script>
 
 

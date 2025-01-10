@@ -25,6 +25,11 @@ class SkillUpdates {
       "flatlightcontainer",
       "flatmagiccontainer",
       "flatpoisoncontainer",
+      "fireresistcontainer",
+      "coldresistcontainer",
+      "lightresistcontainer",
+      "poisonresistcontainer",
+      "curseresistcontainer",
     ];
 
     const stats = {};

@@ -1,7 +1,7 @@
 const itemList = {
   "Biggins Bonnet": {
     description:
-      "Biggin's Bonnet<br>Unique Cap<br>Defense: 19<br>Required Level: 3<br>+50% Enhanced Damage<br>50 to Attack Rating<br>+14 Defense<br>+15 to Life<br>+15 to Mana<br>",
+      "Biggin's Bonnet<br>Cap<br>Defense: 19<br>Required Level: 3<br>+50% Enhanced Damage<br>50 to Attack Rating<br>+14 Defense<br>+15 to Life<br>+15 to Mana<br>",
     properties: {
       defense: 19,
       reqlvl: 3,
@@ -14,7 +14,7 @@ const itemList = {
   },
   Tarnhelm: {
     description:
-      "Tarnhelm<br>Unique Skull Cap<br>Defense: 11<br>Required Strength: 15<br>Required Level: 15<br>+1 to All Skills<br>+3 to Mana after each Kill<br>75% Extra Gold from Monsters<br>50% Better Chance of Getting Magic Items<br>",
+      "Tarnhelm<br>Skull Cap<br>Defense: 11<br>Required Strength: 15<br>Required Level: 15<br>+1 to All Skills<br>+3 to Mana after each Kill<br>75% Extra Gold from Monsters<br>50% Better Chance of Getting Magic Items<br>",
     properties: {
       defense: 11,
       reqstr: 15,
@@ -27,7 +27,7 @@ const itemList = {
   },
   "Coif of Glory": {
     description:
-      "Coif of Glory<br>Unique Helm<br>Defense: 28<br>Required Strength: 26<br>Required Level: 14<br>Hit Blinds Target<br>+10 Defense<br>+100 Defense vs. Missile<br>Lightning Resist +15%<br>+3 Life after each Kill<br>Attacker Takes Lightning Damage of 17<br>",
+      "Coif of Glory<br>Helm<br>Defense: 28<br>Required Strength: 26<br>Required Level: 14<br>Hit Blinds Target<br>+10 Defense<br>+100 Defense vs. Missile<br>Lightning Resist +15%<br>+3 Life after each Kill<br>Attacker Takes Lightning Damage of 17<br>",
     properties: {
       defense: 28,
       reqstr: 26,
@@ -42,7 +42,7 @@ const itemList = {
   },
   Duskeep: {
     description:
-      "Duskeep<br>Unique Full Helm<br> Defense: 60<br>Required Strength: 41<br>Required Level: 17<br>+15 to Maximum Damage<br>+50% Enhanced Defense<br>+20 Defense<br>All Resistances +15%<br>Physical Damage Taken Reduced by 7<br>+2 to Light Radius<br>",
+      "Duskeep<br>Full Helm<br> Defense: 60<br>Required Strength: 41<br>Required Level: 17<br>+15 to Maximum Damage<br>+50% Enhanced Defense<br>+20 Defense<br>All Resistances +15%<br>Physical Damage Taken Reduced by 7<br>+2 to Light Radius<br>",
     properties: {
       defense: 60,
       reqstr: 41,
@@ -57,7 +57,7 @@ const itemList = {
   },
   "The Face of Horror": {
     description:
-      "The Face of Horror<br>Unique Mask<br>Defense: 52<br>Required Strength: 23<br>Required Level: 20<br>+50% Damage to Undead<br>Hit Causes Monster to Flee 50%<br>+25 Defense<br>+20 to Strength<br>All Resistances +20%<br>",
+      "The Face of Horror<br>Mask<br>Defense: 52<br>Required Strength: 23<br>Required Level: 20<br>+50% Damage to Undead<br>Hit Causes Monster to Flee 50%<br>+25 Defense<br>+20 to Strength<br>All Resistances +20%<br>",
     properties: {
       defense: 52,
       reqstr: 23,
@@ -72,7 +72,7 @@ const itemList = {
 
   Wormskull: {
     description:
-      "Wormskull<br>Unique Bone Helm<br>Base Maximum Sockets: 2 (3 for ilvl 41+ upgraded elite versions)<br>Defense: 36<br>Required Strength: 25<br>Required Level: 21<br>+1 to Poison and Bone Skills (Necromancer Only)<br>+1 to Necromancer Skill Levels<br>+60 Poison Damage over 2 Seconds<br>5% Life Stolen per Hit<br>10 to Mana<br>Poison Resist +25%<br>",
+      "Wormskull<br>Bone Helm<br>Base Maximum Sockets: 2 (3 for ilvl 41+ upgraded elite versions)<br>Defense: 36<br>Required Strength: 25<br>Required Level: 21<br>+1 to Poison and Bone Skills (Necromancer Only)<br>+1 to Necromancer Skill Levels<br>+60 Poison Damage over 2 Seconds<br>5% Life Stolen per Hit<br>10 to Mana<br>Poison Resist +25%<br>",
     properties: {
       defense: 36,
       reqstr: 25,
@@ -89,7 +89,7 @@ const itemList = {
 
   Howltusk: {
     description:
-      "Howltusk<br>Unique Great Helm<br>Defense: 64<br>Required Strength: 63<br>Required Level: 25<br>10% Chance to Cast Level 5 Howl on Striking<br>+20% Increased Attack Speed<br>+80% Enhanced Defense<br>Magic Damage Taken Reduced by 2<br>Attacker Takes Damage of 30<br>35% Damage Taken Gained as Mana when Hit<br>",
+      "Howltusk<br>Great Helm<br>Defense: 64<br>Required Strength: 63<br>Required Level: 25<br>10% Chance to Cast Level 5 Howl on Striking<br>+20% Increased Attack Speed<br>+80% Enhanced Defense<br>Magic Damage Taken Reduced by 2<br>Attacker Takes Damage of 30<br>35% Damage Taken Gained as Mana when Hit<br>",
     properties: {
       defense: 64,
       reqstr: 63,
@@ -105,7 +105,7 @@ const itemList = {
 
   "Undead Crown": {
     description:
-      "Undead Crown<br>Unique Crown<br>Defense: 85<br>Required Strength: 55<br>Required Level: 29<br>+50% Damage to Undead<br>+100 to Attack Rating against Undead<br>5% Life Stolen per Hit<br>+3 to Skeleton Mastery (Necromancer Only)<br>+3 to Raise Skeleton Warrior (Necromancer Only)<br>+40 Defense<br>Poison Resist +50%<br>Half Freeze Duration<br>",
+      "Undead Crown<br>Crown<br>Defense: 85<br>Required Strength: 55<br>Required Level: 29<br>+50% Damage to Undead<br>+100 to Attack Rating against Undead<br>5% Life Stolen per Hit<br>+3 to Skeleton Mastery (Necromancer Only)<br>+3 to Raise Skeleton Warrior (Necromancer Only)<br>+40 Defense<br>Poison Resist +50%<br>Half Freeze Duration<br>",
     properties: {
       defense: 85,
       reqstr: 55,
@@ -123,7 +123,7 @@ const itemList = {
 
   "Peasant Crown": {
     description:
-      "Peasant Crown<br>Unique War Hat<br>Defense: 108<br>Required Strength: 20<br>Required Level: 28<br>+1 to All Skills<br>+20% Faster Run/Walk<br>+100% Enhanced Defense<br>+20 to Vitality<br>+20 to Energy<br>Replenish Life +12<br>",
+      "Peasant Crown<br>War Hat<br>Defense: 108<br>Required Strength: 20<br>Required Level: 28<br>+1 to All Skills<br>+20% Faster Run/Walk<br>+100% Enhanced Defense<br>+20 to Vitality<br>+20 to Energy<br>Replenish Life +12<br>",
     properties: {
       defense: 108,
       reqstr: 20,
@@ -239,7 +239,7 @@ const itemList = {
 
   Greyform: {
     description:
-      "Greyform<br>Unique Quilted Armor<br>Base Maximum Sockets: 2 (3)<br>Defense: 31<br>Required Strength: 12<br>Required Level: 7<br>5% Life Stolen per Hit<br>20 Defense<br>+10 to Dexterity<br>Cold Resist +20%<br>Fire Resist +20%<br>Magic Damage Taken Reduced by 3<br>",
+      "Greyform<br>Quilted Armor<br>Base Maximum Sockets: 2 (3)<br>Defense: 31<br>Required Strength: 12<br>Required Level: 7<br>5% Life Stolen per Hit<br>20 Defense<br>+10 to Dexterity<br>Cold Resist +20%<br>Fire Resist +20%<br>Magic Damage Taken Reduced by 3<br>",
     properties: {
       defense: 31,
       reqstr: 12,
