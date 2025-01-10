@@ -1152,13 +1152,11 @@ class SkillHandler {
     return Promise.resolve();
   }
 
-  getSkillInfo(skillName, level) {
+  getTotalSkillValues(skillName, level, allSkillsBonus) {
     const skill = this.skillData[skillName];
-    if (!skill || level === 0) return null;
+    if (!skill) return null;
 
     const calculateSynergyBonus = (mainSkill) => {
-      console.log("Calculating synergies for:", mainSkill.name);
-      console.log("Synergies:", mainSkill.synergies);
       let synergyBonus = 0;
 
       if (mainSkill.synergies?.length > 0) {
@@ -1172,154 +1170,98 @@ class SkillHandler {
               document.getElementById(elementId)?.value || 0
             );
 
-            console.log("Checking synergy:", {
-              skillName: synergySkillName,
-              elementId: elementId,
-              level: synergyLevel,
-              percent: synergyPercent,
-            });
-
             if (synergyLevel > 0 && !isNaN(parseInt(synergyPercent))) {
               const bonus = synergyLevel * parseInt(synergyPercent);
-              console.log(`Adding bonus: ${bonus} from ${synergySkillName}`);
               synergyBonus += bonus;
             }
           }
         });
       }
-      console.log("Total synergy bonus:", synergyBonus);
+
       return synergyBonus;
     };
 
-    const calculateValue = (data) => {
-      if (data?.base && data?.perLevel) {
-        const calculated = data.base + data.perLevel * (level - 1);
-        console.log("Calculated formula damage:", calculated);
-        return calculated;
-      }
-    };
-
     const synergyBonus = calculateSynergyBonus(skill);
+    const totalLevel = level + allSkillsBonus;
 
-    // Handle poison type skills
-    if (skillName === "poisonJavelin" || skillName === "plagueJavelin") {
-      const baseMin = skill.levelData.poisonDamage.min[level - 1] || 0;
-      const baseMax = skill.levelData.poisonDamage.max[level - 1] || 0;
-      const synergyBonus = calculateSynergyBonus(skill);
-
-      return {
-        level,
-        name: skill.name,
-        description: skill.description,
-        damage: {
-          type: "poison",
-          min: baseMin,
-          max: baseMax,
-          base: baseMax, // Add this to use in damage calculation
-          synergyBonus: synergyBonus,
-        },
-        manaCost: calculateValue(skill.levelData.manaCost),
-      };
-    }
-
-    // Handle fire type skills
-    if (skillName === "fireArrow" || skillName === "fireBlast") {
-      const baseMin = skill.levelData.fireDamage.min[level - 1] || 0;
-      const baseMax = skill.levelData.fireDamage.max[level - 1] || 0;
-      return {
-        level,
-        name: skill.name,
-        description: skill.description,
-        damage: {
-          type: "fire",
-          min: baseMin,
-          max: baseMax,
-          synergyBonus: synergyBonus,
-        },
-        manaCost: calculateValue(skill.levelData.manaCost),
-        attackRating: Math.floor(calculateValue(skill.levelData.attackRating)),
-      };
-    }
-
-    // Handle lightning damage skills
-    if (
-      skillName === "lightningStrike" ||
-      skillName === "lightningBolt" ||
-      skillName === "powerStrike" ||
-      skillName === "lightningFury"
-    ) {
-      const baseMax = skill.levelData.lightningDamage.max[level - 1] || 0;
-      return {
-        level,
-        name: skill.name,
-        description: skill.description,
-        damage: {
-          type: "lightning",
-          min: 1,
-          max: baseMax,
-          synergyBonus: synergyBonus,
-        },
-        manaCost: calculateValue(skill.levelData.manaCost),
-        attackRating: calculateValue(skill.levelData.attackRating),
-      };
-    }
-
-    if (skillName === "javelinAndSpearMastery") {
-      const currentCritValue =
-        document.getElementById("criticalhitcontainer")?.value || 0;
-      const critChance =
-        skill.levelData.criticalChance[level - 1] || currentCritValue;
-      return {
-        level,
-        name: skill.name,
-        description: skill.description,
-        criticalChance: critChance,
-      };
-    }
-
+    // Handle different skill types
     if (
       skill.levelData.damage?.min &&
       Array.isArray(skill.levelData.damage.min)
     ) {
+      const totalMin = skill.levelData.damage.min[totalLevel - 1] || 0;
+      const totalMax = skill.levelData.damage.max[totalLevel - 1] || 0;
+
       return {
-        level,
-        name: skill.name,
-        description: skill.description,
         damage: {
-          min: skill.levelData.damage.min[level - 1] || 0,
-          max: skill.levelData.damage.max[level - 1] || 0,
+          min: totalMin,
+          max: totalMax,
           synergyBonus: synergyBonus,
         },
-        ...(skillName === "decoy" && {
-          decoys: Math.floor(skill.levelData.decoys.base + level / 10),
-        }),
-        manaCost:
-          skill.levelData.manaCost.base +
-          skill.levelData.manaCost.perLevel * (level - 1),
+        attackRating: calculateValue(skill.levelData.attackRating, totalLevel),
+        manaCost: calculateValue(skill.levelData.manaCost, totalLevel),
       };
-    }
-
-    // Handle regular skills
-    if (skill.levelData?.damage?.base && skill.levelData?.damage?.perLevel) {
+    } else if (
+      skill.levelData?.damage?.base &&
+      skill.levelData?.damage?.perLevel
+    ) {
       const baseDamageMin =
         skill.levelData.damage.base +
-        skill.levelData.damage.perLevel * (level - 1);
+        skill.levelData.damage.perLevel * (totalLevel - 1);
       const baseDamageMax =
         skill.levelData.damage.base +
-        skill.levelData.damage.perLevel * (level - 1);
+        skill.levelData.damage.perLevel * (totalLevel - 1);
+      const totalMin = Math.floor(baseDamageMin * (1 + synergyBonus / 100));
+      const totalMax = Math.floor(baseDamageMax * (1 + synergyBonus / 100));
 
       return {
+        damage: {
+          min: totalMin,
+          max: totalMax,
+          base: baseDamageMin, // Store the base value for synergy calculations
+          baseMax: baseDamageMax, // Store the base value for synergy calculations
+          synergyBonus: synergyBonus,
+        },
+        attackRating: calculateValue(skill.levelData.attackRating, totalLevel),
+        manaCost: calculateValue(skill.levelData.manaCost, totalLevel),
+      };
+    }
+
+    // Handle other skill types
+    return null;
+  }
+
+  getSkillInfo(skillName, level) {
+    const skill = this.skillData[skillName];
+    if (!skill || level === 0) return null;
+
+    const allSkillsValue = parseInt(
+      document.getElementById("allskillscontainer").textContent ||
+        document.getElementById("allskillscontainer").value ||
+        0
+    );
+    const skillValues = this.getTotalSkillValues(
+      skillName,
+      level,
+      allSkillsValue
+    );
+
+    if (skillValues) {
+      return {
+        ...skillValues,
         level,
         name: skill.name,
         description: skill.description,
-        damage: {
-          min: baseDamageMin,
-          max: baseDamageMax,
-          synergyBonus: synergyBonus,
-        },
-        manaCost: calculateValue(skill.levelData.manaCost),
-        attackRating: Math.floor(calculateValue(skill.levelData.attackRating)),
       };
     }
+
+    return null;
   }
+}
+
+function calculateValue(data, level) {
+  if (data?.base && data?.perLevel) {
+    return data.base + data.perLevel * (level - 1);
+  }
+  return 0;
 }

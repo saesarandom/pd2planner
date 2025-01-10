@@ -5958,9 +5958,18 @@ disableInputs();
     const selectedSkillName = skillNameMap[selectedSkillContainer];
     const currentSkillLevel = parseInt(document.getElementById(selectedSkillContainer)?.value || 0);
     const skillInfo = skillHandler.getSkillInfo(selectedSkillName, currentSkillLevel);
-    // Get skill damage
+   
     const skillDamage = skillHandler.getSkillDamage(selectedSkillName, currentSkillLevel);
     
+  const skillValues = this.getTotalSkillValues(selectedSkillName, currentSkillLevel);
+
+  if (skillValues) {
+    document.getElementById('jabValueOutput').textContent = currentSkillLevel;
+    document.getElementById('attackRatingOutput').textContent = `${skillValues.attackRating || 0}%`;
+    document.getElementById('damageOutput').textContent = `${skillValues.damage.min}-${skillValues.damage.max}`;
+    document.getElementById('manaCostOutput').textContent = (skillValues.manaCost || 0).toFixed(1);
+  }
+
     // Calculate total damage
     let totalMinDmg = baseDamage.min + skillDamage.min;
     let totalMaxDmg = baseDamage.max + skillDamage.max;
@@ -6920,58 +6929,16 @@ const combustionskills = document.getElementById('combustioncontainer');
 const hydraskills = document.getElementById('hydracontainer');
 const firemasteryskills = document.getElementById('firemasterycontainer');
 
-function showAllSkillsBonus() {
-    const totalAllSkill = parseInt(document.getElementById('allskillscontainer').textContent || 0);
-    if (totalAllSkill <= 0) {
-        document.querySelectorAll('.skill-bonus').forEach(el => el.remove());
-        return;
-    }
 
-    // Find all inputs with values > 0 within .skill-container
-    document.querySelectorAll('.skill-container input[type="number"]').forEach(input => {
-        if (parseInt(input.value) > 0) {
-            // Create or update bonus display
-            let bonus = input.parentElement.querySelector('.skill-bonus');
-            if (!bonus) {
-                bonus = document.createElement('div');
-                bonus.className = 'skill-bonus';
-                bonus.style.cssText = `
-                    display: inline;
-                    color: #00ff00;
-                    margin-left: 60px;
-                    position: absolute;
-                `;
-                input.parentElement.appendChild(bonus);
-            }
-            // Calculate total value (original value + all skills bonus)
-            const originalValue = parseInt(input.value);
-            const totalValue = originalValue + totalAllSkill;
-            bonus.textContent = `${totalValue}`;
-        }
-    });
-}
 
-// Only watch allskillscontainer for changes
-const allSkillsContainer = document.getElementById('allskillscontainer');
-if (allSkillsContainer) {
-    new MutationObserver(showAllSkillsBonus).observe(allSkillsContainer, {
-        characterData: true,
-        subtree: true
-    });
-}
-
-// Update display when skill values change
-document.querySelectorAll('.skill-container input[type="number"]').forEach(input => {
-    input.addEventListener('change', showAllSkillsBonus);
-});
 function updateVisibility() {
 
-  let totalAllSkill = parseInt(document.getElementById('allskillscontainer').textContent || 0);
+  
         
-  let jabvalue = Math.min(Math.max((parseInt(jabskills.value, 10) || 0) + totalAllSkill, 0), 20);
-    let poisonjavelinvalue = Math.min(Math.max((parseInt(poisonjavelinskills.value, 10) || 0) + totalAllSkill, 0), 20);
-    let javelinandspearmasteryvalue = Math.min(Math.max((parseInt(javelinandspearmasteryskills.value, 10) || 0) + totalAllSkill, 0), 20);
-    let powerstrikevalue = Math.min(Math.max((parseInt(powerstrikeskills.value, 10) || 0) + totalAllSkill, 0), 20);
+  let jabvalue = Math.min(Math.max(parseInt(jabskills.value, 10) || 0, 0), 20); 
+    let poisonjavelinvalue = Math.min(Math.max(parseInt(poisonjavelinskills.value, 10) || 0, 0), 20); 
+    let javelinandspearmasteryvalue = Math.min(Math.max(parseInt(javelinandspearmasteryskills.value, 10) || 0, 0), 20); 
+    let powerstrikevalue = Math.min(Math.max(parseInt(powerstrikeskills.value, 10) || 0, 0), 20); 
         let lightningboltvalue = Math.min(Math.max(parseInt(lightningboltskills.value, 10) || 0, 0), 20);
         let fendvalue = Math.min(Math.max(parseInt(fendskills.value, 10) || 0, 0), 20);
         let chargedstrikevalue = Math.min(Math.max(parseInt(chargedstrikeskills.value, 10) || 0, 0), 20);
@@ -8125,7 +8092,7 @@ if (meteorvalue > 0 && combustionvalue > 0 && level > 29) {
     firemasterycontainer.classList.add('hiddenSkill30');
 }
 
-updateSkillDisplay();
+// updateSkillDisplay(); 
    
 
 document.getElementById('lvlValue').addEventListener('input', updateVisibility);
@@ -8449,7 +8416,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     const selectedSkillContainer = document.getElementById('left-skill')?.value;
     const selectedSkillName = skillNameMap[selectedSkillContainer];
     const currentSkillLevel = parseInt(document.getElementById(selectedSkillContainer)?.value || 0);
-    const skillInfo = skillHandler.getSkillInfo(selectedSkillName, currentSkillLevel);
+    const allSkillsValue = parseInt(document.getElementById('allskillscontainer').textContent || 
+                            document.getElementById('allskillscontainer').value || 0);
+  const totalSkillLevel = currentSkillLevel + allSkillsValue;
+
+  const skillInfo = skillHandler.getSkillInfo(selectedSkillName, totalSkillLevel);
     
     let baseMinDmg = parseInt(document.getElementById('onehandmindmgcontainer')?.textContent || 0);
     let baseMaxDmg = parseInt(document.getElementById('onehandmaxdmgcontainer')?.textContent || 0);
@@ -8523,11 +8494,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         // Update other displays
-        document.getElementById('jabValueOutput').textContent = currentSkillLevel;
+        document.getElementById('jabValueOutput').textContent = totalSkillLevel;
         document.getElementById('attackRatingOutput').textContent = `${skillInfo.attackRating || 0}%`;
         document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0).toFixed(1);
     }
 }
+
+
 function setupEquipmentListeners() {
     const equipmentSlots = ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'];
     const strInput = document.getElementById('str');
@@ -10008,7 +9981,54 @@ document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
 });
 </script>
 
+<script>
+function showAllSkillsBonus() {
+    const totalAllSkill = parseInt(document.getElementById('allskillscontainer').textContent || 0);
+    if (totalAllSkill <= 0) {
+        document.querySelectorAll('.skill-bonus').forEach(el => el.remove());
+        return;
+    }
 
+    // Find all inputs with values > 0 within .skill-container
+    document.querySelectorAll('.skill-container input[type="number"]').forEach(input => {
+        if (parseInt(input.value) > 0) {
+            // Create or update bonus display
+            let bonus = input.parentElement.querySelector('.skill-bonus');
+            if (!bonus) {
+                bonus = document.createElement('div');
+                bonus.className = 'skill-bonus';
+                bonus.style.cssText = `
+                    display: inline;
+                    color: #F5F2A6;
+                    margin-left: 60px;
+                    position: absolute;
+                `;
+                input.parentElement.appendChild(bonus);
+            }
+            // Calculate total value (original value + all skills bonus)
+            const originalValue = parseInt(input.value);
+            const totalSkills = originalValue + totalAllSkill;
+            bonus.textContent = `${totalSkills}`;
+        }
+    });
+}
+
+// Only watch allskillscontainer for changes
+const allSkillsContainer = document.getElementById('allskillscontainer');
+if (allSkillsContainer) {
+    new MutationObserver(showAllSkillsBonus).observe(allSkillsContainer, {
+        characterData: true,
+        subtree: true
+    });
+}
+
+// Update display when skill values change
+document.querySelectorAll('.skill-container input[type="number"]').forEach(input => {
+    input.addEventListener('change', showAllSkillsBonus);
+});
+
+
+</script>
 </script>
 
 
