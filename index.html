@@ -8413,6 +8413,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
     function updateDamageCalculations() {
+      const skillHandler = new SkillHandler(); // Ensure a fresh instance
     const selectedSkillContainer = document.getElementById('left-skill')?.value;
     const selectedSkillName = skillNameMap[selectedSkillContainer];
     const currentSkillLevel = parseInt(document.getElementById(selectedSkillContainer)?.value || 0);
@@ -8438,44 +8439,46 @@ document.addEventListener('DOMContentLoaded', async function() {
     let totalFlatMagicDmg = parseInt(document.getElementById('flatmagiccontainer')?.textContent || 0);
     let totalFlatPoisonDmg = parseInt(document.getElementById('flatpoisoncontainer')?.textContent || 0);
     if (skillInfo && skillInfo.damage) {
+        // Define skill groups
+        const lightningSkills = ['powerStrike', 'lightningBolt', 'chargedStrike', 'lightningStrike', 'lightningFury'];
+        const poisonSkills = ['poisonJavelin', 'plagueJavelin'];
+        const coldSkills = ['coldArrow', 'iceArrow', 'freezingArrow'];
+        const fireSkills = ['fireArrow', 'explodingArrow', 'immolationArrow'];
+        const magicSkills = ['magicArrow'];
+
         // Handle different damage types
-        switch(skillInfo.damage.type) {
-          case 'poison':
-                const poisonMin = Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
-                const poisonMax = Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
-                document.getElementById('damageOutput').textContent = 
-                    `${poisonMin}-${poisonMax} Poison Damage`;
-                    break;
+        if (poisonSkills.includes(selectedSkillName)) {
+            const poisonMin = Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+            const poisonMax = Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
+            document.getElementById('damageOutput').textContent = 
+                `${poisonMin}-${poisonMax} Poison Damage`;
+        }
+        else if (lightningSkills.includes(selectedSkillName)) {
+            const lightningMin = Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+            const lightningMax = Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
+            document.getElementById('damageOutput').textContent = 
+                `${lightningMin}-${lightningMax} Lightning Damage`;
+        }
+        else if (coldSkills.includes(selectedSkillName)) {
+            const coldMin = Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+            const coldMax = Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
+            document.getElementById('damageOutput').textContent = 
+                `${coldMin}-${coldMax} Cold Damage`;
+        }
+        else if (fireSkills.includes(selectedSkillName)) {
+            const fireMin = Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+            const fireMax = Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
+            document.getElementById('damageOutput').textContent = 
+                `${fireMin}-${fireMax} Fire Damage`;
+        }
+        else if (magicSkills.includes(selectedSkillName)) {
+            const magicMin = Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
+            const magicMax = Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
+            document.getElementById('damageOutput').textContent = 
+                `${magicMin}-${magicMax} Magic Damage`;
+        }
 
-          case 'lightning':
-                const lightningMin =  Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
-                const lightningMax =  Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
-                document.getElementById('damageOutput').textContent = 
-                    `${lightningMin}-${lightningMax} Lightning Damage`;
-                    break;
-
-                case 'cold':
-                const coldMin =  Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
-                const coldMax =  Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
-                document.getElementById('damageOutput').textContent = 
-                    `${coldMin}-${coldMax} Cold Damage`;
-                    break;
-
-                case 'fire':
-                const fireMin =  Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
-                const fireMax =  Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
-                document.getElementById('damageOutput').textContent = 
-                    `${fireMin}-${fireMax} Fire Damage`;
-                    break; 
-                    
-                case 'magic':  
-                const magicMin =  Math.floor(skillInfo.damage.min * (1 + skillInfo.damage.synergyBonus/100));
-                const magicMax =  Math.floor(skillInfo.damage.max * (1 + skillInfo.damage.synergyBonus/100));
-                document.getElementById('damageOutput').textContent = 
-                    `${magicMin}-${magicMax} Magic Damage`;
-                    break;  
-
-            default:
+        else {
                 // Physical/enhanced damage skills with flat damage additions
                 let totalMinDmg = baseMinDmg;
                 let totalMaxDmg = baseMaxDmg;
@@ -8490,7 +8493,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 totalMaxDmg = Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg + totalFlatPoisonDmg);
                 
                 document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg} Phys/Ele Damage`;
-                break;
+                
         }
 
         // Update other displays
@@ -10029,6 +10032,48 @@ document.querySelectorAll('.skill-container input[type="number"]').forEach(input
 
 
 </script>
+
+<script>
+  function updateDamageDisplay() {
+  const selectedSkill = document.getElementById('left-skill').value;
+  const currentLevel = parseInt(document.getElementById(selectedSkill)?.value || 0);
+  const skillName = skillNameMap[selectedSkill];
+  
+  if (!currentLevel || !skillName) {
+    document.getElementById('damageOutput').textContent = '0';
+    return;
+  }
+
+  const skillInfo = skillHandler.getSkillInfo(skillName, currentLevel);
+  
+  if (!skillInfo || !skillInfo.damage) return;
+
+  const damage = skillInfo.damage;
+  const synergyMod = 1 + (damage.synergyBonus || 0) / 100;
+
+  let displayText = '';
+  switch(damage.type) {
+    case 'poison':
+      displayText = `${Math.floor(damage.min * synergyMod)}-${Math.floor(damage.max * synergyMod)} Poison Damage`;
+      break;
+    case 'lightning':
+      displayText = `${Math.floor(damage.min * synergyMod)}-${Math.floor(damage.max * synergyMod)} Lightning Damage`;
+      break;
+    case 'cold':
+      displayText = `${Math.floor(damage.min * synergyMod)}-${Math.floor(damage.max * synergyMod)} Cold Damage`;
+      break;
+    case 'fire':
+      displayText = `${Math.floor(damage.min * synergyMod)}-${Math.floor(damage.max * synergyMod)} Fire Damage`;
+      break;
+    
+
+  document.getElementById('damageOutput').textContent = displayText;
+  document.getElementById('attackRatingOutput').textContent = `${skillInfo.attackRating || 0}%`;
+  document.getElementById('manaCostOutput').textContent = (skillInfo.manaCost || 0).toFixed(1);
+}}
+</script>
+
+
 </script>
 
 

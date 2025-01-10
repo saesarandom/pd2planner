@@ -1240,28 +1240,101 @@ class SkillHandler {
         document.getElementById("allskillscontainer").value ||
         0
     );
-    const skillValues = this.getTotalSkillValues(
-      skillName,
-      level,
-      allSkillsValue
-    );
+    const totalLevel = level + allSkillsValue;
 
-    if (skillValues) {
-      return {
-        ...skillValues,
-        level,
-        name: skill.name,
-        description: skill.description,
-      };
+    let synergyBonus = 0;
+    if (skill.synergies) {
+      skill.synergies.forEach((synergy) => {
+        const [synergySkill, bonus] = synergy.split(",");
+        const synergyLevel = parseInt(
+          document.getElementById(synergySkill.toLowerCase() + "container")
+            ?.value || 0
+        );
+        synergyBonus += synergyLevel * parseInt(bonus) || 0;
+      });
     }
 
-    return null;
-  }
-}
+    // Handle different damage types
+    let damageInfo = {};
 
-function calculateValue(data, level) {
-  if (data?.base && data?.perLevel) {
-    return data.base + data.perLevel * (level - 1);
+    if (skill.levelData.poisonDamage) {
+      damageInfo = {
+        min: skill.levelData.poisonDamage.min[totalLevel - 1] || 0,
+        max: skill.levelData.poisonDamage.max[totalLevel - 1] || 0,
+        type: "poison",
+        synergyBonus,
+      };
+    } else if (skill.levelData.lightningDamage) {
+      damageInfo = {
+        min: skill.levelData.lightningDamage.min || 1,
+        max: skill.levelData.lightningDamage.max[totalLevel - 1] || 0,
+        type: "lightning",
+        synergyBonus,
+      };
+    } else if (skill.levelData.coldDamage) {
+      damageInfo = {
+        min: skill.levelData.coldDamage.min[totalLevel - 1] || 0,
+        max: skill.levelData.coldDamage.max[totalLevel - 1] || 0,
+        type: "cold",
+        synergyBonus,
+      };
+    } else if (skill.levelData.fireDamage) {
+      damageInfo = {
+        min: skill.levelData.fireDamage.min[totalLevel - 1] || 0,
+        max: skill.levelData.fireDamage.max[totalLevel - 1] || 0,
+        type: "fire",
+        synergyBonus,
+      };
+    } else if (skill.levelData.damage) {
+      // Physical damage
+      if (
+        typeof skill.levelData.damage === "object" &&
+        skill.levelData.damage.base
+      ) {
+        const base =
+          skill.levelData.damage.base +
+          skill.levelData.damage.perLevel * (totalLevel - 1);
+        damageInfo = {
+          min: Math.floor(base * (1 + synergyBonus / 100)),
+          max: Math.floor(base * (1 + synergyBonus / 100)),
+          type: "physical",
+          synergyBonus,
+        };
+      }
+    }
+
+    // Calculate attack rating
+    let attackRating = 0;
+    if (skill.levelData.attackRating) {
+      if (typeof skill.levelData.attackRating === "object") {
+        attackRating =
+          skill.levelData.attackRating.base +
+          skill.levelData.attackRating.perLevel * (totalLevel - 1);
+      }
+    }
+
+    // Calculate mana cost
+    let manaCost = 0;
+    if (skill.levelData.manaCost) {
+      manaCost =
+        typeof skill.levelData.manaCost === "object"
+          ? skill.levelData.manaCost.base +
+            skill.levelData.manaCost.perLevel * (totalLevel - 1)
+          : skill.levelData.manaCost;
+    }
+
+    return {
+      name: skill.name,
+      level: totalLevel,
+      damage: damageInfo,
+      attackRating,
+      manaCost,
+    };
   }
-  return 0;
 }
+// function calculateValue(data, level) {
+//   if (data?.base && data?.perLevel) {
+//     return data.base + data.perLevel * (level - 1);
+//   }
+//   return 0;
+// }
