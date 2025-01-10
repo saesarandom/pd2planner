@@ -1,3 +1,4 @@
+![10ledendone](https://github.com/user-attachments/assets/10f069a9-031f-4b6e-a773-3f03ac51df10)
 
-![image](https://github.com/user-attachments/assets/fa1c708e-15f1-47f0-b384-be77148b0c80)
+
 
