@@ -5662,9 +5662,21 @@ function updateInventoryStats() {
      fire: 0, 
      maxdam: 0, 
      mindam: 0,
-     allskills: 0
+     allskills: 0,
+     coldres: 30,  
+     fireres: 30,
+     lightres: 30,
+     poisonres: 30,
+     allres: 0
    };
    
+   let charmResistances = {
+     coldres: 0,
+     fireres: 0,
+     lightres: 0,
+     poisonres: 0
+   };
+
    // Process equipped items
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 
     'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 
@@ -5694,6 +5706,19 @@ function updateInventoryStats() {
            if(item.properties.onehandmin) {
                baseStats.mindam += item.properties.onehandmin;
            }
+           if(item.properties.coldres || item.properties.allres) {
+               baseStats.coldres += (item.properties.coldres || 0) + (item.properties.allres || 0);
+           }
+           if(item.properties.firres || item.properties.allres) {
+               baseStats.fireres += (item.properties.firres || 0) + (item.properties.allres || 0);
+           }
+           if(item.properties.ligres || item.properties.allres) {
+               baseStats.lightres += (item.properties.ligres || 0) + (item.properties.allres || 0);
+           }
+           if(item.properties.poisres || item.properties.allres) {
+               baseStats.poisonres += (item.properties.poisres || 0) + (item.properties.allres || 0);
+           }
+   
 
            // Add all skills bonus
            if(item.properties.allsk) {
@@ -5743,7 +5768,61 @@ function updateInventoryStats() {
        if(allSkillsMatch) {
            baseStats.allskills += parseInt(allSkillsMatch[1]);
        }
+
+       // In the charm processing section
+       const coldResMatch = text.match(/\+(\d+)\s*%\s*to Cold Resist/);  // Allow optional spaces
+if(coldResMatch) {
+    const value = parseInt(coldResMatch[1]);
+    charmResistances.coldres += value;
+    console.log('Found cold resistance:', {
+        charmText: text,
+        resistValue: value,
+        totalColdRes: charmResistances.coldres
+    });
+}
+
+       // Fire resistance from charms
+       const fireResMatch = text.match(/\+(\d+)% to Fire Resist/);
+       if(fireResMatch) {
+           charmResistances.fireres += parseInt(fireResMatch[1]);
+       }
+
+       // Lightning resistance from charms
+       const lightResMatch = text.match(/\+(\d+)% to Light(ning)? Resist/);
+       if(lightResMatch) {
+           charmResistances.lightres += parseInt(lightResMatch[1]);
+       }
+
+       // Poison resistance from charms
+       const poisonResMatch = text.match(/\+(\d+)% to Poison Resist/);
+       if(poisonResMatch) {
+           charmResistances.poisonres += parseInt(poisonResMatch[1]);
+       }
    });
+
+   baseStats.coldres += charmResistances.coldres;
+   baseStats.fireres += charmResistances.fireres;
+   baseStats.lightres += charmResistances.lightres;
+   baseStats.poisonres += charmResistances.poisonres;
+
+   const container = document.getElementById('coldresistcontainer');
+   const span = container.querySelector('.resist-cold');
+   if (span) {
+       span.textContent = `${baseStats.coldres}`;
+   }
+
+   console.log('Charm resistances:', charmResistances.coldres);
+
+// Log all charm texts
+const charms = document.querySelectorAll('.charm1');
+console.log('Charm texts:');
+charms.forEach(charm => {
+    if (charm.textContent && !charm.textContent.includes('X')) {
+        console.log(charm.textContent);
+    }
+});
+
+
 
    // Update damage and elemental containers
    document.getElementById('flatpoisoncontainer').textContent = baseStats.poison.toFixed(1);
@@ -5753,6 +5832,7 @@ function updateInventoryStats() {
    document.getElementById('onehandmaxdmgcontainer').textContent = baseStats.maxdam.toFixed(0);
    document.getElementById('onehandmindmgcontainer').textContent = baseStats.mindam.toFixed(0);
    document.getElementById('allskillscontainer').textContent = baseStats.allskills.toFixed(0);
+   
 }
 
 // Initialize event listeners
