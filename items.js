@@ -2375,7 +2375,7 @@ const itemList = {
       reqlvl: 69,
       monheal: 1,
       slainmonstersrip: 1,
-      maxpoisres: 3,
+      maxpoisonres: 3,
       maxcoldres: 3,
       maxlightres: 3,
       maxfireres: 3,

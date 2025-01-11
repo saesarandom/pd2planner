@@ -5782,21 +5782,24 @@ if(coldResMatch) {
 }
 
        // Fire resistance from charms
-       const fireResMatch = text.match(/\+(\d+)% to Fire Resist/);
+       const fireResMatch = text.match(/\+(\d+)\s*%\s*to Fire Resist/);
        if(fireResMatch) {
-           charmResistances.fireres += parseInt(fireResMatch[1]);
+        const value2 = parseInt(fireResMatch[1]);
+        charmResistances.fireres += value2;
        }
 
        // Lightning resistance from charms
-       const lightResMatch = text.match(/\+(\d+)% to Light(ning)? Resist/);
+       const lightResMatch = text.match(/\+(\d+)\s*%\s*to Lightning Resist/);
        if(lightResMatch) {
-           charmResistances.lightres += parseInt(lightResMatch[1]);
+        const value3 = parseInt(lightResMatch[1]);
+        charmResistances.lightres += value3;
        }
 
        // Poison resistance from charms
-       const poisonResMatch = text.match(/\+(\d+)% to Poison Resist/);
+       const poisonResMatch = text.match(/\+(\d+)\s*%\s*to Poison Resist/);
        if(poisonResMatch) {
-           charmResistances.poisonres += parseInt(poisonResMatch[1]);
+        const value4 = parseInt(poisonResMatch[1]);
+        charmResistances.poisonres += value4;
        }
    });
 
@@ -5811,16 +5814,27 @@ if(coldResMatch) {
        span.textContent = `${baseStats.coldres}`;
    }
 
-   console.log('Charm resistances:', charmResistances.coldres);
+   const container2 = document.getElementById('fireresistcontainer');
+   const span2 = container2.querySelector('.resist-fire');
+   if (span2) {
+       span2.textContent = `${baseStats.fireres}`;
+   }
 
-// Log all charm texts
-const charms = document.querySelectorAll('.charm1');
-console.log('Charm texts:');
-charms.forEach(charm => {
-    if (charm.textContent && !charm.textContent.includes('X')) {
-        console.log(charm.textContent);
-    }
-});
+   const container3 = document.getElementById('lightresistcontainer');
+   const span3 = container3.querySelector('.resist-light');
+   if (span3) {
+       span3.textContent = `${baseStats.lightres}`;
+   }
+
+   const container4 = document.getElementById('poisonresistcontainer');
+   const span4 = container4.querySelector('.resist-poison');
+   if (span4) {
+       span4.textContent = `${baseStats.poisonres}`;
+   }
+
+   console.log('Charm resistances:', charmResistances.coldres);
+   console.log('Charm resistances light:', charmResistances.lightres);
+
 
 
 
@@ -6136,21 +6150,32 @@ function updateResistanceDisplay() {
   `;
   document.head.appendChild(style);
 
+
+  const currentValues = {
+    fire: parseInt(containers.fire.querySelector('.resist-fire')?.textContent || '0'),
+    cold: parseInt(containers.cold.querySelector('.resist-cold')?.textContent || '0'),
+    light: parseInt(containers.light.querySelector('.resist-light')?.textContent || '0'),
+    poison: parseInt(containers.poison.querySelector('.resist-poison')?.textContent || '0')
+  };
+
+
+
+
   // Update each resistance container with current and max values
-  if (containers.fire.textContent && !containers.fire.textContent.includes('/')) {
-    containers.fire.innerHTML = `<span class="resist-fire">${containers.fire.textContent}</span>/<span class="resist-fire">${totalMaxFireRes}</span>`;
+  if (!containers.fire.textContent.includes('/')) {
+    containers.fire.innerHTML = `<span class="resist-fire">${currentValues.fire}</span>/<span class="resist-fire">${totalMaxFireRes}</span>`;
   }
   
-  if (containers.cold.textContent && !containers.cold.textContent.includes('/')) {
-    containers.cold.innerHTML = `<span class="resist-cold">${containers.cold.textContent}</span>/<span class="resist-cold">${totalMaxColdRes}</span>`;
+  if (!containers.cold.textContent.includes('/')) {
+    containers.cold.innerHTML = `<span class="resist-cold">${currentValues.cold}</span>/<span class="resist-cold">${totalMaxColdRes}</span>`;
   }
   
-  if (containers.light.textContent && !containers.light.textContent.includes('/')) {
-    containers.light.innerHTML = `<span class="resist-light">${containers.light.textContent}</span>/<span class="resist-light">${totalMaxLightRes}</span>`;
+  if (!containers.light.textContent.includes('/')) {
+    containers.light.innerHTML = `<span class="resist-light">${currentValues.light}</span>/<span class="resist-light">${totalMaxLightRes}</span>`;
   }
   
-  if (containers.poison.textContent && !containers.poison.textContent.includes('/')) {
-    containers.poison.innerHTML = `<span class="resist-poison">${containers.poison.textContent}</span>/<span class="resist-poison">${totalMaxPoisonRes}</span>`;
+  if (!containers.poison.textContent.includes('/')) {
+    containers.poison.innerHTML = `<span class="resist-poison">${currentValues.poison}</span>/<span class="resist-poison">${totalMaxPoisonRes}</span>`;
   }
 }
 
@@ -6204,9 +6229,25 @@ resistanceContainers.forEach(containerId => {
   }
 });
 
-document.addEventListener('DOMContentLoaded', updateResistanceDisplay);
+document.addEventListener('DOMContentLoaded', () => {
+
+const updateAll = () => {
+    updateResistanceDisplay();
+    setTimeout(updateInventoryStats, 0);
+  };
+
+  // Update all event listeners to use updateAll
+  elementsToWatch.forEach(elementId => {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.addEventListener('change', updateAll);
+      element.addEventListener('input', updateAll);
+    }
+  });
+});
+
 </script>
-</script>
+
 
 
 
@@ -6326,5 +6367,10 @@ merclvlValue.addEventListener('input', () => {
  mercbuff.dispatchEvent(new Event('change'));
 });
 </script>
+<script>
+
+
+  </script>
+
 </body>
 </html>
