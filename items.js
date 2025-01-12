@@ -237,7 +237,7 @@ const itemList = {
 
   "Harlequin Crest": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Harlequin Crest<br> Shako<br> Defense: 141<br> Required Strength: 50<br> Required Level: 62<br> +2 to All Skills<br> +2 to All Attributes<br> +[1-99] to Life (+1 per Character Level)<br> +[1-99] to Mana (+1 per Character Level)<br> Physical Damage Taken Reduced by 5%<br> 50% Better Chance of Getting Magic Items<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -254,7 +254,7 @@ const itemList = {
 
   "Steel Shade": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Steel Shade<br> Armet<br> Defense: 345<br> Required Strength: 109<br> Required Level: 62<br> +2 to All Skills<br> +20% Faster Block Rate<br> 20% Increased Chance of Blocking<br> 8% Mana Stolen per Hit<br> +130% Enhanced Defense<br> Replenish Life +48<br> +6 Fire Absorb<br> 80% Extra Gold from Monsters<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -271,7 +271,7 @@ const itemList = {
 
   "Andariel's Visage": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Andariel's Visage<br> Demonhead<br> Defense: 387<br> Required Strength: 102<br> Required Level: 83<br> 15% Chance to Cast Level 30 Poison Nova when Struck<br> +2 to All Skills<br> +30% Increased Attack Speed<br> 10% Life Stolen per Hit<br> +150% Enhanced Defense<br> +30 to Strength<br> +8% to Maximum Poison Resist<br> Fire Resist -20%<br> Poison Resist +70%<br> Level 3 Venom (20 Charges)<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -288,7 +288,7 @@ const itemList = {
 
   "Giant Skull": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Giant Skull<br> Bone Visage<br> Defense: 477<br> Required Strength: 106<br> Required Level: 65<br> +35% Chance to Pierce<br> +80% Enhanced Damage<br> 25% Chance of Crushing Blow<br> Knockback<br> +320 Defense<br> +35 to Strength<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -305,7 +305,7 @@ const itemList = {
 
   "Veil of Steel": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Veil of Steel<br> Spired Helm<br> Defense: 652<br> Durability: 60<br> Required Strength: 192<br> Required Level: 73<br> +1 to All Skills<br> +80% Enhanced Damage<br> +220% Enhanced Defense<br> +140 Defense<br> +15 to Strength<br> +15 to Vitality<br> All Resistances +40<br> +20 Durability<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -322,7 +322,7 @@ const itemList = {
 
   "Nightwing's Veil": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Nightwing's Veil<br> Spired Helm<br> Defense: 352<br> Required Strength: 96<br> Required Level: 67<br> +2 to All Skills<br> -10% to Enemy Cold Resistance<br> +15% to Cold Skill Damage<br> +120% Enhanced Defense<br> +20 to Dexterity<br> +9 Cold Absorb<br> Half Freeze Duration<br> Requirements -50%<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -339,7 +339,7 @@ const itemList = {
 
   "Crown of Ages": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Crown of Ages<br> Corona<br> Defense: 399<br> Required Strength: 174<br> Required Level: 82<br> Indestructible<br> +30% Faster Hit Recovery<br> 50% Reduced Curse Duration<br> +50% Enhanced Defense<br> +150 Defense<br> All Resistances +30<br> Physical Damage Taken Reduced by 15%<br> Socketed [2-3]<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -356,7 +356,7 @@ const itemList = {
 
   "Overlord's Helm": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Overlord's Helm<br> Giant Conch<br> Defense: 834<br> Required Strength: 142<br> Required Level: 85<br> -10% to Enemy Physical Resistance<br> 8% Life Stolen per Hit<br> +680 Defense<br> +30 to Strength<br> +15 to Dexterity<br> +15 to Vitality<br> -30 to Energy<br> Curse Resistance -30%<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -373,7 +373,7 @@ const itemList = {
 
   "Kira's Guardian": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Kira's Guardian<br> Tiara<br> Defense: 170<br> Required Level: 77<br> +20% Faster Hit Recovery<br> -15% to Enemy Cold Resistance<br> -15% to Enemy Lightning Resistance<br> -15% to Enemy Fire Resistance<br> +120 Defense<br> All Resistances +40<br> Cannot Be Frozen<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -390,7 +390,7 @@ const itemList = {
 
   "Griffon's Eye": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Griffon's Eye<br> Diadem<br> Defense: 260<br> Required Level: 76<br> +1 to All Skills<br> +25% Faster Cast Rate<br> +15% to Lightning Skill Damage<br> -20% to Enemy Lightning Resistance<br> +200 Defense<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -407,7 +407,7 @@ const itemList = {
 
   "Cyclopean Roar": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Cyclopean Roar<br> Jawbone Visor<br> Defense: 169<br> Required Strength: 58<br> Required Level: 28<br> (Barbarian Only)<br> 8% Chance to Cast Level 6 Battle Cry on Striking<br> or<br> 8% Chance to Cast Level 6 Battle Cry on Casting<br> +3 to Warcries (Barbarian Only)<br> +20% Faster Run/Walk<br> +20% to Leap and Leap Attack Movement Speed<br> +145% Enhanced Defense<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -424,7 +424,7 @@ const itemList = {
 
   "Arreat's Face": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Arreat's Face<br> Slayer Guard<br> Defense: 363<br> Required Strength: 118<br> Required Level: 42<br> (Barbarian Only)<br> +2 to Combat Skills (Barbarian Only)<br> +2 to Barbarian Skills<br> +30% Faster Hit Recovery<br> 20% Bonus to Attack Rating<br> 6% Life Stolen per Hit<br> +200% Enhanced Defense<br> +20 to Strength<br> +20 to Dexterity<br> All Resistances +20<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -441,7 +441,7 @@ const itemList = {
 
   Wolfhowl: {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Wolfhowl<br> Fury Visor<br> Defense: 377<br> Required Strength: 129<br> Required Level: 79<br> (Barbarian Only)<br> +3 to Warcries (Barbarian Only)<br> Removed<br> +6 to Feral Rage<br> +6 to Werewolf<br> +150% Enhanced Defense<br> +15 to Strength<br> +15 to Dexterity<br> +15 to Summon Dire Wolf<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -458,7 +458,7 @@ const itemList = {
 
   "Demonhorn's Edge": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Demonhorn's Edge<br> Destroyer Helm<br> Defense: 408<br> Required Strength: 151<br> Required Level: 61<br> (Barbarian Only)<br> +3 to Warcries (Barbarian Only)<br> +3 to Masteries (Barbarian Only)<br> +3 to Combat Skills (Barbarian Only)<br> 20% Chance of Open Wounds<br> +350 Open Wounds Damage per Second<br> +160% Enhanced Defense<br> Physical Damage Taken Reduced by 24<br> Attacker Takes Damage of 1050<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -475,7 +475,7 @@ const itemList = {
 
   "Halaberd's Reign": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Halaberd's Reign<br> Conqueror Crown<br> Defense: 432<br> Required Strength: 174<br> Required Level: 77<br> (Barbarian Only)<br> +3 Masteries (Barbarian Only)<br> +2 to Barbarian Skills<br> +20% Faster Hit Recovery<br> +[4-445] to Attack Rating (+4.5 per Character Level)<br> +3 to Battle Orders (Barbarian Only)<br> +3 to Battle Cry (Barbarian Only)<br> +170% Enhanced Defense<br> Physical Damage Taken Reduced by 15%<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -492,7 +492,7 @@ const itemList = {
 
   "Raekor's Virtue": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Raekor's Virtue<br> Guardian Crown<br> Defense: 473<br> Required Strength: 196<br> Required Level: 78<br> Minimum Item Level: 87<br> (Barbarian Only)<br> You May Apply an Additional Curse<br> +2 to Barbarian Skills<br> 8% Mana Stolen per Hit<br> +4 to Frenzy (Barbarian Only)<br> +4 to Double Swing (Barbarian Only)<br> +180% Enhanced Defense<br> +30 to Dexterity<br> Curse Resistance +20%<br> +4 to Light Radius<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -509,7 +509,7 @@ const itemList = {
 
   Quetzalcoatl: {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Quetzalcoatl<br> Hawk Helm<br> Defense: 28<br> Required Strength: 20<br> Required Level: 29<br> (Druid Only)<br> +2 to Druid Skills<br> Gust's Cooldown is Reduced by 2 Seconds<br> +10% Faster Cast Rate<br> +80% Enhanced Defense<br> Cold Resist +25%<br> +4 Life after each Kill<br> Does not reduce Gust cooldown below 0.5 seconds<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -526,7 +526,7 @@ const itemList = {
 
   "Jalal's Mane": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Jalal's Mane<br> Totemic Mask <br> Defense: 297<br> Required Strength: 65<br> Required Level: 42<br> (Druid Only)<br> +2 to Shape Shifting Skills (Druid Only)<br> +2 to Druid Skills<br> +30% Faster Hit Recovery<br> 20% Bonus to Attack Rating<br> +200% Enhanced Defense<br> +2] to Strength<br> +20 to Energy<br> All Resistances +25<br> +5 to Mana after each Kill<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -543,7 +543,7 @@ const itemList = {
 
   "Cerebus' Bite": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Cerebus' Bite<br> Blood Spirit<br> Defense: 350<br> Required Strength: 86<br> Required Level: 63<br> (Druid Only)<br> +4 to Shape Shifting Skills (Druid Only)<br> 120% Bonus to Attack Rating<br> 33% Deadly Strike<br> 33% Chance of Open Wounds<br> +360 Open Wounds Damage per Second<br> +2 to Feral Rage (Druid Only)<br> +2 to Hunger (Druid Only)<br> +140% Enhanced Defense<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -560,7 +560,7 @@ const itemList = {
 
   Denmother: {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Denmother<br> Sun Spirit<br> Defense: 333<br> Required Strength: 95<br> Required Level: 58<br> (Druid Only)<br> +2 to Druid Skill Levels<br> You May Summon 2 Additional Grizzlies<br> You May No Longer Summon Wolves<br> +20% Faster Cast Rate<br> +3 to Summon Grizzly (Druid Only)<br> +3 to Maul (Druid Only)<br> +125% Enhanced Defense<br> Replenish Life +35<br> 80% Extra Gold from Monsters<br> Socketed ([2-3])<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -577,7 +577,7 @@ const itemList = {
 
   Ravenlore: {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Ravenlore<br> Sky Spirit<br> Defense: 390<br> Required Strength: 113<br> Required Level: 74<br> (Druid Only)<br> +3 to Elemental Skills (Druid Only)<br> +7 to Raven (Druid Only)<br> -20% to Enemy Fire Resistance<br> +150% Enhanced Defense<br> +30 to Energy<br> All Resistances +25<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -594,7 +594,7 @@ const itemList = {
 
   "Spirit Keeper": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Spirit Keeper<br> Earth Spirit<br> Defense: 443<br> Required Strength: 104<br> Required Level: 67<br> (Druid Only)<br> +2 to Druid Skills<br> +20% Faster Hit Recovery<br> +2 to Random Druid Skill* (Druid Only)<br> +190% Enhanced Defense<br> You May Now Summon 1 Additional Spirit<br> +8% to Maximum Poison Resist<br> Fire Resist +30%<br> +6 Lightning Absorb<br> Cold Absorb 5%<br> * Excludes Druid skills with new IDs (Gust)<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -611,7 +611,7 @@ const itemList = {
 
   "Ursa's Nightmare": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Ursa's Nightmare<br> Dream Spirit<br> Base Durability: 20<br> Defense: 416<br> Required Strength: 118<br> Required Level: 66<br> (Druid Only)<br> You cannot life steal when above 60% maximum life<br> +[0-40]% Increased Splash Radius (based on missing life)<br> +3 to Shape Shifting Skills (Druid Only)<br> +40% Faster Hit Recovery<br> Prevent Monster Heal<br> +160% Enhanced Defense<br> Increase Maximum Life 35%<br> Drain Life -30<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -628,18 +628,14 @@ const itemList = {
 
   "Arcanna's Head": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Arcanna's Head<br> Skull Cap<br> Defense: 11<br> Defense (2 Items): 11-308<br> Required Strength: 15<br> Required Level: 15<br> Replenish Life +14<br> +40 to Mana<br> Regenerate Mana 20%<br> Attacker Takes Damage of 12<br> +[3-297] Defense (+3 per Character Level) (2 Items)<br> Lightning Resist +25% (3 Items)<br>",
     properties: {
-      defense: 342,
-      reqstr: 103,
-      reqlvl: 49,
-      lleech: 10,
-      edmg: 200,
-      dex: 25,
-      tolife: 50,
-      firres: 33,
-      goldfind: 100,
-      magicfind: 65,
+      defense: 11,
+      reqstr: 15,
+      reqlvl: 15,
+      tomana: 40,
+      regmana: 20,
+      atdmg: 12,
     },
   },
 

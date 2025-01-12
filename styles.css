@@ -366,7 +366,7 @@ body {
   padding: 10px;
   background-color: #120707;
   font-size: 15px;
-  margin-left: 12px;
+  margin-left: 18px;
 }
 
 #armor-info {
@@ -396,7 +396,7 @@ body {
   padding: 10px;
   background-color: #120707;
   font-size: 15px;
-  margin-left: 62px;
+  margin-left: 10px;
 }
 
 #glove-info {
@@ -477,10 +477,13 @@ body {
 }
 
 .grouphelms {
+  position: static;
+  overflow: hidden;
+  display: block;
   margin-top: 10px;
-  margin-right: 1080px;
+  margin-left: 0px;
   font-size: 25px;
-
+  width: max-content;
   color: rgb(100, 139, 248);
   text-align: center;
 }
@@ -500,7 +503,7 @@ body {
   overflow: hidden;
   display: block;
   margin-left: 690px;
-  margin-top: -88px;
+  margin-top: -50px;
   font-size: 25px;
   width: max-content;
   color: rgb(100, 139, 248);
@@ -510,10 +513,10 @@ body {
 .groupoffs {
   overflow: hidden;
   display: block;
-  margin-left: -90px;
+  margin-left: 15px;
   margin-top: 336px;
   font-size: 25px;
-  width: 100%;
+  width: max-content;
   color: rgb(100, 139, 248);
   text-align: center;
 }
@@ -2034,7 +2037,10 @@ select:has(option[value="Cliffkiller"]:checked),
 option[value="Tempest"] {
   background-color: rgb(186, 174, 82);
 } */
-
+select:has(option[value="Arcanna's Head"]:checked),
+option[value="Arcanna's Head"] {
+  background-color: rgb(4, 186, 95);
+}
 .hirelingcontainer {
   position: absolute;
   left: 1247px;
