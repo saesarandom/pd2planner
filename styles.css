@@ -2010,6 +2010,30 @@ select:has(option[value="Tempest"]:checked),
 option[value="Tempest"] {
   background-color: rgb(186, 174, 82);
 }
+/* select:has(option[value="Skystrike"]:checked),
+option[value="Skystrike"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Riphook"]:checked),
+option[value="Riphook"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Kuko Shakaku"]:checked),
+option[value="Kuko Shakaku"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Endlesshail"]:checked),
+option[value="Endlesshail"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Witchwild String"]:checked),
+option[value="Witchwild String"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Cliffkiller"]:checked),
+option[value="Tempest"] {
+  background-color: rgb(186, 174, 82);
+} */
 
 .hirelingcontainer {
   position: absolute;

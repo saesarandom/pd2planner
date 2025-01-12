@@ -235,6 +235,414 @@ const itemList = {
     },
   },
 
+  "Harlequin Crest": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Steel Shade": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Andariel's Visage": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Giant Skull": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Veil of Steel": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Nightwing's Veil": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Crown of Ages": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Overlord's Helm": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Kira's Guardian": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Griffon's Eye": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Cyclopean Roar": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Arreat's Face": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  Wolfhowl: {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Demonhorn's Edge": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Halaberd's Reign": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Raekor's Virtue": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  Quetzalcoatl: {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Jalal's Mane": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Cerebus' Bite": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  Denmother: {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  Ravenlore: {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Spirit Keeper": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Ursa's Nightmare": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
+  "Arcanna's Head": {
+    description:
+      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 342,
+      reqstr: 103,
+      reqlvl: 49,
+      lleech: 10,
+      edmg: 200,
+      dex: 25,
+      tolife: 50,
+      firres: 33,
+      goldfind: 100,
+      magicfind: 65,
+    },
+  },
+
   // UNIQUE ARMORS //
 
   Greyform: {
@@ -1517,6 +1925,226 @@ const itemList = {
   Blastbark: {
     description:
       "Blastbark<br> Long War Bow<br> Base Speed Modifier: 10<br> Two-Hand Damage: 7 to 57, Avg 32<br> Required Strength: 50<br> Required Dexterity: 65<br> Required Level: 28<br> +2 to Amazon Skills<br> +20% Chance to Pierce<br> +150% Enhanced Damage<br> 3% Mana Stolen per Hit<br> +3 to Exploding Arrow<br> Knockback<br> +5 to Strength<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  Skystrike: {
+    description:
+      "Skystrike<br> Edge Bow<br> Base Speed Modifier: 5<br> Base Maximum Sockets: 4 (was 3)<br> Two-Hand Damage: 24 to 75, Avg 49.5<br> Required Strength: 25<br> Required Dexterity: 43<br> Required Level: 28<br> 30% Chance to Cast Level 8 Meteor on Striking<br> +2 to Amazon Skills<br> +30% Increased Attack Speed<br> +200% Enhanced Damage<br> +100 to Attack Rating<br> Adds 1-250 Lightning Damage<br> +10 to Energy<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  Riphook: {
+    description:
+      "Riphook<br> Razor Bow<br> Base Speed Modifier: -10<br> Two-Hand Damage: 39 to 104, Avg 71.5<br> Required Strength: 25<br> Required Dexterity: 62<br> Required Level: 31<br> +50% Increased Attack Speed<br> +260% Enhanced Damage<br> 10% Life Stolen per Hit<br> 30% Chance of Open Wounds<br> +50 Open Wounds Damage per Second<br> Slows Target by 10%<br> +35 to Mana<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  "Kuko Shakaku": {
+    description:
+      "Kuko Shakaku<br> Cedar Bow<br> Base Speed Modifier: 0<br> Base Maximum Sockets: 5 for ilvl 41+ versions (6 for ilvl 41+ upgraded versions)<br> Two-Hand Damage: 36 to 106, Avg 71<br> Required Strength: 53<br> Required Dexterity: 49<br> Required Level: 33<br> +3 to Bow and Crossbow Skills (Amazon Only)<br> Fires Explosive Arrows or Bolts (Level 7)<br> +50% Chance to Pierce<br> +180% Enhanced Damage<br> Adds 40-180 Fire Damage<br> +2 to Mana after each Kill<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  Endlesshail: {
+    description:
+      "Endlesshail<br> Double Bow<br> Base Speed Modifier: -10<br> Two-Hand Damage: 44 to 112, Avg 78<br> Required Strength: 58<br> Required Dexterity: 73<br> Required Level: 36<br> 6% Chance to Cast Level 24 Blizzard on Striking<br> +220% Enhanced Damage<br> Adds 15-30 Cold Damage<br> +5 to Strafe<br> Cold Resist +35%<br> +40 to Mana<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  "Witchwild String": {
+    description:
+      "Witchwild String<br> Short Siege Bow<br> Base Speed Modifier: 0<br> Two-Hand Damage: 49 to 116, Avg 82.5<br> Required Strength: 65<br> Required Dexterity: 80<br> Required Level: 39<br> 14% Chance to Cast Level 31 Amplify Damage on Striking<br> Fires Magic Arrows (Level 20)<br> +190% Enhanced Damage<br> [0-49]% Deadly Strike (0.5% per Character Level)<br> All Resistances +40<br> Socketed [4]<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  Cliffkiller: {
+    description:
+      "Cliffkiller<br> Large Siege Bow<br> Base Speed Modifier: 10<br> Two-Hand Damage: 52 to 214, Avg 133<br> Required Strength: 80<br> Required Dexterity: 95<br> Required Level: 41<br> +2 to Amazon Skills<br> +80% Increased Attack Speed<br> +30% Chance to Pierce<br> +230% Enhanced Damage<br> Adds 10 to 30 Damage<br> Knockback<br> +80 Defense vs. Missile<br> +50 to Life<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  Magewrath: {
+    description:
+      "Magewrath<br> Rune Bow<br> Base Speed Modifier: 0<br> Two-Hand Damage: 83 to 192, Avg 137.5<br> Required Strength: 73<br> Required Dexterity: 103<br> Required Level: 43<br> +2 to Amazon Skills<br> +210% Enhanced Damage<br> Adds 25-50 Damage<br> +250 to Attack Rating<br> 15% Mana Stolen per Hit<br> +4 to Guided Arrow (Amazon Only)<br> +4 to Magic Arrow (Amazon Only)<br> Hit Blinds Target<br> +10 to Dexterity<br> Magic Damage Taken Reduced by 13<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  "Goldstrike Arch": {
+    description:
+      "Goldstrike Arch<br> Gothic Bow<br> Base Speed Modifier: 10<br> Two-Hand Damage: 28 to 220, Avg 124<br> Required Strength: 95<br> Required Dexterity: 118<br> Required Level: 46<br> 20% Chance to Cast Level 20 Fist of the Heavens on Striking<br> +50% Increased Attack Speed<br> +250% Enhanced Damage<br> 150% Bonus to Attack Rating<br> +300% Damage to Demons<br> +300% Damage to Undead<br> Replenish Life +24<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  Eaglehorn: {
+    description:
+      "Eaglehorn<br> Crusader Bow<br> Base Speed Modifier: 10<br> Two-Hand Damage: 66 to 416, Avg 241<br> Required Strength: 97<br> Required Dexterity: 121<br> Required Level: 69<br> 12% Chance to Cast Level 30 Raven on Striking<br> +10 to Raven (only +3 to Raven if worn by Druid)<br> Your Ravens deal an additional 500 Cold Damage<br> +2 to Amazon Skills<br> +250% Enhanced Damage<br> +[2-198]% Enhanced Maximum Damage (+2% per Character Level)<br> Ignore Target's Defense<br> +[6-594] to Attack Rating (+6 per Character Level)<br> +100 to Dexterity<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  Widowmaker: {
+    description:
+      "Widowmaker<br> Ward Bow<br> Base Speed Modifier: 0<br> Two-Hand Damage: 108 to 288, Avg 198<br> Required Strength: 72<br> Required Dexterity: 146<br> Required Level: 65<br> Fires Magic Arrows (Level 11)<br> +350% Enhanced Damage<br> Ignore Target's Defense<br> 33% Deadly Strike<br> +5 to Guided Arrow<br> +5 to Multiple Shot<br>",
+    properties: {
+      speed: 10,
+      twohandminbow: 7,
+      twohandmaxbow: 57,
+      reqstr: 50,
+      reqdex: 65,
+      reqlvl: 28,
+      amask: 2,
+      pierce: 20,
+      edmg: 150,
+      mleech: 3,
+      explodingarrowoskill: 3,
+      knock: 1,
+      str: 5,
+    },
+  },
+
+  Windforce: {
+    description:
+      "Windforce<br> Hydra Bow<br> Base Speed Modifier: 10<br> Two-Hand Damage:  51 to 512, Avg 281.5<br> Required Strength: 134<br> Required Dexterity: 167<br> Required Level: 73<br> After<br> 12% Chance to Cast Level 35 Twister on Striking<br> +20% Increased Attack Speed<br> +325% Enhanced Damage<br> +[2-198] to Maximum Damage (+2 per Character Level)<br> 8% Mana Stolen per Hit<br> Knockback<br> +10 to Strength<br> +20 to Dexterity<br>",
     properties: {
       speed: 10,
       twohandminbow: 7,
