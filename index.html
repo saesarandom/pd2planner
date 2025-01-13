@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>PD2 Character Planner</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="/icon.png">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="72048bb5-a72a-4c78-9750-4c1c9a17e30c"></script>
     <script src="items.js"></script>
 
@@ -15,8 +16,9 @@
 </button>
 <div>
 <div class="polyrellife">Polynomial Relative Life<div id="polyrellife"></div>
-<br>
 </div>
+
+
 <div class="particles-container"></div>
 <script>
 
@@ -84,10 +86,10 @@
 <input type="number" min="1" max="99" value="1" id="lvlValue">
 <span id="startLvlValue"></span> 
 <span id="lifeValue"></span> 
-</div>	
+</div>
 
 <div>	
-<div class="total-life"><div id="totalLifeDisplay">
+<div class="total-life" div id="totalLifeDisplay">
 </div>	
 
 
@@ -301,9 +303,10 @@ Resistance to fire %
 <div id="off-info"></div>
 </div>
 
+
+
 <div>
-<div class="defensecontainer">
-Defense
+<div class="defensecontainer">Defense
 <div id="defensecontainer">
 </div>
 
@@ -344,7 +347,7 @@ Defense
 </div>
 
 <div>
-<div class="drcontainer">Damage Reduced by %
+<div class="drcontainer">Damage Redby %
 <div id="drcontainer">
 </div>
 
@@ -402,7 +405,7 @@ Defense
 <div id="twohandmaxdmgcontainer">
 </div>
   
-   
+
 
 
 
@@ -449,7 +452,7 @@ Defense
   <div id="boot-info"></div>
 </div>
 
-<div>
+
 <div class="groupringsone">
   <label for="ringsone-dropdown">Ring:</label>
   <select id="ringsone-dropdown" name="ringone">
@@ -558,9 +561,9 @@ Defense
 <div class="criticalhitcontainer">Critical Hit<div id="criticalhitcontainer"></div>
 <div class="deadlystrikecontainer">Deadly Strike<div id="deadlystrikecontainer"></div>
 <div class="weaponmasterycontainer">Weapon Mastery<div id="weaponmasterycontainer"></div>
-</div>
+
 <div class="crithitmultipliercontainer">Crit Hit dmg multiplier<div id="crithitmultipliercontainer"></div>
-</div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
+</div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
 
 <div class="inventorycontainer">
   <div class="charm1"></div>
@@ -603,9 +606,10 @@ Defense
   <div class="charm1"></div>
   <div class="charm1"></div>
   <div class="charm1"></div>
-  
-  
 </div>
+  
+  
+
 
 <!-- Modal -->
 <div id="charmModal" class="modal">
@@ -895,7 +899,7 @@ Defense
               <input type="range" id="customallskillsRange" min="1" max="40" value="1" class="propertyrange">
             <span id="customallskillsValue">1</span>
               </div>
-</div>
+            
 
 
   <div class="suffixproperties" style="display: none;">
@@ -1075,8 +1079,8 @@ Defense
                         </div>
 
                               
-</div></div>
-</div>
+
+                      </div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
 
 
 
@@ -1107,7 +1111,7 @@ Defense
     <div>Decoy:<input min="0" max="20" type="number" id="decoycontainer" class="hiddenSkill18"></div>
     <div>Penetrate:<input min="0" max="20" type="number" id="penetratecontainer" class="hiddenSkill24"></div>
     <div>Valkyrie:<input min="0" max="20" type="number" id="valkyriecontainer" class="hiddenSkill30"></div></div>
-    
+  
 
     <div id="bowandcrossbowskillscontainer" class="skill-container">
       <div>Magic Arrow:<input min="0" max="20" type="number" id="magicarrowcontainer"></div>
@@ -1120,7 +1124,7 @@ Defense
       <div>Strafe:<input min="0" max="20" type="number" id="strafecontainer" class="hiddenSkill24"></div>
       <div>Immolation Arrow:<input min="0" max="20" type="number" id="immolationarrowcontainer" class="hiddenSkill30"></div>
       <div>Freezing Arrow:<input min="0" max="20" type="number" id="freezingarrowcontainer" class="hiddenSkill30"></div></div>
-    </div>  
+     
 
 
     <div id="martialartskillscontainer" class="skill-container">
@@ -1147,7 +1151,7 @@ Defense
       <div>Shadow Warrior:<input type="number" min="0" max="20" value="0" id="shadowwarriorcontainer" class="hiddenSkill18"></div>
       <div>Shadow Master:<input type="number" min="0" max="20" value="0" id="shadowmastercontainer" class="hiddenSkill30"></div>
       <div>Venom:<input type="number" min="0" max="20" value="0" id="venomcontainer" class="hiddenSkill30"></div></div>
-</div>
+
 
     <div id="trapskillscontainer" class="skill-container">
       <div>Fire Blast:<input type="number" min="0" max="20" value="0" id="fireblastcontainer"></div>
@@ -1426,7 +1430,7 @@ Defense
       </select>
     </div>
     
-    <div id="jabValueDisplay">Skill Level: <span id="jabValueOutput">0</span></div> 
+    <div class="damage" id="jabValueDisplay">Skill Level: <span id="jabValueOutput">0</span><br> 
       Attack Rating: <span id="attackRatingOutput">0</span><br>
       Damage: <span id="damageOutput">0</span><br>
       Mana Cost: <span id="manaCostOutput">0</span>

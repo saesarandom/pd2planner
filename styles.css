@@ -93,14 +93,17 @@ body {
 }
 
 .slidecontainer {
+  position: absolute !important;
   width: 100%;
   color: rgb(255, 255, 255);
-  position: relative;
-  top: -80px;
-  left: 125px;
+  position: absolute;
+  top: 0px;
+  left: 122px;
 }
 
 .menucontainer {
+  position: absolute;
+  top: 0px;
   width: 100%;
   color: rgb(255, 255, 255);
 }
@@ -108,16 +111,16 @@ body {
 .lifecontainer {
   width: 100%;
   color: rgb(241, 37, 37);
-  position: relative;
-  top: -165px;
-  left: 295px;
+  position: absolute;
+  top: 0px;
+  left: 42px;
   font-size: 18px;
 }
 
 .inventorycontainer {
   position: absolute;
-  margin-top: -320px;
-  left: 1280px;
+  margin-top: 320px;
+  left: 700px;
   display: grid;
   padding: 1px;
   background-color: rgb(0, 0, 0);
@@ -359,6 +362,21 @@ body {
   color: white;
 }
 
+.damage {
+  color: rgb(158, 158, 239);
+  display: block;
+  transform: scaleX(0.95);
+  transition: opacity 0.7s, transform 0.7s, overlay 0.5s allow-discrete,
+    display 0.7s allow-discrete;
+}
+
+.damage:hover {
+  color: rgb(97, 97, 96);
+  display: block;
+  opacity: 0.9;
+  transform: scaleX(1);
+}
+
 #helm-info {
   position: absolute;
   margin-top: 10px;
@@ -366,7 +384,7 @@ body {
   padding: 10px;
   background-color: #120707;
   font-size: 15px;
-  margin-left: 18px;
+  margin-left: 08px;
 }
 
 #armor-info {
@@ -480,7 +498,7 @@ body {
   position: static;
   overflow: hidden;
   display: block;
-  margin-top: 10px;
+  margin-top: 199px;
   margin-left: 0px;
   font-size: 25px;
   width: max-content;
@@ -595,15 +613,17 @@ body {
 .polyrellife {
   position: absolute;
   font-family: bahnschrift condensed;
-  width: 100%;
+  width: fit-content;
   color: rgb(218, 14, 75);
   font-size: 19px;
   text-align: center;
-  left: 490px;
+  left: 890px;
   top: 20px;
 }
 
 .statcontainer {
+  position: absolute;
+  top: 182px;
   font-family: bahnschrift condensed;
   margin-top: -10ch;
   width: 100%;
@@ -614,16 +634,16 @@ body {
 
 .defensecontainer {
   position: absolute;
-  width: 100%;
+  width: auto;
   color: rgb(255, 255, 255);
   font-size: 16px;
-  left: -140px;
+  left: 290px;
   top: 20px;
 }
 
 .realblockcontainer {
   position: absolute;
-  width: 100%;
+  width: fit-content;
   color: rgb(255, 255, 255);
   font-size: 16px;
   left: 70px;
@@ -632,7 +652,7 @@ body {
 
 .iascontainer {
   position: absolute;
-  width: 100%;
+  width: fit-content;
   color: rgb(255, 255, 255);
   font-size: 16px;
   left: 70px;
@@ -641,7 +661,7 @@ body {
 
 .fcrcontainer {
   position: absolute;
-  width: 100%;
+  width: fit-content;
   color: rgb(255, 255, 255);
   font-size: 16px;
   left: 70px;
@@ -650,7 +670,7 @@ body {
 
 .frwcontainer {
   position: absolute;
-  width: 100%;
+  width: fit-content;
   color: rgb(255, 255, 255);
   font-size: 16px;
   left: 70px;
@@ -659,7 +679,7 @@ body {
 
 .fhrcontainer {
   position: absolute;
-  width: 100%;
+  width: fit-content;
   color: rgb(255, 255, 255);
   font-size: 16px;
   left: 70px;
@@ -668,7 +688,7 @@ body {
 
 .cbfcontainer {
   position: absolute;
-  width: 100%;
+  width: fit-content;
   color: rgb(16, 13, 181);
   font-size: 16px;
   left: 70px;
@@ -677,7 +697,7 @@ body {
 
 .plrcontainer {
   position: absolute;
-  width: 100%;
+  width: fit-content;
   color: rgb(30, 182, 96);
   font-size: 16px;
   left: 70px;
@@ -689,7 +709,7 @@ body {
   width: fit-content;
   color: rgb(189, 189, 189);
   font-size: 16px;
-  left: 70px;
+  left: -320px;
   top: 50px;
 }
 
@@ -2043,7 +2063,7 @@ option[value="Arcanna's Head"] {
 }
 .hirelingcontainer {
   position: absolute;
-  left: 1247px;
+  left: 1440px;
   top: 900px;
   width: 700px;
   height: 600px;
@@ -2058,7 +2078,6 @@ option[value="Arcanna's Head"] {
   top: 20px;
   width: 38px;
   height: 38px;
-
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -2069,7 +2088,6 @@ option[value="Arcanna's Head"] {
   top: 20px;
   width: 38px;
   height: 38px;
-
   background-size: contain;
   background-repeat: no-repeat;
 }
