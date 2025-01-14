@@ -2092,34 +2092,51 @@ option[value="Arcanna's Head"] {
 .socketcontainer {
   position: absolute;
   left: 1220px;
-  top: 24px;
+  top: 124px;
   display: block; /* Changed from inline-block to flex */
   align-items: center; /* Added to align sockets */
   gap: 10px;
   padding: 10px;
 }
 
+.socketcontainer2 {
+  position: absolute;
+  padding: 10px;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  left: 1323px;
+  top: 124px;
+  display: grid;
+  align-items: center;
+  gap: 0px;
+}
+
 .socket {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border: 2px solid #666;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background: #2a2a2a;
+  background: #161616;
   overflow: hidden;
   transition: all 0.2s ease; /* Added smooth transition for hover effects */
 }
 
+.socketcolumn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .socket.empty {
-  background: #2a2a2a;
+  background: #111111;
 }
 
 .socket:hover {
   border-color: #888;
-  background: #3a3a3a;
+  background: #000000;
   transform: scale(1.05); /* Optional: slight scale effect on hover */
 }
 
@@ -2182,41 +2199,67 @@ option[value="Arcanna's Head"] {
 }
 
 .socket-item:hover {
-  background: #444;
+  background: #540303;
 }
 
 .socket-item img {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   pointer-events: none;
 }
 
-.socket-gem-img {
+.socket-sock-img {
   width: 32px;
   height: 32px;
   object-fit: cover;
-  transition: transform 0.2s ease; /* Optional: slight scale effect */
+  transition: transform 0.2s ease;
 }
 
-.socket-gem-img:hover {
-  transform: scale(1.1); /* Optional: slight enlargement on hover */
+.socket-sock-img:hover {
+  transform: scale(1.1);
 }
 
-.gem-info {
+.sock-info {
   flex: 1;
 }
 
-.gem-name {
+.sock-name {
   color: #6495ed;
   font-weight: bold;
   margin-bottom: 4px;
 }
 
-.gem-stats {
+.sock-stats {
   font-size: 0.9em;
   color: #aaa;
 }
 
 .gem-stats div {
   margin: 2px 0;
+}
+
+.helmsocket {
+  margin: 2px 0;
+  position: absolute;
+  left: 1220px;
+  top: 20px;
+  width: 64px;
+  height: 64px;
+  background-image: url("/img/helmsocket.png");
+  background-size: contain;
+  border: 2px solid #a41515;
+  border-radius: 50%;
+}
+
+.armorsocket {
+  margin: 2px 0;
+  position: absolute;
+  left: 1340px;
+  top: 20px;
+  width: 64px;
+  height: 96px;
+  background-image: url("/img/armorsocket.png");
+  background-size: contain;
+  border: 2px solid #a41515;
+  border-radius: 50%;
 }
