@@ -1523,8 +1523,13 @@ function updateCriticalAndDeadly() {
     
 }
 
-        const deadlyStrike = (parseFloat(document.getElementById('deadlystrikecontainer')?.textContent || 0));
+console.log('Raw deadly strike value:', document.getElementById('deadlystrikecontainer')?.textContent);
+        const deadlyStrike = parseFloat(document.getElementById('deadlystrikecontainer')?.textContent || 0);
+        console.log('Parsed deadly strike:', deadlyStrike);
+        
         const weaponMastery = parseFloat(document.getElementById('weaponmasterycontainer')?.textContent || 0);
+        console.log('Weapon mastery:', weaponMastery);
+        console.log('Critical hit value:', criticalHitValue);
 
 
         const critMultiplier = 0.5 * (1 - (1 - deadlyStrike) * 
@@ -2075,7 +2080,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (armorData.properties.poisondmg / armorData.properties.poisontime) || 0;
       totalFlatMagicDmg += (armorData.properties.magicdmgmin/2 + armorData.properties.magicdmgmax/2) || 0;
       totalCriticalHit += armorData.properties.criticalsk || 0;
-      totalDeadlyStrike += armorData.properties.deadlyperlvl*startLvlValue/100 + armorData.properties.deadly || 0; 
+      totalDeadlyStrike += armorData.properties.deadlyperlvl*startLvlValue + armorData.properties.deadly || 0; 
       totalWeaponMastery += armorData.properties.weaponmasterysk || 0;
       totalEDMG += armorData.properties.edmg || 0; 
       totalMaxFireRes += armorData.properties.maxfirres || 0;
@@ -2118,7 +2123,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (weaponData.properties.poisondmg / weaponData.properties.poisontime) || 0;
       totalFlatMagicDmg += (weaponData.properties.magicdmgmin/2 + weaponData.properties.magicdmgmax/2) || 0;
       totalCriticalHit += weaponData.properties.criticalsk || 0;
-      totalDeadlyStrike += (weaponData.properties.deadlyperlvl*startLvlValue/100) || 0 + (weaponData.properties.deadly/100) || 0; 
+      totalDeadlyStrike += (weaponData.properties.deadlyperlvl*startLvlValue) || 0 + (weaponData.properties.deadly/100) || 0; 
       totalWeaponMastery += weaponData.properties.weaponmasterysk || 0;
       totalMaxFireRes += weaponData.properties.maxfirres || 0;
       
@@ -4404,18 +4409,6 @@ document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
 
 
 
-
-      
-
-
-
-
-
-
-
-
-
-
         const selectedSkillContainer = document.getElementById('left-skill').value;
         const skillInput = document.getElementById(selectedSkillContainer);
         
@@ -4445,10 +4438,10 @@ document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
 
 // Get deadly strike value correctly
 deadlyStrikeValue = parseFloat(document.getElementById('deadlystrikecontainer').value || 0);
-
-const totalDeadlyStrike = deadlyStrikeValue;
+weaponMasteryValue = parseFloat(document.getElementById('weaponmasterycontainer').value || 0);
+const totalDeadlyStrike = deadlyStrikeValue / 100;
 const totalCriticalHit = criticalHitValue / 100;
-const totalWeaponMastery = parseFloat(document.getElementById('weaponmasterycontainer').value || 0) / 100;
+const totalWeaponMastery = weaponMasteryValue / 100;
 
 const totalCritMultiplier = 0.5 * (1 - (1 - totalDeadlyStrike) * (1 - totalCriticalHit) * (1 - totalWeaponMastery)) + 1;
 document.getElementById('crithitmultipliercontainer').value = totalCritMultiplier.toFixed(3);
@@ -4457,14 +4450,16 @@ document.getElementById('crithitmultipliercontainer').value = totalCritMultiplie
 
    
     const deadlyStrikeElement = document.getElementById('deadlystrikecontainer');
+    const criticalHitElement = document.getElementById('criticalhitcontainer');
+    const weaponMasteryElement = document.getElementById('weaponmasterycontainer');
 // Listen for changes to deadly strike
-deadlyStrikeElement.addEventListener('input', function() {
-    
-
+deadlyStrikeElement.addEventListener('input', UpdateDamageCalculations());
+criticalHitElement.addEventListener('input', UpdateDamageCalculations());   
+weaponMasteryElement.addEventListener('input', UpdateDamageCalculations());
 
   
     updateDamageCalculations();
-});
+
 
 
 
@@ -5702,6 +5697,7 @@ function updateInventoryStats() {
      lightres: 30,
      poisonres: 30,
      allres: 0
+     
    };
    
    let charmResistances = {
@@ -5710,6 +5706,37 @@ function updateInventoryStats() {
      lightres: 0,
      poisonres: 0
    };
+
+
+//def calcs
+
+let equipmentDefense = 0;
+    ['helms-dropdown', 'armors-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 
+     'ringstwo-dropdown', 'amulets-dropdown'].forEach(slot => {
+        const item = itemList[document.getElementById(slot)?.value];
+        if(item?.properties?.defense) {
+            equipmentDefense += item.properties.defense;
+        }
+        //need to add dex/4 to Defense
+    });
+
+    // Get charm defense from all charms (separate loop)
+    let charmDefense = 0;
+    document.querySelectorAll('.charm1').forEach(charm => {
+        if(!charm.textContent || charm.textContent.includes('X')) return;
+        
+        const text = charm.textContent;
+        const stoutMatch = text.match(/\+(\d+)\s+Defense/);
+        if(stoutMatch) {
+            const defenseValue = parseInt(stoutMatch[1]);
+            charmDefense += defenseValue;
+        }
+    });
+
+
+
+
+
 
    // Process equipped items
    ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown', 
@@ -5754,12 +5781,19 @@ function updateInventoryStats() {
            }
    
 
-           // Add all skills bonus
+           
            if(item.properties.allsk) {
                baseStats.allskills += item.properties.allsk;
            }
+           
+          
+          
+         
+
        }
    });
+
+
 
    // Process charms for non-life stats first
    document.querySelectorAll('.charm1').forEach(charm => {
@@ -5803,6 +5837,8 @@ function updateInventoryStats() {
            baseStats.allskills += parseInt(allSkillsMatch[1]);
        }
 
+   
+
        // In the charm processing section
        const coldResMatch = text.match(/\+(\d+)\s*%\s*to Cold Resist/);  // Allow optional spaces
 if(coldResMatch) {
@@ -5835,6 +5871,7 @@ if(coldResMatch) {
         const value4 = parseInt(poisonResMatch[1]);
         charmResistances.poisonres += value4;
        }
+      
    });
 
    baseStats.coldres += charmResistances.coldres;
@@ -5869,7 +5906,12 @@ if(coldResMatch) {
    console.log('Charm resistances:', charmResistances.coldres);
    console.log('Charm resistances light:', charmResistances.lightres);
 
-
+   
+  
+  
+    
+    // Update defense container
+   
 
 
    // Update damage and elemental containers
@@ -5880,7 +5922,7 @@ if(coldResMatch) {
    document.getElementById('onehandmaxdmgcontainer').textContent = baseStats.maxdam.toFixed(0);
    document.getElementById('onehandmindmgcontainer').textContent = baseStats.mindam.toFixed(0);
    document.getElementById('allskillscontainer').textContent = baseStats.allskills.toFixed(0);
-   
+   document.getElementById('defensecontainer').textContent = (equipmentDefense + charmDefense).toFixed(0);
 }
 
 // Initialize event listeners
@@ -6407,10 +6449,140 @@ merclvlValue.addEventListener('input', () => {
  mercbuff.dispatchEvent(new Event('change'));
 });
 </script>
+
+<div id="socketModal" class="socketingmodal">
+  <div class="socketmodal-content">
+    <span class="socket-close">&times;</span>
+    <h2>Socket Options</h2>
+    <div class="socket-options">
+      <!-- Gem options -->
+      <div class="socket-item" data-gem="chipped-sapphire">
+        <img src="img/redjewel2.png" alt="Chipped Sapphire" class="gem-img" onerror="this.src='/api/placeholder/32/32'">
+        <div class="gem-info">
+          <div class="gem-name">Red jewel</div>
+          <div class="gem-stats">
+            <div>Weapon: +1-3 Cold Damage</div>
+            <div>Armor/Helm: +10 to Mana</div>
+            <div>Shield: Cold Resist +12%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="socket-item" data-gem="flawed-sapphire">
+        <img src="img/emerald2.png" alt="Flawed Sapphire" class="gem-img" onerror="this.src='/api/placeholder/32/32'">
+        <div class="gem-info">
+          <div class="gem-name">Emerald</div>
+          <div class="gem-stats">
+            <div>Weapon: +3-5 Cold Damage</div>
+            <div>Armor/Helm: +17 to Mana</div>
+            <div>Shield: Cold Resist +16%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="socket-item" data-gem="sapphire">
+        <img src="img/ort2.png" alt="Sapphire" class="gem-img" onerror="this.src='/api/placeholder/32/32'">
+        <div class="gem-info">
+          <div class="gem-name">Ort</div>
+          <div class="gem-stats">
+            <div>Weapon: +4-7 Cold Damage</div>
+            <div>Armor/Helm: +24 to Mana</div>
+            <div>Shield: Cold Resist +22%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add this where you want the socket container to appear -->
+<div class="socketcontainer">
+  <div class="socket empty" data-socket="1">
+    <img src="/img/emerald2.png" alt="" class="socket-gem-img" style="display: none;">
+  </div>
+  <div class="socket empty" data-socket="2">
+    <img src="/img/emerald2.png" alt="" class="socket-gem-img" style="display: none;">
+  </div>
+  <div class="socket empty" data-socket="3">
+    <img src="/img/emerald2.png" alt="" class="socket-gem-img" style="display: none;">
+  </div>
+</div>
 <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('socketModal');
+  const sockets = document.querySelectorAll('.socket');
+  const closeBtn = document.querySelector('.socket-close');
+  const socketItems = document.querySelectorAll('.socket-item');
+  let currentSocket = null;
 
+  // Socket click handler to open modal
+  sockets.forEach(socket => {
+    socket.addEventListener('click', (e) => {
+      modal.style.display = 'block';
+      // Ensure we get the actual socket, even if image is clicked
+      currentSocket = e.target.closest('.socket');
+    });
+  });
 
-  </script>
+  // Gem item selection handler
+  socketItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      // Ensure we can select the entire item, including its children
+      const actualItem = e.target.closest('.socket-item');
+      
+      if (currentSocket) {
+        const gemType = actualItem.dataset.gem;
+        const gemImg = actualItem.querySelector('.gem-img').src;
+        
+        // Remove empty class
+        currentSocket.classList.remove('empty');
+        
+        // Get the image element inside the socket
+        const socketImg = currentSocket.querySelector('.socket-gem-img');
+        
+        // Update image
+        socketImg.src = gemImg;
+        socketImg.alt = gemType;
+        socketImg.style.display = 'block';
+        
+        // Store gem type
+        currentSocket.dataset.gemType = gemType;
+        
+        // Close modal
+        modal.style.display = 'none';
+        currentSocket = null;
+      }
+    });
+  });
 
+  // Socket right-click (context menu) to remove gem
+  sockets.forEach(socket => {
+    socket.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      if (!socket.classList.contains('empty')) {
+        socket.classList.add('empty');
+        const socketImg = socket.querySelector('.socket-gem-img');
+        socketImg.src = '';
+        socketImg.style.display = 'none';
+        socket.dataset.gemType = '';
+      }
+    });
+  });
+
+  // Close modal button handler
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+    currentSocket = null;
+  });
+
+  // Close modal when clicking outside
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+      currentSocket = null;
+    }
+  });
+});
+</script>
 </body>
 </html>

@@ -120,8 +120,8 @@ body {
 
 .inventorycontainer {
   position: absolute;
-  margin-top: 320px;
-  left: 700px;
+  margin-top: 440px;
+  left: 675px;
   display: grid;
   padding: 1px;
   background-color: rgb(0, 0, 0);
@@ -2060,8 +2060,8 @@ option[value="Arcanna's Head"] {
 }
 .hirelingcontainer {
   position: absolute;
-  left: 1440px;
-  top: 900px;
+  left: 1400px;
+  top: 940px;
   width: 700px;
   height: 600px;
   background-image: url("/img/mercback.png");
@@ -2087,4 +2087,136 @@ option[value="Arcanna's Head"] {
   height: 38px;
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+.socketcontainer {
+  position: absolute;
+  left: 1220px;
+  top: 24px;
+  display: block; /* Changed from inline-block to flex */
+  align-items: center; /* Added to align sockets */
+  gap: 10px;
+  padding: 10px;
+}
+
+.socket {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #666;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #2a2a2a;
+  overflow: hidden;
+  transition: all 0.2s ease; /* Added smooth transition for hover effects */
+}
+
+.socket.empty {
+  background: #2a2a2a;
+}
+
+.socket:hover {
+  border-color: #888;
+  background: #3a3a3a;
+  transform: scale(1.05); /* Optional: slight scale effect on hover */
+}
+
+/* Modal styles */
+.socketingmodal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.socketmodal-content {
+  background-color: #2a2a2a;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #666;
+  width: 80%;
+  max-width: 500px;
+  color: #fff;
+  border-radius: 8px; /* Optional: rounded corners for the modal */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}
+
+.socket-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.socket-close:hover {
+  color: #fff;
+}
+
+.socket-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.socket-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  user-select: none;
+}
+
+.socket-item:hover {
+  background: #444;
+}
+
+.socket-item img {
+  width: 38px;
+  height: 38px;
+  pointer-events: none;
+}
+
+.socket-gem-img {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  transition: transform 0.2s ease; /* Optional: slight scale effect */
+}
+
+.socket-gem-img:hover {
+  transform: scale(1.1); /* Optional: slight enlargement on hover */
+}
+
+.gem-info {
+  flex: 1;
+}
+
+.gem-name {
+  color: #6495ed;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.gem-stats {
+  font-size: 0.9em;
+  color: #aaa;
+}
+
+.gem-stats div {
+  margin: 2px 0;
 }
