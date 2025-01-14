@@ -2111,6 +2111,30 @@ option[value="Arcanna's Head"] {
   gap: 0px;
 }
 
+.socketcontainer3 {
+  position: absolute;
+  padding: 10px;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  left: 1446px;
+  top: 124px;
+  display: grid;
+  align-items: center;
+  gap: 0px;
+}
+
+.socketcontainer4 {
+  position: absolute;
+  padding: 10px;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  left: 1566px;
+  top: 124px;
+  display: grid;
+  align-items: center;
+  gap: 0px;
+}
+
 .socket {
   width: 36px;
   height: 36px;
@@ -2153,7 +2177,7 @@ option[value="Arcanna's Head"] {
 }
 
 .socketmodal-content {
-  background-color: #2a2a2a;
+  background-color: #0b0202;
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #666;
@@ -2262,4 +2286,119 @@ option[value="Arcanna's Head"] {
   background-size: contain;
   border: 2px solid #a41515;
   border-radius: 50%;
+}
+
+.weaponsocket {
+  margin: 2px 0;
+  position: absolute;
+  left: 1460px;
+  top: 0px;
+  width: 64px;
+  height: 126px;
+  background-image: url("/img/weaponsocket.png");
+  background-size: contain;
+  border: 2px solid #a41515;
+  border-radius: 50%;
+}
+
+.offsocket {
+  margin: 2px 0;
+  position: absolute;
+  left: 1580px;
+  top: 20px;
+  width: 64px;
+  height: 96px;
+  background-image: url("/img/shieldsocket.png");
+  background-size: contain;
+  border: 2px solid #a41515;
+  border-radius: 50%;
+}
+
+.helm-socket-stats {
+  position: absolute;
+  left: 1220px;
+  top: 280px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #a41515;
+  color: #6495ed;
+  min-width: 80px;
+  min-height: 30px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.armor-socket-stats {
+  position: absolute;
+  left: 1320px;
+  top: 280px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #a41515;
+  color: #6495ed;
+  min-width: 80px;
+  min-height: 30px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.weapon-socket-stats {
+  position: absolute;
+  left: 1420px;
+  top: 280px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #a41515;
+  color: #6495ed;
+  min-width: 80px;
+  min-height: 30px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.shield-socket-stats {
+  position: absolute;
+  left: 1520px;
+  top: 280px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #a41515;
+  color: #6495ed;
+  min-width: 80px;
+  min-height: 30px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.socket-categories {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 20px;
+}
+
+.socket-category-tab {
+  padding: 8px 16px;
+  background-color: #2a2a2a;
+  color: #aaa;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.socket-category-tab:hover {
+  background-color: #3a3a3a;
+  color: #fff;
+}
+
+.socket-category-tab.active {
+  background-color: #540303;
+  color: #fff;
+}
+
+.socket-content {
+  display: none;
+}
+
+.socket-content.active {
+  display: block;
 }

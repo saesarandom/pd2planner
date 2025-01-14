@@ -6454,36 +6454,82 @@ merclvlValue.addEventListener('input', () => {
   <div class="socketmodal-content">
     <span class="socket-close">&times;</span>
     <h2>Socket Options, with corrupts u will be able to add more sockets</h2>
-    <div class="socket-options">
-      <!-- Gem options -->
-      <div class="socket-item" data-gem="chipped-sapphire">
-        <img src="img/amethyst3.png" class="sock-img">
-        <div class="sock-info">
-          <div class="sock-name">Red jewel</div>
-          <div class="sock-stats">
-            <div>Weapon: +1-3 Cold Damage</div>
-            <div>Armor/Helm: +10 to Mana</div>
-            <div>Shield: Cold Resist +12%</div>
-          </div>
-        </div>
-      </div>
+    
+    <!-- Category Tabs -->
+    <div class="socket-categories">
+      <button class="socket-category-tab active" data-category="gems">Gems</button>
+      <button class="socket-category-tab" data-category="jewels">Jewels</button>
+      <button class="socket-category-tab" data-category="runes">Runes</button>
+      <button class="socket-category-tab" data-category="runewords">Runewords</button>
+    </div>
 
-      <div class="socket-item" data-gem="flawed-sapphire">
-        <img src="img/diamond2.png" class="sock-img">
-        <div class="sock-info">
-          <div class="sock-name">Emerald</div>
-          <div class="sock-stats">
-            <div>Weapon: +3-5 Cold Damage</div>
-            <div>Armor/Helm: +17 to Mana</div>
-            <div>Shield: Cold Resist +16%</div>
+    <!-- Gems Content -->
+    <div class="socket-content active" data-category="gems">
+      <div class="socket-options">
+        <div class="socket-item" data-gem="chipped-sapphire">
+          <img src="img/amethyst3.png" class="sock-img">
+          <div class="sock-info">
+            <div class="sock-name">Red jewel</div>
+            <div class="sock-stats">
+              <div>Weapon: +1-3 Cold Damage</div>
+              <div>Armor/Helm: +10 to Mana</div>
+              <div>Shield: Cold Resist +12%</div>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div class="socket-item" data-gem="flawed-sapphire">
+          <img src="img/diamond2.png" class="sock-img">
+          <div class="sock-info">
+            <div class="sock-name">Emerald</div>
+            <div class="sock-stats">
+              <div>Weapon: +3-5 Cold Damage</div>
+              <div>Armor/Helm: +17 to Mana</div>
+              <div>Shield: Cold Resist +16%</div>
+            </div>
+          </div>
+        </div>
 
       <div class="socket-item" data-gem="sapphire">
         <img src="img/bluejewel3.png" class="sock-img">
         <div class="sock-info">
-          <div class="sock-name">Ort</div>
+          <div class="sock-name">Blue</div>
+          <div class="sock-stats">
+            <div>Weapon: +4-7 Cold Damage</div>
+            <div>Armor/Helm: +24 to Mana</div>
+            <div>Shield: Cold Resist +22%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="socket-item" data-gem="flawless-sapphire">
+        <img src="img/yellowjewel2.png" class="sock-img">
+        <div class="sock-info">
+          <div class="sock-name">Yellow</div>
+          <div class="sock-stats">
+            <div>Weapon: +4-7 Cold Damage</div>
+            <div>Armor/Helm: +24 to Mana</div>
+            <div>Shield: Cold Resist +22%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="socket-item" data-gem="perfect-sapphire">
+        <img src="img/greenjewel2.png" class="sock-img">
+        <div class="sock-info">
+          <div class="sock-name">Green</div>
+          <div class="sock-stats">
+            <div>Weapon: +4-7 Cold Damage</div>
+            <div>Armor/Helm: +24 to Mana</div>
+            <div>Shield: Cold Resist +22%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="socket-item" data-gem="divine-sapphire">
+        <img src="img/redjewel2.png" class="sock-img">
+        <div class="sock-info">
+          <div class="sock-name">Red</div>
           <div class="sock-stats">
             <div>Weapon: +4-7 Cold Damage</div>
             <div>Armor/Helm: +24 to Mana</div>
@@ -6493,6 +6539,57 @@ merclvlValue.addEventListener('input', () => {
       </div>
     </div>
   </div>
+
+  <div class="socket-content" data-category="jewels">
+    <div class="socket-options">
+      <div class="socket-item" data-jewel="rare-jewel">
+        <img src="img/redjewel2.png" class="sock-img">
+        <div class="sock-info">
+          <div class="sock-name">Rare Jewel</div>
+          <div class="sock-stats">
+            <div>+15% Enhanced Damage</div>
+            <div>+9 To All Attributes</div>
+          </div>
+        </div>
+      </div>
+      <!-- Add more jewel options -->
+    </div>
+  </div>
+
+  <!-- Runes Content -->
+  <div class="socket-content" data-category="runes">
+    <div class="socket-options">
+      <div class="socket-item" data-rune="el">
+        <img src="img/el.png" class="sock-img">
+        <div class="sock-info">
+          <div class="sock-name">El Rune</div>
+          <div class="sock-stats">
+            <div>Weapon: +50 AR, +1 Light Radius</div>
+            <div>Armor/Helm: +15 Defense, +1 Light Radius</div>
+          </div>
+        </div>
+      </div>
+      <!-- Add more rune options -->
+    </div>
+  </div>
+
+  <!-- Runewords Content -->
+  <div class="socket-content" data-category="runewords">
+    <div class="socket-options">
+      <div class="socket-item" data-runeword="stealth">
+        <div class="sock-info">
+          <div class="sock-name">Stealth (Tal + Eth)</div>
+          <div class="sock-stats">
+            <div>+25% FRW</div>
+            <div>+25% FCR</div>
+            <div>+25% FHR</div>
+          </div>
+        </div>
+      </div>
+      <!-- Add more runeword options -->
+    </div>
+  </div>
+</div>
 </div>
 
 <!-- Add this where you want the socket container to appear -->
@@ -6509,202 +6606,324 @@ merclvlValue.addEventListener('input', () => {
 </div>
 
 <div class="socketcontainer2">
-  </div>
-  
+</div>
+<div class="socketcontainer3">
+</div>
+<div class="socketcontainer4">
+</div>
 
 
 <div class="helmsocket"></div>
 <div class="armorsocket"></div>
+<div class="weaponsocket"></div>
+<div class="offsocket"></div>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('socketModal');
-    const closeBtn = document.querySelector('.socket-close');
-    const socketItems = document.querySelectorAll('.socket-item');
-    const helmDropdown = document.getElementById('helms-dropdown');
-    const armorDropdown = document.getElementById('armors-dropdown');
-    const socketContainers = {
-      container1: document.querySelector('.socketcontainer'),
-      container2: document.querySelector('.socketcontainer2'),
-    };
-    let currentSocket = null;
+ document.addEventListener('DOMContentLoaded', () => {
+  const statsContainer = document.createElement('div');
+  const statsContainer2 = document.createElement('div');
+  const statsContainer3 = document.createElement('div');
+  const statsContainer4 = document.createElement('div');
 
-    // Function to attach event listeners to sockets
-    function attachSocketListeners(socket) {
-      // Left-click to open modal
-      socket.addEventListener('click', (e) => {
-        modal.style.display = 'block';
-        currentSocket = e.target.closest('.socket'); // Get the actual socket element
-      });
+  // Set IDs
+  statsContainer.id = 'helmsocketstats';
+  statsContainer2.id = 'weaponsocketstats';
+  statsContainer3.id = 'armorsocketstats';
+  statsContainer4.id = 'shieldsocketstats';
+  
+  // Set classes
+  statsContainer.className = 'helm-socket-stats';
+  statsContainer2.className = 'weapon-socket-stats';
+  statsContainer3.className = 'armor-socket-stats';
+  statsContainer4.className = 'shield-socket-stats';
 
-      // Right-click to remove gem
-      socket.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        if (!socket.classList.contains('empty')) {
-          socket.classList.add('empty');
-          const socketImg = socket.querySelector('.socket-sock-img');
-          socketImg.src = '';
-          socketImg.style.display = 'none';
-          socket.dataset.gemType = '';
-        }
-      });
-    }
+  // Append all containers
+  document.body.appendChild(statsContainer);
+  document.body.appendChild(statsContainer2);
+  document.body.appendChild(statsContainer3);
+  document.body.appendChild(statsContainer4);
+  
+  const modal = document.getElementById('socketModal');
+  const closeBtn = document.querySelector('.socket-close');
+  const socketItems = document.querySelectorAll('.socket-item');
+  const categoryTabs = document.querySelectorAll('.socket-category-tab');
+  const categoryContents = document.querySelectorAll('.socket-content');
+  
+  const helmDropdown = document.getElementById('helms-dropdown');
+  const armorDropdown = document.getElementById('armors-dropdown');
+  const weaponDropdown = document.getElementById('weapons-dropdown');
+  const offDropdown = document.getElementById('offs-dropdown');
+  
+  const socketContainers = {
+    container1: document.querySelector('.socketcontainer'),
+    container2: document.querySelector('.socketcontainer2'),
+    container3: document.querySelector('.socketcontainer3'),
+    container4: document.querySelector('.socketcontainer4'),
+  };
+  
+  let currentSocket = null;
+  let socketStates = {
+    container1: [],
+    container2: [],
+    container3: [],
+    container4: []
+  };
 
-    // Function to display the appropriate number of sockets for a given container
-    function updateSocketsForContainer(container, numberOfSockets) {
-      // Clear the existing sockets
-      container.innerHTML = '';
-
-      // Add the required number of sockets
-      for (let i = 0; i < numberOfSockets; i++) {
-        const socket = document.createElement('div');
-        socket.classList.add('socket', 'empty'); // Add necessary classes
-        socket.setAttribute('data-socket', i + 1); // Set a data attribute
-        const img = document.createElement('img');
-        img.src = '';
-        img.classList.add('socket-sock-img');
-        img.style.display = 'none';
-        socket.appendChild(img);
-        container.appendChild(socket);
-
-        // Attach event listeners to the newly created socket
-        attachSocketListeners(socket);
-      }
-    }
-
-    function updateSockets() {
-      const helmName = helmDropdown.value.trim();
+  // Category switching functionality
+  categoryTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      categoryTabs.forEach(t => t.classList.remove('active'));
+      categoryContents.forEach(c => c.classList.remove('active'));
       
-      let numberOfSocketsContainer1 = 3;
-      let numberOfSocketsContainer2 = 6;
+      tab.classList.add('active');
+      const category = tab.dataset.category;
+      document.querySelector(`.socket-content[data-category="${category}"]`).classList.add('active');
+    });
+  });
 
-  switch (helmName) {
-    case "Biggin's Bonnet":
-    case "Tarnhelm":
-    case "Coif of Glory":
-    case "Duskeep":
-    case "The Face of Horror":
-    case "Wormskull":
-    case "Howltusk":
-    case "Undead Crown":
-    case "Peasant Crown":
-    case "Rockstopper":
-    case "Stealskull":
-    case "Darksight Helm":
-    case "Blackhorn's Face":
-    case "Valkyrie Wing":
-    case "Crown of Thieves":
-    case "Harlequin Crest":
-    case "Steel Shade":
-    case "Andariel's Visage":
-    case "Giant Skull":
-    case "Veil of Steel":
-    case "Nightwing's Veil":
-    case "Crown of Ages":
-    case "Overlord's Helm":
-    case "Kira's Guardian":
-    case "Griffon's Eye":
-    case "Cyclopean Roar":
-    case "Arreat's Face":
-    case "Wolfhowl":
-    case "Demonhorn's Edge":
-    case "Halaberd's Reign":
-    case "Raekor's Virtue":
-    case "Quetzalcoatl":
-    case "Jalal's Mane":
-    case "Cerebus' Bite":
-    case "Denmother":
-    case "Ravenlore":
-    case "Spirit Keeper":
-    case "Ursa's Nightmare":
-    case "Arcanna's Head":
-      numberOfSocketsContainer1 = 2;
-      break;
-    default:
-      numberOfSocketsContainer1 = 3;
-  }
+  
+    function getGemStats(gemType) {
+  const statsMap = {
+    'chipped-sapphire': {
+      helm: '+10 to Mana',
+      weapon: '+1-3 Cold Damage',
+      armor: '+10 to Mana',
+      shield: 'Cold Resist +12%'
+    },
+    'flawed-sapphire': {
+      helm: '+17 to Mana',
+      weapon: '+3-5 Cold Damage', 
+      armor: '+17 to Mana',
+      shield: 'Cold Resist +16%'
+    },
+    'sapphire': {
+      helm: '+24 to Mana',
+      weapon: '+4-7 Cold Damage',
+      armor: '+24 to Mana', 
+      shield: 'Cold Resist +22%'
+    },
+    'flawless-sapphire': {
+      helm: '+30 to Mana',
+      weapon: '+6-10 Cold Damage',
+      armor: '+30 to Mana',
+      shield: 'Cold Resist +28%'
+    },
+    'perfect-sapphire': {
+      helm: '+38 to Mana',
+      weapon: '+10-14 Cold Damage',
+      armor: '+38 to Mana',
+      shield: 'Cold Resist +36%'
+    },
+    'divine-sapphire': {
+      helm: '+1000 to Mana',
+      weapon: '+20-300 Cold Damage',
+      armor: '+1000 to Mana',
+      shield: 'Cold Resist +500%'
+    }
+  };
+  return statsMap[gemType] || { helm: '', weapon: '', armor: '', shield: '' };
+}
 
-  const armorName = armorDropdown.value.trim();
-  switch (armorName) {
-    case "Greyform":
-    case "Blinkbat's Form":
-    case "The Centurion":
-    case "Twitchthroe":
-    case "Darkglow":
-    case "Hawkmail":
-    case "Sparking Mail":
-    case "Venom Ward":
-    case "Iceblink":
-    case "Boneflesh":
-    case "Rockfleece":
-    case "Rattlecage":
-    case "Heavenly Garb":
-    case "Goldskin":
-    case "Silks of the Victor":
-    case "Spirit Shroud":
-    case "Vipermagi":
-      numberOfSocketsContainer2 = 2; // Set 2 sockets for these armors
-      break;
-    default:
-      numberOfSocketsContainer2 = 6; // Default to 1 socket for any other armor
-  }
+  // Keep your existing functions...
+  function updateStatsDisplay() {
+      const helmStats = document.getElementById('helmsocketstats');
+  const weaponStats = document.getElementById('weaponsocketstats');
+  const armorStats = document.getElementById('armorsocketstats');
+  const shieldStats = document.getElementById('shieldsocketstats');
 
+  // Update helm stats
+  const helmSocketStats = socketStates.container1
+    .map(socket => socket.gemStats?.helm || '')
+    .filter(stat => stat !== '')
+    .join('<br>');
+  helmStats.innerHTML = helmSocketStats || 'No socketables socketed';
 
-      // Update each container
-      updateSocketsForContainer(socketContainers.container1, numberOfSocketsContainer1);
-      updateSocketsForContainer(socketContainers.container2, numberOfSocketsContainer2);
+  // Update weapon stats  
+  const weaponSocketStats = socketStates.container3
+    .map(socket => socket.gemStats?.weapon || '')
+    .filter(stat => stat !== '')
+    .join('<br>');
+  weaponStats.innerHTML = weaponSocketStats || 'No socketables socketed';
+
+  // Update armor stats
+  const armorSocketStats = socketStates.container2
+    .map(socket => socket.gemStats?.armor || '')
+    .filter(stat => stat !== '')
+    .join('<br>');
+  armorStats.innerHTML = armorSocketStats || 'No socketables socketed';
+
+  // Update shield stats
+  const shieldSocketStats = socketStates.container4
+    .map(socket => socket.gemStats?.shield || '')
+    .filter(stat => stat !== '')
+    .join('<br>');
+  shieldStats.innerHTML = shieldSocketStats || 'No socketables socketed';
+}
+
+  function updateSocketsForContainer(container, numberOfSockets, containerKey) {
+    while (socketStates[containerKey].length < numberOfSockets) {
+      socketStates[containerKey].push({
+        gemType: '',
+        gemImg: ''
+      });
+    }
+    
+    container.innerHTML = '';
+
+    for (let i = 0; i < numberOfSockets; i++) {
+      const socket = document.createElement('div');
+      socket.classList.add('socket');
+      
+      const img = document.createElement('img');
+      img.classList.add('socket-sock-img');
+      
+      const state = socketStates[containerKey][i];
+      if (state.gemImg) {
+        img.src = state.gemImg;
+        img.style.display = 'block';
+        socket.classList.remove('empty');
+      } else {
+        img.src = '';
+        img.style.display = 'none';
+        socket.classList.add('empty');
+      }
+      
+      socket.appendChild(img);
+      container.appendChild(socket);
+      
+      attachSocketListeners(socket, containerKey, i);
     }
 
-    // Gem item selection handler
-    socketItems.forEach(item => {
-      item.addEventListener('click', (e) => {
-        const actualItem = e.target.closest('.socket-item'); // Get the clicked item
+    socketStates[containerKey] = socketStates[containerKey].slice(0, numberOfSockets);
+  }
 
-        if (currentSocket) {
-          const gemType = actualItem.dataset.gem;
-          const gemImg = actualItem.querySelector('.sock-img').src;
-
-          // Remove empty class
-          currentSocket.classList.remove('empty');
-
-          // Get the image element inside the socket
-          const socketImg = currentSocket.querySelector('.socket-sock-img');
-
-          // Update image
-          socketImg.src = gemImg;
-          socketImg.alt = gemType;
-          socketImg.style.display = 'block';
-
-          // Store gem type
-          currentSocket.dataset.gemType = gemType;
-
-          // Close modal
-          modal.style.display = 'none';
-          currentSocket = null;
-        }
-      });
+  function attachSocketListeners(socket, containerKey, socketIndex) {
+    socket.addEventListener('click', (e) => {
+      modal.style.display = 'block';
+      currentSocket = {
+        element: socket,
+        containerKey: containerKey,
+        index: socketIndex
+      };
     });
 
-    // Close modal button handler
-    closeBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
-      currentSocket = null;
+    socket.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      socket.classList.add('empty');
+      const socketImg = socket.querySelector('.socket-sock-img');
+      socketImg.src = '';
+      socketImg.style.display = 'none';
+      
+      socketStates[containerKey][socketIndex] = {
+        gemType: '',
+        gemImg: '',
+        gemStats: null
+      };
+      
+      updateStatsDisplay();
     });
+  }
 
-    // Close modal when clicking outside
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) {
+  function updateSockets() {
+    const getSocketCount = (itemName, defaultCount, specialCases) => {
+      return specialCases.includes(itemName.trim()) ? 2 : defaultCount;
+    };
+
+    const SocketHelms = [
+      "Biggin's Bonnet", "Tarnhelm", "Coif of Glory", "Duskeep", "The Face of Horror",
+  "Wormskull", "Howltusk", "Undead Crown", "Peasant Crown", "Rockstopper", "Stealskull",
+  "Darksight Helm", "Blackhorn's Face", "Valkyrie Wing", "Crown of Thieves", "Harlequin Crest",
+  "Steel Shade", "Andariel's Visage", "Giant Skull", "Veil of Steel", "Nightwing's Veil",
+  "Crown of Ages", "Overlord's Helm", "Kira's Guardian", "Griffon's Eye", "Cyclopean Roar",
+  "Arreat's Face", "Wolfhowl", "Demonhorn's Edge", "Halaberd's Reign", "Raekor's Virtue",
+  "Quetzalcoatl", "Jalal's Mane", "Cerebus' Bite", "Denmother", "Ravenlore", "Spirit Keeper",
+  "Ursa's Nightmare", "Arcanna's Head"
+    ];
+
+    const SocketArmors = [
+      "Greyform", "Blinkbat's Form", "The Centurion", "Twitchthroe", "Darkglow", "Hawkmail",
+  "Sparking Mail", "Venom Ward", "Iceblink", "Boneflesh", "Rockfleece", "Rattlecage",
+  "Heavenly Garb", "Goldskin", "Silks of the Victor", "Spirit Shroud", "Vipermagi"
+    ];
+
+    const SocketWeapons = [
+      "The Gnasher", "Deathspade", "Bladebone", "Skull Splitter", "Rakescar", "Axe of Fechmar"
+    ];
+
+    const SocketOffhands = [
+      "Pelta Lunata", "Umbral Disk", "Stormguild", "Steelclash", "Swordback Hold", "Spiked Shield"
+    ];
+
+    const counts = {
+      container1: getSocketCount(helmDropdown.value, 3, SocketHelms),
+      container2: getSocketCount(armorDropdown.value, 6, SocketArmors),
+      container3: getSocketCount(weaponDropdown.value, 6, SocketWeapons),
+      container4: getSocketCount(offDropdown.value, 6, SocketOffhands)
+    };
+
+    Object.entries(counts).forEach(([key, count]) => {
+      updateSocketsForContainer(socketContainers[key], count, key);
+    });
+  }
+
+  // Handle gem selection
+  socketItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      const actualItem = e.target.closest('.socket-item');
+      
+      if (currentSocket) {
+        const gemType = actualItem.dataset.gem;
+        const gemImg = actualItem.querySelector('.sock-img').src;
+        const gemStats = getGemStats(gemType);
+
+     // Update DOM
+     currentSocket.element.classList.remove('empty');
+        const socketImg = currentSocket.element.querySelector('.socket-sock-img');
+        socketImg.src = gemImg;
+        socketImg.style.display = 'block';
+        
+        // Update state with stats
+        socketStates[currentSocket.containerKey][currentSocket.index] = {
+          gemType: gemType,
+          gemImg: gemImg,
+          gemStats: gemStats
+        };
+        
+        updateStatsDisplay();
         modal.style.display = 'none';
         currentSocket = null;
       }
     });
-
-    // Run the function initially
-    updateSockets();
-
-    // Update sockets when the dropdown changes
-    helmDropdown.addEventListener('change', updateSockets);
-    armorDropdown.addEventListener('change', updateSockets);
   });
+
+  updateSockets();
+  [helmDropdown, armorDropdown, weaponDropdown, offDropdown].forEach(
+    dropdown => dropdown.addEventListener('change', updateSockets)
+  );
+
+
+
+
+
+
+  // Close modal handlers
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+    currentSocket = null;
+  });
+
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+      currentSocket = null;
+    }
+  });
+
+  // Initial setup and dropdown change handlers
+  updateSockets();
+  [helmDropdown, armorDropdown, weaponDropdown, offDropdown].forEach(
+    dropdown => dropdown.addEventListener('change', updateSockets)
+  );
+});
 </script>
 </body>
 </html>
