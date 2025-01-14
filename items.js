@@ -1,5 +1,5 @@
 const itemList = {
-  "Biggins Bonnet": {
+  "Biggin's Bonnet": {
     description:
       "Biggin's Bonnet<br>Cap<br>Defense: 19<br>Required Level: 3<br>+50% Enhanced Damage<br>50 to Attack Rating<br>+14 Defense<br>+15 to Life<br>+15 to Mana<br>",
     properties: {

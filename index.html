@@ -124,7 +124,7 @@ Resistance to fire %
 <label for="helms-dropdown">Helm:</label>
 <select id="helms-dropdown" name="helms">
  
-<option value="Biggins Bonnet">Biggin's Bonnet</option>
+<option value="Biggin's Bonnet">Biggin's Bonnet</option>
 <option value="Tarnhelm">Tarnhelm</option>
 <option value="Coif of Glory">Coif of Glory</option>
 <option value="Duskeep">Duskeep</option>
@@ -6453,7 +6453,7 @@ merclvlValue.addEventListener('input', () => {
 <div id="socketModal" class="socketingmodal">
   <div class="socketmodal-content">
     <span class="socket-close">&times;</span>
-    <h2>Socket Options</h2>
+    <h2>Socket Options, with corrupts u will be able to add more sockets</h2>
     <div class="socket-options">
       <!-- Gem options -->
       <div class="socket-item" data-gem="chipped-sapphire">
@@ -6509,25 +6509,7 @@ merclvlValue.addEventListener('input', () => {
 </div>
 
 <div class="socketcontainer2">
-  <div class="socket">
-    <img src="" class="socket-sock-img" style="display: none;">
   </div>
-  <div class="socket">
-    <img src="" class="socket-sock-img" style="display: none;">
-  </div>
-  <div class="socket">
-    <img src="" class="socket-sock-img" style="display: none;">
-  </div>
-  <div class="socket">
-    <img src="" class="socket-sock-img" style="display: none;">
-  </div>
-  <div class="socket">
-    <img src="" class="socket-sock-img" style="display: none;">
-  </div>
-  <div class="socket">
-    <img src="" class="socket-sock-img" style="display: none;">
-  </div>
-</div>
   
 
 
@@ -6535,119 +6517,194 @@ merclvlValue.addEventListener('input', () => {
 <div class="armorsocket"></div>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('socketModal');
-  const sockets = document.querySelectorAll('.socket');
-  const closeBtn = document.querySelector('.socket-close');
-  const socketItems = document.querySelectorAll('.socket-item');
-  let currentSocket = null;
+    const modal = document.getElementById('socketModal');
+    const closeBtn = document.querySelector('.socket-close');
+    const socketItems = document.querySelectorAll('.socket-item');
+    const helmDropdown = document.getElementById('helms-dropdown');
+    const armorDropdown = document.getElementById('armors-dropdown');
+    const socketContainers = {
+      container1: document.querySelector('.socketcontainer'),
+      container2: document.querySelector('.socketcontainer2'),
+    };
+    let currentSocket = null;
 
-  // Socket click handler to open modal
-  sockets.forEach(socket => {
-    socket.addEventListener('click', (e) => {
-      modal.style.display = 'block';
-      // Ensure we get the actual socket, even if image is clicked
-      currentSocket = e.target.closest('.socket');
-    });
-  });
+    // Function to attach event listeners to sockets
+    function attachSocketListeners(socket) {
+      // Left-click to open modal
+      socket.addEventListener('click', (e) => {
+        modal.style.display = 'block';
+        currentSocket = e.target.closest('.socket'); // Get the actual socket element
+      });
 
-  // Gem item selection handler
-  socketItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-      // Ensure we can select the entire item, including its children
-      const actualItem = e.target.closest('.socket-item');
+      // Right-click to remove gem
+      socket.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        if (!socket.classList.contains('empty')) {
+          socket.classList.add('empty');
+          const socketImg = socket.querySelector('.socket-sock-img');
+          socketImg.src = '';
+          socketImg.style.display = 'none';
+          socket.dataset.gemType = '';
+        }
+      });
+    }
+
+    // Function to display the appropriate number of sockets for a given container
+    function updateSocketsForContainer(container, numberOfSockets) {
+      // Clear the existing sockets
+      container.innerHTML = '';
+
+      // Add the required number of sockets
+      for (let i = 0; i < numberOfSockets; i++) {
+        const socket = document.createElement('div');
+        socket.classList.add('socket', 'empty'); // Add necessary classes
+        socket.setAttribute('data-socket', i + 1); // Set a data attribute
+        const img = document.createElement('img');
+        img.src = '';
+        img.classList.add('socket-sock-img');
+        img.style.display = 'none';
+        socket.appendChild(img);
+        container.appendChild(socket);
+
+        // Attach event listeners to the newly created socket
+        attachSocketListeners(socket);
+      }
+    }
+
+    function updateSockets() {
+      const helmName = helmDropdown.value.trim();
       
-      if (currentSocket) {
-        const gemType = actualItem.dataset.gem;
-        const gemImg = actualItem.querySelector('.sock-img').src;
-        
-        // Remove empty class
-        currentSocket.classList.remove('empty');
-        
-        // Get the image element inside the socket
-        const socketImg = currentSocket.querySelector('.socket-sock-img');
-        
-        // Update image
-        socketImg.src = gemImg;
-        socketImg.alt = gemType;
-        socketImg.style.display = 'block';
-        
-        // Store gem type
-        currentSocket.dataset.gemType = gemType;
-        
-        // Close modal
+      let numberOfSocketsContainer1 = 3;
+      let numberOfSocketsContainer2 = 6;
+
+  switch (helmName) {
+    case "Biggin's Bonnet":
+    case "Tarnhelm":
+    case "Coif of Glory":
+    case "Duskeep":
+    case "The Face of Horror":
+    case "Wormskull":
+    case "Howltusk":
+    case "Undead Crown":
+    case "Peasant Crown":
+    case "Rockstopper":
+    case "Stealskull":
+    case "Darksight Helm":
+    case "Blackhorn's Face":
+    case "Valkyrie Wing":
+    case "Crown of Thieves":
+    case "Harlequin Crest":
+    case "Steel Shade":
+    case "Andariel's Visage":
+    case "Giant Skull":
+    case "Veil of Steel":
+    case "Nightwing's Veil":
+    case "Crown of Ages":
+    case "Overlord's Helm":
+    case "Kira's Guardian":
+    case "Griffon's Eye":
+    case "Cyclopean Roar":
+    case "Arreat's Face":
+    case "Wolfhowl":
+    case "Demonhorn's Edge":
+    case "Halaberd's Reign":
+    case "Raekor's Virtue":
+    case "Quetzalcoatl":
+    case "Jalal's Mane":
+    case "Cerebus' Bite":
+    case "Denmother":
+    case "Ravenlore":
+    case "Spirit Keeper":
+    case "Ursa's Nightmare":
+    case "Arcanna's Head":
+      numberOfSocketsContainer1 = 2;
+      break;
+    default:
+      numberOfSocketsContainer1 = 3;
+  }
+
+  const armorName = armorDropdown.value.trim();
+  switch (armorName) {
+    case "Greyform":
+    case "Blinkbat's Form":
+    case "The Centurion":
+    case "Twitchthroe":
+    case "Darkglow":
+    case "Hawkmail":
+    case "Sparking Mail":
+    case "Venom Ward":
+    case "Iceblink":
+    case "Boneflesh":
+    case "Rockfleece":
+    case "Rattlecage":
+    case "Heavenly Garb":
+    case "Goldskin":
+    case "Silks of the Victor":
+    case "Spirit Shroud":
+    case "Vipermagi":
+      numberOfSocketsContainer2 = 2; // Set 2 sockets for these armors
+      break;
+    default:
+      numberOfSocketsContainer2 = 6; // Default to 1 socket for any other armor
+  }
+
+
+      // Update each container
+      updateSocketsForContainer(socketContainers.container1, numberOfSocketsContainer1);
+      updateSocketsForContainer(socketContainers.container2, numberOfSocketsContainer2);
+    }
+
+    // Gem item selection handler
+    socketItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        const actualItem = e.target.closest('.socket-item'); // Get the clicked item
+
+        if (currentSocket) {
+          const gemType = actualItem.dataset.gem;
+          const gemImg = actualItem.querySelector('.sock-img').src;
+
+          // Remove empty class
+          currentSocket.classList.remove('empty');
+
+          // Get the image element inside the socket
+          const socketImg = currentSocket.querySelector('.socket-sock-img');
+
+          // Update image
+          socketImg.src = gemImg;
+          socketImg.alt = gemType;
+          socketImg.style.display = 'block';
+
+          // Store gem type
+          currentSocket.dataset.gemType = gemType;
+
+          // Close modal
+          modal.style.display = 'none';
+          currentSocket = null;
+        }
+      });
+    });
+
+    // Close modal button handler
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      currentSocket = null;
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
         modal.style.display = 'none';
         currentSocket = null;
       }
     });
+
+    // Run the function initially
+    updateSockets();
+
+    // Update sockets when the dropdown changes
+    helmDropdown.addEventListener('change', updateSockets);
+    armorDropdown.addEventListener('change', updateSockets);
   });
-
-  // Socket right-click (context menu) to remove gem
-  sockets.forEach(socket => {
-    socket.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      if (!socket.classList.contains('empty')) {
-        socket.classList.add('empty');
-        const socketImg = socket.querySelector('.socket-sock-img');
-        socketImg.src = '';
-        socketImg.style.display = 'none';
-        socket.dataset.gemType = '';
-      }
-    });
-  });
-
-  // Close modal button handler
-  closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-    currentSocket = null;
-  });
-
-  // Close modal when clicking outside
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.style.display = 'none';
-      currentSocket = null;
-    }
-  });
-});
-
-
-</script>
-<script>
-  const weaponDropdown = document.getElementById('weapons-dropdown');
-const socketContainer = document.querySelector('.socketcontainer');
-
-// Function to display the appropriate number of sockets
-function updateSockets() {
-  const weaponName = weaponDropdown.textContent.trim(); // Get dropdown text
-  let numberOfSockets = 1; // Default number of sockets
-
-  // Check for specific weapon and adjust the number of sockets
-  if (weaponDropdown.value === "Rakescar") {
-    numberOfSockets = 2; // Only display 3 sockets for Rakescar
-  }
-
-  // Clear the existing sockets
-  socketContainer.innerHTML = '';
-
-  // Add the required number of sockets
-  for (let i = 0; i < numberOfSockets; i++) {
-    const socket = document.createElement('div');
-    socket.classList.add('socket', 'empty'); // Add necessary classes
-    socket.setAttribute('data-socket', i + 1); // Set a data attribute
-    const img = document.createElement('img');
-    img.src = '';
-    img.classList.add('socket-sock-img');
-    img.style.display = 'none';
-    socket.appendChild(img);
-    socketContainer.appendChild(socket);
-  }
-}
-
-// Run the function initially
-updateSockets();
-
-// Optional: If the dropdown changes dynamically, update the sockets
-weaponDropdown.addEventListener('change', updateSockets);
 </script>
 </body>
 </html>

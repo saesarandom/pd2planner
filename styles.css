@@ -1454,8 +1454,8 @@ input[type="number"] {
 option {
   background-color: rgb(196, 196, 192);
 }
-select:has(option[value="Biggins Bonnet"]:checked),
-option[value="Biggins Bonnet"] {
+select:has(option[value="Biggin's Bonnet"]:checked),
+option[value="Biggin's Bonnet"] {
   background-color: rgb(186, 174, 82);
 }
 select:has(option[value="Tarnhelm"]:checked),
