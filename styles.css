@@ -2402,3 +2402,9 @@ option[value="Arcanna's Head"] {
 .socket-content.active {
   display: block;
 }
+
+.socket-stats {
+  margin-top: 10px;
+  color: #3a09b6; /* Light green color to make it stand out */
+  font-size: 14px;
+}

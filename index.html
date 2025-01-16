@@ -168,6 +168,7 @@ Resistance to fire %
   
 </select>
 <div id="helm-info"></div>
+<!-- <div id="helm-socket-display"></div> -->
 </div>
  
 
@@ -4015,10 +4016,11 @@ skillvalues.forEach(skillvalue => {
   <script src="skillRestriction.js"></script>
   <script src="skillUpdates.js"></script>
   <script src="DPSSimulator.js"></script>
-   <!-- <script src="enhancedDamage.js"></script> -->
+  <!-- <script src="enhancedDamage.js"></script> -->
   <script src="login.js"></script>
   <script src="achievements.obfuscated.js"></script>
-    <!-- <script src="damageCalculator.js"></script> -->
+  <!-- <script src="damageCalculator.js"></script> -->
+  <script src="socketDisplay.js"></script>
     
       
       
@@ -7848,6 +7850,27 @@ function combineStats(stats) {
   stats.forEach(stat => {
     if (!stat) return;
     
+// Special case for Hel rune's "Requirements -X%"
+if (stat.includes('Requirements')) {
+      const match = stat.match(/Requirements -(\d+)%/);
+      if (match) {
+        const value = parseFloat(match[1]);
+        if (statMap.has('Requirements')) {
+          const current = statMap.get('Requirements');
+          statMap.set('Requirements', {
+            type: 'requirements',
+            value: current.value + value
+          });
+        } else {
+          statMap.set('Requirements', {
+            type: 'requirements',
+            value: value
+          });
+        }
+        return;
+      }
+    }
+
     // Check for range values first (e.g., "1-50 Lightning Damage")
     const rangeMatch = stat.match(/([+-]?)(\d+)-(\d+)(.+)/);
     if (rangeMatch) {
@@ -7904,6 +7927,9 @@ function combineStats(stats) {
   // Convert back to strings
   return Array.from(statMap.entries())
     .map(([text, stat]) => {
+      if (stat.type === 'requirements') {
+        return `Requirements -${stat.value}%`;
+      }
       if (stat.type === 'range') {
         return `+${stat.min}-${stat.max} ${text}`;
       }
@@ -7921,16 +7947,25 @@ function updateStatsDisplay() {
   const armorStats = document.getElementById('armorsocketstats');
   const shieldStats = document.getElementById('shieldsocketstats');
 
-  // Helper function to process stats for each container
+  // Get the current number of visible sockets for each container
+  const visibleSockets = {
+    container1: document.querySelector('.socketcontainer')?.childElementCount || 0,
+    container2: document.querySelector('.socketcontainer2')?.childElementCount || 0,
+    container3: document.querySelector('.socketcontainer3')?.childElementCount || 0,
+    container4: document.querySelector('.socketcontainer4')?.childElementCount || 0
+  };
+
   function processContainerStats(container, statType) {
+    // Only process stats for currently visible sockets
     const stats = socketStates[container]
+      .slice(0, visibleSockets[container]) // Only take stats from visible sockets
       .map(socket => socket.gemStats?.[statType] || '')
       .filter(stat => stat !== '');
     
     return combineStats(stats).join('<br>') || 'No socketables socketed';
   }
 
-  // Update all stat displays with combined stats
+  // Update all stat displays
   helmStats.innerHTML = processContainerStats('container1', 'helm');
   weaponStats.innerHTML = processContainerStats('container3', 'weapon');
   armorStats.innerHTML = processContainerStats('container2', 'armor');
@@ -7938,69 +7973,75 @@ function updateStatsDisplay() {
 }
 
 
-  function updateSocketsForContainer(container, numberOfSockets, containerKey) {
-    while (socketStates[containerKey].length < numberOfSockets) {
-      socketStates[containerKey].push({
-        gemType: '',
-        gemImg: ''
-      });
+
+function updateSocketsForContainer(container, numberOfSockets, containerKey) {
+  // Add new empty sockets if needed
+  while (socketStates[containerKey].length < numberOfSockets) {
+    socketStates[containerKey].push({
+      gemType: '',
+      gemImg: '',
+      gemStats: null
+    });
+  }
+  
+  // Clear and rebuild the container's DOM
+  container.innerHTML = '';
+
+  // Only display up to numberOfSockets, but don't delete excess sockets from state
+  for (let i = 0; i < numberOfSockets; i++) {
+    const socket = document.createElement('div');
+    socket.classList.add('socket');
+    
+    const img = document.createElement('img');
+    img.classList.add('socket-sock-img');
+    
+    const state = socketStates[containerKey][i];
+    if (state.gemImg) {
+      img.src = state.gemImg;
+      img.style.display = 'block';
+      socket.classList.remove('empty');
+    } else {
+      img.src = '';
+      img.style.display = 'none';
+      socket.classList.add('empty');
     }
     
-    container.innerHTML = '';
-
-    for (let i = 0; i < numberOfSockets; i++) {
-      const socket = document.createElement('div');
-      socket.classList.add('socket');
-      
-      const img = document.createElement('img');
-      img.classList.add('socket-sock-img');
-      
-      const state = socketStates[containerKey][i];
-      if (state.gemImg) {
-        img.src = state.gemImg;
-        img.style.display = 'block';
-        socket.classList.remove('empty');
-      } else {
-        img.src = '';
-        img.style.display = 'none';
-        socket.classList.add('empty');
-      }
-      
-      socket.appendChild(img);
-      container.appendChild(socket);
-      
-      attachSocketListeners(socket, containerKey, i);
-    }
-
-    socketStates[containerKey] = socketStates[containerKey].slice(0, numberOfSockets);
+    socket.appendChild(img);
+    container.appendChild(socket);
+    
+    attachSocketListeners(socket, containerKey, i);
   }
+  
+  // Update stats display to show only active socket stats
+  updateStatsDisplay();
+}
 
-  function attachSocketListeners(socket, containerKey, socketIndex) {
-    socket.addEventListener('click', (e) => {
-      modal.style.display = 'block';
-      currentSocket = {
-        element: socket,
-        containerKey: containerKey,
-        index: socketIndex
-      };
-    });
+function attachSocketListeners(socket, containerKey, socketIndex) {
+  socket.addEventListener('click', (e) => {
+    modal.style.display = 'block';
+    currentSocket = {
+      element: socket,
+      containerKey: containerKey,
+      index: socketIndex
+    };
+  });
 
-    socket.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      socket.classList.add('empty');
-      const socketImg = socket.querySelector('.socket-sock-img');
-      socketImg.src = '';
-      socketImg.style.display = 'none';
-      
-      socketStates[containerKey][socketIndex] = {
-        gemType: '',
-        gemImg: '',
-        gemStats: null
-      };
-      
-      updateStatsDisplay();
-    });
-  }
+  socket.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    socket.classList.add('empty');
+    const socketImg = socket.querySelector('.socket-sock-img');
+    socketImg.src = '';
+    socketImg.style.display = 'none';
+    
+    socketStates[containerKey][socketIndex] = {
+      gemType: '',
+      gemImg: '',
+      gemStats: null
+    };
+    
+    updateStatsDisplay();
+  });
+}
 
   function updateSockets() {
     const getSocketCount = (itemName, defaultCount, specialCases) => {
@@ -8107,5 +8148,140 @@ function updateStatsDisplay() {
   );
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const gemStatMap = {
+    'chipped-sapphire': {
+      helm: '+10 to Mana',
+      armor: '+10 to Mana',
+      weapon: '+1-3 Cold Damage',
+      shield: 'Cold Resist +12%'
+    },
+    'perfect-ruby': {
+      helm: '+40 to Life',
+      armor: '+40 to Life',
+      weapon: 'Adds 15-20 Fire Damage',
+      shield: 'Fire Resist +40%'
+    }
+    // Add more gem types as needed
+  };
+
+  function getSocketStats(container, itemType) {
+    const sockets = container.querySelectorAll('.socket-sock-img');
+    const stats = [];
+
+    sockets.forEach(socket => {
+      if (socket.src) {
+        const gemName = socket.src.split('/').pop().replace('.png', '');
+        const gemStats = gemStatMap[gemName]?.[itemType];
+        if (gemStats) {
+          stats.push(gemStats);
+        }
+      }
+    });
+
+    return stats;
+  }
+
+  function updateSocketDisplay() {
+    console.log('[Socket Display] Updating socket display');
+
+    const helmSocketStats = document.getElementsByClassName('helm-socket-stats');
+    const armorSocketStats = document.getElementsByClassName('armor-socket-stats');
+    const weaponSocketStats = document.getElementsByClassName('weapon-socket-stats');
+    const shieldSocketStats = document.getElementsByClassName('shield-socket-stats');
+
+    const helmStatsDiv = document.getElementById('helm-info');
+    const armorStatsDiv = document.getElementById('armor-info');
+    const weaponStatsDiv = document.getElementById('weapon-info');
+    const shieldStatsDiv = document.getElementById('off-info');
+
+    if (helmStatsDiv && helmSocketStats.length > 0) {
+      helmStatsDiv.innerHTML += ` <span class="socket-stats">${helmSocketStats[0].textContent}</span>`;
+    } else {
+      console.warn('[Socket Display] Helm info div or socket stats not found');
+    }
+
+    if (armorStatsDiv && armorSocketStats.length > 0) {
+      armorStatsDiv.innerHTML += ` (${armorSocketStats[0].textContent})`;
+    } else {
+      console.warn('[Socket Display] Armor info div or socket stats not found');
+    }
+
+    if (weaponStatsDiv && weaponSocketStats.length > 0) {
+      weaponStatsDiv.innerHTML += ` (${weaponSocketStats[0].textContent})`;
+    } else {
+      console.warn('[Socket Display] Weapon info div or socket stats not found');
+    }
+
+    if (shieldStatsDiv && shieldSocketStats.length > 0) {
+      shieldStatsDiv.innerHTML += ` (${shieldSocketStats[0].textContent})`;
+    } else {
+      console.warn('[Socket Display] Shield info div or socket stats not found');
+    }
+  }
+
+  // Add listeners to dropdowns
+  const dropdownMap = {
+    'helms-dropdown': updateSocketDisplay,
+    'armors-dropdown': updateSocketDisplay,
+    'weapons-dropdown': updateSocketDisplay,
+    'offs-dropdown': updateSocketDisplay
+  };
+
+  Object.entries(dropdownMap).forEach(([dropdownId, handler]) => {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+      dropdown.addEventListener('change', handler);
+    } else {
+      console.warn(`[Socket Display] Dropdown with ID ${dropdownId} not found.`);
+    }
+  });
+
+  // Observer for socket state changes
+  const observer = new MutationObserver(updateSocketDisplay);
+
+  const socketContainers = [
+    '.helmsocket',
+    '.armorsocket',
+    '.weaponsocket',
+    '.offsocket'
+  ];
+
+  socketContainers.forEach(containerSelector => {
+    const container = document.querySelector(containerSelector);
+    if (container) {
+      observer.observe(container, {
+        childList: true,
+        subtree: true,
+        attributes: true
+      });
+    } else {
+      console.warn(`[Socket Display] Container not found: ${containerSelector}`);
+    }
+  });
+
+  // Initial update
+  updateSocketDisplay();
+
+  const style = document.createElement('style');
+style.textContent = `
+  .socket-stats {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    color: #3a09b6;
+    font-size: 16px;
+  }
+`;
+document.head.appendChild(style);
+});
+
+
+
+
+</script>
+
+<!-- <div id="socket-displays"></div> -->
 </body>
 </html>
