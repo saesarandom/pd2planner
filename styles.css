@@ -2408,3 +2408,7 @@ option[value="Arcanna's Head"] {
   color: #3a09b6; /* Light green color to make it stand out */
   font-size: 14px;
 }
+
+.socket-stat {
+  display: block !important;
+}

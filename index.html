@@ -7843,6 +7843,66 @@ merclvlValue.addEventListener('input', () => {
   return statsMap[gemType] || { helm: '', weapon: '', armor: '', shield: '' };
 }
 
+function splitStats(stat) {
+  // Split stats that are separated by commas or contain multiple properties
+  if (stat.includes(',')) {
+    return stat.split(',').map(s => s.trim());
+  }
+  
+  // Handle compound stats with 'and'
+  if (stat.includes(' and ')) {
+    return stat.split(' and ').map(s => s.trim());
+  }
+  
+  // For stats with multiple properties but no explicit separator
+  if (stat.includes('Regenerate') && stat.includes('after')) {
+    const parts = stat.match(/(Regenerate.*?)(\+\d+ to.*)/);
+    if (parts) {
+      return [parts[1].trim(), parts[2].trim()];
+    }
+  }
+  
+  return [stat];
+}
+
+function formatStat(stat) {
+  // Clean up the stat
+  stat = stat.trim();
+  
+  // Handle resist cases
+  const resistMatch = stat.match(/(\w+)\s*Resist\s*\+?(\d+)%/);
+  if (resistMatch) {
+    return `${resistMatch[1]} Resist +${resistMatch[2]}%`;
+  }
+
+  // Handle "to Mana after each Kill" cases
+  if (stat.includes('to Mana after each Kill')) {
+    if (!stat.startsWith('+')) {
+      return '+' + stat;
+    }
+  }
+
+  // Handle special prefixed stats that shouldn't start with +
+  if (stat.startsWith('Regenerate') ||
+      stat.startsWith('Replenish') ||
+      stat.startsWith('Increase') ||
+      stat.includes('Damage Taken') ||
+      stat === 'Cannot Be Frozen' ||
+      stat === 'Indestructible' ||
+      stat === 'Prevent Monster Heal' ||
+      stat === 'Knockback' ||
+      stat === 'Ignore Target\'s Defense') {
+    return stat;
+  }
+
+  // Add + to numeric stats if missing
+  if (stat.match(/^\d/)) {
+    return '+' + stat;
+  }
+
+  return stat;
+}
+
 
 function combineStats(stats) {
   const statMap = new Map();
@@ -7850,94 +7910,113 @@ function combineStats(stats) {
   stats.forEach(stat => {
     if (!stat) return;
     
-// Special case for Hel rune's "Requirements -X%"
-if (stat.includes('Requirements')) {
-      const match = stat.match(/Requirements -(\d+)%/);
-      if (match) {
-        const value = parseFloat(match[1]);
-        if (statMap.has('Requirements')) {
-          const current = statMap.get('Requirements');
-          statMap.set('Requirements', {
-            type: 'requirements',
-            value: current.value + value
+    // Split multiple stats separated by commas or 'and'
+    const individualStats = stat.split(/,\s*|\s+and\s+/);
+    
+    individualStats.forEach(singleStat => {
+      // Clean up the stat
+      singleStat = singleStat.trim();
+      
+      // Special cases
+      if (singleStat.startsWith('Regenerate') || 
+          singleStat.startsWith('Replenish') ||
+          singleStat.startsWith('Increase') ||
+          singleStat.includes('Damage Taken')) {
+        // Keep these stats as is, they're properly formatted
+        if (statMap.has(singleStat)) {
+          // If it's a percentage stat, add the numbers
+          const percentMatch = singleStat.match(/(\d+)%/);
+          if (percentMatch) {
+            const currentValue = parseInt(statMap.get(singleStat).match(/(\d+)%/)[1]);
+            const newValue = currentValue + parseInt(percentMatch[1]);
+            const newStat = singleStat.replace(/\d+%/, `${newValue}%`);
+            statMap.set(singleStat, { type: 'text', value: newStat });
+          }
+        } else {
+          statMap.set(singleStat, { type: 'text', value: singleStat });
+        }
+        return;
+      }
+
+      // Handle "Resist +X%" cases
+      if (singleStat.match(/\w+ Resist \+\d+%/)) {
+        const [type, value] = singleStat.split('Resist ');
+        const numValue = parseInt(value.match(/\d+/)[0]);
+        
+        if (statMap.has(type + 'Resist')) {
+          const currentValue = statMap.get(type + 'Resist');
+          statMap.set(type + 'Resist', {
+            type: 'resist',
+            value: currentValue.value + numValue
           });
         } else {
-          statMap.set('Requirements', {
-            type: 'requirements',
-            value: value
+          statMap.set(type + 'Resist', {
+            type: 'resist',
+            value: numValue
           });
         }
         return;
       }
-    }
 
-    // Check for range values first (e.g., "1-50 Lightning Damage")
-    const rangeMatch = stat.match(/([+-]?)(\d+)-(\d+)(.+)/);
-    if (rangeMatch) {
-      const [_, sign, min, max, text] = rangeMatch;
-      const minValue = parseFloat(min);
-      const maxValue = parseFloat(max);
-      
-      if (statMap.has(text.trim())) {
-        const current = statMap.get(text.trim());
-        statMap.set(text.trim(), {
-          type: 'range',
-          min: current.min + minValue,
-          max: current.max + maxValue
-        });
-      } else {
-        statMap.set(text.trim(), {
-          type: 'range',
-          min: minValue,
-          max: maxValue
-        });
+      // Handle all other cases
+      if (!statMap.has(singleStat)) {
+        statMap.set(singleStat, { type: 'text', value: singleStat });
       }
-      return;
+    });
+  });
+
+  // Convert map back to array of strings
+  return Array.from(statMap.values()).map(stat => {
+    if (stat.type === 'resist') {
+      return `${stat.key} Resist +${stat.value}%`;
     }
+    return stat.value;
+
+    const splitStatArray = splitStats(stat);
     
-    // Handle regular numeric values
-    const match = stat.match(/([+-]?\d+(?:\.\d+)?%?)(.+)/);
-    if (match) {
-      const [_, number, text] = match;
-      const numValue = parseFloat(number);
-      const isPercent = number.includes('%');
-      
-      if (statMap.has(text.trim())) {
-        const currentValue = statMap.get(text.trim());
-        statMap.set(text.trim(), {
-          type: 'single',
-          value: currentValue.value + numValue,
-          isPercent: isPercent
-        });
-      } else {
-        statMap.set(text.trim(), {
-          type: 'single',
-          value: numValue,
-          isPercent: isPercent
-        });
+    // Format each individual stat
+    splitStatArray.forEach(singleStat => {
+      const formattedStat = formatStat(singleStat);
+      if (formattedStat && !allStats.includes(formattedStat)) {
+        allStats.push(formattedStat);
       }
-    } else {
-      // Handle stats without numbers
-      if (!statMap.has(stat)) {
-        statMap.set(stat, { type: 'text' });
-      }
-    }
+    });
   });
   
-  // Convert back to strings
-  return Array.from(statMap.entries())
-    .map(([text, stat]) => {
-      if (stat.type === 'requirements') {
-        return `Requirements -${stat.value}%`;
-      }
-      if (stat.type === 'range') {
-        return `+${stat.min}-${stat.max} ${text}`;
-      }
-      if (stat.type === 'single') {
-        return `+${stat.value}${stat.isPercent ? '%' : ''} ${text}`;
-      }
-      return text;
-    });
+  return allStats;
+}
+  
+
+
+
+// Helper function to format stats for display
+function formatStatsForDisplay(stats) {
+  if (!stats || stats.length === 0) return 'No socketables socketed';
+  
+  // Process each stat
+  const processedStats = stats.map(stat => {
+    // Already formatted stats like "Regenerate Mana X%"
+    if (stat.startsWith('Regenerate') || 
+        stat.startsWith('Replenish') ||
+        stat.startsWith('Increase') ||
+        stat.includes('Damage Taken') ||
+        stat === 'Cannot Be Frozen' ||
+        stat === 'Indestructible' ||
+        stat === 'Prevent Monster Heal' ||
+        stat === 'Knockback' ||
+        stat === 'Ignore Target\'s Defense') {
+      return stat;
+    }
+    
+    // Handle stats that should start with a plus sign
+    if (stat.match(/^\d/)) {
+      return '+' + stat;
+    }
+    
+    return stat;
+  });
+
+  return processedStats.join('\n');
 }
 
 
@@ -7955,14 +8034,20 @@ function updateStatsDisplay() {
     container4: document.querySelector('.socketcontainer4')?.childElementCount || 0
   };
 
-  function processContainerStats(container, statType) {
-    // Only process stats for currently visible sockets
+ 
+    function processContainerStats(container, statType) {
     const stats = socketStates[container]
-      .slice(0, visibleSockets[container]) // Only take stats from visible sockets
-      .map(socket => socket.gemStats?.[statType] || '')
-      .filter(stat => stat !== '');
+      .filter(socket => socket.gemStats?.[statType])
+      .map(socket => socket.gemStats[statType]);
     
-    return combineStats(stats).join('<br>') || 'No socketables socketed';
+    if (!stats.length) return '<div class="stat-line">No socketables socketed</div>';
+    
+    return stats
+      .flatMap(stat => stat.split(','))
+      .map(stat => stat.trim())
+      .filter(Boolean)
+      .map(stat => `<div class="stat-line">${stat}</div>`)
+      .join('');
   }
 
   // Update all stat displays
@@ -8150,136 +8235,141 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const gemStatMap = {
-    'chipped-sapphire': {
-      helm: '+10 to Mana',
-      armor: '+10 to Mana',
-      weapon: '+1-3 Cold Damage',
-      shield: 'Cold Resist +12%'
-    },
-    'perfect-ruby': {
-      helm: '+40 to Life',
-      armor: '+40 to Life',
-      weapon: 'Adds 15-20 Fire Damage',
-      shield: 'Fire Resist +40%'
-    }
-    // Add more gem types as needed
-  };
-
-  function getSocketStats(container, itemType) {
-    const sockets = container.querySelectorAll('.socket-sock-img');
-    const stats = [];
-
-    sockets.forEach(socket => {
-      if (socket.src) {
-        const gemName = socket.src.split('/').pop().replace('.png', '');
-        const gemStats = gemStatMap[gemName]?.[itemType];
-        if (gemStats) {
-          stats.push(gemStats);
-        }
+  function formatStat(stat) {
+    if (!stat || stat.trim() === '+') return '';
+    
+    // Clean up the stat text
+    stat = stat.trim();
+    
+    // Handle special compound stats
+    if (stat.includes('Regenerate Mana')) {
+      const percent = stat.match(/(\d+)%/);
+      if (percent) {
+        return `Regenerate Mana ${percent[1]}%`;
       }
-    });
-
-    return stats;
+    }
+    
+    if (stat.includes('Resist')) {
+      const match = stat.match(/(.*?Resist)\s*\+?(\d+)%/);
+      if (match) {
+        return `${match[1]} +${match[2]}%`;
+      }
+    }
+    
+    if (stat.includes('Slower Stamina Drain')) {
+      const match = stat.match(/\+?(\d+)%(.*)/);
+      if (match) {
+        return `+${match[1]}% ${match[2]}`;
+      }
+    }
+    
+    // Format regular stats
+    if (/^\d/.test(stat) && !stat.startsWith('+')) {
+      stat = '+' + stat;
+    }
+    
+    return stat.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(' To ', ' to ');
   }
 
   function updateSocketDisplay() {
-    console.log('[Socket Display] Updating socket display');
-
-    const helmSocketStats = document.getElementsByClassName('helm-socket-stats');
-    const armorSocketStats = document.getElementsByClassName('armor-socket-stats');
-    const weaponSocketStats = document.getElementsByClassName('weapon-socket-stats');
-    const shieldSocketStats = document.getElementsByClassName('shield-socket-stats');
-
     const helmStatsDiv = document.getElementById('helm-info');
     const armorStatsDiv = document.getElementById('armor-info');
     const weaponStatsDiv = document.getElementById('weapon-info');
     const shieldStatsDiv = document.getElementById('off-info');
 
-    if (helmStatsDiv && helmSocketStats.length > 0) {
-      helmStatsDiv.innerHTML += ` <span class="socket-stats">${helmSocketStats[0].textContent}</span>`;
-    } else {
-      console.warn('[Socket Display] Helm info div or socket stats not found');
-    }
+    const containers = [
+      { div: helmStatsDiv, stats: document.getElementsByClassName('helm-socket-stats')[0] },
+      { div: armorStatsDiv, stats: document.getElementsByClassName('armor-socket-stats')[0] },
+      { div: weaponStatsDiv, stats: document.getElementsByClassName('weapon-socket-stats')[0] },
+      { div: shieldStatsDiv, stats: document.getElementsByClassName('shield-socket-stats')[0] }
+    ];
 
-    if (armorStatsDiv && armorSocketStats.length > 0) {
-      armorStatsDiv.innerHTML += ` (${armorSocketStats[0].textContent})`;
-    } else {
-      console.warn('[Socket Display] Armor info div or socket stats not found');
-    }
+    containers.forEach(({ div, stats }) => {
+      if (div && stats) {
+        const existingStats = div.querySelector('.socket-stats');
+        if (existingStats) {
+          existingStats.remove();
+        }
 
-    if (weaponStatsDiv && weaponSocketStats.length > 0) {
-      weaponStatsDiv.innerHTML += ` (${weaponSocketStats[0].textContent})`;
-    } else {
-      console.warn('[Socket Display] Weapon info div or socket stats not found');
-    }
+        const wrapper = document.createElement('div');
+        wrapper.className = 'socket-stats';
 
-    if (shieldStatsDiv && shieldSocketStats.length > 0) {
-      shieldStatsDiv.innerHTML += ` (${shieldSocketStats[0].textContent})`;
-    } else {
-      console.warn('[Socket Display] Shield info div or socket stats not found');
-    }
+        // Get text and clean it up first
+        let statsText = stats.textContent || 'No socketables socketed';
+        
+        // First normalize the text - separate numbers from text
+        statsText = statsText
+          .replace(/\s+/g, ' ')
+          .replace(/(\d+)(Better)/g, '$1 $2')  // Add space between number and Better
+          .replace(/(\d+)([A-Z])/g, '$1 $2')   // Add space between number and capital letter
+          .replace(/([a-z])(\d+)/g, '$1 $2')   // Add space between letter and number
+          .replace(/\+\s+(\d+)/g, '+$1')
+          .trim();
+
+        // Split on key boundaries and format
+        const statLines = statsText
+          .split(/(?=\+\d+\s|(?:\d+%)\s|Better\s)/g)
+          .map(line => line.trim())
+          .filter(line => line && line !== '+')
+          .map(formatStat)
+          .filter(Boolean);
+
+        // Create elements for each stat line
+        statLines.forEach(line => {
+          const statDiv = document.createElement('div');
+          statDiv.className = 'socket-stat';
+          statDiv.textContent = line;
+          wrapper.appendChild(statDiv);
+        });
+
+        div.appendChild(wrapper);
+      }
+    });
   }
 
-  // Add listeners to dropdowns
-  const dropdownMap = {
-    'helms-dropdown': updateSocketDisplay,
-    'armors-dropdown': updateSocketDisplay,
-    'weapons-dropdown': updateSocketDisplay,
-    'offs-dropdown': updateSocketDisplay
-  };
+  // Add styles
+  const style = document.createElement('style');
+  style.textContent = `
+    .socket-stats {
+      margin-top: 4px;
+      padding-top: 2px;
+    }
+    .socket-stat {
+      color: #3a09b6;
+      font-size: 14px;
+      display: block !important;
+      white-space: nowrap;
+      line-height: 1.4;
+      margin: 2px 0;
+    }
+  `;
+  document.head.appendChild(style);
 
-  Object.entries(dropdownMap).forEach(([dropdownId, handler]) => {
-    const dropdown = document.getElementById(dropdownId);
+  // Add dropdown listeners
+  ['helms', 'armors', 'weapons', 'offs'].forEach(type => {
+    const dropdown = document.getElementById(`${type}-dropdown`);
     if (dropdown) {
-      dropdown.addEventListener('change', handler);
-    } else {
-      console.warn(`[Socket Display] Dropdown with ID ${dropdownId} not found.`);
+      dropdown.addEventListener('change', updateSocketDisplay);
     }
   });
 
-  // Observer for socket state changes
+  // Observer setup
   const observer = new MutationObserver(updateSocketDisplay);
-
-  const socketContainers = [
-    '.helmsocket',
-    '.armorsocket',
-    '.weaponsocket',
-    '.offsocket'
-  ];
-
-  socketContainers.forEach(containerSelector => {
-    const container = document.querySelector(containerSelector);
+  ['.helmsocket', '.armorsocket', '.weaponsocket', '.offsocket'].forEach(selector => {
+    const container = document.querySelector(selector);
     if (container) {
-      observer.observe(container, {
-        childList: true,
-        subtree: true,
-        attributes: true
+      observer.observe(container, { 
+        childList: true, 
+        subtree: true, 
+        attributes: true 
       });
-    } else {
-      console.warn(`[Socket Display] Container not found: ${containerSelector}`);
     }
   });
 
-  // Initial update
+  // Initial call to set up display
   updateSocketDisplay();
 
-  const style = document.createElement('style');
-style.textContent = `
-  .socket-stats {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    color: #3a09b6;
-    font-size: 16px;
-  }
-`;
-document.head.appendChild(style);
 });
-
-
-
-
 </script>
 
 <!-- <div id="socket-displays"></div> -->
