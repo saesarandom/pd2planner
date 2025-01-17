@@ -8040,7 +8040,7 @@ function updateStatsDisplay() {
       .filter(socket => socket.gemStats?.[statType])
       .map(socket => socket.gemStats[statType]);
     
-    if (!stats.length) return '<div class="stat-line">No socketables socketed</div>';
+    if (!stats.length) return '<div class="stat-line">No sockets</div>';
     
     return stats
       .flatMap(stat => stat.split(','))
@@ -8235,95 +8235,61 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  function formatStat(stat) {
-    if (!stat || stat.trim() === '+') return '';
-    
-    // Clean up the stat text
-    stat = stat.trim();
-    
-    // Handle special compound stats
-    if (stat.includes('Regenerate Mana')) {
-      const percent = stat.match(/(\d+)%/);
-      if (percent) {
-        return `Regenerate Mana ${percent[1]}%`;
-      }
-    }
-    
-    if (stat.includes('Resist')) {
-      const match = stat.match(/(.*?Resist)\s*\+?(\d+)%/);
-      if (match) {
-        return `${match[1]} +${match[2]}%`;
-      }
-    }
-    
-    if (stat.includes('Slower Stamina Drain')) {
-      const match = stat.match(/\+?(\d+)%(.*)/);
-      if (match) {
-        return `+${match[1]}% ${match[2]}`;
-      }
-    }
-    
-    // Format regular stats
-    if (/^\d/.test(stat) && !stat.startsWith('+')) {
-      stat = '+' + stat;
-    }
-    
-    return stat.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(' To ', ' to ');
-  }
-
   function updateSocketDisplay() {
-    const helmStatsDiv = document.getElementById('helm-info');
-    const armorStatsDiv = document.getElementById('armor-info');
-    const weaponStatsDiv = document.getElementById('weapon-info');
-    const shieldStatsDiv = document.getElementById('off-info');
-
-    const containers = [
-      { div: helmStatsDiv, stats: document.getElementsByClassName('helm-socket-stats')[0] },
-      { div: armorStatsDiv, stats: document.getElementsByClassName('armor-socket-stats')[0] },
-      { div: weaponStatsDiv, stats: document.getElementsByClassName('weapon-socket-stats')[0] },
-      { div: shieldStatsDiv, stats: document.getElementsByClassName('shield-socket-stats')[0] }
+    const socketTypes = [
+      { 
+        statsSelector: '.helm-socket-stats', 
+        infoDiv: document.getElementById('helm-info') 
+      },
+      { 
+        statsSelector: '.armor-socket-stats', 
+        infoDiv: document.getElementById('armor-info') 
+      },
+      { 
+        statsSelector: '.weapon-socket-stats', 
+        infoDiv: document.getElementById('weapon-info') 
+      },
+      { 
+        statsSelector: '.shield-socket-stats', 
+        infoDiv: document.getElementById('off-info') 
+      }
     ];
 
-    containers.forEach(({ div, stats }) => {
-      if (div && stats) {
-        const existingStats = div.querySelector('.socket-stats');
-        if (existingStats) {
-          existingStats.remove();
-        }
+    socketTypes.forEach(({ statsSelector, infoDiv }) => {
+      if (!infoDiv) return;
 
-        const wrapper = document.createElement('div');
-        wrapper.className = 'socket-stats';
-
-        // Get text and clean it up first
-        let statsText = stats.textContent || 'No socketables socketed';
-        
-        // First normalize the text - separate numbers from text
-        statsText = statsText
-          .replace(/\s+/g, ' ')
-          .replace(/(\d+)(Better)/g, '$1 $2')  // Add space between number and Better
-          .replace(/(\d+)([A-Z])/g, '$1 $2')   // Add space between number and capital letter
-          .replace(/([a-z])(\d+)/g, '$1 $2')   // Add space between letter and number
-          .replace(/\+\s+(\d+)/g, '+$1')
-          .trim();
-
-        // Split on key boundaries and format
-        const statLines = statsText
-          .split(/(?=\+\d+\s|(?:\d+%)\s|Better\s)/g)
-          .map(line => line.trim())
-          .filter(line => line && line !== '+')
-          .map(formatStat)
-          .filter(Boolean);
-
-        // Create elements for each stat line
-        statLines.forEach(line => {
-          const statDiv = document.createElement('div');
-          statDiv.className = 'socket-stat';
-          statDiv.textContent = line;
-          wrapper.appendChild(statDiv);
-        });
-
-        div.appendChild(wrapper);
+      // Remove existing socket stats
+      const existingSocketStats = infoDiv.querySelector('.socket-stats');
+      if (existingSocketStats) {
+        existingSocketStats.remove();
       }
+
+      // Find the stats container
+      const statsContainer = document.querySelector(statsSelector);
+      if (!statsContainer) return;
+
+      // Get all stat lines
+      const statLines = Array.from(statsContainer.querySelectorAll('.stat-line'))
+        .map(line => line.textContent.trim())
+        .filter(Boolean);
+
+      // If no stats, skip
+      if (statLines.length === 0) return;
+
+      // Create new socket stats wrapper
+      const socketStatsWrapper = document.createElement('div');
+      socketStatsWrapper.className = 'socket-stats';
+
+      // Create stat elements
+      statLines.forEach(statText => {
+        const statElement = document.createElement('div');
+        statElement.className = 'socket-stat';
+        statElement.textContent = statText;
+        socketStatsWrapper.appendChild(statElement);
+      });
+
+      // Append to info div
+      infoDiv.appendChild(socketStatsWrapper);
     });
   }
 
@@ -8335,17 +8301,17 @@ document.addEventListener('DOMContentLoaded', () => {
       padding-top: 2px;
     }
     .socket-stat {
-      color: #3a09b6;
-      font-size: 14px;
+      color: #7d49ff;
+      font-size: 15px;
       display: block !important;
       white-space: nowrap;
-      line-height: 1.4;
-      margin: 2px 0;
+      line-height: 1.0;
+      margin: 1px 0;
     }
   `;
   document.head.appendChild(style);
 
-  // Add dropdown listeners
+  // Add event listeners to dropdowns
   ['helms', 'armors', 'weapons', 'offs'].forEach(type => {
     const dropdown = document.getElementById(`${type}-dropdown`);
     if (dropdown) {
@@ -8353,9 +8319,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Observer setup
+  document.querySelector('[data-category="jewels"]').addEventListener('click', () => {
+  const jewelModal = document.getElementById('jewelModal');
+  jewelModal.style.display = 'block';
+});
+
+  // Observe changes in socket stats
+  const statsContainers = [
+    '.helmsocket', 
+    '.armorsocket', 
+    '.weaponsocket', 
+    '.offsocket'
+  ];
+
   const observer = new MutationObserver(updateSocketDisplay);
-  ['.helmsocket', '.armorsocket', '.weaponsocket', '.offsocket'].forEach(selector => {
+  
+  statsContainers.forEach(selector => {
     const container = document.querySelector(selector);
     if (container) {
       observer.observe(container, { 
@@ -8368,10 +8347,224 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial call to set up display
   updateSocketDisplay();
-
 });
 </script>
 
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const jewelModal = document.createElement('div');
+  jewelModal.id = 'jewelModal';
+  jewelModal.className = 'modal';
+  jewelModal.innerHTML = `
+    <div class="modal-content">
+      <span id="closeJewelModal" class="close">&times;</span>
+      <h2>Jewel Affixes</h2>
+      
+     
+
+      <div class="affix-selection">
+        <div class="prefix-section">
+          <h3>Prefixes 
+            <span id="prefixCount">(0/3)</span>
+          </h3>
+          <div class="prefix-container"></div>
+        </div>
+        
+        <div class="suffix-section">
+          <h3>Suffixes 
+            <span id="suffixCount">(0/3)</span>
+          </h3>
+          <div class="suffix-container"></div>
+        </div>
+
+        <div class="total-affixes">
+          <span id="totalAffixCount">Total Affixes: 0/4</span>
+        </div>
+      </div>
+
+      <div class="affix-actions">
+        <button id="confirmAffixes">Confirm</button>
+        <button id="clearAffixes">Clear All</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(jewelModal);
+
+  // Prefixes data
+  const prefixData = [
+    { name: 'Stout', min: 1, max: 1, category: 'prefix' },
+    { name: 'Stout', min: 4, max: 8, category: 'prefix' },
+    { name: 'Burly', min: 15, max: 20, category: 'prefix' },
+    { name: 'Stalwart', min: 20, max: 30, category: 'prefix' },
+    { name: 'Red', min: 1, max: 1, category: 'prefix' },
+    { name: 'Custom 40 max dmg', min: 1, max: 40, category: 'prefix' },
+    { name: 'Custom 80 max dmg', min: 41, max: 80, category: 'prefix' },
+    { name: 'Custom 120 max dmg', min: 81, max: 120, category: 'prefix' },
+    { name: 'Custom Minimum Damage', min: 1, max: 200, category: 'prefix' },
+    { name: 'Custom Life', min: 81, max: 200, category: 'prefix' },
+    { name: 'Custom All skills', min: 1, max: 40, category: 'prefix' }
+  ];
+
+  // Suffixes data
+  const suffixData = [
+    { name: 'Of Frost', min: 1, max: 2, category: 'suffix' },
+    { name: 'Of Icicle', min: 2, max: 5, category: 'suffix' },
+    { name: 'Of Glacier', min: 4, max: 8, category: 'suffix' },
+    { name: 'Of Winter', min: 7, max: 13, category: 'suffix' },
+    { name: 'Of Life', min: 5, max: 10, category: 'suffix' },
+    { name: 'Of Sustenance', min: 11, max: 15, category: 'suffix' },
+    { name: 'Of Good Luck', min: 6, max: 7, category: 'suffix' },
+    { name: 'Of Fortune', min: 3, max: 5, category: 'suffix' }
+  ];
+
+  // Combine and setup the affix modal
+  function setupAffixModal() {
+    const prefixContainer = jewelModal.querySelector('.prefix-container');
+    const suffixContainer = jewelModal.querySelector('.suffix-container');
+    const prefixCountSpan = jewelModal.querySelector('#prefixCount');
+    const suffixCountSpan = jewelModal.querySelector('#suffixCount');
+    const totalAffixCountSpan = jewelModal.querySelector('#totalAffixCount');
+    const confirmButton = jewelModal.querySelector('#confirmAffixes');
+    const clearButton = jewelModal.querySelector('#clearAffixes');
+
+    let selectedAffixes = [];
+
+    // Create affix elements
+    function createAffixElement(affix) {
+      const affixEl = document.createElement('div');
+      affixEl.className = 'affix-item';
+      affixEl.dataset.name = affix.name;
+      affixEl.dataset.category = affix.category;
+
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = affix.name;
+
+      const rangeInput = document.createElement('input');
+      rangeInput.type = 'range';
+      rangeInput.min = affix.min;
+      rangeInput.max = affix.max;
+      rangeInput.value = affix.min;
+
+      const valueSpan = document.createElement('span');
+      valueSpan.textContent = affix.min;
+
+      rangeInput.addEventListener('input', (e) => {
+        valueSpan.textContent = e.target.value;
+      });
+
+      const selectButton = document.createElement('button');
+      selectButton.textContent = 'Select';
+      selectButton.addEventListener('click', () => {
+        if (selectedAffixes.length >= 4) {
+          alert('Maximum of 4 total affixes allowed!');
+          return;
+        }
+
+        const prefixCount = selectedAffixes.filter(a => a.category === 'prefix').length;
+        const suffixCount = selectedAffixes.filter(a => a.category === 'suffix').length;
+
+        if (affix.category === 'prefix' && prefixCount >= 3) {
+          alert('Maximum of 3 prefixes allowed!');
+          return;
+        }
+
+        if (affix.category === 'suffix' && suffixCount >= 3) {
+          alert('Maximum of 3 suffixes allowed!');
+          return;
+        }
+
+        const newAffix = {
+          ...affix,
+          value: parseInt(rangeInput.value)
+        };
+
+        selectedAffixes.push(newAffix);
+        updateAffixCounts();
+        highlightSelectedAffixes();
+      });
+
+      affixEl.append(nameSpan, rangeInput, valueSpan, selectButton);
+      return affixEl;
+    }
+
+    // Update affix counts and highlights
+    function updateAffixCounts() {
+      const prefixCount = selectedAffixes.filter(a => a.category === 'prefix').length;
+      const suffixCount = selectedAffixes.filter(a => a.category === 'suffix').length;
+
+      prefixCountSpan.textContent = `(${prefixCount}/3)`;
+      suffixCountSpan.textContent = `(${suffixCount}/3)`;
+      totalAffixCountSpan.textContent = `Total Affixes: ${selectedAffixes.length}/4`;
+    }
+
+    // Highlight selected affixes
+    function highlightSelectedAffixes() {
+      prefixContainer.querySelectorAll('.affix-item').forEach(el => {
+        const name = el.dataset.name;
+        const isSelected = selectedAffixes.some(a => a.name === name);
+        el.classList.toggle('selected', isSelected);
+      });
+
+      suffixContainer.querySelectorAll('.affix-item').forEach(el => {
+        const name = el.dataset.name;
+        const isSelected = selectedAffixes.some(a => a.name === name);
+        el.classList.toggle('selected', isSelected);
+      });
+    }
+
+    // Clear all selected affixes
+    clearButton.addEventListener('click', () => {
+      selectedAffixes = [];
+      updateAffixCounts();
+      highlightSelectedAffixes();
+    });
+
+    // Confirm selected affixes
+    confirmButton.addEventListener('click', () => {
+  // Here you can add logic to apply the selected affixes to a jewel
+  console.log('Selected Affixes:', selectedAffixes);
+  jewelModal.style.display = 'none';
+  // Add your logic to create the jewel in the socket spot
+});
+
+
+    // Render affixes
+    prefixData.forEach(affix => {
+      const affixEl = createAffixElement(affix);
+      prefixContainer.appendChild(affixEl);
+    });
+
+    suffixData.forEach(affix => {
+      const affixEl = createAffixElement(affix);
+      suffixContainer.appendChild(affixEl);
+    });
+
+    // Close modal
+    const closeButton = jewelModal.querySelector('.close');
+  closeButton.addEventListener('click', () => {
+    jewelModal.style.display = 'none';
+  });
+
+    // Close when clicking outside modal
+    window.addEventListener('click', (e) => {
+      if (e.target === jewelModal) {
+        jewelModal.style.display = 'none';
+      }
+    });
+  }
+
+  // Method to open modal
+  window.openJewelModal = function() {
+    jewelModal.classList.add('show');
+  };
+
+  // Initialize
+  setupAffixModal();
+});
+</script>
 <!-- <div id="socket-displays"></div> -->
 </body>
 </html>
