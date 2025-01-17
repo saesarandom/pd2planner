@@ -6930,9 +6930,14 @@ merclvlValue.addEventListener('input', () => {
           </div>
         </div>
       </div>
-      <!-- Add more jewel options -->
+
+
     </div>
   </div>
+      
+
+      
+    
 
   <!-- Runes Content -->
   <div class="socket-content" data-category="runes">
@@ -7418,15 +7423,23 @@ merclvlValue.addEventListener('input', () => {
 
   // Category switching functionality
   categoryTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      categoryTabs.forEach(t => t.classList.remove('active'));
-      categoryContents.forEach(c => c.classList.remove('active'));
-      
-      tab.classList.add('active');
-      const category = tab.dataset.category;
-      document.querySelector(`.socket-content[data-category="${category}"]`).classList.add('active');
-    });
+  tab.addEventListener('click', () => {
+    categoryTabs.forEach(t => t.classList.remove('active'));
+    categoryContents.forEach(c => c.classList.remove('active'));
+    
+    tab.classList.add('active');
+    const category = tab.dataset.category;
+    document.querySelector(`.socket-content[data-category="${category}"]`).classList.add('active');
+
+    // Add jewel modal handling here
+    if (category === 'jewels') {
+      const jewelModal = document.getElementById('jewelModal');
+      if (jewelModal) {
+        jewelModal.style.display = 'block';
+      }
+    }
   });
+});
 
   
   function getGemStats(gemType) {
@@ -8172,36 +8185,52 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
 
   // Handle gem selection
   socketItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-      const actualItem = e.target.closest('.socket-item');
+  item.addEventListener('click', (e) => {
+    const actualItem = e.target.closest('.socket-item');
+    
+    if (currentSocket) {
+      const gemType = actualItem.dataset.gem;
+      const runeType = actualItem.dataset.rune;
+      const jewelType = actualItem.dataset.jewel;
+      const type = gemType || runeType || jewelType;
+      const gemImg = actualItem.querySelector('.sock-img').src;
       
-      if (currentSocket) {
-      
-        const gemType = actualItem.dataset.gem;
-        const runeType = actualItem.dataset.rune;
-        const type = gemType || runeType;
-        const gemImg = actualItem.querySelector('.sock-img').src;
-        const gemStats = getGemStats(type);
-
-     // Update DOM
-     currentSocket.element.classList.remove('empty');
-        const socketImg = currentSocket.element.querySelector('.socket-sock-img');
-        socketImg.src = gemImg;
-        socketImg.style.display = 'block';
-        
-        // Update state with stats
-        socketStates[currentSocket.containerKey][currentSocket.index] = {
-          gemType: gemType,
-          gemImg: gemImg,
-          gemStats: gemStats
+      // Get stats based on item type
+      let stats;
+      if (jewelType) {
+        // For jewels, get stats directly from the HTML
+        stats = {
+          helm: actualItem.querySelector('.sock-stats').innerHTML,
+          armor: actualItem.querySelector('.sock-stats').innerHTML,
+          weapon: actualItem.querySelector('.sock-stats').innerHTML,
+          shield: actualItem.querySelector('.sock-stats').innerHTML
         };
-        
-        updateStatsDisplay();
-        modal.style.display = 'none';
-        currentSocket = null;
+      } else {
+        // For gems and runes, use the existing getGemStats
+        stats = getGemStats(type);
       }
-    });
+
+      // Update DOM
+      currentSocket.element.classList.remove('empty');
+      const socketImg = currentSocket.element.querySelector('.socket-sock-img');
+      socketImg.src = gemImg;
+      socketImg.style.display = 'block';
+      
+      // Update state with stats
+      socketStates[currentSocket.containerKey][currentSocket.index] = {
+        gemType: gemType,
+        gemImg: gemImg,
+        gemStats: stats
+      };
+      
+      updateStatsDisplay();
+      modal.style.display = 'none';
+      currentSocket = null;
+    }
   });
+});
+
+  
 
   updateSockets();
   [helmDropdown, armorDropdown, weaponDropdown, offDropdown].forEach(
@@ -8319,10 +8348,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.querySelector('[data-category="jewels"]').addEventListener('click', () => {
-  const jewelModal = document.getElementById('jewelModal');
-  jewelModal.style.display = 'block';
-});
+//   document.querySelector('[data-category="jewels"]').addEventListener('click', () => {
+//   const jewelModal = document.getElementById('jewelModal');
+//   jewelModal.style.display = 'block';
+// });
 
   // Observe changes in socket stats
   const statsContainers = [
@@ -8353,53 +8382,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-  const jewelModal = document.createElement('div');
-  jewelModal.id = 'jewelModal';
-  jewelModal.className = 'modal';
-  jewelModal.innerHTML = `
-    <div class="modal-content">
-      <span id="closeJewelModal" class="close">&times;</span>
-      <h2>Jewel Affixes</h2>
-      
-     
+document.addEventListener('DOMContentLoaded', () => {
+  // State management
+  const state = {
+    selectedAffixes: [],
+    currentSocket: null
+    
+    }
+    
+    function handleCustomJewelClick(customJewel) {
+  const { element, containerKey, index } = state.currentSocket;
 
-      <div class="affix-selection">
-        <div class="prefix-section">
-          <h3>Prefixes 
-            <span id="prefixCount">(0/3)</span>
-          </h3>
-          <div class="prefix-container"></div>
-        </div>
-        
-        <div class="suffix-section">
-          <h3>Suffixes 
-            <span id="suffixCount">(0/3)</span>
-          </h3>
-          <div class="suffix-container"></div>
-        </div>
+  // Update the DOM
+  element.classList.remove('empty');
+  const customJewelContent = customJewel.querySelector('.socket-item-content');
+  const socketImg = element.querySelector('.sock-img');
+  if (socketImg) {
+    socketImg.src = customJewelContent.querySelector('.sock-img').src;
+    socketImg.style.display = 'block';
+  } else {
+    console.error('Socket image element not found');
+    return;
+  }
 
-        <div class="total-affixes">
-          <span id="totalAffixCount">Total Affixes: 0/4</span>
-        </div>
-      </div>
+  // Update the state
+  state.socketStates = {
+    gemType: 'custom-jewel',
+    gemImg: socketImg.src,
+    gemStats: {
+      helm: customJewel.querySelector('.sock-stats').innerHTML,
+      armor: customJewel.querySelector('.sock-stats').innerHTML,
+      weapon: customJewel.querySelector('.sock-stats').innerHTML,
+      shield: customJewel.querySelector('.sock-stats').innerHTML
+    }
+  };
 
-      <div class="affix-actions">
-        <button id="confirmAffixes">Confirm</button>
-        <button id="clearAffixes">Clear All</button>
-      </div>
-    </div>
-  `;
+  // Update the stats display
+  updateStatsDisplay();
 
-  document.body.appendChild(jewelModal);
+  // Close the modal
+  const modal = document.getElementById('socketModal');
+  modal.style.display = 'none';
+  state.currentSocket = null;
+}
 
-  // Prefixes data
+function updateStatsDisplay() {
+  const helmStats = document.getElementById('helmsocketstats');
+  const weaponStats = document.getElementById('weaponsocketstats');
+  const armorStats = document.getElementById('armorsocketstats');
+  const shieldStats = document.getElementById('shieldsocketstats');
+
+  helmStats.innerHTML = processContainerStats('custom', 'helm');
+  weaponStats.innerHTML = processContainerStats('custom', 'weapon');
+  armorStats.innerHTML = processContainerStats('custom', 'armor');
+  shieldStats.innerHTML = processContainerStats('custom', 'shield');
+}
+
+function processContainerStats(containerKey, statType) {
+  const stats = state.socketStates?.[statType];
+  if (!stats) return '<div class="stat-line">No sockets</div>';
+
+  return stats
+    .split(',')
+    .map(stat => `<div class="stat-line">${stat.trim()}</div>`)
+    .join('');
+}
+
+  // Prefix and suffix data
   const prefixData = [
-    { name: 'Stout', min: 1, max: 1, category: 'prefix' },
-    { name: 'Stout', min: 4, max: 8, category: 'prefix' },
-    { name: 'Burly', min: 15, max: 20, category: 'prefix' },
-    { name: 'Stalwart', min: 20, max: 30, category: 'prefix' },
-    { name: 'Red', min: 1, max: 1, category: 'prefix' },
     { name: 'Custom 40 max dmg', min: 1, max: 40, category: 'prefix' },
     { name: 'Custom 80 max dmg', min: 41, max: 80, category: 'prefix' },
     { name: 'Custom 120 max dmg', min: 81, max: 120, category: 'prefix' },
@@ -8408,163 +8458,498 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Custom All skills', min: 1, max: 40, category: 'prefix' }
   ];
 
-  // Suffixes data
   const suffixData = [
-    { name: 'Of Frost', min: 1, max: 2, category: 'suffix' },
-    { name: 'Of Icicle', min: 2, max: 5, category: 'suffix' },
-    { name: 'Of Glacier', min: 4, max: 8, category: 'suffix' },
-    { name: 'Of Winter', min: 7, max: 13, category: 'suffix' },
-    { name: 'Of Life', min: 5, max: 10, category: 'suffix' },
-    { name: 'Of Sustenance', min: 11, max: 15, category: 'suffix' },
-    { name: 'Of Good Luck', min: 6, max: 7, category: 'suffix' },
-    { name: 'Of Fortune', min: 3, max: 5, category: 'suffix' }
+    { name: 'Of Frost', min: 1, max: 13, category: 'suffix' },
+    { name: 'Of Life', min: 5, max: 15, category: 'suffix' },
+    { name: 'Of Fortune', min: 3, max: 7, category: 'suffix' }
   ];
 
-  // Combine and setup the affix modal
-  function setupAffixModal() {
-    const prefixContainer = jewelModal.querySelector('.prefix-container');
-    const suffixContainer = jewelModal.querySelector('.suffix-container');
-    const prefixCountSpan = jewelModal.querySelector('#prefixCount');
-    const suffixCountSpan = jewelModal.querySelector('#suffixCount');
-    const totalAffixCountSpan = jewelModal.querySelector('#totalAffixCount');
-    const confirmButton = jewelModal.querySelector('#confirmAffixes');
-    const clearButton = jewelModal.querySelector('#clearAffixes');
+  // Create and initialize modal
+  const jewelModal = document.createElement('div');
+  jewelModal.id = 'jewelModal';
+  jewelModal.className = 'modal';
+  jewelModal.innerHTML = `
+    <div class="modal-content">
+      <span id="closeJewelModal" class="close">&times;</span>
+      <h2>Jewel Affixes</h2>
+      <div class="affix-selection">
+        <div class="prefix-section">
+          <h3>Prefixes <span id="prefixCount">(0/3)</span></h3>
+          <div class="prefix-container"></div>
+        </div>
+        <div class="suffix-section">
+          <h3>Suffixes <span id="suffixCount">(0/3)</span></h3>
+          <div class="suffix-container"></div>
+        </div>
+        <div class="total-affixes">
+          <span id="totalAffixCount">Total Affixes: 0/4</span>
+        </div>
+      </div>
+      <div class="affix-actions">
+        <button id="confirmAffixes">Confirm</button>
+        <button id="clearAffixes">Clear All</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(jewelModal);
 
-    let selectedAffixes = [];
-
-    // Create affix elements
-    function createAffixElement(affix) {
-      const affixEl = document.createElement('div');
-      affixEl.className = 'affix-item';
-      affixEl.dataset.name = affix.name;
-      affixEl.dataset.category = affix.category;
-
-      const nameSpan = document.createElement('span');
-      nameSpan.textContent = affix.name;
-
-      const rangeInput = document.createElement('input');
-      rangeInput.type = 'range';
-      rangeInput.min = affix.min;
-      rangeInput.max = affix.max;
-      rangeInput.value = affix.min;
-
-      const valueSpan = document.createElement('span');
-      valueSpan.textContent = affix.min;
-
-      rangeInput.addEventListener('input', (e) => {
-        valueSpan.textContent = e.target.value;
-      });
-
-      const selectButton = document.createElement('button');
-      selectButton.textContent = 'Select';
-      selectButton.addEventListener('click', () => {
-        if (selectedAffixes.length >= 4) {
-          alert('Maximum of 4 total affixes allowed!');
-          return;
-        }
-
-        const prefixCount = selectedAffixes.filter(a => a.category === 'prefix').length;
-        const suffixCount = selectedAffixes.filter(a => a.category === 'suffix').length;
-
-        if (affix.category === 'prefix' && prefixCount >= 3) {
-          alert('Maximum of 3 prefixes allowed!');
-          return;
-        }
-
-        if (affix.category === 'suffix' && suffixCount >= 3) {
-          alert('Maximum of 3 suffixes allowed!');
-          return;
-        }
-
-        const newAffix = {
-          ...affix,
-          value: parseInt(rangeInput.value)
-        };
-
-        selectedAffixes.push(newAffix);
-        updateAffixCounts();
-        highlightSelectedAffixes();
-      });
-
-      affixEl.append(nameSpan, rangeInput, valueSpan, selectButton);
-      return affixEl;
+  // Helper functions
+  function formatAffixText(affix) {
+  if (affix.name.includes('Custom')) {
+    if (affix.name.includes('max dmg')) {
+      return `+${affix.value} to Maximum Damage`;
     }
-
-    // Update affix counts and highlights
-    function updateAffixCounts() {
-      const prefixCount = selectedAffixes.filter(a => a.category === 'prefix').length;
-      const suffixCount = selectedAffixes.filter(a => a.category === 'suffix').length;
-
-      prefixCountSpan.textContent = `(${prefixCount}/3)`;
-      suffixCountSpan.textContent = `(${suffixCount}/3)`;
-      totalAffixCountSpan.textContent = `Total Affixes: ${selectedAffixes.length}/4`;
+    if (affix.name.includes('Minimum Damage')) {
+      return `+${affix.value} to Minimum Damage`;
     }
+    if (affix.name.includes('Life')) {
+      return `+${affix.value} to Life`;
+    }
+    if (affix.name.includes('All skills')) {
+      return `+${affix.value} to All Skills`;
+    }
+  } else if (affix.name.startsWith('Of')) {
+    if (affix.name.includes('Frost')) {
+      return `+${affix.value} Cold Damage`;
+    }
+    if (affix.name.includes('Life')) {
+      return `+${affix.value} to Life`;
+    }
+    if (affix.name.includes('Fortune')) {
+      return `+${affix.value}% Better Chance of Getting Magic Items`;
+    }
+  }
+  return `${affix.name} ${affix.value}`;
+}
 
-    // Highlight selected affixes
-    function highlightSelectedAffixes() {
-      prefixContainer.querySelectorAll('.affix-item').forEach(el => {
-        const name = el.dataset.name;
-        const isSelected = selectedAffixes.some(a => a.name === name);
-        el.classList.toggle('selected', isSelected);
+  function updateAffixCounts() {
+    console.log('Updating affix counts');
+    const prefixCount = state.selectedAffixes.filter(a => a.category === 'prefix').length;
+    const suffixCount = state.selectedAffixes.filter(a => a.category === 'suffix').length;
+
+    document.getElementById('prefixCount').textContent = `(${prefixCount}/3)`;
+    document.getElementById('suffixCount').textContent = `(${suffixCount}/3)`;
+    document.getElementById('totalAffixCount').textContent = `Total Affixes: ${state.selectedAffixes.length}/4`;
+  }
+
+  function createAffixElement(affix) {
+    console.log('Creating affix element:', affix);
+    const el = document.createElement('div');
+    el.className = 'affix-item';
+    el.dataset.name = affix.name;
+    el.dataset.category = affix.category;
+
+    const range = document.createElement('input');
+    range.type = 'range';
+    range.min = affix.min;
+    range.max = affix.max;
+    range.value = affix.min;
+
+    const value = document.createElement('span');
+    value.textContent = affix.min;
+    
+    range.addEventListener('input', () => value.textContent = range.value);
+
+    const select = document.createElement('button');
+    select.textContent = 'Select';
+    select.onclick = () => {
+      if (state.selectedAffixes.length >= 4) {
+        alert('Maximum of 4 total affixes allowed!');
+        return;
+      }
+
+      const prefixCount = state.selectedAffixes.filter(a => a.category === 'prefix').length;
+      const suffixCount = state.selectedAffixes.filter(a => a.category === 'suffix').length;
+
+      if (affix.category === 'prefix' && prefixCount >= 3) {
+        alert('Maximum of 3 prefixes allowed!');
+        return;
+      }
+
+      if (affix.category === 'suffix' && suffixCount >= 3) {
+        alert('Maximum of 3 suffixes allowed!');
+        return;
+      }
+
+      state.selectedAffixes.push({
+        ...affix,
+        value: parseInt(range.value)
       });
 
-      suffixContainer.querySelectorAll('.affix-item').forEach(el => {
-        const name = el.dataset.name;
-        const isSelected = selectedAffixes.some(a => a.name === name);
-        el.classList.toggle('selected', isSelected);
-      });
-    }
-
-    // Clear all selected affixes
-    clearButton.addEventListener('click', () => {
-      selectedAffixes = [];
       updateAffixCounts();
       highlightSelectedAffixes();
-    });
+    };
 
-    // Confirm selected affixes
-    confirmButton.addEventListener('click', () => {
-  // Here you can add logic to apply the selected affixes to a jewel
-  console.log('Selected Affixes:', selectedAffixes);
-  jewelModal.style.display = 'none';
-  // Add your logic to create the jewel in the socket spot
-});
+    el.append(document.createElement('span').appendChild(document.createTextNode(affix.name)), range, value, select);
+    return el;
+  }
 
-
-    // Render affixes
-    prefixData.forEach(affix => {
-      const affixEl = createAffixElement(affix);
-      prefixContainer.appendChild(affixEl);
-    });
-
-    suffixData.forEach(affix => {
-      const affixEl = createAffixElement(affix);
-      suffixContainer.appendChild(affixEl);
-    });
-
-    // Close modal
-    const closeButton = jewelModal.querySelector('.close');
-  closeButton.addEventListener('click', () => {
-    jewelModal.style.display = 'none';
-  });
-
-    // Close when clicking outside modal
-    window.addEventListener('click', (e) => {
-      if (e.target === jewelModal) {
-        jewelModal.style.display = 'none';
-      }
+  function highlightSelectedAffixes() {
+    console.log('Highlighting selected affixes:', state.selectedAffixes);
+    document.querySelectorAll('.affix-item').forEach(el => {
+      const name = el.dataset.name;
+      el.classList.toggle('selected', state.selectedAffixes.some(a => a.name === name));
     });
   }
 
-  // Method to open modal
-  window.openJewelModal = function() {
-    jewelModal.classList.add('show');
+  let socketStates = {
+  container1: [],
+  container2: [],
+  container3: [],
+  container4: []
+};
+
+  function addCustomJewel(affixes, socketItems) {
+  console.log('Adding custom jewel with affixes:', affixes);
+
+  const jewelCategory = document.querySelector('.socket-content[data-category="jewels"] .socket-options');
+  console.log('Found jewelCategory:', jewelCategory);
+
+  let statsText = '';
+  affixes.forEach(affix => {
+    statsText += `<div>${formatAffixText(affix)}</div>`;
+  });
+
+  const customJewel = document.createElement('div');
+  customJewel.className = 'socket-item';
+  customJewel.dataset.jewel = 'custom-jewel';
+
+  const customJewelElement = document.createElement('div');
+  customJewelElement.className = 'socket-item-content';
+
+  const sockImgDiv = document.createElement('img');
+  sockImgDiv.className = 'sock-img';
+  sockImgDiv.src = 'img/redjewel2.png';
+
+  const sockInfoDiv = document.createElement('div');
+  sockInfoDiv.className = 'sock-info';
+
+  const sockNameDiv = document.createElement('div');
+  sockNameDiv.className = 'sock-name';
+  sockNameDiv.textContent = 'Custom Jewel';
+
+  const sockStatsDiv = document.createElement('div');
+  sockStatsDiv.className = 'sock-stats';
+  sockStatsDiv.innerHTML = statsText;
+
+  sockInfoDiv.appendChild(sockNameDiv);
+  sockInfoDiv.appendChild(sockStatsDiv);
+
+  customJewelElement.appendChild(sockImgDiv);
+  customJewelElement.appendChild(sockInfoDiv);
+
+  customJewel.appendChild(customJewelElement);
+
+  jewelCategory.appendChild(customJewel);
+
+  // Set up click handler for the custom jewel
+  customJewel.addEventListener('click', () => {
+    state.currentSocket = {
+      element: customJewel,
+      containerKey: 'custom',
+      index: 0
+    };
+    handleCustomJewelClick(customJewel);
+  });
+
+  console.log('Current socketItems:', socketItems);
+  console.log('All socket-items:', document.querySelectorAll('.socket-item'));
+
+  return customJewel;
+}
+
+
+  // Initialize modal content
+  const modal = {
+    prefixContainer: jewelModal.querySelector('.prefix-container'),
+    suffixContainer: jewelModal.querySelector('.suffix-container'),
+    confirmButton: jewelModal.querySelector('#confirmAffixes'),
+    clearButton: jewelModal.querySelector('#clearAffixes'),
+    closeButton: jewelModal.querySelector('.close')
   };
 
-  // Initialize
-  setupAffixModal();
+  // Add affixes to containers
+  prefixData.forEach(affix => modal.prefixContainer.appendChild(createAffixElement(affix)));
+  suffixData.forEach(affix => modal.suffixContainer.appendChild(createAffixElement(affix)));
+
+  // Event handlers
+  modal.clearButton.onclick = () => {
+    state.selectedAffixes = [];
+    updateAffixCounts();
+    highlightSelectedAffixes();
+  };
+
+  modal.confirmButton.onclick = () => {
+    if (state.selectedAffixes.length === 0) {
+      alert('Please select at least one affix for the jewel');
+      return;
+    }
+    addCustomJewel(state.selectedAffixes);
+    jewelModal.style.display = 'none';
+    state.selectedAffixes = [];
+    updateAffixCounts();
+    highlightSelectedAffixes();
+  };
+
+  modal.closeButton.onclick = () => jewelModal.style.display = 'none';
+
+  window.onclick = (e) => {
+    if (e.target === jewelModal) jewelModal.style.display = 'none';
+  };
+
+  // Add click handler for jewels tab
+  const jewelsTab = document.querySelector('.socket-category-tab[data-category="jewels"]');
+  if (jewelsTab) {
+    jewelsTab.addEventListener('click', () => {
+      jewelModal.style.display = 'block';
+    });
+  }
 });
 </script>
-<!-- <div id="socket-displays"></div> -->
+
+<!-- <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="sockets.js"></script>
+    
+    <div id="jewel-system"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const jewelSystem = {
+    selectedAffixes: [],
+
+    init() {
+      this.setupJewelModal();
+      this.bindEvents();
+    },
+
+    setupJewelModal() {
+      const modal = document.createElement('div');
+      modal.id = 'jewelCustomModal';
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Create Custom Jewel</h2>
+          <div class="jewel-options">
+            <div class="prefix-section">
+              <h3>Selected Affixes: <span id="affixCount">0/4</span></h3>
+              <div class="prefix-list">
+                <div class="affix-option">
+                  <span>Enhanced Damage</span>
+                  <input type="range" min="20" max="40" value="20" id="enhancedDamageRange">
+                  <span class="value" id="enhancedDamageValue">20</span>
+                  <button class="add-affix" data-affix="enhanced-damage">Add</button>
+                </div>
+                <div class="affix-option">
+                  <span>Life</span>
+                  <input type="range" min="10" max="20" value="10" id="lifeRange">
+                  <span class="value" id="lifeValue">10</span>
+                  <button class="add-affix" data-affix="life">Add</button>
+                </div>
+              </div>
+            </div>
+            <div id="selectedAffixes" class="mt-4">
+              <h4>Selected Affixes:</h4>
+              <div id="affixList"></div>
+            </div>
+          </div>
+          <button id="createJewel" class="mt-4 p-2 bg-blue-500 text-white rounded">Create Jewel</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      // Add basic styles
+      const style = document.createElement('style');
+      style.textContent = `
+        #jewelCustomModal {
+          display: none;
+          position: fixed;
+          z-index: 1001;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0,0,0,0.5);
+        }
+        #jewelCustomModal .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 80%;
+          max-width: 500px;
+        }
+        .affix-option {
+          margin: 10px 0;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+        }
+        #selectedAffixes {
+          margin-top: 20px;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+        }
+        .selected-affix {
+          margin: 5px 0;
+          padding: 5px;
+          background: #f0f0f0;
+          border-radius: 4px;
+          display: flex;
+          justify-content: space-between;
+        }
+        .remove-affix {
+          color: red;
+          cursor: pointer;
+        }
+      `;
+      document.head.appendChild(style);
+    },
+
+    bindEvents() {
+      // Show modal when clicking jewels tab
+      const jewelsTab = document.querySelector('[data-category="jewels"]');
+      if (jewelsTab) {
+        jewelsTab.addEventListener('click', () => {
+          document.getElementById('jewelCustomModal').style.display = 'block';
+        });
+      }
+
+      // Close modal
+      const closeBtn = document.querySelector('#jewelCustomModal .close');
+      if (closeBtn) {
+        closeBtn.onclick = () => {
+          document.getElementById('jewelCustomModal').style.display = 'none';
+        };
+      }
+
+      // Range input handlers
+      document.getElementById('enhancedDamageRange').addEventListener('input', (e) => {
+        document.getElementById('enhancedDamageValue').textContent = e.target.value;
+      });
+
+      document.getElementById('lifeRange').addEventListener('input', (e) => {
+        document.getElementById('lifeValue').textContent = e.target.value;
+      });
+
+      // Add affix buttons
+      document.querySelectorAll('.add-affix').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const affixType = e.target.dataset.affix;
+          const value = document.getElementById(`${affixType}Range`).value;
+          this.addAffix(affixType, value);
+        });
+      });
+
+      // Create jewel button
+      document.getElementById('createJewel').addEventListener('click', () => {
+        this.createCustomJewel();
+      });
+    },
+
+    addAffix(type, value) {
+      if (this.selectedAffixes.length >= 4) {
+        alert('Maximum 4 affixes allowed!');
+        return;
+      }
+
+      const affix = {
+        type,
+        value,
+        text: type === 'enhanced-damage' ? 
+          `+${value} Enhanced Damage` : 
+          `+${value} to Life`
+      };
+
+      this.selectedAffixes.push(affix);
+      this.updateAffixDisplay();
+    },
+
+    updateAffixDisplay() {
+      const affixList = document.getElementById('affixList');
+      const affixCount = document.getElementById('affixCount');
+      
+      affixList.innerHTML = this.selectedAffixes.map((affix, index) => `
+        <div class="selected-affix">
+          <span>${affix.text}</span>
+          <span class="remove-affix" data-index="${index}">×</span>
+        </div>
+      `).join('');
+
+      affixCount.textContent = `${this.selectedAffixes.length}/4`;
+
+      // Add remove handlers
+      document.querySelectorAll('.remove-affix').forEach(btn => {
+        btn.onclick = (e) => {
+          const index = parseInt(e.target.dataset.index);
+          this.selectedAffixes.splice(index, 1);
+          this.updateAffixDisplay();
+        };
+      });
+    },
+
+    createCustomJewel() {
+      if (this.selectedAffixes.length === 0) {
+        alert('Please add at least one affix!');
+        return;
+      }
+
+      const jewelCategory = document.querySelector('.socket-content[data-category="jewels"] .socket-options');
+      if (!jewelCategory) return;
+
+      const statsText = this.selectedAffixes.map(affix => affix.text).join('<br>');
+      
+      const newJewel = document.createElement('div');
+      newJewel.className = 'socket-item';
+      newJewel.dataset.jewel = 'custom-jewel';
+      newJewel.innerHTML = `
+        <img src="img/redjewel2.png" class="sock-img">
+        <div class="sock-info">
+          <div class="sock-name">Custom Jewel</div>
+          <div class="sock-stats">
+            <div>${statsText}</div>
+          </div>
+        </div>
+      `;
+
+      // Add click handler for the new jewel
+      newJewel.addEventListener('click', (e) => {
+        if (currentSocket) {
+          const socketImg = currentSocket.element.querySelector('.socket-sock-img');
+          socketImg.src = 'img/redjewel2.png';
+          socketImg.style.display = 'block';
+          currentSocket.element.classList.remove('empty');
+          
+          // Update socket state
+          socketStates[currentSocket.containerKey][currentSocket.index] = {
+            gemType: 'custom-jewel',
+            gemImg: 'img/redjewel2.png',
+            gemStats: {
+              helm: statsText,
+              weapon: statsText,
+              armor: statsText,
+              shield: statsText
+            }
+          };
+          
+          updateStatsDisplay();
+          document.getElementById('socketModal').style.display = 'none';
+          document.getElementById('jewelCustomModal').style.display = 'none';
+          currentSocket = null;
+        }
+      });
+
+      jewelCategory.appendChild(newJewel);
+      document.getElementById('jewelCustomModal').style.display = 'none';
+      this.selectedAffixes = [];
+      this.updateAffixDisplay();
+    }
+  };
+
+  // Initialize the jewel system
+  jewelSystem.init();
+});
+    </script> -->
 </body>
 </html>
