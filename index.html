@@ -9149,18 +9149,57 @@ window.removeAffix = function(type, index) {
 
 function insertItem(itemName) {
   if (!currentSocket) return;
-  
+
   const section = currentSocket.dataset.section;
   const stats = items[itemName]?.[section];
-  
+
   if (stats) {
     currentSocket.classList.remove('empty');
     currentSocket.classList.add('filled');
-    currentSocket.textContent = itemName;
-    currentSocket.dataset.itemName = itemName;
+
+    // Create an image element
+    const img = document.createElement('img');
+
+    if (itemName === 'jewel') {
+      const prefix = selectedPrefixes.length > 0 ? selectedPrefixes[0].effect : '';
+      const suffix = selectedSuffixes.length > 0 ? selectedSuffixes[0].effect : '';
+      const jewelName = `${prefix}${suffix ? ' ' + suffix : ''} Jewel`.trim();
+
+      img.src = getJewelImageSrc();
+      img.alt = jewelName;
+      currentSocket.dataset.itemName = 'jewel';
+      currentSocket.dataset.stats = jewelName;
+    } else {
+      // Convert item name to image filename
+      const filename = itemName.replace(/\s+/g, '').toLowerCase();
+      img.src = `/img/${filename}.png`;
+      img.alt = itemName;
+      currentSocket.dataset.itemName = itemName;
+      currentSocket.dataset.stats = stats;
+    }
+
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '100%';
+
+    // Clear any existing content and add the image
+    currentSocket.innerHTML = '';
+    currentSocket.appendChild(img);
+
     updateAllStatsDisplays();
   }
 }
+
+function getJewelImageSrc() {
+  const jewelImages = [
+    '/img/jewel1.png',
+    '/img/jewel2.png',
+    '/img/jewel3.png',
+    '/img/jewel4.png'
+  ];
+
+  return jewelImages[Math.floor(Math.random() * jewelImages.length)];
+}
+
 
   document.getElementById('confirmJewel')?.addEventListener('click', () => {
   if (!currentSocket) return;
