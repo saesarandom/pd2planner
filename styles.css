@@ -2316,7 +2316,7 @@ option[value="Arcanna's Head"] {
 
 .helm-socket-stats {
   position: absolute;
-  left: 1220px;
+  left: 1200px;
   top: 280px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.7);
@@ -2344,7 +2344,7 @@ option[value="Arcanna's Head"] {
 
 .weapon-socket-stats {
   position: absolute;
-  left: 1420px;
+  left: 1445px;
   top: 280px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.7);
@@ -2358,7 +2358,7 @@ option[value="Arcanna's Head"] {
 
 .shield-socket-stats {
   position: absolute;
-  left: 1520px;
+  left: 1570px;
   top: 280px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.7);
@@ -2413,7 +2413,7 @@ option[value="Arcanna's Head"] {
   display: block !important;
 }
 
-#jewelModal {
+/* #jewelModal {
   display: none;
   position: absolute;
   z-index: 1000;
@@ -2639,7 +2639,7 @@ option[value="Arcanna's Head"] {
 
 #createJewel:hover {
   background-color: #666;
-}
+} 
 
 /* .socket-item[data-jewel="custom-jewel"] {
   cursor: pointer;
@@ -2649,3 +2649,127 @@ option[value="Arcanna's Head"] {
 .socket-item[data-jewel="custom-jewel"] * {
   pointer-events: none;
 } */
+
+.socketz {
+  width: 45px;
+  height: 45px;
+  border: 2px solid #4B5563; /* gray-600 */
+  background-color: #374151; /* gray-700 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.socketz.empty:hover {
+  background-color: #1b1b1d; /* gray-600 */
+  border-color: #6B7280; /* gray-500 */
+}
+.socketz.empty {
+  background-color: #171818; /* gray-700 */
+  color: #9CA3AF; /* gray-400 */
+  
+}
+
+.socketz.filled {
+  background-color: #141414; /* blue-800 */
+  color: white;
+  font-weight: bold;
+}
+.modalz {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modalz.show {
+  display: flex;
+}
+
+.modalz-content {
+  background-color: #1F2937;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 10000;
+}
+
+.helmsockets {
+  position: absolute;
+  padding: 10px;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  left: 1196px;
+  top: 124px;
+  display: grid;
+  align-items: center;
+  gap: 0px;
+}
+
+.armorsockets {
+  position: absolute;
+  padding: 10px;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  left: 1316px;
+  top: 124px;
+  display: grid;
+  align-items: center;
+  gap: 0px;
+}
+
+.weaponsockets {
+  position: absolute;
+  padding: 10px;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  left: 1436px;
+  top: 124px;
+  display: grid;
+  align-items: center;
+  gap: 0px;
+}
+
+.shieldsockets {
+  position: absolute;
+  padding: 10px;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  left: 1556px;
+  top: 124px;
+  display: grid;
+  align-items: center;
+  gap: 0px;
+}
+.affix-section {
+  margin-bottom: 15px;
+}
+.affix-section select {
+  width: 200px;
+  margin-right: 10px;
+}
+#selectedAffixes {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #4B5563;
+}
+.selected-affix {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+}
+.remove-affix {
+  cursor: pointer;
+  color: #EF4444;
+}

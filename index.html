@@ -168,7 +168,7 @@ Resistance to fire %
   
 </select>
 <div id="helm-info"></div>
-<!-- <div id="helm-socket-display"></div> -->
+
 </div>
  
 
@@ -6926,7 +6926,7 @@ merclvlValue.addEventListener('input', () => {
           <div class="sock-name">Rare Jewel</div>
           <div class="sock-stats">
             <div>+15% Enhanced Damage</div>
-            <div>+9 To All Attributes</div>
+            <!-- <div>+9 To All Attributes</div> -->
           </div>
         </div>
       </div>
@@ -7346,7 +7346,7 @@ merclvlValue.addEventListener('input', () => {
 </div>
 
 <!-- Add this where you want the socket container to appear -->
-<div class="socketcontainer">
+<!-- <div class="socketcontainer"> -->
   <!-- <div class="socket empty" data-socket="1">
     <img src="" class="socket-sock-img" style="display: none;">
   </div>
@@ -7358,12 +7358,12 @@ merclvlValue.addEventListener('input', () => {
   </div> -->
 </div>
 
-<div class="socketcontainer2">
+<!-- <div class="socketcontainer2">
 </div>
 <div class="socketcontainer3">
 </div>
 <div class="socketcontainer4">
-</div>
+</div> -->
 
 
 <div class="helmsocket"></div>
@@ -8262,694 +8262,1011 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
   );
 });
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  function updateSocketDisplay() {
-    const socketTypes = [
-      { 
-        statsSelector: '.helm-socket-stats', 
-        infoDiv: document.getElementById('helm-info') 
-      },
-      { 
-        statsSelector: '.armor-socket-stats', 
-        infoDiv: document.getElementById('armor-info') 
-      },
-      { 
-        statsSelector: '.weapon-socket-stats', 
-        infoDiv: document.getElementById('weapon-info') 
-      },
-      { 
-        statsSelector: '.shield-socket-stats', 
-        infoDiv: document.getElementById('off-info') 
-      }
-    ];
-
-    socketTypes.forEach(({ statsSelector, infoDiv }) => {
-      if (!infoDiv) return;
-
-      // Remove existing socket stats
-      const existingSocketStats = infoDiv.querySelector('.socket-stats');
-      if (existingSocketStats) {
-        existingSocketStats.remove();
-      }
-
-      // Find the stats container
-      const statsContainer = document.querySelector(statsSelector);
-      if (!statsContainer) return;
-
-      // Get all stat lines
-      const statLines = Array.from(statsContainer.querySelectorAll('.stat-line'))
-        .map(line => line.textContent.trim())
-        .filter(Boolean);
-
-      // If no stats, skip
-      if (statLines.length === 0) return;
-
-      // Create new socket stats wrapper
-      const socketStatsWrapper = document.createElement('div');
-      socketStatsWrapper.className = 'socket-stats';
-
-      // Create stat elements
-      statLines.forEach(statText => {
-        const statElement = document.createElement('div');
-        statElement.className = 'socket-stat';
-        statElement.textContent = statText;
-        socketStatsWrapper.appendChild(statElement);
-      });
-
-      // Append to info div
-      infoDiv.appendChild(socketStatsWrapper);
-    });
-  }
-
-  // Add styles
-  const style = document.createElement('style');
-  style.textContent = `
-    .socket-stats {
-      margin-top: 4px;
-      padding-top: 2px;
-    }
-    .socket-stat {
-      color: #7d49ff;
-      font-size: 15px;
-      display: block !important;
-      white-space: nowrap;
-      line-height: 1.0;
-      margin: 1px 0;
-    }
-  `;
-  document.head.appendChild(style);
-
-  // Add event listeners to dropdowns
-  ['helms', 'armors', 'weapons', 'offs'].forEach(type => {
-    const dropdown = document.getElementById(`${type}-dropdown`);
-    if (dropdown) {
-      dropdown.addEventListener('change', updateSocketDisplay);
-    }
-  });
-
-//   document.querySelector('[data-category="jewels"]').addEventListener('click', () => {
-//   const jewelModal = document.getElementById('jewelModal');
-//   jewelModal.style.display = 'block';
-// });
-
-  // Observe changes in socket stats
-  const statsContainers = [
-    '.helmsocket', 
-    '.armorsocket', 
-    '.weaponsocket', 
-    '.offsocket'
-  ];
-
-  const observer = new MutationObserver(updateSocketDisplay);
-  
-  statsContainers.forEach(selector => {
-    const container = document.querySelector(selector);
-    if (container) {
-      observer.observe(container, { 
-        childList: true, 
-        subtree: true, 
-        attributes: true 
-      });
-    }
-  });
-
-  // Initial call to set up display
-  updateSocketDisplay();
-});
-</script>
 
 
-
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // State management
-  const state = {
-    selectedAffixes: [],
-    currentSocket: null
-    
-    }
-    
-    function handleCustomJewelClick(customJewel) {
-  const { element, containerKey, index } = state.currentSocket;
-
-  // Update the DOM
-  element.classList.remove('empty');
-  const customJewelContent = customJewel.querySelector('.socket-item-content');
-  const socketImg = element.querySelector('.sock-img');
-  if (socketImg) {
-    socketImg.src = customJewelContent.querySelector('.sock-img').src;
-    socketImg.style.display = 'block';
-  } else {
-    console.error('Socket image element not found');
-    return;
-  }
-
-  // Update the state
-  state.socketStates = {
-    gemType: 'custom-jewel',
-    gemImg: socketImg.src,
-    gemStats: {
-      helm: customJewel.querySelector('.sock-stats').innerHTML,
-      armor: customJewel.querySelector('.sock-stats').innerHTML,
-      weapon: customJewel.querySelector('.sock-stats').innerHTML,
-      shield: customJewel.querySelector('.sock-stats').innerHTML
-    }
-  };
-
-  // Update the stats display
-  updateStatsDisplay();
-
-  // Close the modal
-  const modal = document.getElementById('socketModal');
-  modal.style.display = 'none';
-  state.currentSocket = null;
-}
-
-function updateStatsDisplay() {
-  const helmStats = document.getElementById('helmsocketstats');
-  const weaponStats = document.getElementById('weaponsocketstats');
-  const armorStats = document.getElementById('armorsocketstats');
-  const shieldStats = document.getElementById('shieldsocketstats');
-
-  helmStats.innerHTML = processContainerStats('custom', 'helm');
-  weaponStats.innerHTML = processContainerStats('custom', 'weapon');
-  armorStats.innerHTML = processContainerStats('custom', 'armor');
-  shieldStats.innerHTML = processContainerStats('custom', 'shield');
-}
-
-function processContainerStats(containerKey, statType) {
-  const stats = state.socketStates?.[statType];
-  if (!stats) return '<div class="stat-line">No sockets</div>';
-
-  return stats
-    .split(',')
-    .map(stat => `<div class="stat-line">${stat.trim()}</div>`)
-    .join('');
-}
-
-  // Prefix and suffix data
-  const prefixData = [
-    { name: 'Custom 40 max dmg', min: 1, max: 40, category: 'prefix' },
-    { name: 'Custom 80 max dmg', min: 41, max: 80, category: 'prefix' },
-    { name: 'Custom 120 max dmg', min: 81, max: 120, category: 'prefix' },
-    { name: 'Custom Minimum Damage', min: 1, max: 200, category: 'prefix' },
-    { name: 'Custom Life', min: 81, max: 200, category: 'prefix' },
-    { name: 'Custom All skills', min: 1, max: 40, category: 'prefix' }
-  ];
-
-  const suffixData = [
-    { name: 'Of Frost', min: 1, max: 13, category: 'suffix' },
-    { name: 'Of Life', min: 5, max: 15, category: 'suffix' },
-    { name: 'Of Fortune', min: 3, max: 7, category: 'suffix' }
-  ];
-
-  // Create and initialize modal
-  const jewelModal = document.createElement('div');
-  jewelModal.id = 'jewelModal';
-  jewelModal.className = 'modal';
-  jewelModal.innerHTML = `
-    <div class="modal-content">
-      <span id="closeJewelModal" class="close">&times;</span>
-      <h2>Jewel Affixes</h2>
-      <div class="affix-selection">
-        <div class="prefix-section">
-          <h3>Prefixes <span id="prefixCount">(0/3)</span></h3>
-          <div class="prefix-container"></div>
-        </div>
-        <div class="suffix-section">
-          <h3>Suffixes <span id="suffixCount">(0/3)</span></h3>
-          <div class="suffix-container"></div>
-        </div>
-        <div class="total-affixes">
-          <span id="totalAffixCount">Total Affixes: 0/4</span>
-        </div>
-      </div>
-      <div class="affix-actions">
-        <button id="confirmAffixes">Confirm</button>
-        <button id="clearAffixes">Clear All</button>
-      </div>
+  <div class="helmsockets">
+      <div class="socketz empty" data-section="helm" data-index="0"></div>
+      <div class="socketz empty" data-section="helm" data-index="1"></div>
+      
     </div>
-  `;
-  document.body.appendChild(jewelModal);
+   
 
-  // Helper functions
-  function formatAffixText(affix) {
-  if (affix.name.includes('Custom')) {
-    if (affix.name.includes('max dmg')) {
-      return `+${affix.value} to Maximum Damage`;
-    }
-    if (affix.name.includes('Minimum Damage')) {
-      return `+${affix.value} to Minimum Damage`;
-    }
-    if (affix.name.includes('Life')) {
-      return `+${affix.value} to Life`;
-    }
-    if (affix.name.includes('All skills')) {
-      return `+${affix.value} to All Skills`;
-    }
-  } else if (affix.name.startsWith('Of')) {
-    if (affix.name.includes('Frost')) {
-      return `+${affix.value} Cold Damage`;
-    }
-    if (affix.name.includes('Life')) {
-      return `+${affix.value} to Life`;
-    }
-    if (affix.name.includes('Fortune')) {
-      return `+${affix.value}% Better Chance of Getting Magic Items`;
-    }
-  }
-  return `${affix.name} ${affix.value}`;
-}
-
-  function updateAffixCounts() {
-    console.log('Updating affix counts');
-    const prefixCount = state.selectedAffixes.filter(a => a.category === 'prefix').length;
-    const suffixCount = state.selectedAffixes.filter(a => a.category === 'suffix').length;
-
-    document.getElementById('prefixCount').textContent = `(${prefixCount}/3)`;
-    document.getElementById('suffixCount').textContent = `(${suffixCount}/3)`;
-    document.getElementById('totalAffixCount').textContent = `Total Affixes: ${state.selectedAffixes.length}/4`;
-  }
-
-  function createAffixElement(affix) {
-    console.log('Creating affix element:', affix);
-    const el = document.createElement('div');
-    el.className = 'affix-item';
-    el.dataset.name = affix.name;
-    el.dataset.category = affix.category;
-
-    const range = document.createElement('input');
-    range.type = 'range';
-    range.min = affix.min;
-    range.max = affix.max;
-    range.value = affix.min;
-
-    const value = document.createElement('span');
-    value.textContent = affix.min;
+    <div class="armorsockets">
+      <div class="socketz empty" data-section="armor" data-index="0"></div>
+      <div class="socketz empty" data-section="armor" data-index="1"></div>
+    </div>
     
-    range.addEventListener('input', () => value.textContent = range.value);
 
-    const select = document.createElement('button');
-    select.textContent = 'Select';
-    select.onclick = () => {
-      if (state.selectedAffixes.length >= 4) {
-        alert('Maximum of 4 total affixes allowed!');
-        return;
-      }
+    <div class="weaponsockets">
+      <div class="socketz empty" data-section="weapon" data-index="0"></div>
+      <div class="socketz empty" data-section="weapon" data-index="1"></div>
+    </div>
+    
 
-      const prefixCount = state.selectedAffixes.filter(a => a.category === 'prefix').length;
-      const suffixCount = state.selectedAffixes.filter(a => a.category === 'suffix').length;
+    <div class="shieldsockets">  
+      <div class="socketz empty" data-section="shield" data-index="0"></div>
+      <div class="socketz empty" data-section="shield" data-index="1"></div>
+</div>
 
-      if (affix.category === 'prefix' && prefixCount >= 3) {
-        alert('Maximum of 3 prefixes allowed!');
-        return;
-      }
+<!-- Modal for item selection -->
+<div id="itemModal" class="modalz hidden">
+  <div class="modalz-content">
+    <h2>Select Item</h2>
+    <button data-item="El Rune">El Rune</button>
+    <button data-item="Eld Rune">Eld Rune</button>
+    <button data-item="El Rune">El Rune</button>
+<button data-item="Eld Rune">Eld Rune</button>
+<button data-item="Tir Rune">Tir Rune</button>
+<button data-item="Nef Rune">Nef Rune</button>
+<button data-item="Eth Rune">Eth Rune</button>
+<button data-item="Ith Rune">Ith Rune</button>
+<button data-item="Tal Rune">Tal Rune</button>
+<button data-item="Ral Rune">Ral Rune</button>
+<button data-item="Ort Rune">Ort Rune</button>
+<button data-item="Thul Rune">Thul Rune</button>
+<button data-item="Amn Rune">Amn Rune</button>
+<button data-item="Sol Rune">Sol Rune</button>
+<button data-item="Shael Rune">Shael Rune</button>
+<button data-item="Dol Rune">Dol Rune</button>
+<button data-item="Hel Rune">Hel Rune</button>
+<button data-item="Io Rune">Io Rune</button>
+<button data-item="Lum Rune">Lum Rune</button>
+<button data-item="Ko Rune">Ko Rune</button>
+<button data-item="Fal Rune">Fal Rune</button>
+<button data-item="Lem Rune">Lem Rune</button>
+<button data-item="Pul Rune">Pul Rune</button>
+<button data-item="Um Rune">Um Rune</button>
+<button data-item="Mal Rune">Mal Rune</button>
+<button data-item="Ist Rune">Ist Rune</button>
+<button data-item="Gul Rune">Gul Rune</button>
+<button data-item="Vex Rune">Vex Rune</button>
+<button data-item="Ohm Rune">Ohm Rune</button>
+<button data-item="Lo Rune">Lo Rune</button>
+<button data-item="Sur Rune">Sur Rune</button>
+<button data-item="Ber Rune">Ber Rune</button>
+<button data-item="Jah Rune">Jah Rune</button>
+<button data-item="Cham Rune">Cham Rune</button>
+<button data-item="Zod Rune">Zod Rune</button>
+<button data-item="Chipped Sapphire">Chipped Sapphire</button>
+<button data-item="Flawed Sapphire">Flawed Sapphire</button>
+<button data-item="Sapphire">Sapphire</button>
+<button data-item="Flawless Sapphire">Flawless Sapphire</button>
+<button data-item="Perfect Sapphire">Perfect Sapphire</button>
 
-      if (affix.category === 'suffix' && suffixCount >= 3) {
-        alert('Maximum of 3 suffixes allowed!');
-        return;
-      }
+<button data-item="Chipped Emerald">Chipped Emerald</button>
+<button data-item="Flawed Emerald">Flawed Emerald</button>
+<button data-item="Emerald">Emerald</button>
+<button data-item="Flawless Emerald">Flawless Emerald</button>
+<button data-item="Perfect Emerald">Perfect Emerald</button>
 
-      state.selectedAffixes.push({
-        ...affix,
-        value: parseInt(range.value)
-      });
+<button data-item="Chipped Topaz">Chipped Topaz</button>
+<button data-item="Flawed Topaz">Flawed Topaz</button>
+<button data-item="Topaz">Topaz</button>
+<button data-item="Flawless Topaz">Flawless Topaz</button>
+<button data-item="Perfect Topaz">Perfect Topaz</button>
 
-      updateAffixCounts();
-      highlightSelectedAffixes();
-    };
+<button data-item="Chipped Ruby">Chipped Ruby</button>
+<button data-item="Flawed Ruby">Flawed Ruby</button>
+<button data-item="Ruby">Ruby</button>
+<button data-item="Flawless Ruby">Flawless Ruby</button>
+<button data-item="Perfect Ruby">Perfect Ruby</button>
 
-    el.append(document.createElement('span').appendChild(document.createTextNode(affix.name)), range, value, select);
-    return el;
+<button data-item="Chipped Diamond">Chipped Diamond</button>
+<button data-item="Flawed Diamond">Flawed Diamond</button>
+<button data-item="Diamond">Diamond</button>
+<button data-item="Flawless Diamond">Flawless Diamond</button>
+<button data-item="Perfect Diamond">Perfect Diamond</button>
+
+<button data-item="Chipped Amethyst">Chipped Amethyst</button>
+<button data-item="Flawed Amethyst">Flawed Amethyst</button>
+<button data-item="Amethyst">Amethyst</button>
+<button data-item="Flawless Amethyst">Flawless Amethyst</button>
+<button data-item="Perfect Amethyst">Perfect Amethyst</button>
+
+<button data-item="Chipped Skull">Chipped Skull</button>
+<button data-item="Flawed Skull">Flawed Skull</button>
+<button data-item="Skull">Skull</button>
+<button data-item="Flawless Skull">Flawless Skull</button>
+<button data-item="Perfect Skull">Perfect Skull</button>
+    <button data-item="Chipped Diamond">Chipped Diamond</button>
+    <button data-item="Jewel">Jewel</button>
+    <button class="cancel">Cancel</button>
+  </div>
+</div>
+
+<!-- Modal for jewel customization -->
+<div id="jewelModal" class="modalz hidden">
+  <div class="modalz-content">
+    <h2>Create Jewel</h2>
+    
+    <div class="affix-section">
+      <h3>Prefixes (max 3)</h3>
+      <select class="prefix-select">
+        <option value="">Select Prefix</option>
+        <option value="+[5-8] Defense">+[5-8] Defense</option>
+        <option value="+[9-20] Defense">+[9-20] Defense</option>
+        <option value="+[21-40] Defense">+[21-40] Defense</option>
+        <option value="+[41-64] Defense">+[41-64] Defense</option>
+        <option value="+[1-4] to Minimum Damage">+[1-4] to Minimum Damage</option>
+        <option value="+[5-8] to Minimum Damage">+[5-8] to Minimum Damage</option>
+        <option value="+[10-14] to Minimum Damage">+[10-14] to Minimum Damage</option>
+        <option value="+[1-5] to Maximum Damage">+[1-5] to Maximum Damage</option>
+        <option value="+[6-9] to Maximum Damage">+[6-9] to Maximum Damage</option>
+        <option value="+[11-15] to Maximum Damage">+[11-15] to Maximum Damage</option>
+        <option value="+[5-10]% Enhanced Damage">+[5-10]% Enhanced Damage</option>
+        <option value="+[11-20]% Enhanced Damage">+[11-20]% Enhanced Damage</option>
+        <option value="+[21-30]% Enhanced Damage">+[21-30]% Enhanced Damage</option>
+        <option value="+[31-40]% Enhanced Damage">+[31-40]% Enhanced Damage</option>
+        <option value="[7-12]% Damage Taken Gained as Mana when Hit">[7-12]% Damage Taken Gained as Mana when Hit</option>
+        <option value="+[10-20] to Attack Rating">+[10-20] to Attack Rating</option>
+        <option value="+[21-40] to Attack Rating">+[21-40] to Attack Rating</option>
+        <option value="+[41-60] to Attack Rating">+[41-60] to Attack Rating</option>
+        <option value="+[61-100] to Attack Rating">+[61-100] to Attack Rating</option>
+        <option value="+1 to Light Radius, +10 to Attack Rating">+1 to Light Radius, +10 to Attack Rating</option>
+        <option value="[3-7]% Better Chance of Getting Magic Items">[3-7]% Better Chance of Getting Magic Items</option>
+        <option value="+[5-10] to Mana">+[5-10] to Mana</option>
+        <option value="+[11-15] to Mana">+[11-15] to Mana</option>
+        <option value="+[16-20] to Mana">+[16-20] to Mana</option>
+        <option value="+[21-30] to Mana">+[21-30] to Mana</option>
+        <option value="All Resistances +[5-10]">All Resistances +[5-10]</option>
+        <option value="All Resistances +[11-15]">All Resistances +[11-15]</option>
+        <option value="Cold Resist +[5-15]%">Cold Resist +[5-15]%</option>
+        <option value="Cold Resist +[16-30]%">Cold Resist +[16-30]%</option>
+        <option value="Fire Resist +[5-15]%">Fire Resist +[5-15]%</option>
+        <option value="Fire Resist +[16-30]%">Fire Resist +[16-30]%</option>
+        <option value="Lightning Resist +[5-15]%">Lightning Resist +[5-15]%</option>
+        <option value="Lightning Resist +[16-30]%">Lightning Resist +[16-30]%</option>
+        <option value="Poison Resist +[5-15]%">Poison Resist +[5-15]%</option>
+        <option value="Poison Resist +[16-30]%">Poison Resist +[16-30]%</option>
+        <option value="+[1-3] to Mana after each Kill">+[1-3] to Mana after each Kill</option>
+        <option value="+[25-50] to Attack Rating against Demons, +[25-40]% Damage to Demons">+[25-50] to Attack Rating against Demons, +[25-40]% Damage to Demons</option>
+        <option value="+[25-50] to Attack Rating against Undead, +[25-50]% Damage to Undead">+[25-50] to Attack Rating against Undead, +[25-50]% Damage to Undead</option>
+        <option value="5% Chance of Open Wounds, +[30-40] Open Wounds Damage per Second">5% Chance of Open Wounds, +[30-40] Open Wounds Damage per Second</option>
+        <option value="5% Chance of Open Wounds, +[65-85] Open Wounds Damage per Second">5% Chance of Open Wounds, +[65-85] Open Wounds Damage per Second</option>
+        <option value="5% Chance of Open Wounds, +[95-125] Open Wounds Damage per Second">5% Chance of Open Wounds, +[95-125] Open Wounds Damage per Second</option>
+        <option value="+[1-3] Life after each Kill">+[1-3] Life after each Kill</option>
+      </select>
+      <input type="number" class="range-value prefix-value" placeholder="Value" min="0" max="0">
+      <button id="addPrefix">Add Prefix</button>
+    </div>
+    
+    <div class="affix-section">
+      <h3>Suffixes (max 3)</h3>
+      <select class="suffix-select">
+        <option value="">Select Suffix</option>
+        <option value="Attacker Takes Damage of [30-40]">Attacker Takes Damage of [30-40]</option>
+        <option value="+15% Increased Attack Speed">+15% Increased Attack Speed</option>
+        <option value="Adds 1 to [3-5] Cold Damage">Adds 1 to [3-5] Cold Damage</option>
+        <option value="Adds [2-3] to [6-10] Cold Damage">Adds [2-3] to [6-10] Cold Damage</option>
+        <option value="Adds [4-5] to [11-15] Cold Damage">Adds [4-5] to [11-15] Cold Damage</option>
+        <option value="Adds [1-3] to [6-10] Fire Damage">Adds [1-3] to [6-10] Fire Damage</option>
+        <option value="Adds [4-10] to [11-30] Fire Damage">Adds [4-10] to [11-30] Fire Damage</option>
+        <option value="Adds [11-25] to [31-50] Fire Damage">Adds [11-25] to [31-50] Fire Damage</option>
+        <option value="Adds 1 to [10-20] Lightning Damage">Adds 1 to [10-20] Lightning Damage</option>
+        <option value="Adds 1 to [21-60] Lightning Damage">Adds 1 to [21-60] Lightning Damage</option>
+        <option value="Adds 1 to [61-100] Lightning Damage">Adds 1 to [61-100] Lightning Damage</option>
+        <option value="+[2-5] to Maximum Damage">+[2-5] to Maximum Damage</option>
+        <option value="+[6-9] to Maximum Damage">+[6-9] to Maximum Damage</option>
+        <option value="+[11-15] to Maximum Damage">+[11-15] to Maximum Damage</option>
+        <option value="+[1-4] to Minimum Damage">+[1-4] to Minimum Damage</option>
+        <option value="+[5-10] to Minimum Damage">+[5-10] to Minimum Damage</option>
+        <option value="+20 Poison Damage over 2 seconds">+20 Poison Damage over 2 seconds</option>
+        <option value="+[1-3] to Dexterity">+[1-3] to Dexterity</option>
+        <option value="+[4-6] to Dexterity">+[4-6] to Dexterity</option>
+        <option value="+[7-9] to Dexterity">+[7-9] to Dexterity</option>
+        <option value="+7% Faster Hit Recovery">+7% Faster Hit Recovery</option>
+        <option value="Replenish Life +[1-4]">Replenish Life +[1-4]</option>
+        <option value="[10-30]% Extra Gold from Monsters">[10-30]% Extra Gold from Monsters</option>
+        <option value="[5-10]% Better Chance of Getting Magic Items">[5-10]% Better Chance of Getting Magic Items</option>
+        <option value="+[1-5] to Energy">+[1-5] to Energy</option>
+        <option value="+[4-6] to Energy">+[4-6] to Energy</option>
+        <option value="+[7-9] to Energy">+[7-9] to Energy</option>
+        <option value="+[3-8] to Life">+[3-8] to Life</option>
+        <option value="+[9-20] to Life">+[9-20] to Life</option>
+        <option value="Requirements -15%">Requirements -15%</option>
+        <option value="+[1-4] to Strength">+[1-4] to Strength</option>
+        <option value="+[5-6] to Strength">+[5-6] to Strength</option>
+        <option value="+[7-9] to Strength">+[7-9] to Strength</option>
+      </select>
+      <input type="number" class="range-value suffix-value" placeholder="Value" min="0" max="0">
+      <button id="addSuffix">Add Suffix</button>
+    </div>
+
+    <div id="selectedAffixes">
+      <!-- Selected affixes will appear here -->
+    </div>
+
+    <div class="button-group">
+      <button id="confirmJewel">Confirm</button>
+      <button class="cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const items = {
+  'El Rune': {
+    helm: '+15 Defense, +1 Light Radius',
+    armor: '+15 Defense, +1 Light Radius',
+    weapon: '+50 Attack Rating, +1 Light Radius',
+    shield: '+15 Defense, +1 Light Radius'
+  },
+  'Eld Rune': {
+    helm: '15% Slower Stamina Drain',
+    armor: '15% Slower Stamina Drain',
+    weapon: '+75% Damage vs Undead, +50 Attack Rating vs Undead',
+    shield: '7% Increased Chance of Blocking'
+  },
+  'Tir Rune': {
+    helm: '+2 to Mana after each Kill',
+    armor: '+2 to Mana after each Kill',
+    weapon: '+2 to Mana after each Kill',
+    shield: '+2 to Mana after each Kill'
+  },
+  'Nef Rune': {
+    helm: '+30 Defense vs. Missile',
+    armor: '+30 Defense vs. Missile',
+    weapon: 'Knockback',
+    shield: '+30 Defense vs. Missile'
+  },
+  'Eth Rune': {
+    helm: 'Regenerate Mana 15%',
+    armor: 'Regenerate Mana 15%',
+    weapon: '-25% Target Defense',
+    shield: 'Regenerate Mana 15%'
+  },
+  'Ith Rune': {
+    helm: '15% Damage Taken Gained as Mana when Hit',
+    armor: '15% Damage Taken Gained as Mana when Hit',
+    weapon: '+9 to Maximum Damage',
+    shield: '15% Damage Taken Gained as Mana when Hit'
+  },
+  'Tal Rune': {
+    helm: 'Poison Resist +30%',
+    armor: 'Poison Resist +30%',
+    weapon: '+75 Poison Damage over 5 Seconds',
+    shield: 'Poison Resist +35%'
+  },
+  'Ral Rune': {
+    helm: 'Fire Resist +30%',
+    armor: 'Fire Resist +30%',
+    weapon: 'Adds 5-30 Fire Damage',
+    shield: 'Fire Resist +35%'
+  },
+  'Ort Rune': {
+    helm: 'Lightning Resist +30%',
+    armor: 'Lightning Resist +30%',
+    weapon: 'Adds 1-50 Lightning Damage',
+    shield: 'Lightning Resist +35%'
+  },
+  'Thul Rune': {
+    helm: 'Cold Resist +30%',
+    armor: 'Cold Resist +30%',
+    weapon: 'Adds 3-14 Cold Damage',
+    shield: 'Cold Resist +35%'
+  },
+  'Amn Rune': {
+    helm: 'Attacker Takes Damage of 14',
+    armor: 'Attacker Takes Damage of 14',
+    weapon: '7% Life Stolen per Hit',
+    shield: 'Attacker Takes Damage of 14'
+  },
+  'Sol Rune': {
+    helm: 'Physical Damage Taken Reduced by 7',
+    armor: 'Physical Damage Taken Reduced by 7',
+    weapon: '+9 to Minimum Damage',
+    shield: 'Physical Damage Taken Reduced by 7'
+  },
+  'Shael Rune': {
+    helm: '+20% Faster Hit Recovery',
+    armor: '+20% Faster Hit Recovery',
+    weapon: '+20% Increased Attack Speed',
+    shield: '+20% Faster Block Rate'
+  },
+  'Dol Rune': {
+    helm: 'Replenish Life +10',
+    armor: 'Replenish Life +10',
+    weapon: '20% Enhanced Damage',
+    shield: 'Replenish Life +10'
+  },
+  'Hel Rune': {
+    helm: 'Requirements -20%',
+    armor: 'Requirements -20%',
+    weapon: 'Requirements -20%',
+    shield: 'Requirements -20%'
+  },
+  'Io Rune': {
+    helm: '+10 to Vitality',
+    armor: '+10 to Vitality',
+    weapon: '+10 to Vitality',
+    shield: '+10 to Vitality'
+  },
+  'Lum Rune': {
+    helm: '+10 to Energy',
+    armor: '+10 to Energy',
+    weapon: '+10 to Energy',
+    shield: '+10 to Energy'
+  },
+  'Ko Rune': {
+    helm: '+10 to Dexterity',
+    armor: '+10 to Dexterity',
+    weapon: '+10 to Dexterity',
+    shield: '+10 to Dexterity'
+  },
+  'Fal Rune': {
+    helm: '+10 to Strength',
+    armor: '+10 to Strength',
+    weapon: '+10 to Strength',
+    shield: '+10 to Strength'
+  },
+  'Lem Rune': {
+    helm: '50% Extra Gold From Monsters',
+    armor: '50% Extra Gold From Monsters',
+    weapon: '75% Extra Gold From Monsters',
+    shield: '50% Extra Gold From Monsters'
+  },
+  'Pul Rune': {
+    helm: '+30% Enhanced Defense',
+    armor: '+30% Enhanced Defense',
+    weapon: '+75% Damage to Demons\n+100 to Attack Rating against Demons',
+    shield: '+30% Enhanced Defense'
+  },
+  'Um Rune': {
+    helm: 'All Resistances +15',
+    armor: 'All Resistances +15',
+    weapon: '10% Chance of Open Wounds\n+120 Open Wounds Damage per Second',
+    shield: 'All Resistances +22'
+  },
+  'Mal Rune': {
+    helm: 'Magic Damage Taken Reduced by 7',
+    armor: 'Magic Damage Taken Reduced by 7',
+    weapon: 'Prevent Monster Heal',
+    shield: 'Magic Damage Taken Reduced by 7'
+  },
+  'Ist Rune': {
+    helm: '30% Better Chance of Getting Magic Items',
+    armor: '30% Better Chance of Getting Magic Items',
+    weapon: '30% Better Chance of Getting Magic Items',
+    shield: '30% Better Chance of Getting Magic Items'
+  },
+  'Gul Rune': {
+    helm: '+4% to Maximum Poison Resist',
+    armor: '+4% to Maximum Poison Resist',
+    weapon: '20% Bonus to Attack Rating',
+    shield: '+4% to Maximum Poison Resist'
+  },
+  'Vex Rune': {
+    helm: '+4% to Maximum Fire Resist',
+    armor: '+4% to Maximum Fire Resist',
+    weapon: '7% Mana Stolen per Hit',
+    shield: '+4% to Maximum Fire Resist'
+  },
+  'Ohm Rune': {
+    helm: '+4% to Maximum Cold Resist',
+    armor: '+4% to Maximum Cold Resist',
+    weapon: '+45% Enhanced Damage',
+    shield: '+4% to Maximum Cold Resist'
+  },
+  'Lo Rune': {
+    helm: '+4% to Maximum Lightning Resist',
+    armor: '+4% to Maximum Lightning Resist',
+    weapon: '20% Deadly Strike',
+    shield: '+4% to Maximum Lightning Resist'
+  },
+  'Sur Rune': {
+    helm: 'Increase Maximum Mana 5%',
+    armor: 'Increase Maximum Mana 5%',
+    weapon: '+4 Life after each Kill',
+    shield: '50 to Mana'
+  },
+  'Ber Rune': {
+    helm: 'Physical Damage Taken Reduced by 5%',
+    armor: 'Physical Damage Taken Reduced by 5%',
+    weapon: '20% Chance of Crushing Blow',
+    shield: 'Physical Damage Taken Reduced by 5%'
+  },
+  'Jah Rune': {
+    helm: 'Increase Maximum Life 5%',
+    armor: 'Increase Maximum Life 5%',
+    weapon: 'Ignore Target\'s Defense',
+    shield: '+75 to Life'
+  },
+  'Cham Rune': {
+    helm: 'Cannot Be Frozen',
+    armor: 'Cannot Be Frozen',
+    weapon: 'Freezes Target +3',
+    shield: 'Cannot Be Frozen'
+  },
+  'Zod Rune': {
+    helm: 'Indestructible',
+    armor: 'Indestructible',
+    weapon: 'Indestructible',
+    shield: 'Indestructible'
+  },
+  'Chipped Sapphire': {
+    weapon: '+1-3 Cold Damage',
+    helm: '+10 to Mana',
+    armor: '+10 to Mana',
+    shield: 'Cold Resist +12%'
+  },
+  'Flawed Sapphire': {
+    weapon: '+3-5 Cold Damage',
+    helm: '+17 to Mana',
+    armor: '+17 to Mana',
+    shield: 'Cold Resist +16%'
+  },
+  'Sapphire': {
+    weapon: '+4-7 Cold Damage',
+    helm: '+24 to Mana',
+    armor: '+24 to Mana',
+    shield: 'Cold Resist +22%'
+  },
+  'Flawless Sapphire': {
+    weapon: '+4-7 Cold Damage',
+    helm: '+31 to Mana',
+    armor: '+31 to Mana',
+    shield: 'Cold Resist +22%'
+  },
+  'Perfect Sapphire': {
+    weapon: '+4-7 Cold Damage',
+    helm: '+38 to Mana',
+    armor: '+38 to Mana',
+    shield: 'Cold Resist +22%'
+  },
+  'Chipped Emerald': {
+    weapon: '+10 Poison Damage over 3 Seconds',
+    helm: '+3 to Dexterity',
+    armor: '+3 to Dexterity',
+    shield: 'Poison Resist +12%'
+  },
+  'Flawed Emerald': {
+    weapon: '+20 Poison Damage over 4 Seconds',
+    helm: '+4 to Dexterity',
+    armor: '+4 to Dexterity',
+    shield: 'Poison Resist +16%'
+  },
+  'Emerald': {
+    weapon: '+40 Poison Damage over 5 Seconds',
+    helm: '+6 to Dexterity',
+    armor: '+6 to Dexterity',
+    shield: 'Poison Resist +22%'
+  },
+  'Flawless Emerald': {
+    weapon: '+60 Poison Damage over 6 Seconds',
+    helm: '+8 to Dexterity',
+    armor: '+8 to Dexterity',
+    shield: 'Poison Resist +28%'
+  },
+  'Perfect Emerald': {
+    weapon: '+100 Poison Damage over 7 Seconds',
+    helm: '+10 to Dexterity',
+    armor: '+10 to Dexterity',
+    shield: 'Poison Resist +40%'
+  },
+  'Chipped Topaz': {
+    weapon: 'Adds 1-8 Lightning Damage',
+    helm: '9% Better Chance of Getting Magic Items',
+    armor: '9% Better Chance of Getting Magic Items',
+    shield: 'Lightning Resist +12%'
+  },
+  'Flawed Topaz': {
+    weapon: 'Adds 1-14 Lightning Damage',
+    helm: '13% Better Chance of Getting Magic Items',
+    armor: '13% Better Chance of Getting Magic Items',
+    shield: 'Lightning Resist +16%'
+  },
+  'Topaz': {
+    weapon: 'Adds 1-22 Lightning Damage',
+    helm: '16% Better Chance of Getting Magic Items',
+    armor: '16% Better Chance of Getting Magic Items',
+    shield: 'Lightning Resist +22%'
+  },
+  'Flawless Topaz': {
+    weapon: 'Adds 1-30 Lightning Damage',
+    helm: '20% Better Chance of Getting Magic Items',
+    armor: '20% Better Chance of Getting Magic Items',
+    shield: 'Lightning Resist +28%'
+  },
+  'Perfect Topaz': {
+    weapon: 'Adds 1-40 Lightning Damage',
+    helm: '24% Better Chance of Getting Magic Items',
+    armor: '24% Better Chance of Getting Magic Items',
+    shield: 'Lightning Resist +40%'
+  },
+  'Chipped Ruby': {
+    weapon: 'Adds 3-4 Fire Damage',
+    helm: '+10 to Life',
+    armor: '+10 to Life',
+    shield: 'Fire Resist +12%'
+  },
+  'Flawed Ruby': {
+    weapon: 'Adds 5-8 Fire Damage',
+    helm: '+17 to Life',
+    armor: '+17 to Life',
+    shield: 'Fire Resist +16%'
+  },
+  'Ruby': {
+    weapon: 'Adds 8-12 Fire Damage',
+    helm: '+24 to Life',
+    armor: '+24 to Life',
+    shield: 'Fire Resist +22%'
+  },
+  'Flawless Ruby': {
+    weapon: 'Adds 10-16 Fire Damage',
+    helm: '+31 to Life',
+    armor: '+31 to Life',
+    shield: 'Fire Resist +28%'
+  },
+  'Perfect Ruby': {
+    weapon: 'Adds 15-20 Fire Damage',
+    helm: '+40 to Life',
+    armor: '+40 to Life',
+    shield: 'Fire Resist +40%'
+  },
+  'Chipped Diamond': {
+    weapon: '+28% Damage to Undead',
+    helm: '+20 to Attack Rating',
+    armor: '+20 to Attack Rating',
+    shield: 'All Resistances +6'
+  },
+  'Flawed Diamond': {
+    weapon: '+34% Damage to Undead',
+    helm: '+40 to Attack Rating',
+    armor: '+40 to Attack Rating',
+    shield: 'All Resistances +8'
+  },
+  'Diamond': {
+    weapon: '+44% Damage to Undead',
+    helm: '+60 to Attack Rating',
+    armor: '+60 to Attack Rating',
+    shield: 'All Resistances +11'
+  },
+  'Flawless Diamond': {
+    weapon: '+54% Damage to Undead',
+    helm: '+80 to Attack Rating',
+    armor: '+80 to Attack Rating',
+    shield: 'All Resistances +14'
+  },
+  'Perfect Diamond': {
+    weapon: '+68% Damage to Undead',
+    helm: '+100 to Attack Rating',
+    armor: '+100 to Attack Rating',
+    shield: 'All Resistances +19'
+  },
+  'Chipped Amethyst': {
+    weapon: '+40 to Attack Rating',
+    helm: '+3 to Strength',
+    armor: '+3 to Strength',
+    shield: '+8 Defense'
+  },
+  'Flawed Amethyst': {
+    weapon: '+60 to Attack Rating',
+    helm: '+4 to Strength',
+    armor: '+4 to Strength',
+    shield: '+12 Defense'
+  },
+  'Amethyst': {
+    weapon: '+80 to Attack Rating',
+    helm: '+6 to Strength',
+    armor: '+6 to Strength',
+    shield: '+18 Defense'
+  },
+  'Flawless Amethyst': {
+    weapon: '+100 to Attack Rating',
+    helm: '+8 to Strength',
+    armor: '+8 to Strength',
+    shield: '+24 Defense'
+  },
+  'Perfect Amethyst': {
+    weapon: '150 to Attack Rating',
+    helm: '+10 to Strength',
+    armor: '+10 to Strength',
+    shield: '+30 Defense'
+  },
+  'Chipped Skull': {
+    weapon: '2% Life Stolen per Hit\n1% Mana Stolen per Hit',
+    helm: 'Regenerate Mana 8%\nReplenish Life +2',
+    armor: 'Regenerate Mana 8%\nReplenish Life +2',
+    shield: 'Attacker Takes Damage of 4'
+  },
+  'Flawed Skull': {
+    weapon: '2% Life Stolen per Hit\n2% Mana Stolen per Hit',
+    helm: 'Regenerate Mana 8%\nReplenish Life +3',
+    armor: 'Regenerate Mana 8%\nReplenish Life +3',
+    shield: 'Attacker Takes Damage of 8'
+  },
+  'Skull': {
+    weapon: '3% Life Stolen per Hit\n2% Mana Stolen per Hit',
+    helm: 'Regenerate Mana 12%\nReplenish Life +3',
+    armor: 'Regenerate Mana 12%\nReplenish Life +3',
+    shield: 'Attacker Takes Damage of 12'
+  },
+  'Flawless Skull': {
+    weapon: '3% Life Stolen per Hit\n3% Mana Stolen per Hit',
+    helm: 'Regenerate Mana 12%\nReplenish Life +4',
+    armor: 'Regenerate Mana 12%\nReplenish Life +4',
+    shield: 'Attacker Takes Damage of 16'
+  },
+  'Perfect Skull': {
+    weapon: '4% Life Stolen per Hit\n3% Mana Stolen per Hit',
+    helm: 'Regenerate Mana 19%\nReplenish Life +5',
+    armor: 'Regenerate Mana 19%\nReplenish Life +5',
+    shield: 'Attacker Takes Damage of 20'
   }
-
-  function highlightSelectedAffixes() {
-    console.log('Highlighting selected affixes:', state.selectedAffixes);
-    document.querySelectorAll('.affix-item').forEach(el => {
-      const name = el.dataset.name;
-      el.classList.toggle('selected', state.selectedAffixes.some(a => a.name === name));
-    });
-  }
-
-  let socketStates = {
-  container1: [],
-  container2: [],
-  container3: [],
-  container4: []
 };
 
-  function addCustomJewel(affixes, socketItems) {
-  console.log('Adding custom jewel with affixes:', affixes);
+const jewelPrefixes = {
+  'Blanched': { effect: '+[5-8] Defense', reqLevel: 1 },
+  'Eburin': { effect: '+[9-20] Defense', reqLevel: 12 },
+  'Bone': { effect: '+[21-40] Defense', reqLevel: 24 },
+  'Ivory': { effect: '+[41-64] Defense', reqLevel: 56 },
+  'Scarlet': { effect: '+[1-4] to Minimum Damage', reqLevel: 6 },
+  'Crimson': { effect: '+[5-8] to Minimum Damage', reqLevel: 30 },
+  'Cardinal': { effect: '+[10-14] to Minimum Damage', reqLevel: 30 },
+  'Carbuncle': { effect: '+[1-5] to Maximum Damage', reqLevel: 9 },
+  'Carmine': { effect: '+[6-9] to Maximum Damage', reqLevel: 27 },
+  'Vermillion': { effect: '+[11-15] to Maximum Damage', reqLevel: 50 },
+  'Cinnabar': { effect: '+[5-10]% Enhanced Damage', reqLevel: 1 },
+  'Rusty': { effect: '+[11-20]% Enhanced Damage', reqLevel: 9 },
+  'Realgar': { effect: '+[21-30]% Enhanced Damage', reqLevel: 37 },
+  'Ruby': { effect: '+[31-40]% Enhanced Damage', reqLevel: 58 },
+  'Dun': { effect: '[7-12]% Damage Taken Gained as Mana when Hit', reqLevel: 5 },
+  'Nickel': { effect: '+[10-20] to Attack Rating', reqLevel: 1 },
+  'Tin': { effect: '+[21-40] to Attack Rating', reqLevel: 6 },
+  'Silver': { effect: '+[41-60] to Attack Rating', reqLevel: 18 },
+  'Argent': { effect: '+[61-100] to Attack Rating', reqLevel: 36 },
+  'Bright': { effect: '+1 to Light Radius, +10 to Attack Rating', reqLevel: 1 },
+  'Emerald': { effect: '[3-7]% Better Chance of Getting Magic Items', reqLevel: 12 },
+  'Zircon': { effect: '+[5-10] to Mana', reqLevel: 2 },
+  'Jacinth': { effect: '+[11-15] to Mana', reqLevel: 12 },
+  'Turquoise': { effect: '+[16-20] to Mana', reqLevel: 21 },
+  'Cerulean': { effect: '+[21-30] to Mana', reqLevel: 41 },
+  'Shimmering': { effect: 'All Resistances +[5-10]', reqLevel: 12 },
+  'Scintillating': { effect: 'All Resistances +[11-15]', reqLevel: 26 },
+  'Lapis Lazuli': { effect: 'Cold Resist +[5-15]%', reqLevel: 1 },
+  'Sapphire': { effect: 'Cold Resist +[16-30]%', reqLevel: 14 }
+  // ... continue with remaining prefixes
+};
 
-  const jewelCategory = document.querySelector('.socket-content[data-category="jewels"] .socket-options');
-  console.log('Found jewelCategory:', jewelCategory);
+const jewelSuffixes = {
+  'Malice': { effect: 'Attacker Takes Damage of [30-40]', reqLevel: 29 },
+  'Fervor': { effect: '+15% Increased Attack Speed', reqLevel: 31 },
+  'Frigidity': { effect: 'Adds 1 to [3-5] Cold Damage', reqLevel: 12 },
+  'Icicle': { effect: 'Adds [2-3] to [6-10] Cold Damage', reqLevel: 29 },
+  'Glacier': { effect: 'Adds [4-5] to [11-15] Cold Damage', reqLevel: 50 },
+  'Passion': { effect: 'Adds [1-3] to [6-10] Fire Damage', reqLevel: 11 },
+  'Fire': { effect: 'Adds [4-10] to [11-30] Fire Damage', reqLevel: 28 },
+  'Burning': { effect: 'Adds [11-25] to [31-50] Fire Damage', reqLevel: 49 },
+  'Ennui': { effect: 'Adds 1 to [10-20] Lightning Damage', reqLevel: 11 },
+  'Lightning': { effect: 'Adds 1 to [21-60] Lightning Damage', reqLevel: 28 },
+  'Thunder': { effect: 'Adds 1 to [61-100] Lightning Damage', reqLevel: 49 }
+  // ... continue with remaining suffixes
+};
 
-  let statsText = '';
-  affixes.forEach(affix => {
-    statsText += `<div>${formatAffixText(affix)}</div>`;
+let currentSocket = null;
+const itemModal = document.getElementById('itemModal');
+const jewelModal = document.getElementById('jewelModal');
+let selectedPrefixes = [];
+let selectedSuffixes = [];
+
+// Initialize socket click handlers
+document.querySelectorAll('.socketz').forEach(socket => {
+  socket.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentSocket = socket;
+    showItemModal();
   });
 
-  const customJewel = document.createElement('div');
-  customJewel.className = 'socket-item';
-  customJewel.dataset.jewel = 'custom-jewel';
-
-  const customJewelElement = document.createElement('div');
-  customJewelElement.className = 'socket-item-content';
-
-  const sockImgDiv = document.createElement('img');
-  sockImgDiv.className = 'sock-img';
-  sockImgDiv.src = 'img/redjewel2.png';
-
-  const sockInfoDiv = document.createElement('div');
-  sockInfoDiv.className = 'sock-info';
-
-  const sockNameDiv = document.createElement('div');
-  sockNameDiv.className = 'sock-name';
-  sockNameDiv.textContent = 'Custom Jewel';
-
-  const sockStatsDiv = document.createElement('div');
-  sockStatsDiv.className = 'sock-stats';
-  sockStatsDiv.innerHTML = statsText;
-
-  sockInfoDiv.appendChild(sockNameDiv);
-  sockInfoDiv.appendChild(sockStatsDiv);
-
-  customJewelElement.appendChild(sockImgDiv);
-  customJewelElement.appendChild(sockInfoDiv);
-
-  customJewel.appendChild(customJewelElement);
-
-  jewelCategory.appendChild(customJewel);
-
-  // Set up click handler for the custom jewel
-  customJewel.addEventListener('click', () => {
-    state.currentSocket = {
-      element: customJewel,
-      containerKey: 'custom',
-      index: 0
-    };
-    handleCustomJewelClick(customJewel);
+  socket.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    clearSocket(socket);
+    updateAllStatsDisplays();
   });
+});
 
-  console.log('Current socketItems:', socketItems);
-  console.log('All socket-items:', document.querySelectorAll('.socket-item'));
-
-  return customJewel;
+function showItemModal() {
+  itemModal.classList.remove('hidden');
+  itemModal.style.display = 'flex';
 }
 
+function hideItemModal() {
+  itemModal.classList.add('hidden');
+  itemModal.style.display = 'none';
+}
 
-  // Initialize modal content
-  const modal = {
-    prefixContainer: jewelModal.querySelector('.prefix-container'),
-    suffixContainer: jewelModal.querySelector('.suffix-container'),
-    confirmButton: jewelModal.querySelector('#confirmAffixes'),
-    clearButton: jewelModal.querySelector('#clearAffixes'),
-    closeButton: jewelModal.querySelector('.close')
-  };
+function showJewelModal() {
+  jewelModal.classList.remove('hidden');
+  jewelModal.style.display = 'flex';
+}
 
-  // Add affixes to containers
-  prefixData.forEach(affix => modal.prefixContainer.appendChild(createAffixElement(affix)));
-  suffixData.forEach(affix => modal.suffixContainer.appendChild(createAffixElement(affix)));
+function hideJewelModal() {
+  jewelModal.classList.add('hidden');
+  jewelModal.style.display = 'none';
+}
 
-  // Event handlers
-  modal.clearButton.onclick = () => {
-    state.selectedAffixes = [];
-    updateAffixCounts();
-    highlightSelectedAffixes();
-  };
-
-  modal.confirmButton.onclick = () => {
-    if (state.selectedAffixes.length === 0) {
-      alert('Please select at least one affix for the jewel');
-      return;
+// Handle item selection
+document.querySelectorAll('[data-item]').forEach(button => {
+  button.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const itemName = button.dataset.item;
+    if (itemName === 'Jewel') {
+      hideItemModal();
+      showJewelModal();
+      selectedPrefixes = [];
+      selectedSuffixes = [];
+      updateSelectedAffixesDisplay();
+    } else {
+      insertItem(itemName);
+      hideItemModal();
     }
-    addCustomJewel(state.selectedAffixes);
-    jewelModal.style.display = 'none';
-    state.selectedAffixes = [];
-    updateAffixCounts();
-    highlightSelectedAffixes();
-  };
+  });
+});
 
-  modal.closeButton.onclick = () => jewelModal.style.display = 'none';
+// Handle modal cancellation
+document.querySelectorAll('.cancel').forEach(button => {
+  button.addEventListener('click', (e) => {
+    e.stopPropagation();
+    hideItemModal();
+    hideJewelModal();
+  });
+});
 
-  window.onclick = (e) => {
-    if (e.target === jewelModal) jewelModal.style.display = 'none';
-  };
 
-  // Add click handler for jewels tab
-  const jewelsTab = document.querySelector('.socket-category-tab[data-category="jewels"]');
-  if (jewelsTab) {
-    jewelsTab.addEventListener('click', () => {
-      jewelModal.style.display = 'block';
-    });
+
+function extractRange(effect) {
+  const match = effect.match(/\[(\d+)-(\d+)\]/);
+  if (match) {
+    return {
+      min: parseInt(match[1]),
+      max: parseInt(match[2])
+    };
+  }
+  return null;
+}
+
+// Update value input when prefix is selected
+document.querySelector('.prefix-select')?.addEventListener('change', (e) => {
+  const range = extractRange(e.target.value);
+  const valueInput = document.querySelector('.prefix-value');
+  if (range) {
+    valueInput.min = range.min;
+    valueInput.max = range.max;
+    valueInput.value = range.min;
   }
 });
-</script>
 
-<!-- <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-    <script src="sockets.js"></script>
-    
-    <div id="jewel-system"></div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-  const jewelSystem = {
-    selectedAffixes: [],
-
-    init() {
-      this.setupJewelModal();
-      this.bindEvents();
-    },
-
-    setupJewelModal() {
-      const modal = document.createElement('div');
-      modal.id = 'jewelCustomModal';
-      modal.className = 'modal';
-      modal.innerHTML = `
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>Create Custom Jewel</h2>
-          <div class="jewel-options">
-            <div class="prefix-section">
-              <h3>Selected Affixes: <span id="affixCount">0/4</span></h3>
-              <div class="prefix-list">
-                <div class="affix-option">
-                  <span>Enhanced Damage</span>
-                  <input type="range" min="20" max="40" value="20" id="enhancedDamageRange">
-                  <span class="value" id="enhancedDamageValue">20</span>
-                  <button class="add-affix" data-affix="enhanced-damage">Add</button>
-                </div>
-                <div class="affix-option">
-                  <span>Life</span>
-                  <input type="range" min="10" max="20" value="10" id="lifeRange">
-                  <span class="value" id="lifeValue">10</span>
-                  <button class="add-affix" data-affix="life">Add</button>
-                </div>
-              </div>
-            </div>
-            <div id="selectedAffixes" class="mt-4">
-              <h4>Selected Affixes:</h4>
-              <div id="affixList"></div>
-            </div>
-          </div>
-          <button id="createJewel" class="mt-4 p-2 bg-blue-500 text-white rounded">Create Jewel</button>
-        </div>
-      `;
-      document.body.appendChild(modal);
-
-      // Add basic styles
-      const style = document.createElement('style');
-      style.textContent = `
-        #jewelCustomModal {
-          display: none;
-          position: fixed;
-          z-index: 1001;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0,0,0,0.5);
-        }
-        #jewelCustomModal .modal-content {
-          background-color: #fefefe;
-          margin: 15% auto;
-          padding: 20px;
-          border: 1px solid #888;
-          width: 80%;
-          max-width: 500px;
-        }
-        .affix-option {
-          margin: 10px 0;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-        }
-        #selectedAffixes {
-          margin-top: 20px;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-        }
-        .selected-affix {
-          margin: 5px 0;
-          padding: 5px;
-          background: #f0f0f0;
-          border-radius: 4px;
-          display: flex;
-          justify-content: space-between;
-        }
-        .remove-affix {
-          color: red;
-          cursor: pointer;
-        }
-      `;
-      document.head.appendChild(style);
-    },
-
-    bindEvents() {
-      // Show modal when clicking jewels tab
-      const jewelsTab = document.querySelector('[data-category="jewels"]');
-      if (jewelsTab) {
-        jewelsTab.addEventListener('click', () => {
-          document.getElementById('jewelCustomModal').style.display = 'block';
-        });
-      }
-
-      // Close modal
-      const closeBtn = document.querySelector('#jewelCustomModal .close');
-      if (closeBtn) {
-        closeBtn.onclick = () => {
-          document.getElementById('jewelCustomModal').style.display = 'none';
-        };
-      }
-
-      // Range input handlers
-      document.getElementById('enhancedDamageRange').addEventListener('input', (e) => {
-        document.getElementById('enhancedDamageValue').textContent = e.target.value;
-      });
-
-      document.getElementById('lifeRange').addEventListener('input', (e) => {
-        document.getElementById('lifeValue').textContent = e.target.value;
-      });
-
-      // Add affix buttons
-      document.querySelectorAll('.add-affix').forEach(button => {
-        button.addEventListener('click', (e) => {
-          const affixType = e.target.dataset.affix;
-          const value = document.getElementById(`${affixType}Range`).value;
-          this.addAffix(affixType, value);
-        });
-      });
-
-      // Create jewel button
-      document.getElementById('createJewel').addEventListener('click', () => {
-        this.createCustomJewel();
-      });
-    },
-
-    addAffix(type, value) {
-      if (this.selectedAffixes.length >= 4) {
-        alert('Maximum 4 affixes allowed!');
-        return;
-      }
-
-      const affix = {
-        type,
-        value,
-        text: type === 'enhanced-damage' ? 
-          `+${value} Enhanced Damage` : 
-          `+${value} to Life`
-      };
-
-      this.selectedAffixes.push(affix);
-      this.updateAffixDisplay();
-    },
-
-    updateAffixDisplay() {
-      const affixList = document.getElementById('affixList');
-      const affixCount = document.getElementById('affixCount');
-      
-      affixList.innerHTML = this.selectedAffixes.map((affix, index) => `
-        <div class="selected-affix">
-          <span>${affix.text}</span>
-          <span class="remove-affix" data-index="${index}">×</span>
-        </div>
-      `).join('');
-
-      affixCount.textContent = `${this.selectedAffixes.length}/4`;
-
-      // Add remove handlers
-      document.querySelectorAll('.remove-affix').forEach(btn => {
-        btn.onclick = (e) => {
-          const index = parseInt(e.target.dataset.index);
-          this.selectedAffixes.splice(index, 1);
-          this.updateAffixDisplay();
-        };
-      });
-    },
-
-    createCustomJewel() {
-      if (this.selectedAffixes.length === 0) {
-        alert('Please add at least one affix!');
-        return;
-      }
-
-      const jewelCategory = document.querySelector('.socket-content[data-category="jewels"] .socket-options');
-      if (!jewelCategory) return;
-
-      const statsText = this.selectedAffixes.map(affix => affix.text).join('<br>');
-      
-      const newJewel = document.createElement('div');
-      newJewel.className = 'socket-item';
-      newJewel.dataset.jewel = 'custom-jewel';
-      newJewel.innerHTML = `
-        <img src="img/redjewel2.png" class="sock-img">
-        <div class="sock-info">
-          <div class="sock-name">Custom Jewel</div>
-          <div class="sock-stats">
-            <div>${statsText}</div>
-          </div>
-        </div>
-      `;
-
-      // Add click handler for the new jewel
-      newJewel.addEventListener('click', (e) => {
-        if (currentSocket) {
-          const socketImg = currentSocket.element.querySelector('.socket-sock-img');
-          socketImg.src = 'img/redjewel2.png';
-          socketImg.style.display = 'block';
-          currentSocket.element.classList.remove('empty');
-          
-          // Update socket state
-          socketStates[currentSocket.containerKey][currentSocket.index] = {
-            gemType: 'custom-jewel',
-            gemImg: 'img/redjewel2.png',
-            gemStats: {
-              helm: statsText,
-              weapon: statsText,
-              armor: statsText,
-              shield: statsText
-            }
-          };
-          
-          updateStatsDisplay();
-          document.getElementById('socketModal').style.display = 'none';
-          document.getElementById('jewelCustomModal').style.display = 'none';
-          currentSocket = null;
-        }
-      });
-
-      jewelCategory.appendChild(newJewel);
-      document.getElementById('jewelCustomModal').style.display = 'none';
-      this.selectedAffixes = [];
-      this.updateAffixDisplay();
-    }
-  };
-
-  // Initialize the jewel system
-  jewelSystem.init();
+// Update value input when suffix is selected
+document.querySelector('.suffix-select')?.addEventListener('change', (e) => {
+  const range = extractRange(e.target.value);
+  const valueInput = document.querySelector('.suffix-value');
+  if (range) {
+    valueInput.min = range.min;
+    valueInput.max = range.max;
+    valueInput.value = range.min;
+  }
 });
-    </script> -->
+
+document.getElementById('addPrefix')?.addEventListener('click', () => {
+  const select = document.querySelector('.prefix-select');
+  const valueInput = document.querySelector('.prefix-value');
+  
+  if (select.value && valueInput.value) {
+    const range = extractRange(select.value);
+    const value = parseInt(valueInput.value);
+    
+    if (!range || value < range.min || value > range.max) {
+      alert(`Value must be between ${range.min} and ${range.max}`);
+      return;
+    }
+
+    if (selectedPrefixes.length >= 3 || (selectedPrefixes.length + selectedSuffixes.length) >= 4) {
+      alert('Maximum affixes reached');
+      return;
+    }
+    
+    const effectTemplate = select.value;
+    const effectText = effectTemplate.replace(/\[\d+-\d+\]/, value);
+    
+    selectedPrefixes.push({
+      template: effectTemplate,
+      effect: effectText,
+      value: value
+    });
+    updateSelectedAffixesDisplay();
+    select.value = '';
+    valueInput.value = '';
+  }
+});
+
+document.getElementById('addSuffix')?.addEventListener('click', () => {
+  const select = document.querySelector('.suffix-select');
+  const valueInput = document.querySelector('.suffix-value');
+  
+  if (select.value && valueInput.value) {
+    const range = extractRange(select.value);
+    const value = parseInt(valueInput.value);
+    
+    if (!range || value < range.min || value > range.max) {
+      alert(`Value must be between ${range.min} and ${range.max}`);
+      return;
+    }
+
+    if (selectedSuffixes.length >= 3 || (selectedPrefixes.length + selectedSuffixes.length) >= 4) {
+      alert('Maximum affixes reached');
+      return;
+    }
+    
+    const effectTemplate = select.value;
+    const effectText = effectTemplate.replace(/\[\d+-\d+\]/, value);
+    
+    selectedSuffixes.push({
+      template: effectTemplate,
+      effect: effectText,
+      value: value
+    });
+    updateSelectedAffixesDisplay();
+    select.value = '';
+    valueInput.value = '';
+  }
+});
+
+function updateSelectedAffixesDisplay() {
+  const display = document.getElementById('selectedAffixes');
+  if (!display) return;
+
+  let html = '';
+  
+  selectedPrefixes.forEach((prefix, index) => {
+    html += `
+      <div class="selected-affix">
+        ${prefix.effect}
+        <button onclick="window.removeAffix('prefix', ${index})" class="remove-btn">×</button>
+      </div>
+    `;
+  });
+  
+  selectedSuffixes.forEach((suffix, index) => {
+    html += `
+      <div class="selected-affix">
+        ${suffix.effect}
+        <button onclick="window.removeAffix('suffix', ${index})" class="remove-btn">×</button>
+      </div>
+    `;
+  });
+
+  display.innerHTML = html || '<div style="color: #666;">No affixes selected</div>';
+}
+
+window.removeAffix = function(type, index) {
+  if (type === 'prefix') {
+    selectedPrefixes.splice(index, 1);
+  } else {
+    selectedSuffixes.splice(index, 1);
+  }
+  updateSelectedAffixesDisplay();
+};
+
+function insertItem(itemName) {
+  if (!currentSocket) return;
+  
+  const section = currentSocket.dataset.section;
+  const stats = items[itemName]?.[section];
+  
+  if (stats) {
+    currentSocket.classList.remove('empty');
+    currentSocket.classList.add('filled');
+    currentSocket.textContent = itemName;
+    currentSocket.dataset.itemName = itemName;
+    updateAllStatsDisplays();
+  }
+}
+
+  document.getElementById('confirmJewel')?.addEventListener('click', () => {
+  if (!currentSocket) return;
+
+  const stats = [
+    ...selectedPrefixes.map(p => `${p.effect}`),
+    ...selectedSuffixes.map(s => `${s.effect}`)
+  ];
+
+  const prefix = selectedPrefixes[0]?.effect || '';
+  const suffix = selectedSuffixes[0]?.effect || '';
+  const jewelName = `${prefix}${suffix ? ' ' + suffix : ''} Jewel`.trim();
+
+  currentSocket.classList.remove('empty');
+  currentSocket.classList.add('filled');
+  currentSocket.textContent = jewelName || 'Jewel';
+  currentSocket.dataset.itemName = 'jewel';
+  currentSocket.dataset.stats = JSON.stringify(stats); // Use JSON.stringify
+
+ 
+  hideJewelModal();
+  updateAllStatsDisplays();
+
+  // Clear selections
+  selectedPrefixes = [];
+  selectedSuffixes = [];
+});
+
+function clearSocket(socket) {
+  socket.classList.remove('filled');
+  socket.classList.add('empty');
+  socket.textContent = '';
+  delete socket.dataset.itemName;
+  delete socket.dataset.stats;
+}
+
+function updateAllStatsDisplays() {
+  updateStatsDisplay('helm');
+  updateStatsDisplay('armor');
+  updateStatsDisplay('weapon');
+  updateStatsDisplay('shield');
+}
+
+function updateStatsDisplay(section) {
+  const statsContainer = document.querySelector(`.${section}-socket-stats`);
+  if (!statsContainer) return;
+
+  const sectionSockets = document.querySelectorAll(`.socketz[data-section="${section}"]`);
+  let statsHtml = '';
+
+  sectionSockets.forEach(socket => {
+    if (socket.dataset.itemName) {
+      if (socket.dataset.itemName === 'jewel') {
+  const stats = JSON.parse(socket.dataset.stats);
+  statsHtml += stats.join('<br>') + '<br>';
+      } else {
+        const itemStats = items[socket.dataset.itemName]?.[section];
+        if (itemStats) {
+          statsHtml += itemStats.split(',').map(stat => stat.trim()).join('<br>') + '<br>';
+        }
+      }
+    }
+  });
+
+  statsContainer.innerHTML = statsHtml || 'No sockets filled';
+}
+
+function extractRanges(effect) {
+  const ranges = [];
+  const regex = /\[(\d+)-(\d+)\]/g;
+  let match;
+  
+  while ((match = regex.exec(effect)) !== null) {
+    ranges.push({
+      min: parseInt(match[1]),
+      max: parseInt(match[2])
+    });
+  }
+  
+  return ranges.length > 0 ? ranges : null;
+}
+
+document.querySelector('.prefix-select')?.addEventListener('change', (e) => {
+  const ranges = extractRanges(e.target.value);
+  const valueInputs = document.querySelectorAll('.prefix-value');
+  
+  if (ranges) {
+    // For now, just handle the first range. You might want to add multiple inputs for multiple ranges
+    const firstRange = ranges[0];
+    const valueInput = valueInputs[0];
+    if (valueInput) {
+      valueInput.min = firstRange.min;
+      valueInput.max = firstRange.max;
+      valueInput.value = firstRange.min;
+    }
+  }
+});
+
+// Close modals when clicking outside
+window.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modalz')) {
+    hideItemModal();
+    hideJewelModal();
+  }
+});
+  </script>
+
 </body>
 </html>
