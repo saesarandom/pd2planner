@@ -6509,7 +6509,7 @@ merclvlValue.addEventListener('input', () => {
         <div class="sock-info">
           <div class="sock-name">Flawless Sapphire</div>
           <div class="sock-stats">
-            <div>Weapon: +4-7 Cold Damage</div>
+            <div>Weapon: +6-10 Cold Damage</div>
             <div>Armor/Helm: +31 to Mana</div>
             <div>Shield: Cold Resist +22%</div>
           </div>
@@ -6521,7 +6521,7 @@ merclvlValue.addEventListener('input', () => {
         <div class="sock-info">
           <div class="sock-name">Perfect Sapphire</div>
           <div class="sock-stats">
-            <div>Weapon: +4-7 Cold Damage</div>
+            <div>Weapon: +10-14 Cold Damage</div>
             <div>Armor/Helm: +38 to Mana</div>
             <div>Shield: Cold Resist +22%</div>
           </div>
@@ -8703,13 +8703,13 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
     shield: 'Cold Resist +22%'
   },
   'Flawless Sapphire': {
-    weapon: '+4-7 Cold Damage',
+    weapon: '+6-10 Cold Damage',
     helm: '+31 to Mana',
     armor: '+31 to Mana',
     shield: 'Cold Resist +22%'
   },
   'Perfect Sapphire': {
-    weapon: '+4-7 Cold Damage',
+    weapon: '+10-14 Cold Damage',
     helm: '+38 to Mana',
     armor: '+38 to Mana',
     shield: 'Cold Resist +22%'
@@ -9157,33 +9157,18 @@ function insertItem(itemName) {
     currentSocket.classList.remove('empty');
     currentSocket.classList.add('filled');
 
-    // Create an image element
     const img = document.createElement('img');
-
-    if (itemName === 'jewel') {
-      const prefix = selectedPrefixes.length > 0 ? selectedPrefixes[0].effect : '';
-      const suffix = selectedSuffixes.length > 0 ? selectedSuffixes[0].effect : '';
-      const jewelName = `${prefix}${suffix ? ' ' + suffix : ''} Jewel`.trim();
-
-      img.src = getJewelImageSrc();
-      img.alt = jewelName;
-      currentSocket.dataset.itemName = 'jewel';
-      currentSocket.dataset.stats = jewelName;
-    } else {
-      // Convert item name to image filename
-      const filename = itemName.replace(/\s+/g, '').toLowerCase();
-      img.src = `/img/${filename}.png`;
-      img.alt = itemName;
-      currentSocket.dataset.itemName = itemName;
-      currentSocket.dataset.stats = stats;
-    }
-
+    const filename = itemName.replace(/\s+/g, '').toLowerCase();
+    img.src = `/img/${filename}.png`;
+    img.alt = itemName;
     img.style.maxWidth = '100%';
     img.style.maxHeight = '100%';
 
-    // Clear any existing content and add the image
     currentSocket.innerHTML = '';
     currentSocket.appendChild(img);
+
+    currentSocket.dataset.itemName = itemName;
+    currentSocket.dataset.stats = stats;
 
     updateAllStatsDisplays();
   }
@@ -9248,25 +9233,89 @@ function updateStatsDisplay(section) {
   if (!statsContainer) return;
 
   const sectionSockets = document.querySelectorAll(`.socketz[data-section="${section}"]`);
-  let statsHtml = '';
+  const statsMap = new Map();
 
   sectionSockets.forEach(socket => {
-    if (socket.dataset.itemName) {
-      if (socket.dataset.itemName === 'jewel') {
-  const stats = JSON.parse(socket.dataset.stats);
-  statsHtml += stats.join('<br>') + '<br>';
-      } else {
-        const itemStats = items[socket.dataset.itemName]?.[section];
-        if (itemStats) {
-          statsHtml += itemStats.split(',').map(stat => stat.trim()).join('<br>') + '<br>';
-        }
+    if (!socket.dataset.itemName) return;
+
+    let stats = [];
+    if (socket.dataset.itemName === 'jewel') {
+      stats = JSON.parse(socket.dataset.stats);
+    } else {
+      const itemStats = items[socket.dataset.itemName]?.[section];
+      if (itemStats) {
+        stats = itemStats.split(',').map(stat => stat.trim());
       }
+    }
+
+    stats.forEach(stat => {
+      // Handle resistance stats specifically
+      const resistMatch = stat.match(/(\w+) Resist \+(\d+)%/);
+      if (resistMatch) {
+        const [_, type, value] = resistMatch;
+        const key = `${type} Resist`;
+        statsMap.set(key, (statsMap.get(key) || 0) + parseInt(value));
+        return;
+      }
+
+      // Handle "All Resistances" specifically
+      const allResMatch = stat.match(/All Resistances \+(\d+)/);
+      if (allResMatch) {
+        const value = parseInt(allResMatch[1]);
+        const key = 'All Resistances';
+        statsMap.set(key, (statsMap.get(key) || 0) + value);
+        return;
+      }
+
+      // Handle regular numeric stats
+      const match = stat.match(/([+-]?\d+)\s*(.+)/);
+      if (match) {
+        const [_, value, text] = match;
+        const numValue = parseInt(value);
+        const key = text.trim();
+
+        // Handle damage ranges
+        const rangeMatch = stat.match(/Adds (\d+)-(\d+) (.+)/);
+        if (rangeMatch) {
+          const [_, min, max, type] = rangeMatch;
+          const key = `Adds X-Y ${type}`;
+          const currentRange = statsMap.get(key) || { min: 0, max: 0 };
+          statsMap.set(key, {
+            min: currentRange.min + parseInt(min),
+            max: currentRange.max + parseInt(max)
+          });
+          return;
+        }
+
+        statsMap.set(key, (statsMap.get(key) || 0) + numValue);
+      } else {
+        // Handle non-numeric stats
+        statsMap.set(stat, 1);
+      }
+    });
+  });
+
+  // Convert Map back to HTML with proper spacing
+  let statsHtml = '';
+  statsMap.forEach((value, key) => {
+    if (key === 'All Resistances') {
+      statsHtml += `All Resistances +${value}<br>`;
+    } else if (key.includes('Resist')) {
+      statsHtml += `${key} +${value}%<br>`;
+    } else if (typeof value === 'object') {
+      // Handle damage ranges
+      statsHtml += `Adds ${value.min}-${value.max} ${key.split(' ').slice(2).join(' ')}<br>`;
+    } else if (value === 1) {
+      // Handle static effects
+      statsHtml += `${key}<br>`;
+    } else {
+      // Handle numeric stats with proper spacing
+      statsHtml += `+${value} ${key}<br>`;
     }
   });
 
   statsContainer.innerHTML = statsHtml || 'No sockets filled';
 }
-
 function extractRanges(effect) {
   const ranges = [];
   const regex = /\[(\d+)-(\d+)\]/g;
