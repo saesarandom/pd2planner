@@ -2651,10 +2651,12 @@ option[value="Arcanna's Head"] {
 } */
 
 .socketz {
-  width: 45px;
-  height: 45px;
-  border: 2px solid #4B5563; /* gray-600 */
+  width: 40px;
+  height: 40px;
+  border: 2px solid #676a6d; /* gray-600 */
+  border-radius: 50%;
   background-color: #374151; /* gray-700 */
+  background-size: contain;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2662,7 +2664,7 @@ option[value="Arcanna's Head"] {
   transition: all 0.3s ease;
 }
 .socketz.empty:hover {
-  background-color: #1b1b1d; /* gray-600 */
+  background-color: #121213; /* gray-600 */
   border-color: #6B7280; /* gray-500 */
 }
 .socketz.empty {
@@ -2672,9 +2674,10 @@ option[value="Arcanna's Head"] {
 }
 
 .socketz.filled {
-  background-color: #141414; /* blue-800 */
+  background-color: #0d0d0d; /* blue-800 */
   color: white;
   font-weight: bold;
+  background-size: contain;
 }
 .modalz {
   position: fixed;

@@ -9228,12 +9228,36 @@ function updateAllStatsDisplays() {
   updateStatsDisplay('shield');
 }
 
+function updateAllSocketStats() {
+  const sections = ['helm', 'armor', 'weapon', 'shield'];
+  
+  sections.forEach(section => {
+    updateStatsDisplay(section);
+  });
+
+  
+}
+
 function updateStatsDisplay(section) {
+
+  const infoContainerId = {
+    'helm': 'helm-info',
+    'armor': 'armor-info',
+    'weapon': 'weapon-info',
+    'shield': 'off-info'
+  }[section];
+
+  const infoContainer = document.getElementById(infoContainerId);
+  if (!infoContainer) return;
+  
   const statsContainer = document.querySelector(`.${section}-socket-stats`);
   if (!statsContainer) return;
 
   const sectionSockets = document.querySelectorAll(`.socketz[data-section="${section}"]`);
   const statsMap = new Map();
+
+  
+  
 
   sectionSockets.forEach(socket => {
     if (!socket.dataset.itemName) return;
@@ -9244,12 +9268,159 @@ function updateStatsDisplay(section) {
     } else {
       const itemStats = items[socket.dataset.itemName]?.[section];
       if (itemStats) {
-        stats = itemStats.split(',').map(stat => stat.trim());
+        // Split multi-line stats and remove empty strings
+        stats = itemStats.split(/\n|,/).map(s => s.trim()).filter(Boolean);
       }
     }
 
+    
+
     stats.forEach(stat => {
-      // Handle resistance stats specifically
+      // Life/Mana Stolen
+      if (stat.includes('Life Stolen per Hit') || stat.includes('Mana Stolen per Hit')) {
+        const match = stat.match(/(\d+)% (Life|Mana) Stolen per Hit/);
+        if (match) {
+          const [_, value, type] = match;
+          statsMap.set(`${type} Stolen per Hit`, (statsMap.get(`${type} Stolen per Hit`) || 0) + parseInt(value));
+        }
+        return;
+      }
+
+      // Regenerate Mana and Replenish Life
+      if (stat.includes('Regenerate Mana') || stat.includes('Replenish Life')) {
+        if (stat.includes('Regenerate Mana')) {
+          const value = parseInt(stat.match(/(\d+)/)[1]);
+          statsMap.set('Regenerate Mana', (statsMap.get('Regenerate Mana') || 0) + value);
+        } else {
+          const value = parseInt(stat.match(/\+(\d+)/)[1]);
+          statsMap.set('Replenish Life', (statsMap.get('Replenish Life') || 0) + value);
+        }
+        return;
+      }
+
+      if (stat.includes('Maximum Damage') || stat === '+9 to Maximum Damage') {
+  const value = parseInt(stat.match(/\+?(\d+)/)[1]);
+  statsMap.set('Maximum Damage', (statsMap.get('Maximum Damage') || 0) + value);
+  return;
+}
+
+// Increase Maximum Mana handling
+if (stat.includes('Increase Maximum Mana') || stat === 'Increase Maximum Mana 5%') {
+  const value = parseInt(stat.match(/(\d+)/)[1]);
+  statsMap.set('Increase Maximum Mana', (statsMap.get('Increase Maximum Mana') || 0) + value);
+  return;
+}
+
+
+      // Demon bonus stats
+      if (stat.includes('Demons')) {
+        if (stat.includes('Damage to Demons')) {
+          const value = parseInt(stat.match(/\+?(\d+)%/)[1]);
+          statsMap.set('Damage to Demons', (statsMap.get('Damage to Demons') || 0) + value);
+        } else if (stat.includes('Attack Rating against Demons')) {
+          const value = parseInt(stat.match(/\+(\d+)/)[1]);
+          statsMap.set('AR against Demons', (statsMap.get('AR against Demons') || 0) + value);
+        }
+        return;
+      }
+
+      // Open Wounds
+      if (stat.includes('Open Wounds')) {
+        if (stat.includes('Chance of Open Wounds')) {
+          const value = parseInt(stat.match(/(\d+)%/)[1]);
+          statsMap.set('Open Wounds Chance', (statsMap.get('Open Wounds Chance') || 0) + value);
+        } else if (stat.includes('Open Wounds Damage')) {
+          const value = parseInt(stat.match(/\+(\d+)/)[1]);
+          statsMap.set('Open Wounds Damage', (statsMap.get('Open Wounds Damage') || 0) + value);
+        }
+        return;
+      }
+
+      // Handle Regenerate Mana stats
+      const manaRegenMatch = stat.match(/Regenerate Mana (\d+)%/);
+      if (manaRegenMatch) {
+        const value = parseInt(manaRegenMatch[1]);
+        const key = 'Regenerate Mana';
+        statsMap.set(key, (statsMap.get(key) || 0) + value);
+        return;
+      }
+
+      const regenMatch = stat.match(/Regenerate Mana (\d+)%/) ||
+                        stat.match(/Replenish Life \+(\d+)/);
+      if (regenMatch) {
+        const value = parseInt(regenMatch[1]);
+        const key = regenMatch[0].includes('Mana') ? 'Regenerate Mana' : 'Replenish Life';
+        statsMap.set(key, (statsMap.get(key) || 0) + value);
+        return;
+      }
+  
+
+      // Handle Target Defense stats
+      const targetDefenseMatch = stat.match(/-(\d+)% Target Defense/);
+      if (targetDefenseMatch) {
+        const value = parseInt(targetDefenseMatch[1]);
+        const key = 'Target Defense';
+        statsMap.set(key, (statsMap.get(key) || 0) + value);
+        return;
+      }
+
+      const demonMatch = stat.match(/(\d+)% Damage to Demons/) || 
+                        stat.match(/\+(\d+) to Attack Rating against Demons/);
+      if (demonMatch) {
+        const value = parseInt(demonMatch[1]);
+        const key = demonMatch[0].includes('Damage') ? 'Damage to Demons' : 'Attack Rating against Demons';
+        statsMap.set(key, (statsMap.get(key) || 0) + value);
+        return;
+      }
+
+      // Handle Open Wounds stats
+      const woundsMatch = stat.match(/(\d+)% Chance of Open Wounds/) ||
+                         stat.match(/\+(\d+) Open Wounds Damage per Second/);
+      if (woundsMatch) {
+        const value = parseInt(woundsMatch[1]);
+        const key = woundsMatch[0].includes('Chance') ? 'Chance of Open Wounds' : 'Open Wounds Damage per Second';
+        statsMap.set(key, (statsMap.get(key) || 0) + value);
+        return;
+      }
+
+      // Handle Life/Mana Stolen stats
+      const stolenMatch = stat.match(/(\d+)% (Life|Mana) Stolen per Hit/);
+      if (stolenMatch) {
+        const [_, value, type] = stolenMatch;
+        const key = `${type} Stolen per Hit`;
+        statsMap.set(key, (statsMap.get(key) || 0) + parseInt(value));
+        return;
+      }
+    
+      // Handle "Physical Damage Reduced by X" stats
+      const pdrMatch = stat.match(/Physical Damage (?:Taken )?Reduced by (\d+)/i);
+      if (pdrMatch) {
+        const value = parseInt(pdrMatch[1]);
+        const key = 'Physical Damage Reduced by';
+        statsMap.set(key, (statsMap.get(key) || 0) + value);
+        return;
+      }
+
+      // Handle "Attacker Takes Damage of X" stats
+      const damageToAttackerMatch = stat.match(/Attacker Takes Damage of (\d+)/i);
+      if (damageToAttackerMatch) {
+        const value = parseInt(damageToAttackerMatch[1]);
+        const key = 'Attacker Takes Damage of';
+        statsMap.set(key, (statsMap.get(key) || 0) + value);
+        return;
+      }
+
+      
+      // Handle Maximum X Resist stats
+      const maxResistMatch = stat.match(/\+(\d+)% to Maximum (\w+) Resist/);
+      if (maxResistMatch) {
+        const [_, value, type] = maxResistMatch;
+        const key = `to Maximum ${type} Resist`;
+        statsMap.set(key, (statsMap.get(key) || 0) + parseInt(value));
+        return;
+      }
+
+      // Handle regular resistance stats
       const resistMatch = stat.match(/(\w+) Resist \+(\d+)%/);
       if (resistMatch) {
         const [_, type, value] = resistMatch;
@@ -9258,7 +9429,6 @@ function updateStatsDisplay(section) {
         return;
       }
 
-      // Handle "All Resistances" specifically
       const allResMatch = stat.match(/All Resistances \+(\d+)/);
       if (allResMatch) {
         const value = parseInt(allResMatch[1]);
@@ -9267,14 +9437,12 @@ function updateStatsDisplay(section) {
         return;
       }
 
-      // Handle regular numeric stats
       const match = stat.match(/([+-]?\d+)\s*(.+)/);
       if (match) {
         const [_, value, text] = match;
         const numValue = parseInt(value);
         const key = text.trim();
 
-        // Handle damage ranges
         const rangeMatch = stat.match(/Adds (\d+)-(\d+) (.+)/);
         if (rangeMatch) {
           const [_, min, max, type] = rangeMatch;
@@ -9289,33 +9457,121 @@ function updateStatsDisplay(section) {
 
         statsMap.set(key, (statsMap.get(key) || 0) + numValue);
       } else {
-        // Handle non-numeric stats
         statsMap.set(stat, 1);
       }
     });
   });
 
-  // Convert Map back to HTML with proper spacing
-  let statsHtml = '';
+
+  // Convert Map back to HTML with proper spacing and special cases
+  let statsHtml = '<div class="socket-stats">';
+  
+    if (statsMap.size > 0) {
+    
+
+  
+
   statsMap.forEach((value, key) => {
-    if (key === 'All Resistances') {
-      statsHtml += `All Resistances +${value}<br>`;
-    } else if (key.includes('Resist')) {
+    if (key.startsWith('to Maximum')) {
+      // Handle Maximum X Resist format
+      const type = key.split(' ')[2]; // Gets the element type (Fire, Cold, etc.)
+      statsHtml += `+${value}% to Maximum ${type} Resist<br>`;
+    } else if (key.endsWith('Resist')) {
+      // Handle regular resists
       statsHtml += `${key} +${value}%<br>`;
-    } else if (typeof value === 'object') {
-      // Handle damage ranges
-      statsHtml += `Adds ${value.min}-${value.max} ${key.split(' ').slice(2).join(' ')}<br>`;
-    } else if (value === 1) {
-      // Handle static effects
-      statsHtml += `${key}<br>`;
-    } else {
-      // Handle numeric stats with proper spacing
-      statsHtml += `+${value} ${key}<br>`;
+    } else 
+    switch(key) {
+      case 'Life Stolen per Hit':
+        statsHtml += `${value}% Life Stolen per Hit<br>`;
+        break;
+      case 'Mana Stolen per Hit':
+        statsHtml += `${value}% Mana Stolen per Hit<br>`;
+        break;
+      case 'Regenerate Mana':
+        statsHtml += `Regenerate Mana ${value}%<br>`;
+        break;
+      case 'Replenish Life':
+        statsHtml += `Replenish Life +${value}<br>`;
+        break;
+      case 'Damage to Demons':
+        statsHtml += `+${value}% Damage to Demons<br>`;
+        break;
+      case 'AR against Demons':
+        statsHtml += `+${value} to Attack Rating against Demons<br>`;
+        break;
+      case 'Open Wounds Chance':
+        statsHtml += `${value}% Chance of Open Wounds<br>`;
+        break;
+      case 'Open Wounds Damage':
+        statsHtml += `+${value} Open Wounds Damage per Second<br>`;
+        break;
+      case 'Maximum Damage':
+      statsHtml += `+${value} to Maximum Damage<br>`;
+      break;
+    case 'Increase Maximum Mana':
+      statsHtml += `Increase Maximum Mana ${value}%<br>`;
+      break;
+      // ... (rest of your existing output formatting)
+      default:
+        if (typeof value === 'object') {
+          statsHtml += `Adds ${value.min}-${value.max} ${key.split(' ').slice(2).join(' ')}<br>`;
+        } else if (value === 1) {
+          statsHtml += `${key}<br>`;
+        } else {
+          statsHtml += `+${value} ${key}<br>`;
+        }
     }
   });
+}
+
 
   statsContainer.innerHTML = statsHtml || 'No sockets filled';
+  statsHtml += '</div>';
+
+    // Remove any existing socket stats section first
+    const existingSocketStats = infoContainer.querySelector('.socket-stats');
+    if (existingSocketStats) {
+      existingSocketStats.remove();
+    
+ 
+
+    infoContainer.insertAdjacentHTML('beforeend', statsHtml);
+  } else {
+    // If no socket stats, remove any existing socket stats section
+    const existingSocketStats = infoContainer.querySelector('.socket-stats');
+    if (existingSocketStats) {
+      existingSocketStats.remove();
+    }
+    infoContainer.insertAdjacentHTML('beforeend', statsHtml);
+  } 
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Update when sockets change
+  document.querySelectorAll('.socketz').forEach(socket => {
+    socket.addEventListener('click', () => {
+      updateAllSocketStats();
+    });
+    socket.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      updateAllSocketStats();
+    });
+  });
+
+  // Update when item changes
+  ['helms-dropdown', 'armors-dropdown', 'weapons-dropdown', 'offs-dropdown'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', updateAllSocketStats);
+  });
+
+  // Add listeners for character stats and level
+  ['str', 'dex', 'vit', 'enr', 'lvlValue'].forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.addEventListener('input', updateAllSocketStats);
+    }
+  });
+});
 function extractRanges(effect) {
   const ranges = [];
   const regex = /\[(\d+)-(\d+)\]/g;
