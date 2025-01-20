@@ -11,7 +11,7 @@
 
 
 <body>
-  <button onclick="document.body.classList.toggle('moody')" style="position: fixed; top: 10px; right: 10px; z-index: 10000;">
+  <button onclick="document.body.classList.toggle('moody')" style="position: fixed; top: 10px; right: 10px; z-index: 1; background-color: black; color: white;">
     Load/Stop Theme
 </button>
 <div>
@@ -9483,6 +9483,9 @@ if (stat.includes('Increase Maximum Mana') || stat === 'Increase Maximum Mana 5%
     switch(key) {
       case 'Life Stolen per Hit':
         statsHtml += `${value}% Life Stolen per Hit<br>`;
+        break;
+        case 'Attacker Takes Damage of':
+        statsHtml += `Attacker Takes Damage of ${value}<br>`;
         break;
       case 'Mana Stolen per Hit':
         statsHtml += `${value}% Mana Stolen per Hit<br>`;

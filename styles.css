@@ -84,6 +84,7 @@ body {
   font-family: overlock sc, bahnschrift condensed;
   font-size: 15px;
   flex-direction: column;
+  cursor: url('img/cursor3.png'), auto !important; 
   width: 300%;
   min-width: auto;
   background-color: rgba(0, 0, 0);
@@ -93,8 +94,17 @@ body {
   color: rgb(243, 241, 242);
 }
 
+* {
+  cursor: url('img/cursor3.png'), auto !important;
+}
+
+
+*:active { 
+  cursor: url('img/cursor3.png'), auto !important;
+}
+
 .slidecontainer {
-  position: absolute !important;
+  position: absolute;
   width: 100%;
   color: rgb(255, 255, 255);
   position: absolute;
