@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="/icon.png">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="72048bb5-a72a-4c78-9750-4c1c9a17e30c"></script>
     <script src="items.js"></script>
+    <script src="itemUpgrade.js"></script>
 
 
 
@@ -9614,6 +9615,15 @@ window.addEventListener('click', (e) => {
   }
 });
   </script>
+
+<button id="upgradeButton" class="upgrade-button">Upgrade Item, it works, u just need lvl and str for upgrade</button>
+
+<script>
+document.getElementById('upgradeButton').addEventListener('click', function() {
+    const selectedType = 'helms'; // For now we only handle helms
+    handleUpgrade(selectedType);
+});
+</script>
 
 </body>
 </html>
