@@ -8293,9 +8293,7 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
 <div id="itemModal" class="modalz hidden">
   <div class="modalz-content">
     <h2>Select Item</h2>
-    <button data-item="El Rune">El Rune</button>
-    <button data-item="Eld Rune">Eld Rune</button>
-    <button data-item="El Rune">El Rune</button>
+<button data-item="El Rune">El Rune</button>
 <button data-item="Eld Rune">Eld Rune</button>
 <button data-item="Tir Rune">Tir Rune</button>
 <button data-item="Nef Rune">Nef Rune</button>
@@ -9170,6 +9168,8 @@ function insertItem(itemName) {
 
     currentSocket.dataset.itemName = itemName;
     currentSocket.dataset.stats = stats;
+    // updateUpgradeDefinitions();
+    // handleUpgrade();
 
     updateAllStatsDisplays();
   }
@@ -9365,6 +9365,13 @@ if (stat.includes('Increase Maximum Mana') || stat === 'Increase Maximum Mana 5%
         return;
       }
 
+      
+      if (stat.includes('Enhanced Defense')) {
+  const value = parseInt(stat.match(/\+?(\d+)%/)[1]);
+  statsMap.set('Enhanced Defense', (statsMap.get('Enhanced Defense') || 0) + value);
+  return;
+}
+
       const demonMatch = stat.match(/(\d+)% Damage to Demons/) || 
                         stat.match(/\+(\d+) to Attack Rating against Demons/);
       if (demonMatch) {
@@ -9484,6 +9491,9 @@ if (stat.includes('Increase Maximum Mana') || stat === 'Increase Maximum Mana 5%
     switch(key) {
       case 'Life Stolen per Hit':
         statsHtml += `${value}% Life Stolen per Hit<br>`;
+        break;
+        case 'Enhanced Defense':
+        statsHtml += `+${value}% Enhanced Defense<br>`;
         break;
         case 'Attacker Takes Damage of':
         statsHtml += `Attacker Takes Damage of ${value}<br>`;
@@ -9616,7 +9626,7 @@ window.addEventListener('click', (e) => {
 });
   </script>
 
-<button id="upgradeButton" class="upgrade-button">Upgrade Item, it works, u just need lvl and str for upgrade</button>
+<button id="upgradeButton" class="upgrade-button">Upgrade Helm, it works, u just need lvl and str for upgrade</button>
 
 <script>
 document.getElementById('upgradeButton').addEventListener('click', function() {

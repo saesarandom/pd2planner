@@ -171,12 +171,12 @@ const itemList = {
 
   "Darksight Helm": {
     description:
-      "Darksight Helm<br> Basinet<br> Defense: 381<br> Required Strength: 82<br> Required Level: 38<br> 16% Chance to Cast Level 3 Dim Vision when Struck<br> 5% Mana Stolen per Hit<br> Hit Blinds Target<br> +[3-297] Defense (+3 per Character Level)<br> Fire Resist +40%<br> Cannot Be Frozen<br> -4 to Light Radius<br> +1 to Cloak of Shadows<br>",
+      "Darksight Helm<br>Basinet<br>Defense: 84<br>Required Strength: 82<br>Required Level: 38<br>16% Chance to Cast Level 3 Dim Vision when Struck<br>5% Mana Stolen per Hit<br>Hit Blinds Target<br>+[3-297] Defense (+3 per Character Level)<br>Fire Resist +40%<br>Cannot Be Frozen<br>-4 to Light Radius<br>+1 to Cloak of Shadows<br>",
     properties: {
-      defense: 381,
+      defense: 84,
       reqstr: 82,
       reqlvl: 38,
-      dimctcstruck: 16 - 3,
+      dimctcstruck: [16, 3],
       mleech: 5,
       blind: 1,
       todeflvl: 3,
@@ -189,12 +189,12 @@ const itemList = {
 
   "Blackhorn's Face": {
     description:
-      "Blackhorn's Face<br> Defense: 278<br> Required Strength: 55<br> Required Level: 41<br> Prevent Monster Heal<br> Slows Target by 20%<br> +220% Enhanced Defense<br> +5% to Maximum Lightning Resist<br> Lightning Resist +30%<br> +20 Lightning Absorb<br> Attacker Takes Lightning Damage of 325<br>",
+      "Blackhorn's Face<br>Death Mask<br>Defense: 278<br>Required Strength: 55<br>Required Level: 41<br>Prevent Monster Heal<br> Slows Target by 20%<br> +220% Enhanced Defense<br> +5% to Maximum Lightning Resist<br> Lightning Resist +30%<br> +20 Lightning Absorb<br> Attacker Takes Lightning Damage of 325<br>",
     properties: {
       defense: 278,
       reqstr: 55,
       reqlvl: 41,
-      edmg: 220,
+      edef: 220,
       maxligres: 5,
       ligres: 30,
       lightabsorb: 20,
@@ -204,7 +204,7 @@ const itemList = {
 
   "Valkyrie Wing": {
     description:
-      "Valkyrie Wing<br> Winged Helm<br> Defense: 297<br> Required Strength: 115<br> Required Level: 44<br> +2 to Amazon Skills<br> +30% Faster Run/Walk<br> +30% Faster Hit Recovery<br> +60% Enhanced Damage<br> +200% Enhanced Defense<br> +6 to Mana after each Kill<br>",
+      "Valkyrie Wing<br>Winged Helm<br>Defense: 297<br>Required Strength: 115<br>Required Level: 44<br>+2 to Amazon Skills<br> +30% Faster Run/Walk<br> +30% Faster Hit Recovery<br> +60% Enhanced Damage<br> +200% Enhanced Defense<br> +6 to Mana after each Kill<br>",
     properties: {
       defense: 297,
       reqstr: 115,
@@ -220,13 +220,13 @@ const itemList = {
 
   "Crown of Thieves": {
     description:
-      "Crown of Thieves<br> Grand Crown<br> Defense: 342<br> Required Strength: 103<br> Required Level: 49<br> 10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Crown of Thieves<br>Grand Crown<br>Defense: 342<br>Required Strength: 103<br>Required Level: 49<br>10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
     properties: {
       defense: 342,
       reqstr: 103,
       reqlvl: 49,
       lleech: 10,
-      edmg: 200,
+      edef: 200,
       dex: 25,
       tolife: 50,
       firres: 33,
@@ -237,9 +237,9 @@ const itemList = {
 
   "Harlequin Crest": {
     description:
-      "Harlequin Crest<br> Shako<br> Defense: 141<br> Required Strength: 50<br> Required Level: 62<br> +2 to All Skills<br> +2 to All Attributes<br> +[1-99] to Life (+1 per Character Level)<br> +[1-99] to Mana (+1 per Character Level)<br> Physical Damage Taken Reduced by 5%<br> 50% Better Chance of Getting Magic Items<br>",
+      "Harlequin Crest<br>Shako<br>Defense: 141<br>Required Strength: 50<br>Required Level: 62<br>+2 to All Skills<br> +2 to All Attributes<br> +[1-99] to Life (+1 per Character Level)<br> +[1-99] to Mana (+1 per Character Level)<br> Physical Damage Taken Reduced by 5%<br> 50% Better Chance of Getting Magic Items<br>",
     properties: {
-      defense: 342,
+      defense: 141,
       reqstr: 103,
       reqlvl: 49,
       lleech: 10,
