@@ -320,6 +320,328 @@ const upgradeDefinitions = {
         },
       },
     },
+    "Cyclopean Roar": {
+      exceptional: {
+        name: "Cyclopean Roar",
+        base: "Jawbone Visor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 28,
+        },
+      },
+      elite: {
+        name: "Cyclopean Roar",
+        base: "Carnage Helm",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 43,
+        },
+      },
+    },
+  },
+  armors: {
+    Greyform: {
+      exceptional: {
+        name: "Greyform",
+        base: "Ghost Armor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 22,
+        },
+      },
+      elite: {
+        name: "Greyform",
+        base: "Dusk Shroud",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 49,
+        },
+      },
+    },
+    "Blinkbat's Form": {
+      exceptional: {
+        name: "Blinkbat's Form",
+        base: "Serpentskin Armor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 24,
+        },
+      },
+      elite: {
+        name: "Blinkbat's Form",
+        base: "Wyrmhide",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 50,
+        },
+      },
+    },
+    "The Centurion": {
+      exceptional: {
+        name: "The Centurion",
+        base: "Demonhide Armor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "The Centurion",
+        base: "Scarab Husk",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 51,
+        },
+      },
+    },
+    Twitchthroe: {
+      exceptional: {
+        name: "Twitchthroe",
+        base: "Trellised Armor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Twitchthroe",
+        base: "Wire Fleece",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 53,
+        },
+      },
+    },
+    Darkglow: {
+      exceptional: {
+        name: "Darkglow",
+        base: "Linked Mail",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Darkglow",
+        base: "Diamond Mail",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 54,
+        },
+      },
+    },
+    Hawkmail: {
+      exceptional: {
+        name: "Hawkmail",
+        base: "Tigulated Mail",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Hawkmail",
+        base: "Loricated Mail",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 55,
+        },
+      },
+    },
+    "Sparking Mail": {
+      exceptional: {
+        name: "Sparking Mail",
+        base: "Mesh Armor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Sparking Mail",
+        base: "Boneweave",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 47,
+        },
+      },
+    },
+    "Venom Ward": {
+      exceptional: {
+        name: "Venom Ward",
+        base: "Cuirass",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Venom Ward",
+        base: "Great Hauberk",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 56,
+        },
+      },
+    },
+    Iceblink: {
+      exceptional: {
+        name: "Iceblink",
+        base: "Russet Armor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Iceblink",
+        base: "Balrog Skin",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 57,
+        },
+      },
+    },
+    Boneflesh: {
+      exceptional: {
+        name: "Boneflesh",
+        base: "Templar Coat",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Boneflesh",
+        base: "Hellforge Plate",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 59,
+        },
+      },
+    },
+    Rockfleece: {
+      exceptional: {
+        name: "Rockfleece",
+        base: "Sharktooth Armor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Rockfleece",
+        base: "Kraken Shell",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 61,
+        },
+      },
+    },
+    Rattlecage: {
+      exceptional: {
+        name: "Rattlecage",
+        base: "Embossed Plate",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Rattlecage",
+        base: "Lacquered Plate",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 62,
+        },
+      },
+    },
+    "Heavenly Garb": {
+      exceptional: {
+        name: "Heavenly Garb",
+        base: "Mage Plate",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Heavenly Garb",
+        base: "Archon Plate",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 63,
+        },
+      },
+    },
+    Goldskin: {
+      exceptional: {
+        name: "Goldskin",
+        base: "Chaos Armor",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Goldskin",
+        base: "Shadow Plate",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 64,
+        },
+      },
+    },
+    "Silks of the Victor": {
+      exceptional: {
+        name: "Silks of the Victor",
+        base: "Ornate Plate",
+        properties: {
+          defense: 278,
+          reqstr: 103,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Silks of the Victor",
+        base: "Sacred Armor",
+        properties: {
+          defense: 100,
+          reqstr: 106,
+          reqlvl: 66,
+        },
+      },
+    },
   },
 };
 
@@ -348,6 +670,53 @@ const baseDefenses = {
   "Spired Helm": 159,
   "Grand Crown": 113,
   Corona: 165,
+  "Jawbone Visor": 68,
+  "Carnage Helm": 147,
+  "Quilted Armor": 11,
+  "Leather Armor": 17,
+  "Hard Leather Armor": 25,
+  "Studded Leather": 37,
+  "Ring Mail": 51,
+  "Scale Mail": 63,
+  "Chain Mail": 71,
+  "Breast Plate": 58,
+  "Splint Mail": 84,
+  "Plate Mail": 108,
+  "Field Plate": 102,
+  "Gothic Plate": 128,
+  "Ghost Armor": 112,
+  "Light Plate": 99,
+  "Full Plate Mail": 150,
+  "Ancient Armor": 185,
+  "Serpentskin Armor": 122,
+  "Trellised Armor": 156,
+  "Demonhide Armor": 134,
+  "Linked Mail": 180,
+  "Tigulated Mail": 202,
+  "Mesh Armor": 216,
+  Cuirass: 176,
+  "Russet Armor": 233,
+  "Templar Coat": 278,
+  "Sharktooth Armor": 255,
+  "Embossed Plate": 304,
+  "Mage Plate": 187,
+  "Chaos Armor": 340,
+  "Ornate Plate": 444,
+  "Dusk Shroud": 302,
+  Wyrmhide: 322,
+  "Scarab Husk": 349,
+  "Wire Fleece": 391,
+  "Diamond Mail": 445,
+  "Loricated Mail": 495,
+  Boneweave: 489,
+  "Great Hauberk": 420,
+  "Balrog Skin": 541,
+  "Hellforge Plate": 625,
+  "Kraken Shell": 576,
+  "Lacquered Plate": 664,
+  "Archon Plate": 407,
+  "Shadow Plate": 696,
+  "Sacred Armor": 730,
 };
 
 const baseStrengths = {
@@ -375,6 +744,53 @@ const baseStrengths = {
   "Spired Helm": 192,
   "Grand Crown": 103,
   Corona: 174,
+  "Jawbone Visor": 58,
+  "Carnage Helm": 106,
+  "Quilted Armor": 12,
+  "Leather Armor": 15,
+  "Hard Leather Armor": 20,
+  "Studded Leather": 27,
+  "Ring Mail": 36,
+  "Scale Mail": 44,
+  "Chain Mail": 48,
+  "Breast Plate": 30,
+  "Splint Mail": 51,
+  "Plate Mail": 65,
+  "Field Plate": 55,
+  "Gothic Plate": 70,
+  "Light Plate": 41,
+  "Full Plate Mail": 80,
+  "Ancient Armor": 100,
+  "Ghost Armor": 38,
+  "Serpentskin Armor": 43,
+  "Demonhide Armor": 50,
+  "Trellised Armor": 61,
+  "Linked Mail": 74,
+  "Tigulated Mail": 86,
+  "Mesh Armor": 92,
+  Cuirass: 65,
+  "Russet Armor": 97,
+  "Templar Coat": 118,
+  "Sharktooth Armor": 103,
+  "Embossed Plate": 125,
+  "Mage Plate": 55,
+  "Chaos Armor": 140,
+  "Ornate Plate": 170,
+  "Dusk Shroud": 77,
+  Wyrmhide: 84,
+  "Scarab Husk": 95,
+  "Wire Fleece": 111,
+  "Diamond Mail": 131,
+  "Loricated Mail": 149,
+  Boneweave: 158,
+  "Great Hauberk": 118,
+  "Balrog Skin": 165,
+  "Hellforge Plate": 196,
+  "Kraken Shell": 174,
+  "Lacquered Plate": 208,
+  "Archon Plate": 103,
+  "Shadow Plate": 220,
+  "Sacred Armor": 232,
 };
 
 function buildDescription(itemName, baseType, properties, magicalProps) {
@@ -402,7 +818,9 @@ function calculateItemDefense(item, baseType) {
 
   let socketsEDef = 0;
   document
-    .querySelectorAll('.socketz[data-section="helm"]')
+    .querySelectorAll(
+      '.socketz[data-section="helm"], .socketz[data-section="armor"]'
+    )
     .forEach((socket) => {
       if (socket.dataset.itemName && socket.dataset.stats) {
         const edefMatch = socket.dataset.stats.match(
@@ -416,27 +834,11 @@ function calculateItemDefense(item, baseType) {
   if (!edef && todef)
     return Math.floor(baseDefense * (1 + socketsEDef / 100)) + todef;
 
-  // Include item's edef in calculation
   const totalEdef = (edef + socketsEDef) / 100;
   return todef
     ? Math.floor(baseDefense * (1 + totalEdef)) + todef
     : Math.floor(baseDefense * (1 + totalEdef));
 }
-
-function extractEnhancedDefense() {
-  const enhancedDefense = {};
-
-  Object.entries(itemList).forEach(([itemName, item]) => {
-    if (item.properties.edef) {
-      enhancedDefense[itemName] = item.properties.edef;
-    }
-  });
-
-  return enhancedDefense;
-}
-
-const enhancedDefense = extractEnhancedDefense();
-console.log(enhancedDefense);
 
 function handleUpgrade() {
   const select = document.getElementById("helms-dropdown");
@@ -448,11 +850,8 @@ function handleUpgrade() {
 
   const level = parseInt(document.getElementById("lvlValue").value) || 0;
   const str = parseInt(document.getElementById("str").value) || 0;
-
-  // Get base type from description
   const baseType = currentItemData.description.split("<br>")[1];
 
-  // Check if item is already elite
   if (baseType === upgrades.elite.base) {
     alert("Item is already at maximum upgrade level");
     return;
@@ -464,7 +863,6 @@ function handleUpgrade() {
     .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
     .join("<br>");
 
-  // Check if exceptional and try elite upgrade
   if (baseType === upgrades.exceptional.base) {
     if (
       level >= upgrades.elite.properties.reqlvl &&
@@ -491,7 +889,6 @@ function handleUpgrade() {
       return;
     }
   } else {
-    // Try exceptional upgrade
     if (
       level >= upgrades.exceptional.properties.reqlvl &&
       str >= baseStrengths[upgrades.exceptional.base]
@@ -524,50 +921,117 @@ function handleUpgrade() {
   alert("Character does not meet requirements for upgrade");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const observer = new MutationObserver(updateDefense);
-  document
-    .querySelectorAll('.socketz[data-section="helm"]')
-    .forEach((socket) => {
-      observer.observe(socket, {
-        attributes: true,
-        childList: true,
-        subtree: true,
-      });
-    });
+function handleArmorUpgrade() {
+  const select = document.getElementById("armors-dropdown");
+  const currentItem = select.value;
+  const upgrades = upgradeDefinitions.armors[currentItem];
+  const currentItemData = itemList[currentItem];
 
-  ["str", "dex", "vit", "enr", "lvlValue"].forEach((id) => {
-    document.getElementById(id)?.addEventListener("input", updateDefense);
-  });
+  if (!upgrades) return;
 
-  document
-    .getElementById("helms-dropdown")
-    ?.addEventListener("change", updateDefense);
-});
+  const level = parseInt(document.getElementById("lvlValue").value) || 0;
+  const str = parseInt(document.getElementById("str").value) || 0;
+  const baseType = currentItemData.description.split("<br>")[1];
 
-function updateDefense() {
-  const select = document.getElementById("helms-dropdown");
-  const item = itemList[select?.value];
-  if (!item) return;
-
-  const baseType = item.description.split("<br>")[1];
-  const newDefense = calculateItemDefense(item, baseType);
-
-  if (newDefense !== item.properties.defense) {
-    const lines = item.description.split("<br>");
-    const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
-    lines[defenseIndex] = `Defense: ${newDefense}`;
-    item.description = lines.join("<br>");
-    item.properties.defense = newDefense;
-    select.dispatchEvent(new Event("change"));
+  if (baseType === upgrades.elite.base) {
+    alert("Item is already at maximum upgrade level");
+    return;
   }
+
+  const magicalProperties = currentItemData.description
+    .split("<br>")
+    .slice(3)
+    .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
+    .join("<br>");
+
+  if (baseType === upgrades.exceptional.base) {
+    if (
+      level >= upgrades.elite.properties.reqlvl &&
+      str >= baseStrengths[upgrades.elite.base]
+    ) {
+      const newProperties = {
+        ...upgrades.elite.properties,
+        defense: calculateItemDefense(currentItemData, upgrades.elite.base),
+        reqstr: baseStrengths[upgrades.elite.base],
+      };
+
+      itemList[currentItem] = {
+        description: buildDescription(
+          currentItem,
+          upgrades.elite.base,
+          newProperties,
+          magicalProperties
+        ),
+        properties: { ...currentItemData.properties, ...newProperties },
+      };
+
+      select.dispatchEvent(new Event("change"));
+      alert("Item upgraded to elite version!");
+      return;
+    }
+  } else {
+    if (
+      level >= upgrades.exceptional.properties.reqlvl &&
+      str >= baseStrengths[upgrades.exceptional.base]
+    ) {
+      const newProperties = {
+        ...upgrades.exceptional.properties,
+        defense: calculateItemDefense(
+          currentItemData,
+          upgrades.exceptional.base
+        ),
+        reqstr: baseStrengths[upgrades.exceptional.base],
+      };
+
+      itemList[currentItem] = {
+        description: buildDescription(
+          currentItem,
+          upgrades.exceptional.base,
+          newProperties,
+          magicalProperties
+        ),
+        properties: { ...currentItemData.properties, ...newProperties },
+      };
+
+      select.dispatchEvent(new Event("change"));
+      alert("Item upgraded to exceptional version!");
+      return;
+    }
+  }
+
+  alert("Character does not meet requirements for upgrade");
 }
 
-// Add listeners for both sockets and inventory changes
+function updateDefense() {
+  const helmSelect = document.getElementById("helms-dropdown");
+  const armorSelect = document.getElementById("armors-dropdown");
+
+  [helmSelect, armorSelect].forEach((select) => {
+    if (!select?.value) return;
+    const item = itemList[select.value];
+    if (!item) return;
+
+    const baseType = item.description.split("<br>")[1];
+    const newDefense = calculateItemDefense(item, baseType);
+
+    if (newDefense !== item.properties.defense) {
+      const lines = item.description.split("<br>");
+      const defenseIndex = lines.findIndex((line) =>
+        line.startsWith("Defense:")
+      );
+      lines[defenseIndex] = `Defense: ${newDefense}`;
+      item.description = lines.join("<br>");
+      item.properties.defense = newDefense;
+      select.dispatchEvent(new Event("change"));
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Socket mutation observer
   document
-    .querySelectorAll('.socketz[data-section="helm"]')
+    .querySelectorAll(
+      '.socketz[data-section="helm"], .socketz[data-section="armor"]'
+    )
     .forEach((socket) => {
       new MutationObserver(() => requestAnimationFrame(updateDefense)).observe(
         socket,
@@ -580,13 +1044,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
 
-  // Stats and level changes
   ["str", "dex", "vit", "enr", "lvlValue"].forEach((id) => {
     document.getElementById(id)?.addEventListener("input", updateDefense);
   });
 
-  // Item selection changes
-  document
-    .getElementById("helms-dropdown")
-    ?.addEventListener("change", updateDefense);
+  ["helms-dropdown", "armors-dropdown"].forEach((id) => {
+    document.getElementById(id)?.addEventListener("change", updateDefense);
+  });
 });

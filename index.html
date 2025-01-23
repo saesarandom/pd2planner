@@ -193,7 +193,18 @@ Resistance to fire %
 <option value="Goldskin">Goldskin</option>
 <option value="Silks of the Victor">Silks of the Victor</option>
 <option value="Spirit Shroud">Spirit Shroud</option>
-<option value="Vipermagi">Vipermagi</option>
+<option value="Skin of the Vipermagi">Skin of the Vipermagi</option>
+<option value="Skin of the Flayed One">Skin of the Flayed One</option>
+<option value="Iron Pelt">Iron Pelt</option>
+<option value="Crow Caw">Crow Caw</option>
+<option value="Shaftstop">Shaftstop</option>
+<option value="Skullder's Ire">Skullder's Ire</option>
+<option value="Que-Hegan's Wisdom">Que-Hegan's Wisdom</option>
+<option value="Toothrow">Toothrow</option>
+<option value="Guardian Angel">Guardian Angel</option>
+<option value="Atma's Wail">Atma's Wail</option>
+<option value="Black Hades">Black Hades</option>
+<option value="Corpsemourn">Corpsemourn</option>
 </select>
 <div id="armor-info"></div>
 </div>
@@ -2032,10 +2043,10 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalLightRes += (helmData.properties.ligres) || 0 + (helmData.properties.allres) || 0;
       totalPoisonRes += (helmData.properties.poisres) || 0 + (helmData.properties.allres) || 0;
       totalCurseRes += helmData.properties.curres || 0;
-      totalStr += helmData.properties.str || 0;
-      totalDex += helmData.properties.dex || 0;
-      totalVit += helmData.properties.vit || 0;
-      totalEnr += helmData.properties.enr || 0;
+      totalStr += (helmData.properties.str) || 0 + (helmData.properties.allstats) || 0;
+      totalDex += helmData.properties.dex || 0 + (helmData.properties.allstats) || 0;
+      totalVit += helmData.properties.vit || 0 + (helmData.properties.allstats) || 0;
+      totalEnr += helmData.properties.enr || 0 + (helmData.properties.allstats) || 0;
       totalAllSkill += helmData.properties.allsk || 0;
       totalMagicFind += helmData.properties.magicfind || 0;
       totalGoldFind += helmData.properties.goldfind || 0;
@@ -2048,6 +2059,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatMagicDmg += (helmData.properties.magicdmgmin/2 + helmData.properties.magicdmgmax/2) || 0;
       totalEDMG += helmData.properties.edmg || 0;
       totalMaxFireRes += helmData.properties.maxfirres || 0;
+      totalMaxColdRes += helmData.properties.maxcoldres || 0;
+      totalMaxLightRes += helmData.properties.maxligres || 0;
+      totalMaxPoisonRes += helmData.properties.maxpoisres || 0;
     }
     if (armorData) {
       totalLife += armorData.properties.tolife || 0;
@@ -2086,6 +2100,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalWeaponMastery += armorData.properties.weaponmasterysk || 0;
       totalEDMG += armorData.properties.edmg || 0; 
       totalMaxFireRes += armorData.properties.maxfirres || 0;
+      totalMaxColdRes += armorData.properties.maxcoldres || 0;
+      totalMaxLightRes += armorData.properties.maxligres || 0;
+      totalMaxPoisonRes += armorData.properties.maxpoisres || 0;
     }
     if (weaponData) {
       totalLife += weaponData.properties.tolife || 0;
@@ -2128,6 +2145,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalDeadlyStrike += (weaponData.properties.deadlyperlvl*startLvlValue) || 0 + (weaponData.properties.deadly/100) || 0; 
       totalWeaponMastery += weaponData.properties.weaponmasterysk || 0;
       totalMaxFireRes += weaponData.properties.maxfirres || 0;
+      totalMaxColdRes += weaponData.properties.maxcoldres || 0;
+      totalMaxLightRes += weaponData.properties.maxligres || 0;
+      totalMaxPoisonRes += weaponData.properties.maxpoisres || 0;
       
     }
     if (offData?.properties?.defense > 0) {
@@ -2159,6 +2179,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatMagicDmg += (offData.properties.magicdmgmin/2 + offData.properties.magicdmgmax/2) || 0;
       totalEDMG += offData.properties.edmg || 0;
       totalMaxFireRes += offData.properties.maxfirres || 0;
+      totalMaxColdRes += offData.properties.maxcoldres || 0;
+      totalMaxLightRes += offData.properties.maxligres || 0;
+      totalMaxPoisonRes += offData.properties.maxpoisres || 0;
     } else {
       totalDefense += offData.properties.todef;
       totalLife += offData.properties.tolife || 0;
@@ -2189,6 +2212,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (offData.properties.poisondmg / offData.properties.poisontime) || 0;
       totalFlatMagicDmg += (offData.properties.magicdmgmin/2 + offData.properties.magicdmgmax/2) || 0;
       totalMaxFireRes += offData.properties.maxfirres || 0;
+      totalMaxColdRes += offData.properties.maxcoldres || 0;
+      totalMaxLightRes += offData.properties.maxligres || 0;
+      totalMaxPoisonRes += offData.properties.maxpoisres || 0;
     }
     if (gloveData) {
       totalLife += gloveData.properties.tolife || 0;
@@ -2224,6 +2250,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatMagicDmg += (gloveData.properties.magicdmgmin/2 + gloveData.properties.magicdmgmax/2) || 0;
       totalEDMG += gloveData.properties.edmg || 0;
       totalMaxFireRes += gloveData.properties.maxfirres || 0;
+      totalMaxColdRes += gloveData.properties.maxcoldres || 0;
+      totalMaxLightRes += gloveData.properties.maxligres || 0;
+      totalMaxPoisonRes += gloveData.properties.maxpoisres || 0;
     }
 
     if (beltData) {
@@ -2260,6 +2289,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatMagicDmg += (beltData.properties.magicdmgmin/2 + beltData.properties.magicdmgmax/2) || 0;
       totalEDMG += beltData.properties.edmg || 0;
       totalMaxFireRes += beltData.properties.maxfirres || 0;
+      totalMaxColdRes += beltData.properties.maxcoldres || 0;
+      totalMaxLightRes += beltData.properties.maxligres || 0;
+      totalMaxPoisonRes += beltData.properties.maxpoisres || 0;
     }
 
     if (bootData) {
@@ -2296,6 +2328,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatMagicDmg += (bootData.properties.magicdmgmin/2 + bootData.properties.magicdmgmax/2) || 0;
       totalEDMG += bootData.properties.edmg || 0;
       totalMaxFireRes += bootData.properties.maxfirres || 0;
+      totalMaxColdRes += bootData.properties.maxcoldres || 0;
+      totalMaxLightRes += bootData.properties.maxligres || 0;
+      totalMaxPoisonRes += bootData.properties.maxpoisres || 0;
     }
 
     if (ringOneData) {
@@ -2332,6 +2367,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatMagicDmg += (ringOneData.properties.magicdmgmin/2 + ringOneData.properties.magicdmgmax/2) || 0;
       totalEDMG += ringOneData.properties.edmg || 0;
       totalMaxFireRes += ringOneData.properties.maxfirres || 0;
+      totalMaxColdRes += ringOneData.properties.maxcoldres || 0;
+      totalMaxLightRes += ringOneData.properties.maxligres || 0;
+      totalMaxPoisonRes += ringOneData.properties.maxpoisres || 0;
     }
 
     if (ringTwoData) {
@@ -2368,6 +2406,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatMagicDmg += (ringTwoData.properties.magicdmgmin/2 + ringTwoData.properties.magicdmgmax/2) || 0;
       totalEDMG += ringTwoData.properties.edmg || 0;
       totalMaxFireRes += ringTwoData.properties.maxfirres || 0;
+      totalMaxColdRes += ringTwoData.properties.maxcoldres || 0;
+      totalMaxLightRes += ringTwoData.properties.maxligres || 0;
+      totalMaxPoisonRes += ringTwoData.properties.maxpoisres || 0;
     }
 
     if (amuletData) {
@@ -2408,6 +2449,9 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalWeaponMastery += amuletData.properties.weaponmasterysk || 0; 
       totalEDMG += amuletData.properties.edmg || 0;
       totalMaxFireRes += amuletData.properties.maxfirres || 0;
+      totalMaxColdRes += amuletData.properties.maxcoldres || 0;
+      totalMaxLightRes += amuletData.properties.maxligres || 0;
+      totalMaxPoisonRes += amuletData.properties.maxpoisres || 0;
     }
 
     let block = helmData?.properties.block || 0;
@@ -8161,7 +8205,7 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
     const SocketArmors = [
       "Greyform", "Blinkbat's Form", "The Centurion", "Twitchthroe", "Darkglow", "Hawkmail",
   "Sparking Mail", "Venom Ward", "Iceblink", "Boneflesh", "Rockfleece", "Rattlecage",
-  "Heavenly Garb", "Goldskin", "Silks of the Victor", "Spirit Shroud", "Vipermagi"
+  "Heavenly Garb", "Goldskin", "Silks of the Victor", "Spirit Shroud", "Skin of the Vipermagi"
     ];
 
     const SocketWeapons = [
@@ -9627,13 +9671,12 @@ window.addEventListener('click', (e) => {
   </script>
 
 <button id="upgradeButton" class="upgrade-button">Upgrade Helm, it works, u just need lvl and str for upgrade</button>
+<button id="upgradeArmorButton" class="upgrade-buttonarmor">Upgrade Armor</button>
 
 <script>
-document.getElementById('upgradeButton').addEventListener('click', function() {
-    const selectedType = 'helms'; // For now we only handle helms
-    handleUpgrade(selectedType);
-});
-</script>
+  document.getElementById('upgradeButton').addEventListener('click', handleUpgrade);
+  document.getElementById('upgradeArmorButton').addEventListener('click', handleArmorUpgrade);
+  </script>
 
 </body>
 </html>

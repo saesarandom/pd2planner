@@ -189,13 +189,13 @@ const itemList = {
 
   "Blackhorn's Face": {
     description:
-      "Blackhorn's Face<br>Death Mask<br>Defense: 278<br>Required Strength: 55<br>Required Level: 41<br>Prevent Monster Heal<br> Slows Target by 20%<br> +220% Enhanced Defense<br> +5% to Maximum Lightning Resist<br> Lightning Resist +30%<br> +20 Lightning Absorb<br> Attacker Takes Lightning Damage of 325<br>",
+      "Blackhorn's Face<br>Death Mask<br>Defense: 278<br>Required Strength: 55<br>Required Level: 41<br>Prevent Monster Heal<br>Slows Target by 20%<br> +220% Enhanced Defense<br>+5% to Maximum Lightning Resist<br>Lightning Resist +30%<br>+20 Lightning Absorb<br>Attacker Takes Lightning Damage of 325<br>",
     properties: {
       defense: 278,
       reqstr: 55,
       reqlvl: 41,
       edef: 220,
-      maxligres: 5,
+      maxlightres: 5,
       ligres: 30,
       lightabsorb: 20,
       atligdmg: 325,
@@ -220,7 +220,7 @@ const itemList = {
 
   "Crown of Thieves": {
     description:
-      "Crown of Thieves<br>Grand Crown<br>Defense: 342<br>Required Strength: 103<br>Required Level: 49<br>10% Life Stolen per Hit<br> +200% Enhanced Defense<br> +25 to Dexterity<br> +50 to Life<br> Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
+      "Crown of Thieves<br>Grand Crown<br>Defense: 342<br>Required Strength: 103<br>Required Level: 49<br>10% Life Stolen per Hit<br>+200% Enhanced Defense<br>+25 to Dexterity<br>+50 to Life<br>Fire Resist +33%<br> 100% Extra Gold from Monsters<br> 65% Better Chance of Getting Magic Items<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -240,27 +240,24 @@ const itemList = {
       "Harlequin Crest<br>Shako<br>Defense: 141<br>Required Strength: 50<br>Required Level: 62<br>+2 to All Skills<br> +2 to All Attributes<br> +[1-99] to Life (+1 per Character Level)<br> +[1-99] to Mana (+1 per Character Level)<br> Physical Damage Taken Reduced by 5%<br> 50% Better Chance of Getting Magic Items<br>",
     properties: {
       defense: 141,
-      reqstr: 103,
-      reqlvl: 49,
-      lleech: 10,
-      edmg: 200,
-      dex: 25,
-      tolife: 50,
-      firres: 33,
-      goldfind: 100,
-      magicfind: 65,
+      reqstr: 50,
+      reqlvl: 62,
+      allsk: 2,
+      allstats: 2,
+      physdr: 5,
+      magicfind: 50,
     },
   },
 
   "Steel Shade": {
     description:
-      "Steel Shade<br> Armet<br> Defense: 345<br> Required Strength: 109<br> Required Level: 62<br> +2 to All Skills<br> +20% Faster Block Rate<br> 20% Increased Chance of Blocking<br> 8% Mana Stolen per Hit<br> +130% Enhanced Defense<br> Replenish Life +48<br> +6 Fire Absorb<br> 80% Extra Gold from Monsters<br>",
+      "Steel Shade<br>Armet<br>Defense: 345<br>Required Strength: 109<br>Required Level: 62<br>+2 to All Skills<br>+20% Faster Block Rate<br>20% Increased Chance of Blocking<br>8% Mana Stolen per Hit<br>+130% Enhanced Defense<br>Replenish Life +48<br>+6 Fire Absorb<br>80% Extra Gold from Monsters<br>",
     properties: {
       defense: 342,
-      reqstr: 103,
-      reqlvl: 49,
+      reqstr: 109,
+      reqlvl: 62,
       lleech: 10,
-      edmg: 200,
+      edef: 130,
       dex: 25,
       tolife: 50,
       firres: 33,
@@ -271,26 +268,27 @@ const itemList = {
 
   "Andariel's Visage": {
     description:
-      "Andariel's Visage<br> Demonhead<br> Defense: 387<br> Required Strength: 102<br> Required Level: 83<br> 15% Chance to Cast Level 30 Poison Nova when Struck<br> +2 to All Skills<br> +30% Increased Attack Speed<br> 10% Life Stolen per Hit<br> +150% Enhanced Defense<br> +30 to Strength<br> +8% to Maximum Poison Resist<br> Fire Resist -20%<br> Poison Resist +70%<br> Level 3 Venom (20 Charges)<br>",
+      "Andariel's Visage<br>Demonhead<br>Defense: 387<br>Required Strength: 102<br>Required Level: 83<br>15% Chance to Cast Level 30 Poison Nova when Struck<br>+2 to All Skills<br>+30% Increased Attack Speed<br>10% Life Stolen per Hit<br>+150% Enhanced Defense<br>+30 to Strength<br>+8% to Maximum Poison Resist<br>Fire Resist -20%<br>Poison Resist +70%<br>Level 3 Venom (20 Charges)<br>",
     properties: {
       defense: 342,
-      reqstr: 103,
-      reqlvl: 49,
+      reqstr: 102,
+      reqlvl: 83,
+      ias: 30,
       lleech: 10,
-      edmg: 200,
-      dex: 25,
-      tolife: 50,
-      firres: 33,
-      goldfind: 100,
-      magicfind: 65,
+      edef: 150,
+      str: 30,
+      maxpoisonres: 8,
+      firres: -20,
+      poisres: 70,
+      venomcharges: 3,
     },
   },
 
   "Giant Skull": {
     description:
-      "Giant Skull<br> Bone Visage<br> Defense: 477<br> Required Strength: 106<br> Required Level: 65<br> +35% Chance to Pierce<br> +80% Enhanced Damage<br> 25% Chance of Crushing Blow<br> Knockback<br> +320 Defense<br> +35 to Strength<br>",
+      "Giant Skull<br>Bone Visage<br>Defense: 477<br>Required Strength: 106<br>Required Level: 65<br>+35% Chance to Pierce<br>+80% Enhanced Damage<br>25% Chance of Crushing Blow<br>Knockback<br>+320 Defense<br>+35 to Strength<br>",
     properties: {
-      defense: 342,
+      defense: 477,
       reqstr: 103,
       reqlvl: 49,
       lleech: 10,
@@ -299,13 +297,13 @@ const itemList = {
       tolife: 50,
       firres: 33,
       goldfind: 100,
-      magicfind: 65,
+      todef: 320,
     },
   },
 
   "Veil of Steel": {
     description:
-      "Veil of Steel<br> Spired Helm<br> Defense: 652<br> Durability: 60<br> Required Strength: 192<br> Required Level: 73<br> +1 to All Skills<br> +80% Enhanced Damage<br> +220% Enhanced Defense<br> +140 Defense<br> +15 to Strength<br> +15 to Vitality<br> All Resistances +40<br> +20 Durability<br>",
+      "Veil of Steel<br>Spired Helm<br>Defense: 652<br>Durability: 60<br>Required Strength: 192<br>Required Level: 73<br>+1 to All Skills<br>+80% Enhanced Damage<br>+220% Enhanced Defense<br>+140 Defense<br>+15 to Strength<br>+15 to Vitality<br>All Resistances +40<br>+20 Durability<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -322,7 +320,7 @@ const itemList = {
 
   "Nightwing's Veil": {
     description:
-      "Nightwing's Veil<br> Spired Helm<br> Defense: 352<br> Required Strength: 96<br> Required Level: 67<br> +2 to All Skills<br> -10% to Enemy Cold Resistance<br> +15% to Cold Skill Damage<br> +120% Enhanced Defense<br> +20 to Dexterity<br> +9 Cold Absorb<br> Half Freeze Duration<br> Requirements -50%<br>",
+      "Nightwing's Veil<br>Spired Helm<br>Defense: 352<br>Required Strength: 96<br>Required Level: 67<br>+2 to All Skills<br>-10% to Enemy Cold Resistance<br>+15% to Cold Skill Damage<br>+120% Enhanced Defense<br>+20 to Dexterity<br>+9 Cold Absorb<br>Half Freeze Duration<br>Requirements -50%<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -339,7 +337,7 @@ const itemList = {
 
   "Crown of Ages": {
     description:
-      "Crown of Ages<br> Corona<br> Defense: 399<br> Required Strength: 174<br> Required Level: 82<br> Indestructible<br> +30% Faster Hit Recovery<br> 50% Reduced Curse Duration<br> +50% Enhanced Defense<br> +150 Defense<br> All Resistances +30<br> Physical Damage Taken Reduced by 15%<br> Socketed [2-3]<br>",
+      "Crown of Ages<br>Corona<br>Defense: 399<br>Required Strength: 174<br>Required Level: 82<br>Indestructible<br>+30% Faster Hit Recovery<br>50% Reduced Curse Duration<br>+50% Enhanced Defense<br>+150 Defense<br>All Resistances +30<br>Physical Damage Taken Reduced by 15%<br>Socketed [2-3]<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -356,7 +354,7 @@ const itemList = {
 
   "Overlord's Helm": {
     description:
-      "Overlord's Helm<br> Giant Conch<br> Defense: 834<br> Required Strength: 142<br> Required Level: 85<br> -10% to Enemy Physical Resistance<br> 8% Life Stolen per Hit<br> +680 Defense<br> +30 to Strength<br> +15 to Dexterity<br> +15 to Vitality<br> -30 to Energy<br> Curse Resistance -30%<br>",
+      "Overlord's Helm<br>Giant Conch<br>Defense: 834<br>Required Strength: 142<br>Required Level: 85<br>-10% to Enemy Physical Resistance<br>8% Life Stolen per Hit<br>+680 Defense<br>+30 to Strength<br>+15 to Dexterity<br>+15 to Vitality<br>-30 to Energy<br>Curse Resistance -30%<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -373,7 +371,7 @@ const itemList = {
 
   "Kira's Guardian": {
     description:
-      "Kira's Guardian<br> Tiara<br> Defense: 170<br> Required Level: 77<br> +20% Faster Hit Recovery<br> -15% to Enemy Cold Resistance<br> -15% to Enemy Lightning Resistance<br> -15% to Enemy Fire Resistance<br> +120 Defense<br> All Resistances +40<br> Cannot Be Frozen<br>",
+      "Kira's Guardian<br>Tiara<br>Defense: 170<br>Required Level: 77<br>+20% Faster Hit Recovery<br>-15% to Enemy Cold Resistance<br>-15% to Enemy Lightning Resistance<br>-15% to Enemy Fire Resistance<br>+120 Defense<br>All Resistances +40<br>Cannot Be Frozen<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -390,7 +388,7 @@ const itemList = {
 
   "Griffon's Eye": {
     description:
-      "Griffon's Eye<br> Diadem<br> Defense: 260<br> Required Level: 76<br> +1 to All Skills<br> +25% Faster Cast Rate<br> +15% to Lightning Skill Damage<br> -20% to Enemy Lightning Resistance<br> +200 Defense<br>",
+      "Griffon's Eye<br>Diadem<br>Defense: 260<br>Required Level: 76<br>+1 to All Skills<br>+25% Faster Cast Rate<br>+15% to Lightning Skill Damage<br>-20% to Enemy Lightning Resistance<br>+200 Defense<br>",
     properties: {
       defense: 342,
       reqstr: 103,
@@ -407,13 +405,13 @@ const itemList = {
 
   "Cyclopean Roar": {
     description:
-      "Cyclopean Roar<br> Jawbone Visor<br> Defense: 169<br> Required Strength: 58<br> Required Level: 28<br> (Barbarian Only)<br> 8% Chance to Cast Level 6 Battle Cry on Striking<br> or<br> 8% Chance to Cast Level 6 Battle Cry on Casting<br> +3 to Warcries (Barbarian Only)<br> +20% Faster Run/Walk<br> +20% to Leap and Leap Attack Movement Speed<br> +145% Enhanced Defense<br>",
+      "Cyclopean Roar<br>Jawbone Visor<br>(Barbarian Only)<br>Defense: 169<br>Required Strength: 58<br>Required Level: 28<br>8% Chance to Cast Level 6 Battle Cry on Striking<br>+3 to Warcries (Barbarian Only)<br>+20% Faster Run/Walk<br>+20% to Leap and Leap Attack Movement Speed<br>+145% Enhanced Defense<br>",
     properties: {
-      defense: 342,
-      reqstr: 103,
-      reqlvl: 49,
+      defense: 169,
+      reqstr: 58,
+      reqlvl: 28,
       lleech: 10,
-      edmg: 200,
+      edef: 145,
       dex: 25,
       tolife: 50,
       firres: 33,
@@ -659,7 +657,7 @@ const itemList = {
 
   "Blinkbat's Form": {
     description:
-      "Blinkbat's Form<br> Leather Armor<br> Base Maximum Sockets: 2 (3 for upgraded elite versions)<br> Defense: 42<br> Required Strength: 15<br> Required Level: 12<br> +20% Faster Run/Walk<br> +40% Faster Hit Recovery<br> Adds 10-15 Fire Damage<br> +25 Defense<br> +50 Defense vs. Missile<br>",
+      "Blinkbat's Form<br>Leather Armor<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 42<br>Required Strength: 15<br>Required Level: 12<br>+20% Faster Run/Walk<br>+40% Faster Hit Recovery<br>Adds 10-15 Fire Damage<br>+25 Defense<br>+50 Defense vs. Missile<br>",
     properties: {
       defense: 42,
       reqstr: 15,
@@ -675,7 +673,7 @@ const itemList = {
 
   "The Centurion": {
     description:
-      "The Centurion<br> Hard Leather Armor<br> Base Maximum Sockets: 2 (3 for upgraded elite versions)<br> Defense: 55<br> Required Strength: 20<br> Required Level: 14<br> 20% Increased Chance of Blocking<br> +30% Enhanced Damage<br> +50 to Attack Rating<br> +30 Defense<br> +15 to Life<br> Replenish Life +15<br> +15 to Mana<br> Physical Damage Taken Reduced by 2<br>",
+      "The Centurion<br>Hard Leather Armor<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 55<br>Required Strength: 20<br>Required Level: 14<br>20% Increased Chance of Blocking<br>+30% Enhanced Damage<br>+50 to Attack Rating<br>+30 Defense<br>+15 to Life<br>Replenish Life +15<br>+15 to Mana<br>Physical Damage Taken Reduced by 2<br>",
     properties: {
       defense: 55,
       reqstr: 20,
@@ -692,7 +690,7 @@ const itemList = {
 
   Twitchthroe: {
     description:
-      "Twitchthroe<br> Studded Leather<br> Base Maximum Sockets: 2 (3 for upgraded elite versions)<br> Defense: 62<br> Required Strength: 27<br> Required Level: 16<br> +40% Increased Attack Speed<br> +20% Faster Hit Recovery<br> 25% Increased Chance of Blocking<br> +25 Defense<br> +10 to Strength<br> +10 to Dexterity<br>",
+      "Twitchthroe<br>Studded Leather<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 62<br>Required Strength: 27<br>Required Level: 16<br>+40% Increased Attack Speed<br>+20% Faster Hit Recovery<br>25% Increased Chance of Blocking<br>+25 Defense<br>+10 to Strength<br>+10 to Dexterity<br>",
     properties: {
       defense: 62,
       reqstr: 27,
@@ -708,17 +706,17 @@ const itemList = {
 
   Darkglow: {
     description:
-      "Darkglow<br> Ring Mail<br> Defense: 104<br> Required Strength: 36<br> Required Level: 14<br> +120 to Attack Rating<br> +100% Enhanced Defense<br> +50 Defense vs. Missile<br> +5% to Maximum Poison Resist<br> +5% to Maximum Cold Resist<br> +5% to Maximum Lightning Resist<br> +5% to Maximum Fire Resist<br> All Resistances +15<br> +3 to Light Radius<br>",
+      "Darkglow<br>Ring Mail<br>Defense: 104<br>Required Strength: 36<br>Required Level: 14<br>+120 to Attack Rating<br>+100% Enhanced Defense<br>+50 Defense vs. Missile<br>+5% to Maximum Poison Resist<br>+5% to Maximum Cold Resist<br>+5% to Maximum Lightning Resist<br>+5% to Maximum Fire Resist<br>All Resistances +15<br>+3 to Light Radius<br>",
     properties: {
       defense: 104,
       reqstr: 36,
       reqlvl: 14,
       toatt: 120,
-      edmg: 100,
+      edef: 100,
       todefmiss: 50,
-      maxpoisres: 5,
+      maxpoisonres: 5,
       maxcoldres: 5,
-      maxligres: 5,
+      maxlightres: 5,
       maxfirres: 5,
       allres: 15,
       tolightrad: 3,
@@ -727,7 +725,7 @@ const itemList = {
 
   Hawkmail: {
     description:
-      "Hawkmail<br> Scale Mail<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> Defense: 128<br> Required Strength: 44<br> Required Level: 15<br> +25% Faster Run/Walk<br> +3 to Raven<br> +100% Enhanced Defense<br> +5% to Maximum Cold Resist<br> Cold Resist +30%<br> Cannot Be Frozen<br>",
+      "Hawkmail<br>Scale Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 128<br>Required Strength: 44<br>Required Level: 15<br>+25% Faster Run/Walk<br>+3 to Raven<br>+100% Enhanced Defense<br>+5% to Maximum Cold Resist<br>Cold Resist +30%<br>Cannot Be Frozen<br>",
     properties: {
       defense: 128,
       reqstr: 44,
@@ -743,7 +741,7 @@ const itemList = {
 
   "Sparking Mail": {
     description:
-      "Sparking Mail<br> Chain Mail<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> Defense: 133<br> Required Strength: 48<br> Required Level: 17<br> Adds 1-45 Lightning Damage<br> +10% to Lightning Skill Damage<br> +85% Enhanced Defense<br> Lightning Resist +30%<br> Attacker Takes Lightning Damage of 28<br>",
+      "Sparking Mail<br>Chain Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 133<br>Required Strength: 48<br>Required Level: 17<br>Adds 1-45 Lightning Damage<br>+10% to Lightning Skill Damage<br>+85% Enhanced Defense<br>Lightning Resist +30%<br>Attacker Takes Lightning Damage of 28<br>",
     properties: {
       defense: 133,
       reqstr: 48,
@@ -759,14 +757,14 @@ const itemList = {
 
   "Venom Ward": {
     description:
-      "Venom Ward<br> Breast Plate<br> Defense: 118<br> Required Strength: 30<br> Required Level: 20<br> -12% to Enemy Poison Resistance<br> +100% Enhanced Defense<br> +8% to Maximum Poison Resist<br> Poison Resist +60%<br> Poison Length Reduced by 50%<br> +2 to Light Radius<br>",
+      "Venom Ward<br>Breast Plate<br>Defense: 118<br>Required Strength: 30<br>Required Level: 20<br>-12% to Enemy Poison Resistance<br>+100% Enhanced Defense<br>+8% to Maximum Poison Resist<br>Poison Resist +60%<br>Poison Length Reduced by 50%<br>+2 to Light Radius<br>",
     properties: {
       defense: 118,
       reqstr: 30,
       reqlvl: 20,
       poisonpierce: 12,
       edef: 100,
-      maxpoisres: 8,
+      maxpoisonres: 8,
       poisres: 60,
       plr: 50,
       lightrad: 2,
@@ -775,7 +773,7 @@ const itemList = {
 
   Iceblink: {
     description:
-      "Iceblink<br> Splint Mail<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> Defense: 153<br> Required Strength: 51<br> Required Level: 22<br> +2 to Cold Skills<br> Freezes Target<br> +80% Enhanced Defense<br> Cold Resist +35%<br> Magic Damage Taken Reduced by 6<br> +4 to Light Radius<br>",
+      "Iceblink<br>Splint Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 153<br>Required Strength: 51<br>Required Level: 22<br>+2 to Cold Skills<br>Freezes Target<br>+80% Enhanced Defense<br>Cold Resist +35%<br>Magic Damage Taken Reduced by 6<br>+4 to Light Radius<br>",
     properties: {
       defense: 153,
       reqstr: 51,
@@ -791,7 +789,7 @@ const itemList = {
 
   Boneflesh: {
     description:
-      "Boneflesh<br> Plate Mail<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> Defense: 239<br> Required Strength: 65<br> Required Level: 26<br> 10% Chance to Cast Level 15 Bone Armor when Struck<br> +235 to Attack Rating<br> 5% Life Stolen per Hit<br> 25% Chance of Open Wounds<br> +32 Open Wounds Damage per Second<br> +120% Enhanced Defense<br>",
+      "Boneflesh<br>Plate Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 239<br>Required Strength: 65<br>Required Level: 26<br>10% Chance to Cast Level 15 Bone Armor when Struck<br>+235 to Attack Rating<br>5% Life Stolen per Hit<br>25% Chance of Open Wounds<br>+32 Open Wounds Damage per Second<br>+120% Enhanced Defense<br>",
     properties: {
       defense: 239,
       reqstr: 65,
@@ -807,7 +805,7 @@ const itemList = {
 
   Rockfleece: {
     description:
-      "Rockfleece<br> Field Plate<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> Defense: 236<br> Required Strength: 50<br> Required Level: 28<br> +130% Enhanced Defense<br> +15 to Strength<br> Physical Damage Taken Reduced by 15%<br> Physical Damage Taken Reduced by 10<br> Requirements -10%<br>",
+      "Rockfleece<br>Field Plate<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 236<br>Required Strength: 50<br>Required Level: 28<br>+130% Enhanced Defense<br>+15 to Strength<br>Physical Damage Taken Reduced by 15%<br>Physical Damage Taken Reduced by 10<br>Requirements -10%<br>",
     properties: {
       defense: 236,
       reqstr: 50,
@@ -822,7 +820,7 @@ const itemList = {
 
   Rattlecage: {
     description:
-      "Rattlecage<br> Gothic Plate<br> Defense: 328<br> Required Strength: 70<br> Required Level: 29<br> +90% Enhanced Damage<br> +145 to Attack Rating<br> 25% Chance of Crushing Blow<br> Hit Causes Monster to Flee 10%??? <br> +200 Defense<br>",
+      "Rattlecage<br>Gothic Plate<br>Defense: 328<br>Required Strength: 70<br>Required Level: 29<br>+90% Enhanced Damage<br>+145 to Attack Rating<br>25% Chance of Crushing Blow<br>Hit Causes Monster to Flee 10%??? <br>+200 Defense<br>",
     properties: {
       defense: 328,
       reqstr: 70,
@@ -837,7 +835,7 @@ const itemList = {
 
   "Heavenly Garb": {
     description:
-      "Heavenly Garb<br> Light Plate<br> Defense: 200<br> Required Strength: 41<br> Required Level: 29<br> Level 4 Sanctuary Aura when Equipped<br> +1 to Magic Skills<br> +50% Damage to Undead<br> +100 to Attack Rating against Undead<br> +100% Enhanced Defense<br> +15 to Energy<br> Regenerate Mana 25%<br> All Resistances +20<br>",
+      "Heavenly Garb<br>Light Plate<br>Defense: 200<br>Required Strength: 41<br>Required Level: 29<br>Level 4 Sanctuary Aura when Equipped<br>+1 to Magic Skills<br>+50% Damage to Undead<br>+100 to Attack Rating against Undead<br>+100% Enhanced Defense<br>+15 to Energy<br>Regenerate Mana 25%<br>All Resistances +20<br>",
     properties: {
       defense: 200,
       reqstr: 41,
@@ -854,7 +852,7 @@ const itemList = {
 
   Goldskin: {
     description:
-      "Goldskin<br> Full Plate Mail<br> Defense: 377<br> Required Strength: 80<br> Required Level: 28<br> +150% Enhanced Defense<br> All Resistances +35<br> Attacker Takes Damage of 10<br> 200% Extra Gold from Monsters<br> +2 to Light Radius<br>",
+      "Goldskin<br>Full Plate Mail<br>Defense: 377<br>Required Strength: 80<br>Required Level: 28<br>+150% Enhanced Defense<br>All Resistances +35<br>Attacker Takes Damage of 10<br>200% Extra Gold from Monsters<br>+2 to Light Radius<br>",
     properties: {
       defense: 377,
       reqstr: 80,
@@ -869,7 +867,7 @@ const itemList = {
 
   "Silks of the Victor": {
     description:
-      "Silks of the Victor<br> Ancient Armor<br> Defense: 409<br> Required Strength: 100<br> Required Level: 28<br> +1 to All Skills<br> +25% Faster Run/Walk<br> 5% Mana Stolen per Hit<br> +120% Enhanced Defense<br> +4 Life after each Kill<br> +2 to Light Radius<br>",
+      "Silks of the Victor<br>Ancient Armor<br>Defense: 409<br>Required Strength: 100<br>Required Level: 28<br>+1 to All Skills<br>+25% Faster Run/Walk<br>5% Mana Stolen per Hit<br>+120% Enhanced Defense<br>+4 Life after each Kill<br>+2 to Light Radius<br>",
     properties: {
       defense: 409,
       reqstr: 100,
@@ -885,7 +883,7 @@ const itemList = {
 
   "Spirit Shroud": {
     description:
-      "Spirit Shroud<br> Ghost Armor<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> Defense: 282<br> Required Strength: 38<br> Required Level: 28<br> +1 to All Skills<br> +30% Faster Cast Rate<br> +150% Enhanced Defense<br> Replenish Life +20<br> Curse Resistance +10%<br> Magic Damage Taken Reduced by 11<br> Cannot Be Frozen<br>",
+      "Spirit Shroud<br>Ghost Armor<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 282<br>Required Strength: 38<br>Required Level: 28<br>+1 to All Skills<br>+30% Faster Cast Rate<br>+150% Enhanced Defense<br>Replenish Life +20<br>Curse Resistance +10%<br>Magic Damage Taken Reduced by 11<br>Cannot Be Frozen<br>",
     properties: {
       defense: 282,
       reqstr: 38,
@@ -900,9 +898,9 @@ const itemList = {
     },
   },
 
-  Vipermagi: {
+  "Skin of the Vipermagi": {
     description:
-      "Skin of the Vipermagi<br> Serpentskin Armor<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> Defense: 270<br> Required Strength: 43<br> Required Level: 29<br> +1 to All Skills<br> +30% Faster Cast Rate<br> +120% Enhanced Defense<br> All Resistances +30<br> Magic Damaged Taken Reduced by 8<br>",
+      "Skin of the Vipermagi<br>Serpentskin Armor<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 270<br>Required Strength: 43<br>Required Level: 29<br>+1 to All Skills<br>+30% Faster Cast Rate<br>+120% Enhanced Defense<br>All Resistances +30<br>Magic Damaged Taken Reduced by 8<br>",
     properties: {
       defense: 270,
       reqstr: 43,
@@ -915,6 +913,228 @@ const itemList = {
     },
   },
 
+  "Skin of the Flayed One": {
+    description:
+      "Skin of the Flayed One<br>Demonhide Armor<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 391<br>Required Strength: 50<br>Required Level: 31<br>Adds 80-135 Fire Damage<br>7% Life Stolen per Hit<br>+190% Enhanced Defense<br>Replenish Life +25<br>Fire Resist +45%<br>Repairs 1 Durability in 4 Seconds<br>",
+    properties: {
+      defense: 391,
+      reqstr: 50,
+      reqlvl: 31,
+      firedmgmin: 80,
+      firedmgmax: 135,
+      lleech: 7,
+      edef: 190,
+      repl: 25,
+      firres: 45,
+      repdur: 1,
+    },
+  },
+
+  "Iron Pelt": {
+    description:
+      "Iron Pelt<br>Trellised Armor<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 611<br>Required Strength: 61<br>Required Level: 33<br>20% Increased Chance of Blocking<br>+100% Enhanced Defense<br>+[3-297] Defense (+3 per Character Level)<br>+100 to Life<br>Physical Damage Taken Reduced by 20<br>Magic Damage Taken Reduced by 16<br>",
+    properties: {
+      defense: 611,
+      reqstr: 61,
+      reqlvl: 33,
+      block: 20,
+      edef: 100,
+      todeflvl: 3,
+      tolife: 100,
+      physdr: 20,
+      mdr: 16,
+    },
+  },
+
+  "Spirit Forge": {
+    description:
+      "Spirit Forge<br>Linked Mail<br>Defense: 470<br>Required Strength: 74<br>Required Level: 35<br>+2 to Fire Skills<br>Adds 20-65 Fire Damage<br>+160% Enhanced Defense<br>+15 to Strength<br>+[1-123] to Life (+1.25 per Character Level)<br>Fire Resist +30%<br>+4 to Light Radius<br>Socketed (2)<br",
+    properties: {
+      defense: 470,
+      reqstr: 74,
+      reqlvl: 35,
+      fireskills: 2,
+      firedmgmin: 20,
+      firedmgmax: 65,
+      edef: 160,
+      str: 15,
+      tolifeperlevel: 1.25,
+      firres: 30,
+      ligrad: 4,
+    },
+  },
+
+  "Crow Caw": {
+    description:
+      "Crow Caw<br>Tigulated Mail<br>Defense: 568<br>Required Strength: 86<br>Required Level: 37<br>+20% Increased Attack Speed<br>+30% Chance to Pierce<br>+80% Enhanced Damage<br>35% Chance of Open Wounds<br>+70 Open Wounds Damage per Second<br>+180% Enhanced Defense<br>+30 to Dexterity<br>",
+    properties: {
+      defense: 568,
+      reqstr: 86,
+      reqlvl: 37,
+      ias: 20,
+      pierce: 30,
+      edmg: 80,
+      ow: 35,
+      owdmg: 70,
+      edef: 180,
+      dex: 30,
+    },
+  },
+
+  Shaftstop: {
+    description:
+      "Shaftstop<br>Mesh Armor<br>Defense: 694<br>Required Strength: 92<br>Required Level: 38<br>+220% Enhanced Defense<br>+250 Defense vs. Missile<br>+140 to Life<br>Physical Damage Taken Reduced by 30%<br>",
+    properties: {
+      defense: 694,
+      reqstr: 92,
+      reqlvl: 38,
+      edef: 220,
+      todefmiss: 250,
+      tolife: 140,
+      physdr: 30,
+    },
+  },
+
+  "Duriel's Shell": {
+    description:
+      "Duriel's Shell<br>Cuirass<br>Defense: 654<br>Durability: 150<br>Required Strength: 65<br>Required Level: 41<br>+200% Enhanced Defense<br>+[1-123] Defense (+1.25 per Character Level)<br>+15 to Strength<br>+[1-149] to Life (+[1.0-1.5] per Character Level)<br>Cold Resist +50%<br>Lightning Resist +20%<br>Fire Resist +20%<br>Poison Resist +20%<br>Cannot Be Frozen<br>",
+    properties: {
+      defense: 654,
+      reqstr: 65,
+      reqlvl: 41,
+      edef: 200,
+      todeflvl: 1.25,
+      str: 15,
+      tolifeperlevel: 1.25,
+      coldres: 50,
+      ligres: 20,
+      firres: 20,
+      poisres: 20,
+      cbf: 1,
+    },
+  },
+
+  "Skullder's Ire": {
+    description:
+      "Skullder's Ire<br>Russet Armor<br>Defense: 702<br>Durability: 90<br>Required Strength: 97<br>Required Level: 42<br>+1 to All Skills<br>+200% Enhanced Defense<br>Magic Damage Taken Reduced by [10-15]<br>[1-148]% Better Chance of Getting Magic Items ([1-1.5]% per Character Level)<br>Repairs 1 Durability in 5 Seconds<br>",
+    properties: {
+      defense: 702,
+      reqstr: 97,
+      reqlvl: 42,
+      allsk: 1,
+      edef: 200,
+      mdr: 10,
+      mflvl: 1.5,
+      repdur: 1,
+    },
+  },
+
+  "Guardian Angel": {
+    description:
+      "Guardian Angel<br>Templar Coat<br>Defense: 837<br>Required Strength: 118<br>Required Level: 45<br>+1 to All Skills<br>+30% Faster Block Rate<br>20% Increased Chance of Blocking<br>+[14-1386] to Attack Rating against Demons (+14 per Character Level)<br>+200% Enhanced Defense<br>+6% to Maximum Poison Resist<br>+6% to Maximum Cold Resist<br>+6% to Maximum Lightning Resist<br>+6% to Maximum Fire Resist<br>+4 to Light Radius<br>",
+    properties: {
+      defense: 837,
+      reqstr: 118,
+      reqlvl: 45,
+      allsk: 1,
+      fbr: 30,
+      block: 20,
+      toattund: 14,
+      edef: 200,
+      maxpoisonres: 6,
+      maxcoldres: 6,
+      maxlightres: 6,
+      maxfirres: 6,
+      ligrad: 4,
+    },
+  },
+
+  Toothrow: {
+    description:
+      "Toothrow<br>Sharktooth Armor<br>Defense: 879<br>Durability: 63<br>Required Strength: 103<br>Required Level: 48<br>25% Deadly Strike<br>40% Chance of Open Wounds<br>+350 Open Wounds Damage per Second<br>+220% Enhanced Defense<br>+60 Defense<br>+10 to Strength<br>Fire Resist +15%<br>",
+    properties: {
+      defense: 879,
+      reqstr: 103,
+      reqlvl: 48,
+      deadly: 25,
+      ow: 40,
+      owdmg: 350,
+      edef: 220,
+      todef: 60,
+      str: 10,
+    },
+  },
+
+  "Atma's Wail": {
+    description:
+      "Atma's Wail<br>Embossed Plate<br>Defense: 991<br>Durability: 105<br>Required Strength: 125<br>Required Level: 41<br>+1 to All Skills<br>+20% Faster Cast Rate<br>+20% Faster Hit Recovery<br>+160% Enhanced Defense<br>+[2-198] Defense (+2 per Character Level)<br>+15 to Dexterity<br>Replenish Life +20<br>Increase Maximum Mana 30%<br>25% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 991,
+      reqstr: 125,
+      reqlvl: 41,
+      allsk: 1,
+      fcr: 20,
+      fhr: 20,
+      edef: 160,
+      todeflvl: 2,
+      dex: 15,
+      repl: 20,
+      maxmana: 30,
+      magicfind: 25,
+    },
+  },
+
+  "Que-Hegan's Wisdom": {
+    description:
+      "Que-Hegan's Wisdom<br>Mage Plate<br>Defense: 488<br>Required Strength: 55<br>Required Level: 51<br>+1 to All Skills<br>+20% Faster Cast Rate<br>+20% Faster Hit Recovery<br>+160% Enhanced Defense<br>+30 to Energy<br>Magic Damage Taken Reduced by 10<br>+5 to Mana after each Kill<br>",
+    properties: {
+      defense: 488,
+      reqstr: 55,
+      reqlvl: 51,
+      allsk: 1,
+      fcr: 20,
+      fhr: 20,
+      edef: 160,
+      enr: 30,
+      mdr: 10,
+      maek: 5,
+    },
+  },
+
+  "Black Hades": {
+    description:
+      "Black Hades<br>Chaos Armor<br>Defense: 1023<br>Required Strength: 140<br>Required Level: 53<br>+225% Damage to Demons<br>+450 to Attack Rating against Demons<br>+200% Enhanced Defense<br>Half Freeze Duration<br>-2 to Light Radius<br>Socketed [3-4]<br>",
+    properties: {
+      defense: 1023,
+      reqstr: 140,
+      reqlvl: 53,
+      dmgtodemons: 225,
+      attodem: 450,
+      edef: 200,
+      halffreeze: 1,
+      lightrad: -2,
+      sock: 3,
+    },
+  },
+
+  Corpsemourn: {
+    description:
+      "Corpsemourn<br>Ornate Plate<br>Defense: 1246<br>Required Strength: 145<br>Required Level: 55<br>Adds 160 to 340 Fire Damage<br>+180% Enhanced Defense<br>+8 to Strength<br>+10 to Vitality<br>Cold Resist +35%<br>+40 to Corpse Explosion<br>5% Reanimate As: Returned<br>Requirements -15%<br>",
+    properties: {
+      defense: 1246,
+      reqstr: 145,
+      reqlvl: 55,
+      firedmgmin: 160,
+      firedmgmax: 340,
+      edef: 180,
+      str: 8,
+      vit: 10,
+      coldres: 35,
+      corpseexplosionsk: 40,
+      reanimate: 5, //Returned
+      req: -15,
+    },
+  },
   // UNIQUE WEAPONS AXES //
 
   "The Gnasher": {
@@ -1546,7 +1766,7 @@ const itemList = {
       poisontime: 2,
       deadly: 20,
       poisonstrikesk: 2,
-      maxpoisres: 10,
+      maxpoisonres: 10,
       poisres: 75,
       cbf: 1,
     },
