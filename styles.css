@@ -1524,6 +1524,98 @@ select:has(option[value="Crown of Thieves"]:checked),
 option[value="Crown of Thieves"] {
   background-color: rgb(186, 174, 82);
 }
+select:has(option[value="Harlequin Crest"]:checked),
+option[value="Harlequin Crest"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Steel Shade"]:checked),
+option[value="Steel Shade"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Andariel's Visage"]:checked),
+option[value="Andariel's Visage"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Giant Skull"]:checked),
+option[value="Giant Skull"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Veil of Steel"]:checked),
+option[value="Veil of Steel"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Nightwing's Veil"]:checked),
+option[value="Nightwing's Veil"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Crown of Ages"]:checked),
+option[value="Crown of Ages"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Overlord's Helm"]:checked),
+option[value="Overlord's Helm"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Kira's Guardian"]:checked),
+option[value="Kira's Guardian"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Griffon's Eye"]:checked),
+option[value="Griffon's Eye"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Cyclopean Roar"]:checked),
+option[value="Cyclopean Roar"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Arreat's Face"]:checked),
+option[value="Arreat's Face"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Wolfhowl"]:checked),
+option[value="Wolfhowl"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Demonhorn's Edge"]:checked),
+option[value="Demonhorn's Edge"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Halaberd's Reign"]:checked),
+option[value="Halaberd's Reign"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Raekor's Virtue"]:checked),
+option[value="Raekor's Virtue"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Quetzalcoatl"]:checked),
+option[value="Quetzalcoatl"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Jalal's Mane"]:checked),
+option[value="Jalal's Mane"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Cerebus' Bite"]:checked),
+option[value="Cerebus' Bite"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Denmother"]:checked),
+option[value="Denmother"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Ravenlore"]:checked),
+option[value="Ravenlore"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Spirit Keeper"]:checked),
+option[value="Spirit Keeper"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Ursa's Nightmare"]:checked),
+option[value="Ursa's Nightmare"] {
+  background-color: rgb(186, 174, 82);
+}
 select:has(option[value="Greyform"]:checked),
 option[value="Greyform"] {
   background-color: rgb(186, 174, 82);
@@ -1590,6 +1682,50 @@ option[value="Spirit Shroud"] {
 }
 select:has(option[value="Skin of the Vipermagi"]:checked),
 option[value="Skin of the Vipermagi"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Skin of the Flayed One"]:checked),
+option[value="Skin of the Flayed One"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Iron Pelt"]:checked),
+option[value="Iron Pelt"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Crow Caw"]:checked),
+option[value="Crow Caw"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Shaftstop"]:checked),
+option[value="Shaftstop"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Skullder's Ire"]:checked),
+option[value="Skullder's Ire"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Toothrow"]:checked),
+option[value="Toothrow"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Guardian Angel"]:checked),
+option[value="Guardian Angel"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Que-Hegan's Wisdom"]:checked),
+option[value="Que-Hegan's Wisdom"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Atma's Wail"]:checked),
+option[value="Atma's Wail"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Black Hades"]:checked),
+option[value="Black Hades"] {
+  background-color: rgb(186, 174, 82);
+}
+select:has(option[value="Corpsemourn"]:checked),
+option[value="Corpsemourn"] {
   background-color: rgb(186, 174, 82);
 }
 select:has(option[value="The Gnasher"]:checked),
@@ -2816,11 +2952,31 @@ option[value="Arcanna's Head"] {
   border-radius: 3px;
 }
 
+.upgrade-buttonweapon {
+  background-color: #4a4a4a;
+  position: absolute;
+  top: 419px;
+  left: 720px;
+  height: 40px;
+  width: 80px;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
 .upgrade-button:hover {
-  background-color: #666666;
+  background-color: #270707;
+}
+.upgrade-buttonarmor:hover {
+  background-color: #270707;
 }
 
+.upgrade-buttonweapon:hover {
+  background-color: #270707;
+}
 .upgrade-button:disabled {
-  background-color: #999999;
+  background-color: #fe0101;
   cursor: not-allowed;
 }
