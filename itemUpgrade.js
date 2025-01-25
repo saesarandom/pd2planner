@@ -703,7 +703,7 @@ const upgradeDefinitions = {
     "Skull Splitter": {
       exceptional: {
         name: "Skull Splitter",
-        base: "Military Pick",
+        base: "Crowbill",
         properties: {
           reqstr: 125,
           reqlvl: 25,
@@ -751,6 +751,282 @@ const upgradeDefinitions = {
         properties: {
           reqstr: 125,
           reqlvl: 42,
+        },
+      },
+    },
+    Goreshovel: {
+      exceptional: {
+        name: "Goreshovel",
+        base: "Bearded Axe",
+        properties: {
+          reqstr: 93,
+          reqlvl: 41,
+        },
+      },
+      elite: {
+        name: "Goreshovel",
+        base: "Silver-Edged Axe",
+        properties: {
+          reqstr: 125,
+          reqlvl: 25,
+        },
+      },
+    },
+    "The Chieftain": {
+      exceptional: {
+        name: "The Chieftain",
+        base: "Tabar",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "The Chieftain",
+        base: "Decapitator",
+        properties: {
+          reqstr: 195,
+          reqlvl: 54,
+        },
+      },
+    },
+    Brainhew: {
+      exceptional: {
+        name: "Brainhew",
+        base: "Gothic Axe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Brainhew",
+        base: "Champion Axe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 61,
+        },
+      },
+    },
+  },
+  gloves: {
+    "The Hand of Broc": {
+      exceptional: {
+        name: "The Hand of Broc",
+        base: "Demonhide Gloves",
+        properties: {
+          reqstr: 25,
+          reqlvl: 21,
+        },
+      },
+      elite: {
+        name: "The Hand of Broc",
+        base: "Bramble Mitts",
+        properties: {
+          reqstr: 125,
+          reqlvl: 42,
+        },
+      },
+    },
+    Bloodfist: {
+      exceptional: {
+        name: "Bloodfist",
+        base: "Sharkskin Gloves",
+        properties: {
+          defense: 35,
+          reqstr: 25,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Bloodfist",
+        base: "Vampirebone Gloves",
+        properties: {
+          defense: 62,
+          reqstr: 50,
+          reqlvl: 47,
+        },
+      },
+    },
+    "Chance Guards": {
+      exceptional: {
+        name: "Chance Guards",
+        base: "Heavy Bracers",
+        properties: {
+          defense: 42,
+          reqstr: 25,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Chance Guards",
+        base: "Vambraces",
+        properties: {
+          defense: 68,
+          reqstr: 50,
+          reqlvl: 51,
+        },
+      },
+    },
+    Magefist: {
+      exceptional: {
+        name: "Magefist",
+        base: "Battle Gauntlets",
+        properties: {
+          defense: 42,
+          reqstr: 45,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Magefist",
+        base: "Crusader Gauntlets",
+        properties: {
+          defense: 68,
+          reqstr: 88,
+          reqlvl: 57,
+        },
+      },
+    },
+    Frostburn: {
+      exceptional: {
+        name: "Frostburn",
+        base: "Heavy Bracers",
+        properties: {
+          defense: 52,
+          reqstr: 58,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Frostburn",
+        base: "Ogre Gauntlets",
+        properties: {
+          defense: 78,
+          reqstr: 96,
+          reqlvl: 64,
+        },
+      },
+    },
+  },
+  belts: {
+    Lenymo: {
+      exceptional: {
+        name: "Lenymo",
+        base: "Demonhide Sash",
+        properties: {
+          defense: 2,
+          reqstr: 20,
+          reqlvl: 24,
+        },
+      },
+      elite: {
+        name: "Lenymo",
+        base: "Spiderweb Sash",
+        properties: {
+          defense: 34,
+          reqstr: 125,
+          reqlvl: 46,
+        },
+      },
+    },
+    Snakecord: {
+      exceptional: {
+        name: "Snakecord",
+        base: "Sharkskin Belt",
+        properties: {
+          defense: 42,
+          reqstr: 20,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Snakecord",
+        base: "Vampirefang Belt",
+        properties: {
+          defense: 72,
+          reqstr: 50,
+          reqlvl: 51,
+        },
+      },
+    },
+    Nightsmoke: {
+      exceptional: {
+        name: "Nightsmoke",
+        base: "Mesh Belt",
+        properties: {
+          defense: 49,
+          reqstr: 58,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Nightsmoke",
+        base: "Mithril Coil",
+        properties: {
+          defense: 82,
+          reqstr: 88,
+          reqlvl: 56,
+        },
+      },
+    },
+    Goldwrap: {
+      exceptional: {
+        name: "Goldwrap",
+        base: "Battle Belt",
+        properties: {
+          defense: 45,
+          reqstr: 45,
+          reqlvl: 27,
+        },
+      },
+      elite: {
+        name: "Goldwrap",
+        base: "War Belt",
+        properties: {
+          defense: 75,
+          reqstr: 88,
+          reqlvl: 62,
+        },
+      },
+    },
+    Bladebuckle: {
+      exceptional: {
+        name: "Bladebuckle",
+        base: "War Belt",
+        properties: {
+          defense: 52,
+          reqstr: 60,
+          reqlvl: 39,
+        },
+      },
+      elite: {
+        name: "Bladebuckle",
+        base: "Colossus Girdle",
+        properties: {
+          defense: 90,
+          reqstr: 106,
+          reqlvl: 67,
+        },
+      },
+    },
+    "String of Ears": {
+      exceptional: {
+        name: "String of Ears",
+        base: "Demonhide Sash",
+        properties: {
+          defense: 42,
+          reqstr: 20,
+          reqlvl: 29,
+        },
+      },
+      elite: {
+        name: "String of Ears",
+        base: "Spiderweb Sash",
+        properties: {
+          defense: 66,
+          reqstr: 47,
+          reqlvl: 46,
         },
       },
     },
@@ -830,6 +1106,8 @@ const baseDefenses = {
   "Shadow Plate": 696,
   "Sacred Armor": 730,
   Circlet: 30,
+  Tiara: 50,
+  Diadem: 60,
   Coronet: 40,
   "Wolf Head": 11,
   "Hawk Helm": 15,
@@ -843,6 +1121,36 @@ const baseDefenses = {
   "Avenger Guard": 50,
   "Slayer Guard": 120,
   "Guardian Crown": 168,
+  "Leather Gloves": 3,
+  "Demonhide Gloves": 35,
+  "Bramble Mitts": 62,
+  "Heavy Gloves": 6,
+  "Chain Gloves": 9,
+  "Light Gauntlets": 11,
+  Gauntlets: 15,
+  "Sharkskin Gloves": 39,
+  "Heavy Bracers": 44,
+  "Battle Gauntlets": 47,
+  "War Gauntlets": 53,
+  "Vampirebone Gloves": 65,
+  Vambraces: 67,
+  "Crusader Gauntlets": 68,
+  "Ogre Gauntlets": 71,
+  Sash: 2,
+  "Light Belt": 3,
+  Belt: 5,
+  "Heavy Belt": 6,
+  "Plated Belt": 11,
+  "Demonhide Sash": 34,
+  "Sharkskin Belt": 36,
+  "Mesh Belt": 40,
+  "Battle Belt": 42,
+  "War Belt": 52,
+  "Mithril Coil": 65,
+  "Troll Belt": 66,
+  "Colossus Girdle": 71,
+  "Spiderweb Sash": 62,
+  "Vampirefang Belt": 63,
 };
 
 const baseStrengths = {
@@ -918,6 +1226,8 @@ const baseStrengths = {
   "Shadow Plate": 220,
   "Sacred Armor": 232,
   Circlet: 0,
+  Tiara: 0,
+  Diadem: 0,
   Coronet: 0,
   "Wolf Head": 16,
   "Hawk Helm": 20,
@@ -943,6 +1253,36 @@ const baseStrengths = {
   "Battle Axe": 54,
   "Great Axe": 63,
   "Giant Axe": 70,
+  "Leather Gloves": 0,
+  "Demonhide Gloves": 20,
+  "Bramble Mitts": 50,
+  "Heavy Gloves": 0,
+  "Chain Gloves": 25,
+  "Light Gauntlets": 45,
+  Gauntlets: 60,
+  "Sharkskin Gloves": 20,
+  "Heavy Bracers": 58,
+  "Battle Gauntlets": 88,
+  "War Gauntlets": 110,
+  "Vampirebone Gloves": 50,
+  Vambraces: 106,
+  "Crusader Gauntlets": 151,
+  "Ogre Gauntlets": 185,
+  Sash: 0,
+  "Light Belt": 0,
+  Belt: 25,
+  "Heavy Belt": 45,
+  "Plated Belt": 60,
+  "Demonhide Sash": 20,
+  "Sharkskin Belt": 20,
+  "Mesh Belt": 58,
+  "Battle Belt": 88,
+  "War Belt": 110,
+  "Mithril Coil": 106,
+  "Troll Belt": 151,
+  "Colossus Girdle": 185,
+  "Spiderweb Sash": 50,
+  "Vampirefang Belt": 50,
 
   // Maces
   Club: 0, // No value provided, defaulting to 0
@@ -1801,15 +2141,13 @@ function buildDescriptionWeapon(itemName, baseType, properties, magicalProps) {
   ].join("<br>");
 }
 
-function calculateItemDefense(item, baseType) {
+function calculateItemDefense(item, baseType, category = "helm") {
   const baseDefense = baseDefenses[baseType] || 0;
   const { edef, todef } = item.properties || {};
 
   let socketsEDef = 0;
   document
-    .querySelectorAll(
-      '.socketz[data-section="helm"], .socketz[data-section="armor"]'
-    )
+    .querySelectorAll(`.socketz[data-section="${category}"]`)
     .forEach((socket) => {
       if (socket.dataset.itemName && socket.dataset.stats) {
         const edefMatch = socket.dataset.stats.match(
@@ -1963,7 +2301,7 @@ function handleArmorUpgrade() {
       };
 
       select.dispatchEvent(new Event("change"));
-      alert("Item upgraded to elite version!");
+      // alert("Item upgraded to elite version!");
       return;
     }
   } else {
@@ -1991,7 +2329,7 @@ function handleArmorUpgrade() {
       };
 
       select.dispatchEvent(new Event("change"));
-      alert("Item upgraded to exceptional version!");
+      // alert("Item upgraded to exceptional version!");
       return;
     }
   }
@@ -2082,7 +2420,7 @@ function handleWeaponUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      alert("Item upgraded to elite version!");
+      // alert("Item upgraded to elite version!");
       return;
     }
   } else {
@@ -2144,7 +2482,179 @@ function handleWeaponUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      alert("Item upgraded to exceptional version!");
+      // alert("Item upgraded to exceptional version!");
+      return;
+    }
+  }
+
+  alert("Character does not meet requirements for upgrade");
+}
+
+function handleGloveUpgrade() {
+  const select = document.getElementById("gloves-dropdown");
+  const currentItem = select.value;
+  const upgrades = upgradeDefinitions.gloves[currentItem];
+  const currentItemData = itemList[currentItem];
+
+  if (!upgrades) return;
+
+  const level = parseInt(document.getElementById("lvlValue").value) || 0;
+  const str = parseInt(document.getElementById("str").value) || 0;
+  const baseType = currentItemData.description.split("<br>")[1];
+
+  if (baseType === upgrades.elite.base) {
+    alert("Item is already at maximum upgrade level");
+    return;
+  }
+
+  const magicalProperties = currentItemData.description
+    .split("<br>")
+    .slice(3)
+    .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
+    .join("<br>");
+
+  if (baseType === upgrades.exceptional.base) {
+    if (
+      level >= upgrades.elite.properties.reqlvl &&
+      str >= baseStrengths[upgrades.elite.base]
+    ) {
+      const newProperties = {
+        ...upgrades.elite.properties,
+        defense: calculateItemDefense(
+          currentItemData,
+          upgrades.elite.base,
+          "gloves"
+        ),
+        reqstr: baseStrengths[upgrades.elite.base],
+      };
+
+      itemList[currentItem] = {
+        description: buildDescription(
+          currentItem,
+          upgrades.elite.base,
+          newProperties,
+          magicalProperties
+        ),
+        properties: { ...currentItemData.properties, ...newProperties },
+      };
+
+      select.dispatchEvent(new Event("change"));
+      // alert("Item upgraded to elite version!");
+      return;
+    }
+  } else {
+    if (
+      level >= upgrades.exceptional.properties.reqlvl &&
+      str >= baseStrengths[upgrades.exceptional.base]
+    ) {
+      const newProperties = {
+        ...upgrades.exceptional.properties,
+        defense: calculateItemDefense(
+          currentItemData,
+          upgrades.elite.base,
+          "gloves"
+        ),
+        reqstr: baseStrengths[upgrades.exceptional.base],
+      };
+
+      itemList[currentItem] = {
+        description: buildDescription(
+          currentItem,
+          upgrades.exceptional.base,
+          newProperties,
+          magicalProperties
+        ),
+        properties: { ...currentItemData.properties, ...newProperties },
+      };
+
+      select.dispatchEvent(new Event("change"));
+      // alert("Item upgraded to exceptional version!");
+      return;
+    }
+  }
+
+  alert("Character does not meet requirements for upgrade");
+}
+
+function handleBeltUpgrade() {
+  const select = document.getElementById("belts-dropdown");
+  const currentItem = select.value;
+  const upgrades = upgradeDefinitions.belts[currentItem];
+  const currentItemData = itemList[currentItem];
+
+  if (!upgrades) return;
+
+  const level = parseInt(document.getElementById("lvlValue").value) || 0;
+  const str = parseInt(document.getElementById("str").value) || 0;
+  const baseType = currentItemData.description.split("<br>")[1];
+
+  if (baseType === upgrades.elite.base) {
+    alert("Item is already at maximum upgrade level");
+    return;
+  }
+
+  const magicalProperties = currentItemData.description
+    .split("<br>")
+    .slice(3)
+    .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
+    .join("<br>");
+
+  if (baseType === upgrades.exceptional.base) {
+    if (
+      level >= upgrades.elite.properties.reqlvl &&
+      str >= baseStrengths[upgrades.elite.base]
+    ) {
+      const newProperties = {
+        ...upgrades.elite.properties,
+        defense: calculateItemDefense(
+          currentItemData,
+          upgrades.elite.base,
+          "belts"
+        ),
+        reqstr: baseStrengths[upgrades.elite.base],
+      };
+
+      itemList[currentItem] = {
+        description: buildDescription(
+          currentItem,
+          upgrades.elite.base,
+          newProperties,
+          magicalProperties
+        ),
+        properties: { ...currentItemData.properties, ...newProperties },
+      };
+
+      select.dispatchEvent(new Event("change"));
+      // alert("Item upgraded to elite version!");
+      return;
+    }
+  } else {
+    if (
+      level >= upgrades.exceptional.properties.reqlvl &&
+      str >= baseStrengths[upgrades.exceptional.base]
+    ) {
+      const newProperties = {
+        ...upgrades.exceptional.properties,
+        defense: calculateItemDefense(
+          currentItemData,
+          upgrades.elite.base,
+          "belts"
+        ),
+        reqstr: baseStrengths[upgrades.exceptional.base],
+      };
+
+      itemList[currentItem] = {
+        description: buildDescription(
+          currentItem,
+          upgrades.exceptional.base,
+          newProperties,
+          magicalProperties
+        ),
+        properties: { ...currentItemData.properties, ...newProperties },
+      };
+
+      select.dispatchEvent(new Event("change"));
+      // alert("Item upgraded to exceptional version!");
       return;
     }
   }
@@ -2153,16 +2663,23 @@ function handleWeaponUpgrade() {
 }
 
 function updateDefense() {
-  const helmSelect = document.getElementById("helms-dropdown");
-  const armorSelect = document.getElementById("armors-dropdown");
+  const sections = [
+    { id: "helms-dropdown", type: "helm" },
+    { id: "armors-dropdown", type: "armor" },
+    { id: "gloves-dropdown", type: "gloves" },
+    { id: "boots-dropdown", type: "boots" },
+    { id: "belts-dropdown", type: "belts" },
+  ];
 
-  [helmSelect, armorSelect].forEach((select) => {
+  sections.forEach(({ id, type }) => {
+    const select = document.getElementById(id);
     if (!select?.value) return;
+
     const item = itemList[select.value];
     if (!item) return;
 
     const baseType = item.description.split("<br>")[1];
-    const newDefense = calculateItemDefense(item, baseType);
+    const newDefense = calculateItemDefense(item, baseType, type);
 
     if (newDefense !== item.properties.defense) {
       const lines = item.description.split("<br>");
@@ -2177,28 +2694,31 @@ function updateDefense() {
   });
 }
 
+// Update event listeners
 document.addEventListener("DOMContentLoaded", () => {
-  document
-    .querySelectorAll(
-      '.socketz[data-section="helm"], .socketz[data-section="armor"]'
-    )
-    .forEach((socket) => {
-      new MutationObserver(() => requestAnimationFrame(updateDefense)).observe(
-        socket,
-        {
-          attributes: true,
-          childList: true,
-          subtree: true,
-          characterData: true,
-        }
-      );
-    });
+  document.querySelectorAll(".socketz").forEach((socket) => {
+    new MutationObserver(() => requestAnimationFrame(updateDefense)).observe(
+      socket,
+      {
+        attributes: true,
+        childList: true,
+        subtree: true,
+        characterData: true,
+      }
+    );
+  });
 
   ["str", "dex", "vit", "enr", "lvlValue"].forEach((id) => {
     document.getElementById(id)?.addEventListener("input", updateDefense);
   });
 
-  ["helms-dropdown", "armors-dropdown"].forEach((id) => {
+  [
+    "helms-dropdown",
+    "armors-dropdown",
+    "gloves-dropdown",
+    "boots-dropdown",
+    "belts-dropdown",
+  ].forEach((id) => {
     document.getElementById(id)?.addEventListener("change", updateDefense);
   });
 });

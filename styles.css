@@ -2966,6 +2966,67 @@ option[value="Arcanna's Head"] {
   cursor: pointer;
   border-radius: 3px;
 }
+
+.upgrade-buttonshield {
+  background-color: #4a4a4a;
+  position: absolute;
+  top: 650px;
+  left: 220px;
+  height: 40px;
+  width: 80px;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.upgrade-buttonglove {
+  background-color: #4a4a4a;
+  position: absolute;
+  top: 690px;
+  left: 660px;
+  height: 40px;
+  width: 80px;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.upgrade-buttonbelt {
+  background-color: #4a4a4a;
+  position: absolute;
+  top: 770px;
+  left: 990px;
+  height: 40px;
+  width: 80px;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.upgrade-buttonboot {
+  background-color: #4a4a4a;
+  position: absolute;
+  top: 1240px;
+  left: 220px;
+  height: 40px;
+  width: 80px;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
 .upgrade-button:hover {
   background-color: #270707;
 }

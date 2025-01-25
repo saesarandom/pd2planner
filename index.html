@@ -1996,7 +1996,7 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     
    
     let totalPiercePhys = 0;
-    let totalPierceFire = 0;
+    let totalPierceFire = 0; //testuju, jestli funguje na frostburn
     let totalPierceCold = 0;
     let totalPierceLight = 0;
     let totalPiercePoison = 0;
@@ -2062,6 +2062,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += helmData.properties.maxcoldres || 0;
       totalMaxLightRes += helmData.properties.maxligres || 0;
       totalMaxPoisonRes += helmData.properties.maxpoisres || 0;
+      totalPiercePhys += helmData.properties.physpierce || 0;
+      totalPierceFire += helmData.properties.firepierce || 0;
+      totalPierceCold += helmData.properties.coldpierce || 0;
+      totalPierceLight += helmData.properties.lightpierce || 0;
+      totalPiercePoison += helmData.properties.poisonpierce || 0;
     }
     if (armorData) {
       totalLife += armorData.properties.tolife || 0;
@@ -2103,6 +2108,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += armorData.properties.maxcoldres || 0;
       totalMaxLightRes += armorData.properties.maxligres || 0;
       totalMaxPoisonRes += armorData.properties.maxpoisres || 0;
+      totalPiercePhys += armorData.properties.physpierce || 0;
+      totalPierceFire += armorData.properties.firepierce || 0;
+      totalPierceCold += armorData.properties.coldpierce || 0;
+      totalPierceLight += armorData.properties.lightpierce || 0;
+      totalPiercePoison += armorData.properties.poisonpierce || 0;
     }
     if (weaponData) {
       totalLife += weaponData.properties.tolife || 0;
@@ -2148,6 +2158,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += weaponData.properties.maxcoldres || 0;
       totalMaxLightRes += weaponData.properties.maxligres || 0;
       totalMaxPoisonRes += weaponData.properties.maxpoisres || 0;
+      totalPiercePhys += weaponData.properties.physpierce || 0;
+      totalPierceFire += weaponData.properties.firepierce || 0;
+      totalPierceCold += weaponData.properties.coldpierce || 0;
+      totalPierceLight += weaponData.properties.lightpierce || 0;
+      totalPiercePoison += weaponData.properties.poisonpierce || 0;
       
     }
     if (offData?.properties?.defense > 0) {
@@ -2182,6 +2197,12 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += offData.properties.maxcoldres || 0;
       totalMaxLightRes += offData.properties.maxligres || 0;
       totalMaxPoisonRes += offData.properties.maxpoisres || 0;
+      totalPiercePhys += offData.properties.physpierce || 0;
+      totalPierceFire += offData.properties.firepierce || 0;
+      totalPierceCold += offData.properties.coldpierce || 0;
+      totalPierceLight += offData.properties.lightpierce || 0;
+      totalPiercePoison += offData.properties.poisonpierce || 0;
+
     } else {
       totalDefense += offData.properties.todef;
       totalLife += offData.properties.tolife || 0;
@@ -2215,6 +2236,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += offData.properties.maxcoldres || 0;
       totalMaxLightRes += offData.properties.maxligres || 0;
       totalMaxPoisonRes += offData.properties.maxpoisres || 0;
+      totalPiercePhys += offData.properties.physpierce || 0;
+      totalPierceFire += offData.properties.firepierce || 0;
+      totalPierceCold += offData.properties.coldpierce || 0;
+      totalPierceLight += offData.properties.lightpierce || 0;
+      totalPiercePoison += offData.properties.poisonpierce || 0;
     }
     if (gloveData) {
       totalLife += gloveData.properties.tolife || 0;
@@ -2253,6 +2279,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += gloveData.properties.maxcoldres || 0;
       totalMaxLightRes += gloveData.properties.maxligres || 0;
       totalMaxPoisonRes += gloveData.properties.maxpoisres || 0;
+      totalPiercePhys += gloveData.properties.physpierce || 0;
+      totalPierceFire += gloveData.properties.firepierce || 0;
+      totalPierceCold += gloveData.properties.coldpierce || 0;
+      totalPierceLight += gloveData.properties.lightpierce || 0;
+      totalPiercePoison += gloveData.properties.poisonpierce || 0;
     }
 
     if (beltData) {
@@ -2292,6 +2323,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += beltData.properties.maxcoldres || 0;
       totalMaxLightRes += beltData.properties.maxligres || 0;
       totalMaxPoisonRes += beltData.properties.maxpoisres || 0;
+      totalPiercePhys += beltData.properties.physpierce || 0;
+      totalPierceFire += beltData.properties.firepierce || 0;
+      totalPierceCold += beltData.properties.coldpierce || 0;
+      totalPierceLight += beltData.properties.lightpierce || 0;
+      totalPiercePoison += beltData.properties.poisonpierce || 0;
     }
 
     if (bootData) {
@@ -2331,6 +2367,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += bootData.properties.maxcoldres || 0;
       totalMaxLightRes += bootData.properties.maxligres || 0;
       totalMaxPoisonRes += bootData.properties.maxpoisres || 0;
+      totalPiercePhys += bootData.properties.physpierce || 0;
+      totalPierceFire += bootData.properties.firepierce || 0;
+      totalPierceCold += bootData.properties.coldpierce || 0;
+      totalPierceLight += bootData.properties.lightpierce || 0;
+      totalPiercePoison += bootData.properties.poisonpierce || 0;
     }
 
     if (ringOneData) {
@@ -2370,6 +2411,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += ringOneData.properties.maxcoldres || 0;
       totalMaxLightRes += ringOneData.properties.maxligres || 0;
       totalMaxPoisonRes += ringOneData.properties.maxpoisres || 0;
+      totalPiercePhys += ringOneData.properties.physpierce || 0;
+      totalPierceFire += ringOneData.properties.firepierce || 0;
+      totalPierceCold += ringOneData.properties.coldpierce || 0;
+      totalPierceLight += ringOneData.properties.lightpierce || 0;
+      totalPiercePoison += ringOneData.properties.poisonpierce || 0;
     }
 
     if (ringTwoData) {
@@ -2409,6 +2455,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += ringTwoData.properties.maxcoldres || 0;
       totalMaxLightRes += ringTwoData.properties.maxligres || 0;
       totalMaxPoisonRes += ringTwoData.properties.maxpoisres || 0;
+      totalPiercePhys += ringTwoData.properties.physpierce || 0;
+      totalPierceFire += ringTwoData.properties.firepierce || 0;
+      totalPierceCold += ringTwoData.properties.coldpierce || 0;
+      totalPierceLight += ringTwoData.properties.lightpierce || 0;
+      totalPiercePoison += ringTwoData.properties.poisonpierce || 0;
     }
 
     if (amuletData) {
@@ -2452,6 +2503,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalMaxColdRes += amuletData.properties.maxcoldres || 0;
       totalMaxLightRes += amuletData.properties.maxligres || 0;
       totalMaxPoisonRes += amuletData.properties.maxpoisres || 0;
+      totalPiercePhys += amuletData.properties.physpierce || 0;
+      totalPierceFire += amuletData.properties.firepierce || 0;
+      totalPierceCold += amuletData.properties.coldpierce || 0;
+      totalPierceLight += amuletData.properties.lightpierce || 0;
+      totalPiercePoison += amuletData.properties.poisonpierce || 0;
     }
 
     let block = helmData?.properties.block || 0;
@@ -9673,13 +9729,19 @@ window.addEventListener('click', (e) => {
 <button id="upgradeButton" class="upgrade-button">Upgrade Helm, it works, u just need lvl and str for upgrade</button>
 <button id="upgradeArmorButton" class="upgrade-buttonarmor">Upgrade Armor</button>
 <button id="upgradeWeaponButton" class="upgrade-buttonweapon">Upgrade Weapon</button>
+<button id="upgradeShieldButton" class="upgrade-buttonshield">Upgrade Shield/Off-Weapon</button>
+<button id="upgradeGloveButton" class="upgrade-buttonglove">Upgrade Gloves</button>
+<button id="upgradeBeltButton" class="upgrade-buttonbelt">Upgrade Belt</button>
+<button id="upgradeBootButton" class="upgrade-buttonboot">Upgrade Boots</button>
+
 
 <script>
   document.getElementById('upgradeButton').addEventListener('click', handleUpgrade);
-
-  document.getElementById('upgradeArmorButton').addEventListener('click', handleArmorUpgrade);
-  document.getElementById('upgradeWeaponButton').addEventListener('click', handleWeaponUpgrade);
-
+document.getElementById('upgradeArmorButton').addEventListener('click', () => handleArmorUpgrade('armor'));
+document.getElementById('upgradeWeaponButton').addEventListener('click', handleWeaponUpgrade);
+document.getElementById('upgradeGloveButton').addEventListener('click', handleGloveUpgrade);  
+document.getElementById('upgradeBeltButton').addEventListener('click', handleBeltUpgrade);
+document.getElementById('upgradeBootButton').addEventListener('click', () => handleArmorUpgrade('boots'));
 </script>
 
 </body>
