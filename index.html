@@ -9733,6 +9733,13 @@ window.addEventListener('click', (e) => {
 <button id="upgradeGloveButton" class="upgrade-buttonglove">Upgrade Gloves</button>
 <button id="upgradeBeltButton" class="upgrade-buttonbelt">Upgrade Belt</button>
 <button id="upgradeBootButton" class="upgrade-buttonboot">Upgrade Boots</button>
+<button id="makeethereal" onclick="makeEthereal()">Ethereal</button>
+<button id="makeetherealarmor" onclick="makeEtherealArmor()">Ethereal</button>
+<!-- <button id="makeetherealweapon" onclick="makeEtherealWeapon()">Ethereal</button>
+<button id="makeetherealshield" onclick="makeEtherealShield()">Ethereal</button> -->
+<button id="makeetherealglove" onclick="makeEtherealGlove()">Ethereal</button>
+<button id="makeetherealbelt" onclick="makeEtherealBelt()">Ethereal</button>
+<button id="makeetherealboot" onclick="makeEtherealBoot()">Ethereal</button>
 
 
 <script>
@@ -9742,6 +9749,11 @@ document.getElementById('upgradeWeaponButton').addEventListener('click', handleW
 document.getElementById('upgradeGloveButton').addEventListener('click', handleGloveUpgrade);  
 document.getElementById('upgradeBeltButton').addEventListener('click', handleBeltUpgrade);
 document.getElementById('upgradeBootButton').addEventListener('click', () => handleArmorUpgrade('boots'));
+document.getElementById('makeethereal').addEventListener('click', () => makeEtherealItem('helms'));
+document.getElementById('makeetherealarmor').addEventListener('click', () => makeEtherealItem('armor'));
+document.getElementById('makeetherealglove').addEventListener('click', () => makeEtherealItem('gloves'));
+document.getElementById('makeetherealbelt').addEventListener('click', () => makeEtherealItem('belts'));
+document.getElementById('makeetherealboot').addEventListener('click', () => makeEtherealItem('boots'));
 </script>
 
 </body>

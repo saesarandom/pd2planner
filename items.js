@@ -23,6 +23,7 @@ const itemList = {
       maek: 3,
       goldfind: 75,
       magicfind: 50,
+      edef: 0,
     },
   },
   "Coif of Glory": {
@@ -42,7 +43,7 @@ const itemList = {
   },
   Duskeep: {
     description:
-      "Duskeep<br>Full Helm<br> Defense: 60<br>Required Strength: 41<br>Required Level: 17<br>+15 to Maximum Damage<br>+50% Enhanced Defense<br>+20 Defense<br>All Resistances +15%<br>Physical Damage Taken Reduced by 7<br>+2 to Light Radius<br>",
+      "Duskeep<br>Full Helm<br>Defense: 60<br>Required Strength: 41<br>Required Level: 17<br>+15 to Maximum Damage<br>+50% Enhanced Defense<br>+20 Defense<br>All Resistances +15%<br>Physical Damage Taken Reduced by 7<br>+2 to Light Radius<br>",
     properties: {
       defense: 60,
       reqstr: 41,
@@ -2833,7 +2834,7 @@ const itemList = {
   //gloovs//
   "The Hand of Broc": {
     description:
-      "The Hand of Broc<br> Leather Gloves<br> Defense: 14<br> Required Level: 5<br> Melee Attacks Deal Splash Damage<br> +30% Enhanced Damage<br> 3% Mana Stolen per Hit<br> 3% Life Stolen per Hit<br> +20% Enhanced Defense<br> +10 Defense<br> +20 to Mana<br> Poison Resist +10%<br>",
+      "The Hand of Broc<br>Leather Gloves<br>Defense: 14<br>Required Level: 5<br>Melee Attacks Deal Splash Damage<br>+30% Enhanced Damage<br>3% Mana Stolen per Hit<br>3% Life Stolen per Hit<br>+20% Enhanced Defense<br>+10 Defense<br>+20 to Mana<br>Poison Resist +10%<br>",
     properties: {
       defense: 14,
       reqlvl: 5,
@@ -2850,7 +2851,7 @@ const itemList = {
 
   Bloodfist: {
     description:
-      "Bloodfist<br> Heavy Gloves<br> Defense: 18<br> Required Level: 9<br> Melee Attacks Deal Splash Damage<br> +10% Increased Attack Speed<br> +30% Faster Hit Recovery<br> +10 to Maximum Damage<br> +20% Enhanced Defense<br> +10 Defense<br> +40 to Life<br>",
+      "Bloodfist<br>Heavy Gloves<br>Defense: 18<br>Required Level: 9<br>Melee Attacks Deal Splash Damage<br>+10% Increased Attack Speed<br>+30% Faster Hit Recovery<br>+10 to Maximum Damage<br>+20% Enhanced Defense<br>+10 Defense<br>+40 to Life<br>",
     properties: {
       defense: 18,
       reqlvl: 9,
@@ -2866,7 +2867,7 @@ const itemList = {
 
   "Chance Guards": {
     description:
-      "Chance Guards<br> Chain Gloves<br> Defense: 28<br> Required Strength: 25<br> Required Level: 15<br> +25 to Attack Rating<br> +30% Enhanced Defense<br> +15 Defense<br> +2 to Mana after each Kill<br> 200% Extra Gold from Monsters<br> 40% Better Chance of Getting Magic Items<br> +2 to Light Radius<br>",
+      "Chance Guards<br>Chain Gloves<br>Defense: 28<br>Required Strength: 25<br>Required Level: 15<br>+25 to Attack Rating<br>+30% Enhanced Defense<br>+15 Defense<br>+2 to Mana after each Kill<br>200% Extra Gold from Monsters<br>40% Better Chance of Getting Magic Items<br>+2 to Light Radius<br>",
     properties: {
       defense: 28,
       reqstr: 25,
@@ -2883,7 +2884,7 @@ const itemList = {
 
   Magefist: {
     description:
-      "Magefist<br> Light Gauntlets<br> Defense: 25<br> Required Strength: 45<br> Required Level: 23<br> +1 to Fire Skills<br> +20% Faster Cast Rate<br> Adds 6-36 Fire Damage<br> +30% Enhanced Defense<br> +10 Defense<br> Regenerate Mana 25%<br>",
+      "Magefist<br>Light Gauntlets<br>Defense: 25<br>Required Strength: 45<br>Required Level: 23<br>+1 to Fire Skills<br>+20% Faster Cast Rate<br>Adds 6-36 Fire Damage<br>+30% Enhanced Defense<br>+10 Defense<br>Regenerate Mana 25%<br>",
     properties: {
       defense: 25,
       reqstr: 45,
@@ -2900,13 +2901,13 @@ const itemList = {
 
   Frostburn: {
     description:
-      "Frostburn<br> Gauntlets<br> Defense: 62<br> Required Strength: 60<br> Required Level: 29<br> Adds 14-28 Fire Damage<br> Adds 6-22 Cold Damage<br> -10% to Enemy Fire Resistance<br> -10% to Enemy Cold Resistance<br> +40% Enhanced Defense<br> +40 Defense<br> Increase Maximum Mana 25%<br>",
+      "Frostburn<br>Gauntlets<br>Defense: 62<br>Required Strength: 60<br>Required Level: 29<br>Adds 14-28 Fire Damage<br>Adds 6-22 Cold Damage<br>-10% to Enemy Fire Resistance<br>-10% to Enemy Cold Resistance<br>+40% Enhanced Defense<br>+40 Defense<br>Increase Maximum Mana 25%<br>",
     properties: {
       defense: 62,
       reqstr: 60,
       reqlvl: 29,
       firedmgmin: 14,
-      firedmgmin: 28,
+      firedmgmax: 28,
       colddmgmin: 6,
       colddmgmax: 22,
       firepierce: 10,
@@ -2916,11 +2917,10 @@ const itemList = {
       maxmana: 25,
     },
   },
-  // blts
 
   Lenymo: {
     description:
-      "<br>Lenymo<br> Sash<br> Defense: 2<br> Required Level: 7<br> +10% Faster Cast Rate<br> +15 to Mana<br> Regenerate Mana 30%<br> All Resistances +5<br> +1 to Light Radius",
+      "Lenymo<br>Sash<br>Defense: 2<br>Required Level: 7<br>+10% Faster Cast Rate<br>+15 to Mana<br>Regenerate Mana 30%<br>All Resistances +5<br>+1 to Light Radius<br>",
     properties: {
       defense: 2,
       reqlvl: 7,
@@ -2934,7 +2934,7 @@ const itemList = {
 
   Snakecord: {
     description:
-      "Snakecord<br> Light Belt<br> Defense: 15<br> Required Level: 12<br> +6% to Poison Skill Damage<br> +30% Enhanced Defense<br> +10 Defense<br> Replenish Life +15<br> Poison Resist +25%<br> Poison Length Reduced by 50%<br>",
+      "Snakecord<br>Light Belt<br>Defense: 15<br>Required Level: 12<br>+6% to Poison Skill Damage<br>+30% Enhanced Defense<br>+10 Defense<br>Replenish Life +15<br>Poison Resist +25%<br>Poison Length Reduced by 50%<br>",
     properties: {
       defense: 15,
       reqlvl: 12,
@@ -2949,7 +2949,7 @@ const itemList = {
 
   Nightsmoke: {
     description:
-      "Nightsmoke<br> Belt<br> Defense: 24<br> Required Strength: 25<br> Required Level: 20<br> +50% Enhanced Defense<br> +15 Defense<br> +20 to Mana<br> All Resistances +10<br> Physical Damage Taken Reduced by 2<br> 50% Damage Taken Gained as Mana when Hit<br>",
+      "Nightsmoke<br>Belt<br>Defense: 24<br>Required Strength: 25<br>Required Level: 20<br>+50% Enhanced Defense<br>+15 Defense<br>+20 to Mana<br>All Resistances +10<br>Physical Damage Taken Reduced by 2<br>50% Damage Taken Gained as Mana when Hit<br>",
     properties: {
       defense: 24,
       reqstr: 25,
@@ -2965,7 +2965,7 @@ const itemList = {
 
   Goldwrap: {
     description:
-      "Goldwrap<br> Heavy Belt<br> Defense: 36<br> Required Strength: 45<br> Required Level: 27<br> +20% Increased Attack Speed<br> +60% Enhanced Defense<br> +25 Defense<br> 80% Extra Gold from Monsters<br> 40% Better Chance of Getting Magic Items<br> +2 to Light Radius<br>",
+      "Goldwrap<br>Heavy Belt<br>Defense: 36<br>Required Strength: 45<br>Required Level: 27<br>+20% Increased Attack Speed<br>+60% Enhanced Defense<br>+25 Defense<br>80% Extra Gold from Monsters<br>40% Better Chance of Getting Magic Items<br>+2 to Light Radius<br>",
     properties: {
       defense: 36,
       reqstr: 45,
@@ -2998,7 +2998,7 @@ const itemList = {
 
   "String of Ears": {
     description:
-      "String of Ears<br> Demonhide Sash<br> Defense: 113<br> Required Strength: 20<br> Required Level: 29<br> 8% Life Stolen per Hit<br> +180% Enhanced Defense<br> +15 Defense<br> Physical Damage Taken Reduced by 15%<br> Magic Damage Taken Reduced by 15<br> +10 Durability<br>",
+      "String of Ears<br>Demonhide Sash<br>Defense: 113<br>Required Strength: 20<br>Required Level: 29<br>8% Life Stolen per Hit<br>+180% Enhanced Defense<br>+15 Defense<br>Physical Damage Taken Reduced by 15%<br>Magic Damage Taken Reduced by 15<br>+10 Durability<br>",
     properties: {
       defense: 113,
       reqstr: 20,
@@ -3016,7 +3016,7 @@ const itemList = {
 
   Hotspur: {
     description:
-      "Hotspur<br> Boots<br> Base Kick Damage: 3 to 8, Avg 5.5<br> Defense: 10<br> Required Level: 5<br> Adds 3-6 Fire Damage<br> +20% Enhanced Defense<br> +6 Defense<br> +15 to Life<br> +6% to Maximum Fire Resist<br> Fire Resist +30%<br>",
+      "Hotspur<br>Boots<br>Base Kick Damage: 3 to 8, Avg 5.5<br>Defense: 10<br>Required Level: 5<br>Adds 3-6 Fire Damage<br>+20% Enhanced Defense<br>+6 Defense<br>+15 to Life<br>+6% to Maximum Fire Resist<br>Fire Resist +30%<br>",
     properties: {
       kickmin: 3,
       kickmax: 8,
@@ -3034,7 +3034,7 @@ const itemList = {
 
   Gorefoot: {
     description:
-      "Gorefoot<br> Heavy Boots<br> Base Kick Damage: 4 to 12, Avg 8<br> Defense: 9<br> Required Strength: 18<br> Required Level: 12<br> +25% Faster Run/Walk<br> +30% Leap and Leap Attack Movement Speed<br> +2 to Leap (Barbarian Only)<br> 4% Mana Stolen per Hit<br> +30% Enhanced Defense<br>",
+      "Gorefoot<br>Heavy Boots<br>Base Kick Damage: 4 to 12, Avg 8<br>Defense: 9<br>Required Strength: 18<br>Required Level: 12<br>+25% Faster Run/Walk<br>+30% Leap and Leap Attack Movement Speed<br>+2 to Leap (Barbarian Only)<br>4% Mana Stolen per Hit<br>+30% Enhanced Defense<br>",
     properties: {
       defense: 9,
       kickmin: 4,
@@ -3051,7 +3051,7 @@ const itemList = {
 
   "Treads of Cthon": {
     description:
-      "Treads of Cthon<br> Chain Boots<br> Base Kick Damage: 6 to 14, Avg 10 (was 6 to 12, Avg 9)<br> Defense: 26<br> Required Strength: 30<br> Required Level: 15<br> +30% Faster Run/Walk<br> +20% Chance to Pierce<br> +40% Enhanced Defense<br> +12 Defense<br> +50 Defense vs. Missile<br> +30 to Life<br> 50% Slower Stamina Drain<br>",
+      "Treads of Cthon<br>Chain Boots<br>Base Kick Damage: 6 to 14, Avg 10 (was 6 to 12, Avg 9)<br>Defense: 26<br>Required Strength: 30<br>Required Level: 15<br>+30% Faster Run/Walk<br>+20% Chance to Pierce<br>+40% Enhanced Defense<br>+12 Defense<br>+50 Defense vs. Missile<br>+30 to Life<br>50% Slower Stamina Drain<br>",
     properties: {
       kickmin: 6,
       kickmax: 14,
@@ -3070,7 +3070,7 @@ const itemList = {
 
   "Goblin Toe": {
     description:
-      "Goblin Toe<br> Light Plated Boots<br> Base Kick Damage: 8 to 18, Avg 13<br> Defense: 34<br> Required Strength: 50<br> Required Level: 22<br> +20% Faster Run/Walk<br> +30% Enhanced Damage<br> 25% Chance of Crushing Blow<br> +60% Enhanced Defense<br> +15 Defense<br> Physical Damage Taken Reduced by 5<br> Magic Damage Taken Reduced by 5<br>",
+      "Goblin Toe<br>Light Plated Boots<br>Base Kick Damage: 8 to 18, Avg 13<br>Defense: 34<br>Required Strength: 50<br>Required Level: 22<br>+20% Faster Run/Walk<br>+30% Enhanced Damage<br>25% Chance of Crushing Blow<br>+60% Enhanced Defense<br>+15 Defense<br>Physical Damage Taken Reduced by 5<br>Magic Damage Taken Reduced by 5<br>",
     properties: {
       kickmin: 8,
       kickmax: 18,
@@ -3089,7 +3089,7 @@ const itemList = {
 
   Tearhaunch: {
     description:
-      "Tearhaunch<br> Greaves<br> Base Kick Damage: 10 to 20, Avg 15<br> Defense: 63<br> Required Strength: 70<br> Required Level: 29<br> +2 to Defensive Auras (Paladin Only)<br> +20% Faster Run/Walk<br> +2 to Vigor (Paladin Only)<br> +80% Enhanced Defense<br> +35 Defense<br> +10 to Strength<br> +10 to Dexterity<br> All Resistances +10<br>",
+      "Tearhaunch<br>Greaves<br>Base Kick Damage: 10 to 20, Avg 15<br>Defense: 63<br>Required Strength: 70<br>Required Level: 29<br>+2 to Defensive Auras (Paladin Only)<br>+20% Faster Run/Walk<br>+2 to Vigor (Paladin Only)<br>+80% Enhanced Defense<br>+35 Defense<br>+10 to Strength<br>+10 to Dexterity<br>All Resistances +10<br>",
     properties: {
       kickmin: 10,
       kickmax: 20,
@@ -3109,7 +3109,7 @@ const itemList = {
 
   Infernostride: {
     description:
-      "Infernostride<br> Demonhide Boots<br> Base Kick Damage: 30 to 64, Avg 47<br> Defense: 105<br> Required Strength: 20<br> Required Level: 29<br> 18% Chance to Cast Level 16 Blaze when Struck<br> +30% Faster Run/Walk<br> Adds 24-66 Fire Damage<br> +150% Enhanced Defense<br> +15 Defense<br> +5% to Maximum Fire Resist<br> Fire Resist +30%<br> 70 Extra Gold from Monsters<br> +2 to Light Radius<br>",
+      "Infernostride<br>Demonhide Boots<br>Base Kick Damage: 30 to 64, Avg 47<br>Defense: 105<br>Required Strength: 20<br>Required Level: 29<br>18% Chance to Cast Level 16 Blaze when Struck<br>+30% Faster Run/Walk<br>Adds 24-66 Fire Damage<br>+150% Enhanced Defense<br>+15 Defense<br>+5% to Maximum Fire Resist<br> Fire Resist +30%<br>70 Extra Gold from Monsters<br>+2 to Light Radius<br>",
     properties: {
       kickmin: 30,
       kickmax: 64,

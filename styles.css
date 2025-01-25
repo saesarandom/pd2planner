@@ -2937,6 +2937,20 @@ option[value="Arcanna's Head"] {
   border-radius: 3px;
 }
 
+#makeethereal {
+  background-color: #1d1d1d;
+  position: absolute;
+  top: 225px;
+  left: 210px;
+  height: 40px;
+  width: 80px;
+  color: rgb(102, 100, 100);
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
 .upgrade-buttonarmor {
   background-color: #4a4a4a;
   position: absolute;
@@ -2945,6 +2959,20 @@ option[value="Arcanna's Head"] {
   height: 40px;
   width: 80px;
   color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+#makeetherealarmor {
+  background-color: #1d1d1d;
+  position: absolute;
+  top: 370px;
+  left: 320px;
+  height: 40px;
+  width: 80px;
+  color: rgb(102, 100, 100);
   border: none;
   padding: 5px 10px;
   margin-left: 10px;
@@ -2997,6 +3025,21 @@ option[value="Arcanna's Head"] {
   border-radius: 3px;
 }
 
+#makeetherealglove {
+  background-color: #1d1d1d;
+  position: absolute;
+  top: 640px;
+  left: 660px;
+  height: 40px;
+  width: 80px;
+  color: rgb(102, 100, 100);
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
 .upgrade-buttonbelt {
   background-color: #4a4a4a;
   position: absolute;
@@ -3012,6 +3055,21 @@ option[value="Arcanna's Head"] {
   border-radius: 3px;
 }
 
+#makeetherealbelt {
+  background-color: #1d1d1d;
+  position: absolute;
+  top: 720px;
+  left: 990px;
+  height: 40px;
+  width: 80px;
+  color: rgb(102, 100, 100);
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
 .upgrade-buttonboot {
   background-color: #4a4a4a;
   position: absolute;
@@ -3020,6 +3078,21 @@ option[value="Arcanna's Head"] {
   height: 40px;
   width: 80px;
   color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+#makeetherealboot {
+  background-color: #1d1d1d;
+  position: absolute;
+  top: 1190px;
+  left: 220px;
+  height: 40px;
+  width: 80px;
+  color: rgb(102, 100, 100);
   border: none;
   padding: 5px 10px;
   margin-left: 10px;

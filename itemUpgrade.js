@@ -815,6 +815,7 @@ const upgradeDefinitions = {
         name: "The Hand of Broc",
         base: "Demonhide Gloves",
         properties: {
+          defense: 22,
           reqstr: 25,
           reqlvl: 21,
         },
@@ -823,6 +824,7 @@ const upgradeDefinitions = {
         name: "The Hand of Broc",
         base: "Bramble Mitts",
         properties: {
+          defense: 44,
           reqstr: 125,
           reqlvl: 42,
         },
@@ -2144,6 +2146,7 @@ function buildDescriptionWeapon(itemName, baseType, properties, magicalProps) {
 function calculateItemDefense(item, baseType, category = "helm") {
   const baseDefense = baseDefenses[baseType] || 0;
   const { edef, todef } = item.properties || {};
+  const ethMult = item.description.includes("Ethereal") ? 1.5 : 1;
 
   let socketsEDef = 0;
   document
@@ -2157,14 +2160,15 @@ function calculateItemDefense(item, baseType, category = "helm") {
       }
     });
 
-  if (!edef && !todef) return Math.floor(baseDefense * (1 + socketsEDef / 100));
+  const baseWithEth = Math.floor(baseDefense * ethMult);
+  if (!edef && !todef) return Math.floor(baseWithEth * (1 + socketsEDef / 100));
   if (!edef && todef)
-    return Math.floor(baseDefense * (1 + socketsEDef / 100)) + todef;
+    return Math.floor(baseWithEth * (1 + socketsEDef / 100)) + todef;
 
   const totalEdef = (edef + socketsEDef) / 100;
   return todef
-    ? Math.floor((baseDefense + 1) * (1 + totalEdef)) + todef
-    : Math.floor((baseDefense + 1) * (1 + totalEdef));
+    ? Math.floor((baseWithEth + 1) * (1 + totalEdef)) + todef
+    : Math.floor((baseWithEth + 1) * (1 + totalEdef));
 }
 
 function calculateItemDamage(item, baseType, isMax = false) {
@@ -2722,3 +2726,61 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(id)?.addEventListener("change", updateDefense);
   });
 });
+
+function makeEthereal() {
+  const select = document.getElementById("helms-dropdown");
+  const currentItem = select.value;
+  const currentItemData = itemList[currentItem];
+
+  if (currentItemData.description.includes("Ethereal")) return;
+
+  currentItemData.properties.ethereal = true;
+
+  let lines = currentItemData.description.split("<br>");
+  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+  currentItemData.description = lines.join("<br>");
+
+  updateDefense();
+}
+
+function makeEtherealArmor() {
+  const select = document.getElementById("armors-dropdown");
+  const currentItem = select.value;
+  const currentItemData = itemList[currentItem];
+
+  if (currentItemData.description.includes("Ethereal")) return;
+
+  currentItemData.properties.ethereal = true;
+
+  let lines = currentItemData.description.split("<br>");
+  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+  currentItemData.description = lines.join("<br>");
+
+  updateDefense();
+}
+
+function makeEtherealItem(category) {
+  const select = document.getElementById(`${category}-dropdown`);
+  const currentItem = select.value;
+  const currentItemData = itemList[currentItem];
+
+  // Early exit checks
+  if (!currentItemData || currentItemData.description.includes("Ethereal"))
+    return;
+
+  // Add ethereal property and text
+  currentItemData.properties.ethereal = true;
+  let lines = currentItemData.description.split("<br>");
+  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+  currentItemData.description = lines.join("<br>");
+
+  // Force recalculation and UI update
+  const baseType = currentItemData.description.split("<br>")[1];
+  const newDefense = calculateItemDefense(currentItemData, baseType, category);
+  const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
+  lines[defenseIndex] = `Defense: ${newDefense}`;
+  currentItemData.description = lines.join("<br>");
+  currentItemData.properties.defense = newDefense;
+
+  select.dispatchEvent(new Event("change"));
+}
