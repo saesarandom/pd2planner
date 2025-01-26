@@ -2224,7 +2224,7 @@ function handleUpgrade() {
       };
 
       select.dispatchEvent(new Event("change"));
-      alert("Item upgraded to elite version!");
+      // alert("Item upgraded to elite version!");
       return;
     }
   } else {
@@ -2252,7 +2252,7 @@ function handleUpgrade() {
       };
 
       select.dispatchEvent(new Event("change"));
-      alert("Item upgraded to exceptional version!");
+      // alert("Item upgraded to exceptional version!");
       return;
     }
   }

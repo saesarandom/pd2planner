@@ -951,7 +951,7 @@ const itemList = {
       edef: 100,
       todeflvl: 3,
       tolife: 100,
-      physdr: 20,
+      pdr: 20,
       mdr: 16,
     },
   },
@@ -2918,6 +2918,167 @@ const itemList = {
     },
   },
 
+  "Venom Grip": {
+    description:
+      "Venom Grip<br> Demonhide Gloves<br> Defense: 118<br> Required Strength: 20<br> Required Level: 29<br> 4% Life Stolen per Hit<br> +15% to Poison Skill Damage<br> 10% Chance of Crushing Blow<br> +160% Enhanced Defense<br> +25 Defense<br> +5% to Maximum Poison Resist<br> Poison Resist +30%<br>",
+    properties: {
+      defense: 118,
+      reqstr: 20,
+      reqlvl: 29,
+      lleech: 4,
+      poisondamage: 15,
+      crushingblow: 10,
+      edef: 160,
+      todef: 25,
+      maxpoisres: 5,
+      poisres: 30,
+    },
+  },
+
+  Gravepalm: {
+    description:
+      "Gravepalm<br> Sharkskin Gloves<br> Defense: 112<br> Required Strength: 20<br> Required Level: 32<br> +1 to Summoning Skills (Necromancer Only)<br> +200% Damage to Undead<br> +200 to Attack Rating against Undead<br> 15% Deadly Strike<br> +180% Enhanced Defense<br> +10 to Strength<br> +10 to Energy<br>",
+    properties: {
+      defense: 112,
+      reqstr: 20,
+      reqlvl: 32,
+      summoningsk: 1,
+      dmgtoun: 200,
+      toatt: 200,
+      deadlystrike: 15,
+      edef: 180,
+    },
+  },
+
+  Ghoulhide: {
+    description:
+      "Ghoulhide<br> Heavy Bracers<br> Defense: 130<br> Required Strength: 58<br> Required Level: 36<br> +20% Increased Attack Speed<br> +[2-198]% Damage to Undead (+2% per Character Level)<br> +[8-792] to Attack Rating against Undead (+8 per Character Level)<br> 5% Mana Stolen per Hit<br> +190% Enhanced Defense<br> +40 to Life<br>",
+    properties: {
+      defense: 130,
+      reqstr: 58,
+      reqlvl: 36,
+      ias: 20,
+      dmgtoun: 198,
+      toatt: 792,
+      mleech: 5,
+      edef: 190,
+      tolife: 40,
+    },
+  },
+
+  "Lava Gout": {
+    description:
+      "Lava Gout<br> Battle Gauntlets<br> Defense: 144<br> Durability: 38<br> Required Strength: 88<br> Required Level: 42<br> 2% Chance to Cast Level 10 Enchant Fire on Striking<br> +20% Increased Attack Speed<br> Adds 26-92 Fire Damage<br> +200% Enhanced Defense<br> +5% to Maximum Fire Resist<br> Fire Resist +36%<br> Half Freeze Duration<br>",
+    properties: {
+      defense: 144,
+      reqstr: 88,
+      reqlvl: 42,
+      ctcfireenchant: (2, 10),
+      ias: 20,
+      firedmgmin: 26,
+      firedmgmax: 92,
+      edef: 200,
+      maxfireres: 5,
+      firres: 36,
+    },
+  },
+
+  Hellmouth: {
+    description:
+      "Hellmouth<br> War Gauntlets<br> Defense: 162<br> Durability: 39<br> Required Strength: 110<br> Required Level: 47<br> 8% Chance to Cast level 22 Molten Boulder on Striking<br> 4% Chance to Cast level 34 Meteor on Striking<br> Adds 30-144 Fire Damage<br> -10% to Enemy Fire Resistance<br> +200% Enhanced Defense<br> Attacker Takes Damage of 400<br>",
+    properties: {
+      defense: 162,
+      reqstr: 110,
+      reqlvl: 47,
+      ctcmb: (8, 22),
+      ctcmeteor: (4, 34),
+      firedmgmin: 30,
+      firedmgmax: 144,
+      firepierce: 10,
+      edef: 200,
+      atdmg: 400,
+    },
+  },
+
+  "Titan's Grip": {
+    description:
+      "Titan's Grip<br> Bramble Mitts<br> Defense: 176<br> Required Strength: 50<br> Required Level: 42<br> +20% Faster Block Rate<br> 20% Increased Chance of Blocking<br> +185% Enhanced Defense<br> +120 Defense vs. Missile<br> Lightning Resist +35%<br> Half Freeze Duration<br>",
+    properties: {
+      defense: 176,
+      reqstr: 50,
+      reqlvl: 42,
+      fbr: 20,
+      block: 20,
+      edef: 185,
+      todefmissile: 120,
+      ligres: 35,
+    },
+  },
+
+  "Dracul's Grasp": {
+    description:
+      "Dracul's Grasp<br> Vampirebone Gloves<br> Defense: 145<br> Required Strength: 50<br> Required Level: 76<br> 10% Increased Attack Speed<br> 12% Life Stolen per Hit<br> 25% Chance of Open Wounds<br> +320 Open Wounds Damage per Second<br> +120% Enhanced Defense<br> +30 to Strength<br> +10 Life after each Kill<br>",
+    properties: {
+      defense: 145,
+      reqstr: 50,
+      reqlvl: 76,
+      ias: 10,
+      lleech: 12,
+      openwounds: 25,
+      owdmg: 320,
+      edef: 120,
+      str: 30,
+      laek: 10,
+    },
+  },
+
+  Souldrainer: {
+    description:
+      "Soul Drainer<br> Vambraces<br> Defense: 149<br> Required Strength: 106<br> Required Level: 74<br> -5% to Enemy Physical Resistance<br> 3% Mana Stolen per Hit<br> 3% Life Stolen per Hit<br> -50 to Monster Defense per Hit<br> +120% Enhanced Defense<br> Drain Life -30<br>",
+    properties: {
+      defense: 149,
+      reqstr: 106,
+      reqlvl: 74,
+      physres: 5,
+      mleech: 3,
+      lleech: 3,
+      mondef: 50,
+      edef: 120,
+      repl: -30,
+    },
+  },
+
+  Occultist: {
+    description:
+      "Occultist<br> Crusader Gauntlets<br> Defense: 138<br> Required Strength: 151<br> Required Level: 70<br> +20% Faster Cast Rate<br> 35% Reduced Curse Duration<br> Hit Blinds Target<br> 100% Enhanced Defense<br> Increase Maximum Mana 35%<br> ",
+    properties: {
+      defense: 138,
+      reqstr: 151,
+      reqlvl: 70,
+      fcr: 20,
+      cursedur: 35,
+      blind: 1,
+      edef: 100,
+      maxmana: 35,
+    },
+  },
+
+  Steelrend: {
+    description:
+      "Steelrend<br> Ogre Gauntlets<br> Defense: 281<br> Required Strength: 185<br> Required Level: 70<br> Melee Attacks Deal Splash Damage<br> +80% Enhanced Damage<br> 20% Chance of Crushing Blow<br> +210 Defense<br> +20 to Strength<br> Attacker Takes Damage of 250<br> ",
+    properties: {
+      defense: 281,
+      reqstr: 185,
+      reqlvl: 70,
+      splash: 1,
+      edmg: 80,
+      cb: 20,
+      todef: 210,
+      str: 20,
+      atdmg: 250,
+    },
+  },
+
   Lenymo: {
     description:
       "Lenymo<br>Sash<br>Defense: 2<br>Required Level: 7<br>+10% Faster Cast Rate<br>+15 to Mana<br>Regenerate Mana 30%<br>All Resistances +5<br>+1 to Light Radius<br>",
@@ -3009,6 +3170,56 @@ const itemList = {
       physdr: 15,
       mdr: 15,
       dur: 10,
+    },
+  },
+
+  Razortail: {
+    description:
+      "Razortail<br> Sharkskin Belt<br> Defense: 107<br> Required Strength: 20<br> Required Level: 32<br> +33% Chance to Pierce<br> +20 to Maximum Damage<br> +150% Enhance Defense<br> +50 Defense<br> +20 to Dexterity<br> Attacker Takes Damage of [1-99] (1 per Character Level)<br>",
+    properties: {
+      defense: 107,
+      reqstr: 20,
+      reqlvl: 32,
+      pierce: 33,
+      tomaxdmg: 20,
+      edef: 150,
+      todef: 50,
+      dex: 20,
+      atdmg: 99,
+    },
+  },
+
+  "Gloom's Trap": {
+    description:
+      "Gloom's Trap<br> Mesh Belt<br> Defense: 102<br> Required Strength: 58<br> Required Level: 36<br> +20% Faster Cast Rate<br> 5% Mana Stolen per Hit<br> +150% Enhanced Defense<br> +15 to Vitality<br> Increase Maximum Mana 15%<br> Regenerate Mana 15%<br> -3 to Light Radius<br>",
+    properties: {
+      defense: 102,
+      reqstr: 58,
+      reqlvl: 36,
+      fcr: 20,
+      mleech: 5,
+      edef: 150,
+      vit: 15,
+      maxmana: 15,
+      regmana: 15,
+      ligrad: 3,
+    },
+  },
+
+  Snowclash: {
+    description:
+      "Snowclash<br> Battle Belt<br> Defense: 116<br> Required Strength: 88<br> Required Level: 42<br> 5% Chance to Cast Level 20 Blizzard when Struck<br> +2 to Cold Skills<br> Adds 39-63 Cold Damage<br> +170% Enhanced Defense<br> +8% to Maximum Cold Resist<br> Cold Resist +45%<br> Half Freeze Duration<br>",
+    properties: {
+      defense: 116,
+      reqstr: 88,
+      reqlvl: 42,
+      ctcblizzard: (5, 20),
+      coldsk: 2,
+      colddmgmin: 39,
+      colddmgmax: 63,
+      edef: 170,
+      maxcoldres: 8,
+      coldres: 45,
     },
   },
 
@@ -3231,7 +3442,7 @@ const itemList = {
       maxpoisonres: 3,
       maxcoldres: 3,
       maxlightres: 3,
-      maxfireres: 3,
+      maxfirres: 3,
       pdr: 11,
       oaksagesk: 5, //charges not implemented
     },

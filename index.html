@@ -8,6 +8,7 @@
     <script defer src="https://cloud.umami.is/script.js" data-website-id="72048bb5-a72a-4c78-9750-4c1c9a17e30c"></script>
     <script src="items.js"></script>
     <script src="itemUpgrade.js"></script>
+    <script src="relativeLife.js"></script>
 
 
 
@@ -432,6 +433,17 @@ Resistance to fire %
 <option value="Chance Guards">Chance Guards</option>
 <option value="Magefist">Magefist</option>
 <option value="Frostburn">Frostburn</option>
+<option value="Venom Grip">Venom Grip</option>
+<option value="Gravepalm">Gravepalm</option>
+<option value="Ghoulhide">Ghoulhide</option>
+<option value="Lava Gout">Lava Gout</option>
+<option value="Hellmouth">Hellmouth</option>
+<option value="Titan's Grip">Titan's Grip</option>
+<option value="Dracul's Grasp">Dracul's Grasp</option>
+<option value="Soul Drainer">Soul Drainer</option>
+<option value="Occultist">Magefist</option>
+<option value="Steelrend">Frostburn</option>
+
 </select>
 <div id="glove-info"></div>
 </div>
@@ -445,6 +457,11 @@ Resistance to fire %
   <option value="Goldwrap">Goldwrap</option>
   <option value="Bladebuckle">Bladebuckle</option>
   <option value="String of Ears">String of Ears</option>
+  <option value="Razortail">Razortail</option>
+  <option value="Gloom's Trap">Gloom's Trap</option>
+  <option value="Snowclash">Snowclash</option>
+  
+
   
   </select>
   <div id="belt-info"></div>
@@ -2060,8 +2077,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalEDMG += helmData.properties.edmg || 0;
       totalMaxFireRes += helmData.properties.maxfirres || 0;
       totalMaxColdRes += helmData.properties.maxcoldres || 0;
-      totalMaxLightRes += helmData.properties.maxligres || 0;
-      totalMaxPoisonRes += helmData.properties.maxpoisres || 0;
+      totalMaxLightRes += helmData.properties.maxlightres || 0;
+      totalMaxPoisonRes += helmData.properties.maxpoisonres || 0;
       totalPiercePhys += helmData.properties.physpierce || 0;
       totalPierceFire += helmData.properties.firepierce || 0;
       totalPierceCold += helmData.properties.coldpierce || 0;
@@ -2106,8 +2123,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalEDMG += armorData.properties.edmg || 0; 
       totalMaxFireRes += armorData.properties.maxfirres || 0;
       totalMaxColdRes += armorData.properties.maxcoldres || 0;
-      totalMaxLightRes += armorData.properties.maxligres || 0;
-      totalMaxPoisonRes += armorData.properties.maxpoisres || 0;
+      totalMaxLightRes += armorData.properties.maxlightres || 0;
+      totalMaxPoisonRes += armorData.properties.maxpoisonres || 0;
       totalPiercePhys += armorData.properties.physpierce || 0;
       totalPierceFire += armorData.properties.firepierce || 0;
       totalPierceCold += armorData.properties.coldpierce || 0;
@@ -2156,8 +2173,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalWeaponMastery += weaponData.properties.weaponmasterysk || 0;
       totalMaxFireRes += weaponData.properties.maxfirres || 0;
       totalMaxColdRes += weaponData.properties.maxcoldres || 0;
-      totalMaxLightRes += weaponData.properties.maxligres || 0;
-      totalMaxPoisonRes += weaponData.properties.maxpoisres || 0;
+      totalMaxLightRes += weaponData.properties.maxlightres || 0;
+      totalMaxPoisonRes += weaponData.properties.maxpoisonres || 0;
       totalPiercePhys += weaponData.properties.physpierce || 0;
       totalPierceFire += weaponData.properties.firepierce || 0;
       totalPierceCold += weaponData.properties.coldpierce || 0;
@@ -2195,8 +2212,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalEDMG += offData.properties.edmg || 0;
       totalMaxFireRes += offData.properties.maxfirres || 0;
       totalMaxColdRes += offData.properties.maxcoldres || 0;
-      totalMaxLightRes += offData.properties.maxligres || 0;
-      totalMaxPoisonRes += offData.properties.maxpoisres || 0;
+      totalMaxLightRes += offData.properties.maxlightres || 0;
+      totalMaxPoisonRes += offData.properties.maxpoisonres || 0;
       totalPiercePhys += offData.properties.physpierce || 0;
       totalPierceFire += offData.properties.firepierce || 0;
       totalPierceCold += offData.properties.coldpierce || 0;
@@ -2234,8 +2251,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatMagicDmg += (offData.properties.magicdmgmin/2 + offData.properties.magicdmgmax/2) || 0;
       totalMaxFireRes += offData.properties.maxfirres || 0;
       totalMaxColdRes += offData.properties.maxcoldres || 0;
-      totalMaxLightRes += offData.properties.maxligres || 0;
-      totalMaxPoisonRes += offData.properties.maxpoisres || 0;
+      totalMaxLightRes += offData.properties.maxlightres || 0;
+      totalMaxPoisonRes += offData.properties.maxpoisonres || 0;
       totalPiercePhys += offData.properties.physpierce || 0;
       totalPierceFire += offData.properties.firepierce || 0;
       totalPierceCold += offData.properties.coldpierce || 0;
@@ -2277,8 +2294,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalEDMG += gloveData.properties.edmg || 0;
       totalMaxFireRes += gloveData.properties.maxfirres || 0;
       totalMaxColdRes += gloveData.properties.maxcoldres || 0;
-      totalMaxLightRes += gloveData.properties.maxligres || 0;
-      totalMaxPoisonRes += gloveData.properties.maxpoisres || 0;
+      totalMaxLightRes += gloveData.properties.maxlightres || 0;
+      totalMaxPoisonRes += gloveData.properties.maxpoisonres || 0;
       totalPiercePhys += gloveData.properties.physpierce || 0;
       totalPierceFire += gloveData.properties.firepierce || 0;
       totalPierceCold += gloveData.properties.coldpierce || 0;
@@ -2321,8 +2338,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalEDMG += beltData.properties.edmg || 0;
       totalMaxFireRes += beltData.properties.maxfirres || 0;
       totalMaxColdRes += beltData.properties.maxcoldres || 0;
-      totalMaxLightRes += beltData.properties.maxligres || 0;
-      totalMaxPoisonRes += beltData.properties.maxpoisres || 0;
+      totalMaxLightRes += beltData.properties.maxlightres || 0;
+      totalMaxPoisonRes += beltData.properties.maxpoisonres || 0;
       totalPiercePhys += beltData.properties.physpierce || 0;
       totalPierceFire += beltData.properties.firepierce || 0;
       totalPierceCold += beltData.properties.coldpierce || 0;
@@ -2365,8 +2382,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalEDMG += bootData.properties.edmg || 0;
       totalMaxFireRes += bootData.properties.maxfirres || 0;
       totalMaxColdRes += bootData.properties.maxcoldres || 0;
-      totalMaxLightRes += bootData.properties.maxligres || 0;
-      totalMaxPoisonRes += bootData.properties.maxpoisres || 0;
+      totalMaxLightRes += bootData.properties.maxlightres || 0;
+      totalMaxPoisonRes += bootData.properties.maxpoisonres || 0;
       totalPiercePhys += bootData.properties.physpierce || 0;
       totalPierceFire += bootData.properties.firepierce || 0;
       totalPierceCold += bootData.properties.coldpierce || 0;
@@ -2409,8 +2426,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalEDMG += ringOneData.properties.edmg || 0;
       totalMaxFireRes += ringOneData.properties.maxfirres || 0;
       totalMaxColdRes += ringOneData.properties.maxcoldres || 0;
-      totalMaxLightRes += ringOneData.properties.maxligres || 0;
-      totalMaxPoisonRes += ringOneData.properties.maxpoisres || 0;
+      totalMaxLightRes += ringOneData.properties.maxlightres || 0;
+      totalMaxPoisonRes += ringOneData.properties.maxpoisonres || 0;
       totalPiercePhys += ringOneData.properties.physpierce || 0;
       totalPierceFire += ringOneData.properties.firepierce || 0;
       totalPierceCold += ringOneData.properties.coldpierce || 0;
@@ -2453,8 +2470,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalEDMG += ringTwoData.properties.edmg || 0;
       totalMaxFireRes += ringTwoData.properties.maxfirres || 0;
       totalMaxColdRes += ringTwoData.properties.maxcoldres || 0;
-      totalMaxLightRes += ringTwoData.properties.maxligres || 0;
-      totalMaxPoisonRes += ringTwoData.properties.maxpoisres || 0;
+      totalMaxLightRes += ringTwoData.properties.maxlightres || 0;
+      totalMaxPoisonRes += ringTwoData.properties.maxpoisonres || 0;
       totalPiercePhys += ringTwoData.properties.physpierce || 0;
       totalPierceFire += ringTwoData.properties.firepierce || 0;
       totalPierceCold += ringTwoData.properties.coldpierce || 0;
