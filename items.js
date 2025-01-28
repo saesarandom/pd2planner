@@ -2973,7 +2973,7 @@ const itemList = {
       defense: 144,
       reqstr: 88,
       reqlvl: 42,
-      ctcfireenchant: (2, 10),
+      ctcfireenchant: (2, 10), //nevim asi zle
       ias: 20,
       firedmgmin: 26,
       firedmgmax: 92,
@@ -2990,8 +2990,8 @@ const itemList = {
       defense: 162,
       reqstr: 110,
       reqlvl: 47,
-      ctcmb: (8, 22),
-      ctcmeteor: (4, 34),
+      ctcmb: (8, 22), //nevim jak to tu delat
+      ctcmeteor: (4, 34), //nevim jak to tu delat
       firedmgmin: 30,
       firedmgmax: 144,
       firepierce: 10,
@@ -3213,13 +3213,95 @@ const itemList = {
       defense: 116,
       reqstr: 88,
       reqlvl: 42,
-      ctcblizzard: (5, 20),
+      ctcblizzard: (5, 20), //zase zle
       coldsk: 2,
       colddmgmin: 39,
       colddmgmax: 63,
       edef: 170,
       maxcoldres: 8,
       coldres: 45,
+    },
+  },
+
+  "Thundergod's Vigor": {
+    description:
+      "Thundergod's Vigor<br> War Belt<br> Defense: 159<br> Required Strength: 110<br> Required Level: 47<br> 5% Chance to Cast Level 17 Fist of the Heavens when Struck<br> +2 to Lightning Skills<br> Adds 1 to 250 Lightning Damage<br> +200% Enhanced Defense<br> +15 to Strength<br> +15 to Vitality<br> +8% to Maximum Lightning Resist<br>",
+    properties: {
+      defense: 159,
+      reqstr: 110,
+      reqlvl: 47,
+      ctcfist: (5, 17), //tu vse zle
+      lightsk: 2,
+      lightdmgmin: 1,
+      lightdmgmax: 250,
+      edef: 200,
+      str: 15,
+      vit: 15,
+      maxlightres: 8,
+    },
+  },
+
+  "Arachnid Mesh": {
+    description:
+      "Arachnid Mesh<br>Spiderweb Sash<br>Defense: 138<br>Required Strength: 50<br>Required Level: 80<br>+1 to All Skills<br>+20% Faster Cast Rate<br>Slows Target by 20%<br>+120% Enhanced Defense<br>Increase Maximum Mana 10%<br>Level 3 Venom (31 Charges)<br>",
+    properties: {
+      defense: 138,
+      reqstr: 50,
+      reqlvl: 80,
+      allskills: 1,
+      fcr: 20,
+      slow: 20,
+      edef: 120,
+      maxmana: 10,
+      venomcharges: 3,
+    },
+  },
+
+  "Nosferatu's Coil": {
+    description:
+      "Nosferatu's Coil<br>Vampirefang Belt<br>Defense: 63<br>Required Strength: 50<br>Required Level: 51<br>+20% Increased Attack Speed<br>6% Life Stolen per Hit<br>10% Deadly Strike<br>Slows Target by 10%<br>+15 to Strength<br>+2 to Mana after each Kill<br>",
+    properties: {
+      defense: 63,
+      reqstr: 50,
+      reqlvl: 51,
+      ias: 20,
+      lleech: 6,
+      deadlystrike: 10,
+      slow: 10,
+      str: 15,
+      maek: 2,
+    },
+  },
+
+  "Verdungo's Hearty Cord": {
+    description:
+      "Verdungo's Hearty Cord<br>Mithril Coil<br>Defense: 158<br>Required Strength: 106<br>Required Level: 63<br>+10% Faster Hit Recovery<br>+140% Enhanced Defense<br>+40 to Vitality<br>Replenish Life +13<br>+120 Maximum Stamina<br>Physical Damage Taken Reduced by 15%<br>",
+    properties: {
+      defense: 158,
+      reqstr: 106,
+      reqlvl: 63,
+      fhr: 10,
+      edef: 140,
+      vit: 40,
+      repl: 13,
+      maxstamina: 120,
+      pdr: 15,
+    },
+  },
+
+  "Band of Skulls": {
+    description:
+      "Band of Skulls<br>Troll Belt<br>Defense: 167<br>Required Strength: 151<br>Required Level: 90<br>6% Chance to Cast Level 28 Bone Armor when Struck<br>+150% Enhanced Defense<br>Physical Damage Taken Reduced by 10%<br>+30% Better Chance of Getting Magic Items<br>-4 to Light Radius<br>Socketed (1)<br>",
+    properties: {
+      defense: 138,
+      reqstr: 50,
+      reqlvl: 80,
+      allskills: 1,
+      fcr: 20,
+      slow: 20,
+      edef: 120,
+      maxmana: 10,
+      venomcharges: 3,
     },
   },
 
@@ -3337,6 +3419,103 @@ const itemList = {
       firres: 30,
       goldfind: 70,
       ligrad: 2,
+    },
+  },
+
+  Waterwalk: {
+    description:
+      "Waterwalk<br>Sharkskin Boots<br>Base Kick Damage: 32 to 72, Avg 52<br>Defense: 124<br>Required Strength: 47<br>Required Level: 32<br>+30% Faster Run/Walk<br>+20% Faster Block Rate<br>+210% Enhanced Defense<br>+15 to Dexterity<br>+65 to Life<br>+40 Maximum Stamina<br>Heal Stamina Plus 50%<br>+5% to Maximum Fire Resist<br>",
+    properties: {
+      kickmin: 32,
+      kickmax: 72,
+      defense: 124,
+      reqstr: 47,
+      reqlvl: 32,
+      frw: 30,
+      fbr: 20,
+      edef: 210,
+      dex: 15,
+      tolife: 65,
+      maxstamina: 40,
+      healstamina: 50,
+      maxfirres: 5,
+    },
+  },
+
+  Silkweave: {
+    description:
+      "Silkweave<br>Mesh Boots<br>Base Kick Damage: 35 to 78, Avg 56.5<br>Defense: 130<br>Required Strength: 65<br>Required Level: 36<br>+30% Faster Run/Walk<br>+190% Enhanced Defense<br>+200 Defense vs. Missile<br>Increase Maximum Mana 20%<br>+5 to Mana after each Kill<br>",
+    properties: {
+      kickmin: 35,
+      kickmax: 78,
+      defense: 130,
+      reqstr: 65,
+      reqlvl: 36,
+      frw: 30,
+      edef: 190,
+      todefmissile: 200,
+      maxmana: 20,
+      maek: 5,
+    },
+  },
+
+  "War Traveler": {
+    description:
+      "War Traveler<br>Battle Boots<br>Base Kick Damage: 42 to 84, Avg 63<br>Defense: 139<br>Durability: 48<br>Required Strength: 95<br>Required Level: 42<br>+25% Faster Run/Walk<br>Adds 15-25 Damage<br>+190% Enhanced Defense<br>+10 to Strength<br>+10 to Vitality<br>40% Slower Stamina Drain<br>Attacker Takes Damage of 10<br>50% Better Chance of Getting Magic Items<br>",
+    properties: {
+      kickmin: 42,
+      kickmax: 84,
+      defense: 139,
+      reqstr: 95,
+      reqlvl: 42,
+      frw: 25,
+      edmgmin: 15,
+      edmgmax: 25,
+      edef: 190,
+      str: 10,
+      vit: 10,
+      stamdrain: 40,
+      atdmg: 10,
+      magicfind: 50,
+    },
+  },
+
+  "Gore Rider": {
+    description:
+      "Gore Rider<br>War Boots<br>Base Kick Damage: 45 to 90, Avg 67.5<br>Defense: 162<br>Durability: 34<br>Required Strength: 94<br>Required Level: 47<br>+30% Faster Run/Walk<br>15% Chance of Crushing Blow<br>+20% Deadly Strike<br>10% Chance of Open Wounds<br>+200 Open Wounds Damage per Second<br>+200% Enhanced Defense<br>Requirements -25%<br>",
+    properties: {
+      kickmin: 45,
+      kickmax: 90,
+      defense: 162,
+      reqstr: 94,
+      reqlvl: 47,
+      frw: 30,
+      cb: 15,
+      deadlystrike: 20,
+      openwounds: 10,
+      owdmg: 200,
+      edef: 200,
+      reqreduced: 25,
+    },
+  },
+
+  "Merman's Sprocket": {
+    description:
+      "Merman's Sprocket<br>Wyrmhide Boots<br>Base Kick Damage: 75 to 100, Avg 87.5<br>Defense: 162<br>Required Strength: 50<br>Required Level: 45<br>Minimum Item Level: 60<br>+60% Faster Run/Walk<br>Adds 40-80 Cold Damage<br>+100 Defense<br>Regenerate Mana 20%<br>+100 Maximum Stamina<br>50% Slower Stamina Drain<br>",
+    properties: {
+      kickmin: 75,
+      kickmax: 100,
+      defense: 162,
+      reqstr: 50,
+      reqlvl: 45,
+      minlvl: 60,
+      frw: 60,
+      colddmgmin: 40,
+      colddmgmax: 80,
+      todef: 100,
+      regmana: 20,
+      maxstamina: 100,
+      stamdrain: 50,
     },
   },
   // rings
