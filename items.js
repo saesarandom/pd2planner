@@ -3225,7 +3225,7 @@ const itemList = {
 
   "Thundergod's Vigor": {
     description:
-      "Thundergod's Vigor<br> War Belt<br> Defense: 159<br> Required Strength: 110<br> Required Level: 47<br> 5% Chance to Cast Level 17 Fist of the Heavens when Struck<br> +2 to Lightning Skills<br> Adds 1 to 250 Lightning Damage<br> +200% Enhanced Defense<br> +15 to Strength<br> +15 to Vitality<br> +8% to Maximum Lightning Resist<br>",
+      "Thundergod's Vigor<br>War Belt<br>Defense: 159<br>Required Strength: 110<br>Required Level:47<br>5% Chance to Cast Level 17 Fist of the Heavens when Struck<br>+2 to Lightning Skills<br>Adds 1 to 250 Lightning Damage<br>+200% Enhanced Defense<br>+15 to Strength<br> +15 to Vitality<br>+8% to Maximum Lightning Resist<br>",
     properties: {
       defense: 159,
       reqstr: 110,
@@ -3518,6 +3518,244 @@ const itemList = {
       stamdrain: 50,
     },
   },
+
+  "Sandstorm Trek": {
+    description:
+      "Sandstorm Trek<br>Scarabshell Boots<br>Base Kick Damage: 70 to 110, Avg 90<br>Defense: 178<br>Required Strength: 91<br>Required Level: 64<br>+30% Faster Run/Walk<br>+20% Faster Hit Recovery<br>+170% Enhanced Defense<br>+15 to Strength<br>+15 to Vitality<br>+[1-99] Maximum Stamina (+1 per Character Level)<br>50% Slower Stamina Drain<br>Poison Resist +70%<br>Attacker Takes Damage of 540<br>Repairs 1 Durability in 10 Seconds<br>",
+    properties: {
+      kickmin: 70,
+      kickmax: 110,
+      defense: 178,
+      reqstr: 91,
+      reqlvl: 64,
+      frw: 30,
+      fhr: 20,
+      edef: 170,
+      str: 15,
+      vit: 15,
+      maxstamina: 99,
+      stamdrain: 50,
+      poisres: 70,
+      atdmg: 540,
+      repdur: 10,
+    },
+  },
+
+  Marrowwalk: {
+    description:
+      "Marrowwalk<br>Boneweave Boots<br>Base Kick Damage: 80 to 125, Avg 102.5<br>Defense: 204<br>Required Strength: 118<br>Required Level: 66<br>+20% Faster Run/Walk<br>+2 to Skeleton Mastery (Necromancer Only)<br>+200% Enhanced Defense<br>+20 to Strength<br>+17 to Dexterity<br>Regenerate Mana 20%<br>Heal Stamina Plus 10%<br>Cannot Be Frozen<br>",
+    properties: {
+      kickmin: 80,
+      kickmax: 125,
+      defense: 204,
+      reqstr: 118,
+      reqlvl: 66,
+      frw: 20,
+      skeletonmasterysk: 2,
+      edef: 200,
+      str: 20,
+      dex: 17,
+      regmana: 20,
+      healstamina: 10,
+      cbf: 1,
+    },
+  },
+
+  "Shadow Dancer": {
+    description:
+      "Shadow Dancer<br>Myrmidon Greaves<br>Base Kick Damage: 83 to 155, Avg 119<br>Defense: 144<br>Required Strength: 167<br>Required Level: 71<br>+2 to Shadow Disciplines<br>+30% Faster Run/Walk<br>+30% Faster Hit Recovery<br>+100% Enhanced Defense<br>+30 to Dexterity<br>Curse Resistance +10%<br>Requirements -25%<br>",
+    properties: {
+      kickmin: 83,
+      kickmax: 155,
+      defense: 144,
+      reqstr: 167,
+      reqlvl: 71,
+      shadowdisciplineskills: 2,
+      frw: 30,
+      fhr: 30,
+      edef: 100,
+      dex: 30,
+      cursres: 10,
+      req: -25,
+    },
+  },
+
+  "Itherael's Path": {
+    description:
+      "Itherael's Path<br>Mirrored Boots<br>Base Kick Damage: 69 to 147, Avg 108<br>Defense: 128<br>Required Strength: 163<br>Required Level: 85<br>+20% Faster Run/Walk<br>+20% Faster Cast Rate<br>+20% Faster Hit Recovery<br>+60 Defense<br>+15 to Dexterity<br>+15 to Vitality<br>",
+    properties: {
+      kickmin: 69,
+      kickmax: 147,
+      defense: 128,
+      reqstr: 163,
+      reqlvl: 85,
+      frw: 20,
+      fcr: 20,
+      fhr: 20,
+      todef: 60,
+      dex: 15,
+      vit: 15,
+    },
+  },
+
+  "Hsarus' Iron Heel": {
+    description:
+      "Hsarus' Iron Heel<br>Chain Boots<br>Base Kick Damage: 6 to 14, Avg 10 (was 6 to 12, Avg 9)<br>Defense: 9<br>Required Strength: 30<br>Required Level: 3<br>+20% Faster Run/Walk<br>Fire Resist +25%<br>+[10-990] to Attack Rating (+10 per Character Level) (2 Items)<br>",
+    properties: {
+      kickmin: 6,
+      kickmax: 14,
+      defense: 9,
+      reqstr: 30,
+      reqlvl: 3,
+      frw: 20,
+      firres: 25,
+    },
+  },
+
+  "Sigon's Sabot": {
+    description:
+      "Sigon's Sabot<br>Greaves<br>Base Kick Damage: 10 to 20, Avg 15<br>Defense: 15<br>Required Strength: 70<br>Required Level: 6<br>+20% Faster Run/Walk<br>Cold Resist +40%<br>+50 to Attack Rating (2 Items)<br>50% Better Chance of Getting Magic Items (3 Item)<br>",
+    properties: {
+      kickmin: 10,
+      kickmax: 20,
+      defense: 15,
+      reqstr: 70,
+      reqlvl: 6,
+      frw: 20,
+      coldres: 40,
+    },
+  },
+
+  "Vidala's Fetlock": {
+    description:
+      "Vidala's Fetlock<br>Light Plated Boots<br>Base Kick Damage: 8 to 18, Avg 13<br>Defense: 11<br>Required Strength: 50<br>Required Level: 14<br>+30% Faster Run/Walk<br>+150 Maximum Stamina<br>All Resistances +8 (2 Items)<br>",
+    properties: {
+      kickmin: 8,
+      kickmax: 18,
+      defense: 11,
+      reqstr: 50,
+      reqlvl: 14,
+      frw: 30,
+      maxstamina: 150,
+    },
+  },
+
+  "Tancred's Hobnails": {
+    description:
+      "Tancred's Hobnails<br>Boots<br>Base Kick Damage: 3 to 8, Avg 5.5<br>Defense: 3<br>Required Level: 20<br>+20 to Dexterity<br>Heal Stamina Plus 25%<br>Physical Damage Taken Reduced by 10%<br>+30% Faster Run/Walk (2 Items)<br>+10 to Strength (3 Items)<br>",
+    properties: {
+      kickmin: 3,
+      kickmax: 8,
+      defense: 3,
+      reqstr: 50,
+      reqlvl: 14,
+      frw: 30,
+      maxstamina: 150,
+      physdr: 10,
+    },
+  },
+
+  "Cow King's Hooves": {
+    description:
+      "Cow King's Hooves<br>Heavy Boots<br>Base Defense: 6<br>Base Kick Damage: 4 to 12, Avg 8<br>Defense: 41<br>Required Strength: 18<br>Required Level: 13<br>+30% Faster Run/Walk<br>Adds 25-35 Fire Damage<br>+35 Defense<br>+20 to Dexterity<br>25% Better Chance of Getting Magic Items<br>",
+    properties: {
+      kickmin: 4,
+      kickmax: 12,
+      defense: 41,
+      reqstr: 18,
+      reqlvl: 13,
+      frw: 30,
+      firedmgmin: 25,
+      firedmgmax: 35,
+      todef: 35,
+      dex: 20,
+      magicfind: 25,
+    },
+  },
+
+  "Sander's Riprap": {
+    description:
+      "Sander's Riprap<br>Heavy Boots<br>Base Kick Damage: 4 to 12, Avg 8<br>Defense: 6<br>Required Strength: 18<br>Required Level: 20<br>Minimum Item Level: 20<br>+40% Faster Run/Walk<br>+100 to Attack Rating<br>+5 to Strength<br>+10 to Dexterity<br>",
+    properties: {
+      kickmin: 4,
+      kickmax: 12,
+      defense: 6,
+      reqstr: 18,
+      reqlvl: 20,
+      frw: 40,
+      toatt: 100,
+      str: 5,
+      dex: 10,
+    },
+  },
+
+  "Rite of Passage": {
+    description:
+      "Rite of Passage<br>Demonhide Boots<br>Base Defense: 35<br>Base Kick Damage: 30 to 64, Avg 47<br>Defense: 60<br>Required Strength: 20<br>Required Level: 29<br>+30% Faster Run/Walk<br>+25 Defense<br>+25 Maximum Stamina<br>Cannot Be Frozen<br>",
+    properties: {
+      kickmin: 30,
+      kickmax: 64,
+      defense: 60,
+      reqstr: 20,
+      reqlvl: 29,
+      frw: 30,
+      todef: 25,
+      maxstamina: 25,
+      cbf: 1,
+    },
+  },
+
+  "Natalya's Soul": {
+    description:
+      "Natalya's Soul<br>Mesh Boots<br>Base Kick Damage: 35 to 78, Avg 56.5<br>Defense: 169<br>Durability: 66<br>Required Strength: 65<br>Required Level: 25<br>+40% Faster Run/Walk<br>+125 Defense<br>Heal Stamina Plus [0-24]% (0.25% per Character Level)<br>Cold Resist +25%<br>Lightning Resist +25%<br>+50 Durability<br>+30 Kick Damage (3 Items)<br>",
+    properties: {
+      kickmin: 35,
+      kickmax: 78,
+      defense: 169,
+      reqstr: 65,
+      reqlvl: 25,
+      frw: 40,
+      todef: 125,
+      healstamina: 24,
+      coldres: 25,
+      lightres: 25,
+    },
+  },
+
+  "Immortal King's Pillar": {
+    description:
+      "Immortal King's Pillar<br>War Boots<br>Base Kick Damage: 45 to 90, Avg 67.5<br>Defense: 138<br>Defense (4 Items): 298<br>Required Strength: 125<br>Required Level: 31<br>+40% Faster Run/Walk<br>+140 to Attack Rating<br>+85 Defense<br>+54 to Life<br>25% Better Chance of Getting Magic Items (2 Items)<br>+2 to Combat Skills (Barbarian Only) (3 Items)<br>+160 Defense (4 Items)<br>Half Freeze Duration (5 Items)<br>",
+    properties: {
+      kickmin: 45,
+      kickmax: 90,
+      defense: 138,
+      reqstr: 125,
+      reqlvl: 31,
+      frw: 40,
+      toatt: 140,
+      todef: 85,
+      tolife: 54,
+      magicfind: 25,
+    },
+  },
+
+  "Aldur's Advance": {
+    description:
+      "Aldur's Advance<br>Battle Boots<br>Base Kick Damage: 42 to 84, Avg 63<br>Defense: 47<br>Required Strength: 95<br>Required Level: 45<br>Indestructible<br>+40% Faster Run/Walk<br>+180 Maximum Stamina<br>10% Damage Taken Gained as Mana when Hit<br>Heal Stamina Plus 32%<br>+50 to Life<br>Fire Resist +50%<br>+15 to Dexterity (2 Items)<br>+15 to Dexterity (3 Items)<br>+15 to Dexterity (Complete Set)<br>",
+    properties: {
+      kickmin: 42,
+      kickmax: 84,
+      defense: 47,
+      reqstr: 95,
+      reqlvl: 45,
+      frw: 40,
+      maxstamina: 180,
+      damagemanaperhit: 10,
+      healstamina: 32,
+      tolife: 50,
+    },
+  },
+
   // rings
 
   Nagelring: {
