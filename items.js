@@ -3079,6 +3079,161 @@ const itemList = {
     },
   },
 
+  "Arctic Mitts": {
+    description:
+      "Arctic Mitts<br>Light Gauntlets<br>Defense: 11<br>Required Strength: 45<br>Required Level: 2<br>+10% Increased Attack Speed<br>+20 to Life<br>+50 to Attack Rating (2 Items)<br>+25% Chance to Pierce (2 Items)<br>+10 to Dexterity (3 Items)<br>",
+    properties: {
+      defense: 11,
+      reqstr: 45,
+      reqlvl: 2,
+      ias: 10,
+      tolife: 20,
+      toatt: 50, //zase 2 items or so
+      pierce: 25,
+    },
+  },
+
+  "Cleglaw's Pincers": {
+    description:
+      "Cleglaw's Pincers<br>Chain Gloves<br>Defense: 9<br>Required Strength: 25<br>Required Level: 4<br>+15 Poison Damage over 3 Seconds<br>Slows Target by 25%<br>Knockback<br>+[10-990] to Attack Rating (+10 per Character Level) (2 Items)<br>",
+    properties: {
+      defense: 9,
+      reqstr: 25,
+      reqlvl: 4,
+      poismin: 15,
+      poismax: 15,
+      slow: 25, //zase items 2
+      knockback: 1,
+    },
+  },
+
+  "Death's Hand": {
+    description:
+      "Death's Hand<br>Leather Gloves<br>Defense: 3<br>Required Level: 6<br>Poison Resist +50%<br>Poison Length Reduced by 45%<br>+30% Increased Attack Speed (2 Items)<br>+[0-49] to Maximum Damage (+0.5 per Character Level) (Complete Set)<br>",
+    properties: {
+      defense: 3,
+      reqlvl: 6,
+      poisres: 50,
+      poislen: 45, //2 items tu je to asi blbe.. poislen???
+      tomaxdmg: 49,
+    },
+  },
+
+  "Sigon's Gage": {
+    description:
+      "Sigon's Gage<br>Gauntlets<br>Defense: 15<br>Required Strength: 60<br>Required Level: 6<br>+20 to Attack Rating<br>+10 to Strength<br>+30% Increased Attack Speed (2 Items)<br>",
+    properties: {
+      defense: 15,
+      reqstr: 60,
+      reqlvl: 6,
+      toatt: 20, //2 items?
+      str: 10,
+    },
+  },
+
+  "Iratha's Cuff": {
+    description:
+      "Iratha's Cuff<br>Light Gauntlets<br>Defense: 11<br>Required Strength: 45<br>Required Level: 15<br>+20% Chance to Pierce<br>Cold Resist +20%<br>Half Freeze Duration<br>+20% Increased Attack Speed (2 Items)<br>",
+    properties: {
+      defense: 11,
+      reqstr: 45,
+      reqlvl: 15,
+      pierce: 20,
+      coldres: 20,
+      coldlen: 1, //tu je halffreeze  a zas 3 items nebo tak
+    },
+  },
+
+  "Sander's Taboo": {
+    description:
+      "Sander's Taboo<br>Heavy Gloves<br>Defense: 31<br>Required Level: 28<br>+20% Increased Attack Speed<br>Adds 27-33 Poison Damage over 3 Seconds<br>+25 Defense<br>+40 to Life<br>",
+    properties: {
+      defense: 31,
+      reqlvl: 28,
+      ias: 20,
+      tomindmg: 27,
+      tomaxdmg: 33,
+      todef: 25, //zas 2 items
+      tolife: 40,
+    },
+  },
+
+  "Magnus' Skin": {
+    description:
+      "Magnus' Skin<br>Sharkskin Gloves<br>Defense: 60<br>Required Strength: 20<br>Required Level: 37<br>+20% Increased Attack Speed<br>+20% Chance to Pierce<br>+100 to Attack Rating<br>+50% Enhanced Defense<br>Fire Resist +15%<br>+3 to Light Radius<br>+150% Damage to Undead (3 Items)<br>",
+    properties: {
+      defense: 60,
+      reqstr: 20,
+      reqlvl: 37,
+      ias: 20,
+      pierce: 20,
+      toatt: 100,
+      edef: 50,
+      firres: 15, //uzas 2i tems
+    },
+  },
+
+  "Laying of Hands": {
+    description:
+      "Laying of Hands<br>Bramble Mitts<br>Defense: 112<br>Required Strength: 50<br>Required Level: 63<br>10% Chance to Cast Level 13 Holy Bolt on Striking<br>+20% Increased Attack Speed<br>+200% Damage to Demons<br>+50 Defense<br>Fire Resist +50%<br>+220 Poison Damage over 2 Seconds (2 Items)<br>",
+    properties: {
+      defense: 112,
+      reqstr: 50,
+      reqlvl: 63,
+      ctcholybolt: (10, 13), //nevim jak to tu delat
+      ias: 20,
+      edmg: 200,
+      todef: 50,
+      firres: 50,
+    },
+  },
+
+  "Immortal King's Forge": {
+    description:
+      "Immortal King's Forge<br>War Gauntlets<br>Defense: 143<br>Defense (3 Items): 263<br>Required Strength: 110<br>Required Level: 30<br>12% Chance to Cast Level 24 Charged Bolt when Struck<br>+90 Defense<br>+20 to Strength<br>+20 to Dexterity<br>+25% Increased Attack Speed (2 Items)<br>+120 Defense (3 Items)<br>10% Life Stolen per Hit (4 Items)<br>10% Mana Stolen per Hit (5 Items)<br>Freezes Target +2 (Complete Set)<br>",
+    properties: {
+      defense: 143,
+      reqstr: 110,
+      reqlvl: 30,
+      ctccbolt: (12, 24), //nevim jak to tu delat
+      todef: 90,
+      str: 20,
+      dex: 20,
+    },
+  },
+
+  "M'avina's Icy Clutch": {
+    description:
+      "M'avina's Icy Clutch<br>Battle Gauntlets<br>Defense: 97<br>Required Strength: 88<br>Required Level: 32<br>Adds 12-36 Cold Damage<br>+50 Defense<br>+12 to Strength<br>+20 to Dexterity<br>Cannot Be Frozen<br>56% Extra Gold from Monsters<br>Adds 131-252 Cold Damage (4 Items)<br>+5% to Cold Skill Damage (Complete Set)<br>",
+    properties: {
+      defense: 97,
+      reqstr: 88,
+      reqlvl: 32,
+      tomindmg: 12,
+      tomaxdmg: 36,
+      todef: 50,
+      str: 12,
+      dex: 20,
+    },
+  },
+
+  "Trang-Oul's Claws": {
+    description:
+      "Trang-Oul's Claws<br>Heavy Bracers<br>Defense: 74<br>Required Strength: 58<br>Required Level: 45<br>+2 to Curses (Necromancer Only)<br>+20% Faster Cast Rate<br>+15% to Poison Skill Damage<br>+30 Defense<br>Cold Resist +30%<br>+20 to Meteor (4 Items)<br>",
+    properties: {
+      defense: 74,
+      reqstr: 58,
+      reqlvl: 45,
+      curseskills: 1,
+      cb: 20,
+      todef: 210,
+      str: 20,
+      atdmg: 250, //vse checkuj, tyhle gloves uplne WRONG
+      meteorosk: 20,
+    },
+  },
+  //belts
+
   Lenymo: {
     description:
       "Lenymo<br>Sash<br>Defense: 2<br>Required Level: 7<br>+10% Faster Cast Rate<br>+15 to Mana<br>Regenerate Mana 30%<br>All Resistances +5<br>+1 to Light Radius<br>",
@@ -3305,6 +3460,148 @@ const itemList = {
     },
   },
 
+  "Arctic Binding": {
+    description:
+      "Arctic Binding<br>Light Belt<br>Defense: 33<br>Required Level: 2<br>+30 Defense<br>Cold Resist +40%<br>40% Better Chance of Getting Magic Items (2 Items)<br>Cold Resist +10% (3 Items)<br>",
+    properties: {
+      defense: 33,
+      reqlvl: 2,
+      todef: 30,
+      coldres: 40,
+      magicfindx: 40,
+      coldresx: 10,
+    },
+  },
+
+  "Hsarus' Iron Stay": {
+    description:
+      "Hsarus' Iron Stay<br>Belt<br>Defense: 5<br>Defense (2 Items): 7-252<br>Required Strength: 25<br>Required Level: 3<br>+20 to Life<br>Cold Resist +20%<br>+[2-247] Defense (+2.5 per Character Level) (2 Items)<br>",
+    properties: {
+      defense: 5,
+      defensex: 252,
+      reqstr: 25,
+      reqlvl: 3,
+      tolife: 20,
+      coldres: 20,
+      defensex: 247,
+    },
+  },
+
+  "Infernal Sign": {
+    description:
+      "Infernal Sign<br>Heavy Belt<br>Defense: 31<br>Required Strength: 45<br>Required Level: 5<br>+25 Defense<br>+20 to Life<br>Poison Resist +45% (2 Items)<br>Cannot Be Frozen (Complete Set)<br>",
+    properties: {
+      defense: 31,
+      reqstr: 45,
+      reqlvl: 5,
+      todef: 25,
+      tolife: 20,
+      poisres: 45, //tu jeste něcochybi
+    },
+  },
+
+  "Death's Guard": {
+    description:
+      "Death's Guard<br>Sash<br>Defense: 22<br>Required Level: 6<br>+20 Defense<br>Cannot Be Frozen<br>All Resistances +15 (2 Items)<br>",
+    properties: {
+      defense: 22,
+      reqlvl: 6,
+      todef: 20,
+      allres: 15, //2 items zase
+    },
+  },
+
+  "Sigon's Wrap": {
+    description:
+      "Sigon's Wrap<br>Plated Belt<br>Defense: 8-11<br>Defense (2 Items): 10-209<br>Required Strength: 60<br>Required Level: 6<br>+20 to Life<br>Fire Resist +20%<br>+[2-198] Defense (+2 per Character Level) (2 Items)<br>",
+    properties: {
+      defense: 8,
+      defensex: 11,
+      reqstr: 60,
+      reqlvl: 6,
+      tolife: 20,
+      fireres: 20,
+      defensex: 198, //checkitout
+    },
+  },
+
+  "Iratha's Cord": {
+    description:
+      "Iratha's Cord<br>Heavy Belt<br>Defense: 31<br>Required Strength: 45<br>Required Level: 15<br>+5 to Minimum Damage<br>+25 Defense<br>+10 to Dexterity (2 Items)<br>+10 to Maximum Damage (3 Items)<br>",
+    properties: {
+      defense: 31,
+      reqstr: 45,
+      reqlvl: 15,
+      tomindmg: 5,
+      todef: 25,
+      dex: 10, //2 items
+      tomaxdmg: 10, //3 items
+    },
+  },
+
+  "Hwanin's Blessing": {
+    description:
+      "Hwanin's Blessing<br>Belt<br>Defense: 6-153<br>Required Strength: 25<br>Required Level: 35<br>Adds 3-330 Lightning Damage<br>Prevent Monster Heal<br>+[1-148] Defense (+1.5 per Character Level)<br>Lightning Absorb 6%<br>12% Damage Taken Gained as Mana when Hit<br>",
+    properties: {
+      defense: 6,
+      defensex: 153,
+      reqstr: 25,
+      reqlvl: 35,
+      lightdmgmin: 3,
+      lightdmgmax: 330,
+      edef: 0, //nevim tady je to spatně
+      preventheal: 1,
+      lightningabsorb: 6,
+      dmgtomana: 12,
+    },
+  },
+
+  "Wilhelm's Pride": {
+    description:
+      "Wilhelm's Pride<br>Battle Belt<br>Defense: 75<br>Required Strength: 88<br>Required Level: 42<br>6% Mana Stolen per Hit<br>6% Life Stolen per Hit<br>+75% Enhanced Defense<br>Cold Resist +20%<br>+150% Damage to Demons (3 Items)<br>",
+    properties: {
+      defense: 75,
+      reqstr: 88,
+      reqlvl: 42,
+      lleech: 6,
+      edef: 75,
+      coldres: 20,
+      dmgtodem: 150, //3 items
+    },
+  },
+
+  Credendum: {
+    description:
+      "Credendum<br>Mithril Coil<br>Defense: 115<br>Required Strength: 106<br>Required Level: 65<br>+50 Defense<br>+10 to Strength<br>+10 to Dexterity<br>All Resistances +15<br>+20% Faster Hit Recovery (3 Items)<br>",
+    properties: {
+      defense: 115,
+      reqstr: 106,
+      reqlvl: 65,
+      todef: 50,
+      str: 10,
+      dex: 10,
+      allres: 15,
+    },
+  },
+
+  "Immortal King's Detail": {
+    description:
+      "Immortal King's Detail<br>War Belt<br>Defense: 109<br>Defense (2 Items): 186-214<br>Defense (4 Items): 239-267<br>Required Strength: 110<br>Required Level: 29<br>+56 Defense<br>+25 to Strength<br>Lightning Resist +33%<br>Fire Resist +28%<br>+105 Defense (2 Items)<br>+25% Faster Hit Recovery (3 Items)<br>+100% Enhanced Defense (4 Items)<br>Physical Damage Taken Reduced by 20% (5 Items)<br>+2 to Masteries (Barbarian Only) (Complete Set)<br>",
+    properties: {
+      defense: 109,
+      defensex: 186,
+      reqstr: 110,
+      reqlvl: 29,
+      todef: 56,
+      str: 25,
+      lightres: 33,
+      fireres: 28,
+      defensex2: 105, //2 items
+      fhr3: 25, //3 items
+      edef4: 100, //4 items
+      pdr5: 20, //5 items
+    },
+  },
   //boots
 
   Hotspur: {
