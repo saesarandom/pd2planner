@@ -646,6 +646,334 @@ const itemList = {
     },
   },
 
+  "Berserker's Headgear": {
+    description:
+      "Berserker's Headgear<br>Helm<br>Defense: 33<br>Required Strength: 26<br>Required Level: 3<br>+15 Defense<br>Fire Resist +25%<br>+[8-792] to Attack Rating (+8 per Character Level) (2 Items)<br>+1 to Barbarian Skills (Complete Set)<br>",
+    properties: {
+      defense: 33,
+      reqstr: 26,
+      reqlvl: 3,
+      toattpercent: 15, //2 itemy atd
+      firres: 25,
+      attperlevel: 8,
+      barsk: 1,
+    },
+  },
+
+  "Infernal Cranium": {
+    description:
+      "Infernal Cranium<br>Cap<br>Defense: 5<br>Defense (2 Items): 7-401<br>Required Level: 3<br>All Resistances +10<br>20% Damage Taken Gained as Mana when Hit<br>+[4-396] Defense (+4 per Character Level) (2 Items)<br>",
+    properties: {
+      defense: 5,
+      reqlvl: 3,
+      allres: 10,
+      dmgtomana: 20,
+      todeflvl: 4, //2 itemy atd
+    },
+  },
+
+  "Sigon's Visor": {
+    description:
+      "Sigon's Visor<br>Great Helm<br>Defense: 60<br>Required Strength: 63<br>Required Level: 6<br>+25 Defense<br>+30 to Mana<br>+[8-792] to Attack Rating (+8 per Character Level) (2 Items)<br>",
+    properties: {
+      defense: 60,
+      reqstr: 63,
+      reqlvl: 6,
+      todef: 25,
+      tomana: 30,
+      toattpercent: 25, //2 itemy atd
+    },
+  },
+
+  "Isenhart's Horns": {
+    description:
+      "Isenhart's Horns<br>Full Helm<br>Defense: 26<br>Required Strength: 41<br>Required Level: 8<br>+8 to Maximum Damage<br>+6 to Dexterity<br>Physical Damage Taken Reduced by 4<br>Lightning Resist +[1-99]% (+1% per Character Level) (3 Items)<br>",
+    properties: {
+      defense: 26,
+      reqstr: 41,
+      reqlvl: 8,
+      maxdmg: 8,
+      dex: 6,
+      pdr: 4,
+      ligresperlevel: 1, //3 itemy atd
+    },
+  },
+
+  "Cathan's Visage": {
+    description:
+      "Cathan's Visage<br>Mask<br>Defense: 27<br>Defense (2 Items): 11-225<br>Required Strength: 23<br>Required Level: 11<br>5% Mana Stolen per Hit<br>+20 to Mana<br>Cold Resist +25%<br>+[2-198] Defense (+2 per Character Level) (2 Items)<br>",
+    properties: {
+      defense: 27,
+      reqstr: 23,
+      reqlvl: 11,
+      mleech: 5,
+      tomana: 20,
+      coldres: 25,
+    },
+  },
+
+  "Iratha's Coil": {
+    description:
+      "Iratha's Coil<br>Crown<br>Defense: 25-45<br>Defense (2 Items): 27-243<br>Required Strength: 55<br>Required Level: 15<br>Lightning Resist +30%<br>Fire Resist +30%<br>+[2-198] Defense (+2 per Character Level) (2 Items)<br>+1 to Amazon Skills (3 Items)<br>",
+    properties: {
+      defense: 25,
+      reqstr: 55,
+      reqlvl: 15,
+      ligres: 30,
+      firres: 30,
+      todeflvl: 2, //2 itemy atd
+      amask: 1, //3 itemy atd
+    },
+  },
+
+  "Milabrega's Diadem": {
+    description:
+      "Milabrega's Diadem<br>Crown<br>Defense: 45<br>Required Strength: 55<br>Required Level: 17<br>Adds 25-35 Cold Damage<br>+15 to Life<br>+15 to Mana<br>Cold Resist +40% (2 Items)<br>",
+    properties: {
+      defense: 45,
+      reqstr: 55,
+      reqlvl: 17,
+      coldmin: 25,
+      coldmax: 35,
+      tolife: 15,
+      tomana: 15,
+      coldres: 40, //2 itemy
+    },
+  },
+
+  "Tancred's Skull": {
+    description:
+      "Tancred's Skull<br>Bone Helm<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 36<br>Required Strength: 25<br>Required Level: 20<br>+30% Enhanced Damage<br>+80 to Attack Rating<br>All Resistances +10 (2 Items)<br>",
+    properties: {
+      defense: 36,
+      reqstr: 25,
+      reqlvl: 20,
+      edmg: 30,
+      toatt: 80,
+      allres: 10, //2 itemy
+    },
+  },
+
+  "Cow King's Horns": {
+    description:
+      "Cow King's Horns<br>War Hat<br>Defense: 120-128<br>Required Strength: 20<br>Required Level: 25<br>+1 to All Skills<br>+75 Defense<br>Cannot Be Frozen<br>Attacker Takes Damage of 10<br>35% Damage Taken Gained as Mana when Hit<br>",
+    properties: {
+      defense: 120,
+      reqstr: 20,
+      reqlvl: 25,
+      allsk: 1,
+      todef: 75,
+      cbf: 1,
+      atdmg: 10,
+      dmgtomana: 35,
+    },
+  },
+
+  "Sander's Paragon": {
+    description:
+      "Sander's Paragon<br>Cap<br>Defense: 4-104<br>Required Level: 25<br>+[1-99] Defense (+1 per Character Level)<br>Attacker Takes Damage of 8<br>70% Better Chance of Getting Magic Items<br>",
+    properties: {
+      defense: 4,
+      reqlvl: 25,
+      todeflvl: 1, //2 itemy atd
+      atdmg: 8,
+      magicfind: 70,
+    },
+  },
+
+  "Hwanin's Splendor": {
+    description:
+      "Hwanin's Splendor<br>Grand Crown<br>Defense: 285<br>Required Strength: 103<br>Required Level: 45<br>+350 to Attack Rating<br>+150% Enhanced Defense<br>Replenish Life +40<br>Cold Resist +37%<br>Magic Damage Taken Reduced by 10<br>",
+    properties: {
+      defense: 285,
+      reqstr: 103,
+      reqlvl: 45,
+      toatt: 350,
+      edef: 150,
+      repl: 40,
+      coldres: 37,
+      mdr: 10,
+    },
+  },
+
+  "Guillaume's Face": {
+    description:
+      "Guillaume's Face<br>Winged Helm<br>Defense: 217<br>Required Strength: 115<br>Required Level: 34<br>+30% Faster Hit Recovery<br>35% Chance of Crushing Blow<br>15% Deadly Strike<br>+120% Enhanced Defense<br>+15 to Strength<br>-20% Target Defense (3 Items)<br>",
+    properties: {
+      defense: 217,
+      reqstr: 115,
+      reqlvl: 34,
+      fhr: 30,
+      cb: 35,
+      deadlystrike: 15,
+      edef: 120,
+      str: 15,
+      targetdefpercent: -20, //3 itemy
+    },
+  },
+
+  "Najs's Circlet": {
+    description:
+      "Naj's Circlet<br>Circlet<br>Base Maximum Sockets: 2 (3 for upgraded exceptional/elite versions)<br>Defense: 105<br>Required Level: 28<br>12% Chance to Cast Level 5 Chain Lightning when Struck<br>+20% Faster Cast Rate<br>Adds 25-35 Fire Damage<br>+75 Defense<br>+15 to Strength<br>+5 to Light Radius<br>+1 to All Skills (2 Items)<br>",
+    properties: {
+      defense: 105,
+      reqlvl: 28,
+      fcr: 20,
+      firemin: 25,
+      firemax: 35,
+      todef: 75,
+      str: 15,
+      ligrad: 5,
+      allsk: 1, //2 itemy
+    },
+  },
+
+  "Sazabi's Mental Sheath": {
+    description:
+      "Sazabi's Mental Sheath<br>Basinet<br>Defense: 184<br>Required Strength: 82<br>Required Level: 43<br>+1 to All Skills<br>+100 Defense<br>Replenish Life +15<br>Lightning Resist +20%<br>Fire Resist +20%<br>",
+    properties: {
+      defense: 184,
+      reqstr: 82,
+      reqlvl: 43,
+      allsk: 1,
+      todef: 100,
+      repl: 15,
+      ligres: 20,
+      firres: 20,
+    },
+  },
+
+  "Ondal's Almighty": {
+    description:
+      "Ondal's Almighty<br>Spired Helm<br>Defense: 309<br>Required Strength: 164<br>Required Level: 69<br>10% Chance to Cast Level 13 Weaken on Striking<br>+2 to All Skills<br>+24% Faster Hit Recovery<br>+150 Defense<br>+15 to Strength<br>+20 to Dexterity<br>Requirements -15%<br>+20% Faster Cast Rate (2 Items)<br>",
+    properties: {
+      defense: 309,
+      reqstr: 164,
+      reqlvl: 69,
+      weakenctc: 10, //bylo tu: 10, 13 ale nevim
+      allsk: 2,
+      fhr: 24,
+      todef: 150,
+      str: 15,
+      dex: 20,
+      req: -15,
+      fcr: 20, //2 itemy
+    },
+  },
+
+  "Aldur's Stony Gaze": {
+    description:
+      "Aldur's Stony Gaze<br>Hunter's Guise<br>Defense: 171<br>Required Strength: 56<br>Required Level: 36<br>(Druid Only)<br>+2 to Summoning Skills (Druid Only)<br>+2 to Druid Skills<br>+25% Faster Hit Recovery<br>+90 Defense<br>Regenerate Mana 17%<br>Cold Resist +50%<br>+5 to Light Radius<br>+15 to Energy (2 Items)<br>+15 to Energy (3 Items)<br>+15 to Energy (Complete Set)<br>",
+    properties: {
+      defense: 171,
+      reqstr: 56,
+      reqlvl: 36,
+      summoning: 2,
+      drusk: 2,
+      fhr: 25,
+      todef: 90,
+      regmana: 17,
+      coldres: 50,
+      ligrad: 5,
+      enr: 15, //2 itemy
+    },
+  },
+
+  "Griswold's Valor": {
+    description:
+      "Griswold's Valor<br>Corona<br>Defense: 290<br>Required Strength: 105<br>Required Level: 69<br>+75% Enhanced Defense<br>All Resistances +25<br>+[0-24] Absorbs Cold Damage (0.25 per Character Level)<br>50% Better Chance of Getting Magic Items<br>Requirements -40%<br>Socketed [2-3]<br>+2 to Offensive Auras (Paladin Only) (2 Items)<br>",
+    properties: {
+      defense: 290,
+      reqstr: 105,
+      reqlvl: 69,
+      edef: 75,
+      allres: 25,
+      coldabsorb: 24,
+      magicfind: 50,
+      req: -40,
+      sock: 3,
+      offensiveaurasskills: 2, //2 itemy
+    },
+  },
+
+  "Immortal King's Will": {
+    description:
+      "Immortal King's Will<br>Avenger Guard<br>Defense: 175<br>Required Strength: 65<br>Required Level: 47<br>(Barbarian Only)<br>+2 to Warcries (Barbarian Only)<br>+125 Defense<br>67% Extra Gold from Monsters<br>40% Better Chance of Getting Magic Items<br>+4 to Light Radius<br>Socketed (2)<br>Physical Damage Taken Reduced by 8% (3 Items)<br>",
+    properties: {
+      defense: 175,
+      reqstr: 65,
+      reqlvl: 47,
+      warcries: 2,
+      todef: 125,
+      goldfind: 67,
+      magicfind: 40,
+      ligrad: 4,
+      sock: 2, //2 itemy
+    },
+  },
+
+  "M'avina's True Sight": {
+    description:
+      "M'avina's True Sight<br>Diadem<br>Defense: 210<br>Required Level: 64<br>+30% Increased Attack Speed<br>+150 Defense<br>Replenish Life +15<br>+45 to Mana<br>+1 to All Skills (2 Items)<br>50% Bonus to Attack Rating (3 Items)<br>All Resistances +25 (4 Items)<br>+5% to Fire Skill Damage (Complete Set)<br>",
+    properties: {
+      defense: 210,
+      reqlvl: 64,
+      ias: 30,
+      todef: 150,
+      repl: 15,
+      tomana: 45,
+      allsk: 1,
+      toattpercent: 50,
+      allres: 25,
+    },
+  },
+
+  "Natalya's Totem": {
+    description:
+      "Natalya's Totem<br>Grim Helm<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 300<br>Required Strength: 58<br>Required Level: 59<br>+175 Defense<br>+20 to Strength<br>+30 to Dexterity<br>All Resistances +20<br>Magic Damage Taken Reduced by 6<br>",
+    properties: {
+      defense: 300,
+      reqstr: 58,
+      reqlvl: 59,
+      todef: 175,
+      str: 20,
+      dex: 30,
+      allres: 20,
+      mdr: 6,
+    },
+  },
+
+  "Tal Rasha's Horadric Crest": {
+    description:
+      "Tal Rasha's Horadric Crest<br>Death Mask<br>Defense: 131<br>Required Strength: 55<br>Required Level: 66<br>10% Mana Stolen per Hit<br>10% Life Stolen per Hit<br>+45 Defense<br>+65 to Life<br>+35 to Mana<br>All Resistances +20<br>",
+    properties: {
+      defense: 131,
+      reqstr: 55,
+      reqlvl: 66,
+      lleech: 10,
+      mleech: 10,
+      todef: 45,
+      tolife: 65,
+      tomana: 35,
+      allres: 20,
+    },
+  },
+
+  "Trang-Oul's Guise": {
+    description:
+      "Trang-Oul's Guise<br>Bone Visage<br>Defense: 257<br>Required Strength: 106<br>Required Level: 65<br>+25% Faster Hit Recovery<br>+100 Defense<br>Replenish Life +30<br>+150 to Mana<br>Attacker Takes Damage of 620<br>",
+    properties: {
+      defense: 257,
+      reqstr: 106,
+      reqlvl: 65,
+      fhr: 25,
+      todef: 100,
+      repl: 30,
+      tomana: 150,
+      atdmg: 620,
+    },
+  },
+
   // UNIQUE ARMORS //
 
   Greyform: {
