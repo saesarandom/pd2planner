@@ -1644,7 +1644,7 @@ console.log('Raw deadly strike value:', document.getElementById('deadlystrikecon
         console.log('Critical hit value:', criticalHitValue);
 
 
-        const critMultiplier = 0.5 * (1 - (1 - deadlyStrike) * 
+        const critMultiplier = 0.5 * (1 - (1 - deadlyStrike/100) * 
                                     (1 - criticalHitValue/100) * 
                                     (1 - weaponMastery/100)) + 1;
 
@@ -2595,7 +2595,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalFlatPoisonDmg += (amuletData.properties.poisondmg / amuletData.properties.poisontime) || 0;
       totalFlatMagicDmg += (amuletData.properties.magicdmgmin/2 + amuletData.properties.magicdmgmax/2) || 0;
       totalCriticalHit += amuletData.properties.criticalsk || 0;
-      totalDeadlyStrike += amuletData.properties.deadlyperlvl*startLvlValue/100 || 0; 
+      totalDeadlyStrike += amuletData.properties.deadlyperlvl*startLvlValue || 0; 
       totalWeaponMastery += amuletData.properties.weaponmasterysk || 0; 
       totalEDMG += amuletData.properties.edmg || 0;
       totalMaxFireRes += amuletData.properties.maxfirres || 0;
@@ -2628,8 +2628,8 @@ let totalEDMG = 0; // total Enhanced Damage defined
     
 
   
-  totalTwoMinDmg = Math.floor(totalTwoMinDmg * (1 + totalStr * 1.1/100));
-  totalTwoMaxDmg = Math.floor(totalTwoMaxDmg * (1 + totalStr * 1.1/100));
+  totalTwoMinDmg = Math.floor(totalTwoMinDmg);
+  totalTwoMaxDmg = Math.floor(totalTwoMaxDmg);
   totalCritMultiplier = 0.5 * (1 - (1 - totalDeadlyStrike) * (1 - totalCriticalHit) * (1 - totalWeaponMastery)) + 1;
    
     let totalLifeAccr;
@@ -2727,7 +2727,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
     document.getElementById('flatpoisoncontainer').innerHTML = totalFlatPoisonDmg.toFixed(0);
     document.getElementById('flatmagiccontainer').innerHTML = totalFlatMagicDmg.toFixed(0);
     document.getElementById('criticalhitcontainer').innerHTML = totalCriticalHit.toFixed(0);
-    document.getElementById('deadlystrikecontainer').innerHTML = totalDeadlyStrike.toFixed(2);
+    document.getElementById('deadlystrikecontainer').innerHTML = totalDeadlyStrike.toFixed(2); //tu bylo 2
     document.getElementById('weaponmasterycontainer').innerHTML = totalWeaponMastery.toFixed(0);
     document.getElementById('crithitmultipliercontainer').innerHTML = totalCritMultiplier.toFixed(3);
 } 

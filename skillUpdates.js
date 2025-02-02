@@ -75,12 +75,12 @@ class SkillUpdates {
     const stats = this.convertStatsToNumbers();
 
     stats.criticalhitcontainer = Math.min(stats.criticalhitcontainer, 75);
-    stats.deadlystrikecontainer = Math.min(stats.deadlystrikecontainer, 0.75);
+    stats.deadlystrikecontainer = Math.min(stats.deadlystrikecontainer, 75);
 
     const critMultiplier =
       0.5 *
         (1 -
-          (1 - stats.deadlystrikecontainer) *
+          (1 - stats.deadlystrikecontainer / 100) *
             (1 - stats.criticalhitcontainer / 100) *
             (1 - stats.weaponmasterycontainer / 100)) +
       1;
