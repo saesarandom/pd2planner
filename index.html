@@ -4216,11 +4216,9 @@ skillvalues.forEach(skillvalue => {
   <script src="skillRestriction.js"></script>
   <script src="skillUpdates.js"></script>
   <script src="DPSSimulator.js"></script>
-  <!-- <script src="enhancedDamage.js"></script> -->
   <script src="login.js"></script>
   <script src="achievements.obfuscated.js"></script>
-  <!-- <script src="damageCalculator.js"></script> -->
-  <script src="socketDisplay.js"></script>
+
     
       
       
@@ -6311,6 +6309,24 @@ document.querySelectorAll('.skill-container input[type="number"]').forEach(input
 
 <script>
   function updateDamageDisplay() {
+
+
+
+    currentWeapon.properties.onehandmin = calculateItemDamage(currentWeapon, baseType, false);
+    currentWeapon.properties.onehandmax = calculateItemDamage(currentWeapon, baseType, true);
+
+
+
+
+
+
+
+
+
+
+
+
+
   const selectedSkill = document.getElementById('left-skill').value;
   const currentLevel = parseInt(document.getElementById(selectedSkill)?.value || 0);
   const skillName = skillNameMap[selectedSkill];
@@ -8765,7 +8781,7 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
   'Dol Rune': {
     helm: 'Replenish Life +10',
     armor: 'Replenish Life +10',
-    weapon: '20% Enhanced Damage',
+    weapon: '+20% Enhanced Damage',
     shield: 'Replenish Life +10'
   },
   'Hel Rune': {
@@ -9160,6 +9176,7 @@ document.querySelectorAll('.socketz').forEach(socket => {
     e.preventDefault();
     clearSocket(socket);
     updateAllStatsDisplays();
+    // updateDamageDisplay();
   });
 });
 
@@ -9371,6 +9388,7 @@ function insertItem(itemName) {
     // handleUpgrade();
 
     updateAllStatsDisplays();
+    // updateDamageDisplay();
   }
 }
 
@@ -9834,8 +9852,8 @@ window.addEventListener('click', (e) => {
 <button id="upgradeBootButton" class="upgrade-buttonboot">Upgrade Boots</button>
 <button id="makeethereal" onclick="makeEthereal()">Ethereal</button>
 <button id="makeetherealarmor" onclick="makeEtherealArmor()">Ethereal</button>
-<!-- <button id="makeetherealweapon" onclick="makeEtherealWeapon()">Ethereal</button>
-<button id="makeetherealshield" onclick="makeEtherealShield()">Ethereal</button> -->
+<button id="makeetherealweapon" onclick="makeEtherealWeapon()">Ethereal</button>
+<button id="makeetherealshield" onclick="makeEtherealShield()">Ethereal</button>
 <button id="makeetherealglove" onclick="makeEtherealGlove()">Ethereal</button>
 <button id="makeetherealbelt" onclick="makeEtherealBelt()">Ethereal</button>
 <button id="makeetherealboot" onclick="makeEtherealBoot()">Ethereal</button>
@@ -9853,6 +9871,7 @@ document.getElementById('makeetherealarmor').addEventListener('click', () => mak
 document.getElementById('makeetherealglove').addEventListener('click', () => makeEtherealItem('gloves'));
 document.getElementById('makeetherealbelt').addEventListener('click', () => makeEtherealItem('belts'));
 document.getElementById('makeetherealboot').addEventListener('click', () => makeEtherealItem('boots'));
+document.getElementById('makeetherealweapon').addEventListener('click', () => makeEtherealItem('weapons'));
 </script>
 
 </body>

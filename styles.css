@@ -2995,6 +2995,21 @@ option[value="Arcanna's Head"] {
   border-radius: 3px;
 }
 
+#makeetherealweapon {
+  background-color: #1d1d1d;
+  position: absolute;
+  top: 369px;
+  left: 720px;
+  height: 40px;
+  width: 80px;
+  color: rgb(201, 1, 1);
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
 .upgrade-buttonshield {
   background-color: #4a4a4a;
   position: absolute;

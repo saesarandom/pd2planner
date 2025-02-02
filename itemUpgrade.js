@@ -2172,11 +2172,60 @@ function calculateItemDefense(item, baseType, category = "helm") {
 }
 
 function calculateItemDamage(item, baseType, isMax = false) {
-  const baseDamage = baseDamages[baseType] || { min: 0, max: 0 };
-  const { edmg } = item.properties || {}; // Default 50% enhanced damage for The Gnasher
+  const baseDamage = baseDamages[baseType.trim()] || { min: 0, max: 0 };
+  const { edmg } = item.properties || {};
+  const ethMult = item.description.includes("Ethereal") ? 1.5 : 1;
+
+  // Calculate enhanced damage from socketed items (jewels AND runes)
+  let socketEnhancedDamage = 0;
+  document
+    .querySelectorAll('.socketz[data-section="weapon"]')
+    .forEach((socket) => {
+      if (socket.dataset.itemName) {
+        // Handle runes
+        if (socket.dataset.itemName.includes("Rune")) {
+          // Get the rune's weapon stats
+          const runeName = socket.dataset.itemName;
+          const runeStats = items[runeName]?.weapon;
+          if (runeStats) {
+            const edmgMatch = runeStats.match(/(\d+)% Enhanced Damage/);
+            if (edmgMatch) {
+              socketEnhancedDamage += parseInt(edmgMatch[1]);
+            }
+          }
+        } else if (socket.dataset.stats) {
+          // Handle jewels
+          try {
+            const stats = JSON.parse(socket.dataset.stats);
+            stats.forEach((stat) => {
+              const edmgMatch = stat.match(/\+(\d+)% Enhanced Damage/);
+              if (edmgMatch) {
+                socketEnhancedDamage += parseInt(edmgMatch[1]);
+              }
+            });
+          } catch (e) {
+            const edmgMatch = socket.dataset.stats.match(
+              /\+(\d+)% Enhanced Damage/
+            );
+            if (edmgMatch) {
+              socketEnhancedDamage += parseInt(edmgMatch[1]);
+            }
+          }
+        }
+      }
+    });
+
+  console.log("Socket Enhanced Damage:", socketEnhancedDamage); // Debug line
 
   const base = isMax ? baseDamage.max : baseDamage.min;
-  return Math.floor(base * (1 + edmg / 100));
+  const ethBase = Math.floor(base * ethMult);
+
+  // Apply both weapon's enhanced damage and socketed enhanced damage
+  const totalEnhancedDamage = (edmg || 0) + socketEnhancedDamage;
+
+  console.log("Total Enhanced Damage:", totalEnhancedDamage); // Debug line
+
+  return Math.floor(ethBase * (1 + totalEnhancedDamage / 100));
 }
 
 function handleUpgrade() {
@@ -2764,23 +2813,95 @@ function makeEtherealItem(category) {
   const currentItem = select.value;
   const currentItemData = itemList[currentItem];
 
-  // Early exit checks
+  console.log("Starting makeEtherealItem:", {
+    category,
+    currentItem,
+    currentItemData,
+  });
+
   if (!currentItemData || currentItemData.description.includes("Ethereal"))
     return;
 
-  // Add ethereal property and text
-  currentItemData.properties.ethereal = true;
-  let lines = currentItemData.description.split("<br>");
-  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
-  currentItemData.description = lines.join("<br>");
+  if (category === "weapons") {
+    const baseType = currentItemData.description.split("<br>")[1];
+    const isTwoHanded = currentItemData.properties.twohandmin !== undefined;
 
-  // Force recalculation and UI update
-  const baseType = currentItemData.description.split("<br>")[1];
-  const newDefense = calculateItemDefense(currentItemData, baseType, category);
-  const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
-  lines[defenseIndex] = `Defense: ${newDefense}`;
-  currentItemData.description = lines.join("<br>");
-  currentItemData.properties.defense = newDefense;
+    console.log("Weapon info:", {
+      baseType,
+      isTwoHanded,
+      properties: currentItemData.properties,
+    });
+
+    const etherealDesc =
+      currentItemData.description +
+      ' <span style="color: #C0C0C0">Ethereal</span>';
+
+    const tempItem = {
+      description: etherealDesc,
+      properties: currentItemData.properties,
+    };
+
+    console.log("Created tempItem:", tempItem);
+
+    const newProperties = {
+      ...currentItemData.properties,
+    };
+
+    if (isTwoHanded) {
+      newProperties.twohandmin = calculateItemDamage(tempItem, baseType, false);
+      newProperties.twohandmax = calculateItemDamage(tempItem, baseType, true);
+    } else {
+      newProperties.onehandmin = calculateItemDamage(tempItem, baseType, false);
+      newProperties.onehandmax = calculateItemDamage(tempItem, baseType, true);
+    }
+
+    console.log("Calculated new properties:", newProperties);
+
+    itemList[currentItem] = {
+      description: buildDescriptionWeapon(
+        currentItem,
+        baseType,
+        newProperties,
+        currentItemData.description
+          .split("<br>")
+          .slice(3)
+          .filter(
+            (prop) => !prop.includes("Required") && !prop.includes("Damage:")
+          )
+          .join("<br>") + ' <span style="color: #C0C0C0">Ethereal</span>'
+      ),
+      properties: newProperties,
+    };
+
+    console.log("Final item:", itemList[currentItem]);
+
+    if (isTwoHanded) {
+      document.getElementById("twohandmindmgcontainer").textContent =
+        newProperties.twohandmin;
+      document.getElementById("twohandmaxdmgcontainer").textContent =
+        newProperties.twohandmax;
+    } else {
+      document.getElementById("onehandmindmgcontainer").textContent =
+        newProperties.onehandmin;
+      document.getElementById("onehandmaxdmgcontainer").textContent =
+        newProperties.onehandmax;
+    }
+  } else {
+    // Armor handling stays the same
+    let lines = currentItemData.description.split("<br>");
+    lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+
+    const baseType = lines[1];
+    const newDefense = calculateItemDefense(
+      currentItemData,
+      baseType,
+      category
+    );
+    const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
+    lines[defenseIndex] = `Defense: ${newDefense}`;
+    currentItemData.description = lines.join("<br>");
+    currentItemData.properties.defense = newDefense;
+  }
 
   select.dispatchEvent(new Event("change"));
 }
