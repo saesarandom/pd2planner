@@ -1657,7 +1657,24 @@ console.log('Raw deadly strike value:', document.getElementById('deadlystrikecon
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    
+    const dropdowns = [
+        'helms-dropdown', 
+        'armors-dropdown', 
+        'weapons-dropdown', 
+        'offs-dropdown', 
+        'gloves-dropdown', 
+        'boots-dropdown', 
+        'belts-dropdown', 
+        'amulets-dropdown', 
+        'rings-dropdown'
+    ];
+
+    dropdowns.forEach(dropdownId => {
+        const dropdown = document.getElementById(dropdownId);
+        if (dropdown) {
+            dropdown.addEventListener('change', updateCriticalAndDeadly);
+        }
+    });
 
     document.getElementById('lvlValue')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('str')?.addEventListener('input', updateCriticalAndDeadly);
@@ -1666,13 +1683,11 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('enr')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('deadlystrikecontainer')?.addEventListener('input', updateCriticalAndDeadly);
     document.getElementById('weaponmasterycontainer')?.addEventListener('input', updateCriticalAndDeadly);
-    document.getElementById('amulets-dropdown')?.addEventListener('change', updateCriticalAndDeadly);
-    document.getElementById('javelinandspearmasterycontainer')?.addEventListener('input', updateCriticalAndDeadly);
-    document.getElementById('criticalstrikecontainer')?.addEventListener('input', updateCriticalAndDeadly);
-    document.getElementById('criticalhitcontainer')?.addEventListener('input', updateCriticalAndDeadly);
+    document.getElementById('javelinandspearmasterycontainer')?.addEventListener('change', updateCriticalAndDeadly);
+    document.getElementById('criticalstrikecontainer')?.addEventListener('change', updateCriticalAndDeadly);
+    document.getElementById('criticalhitcontainer')?.addEventListener('change', updateCriticalAndDeadly);
     
     updateCriticalAndDeadly();
-   
 });
 
   function updateValues() {
@@ -4630,15 +4645,16 @@ document.querySelectorAll('[id$="skillscontainer"] input[type="number"]')
     criticalHitValue = javelinandspearmasteryInfo?.criticalChance || 0;
   }
 
-  // Only update if the current value is different
-  const currentCritValue = parseInt(document.getElementById('criticalhitcontainer').value || 0);
-  if (currentCritValue !== criticalHitValue) {
-    document.getElementById('criticalhitcontainer').value = criticalHitValue;
-  }
+  // // Only update if the current value is different
+  // const currentCritValue = parseInt(document.getElementById('criticalhitcontainer').value || 0);
+  // if (currentCritValue !== criticalHitValue) {
+  //   document.getElementById('criticalhitcontainer').value = criticalHitValue;
+  // }
 
 // Get deadly strike value correctly
 deadlyStrikeValue = parseFloat(document.getElementById('deadlystrikecontainer').value || 0);
 weaponMasteryValue = parseFloat(document.getElementById('weaponmasterycontainer').value || 0);
+criticalHitValue = parseFloat(document.getElementById('criticalhitcontainer').value || 0);
 const totalDeadlyStrike = deadlyStrikeValue / 100;
 const totalCriticalHit = criticalHitValue / 100;
 const totalWeaponMastery = weaponMasteryValue / 100;
@@ -9584,8 +9600,28 @@ if (stat.includes('Increase Maximum Mana') || stat === 'Increase Maximum Mana 5%
 
       
       if (stat.includes('Enhanced Defense')) {
-  const value = parseInt(stat.match(/\+?(\d+)%/)[1]);
-  statsMap.set('Enhanced Defense', (statsMap.get('Enhanced Defense') || 0) + value);
+      const value = parseInt(stat.match(/\+?(\d+)%/)[1]);
+      statsMap.set('Enhanced Defense', (statsMap.get('Enhanced Defense') || 0) + value);
+      return;
+      }
+
+      if (stat.includes('Enhanced Damage')) {
+      const value = parseInt(stat.match(/\+?(\d+)%/)[1]);
+      statsMap.set('Enhanced Damage', (statsMap.get('Enhanced Damage') || 0) + value);
+      return;
+      }
+
+      if (stat.includes('Increase Maximum Life')) {
+  const value = parseInt(stat.match(/(\d+)%/)[1]);
+  const key = 'Increase Maximum Life';
+  statsMap.set(key, (statsMap.get(key) || 0) + value);
+  return;
+}
+
+if (stat.includes('Requirements')) {
+  const value = parseInt(stat.match(/-(\d+)%/)[1]); // Note the - in the regex
+  const key = 'Requirements';
+  statsMap.set(key, (statsMap.get(key) || 0) + value);
   return;
 }
 
@@ -9618,10 +9654,10 @@ if (stat.includes('Increase Maximum Mana') || stat === 'Increase Maximum Mana 5%
       }
     
       // Handle "Physical Damage Reduced by X" stats
-      const pdrMatch = stat.match(/Physical Damage (?:Taken )?Reduced by (\d+)/i);
+      const pdrMatch = stat.match(/Physical Damage (?:Taken )?Reduced by (\d+)(?!\%)/i);
       if (pdrMatch) {
         const value = parseInt(pdrMatch[1]);
-        const key = 'Physical Damage Reduced by';
+        const key = 'Physical Damage Reduced Flat';
         statsMap.set(key, (statsMap.get(key) || 0) + value);
         return;
       }
@@ -9661,6 +9697,14 @@ if (stat.includes('Increase Maximum Mana') || stat === 'Increase Maximum Mana 5%
         statsMap.set(key, (statsMap.get(key) || 0) + value);
         return;
       }
+
+      const pdrMatchPercent = stat.match(/Physical Damage Taken Reduced by (\d+)%?/i);
+if (pdrMatchPercent) {
+  const value = parseInt(pdrMatchPercent[1]);
+  const key = 'Physical Damage Reduced Percent';
+  statsMap.set(key, (statsMap.get(key) || 0) + value);
+  return;
+}
 
       const match = stat.match(/([+-]?\d+)\s*(.+)/);
       if (match) {
@@ -9712,6 +9756,25 @@ if (stat.includes('Increase Maximum Mana') || stat === 'Increase Maximum Mana 5%
         case 'Enhanced Defense':
         statsHtml += `+${value}% Enhanced Defense<br>`;
         break;
+        case 'Enhanced Damage':
+        statsHtml += `+${value}% Enhanced Damage<br>`; // Note: No '+' and no space before '%'
+        break;
+        case 'Physical Damage Reduced Percent':
+    statsHtml += `Physical Damage Taken Reduced by ${value}%<br>`;
+    break;
+
+    case 'Physical Damage Reduced Flat':
+    statsHtml += `Physical Damage Taken Reduced by ${value}<br>`;
+    break;
+
+    case 'Increase Maximum Life':
+    statsHtml += `Increase Maximum Life ${value}%<br>`;
+    break;
+
+    case 'Requirements':
+    statsHtml += `Requirements -${value}%<br>`; // Note we explicitly add the - sign
+    break;
+
         case 'Attacker Takes Damage of':
         statsHtml += `Attacker Takes Damage of ${value}<br>`;
         break;
