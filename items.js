@@ -1478,18 +1478,13 @@ const itemList = {
     description:
       "Arctic Furs<br>Quilted Armor<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 51<br>Defense (2 Items): 48-348<br>Required Strength: 12<br>Required Level: 2<br>+325% Enhanced Defense<br>All Resistances +10<br>+[3-297] Defense (+3 per Character Level) (2 Items)<br>Cold Resist +15% (3 Items)<br>",
     properties: {
-      defense: 1246,
-      reqstr: 145,
-      reqlvl: 55,
-      firedmgmin: 160,
-      firedmgmax: 340,
-      edef: 180,
-      str: 8,
-      vit: 10,
-      coldres: 35,
-      corpseexplosionsk: 40,
-      reanimate: 5, //Returned
-      req: -15,
+      defense: 51,
+      reqstr: 12,
+      reqlvl: 2,
+      edef: 325,
+      allres: 10,
+      todef: 3, //per level tu chyba!!
+      coldres: 15,
     },
   },
 
@@ -1497,18 +1492,13 @@ const itemList = {
     description:
       "Berserker's Hauberk<br>Splint Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 84<br>Defense (2 Items): 85-529<br>Required Strength: 51<br>Required Level: 3<br>+1 to Barbarian Skills<br>Magic Damage Taken Reduced by 2<br>+[4-445] Defense (+4.5 per Character Level) (2 Items)<br>+[3-297]% Enhanced Maximum Damage (+3% per Character Level) (Complete Set)<br>",
     properties: {
-      defense: 1246,
-      reqstr: 145,
-      reqlvl: 55,
-      firedmgmin: 160,
-      firedmgmax: 340,
-      edef: 180,
-      str: 8,
-      vit: 10,
-      coldres: 35,
-      corpseexplosionsk: 40,
-      reanimate: 5, //Returned
-      req: -15,
+      defense: 84,
+      reqstr: 51,
+      reqlvl: 3,
+      barsk: 1,
+      mdr: 2,
+      todef: 4.5, //per level¨
+      maxdmg: 3, //per level¨
     },
   },
 
@@ -1516,18 +1506,11 @@ const itemList = {
     description:
       "Sigon's Shelter<br>Gothic Plate<br>Defense: 161<br>Required Strength: 70<br>Required Level: 6<br>+25% Enhanced Defense<br>Lightning Resist +30%<br>Attacker Takes Damage of 20 (2 Items)<br>",
     properties: {
-      defense: 1246,
-      reqstr: 145,
-      reqlvl: 55,
-      firedmgmin: 160,
-      firedmgmax: 340,
-      edef: 180,
-      str: 8,
-      vit: 10,
-      coldres: 35,
-      corpseexplosionsk: 40,
-      reanimate: 5, //Returned
-      req: -15,
+      defense: 161,
+      reqstr: 70,
+      reqlvl: 6,
+      edef: 25,
+      ligres: 30,
     },
   },
 
@@ -1535,18 +1518,11 @@ const itemList = {
     description:
       "Isenhart's Case<br>Breast Plate<br>Defense: 98<br>Defense (2 Items): 98-296 (was 107-306)<br>Required Strength: 30<br>Required Level: 8<br>+40 Defense<br>Magic Damage Taken Reduced by 4<br>+[2-198] Defense (+2 per Character Level) (2 Items)<br>Cold Resist +[1-99]% (+1% per Character Level) (3 Items)<br>",
     properties: {
-      defense: 1246,
-      reqstr: 145,
-      reqlvl: 55,
-      firedmgmin: 160,
-      firedmgmax: 340,
-      edef: 180,
-      str: 8,
-      vit: 10,
-      coldres: 35,
-      corpseexplosionsk: 40,
-      reanimate: 5, //Returned
-      req: -15,
+      defense: 98,
+      reqstr: 30,
+      reqlvl: 8,
+      todef: 2, //per level
+      coldres: 1, //per level
     },
   },
 
@@ -1554,18 +1530,14 @@ const itemList = {
     description:
       "Cathan's Mesh<br>Chain Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 86<br>Required Strength: 24<br>Required Level: 11<br>+20% Faster Run/Walk<br>+15 Defense<br>Requirements -50%<br>Attacker Takes Damage of [1-99] (1 per Character Level) (2 Items)<br>Fire Resist +30% (3 Items)<br>",
     properties: {
-      defense: 1246,
-      reqstr: 145,
-      reqlvl: 55,
-      firedmgmin: 160,
-      firedmgmax: 340,
-      edef: 180,
-      str: 8,
-      vit: 10,
-      coldres: 35,
-      corpseexplosionsk: 40,
-      reanimate: 5, //Returned
-      req: -15,
+      defense: 86,
+      reqstr: 24,
+      reqlvl: 11,
+      frw: 20,
+      todef: 15,
+      req: -50,
+      atdmg: 1, //per level
+      firres: 30,
     },
   },
 
@@ -1573,18 +1545,14 @@ const itemList = {
     description:
       "Angelic Mantle<br>Ring Mail<br>Defense: 72<br>Defense (2 Items): 222<br>Required Strength: 36<br>Required Level: 12<br>+[50-80]% Damage to Undead<br>+40% Enhanced Defense<br>Physical Damage Taken Reduced by 3<br>+150 Defense (2 Items)<br>Fire Resist +50% (3 Items)<br>",
     properties: {
-      defense: 1246,
-      reqstr: 145,
-      reqlvl: 55,
-      firedmgmin: 160,
-      firedmgmax: 340,
-      edef: 180,
-      str: 8,
-      vit: 10,
-      coldres: 35,
-      corpseexplosionsk: 40,
-      reanimate: 5, //Returned
-      req: -15,
+      defense: 72,
+      reqstr: 36,
+      reqlvl: 12,
+      dmgtoundead: 50,
+      edef: 40,
+      pdr: 3,
+      todef: 150,
+      firres: 50,
     },
   },
 
@@ -1592,18 +1560,13 @@ const itemList = {
     description:
       "Vidala's Ambush<br>Leather Armor<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 67<br>Defense (3 Items): 67-314<br>Required Strength: 15<br>Required Level: 14<br>+50 Defense<br>+[15-25] to Dexterity<br>Fire Resist +24% (2 Items)<br>+[2-247] Defense (+2.5 per Character Level) (3 Items)<br>",
     properties: {
-      defense: 1246,
-      reqstr: 145,
-      reqlvl: 55,
-      firedmgmin: 160,
-      firedmgmax: 340,
-      edef: 180,
-      str: 8,
-      vit: 10,
-      coldres: 35,
-      corpseexplosionsk: 40,
-      reanimate: 5, //Returned
-      req: -15,
+      defense: 67,
+      reqstr: 15,
+      reqlvl: 14,
+      todef: 50,
+      dex: 15,
+      firres: 24,
+      todeflvl: 2.5, //per level
     },
   },
 
@@ -1611,20 +1574,114 @@ const itemList = {
     description:
       "Arcanna's Flesh<br>Light Plate<br>Defense: 99<br>Defense (2 Items): 199<br>Required Strength: 41<br>Required Level: 15<br>+10% Faster Cast Rate<br>Physical Damage Taken Reduced by 6<br>+2 to Light Radius<br>+100 Defense (2 Items)<br>+20 to Energy (3 Items)<br>Regenerate Mana 20% (Complete Set)<br>",
     properties: {
-      defense: 1246,
-      reqstr: 145,
-      reqlvl: 55,
-      firedmgmin: 160,
-      firedmgmax: 340,
-      edef: 180,
-      str: 8,
-      vit: 10,
-      coldres: 35,
-      corpseexplosionsk: 40,
-      reanimate: 5, //Returned
-      req: -15,
+      defense: 99,
+      reqstr: 41,
+      reqlvl: 15,
+      fcr: 10,
+      pdr: 6,
+      ligrad: 2,
+      todef: 100,
+      enr: 20,
+      regmana: 20, //fullset
     },
   },
+
+  "Milabrega's Robe": {
+    description:
+      "Milabrega's Robe<br>Ancient Armor<br>Defense: 186<br>Defense (2 Items): 372 (was 468)<br>Required Strength: 100<br>Required Level: 17<br>Adds 25-35 Cold Damage<br>Physical Damage Taken Reduced by 2<br>Attacker Takes Damage of 13<br>+100% Enhanced Defense<br>14% Chance to Cast Level 5 Frost Nova on Striking (2 Items)<br>",
+    properties: {
+      defense: 99,
+      reqstr: 41,
+      reqlvl: 15,
+      fcr: 10,
+      pdr: 6,
+      ligrad: 2,
+      todef: 100,
+      enr: 20,
+      regmana: 20, //fullset
+    },
+  },
+
+  "Tancred's Spine": {
+    description:
+      "Tancred's Spine<br>Full Plate Mail<br>Defense: 150<br>Defense (2 Items): 151-744<br>Required Strength: 80<br>Required Level: 20<br>+45% Enhanced Damage<br>+15 to Strength<br>+40 to Life<br>+[6-594] Defense (+6 per Character Level) (2 Items)<br>",
+    properties: {
+      defense: 99,
+      reqstr: 41,
+      reqlvl: 15,
+      fcr: 10,
+      pdr: 6,
+      ligrad: 2,
+      todef: 100,
+      enr: 20,
+      regmana: 20, //fullset
+    },
+  },
+
+  "Cow King's Hide": {
+    description:
+      "Cow King's Hide<br>Studded Leather<br>Defense: 60<br>Required Strength: 27<br>Required Level: 18<br>18% Chance to Cast Level 5 Chain Lightning when Struck<br>+60% Enhanced Defense<br>+30 to Life<br>All Resistances +25<br>",
+    properties: {
+      defense: 99,
+      reqstr: 41,
+      reqlvl: 15,
+      fcr: 10,
+      pdr: 6,
+      ligrad: 2,
+      todef: 100,
+      enr: 20,
+      regmana: 20, //fullset
+    },
+  },
+
+  "Hwanin's Refuge": {
+    description:
+      "Hwanin's Refuge<br>Tigulated Mail<br>Defense: 402<br>Required Strength: 86<br>Required Level: 30<br>20% Chance to Cast Level 9 Static Field when Struck<br>+200 Defense<br>+100 to Life<br>Poison Resist +27%<br>",
+    properties: {
+      defense: 99,
+      reqstr: 41,
+      reqlvl: 15,
+      fcr: 10,
+      pdr: 6,
+      ligrad: 2,
+      todef: 100,
+      enr: 20,
+      regmana: 20, //fullset
+    },
+  },
+
+  "Haemosu's Adamant": {
+    description:
+      "Haemosu's Adamant<br>Cuirass<br>Defense: 676<br>Required Strength: 52<br>Required Level: 44<br>+1 to All Skills<br>+500 Defense<br>+250 Defense vs. Melee<br>+250 Defense vs. Missile<br>+100 to Life<br>Requirements -20%<br>+20% Faster Cast Rate (2 Items)<br>",
+    properties: {
+      defense: 99,
+      reqstr: 41,
+      reqlvl: 15,
+      fcr: 10,
+      pdr: 6,
+      ligrad: 2,
+      todef: 100,
+      enr: 20,
+      regmana: 20, //fullset
+    },
+  },
+
+  "Dark Adherent": {
+    description:
+      "Dark Adherent<br>Dusk Shroud<br>Defense: 717<br>Required Strength: 77<br>Required Level: 49<br>25% Chance to Cast Level 23 Nova when Struck<br>+250% Damage to Undead<br>Adds 480-680 Poison Damage over 2 Seconds<br>+415 Defense<br>Fire Resist +55%<br>5% Chance to Cast Level 18 Bone Armor when Struck (3 Items)<br>",
+    properties: {
+      defense: 99,
+      reqstr: 41,
+      reqlvl: 15,
+      fcr: 10,
+      pdr: 6,
+      ligrad: 2,
+      todef: 100,
+      enr: 20,
+      regmana: 20, //fullset
+    },
+  },
+
   // UNIQUE WEAPONS AXES //
 
   "The Gnasher": {
