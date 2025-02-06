@@ -2120,11 +2120,16 @@ let totalCbDmg = calculateCbDmg(startLvlValue)*0.1;
     let totalPierceLight = 0;
     let totalPiercePoison = 0;
     let totalPierceMagic = 0;
-    let totalFlatFireDmg = 0;
-    let totalFlatColdDmg = 0;
-    let totalFlatLightDmg = 0;
-    let totalFlatPoisonDmg = 0;
-    let totalFlatMagicDmg = 0;
+    let totalFlatFireDmgMin = 0;
+    let totalFlatFireDmgMax = 0;
+    let totalFlatColdDmgMin = 0;
+    let totalFlatColdDmgMax = 0;
+    let totalFlatLightDmgMin = 0;
+    let totalFlatLightDmgMax = 0;
+    let totalFlatPoisonDmgMin = 0;
+    let totalFlatPoisonDmgMax = 0;
+    let totalFlatMagicDmgMin = 0;
+    let totalFlatMagicDmgMax = 0;
     let totalCriticalHit = 0;
     let totalDeadlyStrike = 0;
     let totalWeaponMastery = 0;
@@ -2171,11 +2176,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += helmData.properties.goldfind || 0;
       totalOw += helmData.properties.ow || 0;
       totalOwDmg += helmData.properties.owdmg || 0;
-      totalFlatFireDmg += (helmData.properties.firedmgmin/2 + helmData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (helmData.properties.colddmgmin/2 + helmData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (helmData.properties.lightdmgmin/2 + helmData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (helmData.properties.poisondmg / helmData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (helmData.properties.magicdmgmin/2 + helmData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += helmData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += helmData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += helmData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += helmData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += helmData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += helmData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += helmData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += helmData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += helmData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += helmData.properties.magicdmgmax || 0;
       totalEDMG += helmData.properties.edmg || 0;
       totalMaxFireRes += helmData.properties.maxfirres || 0;
       totalMaxColdRes += helmData.properties.maxcoldres || 0;
@@ -2214,11 +2224,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += armorData.properties.goldfind || 0;
       totalOw += armorData.properties.ow || 0;
       totalOwDmg += armorData.properties.owdmg || 0;
-      totalFlatFireDmg += (armorData.properties.firedmgmin/2 + armorData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (armorData.properties.colddmgmin/2 + armorData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (armorData.properties.lightdmgmin/2 + armorData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (armorData.properties.poisondmg / armorData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (armorData.properties.magicdmgmin/2 + armorData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += armorData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += armorData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += armorData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += armorData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += armorData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += armorData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += armorData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += armorData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += armorData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += armorData.properties.magicdmgmax || 0;
       totalCriticalHit += armorData.properties.criticalsk || 0;
       totalDeadlyStrike += armorData.properties.deadlyperlvl*startLvlValue + armorData.properties.deadly || 0; 
       totalWeaponMastery += armorData.properties.weaponmasterysk || 0;
@@ -2265,11 +2280,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalOw += weaponData.properties.ow || 0;
       totalOwDmg += weaponData.properties.owdmg || 0;
       totalCb += weaponData.properties.cb || 0;
-      totalFlatFireDmg += (weaponData.properties.firedmgmin/2 + weaponData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (weaponData.properties.colddmgmin/2 + weaponData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (weaponData.properties.lightdmgmin/2 + weaponData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (weaponData.properties.poisondmg / weaponData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (weaponData.properties.magicdmgmin/2 + weaponData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += weaponData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += weaponData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += weaponData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += weaponData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += weaponData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += weaponData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += weaponData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += weaponData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += weaponData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += weaponData.properties.magicdmgmax || 0;
       totalCriticalHit += weaponData.properties.criticalsk || 0;
       totalDeadlyStrike += (weaponData.properties.deadlyperlvl*startLvlValue) || 0 + (weaponData.properties.deadly/100) || 0; 
       totalWeaponMastery += weaponData.properties.weaponmasterysk || 0;
@@ -2306,11 +2326,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += offData.properties.goldfind || 0;
       totalOw += offData.properties.ow || 0;
       totalOwDmg += offData.properties.owdmg || 0;
-      totalFlatFireDmg += (offData.properties.firedmgmin/2 + offData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (offData.properties.colddmgmin/2 + offData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (offData.properties.lightdmgmin/2 + offData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (offData.properties.poisondmg / offData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (offData.properties.magicdmgmin/2 + offData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += offData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += offData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += offData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += offData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += offData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += offData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += offData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += offData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += offData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += offData.properties.magicdmgmax || 0;
       totalEDMG += offData.properties.edmg || 0;
       totalMaxFireRes += offData.properties.maxfirres || 0;
       totalMaxColdRes += offData.properties.maxcoldres || 0;
@@ -2346,11 +2371,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += offData.properties.goldfind || 0;
       //totalOw += offData.properties.ow || 0; Exception, totalOW cannot be counted if dual-wielded - but you can ignore//
       totalOwDmg += offData.properties.owdmg || 0;
-      totalFlatFireDmg += (offData.properties.firedmgmin/2 + offData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (offData.properties.colddmgmin/2 + offData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (offData.properties.lightdmgmin/2 + offData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (offData.properties.poisondmg / offData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (offData.properties.magicdmgmin/2 + offData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += offData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += offData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += offData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += offData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += offData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += offData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += offData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += offData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += offData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += offData.properties.magicdmgmax || 0;
       totalMaxFireRes += offData.properties.maxfirres || 0;
       totalMaxColdRes += offData.properties.maxcoldres || 0;
       totalMaxLightRes += offData.properties.maxlightres || 0;
@@ -2388,11 +2418,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += gloveData.properties.goldfind || 0;
       totalOw += gloveData.properties.ow || 0;
       totalOwDmg += gloveData.properties.owdmg || 0;
-      totalFlatFireDmg += (gloveData.properties.firedmgmin/2 + gloveData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (gloveData.properties.colddmgmin/2 + gloveData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (gloveData.properties.lightdmgmin/2 + gloveData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (gloveData.properties.poisondmg / gloveData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (gloveData.properties.magicdmgmin/2 + gloveData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += gloveData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += gloveData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += gloveData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += gloveData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += gloveData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += gloveData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += gloveData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += gloveData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += gloveData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += gloveData.properties.magicdmgmax || 0;
       totalEDMG += gloveData.properties.edmg || 0;
       totalMaxFireRes += gloveData.properties.maxfirres || 0;
       totalMaxColdRes += gloveData.properties.maxcoldres || 0;
@@ -2432,11 +2467,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += beltData.properties.goldfind || 0;
       totalOw += beltData.properties.ow || 0;
       totalOwDmg += beltData.properties.owdmg || 0;
-      totalFlatFireDmg += (beltData.properties.firedmgmin/2 + beltData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (beltData.properties.colddmgmin/2 + beltData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (beltData.properties.lightdmgmin/2 + beltData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (beltData.properties.poisondmg / beltData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (beltData.properties.magicdmgmin/2 + beltData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += beltData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += beltData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += beltData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += beltData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += beltData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += beltData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += beltData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += beltData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += beltData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += beltData.properties.magicdmgmax || 0;
       totalEDMG += beltData.properties.edmg || 0;
       totalMaxFireRes += beltData.properties.maxfirres || 0;
       totalMaxColdRes += beltData.properties.maxcoldres || 0;
@@ -2476,11 +2516,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += bootData.properties.goldfind || 0;
       totalOw += bootData.properties.ow || 0;
       totalOwDmg += bootData.properties.owdmg || 0;
-      totalFlatFireDmg += (bootData.properties.firedmgmin/2 + bootData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (bootData.properties.colddmgmin/2 + bootData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (bootData.properties.lightdmgmin/2 + bootData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (bootData.properties.poisondmg / bootData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (bootData.properties.magicdmgmin/2 + bootData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += bootData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += bootData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += bootData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += bootData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += bootData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += bootData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += bootData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += bootData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += bootData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += bootData.properties.magicdmgmax || 0;
       totalEDMG += bootData.properties.edmg || 0;
       totalMaxFireRes += bootData.properties.maxfirres || 0;
       totalMaxColdRes += bootData.properties.maxcoldres || 0;
@@ -2520,11 +2565,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += ringOneData.properties.goldfind || 0;
       totalOw += ringOneData.properties.ow || 0;
       totalOwDmg += ringOneData.properties.owdmg || 0;
-      totalFlatFireDmg += (ringOneData.properties.firedmgmin/2 + ringOneData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (ringOneData.properties.colddmgmin/2 + ringOneData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (ringOneData.properties.lightdmgmin/2 + ringOneData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (ringOneData.properties.poisondmg / ringOneData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (ringOneData.properties.magicdmgmin/2 + ringOneData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += ringOneData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += ringOneData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += ringOneData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += ringOneData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += ringOneData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += ringOneData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += ringOneData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += ringOneData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += ringOneData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += ringOneData.properties.magicdmgmax || 0;
       totalEDMG += ringOneData.properties.edmg || 0;
       totalMaxFireRes += ringOneData.properties.maxfirres || 0;
       totalMaxColdRes += ringOneData.properties.maxcoldres || 0;
@@ -2564,11 +2614,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalGoldFind += ringTwoData.properties.goldfind || 0;
       totalOw += ringTwoData.properties.ow || 0;
       totalOwDmg += ringTwoData.properties.owdmg || 0;
-      totalFlatFireDmg += (ringTwoData.properties.firedmgmin/2 + ringTwoData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (ringTwoData.properties.colddmgmin/2 + ringTwoData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (ringTwoData.properties.lightdmgmin/2 + ringTwoData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (ringTwoData.properties.poisondmg / ringTwoData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (ringTwoData.properties.magicdmgmin/2 + ringTwoData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += ringTwoData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += ringTwoData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += ringTwoData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += ringTwoData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += ringTwoData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += ringTwoData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += ringTwoData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += ringTwoData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += ringTwoData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += ringTwoData.properties.magicdmgmax || 0;
       totalEDMG += ringTwoData.properties.edmg || 0;
       totalMaxFireRes += ringTwoData.properties.maxfirres || 0;
       totalMaxColdRes += ringTwoData.properties.maxcoldres || 0;
@@ -2609,11 +2664,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
       totalOw += amuletData.properties.ow || 0;
       totalOwDmg += amuletData.properties.owdmg || 0;
       totalCb += amuletData.properties.cb || 0;
-      totalFlatFireDmg += (amuletData.properties.firedmgmin/2 + amuletData.properties.firedmgmax/2) || 0;
-      totalFlatColdDmg += (amuletData.properties.colddmgmin/2 + amuletData.properties.colddmgmax/2) || 0;
-      totalFlatLightDmg += (amuletData.properties.lightdmgmin/2 + amuletData.properties.lightdmgmax/2) || 0;
-      totalFlatPoisonDmg += (amuletData.properties.poisondmg / amuletData.properties.poisontime) || 0;
-      totalFlatMagicDmg += (amuletData.properties.magicdmgmin/2 + amuletData.properties.magicdmgmax/2) || 0;
+      totalFlatFireDmgMin += amuletData.properties.firedmgmin || 0;
+      totalFlatFireDmgMax += amuletData.properties.firedmgmax || 0;
+      totalFlatColdDmgMin += amuletData.properties.colddmgmin || 0;
+      totalFlatColdDmgMax += amuletData.properties.colddmgmax || 0;
+      totalFlatLightDmgMin += amuletData.properties.lightdmgmin || 0;
+      totalFlatLightDmgMax += amuletData.properties.lightdmgmax || 0;
+      totalFlatPoisonDmgMin += amuletData.properties.poisondmgmin || 0;
+      totalFlatPoisonDmgMax += amuletData.properties.poisondmgmax || 0;
+      totalFlatMagicDmgMin += amuletData.properties.magicdmgmin || 0;
+      totalFlatMagicDmgMax += amuletData.properties.magicdmgmax || 0;
       totalCriticalHit += amuletData.properties.criticalsk || 0;
       totalDeadlyStrike += amuletData.properties.deadlyperlvl*startLvlValue || 0; 
       totalWeaponMastery += amuletData.properties.weaponmasterysk || 0; 
@@ -2681,7 +2741,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
     updateCriticalAndDeadly();
     calculateBlock(totalLifeAccr, totalDefense, totalStr, totalDex, totalVit, totalEnr, totalBlock, totalIas, totalFcr, totalFrw, totalFhr, totalCbf, totalPlr, totalDr, totalPdr, totalMdr, totalFireRes, totalColdRes, totalLightRes, totalPoisonRes, totalCurseRes, totalMinDmg, totalMaxDmg, totalTwoMinDmg, totalTwoMaxDmg, totalAllSkill, totalMagicFind, totalGoldFind, totalOw, totalOwDmg, totalCb, totalCbDmg,
-      totalPiercePhys, totalPierceFire, totalPierceCold, totalPierceLight, totalPiercePoison, totalPierceMagic, totalFlatFireDmg, totalFlatColdDmg, totalFlatLightDmg, totalFlatMagicDmg, totalFlatPoisonDmg, totalCriticalHit, totalDeadlyStrike, totalWeaponMastery, totalCritMultiplier
+      totalPiercePhys, totalPierceFire, totalPierceCold, totalPierceLight, totalPiercePoison, totalPierceMagic, totalFlatFireDmgMin, totalFlatFireDmgMax, totalFlatColdDmgMin, totalFlatColdDmgMax, totalFlatLightDmgMin, totalFlatLightDmgMax, totalFlatMagicDmgMin, totalFlatMagicDmgMax, totalFlatPoisonDmgMin, totalFlatPoisonDmgMax, totalCriticalHit, totalDeadlyStrike, totalWeaponMastery, totalCritMultiplier
     );
   }
 
@@ -2691,7 +2751,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
 
   function calculateBlock(totalLifeAccr, totalDefense, totalStr, totalDex, totalVit, totalEnr, totalBlock, totalIas, totalFcr, totalFrw, totalFhr, totalCbf, totalPlr, totalDr, totalPdr, totalMdr, totalFireRes, totalColdRes, totalLightRes, totalPoisonRes, totalCurseRes, totalMinDmg, totalMaxDmg, totalTwoMinDmg, totalTwoMaxDmg, totalAllSkill, totalMagicFind, totalGoldFind, totalOw, totalOwDmg, totalCb, totalCbDmg, 
-    totalPiercePhys, totalPierceFire, totalPierceCold, totalPierceLight, totalPiercePoison, totalPierceMagic, totalFlatFireDmg, totalFlatColdDmg, totalFlatLightDmg, totalFlatMagicDmg, totalFlatPoisonDmg, totalCriticalHit, totalDeadlyStrike, totalWeaponMastery, totalCritMultiplier) {
+    totalPiercePhys, totalPierceFire, totalPierceCold, totalPierceLight, totalPiercePoison, totalPierceMagic, totalFlatFireDmgMin, totalFlatFireDmgMax, totalFlatColdDmgMin, totalFlatColdDmgMax, totalFlatLightDmgMin, totalFlatLightDmgMax, totalFlatMagicDmgMin, totalFlatMagicDmgMax, totalFlatPoisonDmgMin, totalFlatPoisonDmgMax, totalCriticalHit, totalDeadlyStrike, totalWeaponMastery, totalCritMultiplier) {
     let blockValue = parseInt(document.getElementById('blockValue').value, 10) || 0;
     let getHitValue = parseInt(document.getElementById('getHitValue').value, 10) || 0; 
     let fireResValue = parseInt(document.getElementById('fireResValue').value, 10) || 0; 
@@ -2741,11 +2801,16 @@ let totalEDMG = 0; // total Enhanced Damage defined
     document.getElementById('piercelightcontainer').innerHTML = totalPierceLight.toFixed(0);
     document.getElementById('piercepoisoncontainer').innerHTML = totalPiercePoison.toFixed(0);
     document.getElementById('piercemagiccontainer').innerHTML = totalPierceMagic.toFixed(0);
-    document.getElementById('flatfiremincontainer').innerHTML = totalFlatFireDmg.toFixed(0);
-    document.getElementById('flatcoldmincontainer').innerHTML = totalFlatColdDmg.toFixed(0);
-    document.getElementById('flatlightmincontainer').innerHTML = totalFlatLightDmg.toFixed(0);
-    document.getElementById('flatpoisonmincontainer').innerHTML = totalFlatPoisonDmg.toFixed(0);
-    document.getElementById('flatmagicmincontainer').innerHTML = totalFlatMagicDmg.toFixed(0);
+    document.getElementById('flatfiremincontainer').innerHTML = totalFlatFireDmgMin.toFixed(0);
+    document.getElementById('flatfiremaxcontainer').innerHTML = totalFlatFireDmgMax.toFixed(0);
+    document.getElementById('flatcoldmincontainer').innerHTML = totalFlatColdDmgMin.toFixed(0);
+    document.getElementById('flatcoldmaxcontainer').innerHTML = totalFlatColdDmgMax.toFixed(0);
+    document.getElementById('flatlightmincontainer').innerHTML = totalFlatLightDmgMin.toFixed(0);
+    document.getElementById('flatlightmaxcontainer').innerHTML = totalFlatLightDmgMax.toFixed(0);
+    document.getElementById('flatpoisonmincontainer').innerHTML = totalFlatPoisonDmgMin.toFixed(0);
+    document.getElementById('flatpoisonmaxcontainer').innerHTML = totalFlatPoisonDmgMax.toFixed(0);
+    document.getElementById('flatmagicmincontainer').innerHTML = totalFlatMagicDmgMin.toFixed(0);
+    document.getElementById('flatmagicmaxcontainer').innerHTML = totalFlatMagicDmgMax.toFixed(0);
     document.getElementById('criticalhitcontainer').innerHTML = totalCriticalHit.toFixed(0);
     document.getElementById('deadlystrikecontainer').innerHTML = totalDeadlyStrike.toFixed(2); //tu bylo 2
     document.getElementById('weaponmasterycontainer').innerHTML = totalWeaponMastery.toFixed(0);
@@ -4516,11 +4581,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     
     // Get flat damage additions
-    let totalFlatColdDmg = parseInt(document.getElementById('flatcoldcontainer')?.textContent || 0);
-    let totalFlatLightDmg = parseInt(document.getElementById('flatlightcontainer')?.textContent || 0);
-    let totalFlatFireDmg = parseInt(document.getElementById('flatfirecontainer')?.textContent || 0);
-    let totalFlatMagicDmg = parseInt(document.getElementById('flatmagiccontainer')?.textContent || 0);
-    let totalFlatPoisonDmg = parseInt(document.getElementById('flatpoisoncontainer')?.textContent || 0);
+    let totalFlatColdDmgMin = parseInt(document.getElementById('flatcoldmincontainer')?.textContent || 0);
+    let totalFlatColdDmgMax = parseInt(document.getElementById('flatcoldmaxcontainer')?.textContent || 0);
+    let totalFlatLightDmgMin = parseInt(document.getElementById('flatlightmincontainer')?.textContent || 0);
+    let totalFlatLightDmgMax = parseInt(document.getElementById('flatlightmaxcontainer')?.textContent || 0);
+    let totalFlatFireDmgMin = parseInt(document.getElementById('flatfiremincontainer')?.textContent || 0);
+    let totalFlatFireDmgMax = parseInt(document.getElementById('flatfiremaxcontainer')?.textContent || 0);
+    let totalFlatMagicDmgMin = parseInt(document.getElementById('flatmagicmincontainer')?.textContent || 0);
+    let totalFlatMagicDmgMax = parseInt(document.getElementById('flatmagicmaxcontainer')?.textContent || 0);
+    let totalFlatPoisonDmgMin = parseInt(document.getElementById('flatpoisonmincontainer')?.textContent || 0);
+    let totalFlatPoisonDmgMax = parseInt(document.getElementById('flatpoisonmaxcontainer')?.textContent || 0);
     if (skillInfo && skillInfo.damage) {
         // Define skill groups
         const lightningSkills = ['powerStrike', 'lightningBolt', 'chargedStrike', 'lightningStrike', 'lightningFury'];
@@ -4572,8 +4642,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 
                 // Add flat damages
-                totalMinDmg = Math.floor(totalMinDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg + totalFlatPoisonDmg);
-                totalMaxDmg = Math.floor(totalMaxDmg + totalFlatColdDmg + totalFlatFireDmg + totalFlatLightDmg + totalFlatMagicDmg + totalFlatPoisonDmg);
+                totalMinDmg = Math.floor(totalMinDmg + totalFlatColdDmgMin + totalFlatFireDmgMin + totalFlatLightDmgMin + totalFlatMagicDmgMin + totalFlatPoisonDmgMin);
+                totalMaxDmg = Math.floor(totalMaxDmg + totalFlatColdDmgMax + totalFlatFireDmgMax + totalFlatLightDmgMax + totalFlatMagicDmgMax + totalFlatPoisonDmgMax);
                 
                 document.getElementById('damageOutput').textContent = `${totalMinDmg}-${totalMaxDmg} Phys/Ele Damage`;
                 
@@ -5430,6 +5500,7 @@ document.head.appendChild(style);
 modal.addEventListener('click', (e) => {
   if (!selectedSlot) return;
   
+  // Handle charm type selection
   if (e.target.dataset.type) {
     const charmType = e.target.dataset.type;
     const position = Array.from(inventory.children).indexOf(selectedSlot);
@@ -5446,7 +5517,7 @@ modal.addEventListener('click', (e) => {
     selectedSlot.textContent = charmType.split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-    
+      
     markSlotsBelow(position, charmType);
     validateColumn(position % 10);
     
@@ -5454,51 +5525,74 @@ modal.addEventListener('click', (e) => {
     document.querySelector('.suffixproperties').style.display = 'block';
     document.querySelector('.charm-types').style.display = 'none';
     confirmButtonsDiv.style.display = 'block';
+
+    selectedProperties.prefix = null;
+    selectedProperties.suffix = null;
+    document.querySelectorAll('.property-button').forEach(btn => {
+      btn.classList.remove('selected');
+    });
   }
 
+  // Handle property selection
   if (e.target.dataset.property) {
     const prop = e.target.dataset.property;
-    const isPrefixProperty = e.target.closest('.prefixproperties') !== null;
-    const isSuffixProperty = e.target.closest('.suffixproperties') !== null;
-    
-    if (isPrefixProperty) {
+    // Check for prefixes that start with "Of" to determine if it's a suffix
+    const isSuffix = prop.startsWith('Of') || e.target.closest('.suffixproperties') !== null;
+    const isPrefix = !isSuffix || e.target.closest('.prefixproperties') !== null;
+
+    console.log('Property clicked:', {
+      property: prop,
+      isSuffix,
+      isPrefix
+    });
+
+    if (isPrefix && !isSuffix) {
+      // Handle prefix selection
+      document.querySelectorAll('.prefixproperties .property-button').forEach(btn => {
+        if (btn !== e.target) btn.classList.remove('selected');
+      });
+      e.target.classList.add('selected');
       selectedProperties.prefix = {
         property: prop,
         value: document.getElementById(`${prop.toLowerCase()}Value`).textContent
       };
-      document.querySelectorAll('.prefixproperties button').forEach(btn => {
-        btn.classList.remove('selected');
+    } else if (isSuffix) {
+      // Handle suffix selection
+      document.querySelectorAll('.suffixproperties .property-button').forEach(btn => {
+        if (btn !== e.target) btn.classList.remove('selected');
       });
-    } else if (isSuffixProperty) {
+      e.target.classList.add('selected');
       selectedProperties.suffix = {
         property: prop,
         value: document.getElementById(`${prop.toLowerCase()}Value`).textContent
       };
-      document.querySelectorAll('.suffixproperties button').forEach(btn => {
-        btn.classList.remove('selected');
-      });
     }
-    
-    e.target.classList.add('selected');
+
+    console.log('Current properties:', selectedProperties);
   }
 });
 
 // Add confirm properties handler
 document.getElementById('confirmProperties').addEventListener('click', () => {
-  if (!selectedSlot || (!selectedProperties.prefix && !selectedProperties.suffix)) return;
+  if (!selectedSlot) return;
   
-  let charmName = selectedSlot.textContent.split(' ').slice(0, 2).join(' ');
-  let description = '';
+  const charmClass = Array.from(selectedSlot.classList)
+    .find(cls => cls.endsWith('-charm'))
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+  
+  let properties = [];
   
   if (selectedProperties.prefix) {
-    description += `+${selectedProperties.prefix.value} ${descriptions[selectedProperties.prefix.property]} `;
+    properties.push(`+${selectedProperties.prefix.value} ${descriptions[selectedProperties.prefix.property]}`);
   }
   
   if (selectedProperties.suffix) {
-    description += `+${selectedProperties.suffix.value} ${descriptions[selectedProperties.suffix.property]}`;
+    properties.push(`+${selectedProperties.suffix.value} ${descriptions[selectedProperties.suffix.property]}`);
   }
-  
-  selectedSlot.textContent = `${charmName} ${description.trim()}`;
+
+  selectedSlot.textContent = `${charmClass} ${properties.join(', ')}`;
   
   selectedProperties.prefix = null;
   selectedProperties.suffix = null;
@@ -5512,7 +5606,6 @@ document.getElementById('confirmProperties').addEventListener('click', () => {
     btn.classList.remove('selected');
   });
 });
-
 // Add cancel properties handler
 document.getElementById('cancelProperties').addEventListener('click', () => {
   selectedProperties.prefix = null;
@@ -5908,8 +6001,11 @@ function updateInventoryStats() {
    let baseStats = {
      poison: 0, 
      cold: 0, 
+     coldmax: 0,
      light: 0, 
+     lightmax: 0,
      fire: 0, 
+     firemax: 0,
      maxdam: 0, 
      mindam: 0,
      allskills: 0,
@@ -5970,15 +6066,18 @@ let equipmentDefense = 0;
            }
            
            if(item.properties.colddmgmin && item.properties.colddmgmax) {
-               baseStats.cold += (item.properties.colddmgmin + item.properties.colddmgmax) / 2;
+               baseStats.cold += (item.properties.colddmgmin);
+               baseStats.coldmax += (item.properties.colddmgmax);
            }
            
            if(item.properties.lightdmgmin && item.properties.lightdmgmax) {
-               baseStats.light += (item.properties.lightdmgmin + item.properties.lightdmgmax) / 2;
+               baseStats.light += (item.properties.lightdmgmin);
+               baseStats.lightmax += (item.properties.lightdmgmax);
            }
            
            if(item.properties.firedmgmin && item.properties.firedmgmax) {
-               baseStats.fire += (item.properties.firedmgmin + item.properties.firedmgmax) / 2;
+               baseStats.fire += (item.properties.firedmgmin);
+                baseStats.firemax += (item.properties.firedmgmax);
            }
            
            if(item.properties.onehandmax) {
@@ -6024,22 +6123,32 @@ let equipmentDefense = 0;
        
        const coldMatch = text.match(/\+(\d+)\s+Cold\s+Damage/);
        if(coldMatch) {
-           baseStats.cold += parseInt(coldMatch[1]) / 2;
+           baseStats.cold += parseInt(coldMatch[1]);
+           baseStats.coldmax += parseInt(coldMatch[1]);
        }
        
        const poisonMatch = text.match(/\+(\d+)\s+Poison\s+Damage/);
        if(poisonMatch) {
-           baseStats.poison += parseInt(poisonMatch[1]) / 2;
+           baseStats.poison += parseInt(poisonMatch[1]);
+           baseStats.poisonmax += parseInt(poisonMatch[1]);
        }
+
+      //  const fireMatch = text.match(/\+(\d+)\s+Fire\s+Damage/);
+      //  if(fireMatch) {
+      //      baseStats.fire += parseInt(fireMatch[1]) / 2;
+      //  }
 
        const fireMatch = text.match(/\+(\d+)\s+Fire\s+Damage/);
        if(fireMatch) {
-           baseStats.fire += parseInt(fireMatch[1]) / 2;
+           baseStats.fire += parseInt(fireMatch[1]);
+           baseStats.firemax += parseInt(fireMatch[1]);
        }
+
 
        const lightMatch = text.match(/\+(\d+)\s+Lightning\s+Damage/);
        if(lightMatch) {
-           baseStats.light += parseInt(lightMatch[1]) / 2;
+           baseStats.light += parseInt(lightMatch[1]);
+           baseStats.lightmax += parseInt(lightMatch[1]);
        }
 
        const maxdamMatch = text.match(/\+(\d+)\s+to Maximum Damage\/AttR/);
@@ -6136,10 +6245,10 @@ if(coldResMatch) {
 
 
    // Update damage and elemental containers
-   document.getElementById('flatpoisoncontainer').textContent = baseStats.poison.toFixed(1);
-   document.getElementById('flatcoldcontainer').textContent = baseStats.cold.toFixed(1);
-   document.getElementById('flatfirecontainer').textContent = baseStats.fire.toFixed(1);
-   document.getElementById('flatlightcontainer').textContent = baseStats.light.toFixed(1);
+   document.getElementById('flatpoisonmincontainer').textContent = baseStats.poison.toFixed(1);
+   document.getElementById('flatcoldmaxcontainer').textContent = baseStats.coldmax.toFixed(1);
+   document.getElementById('flatfiremaxcontainer').textContent = baseStats.firemax.toFixed(1);
+   document.getElementById('flatlightmaxcontainer').textContent = baseStats.lightmax.toFixed(1);
    document.getElementById('onehandmaxdmgcontainer').textContent = baseStats.maxdam.toFixed(0);
    document.getElementById('onehandmindmgcontainer').textContent = baseStats.mindam.toFixed(0);
    document.getElementById('allskillscontainer').textContent = baseStats.allskills.toFixed(0);
@@ -9425,25 +9534,68 @@ function getJewelImageSrc() {
 }
 
 
-  document.getElementById('confirmJewel')?.addEventListener('click', () => {
+//   document.getElementById('confirmJewel')?.addEventListener('click', () => {
+//   if (!currentSocket) return;
+
+//   const stats = [
+//     ...selectedPrefixes.map(p => `${p.effect}`),
+//     ...selectedSuffixes.map(s => `${s.effect}`)
+//   ];
+
+//   const prefix = selectedPrefixes[0]?.effect || '';
+//   const suffix = selectedSuffixes[0]?.effect || '';
+//   const jewelName = `${prefix}${suffix ? ' ' + suffix : ''} Jewel`.trim();
+
+//   currentSocket.classList.remove('empty');
+//   currentSocket.classList.add('filled');
+//   currentSocket.textContent = jewelName || 'Jewel';
+//   currentSocket.dataset.itemName = 'jewel';
+//   currentSocket.dataset.stats = JSON.stringify(stats); // Use JSON.stringify
+
+ 
+//   hideJewelModal();
+//   updateAllStatsDisplays();
+
+//   // Clear selections
+//   selectedPrefixes = [];
+//   selectedSuffixes = [];
+// });
+
+
+document.getElementById('confirmJewel')?.addEventListener('click', () => {
   if (!currentSocket) return;
 
-  const stats = [
-    ...selectedPrefixes.map(p => `${p.effect}`),
-    ...selectedSuffixes.map(s => `${s.effect}`)
-  ];
-
-  const prefix = selectedPrefixes[0]?.effect || '';
-  const suffix = selectedSuffixes[0]?.effect || '';
-  const jewelName = `${prefix}${suffix ? ' ' + suffix : ''} Jewel`.trim();
+  // Combine all prefix and suffix effects into a single array of stats
+  const stats = [];
+  
+  // Add all prefix effects
+  selectedPrefixes.forEach(prefix => {
+    stats.push(prefix.effect);
+  });
+  
+  // Add all suffix effects
+  selectedSuffixes.forEach(suffix => {
+    stats.push(suffix.effect);
+  });
 
   currentSocket.classList.remove('empty');
   currentSocket.classList.add('filled');
-  currentSocket.textContent = jewelName || 'Jewel';
-  currentSocket.dataset.itemName = 'jewel';
-  currentSocket.dataset.stats = JSON.stringify(stats); // Use JSON.stringify
 
- 
+  // Create an image for the jewel
+  const img = document.createElement('img');
+  img.src = getJewelImageSrc();
+  img.alt = 'Jewel';
+  img.style.maxWidth = '100%';
+  img.style.maxHeight = '100%';
+
+  // Clear the socket and add the image
+  currentSocket.innerHTML = '';
+  currentSocket.appendChild(img);
+
+  // Store the stats in the dataset
+  currentSocket.dataset.itemName = 'jewel';
+  currentSocket.dataset.stats = JSON.stringify(stats);
+
   hideJewelModal();
   updateAllStatsDisplays();
 

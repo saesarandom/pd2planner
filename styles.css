@@ -939,110 +939,110 @@ body {
 
 .flatfiremincontainer {
   position: absolute;
-  width: 4pc;
+  width: 7pc;
   color: rgb(226, 24, 24);
-  font-size: 15px;
+  font-size: 13px;
   left: 0px;
   top: 36px;
 }
 
 .flatfiremaxcontainer {
   position: absolute;
-  width: 4pc;
+  width: 7pc;
   color: rgb(226, 24, 24);
-  font-size: 15px;
-  left: 80px;
+  font-size: 13px;
+  left: 95px;
   top: 0px;
 }
 
 .flatcoldmincontainer {
   position: absolute;
-  width: 4pc;
+  width: 7pc;
   color: rgb(19, 8, 223);
-  font-size: 15px;
-  left: -80px;
-  top: 56px;
+  font-size: 13px;
+  left: -95px;
+  top: 36px;
 }
 
 .flatcoldmaxcontainer {
   position: absolute;
-  width: 4pc;
+  width: 7pc;
   color: rgb(19, 8, 223);
-  font-size: 15px;
-  left: 80px;
+  font-size: 13px;
+  left: 95px;
   top: 0px;
 }
 
 .flatlightmincontainer {
   position: absolute;
-  width: 4pc;
+  width: 7pc;
   color: rgb(208, 211, 9);
-  font-size: 15px;
-  left: -80px;
-  top: 56px;
+  font-size: 13px;
+  left: -95px;
+  top: 36px;
 }
 
 .flatlightmaxcontainer {
   position: absolute;
-  width: 4pc;
+  width: 7pc;
   color: rgb(208, 211, 9);
-  font-size: 15px;
-  left: 80px;
+  font-size: 13px;
+  left: 95px;
   top: 0px;
 }
 
 
 .flatpoisonmincontainer {
   position: absolute;
-  width: 5pc;
+  width: 7pc;
   color: rgb(13, 241, 78);
-  font-size: 15px;
-  left: -80px;
-  top: 56px;
+  font-size: 13px;
+  left: -95px;
+  top: 36px;
 }
 
 .flatpoisonmaxcontainer {
   position: absolute;
-  width: 5pc;
+  width: 7pc;
   color: rgb(13, 241, 78);
-  font-size: 15px;
-  left: 80px;
+  font-size: 13px;
+  left: 95px;
   top: 0px;
 }
 
 
 .flatmagicmincontainer {
   position: absolute;
-  width: 5pc;
+  width: 7pc;
   color: rgb(188, 188, 245);
-  font-size: 16px;
-  left: -80px;
-  top: 56px;
+  font-size: 13px;
+  left: -95px;
+  top: 36px;
 }
 
 .flatmagicmaxcontainer {
   position: absolute;
-  width: 5pc;
+  width: 7pc;
   color: rgb(188, 188, 245);
-  font-size: 16px;
-  left: 80px;
+  font-size: 13px;
+  left: 95px;
   top: 0px;
 }
 
 .criticalhitcontainer {
   position: absolute;
   width: 5pc;
-  color: rgba(51, 51, 107, 0.55);
-  font-size: 16px;
+  color: rgba(91, 91, 226, 0.55);
+  font-size: 14px;
   left: -784px;
-  top: -136px;
+  top: -146px;
   text-shadow: rebeccapurple 0 0 25px, 0 0 3px rgb(40, 40, 94);
 }
 
 .deadlystrikecontainer {
   position: absolute;
   width: 5pc;
-  color: rgba(51, 51, 107, 0.55);
+  color: rgba(91, 91, 226, 0.55);
   font-size: 14px;
   left: 86px;
   top: 0px;
@@ -1051,7 +1051,7 @@ body {
 .weaponmasterycontainer {
   position: absolute;
   width: 11pc;
-  color: rgba(51, 51, 107, 0.55);
+  color: rgba(91, 91, 226, 0.55);
   font-size: 14px;
   left: 86px;
   top: 0px;
