@@ -937,47 +937,96 @@ body {
   top: 0px;
 }
 
-.flatfirecontainer {
+.flatfiremincontainer {
   position: absolute;
-  width: 5pc;
+  width: 4pc;
   color: rgb(226, 24, 24);
-  font-size: 16px;
-  left: 0px;
-  top: 36px;
-}
-
-.flatcoldcontainer {
-  position: absolute;
-  width: 5pc;
-  color: rgb(19, 8, 223);
-  font-size: 16px;
-  left: 0px;
-  top: 36px;
-}
-
-.flatlightcontainer {
-  position: absolute;
-  width: 5pc;
-  color: rgb(208, 211, 9);
-  font-size: 16px;
-  left: 0px;
-  top: 36px;
-}
-.flatpoisoncontainer {
-  position: absolute;
-  width: 5pc;
-  color: rgb(13, 241, 78);
   font-size: 15px;
   left: 0px;
   top: 36px;
 }
-.flatmagiccontainer {
+
+.flatfiremaxcontainer {
+  position: absolute;
+  width: 4pc;
+  color: rgb(226, 24, 24);
+  font-size: 15px;
+  left: 80px;
+  top: 0px;
+}
+
+.flatcoldmincontainer {
+  position: absolute;
+  width: 4pc;
+  color: rgb(19, 8, 223);
+  font-size: 15px;
+  left: -80px;
+  top: 56px;
+}
+
+.flatcoldmaxcontainer {
+  position: absolute;
+  width: 4pc;
+  color: rgb(19, 8, 223);
+  font-size: 15px;
+  left: 80px;
+  top: 0px;
+}
+
+.flatlightmincontainer {
+  position: absolute;
+  width: 4pc;
+  color: rgb(208, 211, 9);
+  font-size: 15px;
+  left: -80px;
+  top: 56px;
+}
+
+.flatlightmaxcontainer {
+  position: absolute;
+  width: 4pc;
+  color: rgb(208, 211, 9);
+  font-size: 15px;
+  left: 80px;
+  top: 0px;
+}
+
+
+.flatpoisonmincontainer {
+  position: absolute;
+  width: 5pc;
+  color: rgb(13, 241, 78);
+  font-size: 15px;
+  left: -80px;
+  top: 56px;
+}
+
+.flatpoisonmaxcontainer {
+  position: absolute;
+  width: 5pc;
+  color: rgb(13, 241, 78);
+  font-size: 15px;
+  left: 80px;
+  top: 0px;
+}
+
+
+.flatmagicmincontainer {
   position: absolute;
   width: 5pc;
   color: rgb(188, 188, 245);
   font-size: 16px;
-  left: 0px;
-  top: 36px;
+  left: -80px;
+  top: 56px;
+}
+
+.flatmagicmaxcontainer {
+  position: absolute;
+  width: 5pc;
+  color: rgb(188, 188, 245);
+  font-size: 16px;
+  left: 80px;
+  top: 0px;
 }
 
 .criticalhitcontainer {

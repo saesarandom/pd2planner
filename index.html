@@ -664,11 +664,16 @@ Resistance to fire %
 <div class="piercepoisoncontainer">Pierce Poison<div id="piercepoisoncontainer"></div>
 <div class="piercemagiccontainer">Pierce Magic<div id="piercemagiccontainer"></div>
 
-<div class="flatfirecontainer">Fire Dmg<div id="flatfirecontainer"></div>
-<div class="flatcoldcontainer">Cold Dmg<div id="flatcoldcontainer"></div>
-<div class="flatlightcontainer">Light Dmg<div id="flatlightcontainer"></div>
-<div class="flatpoisoncontainer">Poison Dmg<div id="flatpoisoncontainer"></div>
-<div class="flatmagiccontainer">Magic Dmg<div id="flatmagiccontainer"></div>
+<div class="flatfiremincontainer">Fire Dmg Min<div id="flatfiremincontainer"></div>
+<div class="flatfiremaxcontainer">Fire Dmg Max<div id="flatfiremaxcontainer"></div>
+<div class="flatcoldmincontainer">Cold Dmg Min<div id="flatcoldmincontainer"></div>
+<div class="flatcoldmaxcontainer">Cold Dmg Max<div id="flatcoldmaxcontainer"></div>
+<div class="flatlightmincontainer">Light Dmg Min<div id="flatlightmincontainer"></div>
+<div class="flatlightmaxcontainer">Light Dmg Max<div id="flatlightmaxcontainer"></div>
+<div class="flatpoisonmincontainer">Poison Dmg Min<div id="flatpoisonmincontainer"></div>
+<div class="flatpoisonmaxcontainer">Poison Dmg Max<div id="flatpoisonmaxcontainer"></div>
+<div class="flatmagicmincontainer">Magic Dmg Min<div id="flatmagicmincontainer"></div>
+<div class="flatmagicmaxcontainer">Magic Dmg Max<div id="flatmagicmaxcontainer"></div>
 
 <div class="criticalhitcontainer">Critical Hit<div id="criticalhitcontainer"></div>
 <div class="deadlystrikecontainer">Deadly Strike<div id="deadlystrikecontainer"></div>
@@ -2736,11 +2741,11 @@ let totalEDMG = 0; // total Enhanced Damage defined
     document.getElementById('piercelightcontainer').innerHTML = totalPierceLight.toFixed(0);
     document.getElementById('piercepoisoncontainer').innerHTML = totalPiercePoison.toFixed(0);
     document.getElementById('piercemagiccontainer').innerHTML = totalPierceMagic.toFixed(0);
-    document.getElementById('flatfirecontainer').innerHTML = totalFlatFireDmg.toFixed(0);
-    document.getElementById('flatcoldcontainer').innerHTML = totalFlatColdDmg.toFixed(0);
-    document.getElementById('flatlightcontainer').innerHTML = totalFlatLightDmg.toFixed(0);
-    document.getElementById('flatpoisoncontainer').innerHTML = totalFlatPoisonDmg.toFixed(0);
-    document.getElementById('flatmagiccontainer').innerHTML = totalFlatMagicDmg.toFixed(0);
+    document.getElementById('flatfiremincontainer').innerHTML = totalFlatFireDmg.toFixed(0);
+    document.getElementById('flatcoldmincontainer').innerHTML = totalFlatColdDmg.toFixed(0);
+    document.getElementById('flatlightmincontainer').innerHTML = totalFlatLightDmg.toFixed(0);
+    document.getElementById('flatpoisonmincontainer').innerHTML = totalFlatPoisonDmg.toFixed(0);
+    document.getElementById('flatmagicmincontainer').innerHTML = totalFlatMagicDmg.toFixed(0);
     document.getElementById('criticalhitcontainer').innerHTML = totalCriticalHit.toFixed(0);
     document.getElementById('deadlystrikecontainer').innerHTML = totalDeadlyStrike.toFixed(2); //tu bylo 2
     document.getElementById('weaponmasterycontainer').innerHTML = totalWeaponMastery.toFixed(0);
@@ -5529,7 +5534,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
 });
 </script>
   
-<button id="saveButton">Save as hexcode HTML</button>
+<!-- <button id="saveButton">Save as hexcode HTML</button> --> 
 
 <script>
      function generateHexCode() {
