@@ -1691,6 +1691,7 @@ const itemList = {
       speed: 0,
       onehandmin: 4,
       onehandmax: 9,
+      reqstr: "none",
       reqlvl: 5,
       edmg: 50,
       cb: 20,
