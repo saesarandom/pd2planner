@@ -1378,6 +1378,45 @@ Resistance to fire %
                           <span id= "shockinglargeValue">1</span>
                         </div>
 
+<div class ="propertycontainer">
+<button data-property="Sepiclarge">Septic</button>
+<input type= "septiclargerange"id= "largeRange"min= "9"max= "9" value= "9" class= "propertyrange">
+<span id= "septiclargeValue">9</span>
+</div>
+
+<div class ="propertycontainer">
+  <button data-property="Foullarge">Foul</button>
+  <input type= "range"id= "foullargeRange"min= "26"max= "26"value= "26"class= "propertyrange">
+<span id= "foullargeValue">26</span>
+</div>
+
+
+<div class ="propertycontainer">
+  <button data-property="Toxiclarge">Toxic</button>
+  <input type= "range"id= "toxiclargeRange"min= "49"max= "49"value= "49"class= "propertyrange">
+<span id= "toxiclargeValue">49</span>
+</div>
+
+<div class ="propertycontainer">
+  <button data-property="Pestilentlarge">Pestilent</button>
+  <input type= "range"id= "pestilentlargeRange"min= "129"max= "129"value= "129"class= "propertyrange">
+<span id= "pestilentlargeValue">129</span>
+</div>
+
+
+<div class ="propertycontainer">
+  <button data-property="Channelinglarge">Channeling</button>
+  <input type= "range"id= "channelinglargeRange"min= "2"max= "2"value= "2"class= "propertyrange">
+<span id= "channelinglargeValue">2</span>
+</div>
+
+<div class ="propertycontainer">
+  <button data-property="Coldlarge">Cold</button>
+  <input type= "range"id= "coldlargeRange"min= "2"max= "2"value= "2"class= "propertyrange">
+<span id= "coldlargeValue">2</span>
+</div>
+
+
   <div class="suffixproperties" style="display: none;">
     <h3>Suffix</h3>
     <div class="propertycontainer">
@@ -5780,7 +5819,7 @@ const charmAffixes = {
   },
   'large-charm': {
     prefixes: ['Stoutlarge', 'Stout2large', 'Stout3large', 'Burlylarge', 'Burly2large', 'Stalwartlarge', 'Stalwart2large', 'Redlarge', 'Sanguinarylarge', 'Jaggedlarge', 'Forkedlarge', 'Bronzelarge', 'Bronze2large', 'Bronze3large', 'Ironlarge', 'Iron2large', 'Steellarge', 'Steel2large', 'Finelarge', 'Sharplarge', 'Luckylarge', 'Lucky2large', 'Lucky3large', 'Lizardslarge', 'Lizards2large', 'Snakeslarge', 'Snakes2large', 'Serpentslarge', 'Serpents2large', 'Shimmeringlarge', 'Shimmering2large', 'Azurelarge', 'Lapislarge', 'Cobaltlarge', 'Sapphirelarge', 'Crimsonlarge', 'Russetlarge', 'Garnetlarge', 'Rubylarge', 'Tangerinelarge',
-      'Ocherlarge',   'Corallarge', 'Amberlarge', 'Beryllarge', 'Viridianlarge', 'Jadelarge', 'Emeraldlarge', 'Snowylarge', 'Shiveringlarge', 'Boreallarge', 'Hibernallarge', 'Fierylare', 'Smolderinglarge', 'Smokinglarge', 'Flaminglarge', 'Staticlarge', 'Glowinglarge', 'Arcinglarge', 'Shockinglarge', 'Septiclarge', 'Foullarge', 'Toxiclarge', 'Pestilentlarge'
+      'Ocherlarge',   'Corallarge', 'Amberlarge', 'Beryllarge', 'Viridianlarge', 'Jadelarge', 'Emeraldlarge', 'Snowylarge', 'Shiveringlarge', 'Boreallarge', 'Hibernallarge', 'Fierylare', 'Smolderinglarge', 'Smokinglarge', 'Flaminglarge', 'Staticlarge', 'Glowinglarge', 'Arcinglarge', 'Shockinglarge', 'Septiclarge', 'Foullarge', 'Toxiclarge', 'Pestilentlarge', 'Channelinglarge', 'Coldlarge', 'Cinderlarge', 'Morbidlarge', 'Sparkling', 'Discharging', 'Frigid', 'Wildfire', 'Malicious', 'Effervescent', 'Conduit', 'Numbing', 'Inferno', 'Infectious'
      ],
     suffixes: ['Ofpower', 'Ofmight']
   },
@@ -5979,8 +6018,8 @@ const descriptions = {
   Foullarge: 'Poison Damage',
   Toxiclarge: 'Poison Damage',
   Pestilentlarge: 'Poison Damage',
-  Channelinglarge: 'to Lightning Skill Damage',
-  Coldlarge: 'to Cold Skill Damage',
+  Channelinglarge: '% to Lightning Skill Damage',
+  Coldlarge: '% to Cold Skill Damage',
   Cinderlarge: 'to Fire Skill Damage',
   Morbidlarge: 'to Poison Skill Damage',
   Sparklinglarge: 'to Magic Skill Damage',
