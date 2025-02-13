@@ -808,6 +808,672 @@ const upgradeDefinitions = {
         },
       },
     },
+    Humongous: {
+      exceptional: {
+        name: "Humongous",
+        base: "Ancient Axe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 29,
+        },
+      },
+      elite: {
+        name: "Humongous",
+        base: "Glorious Axe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 66,
+        },
+      },
+    },
+    Felloak: {
+      exceptional: {
+        name: "Felloak",
+        base: "Cudgel",
+        properties: {
+          reqstr: 195,
+          reqlvl: 18,
+        },
+      },
+      elite: {
+        name: "Felloak",
+        base: "Truncheon",
+        properties: {
+          reqstr: 195,
+          reqlvl: 39,
+        },
+      },
+    },
+    Stoutnail: {
+      exceptional: {
+        name: "Stoutnail",
+        base: "Barbed Club",
+        properties: {
+          reqstr: 195,
+          reqlvl: 20,
+        },
+      },
+      elite: {
+        name: "Stoutnail",
+        base: "Tyrant Club",
+        properties: {
+          reqstr: 195,
+          reqlvl: 42,
+        },
+      },
+    },
+    Crushflange: {
+      exceptional: {
+        name: "Crushflange",
+        base: "Flanged Mace",
+        properties: {
+          reqstr: 195,
+          reqlvl: 23,
+        },
+      },
+      elite: {
+        name: "Crushflange",
+        base: "Reinforced Mace",
+        properties: {
+          reqstr: 195,
+          reqlvl: 47,
+        },
+      },
+    },
+    Bloodrise: {
+      exceptional: {
+        name: "Bloodrise",
+        base: "Jagged Star",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Bloodrise",
+        base: "Devil Star",
+        properties: {
+          reqstr: 195,
+          reqlvl: 52,
+        },
+      },
+    },
+    "The General's Tan Do Li Ga": {
+      exceptional: {
+        name: "The General's Tan Do Li Ga",
+        base: "Knout",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "The General's Tan Do Li Ga",
+        base: "Scourge",
+        properties: {
+          reqstr: 195,
+          reqlvl: 57,
+        },
+      },
+    },
+    Ironstone: {
+      exceptional: {
+        name: "Ironstone",
+        base: "Battle Hammer",
+        properties: {
+          reqstr: 195,
+          reqlvl: 27,
+        },
+      },
+      elite: {
+        name: "Ironstone",
+        base: "Legendary Hammer",
+        properties: {
+          reqstr: 195,
+          reqlvl: 61,
+        },
+      },
+    },
+    Bonesnap: {
+      exceptional: {
+        name: "Bonesnap",
+        base: "War Club",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Bonesnap",
+        base: "Ogre Maul",
+        properties: {
+          reqstr: 195,
+          reqlvl: 51,
+        },
+      },
+    },
+    Steeldriver: {
+      exceptional: {
+        name: "Steeldriver",
+        base: "Martel de Fer",
+        properties: {
+          reqstr: 195,
+          reqlvl: 29,
+        },
+      },
+      elite: {
+        name: "Steeldriver",
+        base: "Thunder Maul",
+        properties: {
+          reqstr: 195,
+          reqlvl: 65,
+        },
+      },
+    },
+    "Rixot's Keen": {
+      exceptional: {
+        name: "Rixot's Keen",
+        base: "Gladius",
+        properties: {
+          reqstr: 195,
+          reqlvl: 18,
+        },
+      },
+      elite: {
+        name: "Rixot's Keen",
+        base: "Falcata",
+        properties: {
+          reqstr: 195,
+          reqlvl: 42,
+        },
+      },
+    },
+    "Blood Crescent": {
+      exceptional: {
+        name: "Blood Crescent",
+        base: "Cutlass",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Blood Crescent",
+        base: "Ataghan",
+        properties: {
+          reqstr: 195,
+          reqlvl: 45,
+        },
+      },
+    },
+    "Skewer of Krintiz": {
+      exceptional: {
+        name: "Skewer of Krintiz",
+        base: "Shamsir",
+        properties: {
+          reqstr: 195,
+          reqlvl: 23,
+        },
+      },
+      elite: {
+        name: "Skewer of Krintiz",
+        base: "Elegant Blade",
+        properties: {
+          reqstr: 195,
+          reqlvl: 47,
+        },
+      },
+    },
+    Gleamscythe: {
+      exceptional: {
+        name: "Gleamscythe",
+        base: "Tulwar",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Gleamscythe",
+        base: "Hydra Edge",
+        properties: {
+          reqstr: 195,
+          reqlvl: 51,
+        },
+      },
+    },
+    "Griswold's Edge": {
+      exceptional: {
+        name: "Griswold's Edge",
+        base: "Battle Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Griswold's Edge",
+        base: "Conquest Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 58,
+        },
+      },
+    },
+    Hellplague: {
+      exceptional: {
+        name: "Hellplague",
+        base: "Rune Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Hellplague",
+        base: "Cryptic Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 61,
+        },
+      },
+    },
+    "Culwen's Point": {
+      exceptional: {
+        name: "Culwen's Point",
+        base: "Ancient Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 29,
+        },
+      },
+      elite: {
+        name: "Culwen's Point",
+        base: "Mythical Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 65,
+        },
+      },
+    },
+    Shadowfang: {
+      exceptional: {
+        name: "Shadowfang",
+        base: "Espandon",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Shadowfang",
+        base: "Legend Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 44,
+        },
+      },
+    },
+    Soulflay: {
+      exceptional: {
+        name: "Soulflay",
+        base: "Dacian Falx",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Soulflay",
+        base: "Highland Blade",
+        properties: {
+          reqstr: 195,
+          reqlvl: 49,
+        },
+      },
+    },
+    "Kinemil's Awl": {
+      exceptional: {
+        name: "Kinemil's Awl",
+        base: "Tusk Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 29,
+        },
+      },
+      elite: {
+        name: "Kinemil's Awl",
+        base: "Balrog Blade",
+        properties: {
+          reqstr: 195,
+          reqlvl: 65,
+        },
+      },
+    },
+    Blacktongue: {
+      exceptional: {
+        name: "Blacktongue",
+        base: "Gothic Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 26,
+        },
+      },
+      elite: {
+        name: "Blacktongue",
+        base: "Champion Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 57,
+        },
+      },
+    },
+    Ripsaw: {
+      exceptional: {
+        name: "Ripsaw",
+        base: "Zweihander",
+        properties: {
+          reqstr: 195,
+          reqlvl: 26,
+        },
+      },
+      elite: {
+        name: "Ripsaw",
+        base: "Colossus Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 60,
+        },
+      },
+    },
+    "The Patriarch": {
+      exceptional: {
+        name: "The Patriarch",
+        base: "Executioner Sword",
+        properties: {
+          reqstr: 195,
+          reqlvl: 29,
+        },
+      },
+      elite: {
+        name: "The Patriarch",
+        base: "Colossus Blade",
+        properties: {
+          reqstr: 195,
+          reqlvl: 63,
+        },
+      },
+    },
+    Gull: {
+      exceptional: {
+        name: "Gull",
+        base: "Poignard",
+        properties: {
+          reqstr: 195,
+          reqlvl: 19,
+        },
+      },
+      elite: {
+        name: "Gull",
+        base: "Bone Knife",
+        properties: {
+          reqstr: 195,
+          reqlvl: 43,
+        },
+      },
+    },
+    "The Diggler": {
+      exceptional: {
+        name: "The Diggler",
+        base: "Rondel",
+        properties: {
+          reqstr: 195,
+          reqlvl: 24,
+        },
+      },
+      elite: {
+        name: "The Diggler",
+        base: "Mithril Point",
+        properties: {
+          reqstr: 195,
+          reqlvl: 52,
+        },
+      },
+    },
+    "The Jade Tan Do": {
+      exceptional: {
+        name: "The Jade Tan Do",
+        base: "Cinquedeas",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "The Jade Tan Do",
+        base: "Fanged Knife",
+        properties: {
+          reqstr: 195,
+          reqlvl: 62,
+        },
+      },
+    },
+    "Spectral Shard": {
+      exceptional: {
+        name: "Spectral Shard",
+        base: "Stiletto",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Spectral Shard",
+        base: "Legend Spike",
+        properties: {
+          reqstr: 195,
+          reqlvl: 66,
+        },
+      },
+    },
+    // "The Gidbinn": {
+    //   exceptional: {
+    //     name: "The Gidbinn",
+    //     base: "Dagger",
+    //     properties: {
+    //       reqstr: 195,
+    //       reqlvl: 0,
+    //     },
+    //   },
+    //   elite: {
+    //     name: "The Gidbinn",
+    //     base: "Dagger",
+    //     properties: {
+    //       reqstr: 195,
+    //       reqlvl: 0,
+    //     },
+    //   },
+    // },
+    "The Dragon Chang": {
+      exceptional: {
+        name: "The Dragon Chang",
+        base: "War Spear",
+        properties: {
+          reqstr: 195,
+          reqlvl: 21,
+        },
+      },
+      elite: {
+        name: "The Dragon Chang",
+        base: "Hyperion Spear",
+        properties: {
+          reqstr: 195,
+          reqlvl: 43,
+        },
+      },
+    },
+    Razortine: {
+      exceptional: {
+        name: "Razortine",
+        base: "Fuscina",
+        properties: {
+          reqstr: 195,
+          reqlvl: 24,
+        },
+      },
+      elite: {
+        name: "Razortine",
+        base: "Stygian Pike",
+        properties: {
+          reqstr: 195,
+          reqlvl: 49,
+        },
+      },
+    },
+    Bloodthief: {
+      exceptional: {
+        name: "Bloodthief",
+        base: "War Fork",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Bloodthief",
+        base: "Mancatcher",
+        properties: {
+          reqstr: 195,
+          reqlvl: 55,
+        },
+      },
+    },
+    "Lance of Yaggai": {
+      exceptional: {
+        name: "Lance of Yaggai",
+        base: "Yari",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Lance of Yaggai",
+        base: "Ghost Spear",
+        properties: {
+          reqstr: 195,
+          reqlvl: 62,
+        },
+      },
+    },
+    "The Tannr Gorerod": {
+      exceptional: {
+        name: "The Tannr Gorerod",
+        base: "Lance",
+        properties: {
+          reqstr: 195,
+          reqlvl: 27,
+        },
+      },
+      elite: {
+        name: "The Tannr Gorerod",
+        base: "War Pike",
+        properties: {
+          reqstr: 195,
+          reqlvl: 66,
+        },
+      },
+    },
+    "Dimoak's Hew": {
+      exceptional: {
+        name: "Dimoak's Hew",
+        base: "Lochaber Axe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 21,
+        },
+      },
+      elite: {
+        name: "Dimoak's Hew",
+        base: "Ogre Axe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 45,
+        },
+      },
+    },
+    Steelgoad: {
+      exceptional: {
+        name: "Steelgoad",
+        base: "Bill",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Steelgoad",
+        base: "Colossus Voulge",
+        properties: {
+          reqstr: 195,
+          reqlvl: 48,
+        },
+      },
+    },
+    "The Battlebranch": {
+      exceptional: {
+        name: "The Battlebranch",
+        base: "Partizan",
+        properties: {
+          reqstr: 195,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "The Battlebranch",
+        base: "Cryptic Axe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 59,
+        },
+      },
+    },
+    Woestave: {
+      exceptional: {
+        name: "Woestave",
+        base: "Bec-de-Corbin",
+        properties: {
+          reqstr: 195,
+          reqlvl: 28,
+        },
+      },
+      elite: {
+        name: "Woestave",
+        base: "Great Poleaxe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 63,
+        },
+      },
+    },
+    "The Grim Reaper": {
+      exceptional: {
+        name: "The Grim Reaper",
+        base: "Grim Scythe",
+        properties: {
+          reqstr: 195,
+          reqlvl: 29,
+        },
+      },
+      elite: {
+        name: "The Grim Reaper",
+        base: "Giant Thresher",
+        properties: {
+          reqstr: 195,
+          reqlvl: 66,
+        },
+      },
+    },
   },
   gloves: {
     "The Hand of Broc": {
@@ -3019,15 +3685,22 @@ function updateWeaponDescription() {
   if (currentItemData) {
     const descriptionContainer = document.getElementById("weapon-info");
     if (descriptionContainer) {
-      // Create a deep copy of the current item data to avoid direct mutation
-      const tempItemData = JSON.parse(JSON.stringify(currentItemData));
+      // Save corruption text if it exists
+      const corruptionDiv =
+        descriptionContainer.querySelector(".corrupted-mod");
+      const corruptedText =
+        descriptionContainer.querySelector(".corrupted-text");
+      const corruptionHTML = corruptionDiv ? corruptionDiv.outerHTML : "";
+      const corruptedTextHTML = corruptedText ? corruptedText.outerHTML : "";
 
+      // Create a deep copy of the current item data
+      const tempItemData = JSON.parse(JSON.stringify(currentItemData));
       const baseType = tempItemData.description.split("<br>")[1];
       const isTwoHanded = tempItemData.properties.twohandmin !== undefined;
 
       const newProperties = { ...tempItemData.properties };
 
-      // Recalculate damage specifically for weapon sockets
+      // Recalculate damage
       if (isTwoHanded) {
         newProperties.twohandmin = calculateItemDamage(
           tempItemData,
@@ -3052,7 +3725,7 @@ function updateWeaponDescription() {
         );
       }
 
-      // Extract magical properties, excluding damage and requirement lines
+      // Extract magical properties
       const magicalProperties = tempItemData.description
         .split("<br>")
         .slice(3)
@@ -3078,49 +3751,80 @@ function updateWeaponDescription() {
 
       // Update description container
       const descriptionLines = newDescription.split("<br>");
-      const formattedDescription = descriptionLines
+      let formattedDescription = descriptionLines
         .map((line) => `<div>${line}</div>`)
         .join("");
+
+      // Add back corruption information if it existed
+      if (corruptionHTML || corruptedTextHTML) {
+        formattedDescription += corruptionHTML + corruptedTextHTML;
+      }
+
       descriptionContainer.innerHTML = formattedDescription;
     }
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Add event listeners to trigger description update for weapon sockets
-  document
-    .querySelectorAll('.socketz[data-section="weapon"]')
-    .forEach((socket) => {
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.type === "attributes" || mutation.type === "childList") {
-            requestAnimationFrame(updateWeaponDescription);
-          }
-        });
-      });
+  // Add MutationObserver to weapon sockets
+  const weaponSockets = document.querySelectorAll(
+    '.socketz[data-section="weapon"]'
+  );
 
-      observer.observe(socket, {
-        attributes: true,
-        childList: true,
-        subtree: true,
-        characterData: true,
+  weaponSockets.forEach((socket) => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === "attributes" || mutation.type === "childList") {
+          requestAnimationFrame(updateWeaponDamageDisplay);
+        }
       });
-
-      // Additional direct event listeners
-      socket.addEventListener("click", updateWeaponDescription);
-      socket.addEventListener("contextmenu", updateWeaponDescription);
     });
 
-  // Character stat inputs
+    observer.observe(socket, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  });
+
+  // Additional event listeners for comprehensive updates
+  document.querySelectorAll(".socketz").forEach((socket) => {
+    socket.addEventListener("click", updateWeaponDamageDisplay);
+    socket.addEventListener("contextmenu", updateWeaponDamageDisplay);
+  });
+
   ["str", "dex", "vit", "enr", "lvlValue"].forEach((id) => {
     const element = document.getElementById(id);
     if (element) {
-      element.addEventListener("input", updateWeaponDescription);
+      element.addEventListener("input", updateWeaponDamageDisplay);
     }
   });
 
-  // Weapon dropdown change
   document
     .getElementById("weapons-dropdown")
-    ?.addEventListener("change", updateWeaponDescription);
+    ?.addEventListener("change", updateWeaponDamageDisplay);
 });
+
+document
+  .getElementById("weapons-dropdown")
+  ?.addEventListener("change", (event) => {
+    const selectedItem = event.target.value;
+    const itemData = itemList[selectedItem];
+
+    if (itemData) {
+      // Update description container
+      const descriptionContainer = document.getElementById("weapon-info");
+      if (descriptionContainer) {
+        // Split the description into lines and create HTML
+        const descriptionLines = itemData.description.split("<br>");
+        const formattedDescription = descriptionLines
+          .map((line) => `<div>${line}</div>`)
+          .join("");
+        descriptionContainer.innerHTML = formattedDescription;
+      }
+
+      // Update damage display
+      updateWeaponDamageDisplay();
+    }
+  });

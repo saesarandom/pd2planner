@@ -11509,6 +11509,13 @@ window.removeAffix = function(type, index) {
   updateSelectedAffixesDisplay();
 };
 
+
+function updateAllDisplays() {
+    updateAllStatsDisplays();
+    updateWeaponDamageDisplay();
+    updateWeaponDescription();
+  }
+
 function insertItem(itemName) {
   if (!currentSocket) return;
 
@@ -11531,11 +11538,8 @@ function insertItem(itemName) {
 
     currentSocket.dataset.itemName = itemName;
     currentSocket.dataset.stats = stats;
-    // updateUpgradeDefinitions();
-    // handleUpgrade();
 
-    updateAllStatsDisplays();
-    // updateDamageDisplay();
+    updateAllDisplays();
   }
 }
 
@@ -12071,11 +12075,16 @@ document.querySelector('.prefix-select')?.addEventListener('change', (e) => {
   }
 });
 
+
+
+
 // Close modals when clicking outside
 window.addEventListener('click', (e) => {
   if (e.target.classList.contains('modalz')) {
     hideItemModal();
     hideJewelModal();
+    
+
   }
 });
   </script>
