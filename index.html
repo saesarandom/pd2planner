@@ -3095,13 +3095,12 @@ function updateCriticalAndDeadly() {
     
 }
 
-console.log('Raw deadly strike value:', document.getElementById('deadlystrikecontainer')?.textContent);
+
         const deadlyStrike = parseFloat(document.getElementById('deadlystrikecontainer')?.textContent || 0);
-        console.log('Parsed deadly strike:', deadlyStrike);
+        
         
         const weaponMastery = parseFloat(document.getElementById('weaponmasterycontainer')?.textContent || 0);
-        console.log('Weapon mastery:', weaponMastery);
-        console.log('Critical hit value:', criticalHitValue);
+       
 
 
         const critMultiplier = 0.5 * (1 - (1 - deadlyStrike/100) * 
@@ -5759,6 +5758,7 @@ skillvalues.forEach(skillvalue => {
   <script src="login.js"></script>
   <script src="achievements.obfuscated.js"></script>
   <script src="corruption.js"></script>
+  <!-- <script src="socketManager.js"></script> -->
 
     
       
@@ -7560,11 +7560,7 @@ modal.addEventListener('click', (e) => {
     const isSuffix = prop.startsWith('Of') || e.target.closest('.suffixproperties') !== null;
     const isPrefix = !isSuffix || e.target.closest('.prefixproperties') !== null;
 
-    console.log('Property clicked:', {
-      property: prop,
-      isSuffix,
-      isPrefix
-    });
+   
 
     if (isPrefix && !isSuffix) {
       // Handle prefix selection
@@ -7588,7 +7584,7 @@ modal.addEventListener('click', (e) => {
       };
     }
 
-    console.log('Current properties:', selectedProperties);
+   
   }
 });
 
@@ -8191,11 +8187,7 @@ let equipmentDefense = 0;
 if(coldResMatch) {
     const value = parseInt(coldResMatch[1]);
     charmResistances.coldres += value;
-    console.log('Found cold resistance:', {
-        charmText: text,
-        resistValue: value,
-        totalColdRes: charmResistances.coldres
-    });
+    
 }
 
        // Fire resistance from charms
@@ -8250,8 +8242,7 @@ if(coldResMatch) {
        span4.textContent = `${baseStats.poisonres}`;
    }
 
-   console.log('Charm resistances:', charmResistances.coldres);
-   console.log('Charm resistances light:', charmResistances.lightres);
+   
 
    
   
@@ -11510,11 +11501,26 @@ window.removeAffix = function(type, index) {
 };
 
 
-function updateAllDisplays() {
-    updateAllStatsDisplays();
+// function updateAllDisplays() {
+//     updateAllStatsDisplays();
+//     updateWeaponDamageDisplay();
+//     updateWeaponDescription();
+//   }
+
+  function refreshSocketProperties() {
+  // Update all socket displays
+  updateStatsDisplay('helm');
+  updateStatsDisplay('armor');
+  updateStatsDisplay('weapon');
+  updateStatsDisplay('shield');
+
+  // Update weapon specific displays if they exist
+  if (document.querySelector('.socketz[data-section="weapon"]')) {
     updateWeaponDamageDisplay();
     updateWeaponDescription();
   }
+}
+
 
 function insertItem(itemName) {
   if (!currentSocket) return;
@@ -11539,9 +11545,11 @@ function insertItem(itemName) {
     currentSocket.dataset.itemName = itemName;
     currentSocket.dataset.stats = stats;
 
-    updateAllDisplays();
+    // Refresh immediately after inserting
+    refreshSocketProperties();
   }
 }
+
 
 function getJewelImageSrc() {
   const jewelImages = [
@@ -11631,14 +11639,50 @@ function clearSocket(socket) {
   socket.textContent = '';
   delete socket.dataset.itemName;
   delete socket.dataset.stats;
+  
+  // Refresh immediately after clearing
+  refreshSocketProperties();
 }
 
-function updateAllStatsDisplays() {
-  updateStatsDisplay('helm');
-  updateStatsDisplay('armor');
-  updateStatsDisplay('weapon');
-  updateStatsDisplay('shield');
-}
+// Add listeners for socket changes
+document.addEventListener('DOMContentLoaded', () => {
+  // Watch for changes to sockets
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'attributes' || 
+          mutation.type === 'childList' || 
+          mutation.target.classList.contains('socketz')) {
+        refreshSocketProperties();
+      }
+    });
+  });
+
+  // Observe all socket containers
+  document.querySelectorAll('.socketz').forEach(socket => {
+    observer.observe(socket, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+
+    // Add direct event listeners
+    socket.addEventListener('click', () => refreshSocketProperties());
+    socket.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      refreshSocketProperties();
+    });
+  });
+
+  // Update on jewel confirmation
+  const confirmJewelBtn = document.getElementById('confirmJewel');
+  if (confirmJewelBtn) {
+    confirmJewelBtn.addEventListener('click', refreshSocketProperties);
+  }
+
+  // Initial refresh
+  refreshSocketProperties();
+});
 
 function updateAllSocketStats() {
   const sections = ['helm', 'armor', 'weapon', 'shield'];

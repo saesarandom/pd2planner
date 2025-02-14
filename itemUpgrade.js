@@ -3553,12 +3553,11 @@ function makeEtherealItem(category) {
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".socketz").forEach((socket) => {
     socket.addEventListener("click", () => {
-      updateAllStatsDisplays();
       updateWeaponDamageDisplay();
     });
     socket.addEventListener("contextmenu", (e) => {
       e.preventDefault();
-      updateAllStatsDisplays();
+
       updateWeaponDamageDisplay();
     });
   });
@@ -3685,146 +3684,23 @@ function updateWeaponDescription() {
   if (currentItemData) {
     const descriptionContainer = document.getElementById("weapon-info");
     if (descriptionContainer) {
-      // Save corruption text if it exists
-      const corruptionDiv =
+      // Save existing socket stats and corruption info
+      const existingSocketStats =
+        descriptionContainer.querySelector(".socket-stats");
+      const existingCorruptedMod =
         descriptionContainer.querySelector(".corrupted-mod");
-      const corruptedText =
+      const existingCorruptedText =
         descriptionContainer.querySelector(".corrupted-text");
-      const corruptionHTML = corruptionDiv ? corruptionDiv.outerHTML : "";
-      const corruptedTextHTML = corruptedText ? corruptedText.outerHTML : "";
 
-      // Create a deep copy of the current item data
-      const tempItemData = JSON.parse(JSON.stringify(currentItemData));
-      const baseType = tempItemData.description.split("<br>")[1];
-      const isTwoHanded = tempItemData.properties.twohandmin !== undefined;
-
-      const newProperties = { ...tempItemData.properties };
-
-      // Recalculate damage
-      if (isTwoHanded) {
-        newProperties.twohandmin = calculateItemDamage(
-          tempItemData,
-          baseType,
-          false
-        );
-        newProperties.twohandmax = calculateItemDamage(
-          tempItemData,
-          baseType,
-          true
-        );
-      } else {
-        newProperties.onehandmin = calculateItemDamage(
-          tempItemData,
-          baseType,
-          false
-        );
-        newProperties.onehandmax = calculateItemDamage(
-          tempItemData,
-          baseType,
-          true
-        );
-      }
-
-      // Extract magical properties
-      const magicalProperties = tempItemData.description
-        .split("<br>")
-        .slice(3)
-        .filter(
-          (prop) =>
-            !prop.includes("Required") &&
-            !prop.includes("Damage:") &&
-            prop.trim() !== ""
-        )
-        .join("<br>");
-
-      // Create new description with updated damage
-      const newDescription = buildDescriptionWeapon(
-        currentItem,
-        baseType,
-        newProperties,
-        magicalProperties
-      );
-
-      // Update item in itemList
-      itemList[currentItem].description = newDescription;
-      itemList[currentItem].properties = newProperties;
-
-      // Update description container
-      const descriptionLines = newDescription.split("<br>");
-      let formattedDescription = descriptionLines
-        .map((line) => `<div>${line}</div>`)
-        .join("");
-
-      // Add back corruption information if it existed
-      if (corruptionHTML || corruptedTextHTML) {
-        formattedDescription += corruptionHTML + corruptedTextHTML;
-      }
-
-      descriptionContainer.innerHTML = formattedDescription;
+      const socketStatsHtml = existingSocketStats
+        ? existingSocketStats.outerHTML
+        : "";
+      const corruptedModHtml = existingCorruptedMod
+        ? existingCorruptedMod.outerHTML
+        : "";
+      const corruptedTextHtml = existingCorruptedText
+        ? existingCorruptedText.outerHTML
+        : "";
     }
   }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Add MutationObserver to weapon sockets
-  const weaponSockets = document.querySelectorAll(
-    '.socketz[data-section="weapon"]'
-  );
-
-  weaponSockets.forEach((socket) => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === "attributes" || mutation.type === "childList") {
-          requestAnimationFrame(updateWeaponDamageDisplay);
-        }
-      });
-    });
-
-    observer.observe(socket, {
-      attributes: true,
-      childList: true,
-      subtree: true,
-      characterData: true,
-    });
-  });
-
-  // Additional event listeners for comprehensive updates
-  document.querySelectorAll(".socketz").forEach((socket) => {
-    socket.addEventListener("click", updateWeaponDamageDisplay);
-    socket.addEventListener("contextmenu", updateWeaponDamageDisplay);
-  });
-
-  ["str", "dex", "vit", "enr", "lvlValue"].forEach((id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.addEventListener("input", updateWeaponDamageDisplay);
-    }
-  });
-
-  document
-    .getElementById("weapons-dropdown")
-    ?.addEventListener("change", updateWeaponDamageDisplay);
-});
-
-document
-  .getElementById("weapons-dropdown")
-  ?.addEventListener("change", (event) => {
-    const selectedItem = event.target.value;
-    const itemData = itemList[selectedItem];
-
-    if (itemData) {
-      // Update description container
-      const descriptionContainer = document.getElementById("weapon-info");
-      if (descriptionContainer) {
-        // Split the description into lines and create HTML
-        const descriptionLines = itemData.description.split("<br>");
-        const formattedDescription = descriptionLines
-          .map((line) => `<div>${line}</div>`)
-          .join("");
-        descriptionContainer.innerHTML = formattedDescription;
-      }
-
-      // Update damage display
-      updateWeaponDamageDisplay();
-    }
-  });

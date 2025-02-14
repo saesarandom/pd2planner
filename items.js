@@ -1686,7 +1686,7 @@ const itemList = {
 
   "The Gnasher": {
     description:
-      "The Gnasher<br> Hand Axe<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 4 to 9, Avg 6.5<br> Required Level: 5<br> +50% Enhanced Damage<br> 20% Chance of Crushing Blow<br> 50% Chance of Open Wounds<br> +2 Open Wounds Damage per Second<br> +8 to Strength<br>",
+      "The Gnasher<br>Hand Axe<br>Base Speed Modifier: 0<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 4 to 9, Avg 6.5<br> Required Level: 5<br> +50% Enhanced Damage<br> 20% Chance of Crushing Blow<br> 50% Chance of Open Wounds<br> +2 Open Wounds Damage per Second<br> +8 to Strength<br>",
     properties: {
       speed: 0,
       onehandmin: 4,
@@ -1703,7 +1703,7 @@ const itemList = {
 
   Bladebone: {
     description:
-      "Bladebone<br> Double Axe<br> Base Speed Modifier: 10<br> Base Melee Range: 2<br> One-Hand Damage: 7 to 19, Avg 13<br> Required Strength: 43<br> Required Level: 15<br> 40% Chance to Cast Level 8 Teeth on Striking<br> +20% Increased Attack Speed<br> +50% Enhanced Damage<br> +100% Damage to Undead<br> +40 to Attack Rating against Undead<br> +60 Defense<br>",
+      "Bladebone<br>Double Axe<br>Base Speed Modifier: 10<br> Base Melee Range: 2<br> One-Hand Damage: 7 to 19, Avg 13<br> Required Strength: 43<br> Required Level: 15<br> 40% Chance to Cast Level 8 Teeth on Striking<br> +20% Increased Attack Speed<br> +50% Enhanced Damage<br> +100% Damage to Undead<br> +40 to Attack Rating against Undead<br> +60 Defense<br>",
     properties: {
       speed: 10,
       onehandmin: 7,
@@ -1721,7 +1721,7 @@ const itemList = {
 
   "Skull Splitter": {
     description:
-      "Skull Splitter<br> Military Pick<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> One-Hand Damage: 12 to 19, Avg 15.5<br> Required Strength: 49<br> Required Level: 21<br> +80% Enhanced Damage<br> +100 to Attack Rating<br> Adds 1-60 Lightning Damage<br> 15% Chance of Open Wounds<br> +16 Open Wounds Damage per Second<br> Hit Blinds Target +2<br> Regenerate Mana 20%<br>",
+      "Skull Splitter<br>Military Pick<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> One-Hand Damage: 12 to 19, Avg 15.5<br> Required Strength: 49<br> Required Level: 21<br> +80% Enhanced Damage<br> +100 to Attack Rating<br> Adds 1-60 Lightning Damage<br> 15% Chance of Open Wounds<br> +16 Open Wounds Damage per Second<br> Hit Blinds Target +2<br> Regenerate Mana 20%<br>",
     properties: {
       speed: -10,
       onehandmin: 12,
@@ -1741,7 +1741,7 @@ const itemList = {
 
   Rakescar: {
     description:
-      "Rakescar<br> War Axe<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 30 to 50, Avg 40<br> Required Strength: 67<br> Required Level: 27<br> +30% Increased Attack Speed<br> +150% Enhanced Damage<br> +100 to Attack Rating<br> +38 Poison Damage over 2 Seconds<br> Poison Resist +50%<br>",
+      "Rakescar<br>War Axe<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 30 to 50, Avg 40<br> Required Strength: 67<br> Required Level: 27<br> +30% Increased Attack Speed<br> +150% Enhanced Damage<br> +100 to Attack Rating<br> +38 Poison Damage over 2 Seconds<br> Poison Resist +50%<br>",
     properties: {
       speed: 0,
       onehandmin: 30,
@@ -1759,7 +1759,7 @@ const itemList = {
 
   "Axe of Fechmar": {
     description:
-      "Axe of Fechmar<br> Large Axe<br> Base Speed Modifier: -10<br> Base Melee Range: 3<br> Base Maximum Sockets: 4 (5 for ilvl 26+ upgraded versions)<br> Two-Hand Damage: 11 to 24, Avg 17.5<br> Required Strength: 35<br> Required Level: 8<br> +40% Increased Attack Speed<br> +90% Enhanced Damage<br> Freezes Target +3<br> Cold Resist +50%<br> +2 to Light Radius<br>",
+      "Axe of Fechmar<br>Large Axe<br> Base Speed Modifier: -10<br> Base Melee Range: 3<br> Base Maximum Sockets: 4 (5 for ilvl 26+ upgraded versions)<br> Two-Hand Damage: 11 to 24, Avg 17.5<br> Required Strength: 35<br> Required Level: 8<br> +40% Increased Attack Speed<br> +90% Enhanced Damage<br> Freezes Target +3<br> Cold Resist +50%<br> +2 to Light Radius<br>",
     properties: {
       speed: -10,
       twohandmin: 11,
@@ -1776,7 +1776,7 @@ const itemList = {
 
   Goreshovel: {
     description:
-      "Goreshovel<br> Broad Axe<br> Base Speed Modifier: 0<br> Base Melee Range: 3<br> Two-Hand Damage: 15 to 36, Avg 25.5<br> Required Strength: 48<br> Required Level: 14<br> +30% Increased Attack Speed<br> +50% Enhanced Damage<br> +9 to Maximum Damage<br> 60% Chance of Open Wounds<br> +12 Open Wounds Damage per Second<br> +25 to Strength<br>",
+      "Goreshovel<br>Broad Axe<br> Base Speed Modifier: 0<br> Base Melee Range: 3<br> Two-Hand Damage: 15 to 36, Avg 25.5<br> Required Strength: 48<br> Required Level: 14<br> +30% Increased Attack Speed<br> +50% Enhanced Damage<br> +9 to Maximum Damage<br> 60% Chance of Open Wounds<br> +12 Open Wounds Damage per Second<br> +25 to Strength<br>",
     properties: {
       speed: 0,
       twohandmin: 15,
@@ -1794,7 +1794,7 @@ const itemList = {
 
   "The Chieftain": {
     description:
-      "The Chieftain<br> Battle Axe<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 33 to 89, Avg 61<br> Required Strength: 54<br> Required Level: 19<br> +40% Increased Attack Speed<br> +180% Enhanced Damage<br> Adds 1-40 Lightning Damage<br> All Resistances +20<br> +6 to Mana after each Kill<br>",
+      "The Chieftain<br>Battle Axe<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 33 to 89, Avg 61<br> Required Strength: 54<br> Required Level: 19<br> +40% Increased Attack Speed<br> +180% Enhanced Damage<br> Adds 1-40 Lightning Damage<br> All Resistances +20<br> +6 to Mana after each Kill<br>",
     properties: {
       speed: 10,
       twohandmin: 33,
@@ -1812,7 +1812,7 @@ const itemList = {
 
   Brainhew: {
     description:
-      "Brainhew<br> Great Axe<br> Base Speed Modifier: -10<br> Base Melee Range: 4<br> Two-Hand Damage: 41 to 90, Avg 65.5<br> Required Strength: 63<br> Required Level: 25<br> +40% Increased Attack Speed<br> +200% Enhanced Damage<br> +14 to Minimum Damage<br> Adds 15-35 Fire Damage<br> 13% Mana Stolen per Hit<br> +25 to Mana<br> +4 to Light Radius<br>",
+      "Brainhew<br>Great Axe<br> Base Speed Modifier: -10<br> Base Melee Range: 4<br> Two-Hand Damage: 41 to 90, Avg 65.5<br> Required Strength: 63<br> Required Level: 25<br> +40% Increased Attack Speed<br> +200% Enhanced Damage<br> +14 to Minimum Damage<br> Adds 15-35 Fire Damage<br> 13% Mana Stolen per Hit<br> +25 to Mana<br> +4 to Light Radius<br>",
     properties: {
       speed: -10,
       twohandmin: 41,
@@ -1832,7 +1832,7 @@ const itemList = {
 
   Humongous: {
     description:
-      "Humongous<br> Giant Axe<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 82 to 178, Avg 130<br> Required Strength: 84<br> Required Level: 29<br> Melee Splash Radius Increased by 20%<br> +20% Increased Attack Speed<br> +240% Enhanced Damage<br> Adds 8-25 Damage<br> 33% Chance of Crushing Blow<br> +30 to Strength<br> Requirements +20%<br>",
+      "Humongous<br>Giant Axe<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 82 to 178, Avg 130<br> Required Strength: 84<br> Required Level: 29<br> Melee Splash Radius Increased by 20%<br> +20% Increased Attack Speed<br> +240% Enhanced Damage<br> Adds 8-25 Damage<br> 33% Chance of Crushing Blow<br> +30 to Strength<br> Requirements +20%<br>",
     properties: {
       speed: 10,
       twohandmin: 82,
@@ -1852,7 +1852,7 @@ const itemList = {
 
   Felloak: {
     description:
-      "Felloak<br> Club<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 1 to 10, Avg 5.5<br> Required Level: 3<br> After<br> 80% Enhanced Damage<br> Adds 6-8 Fire Damage<br> +3 to Firestorm (Druid Only)<br> Knockback<br> Lightning Resist +50%<br> Fire Resist +30%<br> +50% Damage to Undead<br>",
+      "Felloak<br>Club<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 1 to 10, Avg 5.5<br> Required Level: 3<br> After<br> 80% Enhanced Damage<br> Adds 6-8 Fire Damage<br> +3 to Firestorm (Druid Only)<br> Knockback<br> Lightning Resist +50%<br> Fire Resist +30%<br> +50% Damage to Undead<br>",
     properties: {
       speed: -10,
       onehandmin: 1,
@@ -1870,7 +1870,7 @@ const itemList = {
 
   Stoutnail: {
     description:
-      "Stoutnail<br> Spiked Club<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 10 to 16, Avg 13<br> Required Level: 5<br> +100% Enhanced Damage<br> +4 to Lycanthropy (Druid Only)<br> +14 to Vitality<br> Magic Damage Taken Reduced by 4<br> Attacker Takes Damage of 10<br> +50% Damage to Undead<br>",
+      "Stoutnail<br>Spiked Club<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 10 to 16, Avg 13<br> Required Level: 5<br> +100% Enhanced Damage<br> +4 to Lycanthropy (Druid Only)<br> +14 to Vitality<br> Magic Damage Taken Reduced by 4<br> Attacker Takes Damage of 10<br> +50% Damage to Undead<br>",
     properties: {
       speed: 0,
       onehandmin: 10,
@@ -1887,7 +1887,7 @@ const itemList = {
 
   Crushflange: {
     description:
-      "Crushflange<br> Mace<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 6 to 20, Avg 13<br> Required Strength: 27<br> Required Level: 9<br> +100% Enhanced Damage<br> 33% Chance of Crushing Blow<br> +15 to Strength<br> Fire Resist +50%<br> +2 to Light Radius<br> +50% Damage to Undead<br>",
+      "Crushflange<br>Mace<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 6 to 20, Avg 13<br> Required Strength: 27<br> Required Level: 9<br> +100% Enhanced Damage<br> 33% Chance of Crushing Blow<br> +15 to Strength<br> Fire Resist +50%<br> +2 to Light Radius<br> +50% Damage to Undead<br>",
     properties: {
       speed: 0,
       onehandmin: 6,
@@ -1905,7 +1905,7 @@ const itemList = {
 
   Bloodrise: {
     description:
-      "Bloodrise<br> Morning Star<br> Base Speed Modifier: 10<br> Base Melee Range: 2<br> One-Hand Damage: 14 to 32, Avg 23<br> Required Strength: 36<br> Required Level: 15<br> +30% Increased Attack Speed<br> +100% Enhanced Damage<br> 50% Bonus to Attack Rating<br> 6% Life Stolen per Hit<br> 25% Chance of Open Wounds<br> +8 Open Wounds Damage per Second<br> +3 to Sacrifice (Paladin Only)<br> +50% Damage to Undead<br>",
+      "Bloodrise<br>Morning Star<br> Base Speed Modifier: 10<br> Base Melee Range: 2<br> One-Hand Damage: 14 to 32, Avg 23<br> Required Strength: 36<br> Required Level: 15<br> +30% Increased Attack Speed<br> +100% Enhanced Damage<br> 50% Bonus to Attack Rating<br> 6% Life Stolen per Hit<br> 25% Chance of Open Wounds<br> +8 Open Wounds Damage per Second<br> +3 to Sacrifice (Paladin Only)<br> +50% Damage to Undead<br>",
     properties: {
       speed: 10,
       onehandmin: 14,
@@ -1925,7 +1925,7 @@ const itemList = {
 
   "The General's Tan Do Li Ga": {
     description:
-      "The General's Tan Do Li Ga<br> Flail<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> One-Hand Damage: 2 to 78, Avg 40<br> Required Strength: 41<br> Required Dexterity: 35<br> Required Level: 21<br> +20% Increased Attack Speed<br> +60% Enhanced Damage<br> Adds 10 to 40 Damage<br> 5% Mana Stolen per Hit<br> Slows Target by 10%<br> +75 Defense<br> +50% Damage to Undead<br>",
+      "The General's Tan Do Li Ga<br>Flail<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> One-Hand Damage: 2 to 78, Avg 40<br> Required Strength: 41<br> Required Dexterity: 35<br> Required Level: 21<br> +20% Increased Attack Speed<br> +60% Enhanced Damage<br> Adds 10 to 40 Damage<br> 5% Mana Stolen per Hit<br> Slows Target by 10%<br> +75 Defense<br> +50% Damage to Undead<br>",
     properties: {
       speed: -10,
       onehandmin: 2,
@@ -1946,7 +1946,7 @@ const itemList = {
 
   Ironstone: {
     description:
-      "Ironstone<br> War Hammer<br> Base Speed Modifier: 20<br> Base Melee Range: 2<br> One-Hand Damage: 55 to 80, Avg 67.5<br> Required Strength: 53<br> Required Level: 27<br> +20% Increased Attack Speed<br> +150% Enhanced Damage<br> +150 to Attack Rating<br> Adds 1-50 Lightning Damage<br> +10 to Strength<br> +50% Damage to Undead<br>",
+      "Ironstone<br>War Hammer<br> Base Speed Modifier: 20<br> Base Melee Range: 2<br> One-Hand Damage: 55 to 80, Avg 67.5<br> Required Strength: 53<br> Required Level: 27<br> +20% Increased Attack Speed<br> +150% Enhanced Damage<br> +150 to Attack Rating<br> Adds 1-50 Lightning Damage<br> +10 to Strength<br> +50% Damage to Undead<br>",
     properties: {
       speed: 20,
       onehandmin: 55,
@@ -1965,7 +1965,7 @@ const itemList = {
 
   Bonesnap: {
     description:
-      "Bonesnap<br> Maul<br> Base Speed Modifier: 10<br> Base Melee Range: 4<br> Two-Hand Damage: 120 to 172, Avg 146<br> Required Strength: 69<br> Required Level: 24<br> +300% Enhanced Damage<br> +100% Damage to Undead<br> 40% Chance of Crushing Blow<br> Cold Resist +30%<br> Fire Resist +30%<br>",
+      "Bonesnap<br>Maul<br> Base Speed Modifier: 10<br> Base Melee Range: 4<br> Two-Hand Damage: 120 to 172, Avg 146<br> Required Strength: 69<br> Required Level: 24<br> +300% Enhanced Damage<br> +100% Damage to Undead<br> 40% Chance of Crushing Blow<br> Cold Resist +30%<br> Fire Resist +30%<br>",
     properties: {
       speed: 10,
       twohandmin: 120,
@@ -1982,7 +1982,7 @@ const itemList = {
 
   "Upped Bonesnap": {
     description:
-      "Upped Bonesnap<br> War Club<br> Base Speed Modifier: 10<br> Base Melee Range: 4<br> Two-Hand Damage: 276 to 452, Avg 364<br> Required Strength: 124<br> Required Level: 25<br> +300% Enhanced Damage<br> +100% Damage to Undead<br> 40% Chance of Crushing Blow<br> Cold Resist +30%<br> Fire Resist +30%<br>",
+      "Upped Bonesnap<br>War Club<br> Base Speed Modifier: 10<br> Base Melee Range: 4<br> Two-Hand Damage: 276 to 452, Avg 364<br> Required Strength: 124<br> Required Level: 25<br> +300% Enhanced Damage<br> +100% Damage to Undead<br> 40% Chance of Crushing Blow<br> Cold Resist +30%<br> Fire Resist +30%<br>",
     properties: {
       speed: 10,
       twohandmin: 276,
@@ -1999,7 +1999,7 @@ const itemList = {
 
   Steeldriver: {
     description:
-      "Steeldriver<br> Great Maul<br> Base Speed Modifier: 20<br> Base Melee Range: 3<br> Two-Hand Damage: 144 to 220, Avg 182<br> Required Strength: 50<br> Required Level: 29<br> +40% Increased Attack Speed<br> +280% Enhanced Damage<br> Heal Stamina Plus 25%<br> Requirements -50%<br> +50% Damage to Undead<br>",
+      "Steeldriver<br>Great Maul<br> Base Speed Modifier: 20<br> Base Melee Range: 3<br> Two-Hand Damage: 144 to 220, Avg 182<br> Required Strength: 50<br> Required Level: 29<br> +40% Increased Attack Speed<br> +280% Enhanced Damage<br> Heal Stamina Plus 25%<br> Requirements -50%<br> +50% Damage to Undead<br>",
     properties: {
       speed: 20,
       twohandmin: 144,
@@ -2016,7 +2016,7 @@ const itemList = {
 
   "Rixot's Keen": {
     description:
-      "Rixot's Keen<br> Short Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 9 to 14, Avg 11.5<br> Required Level: 2<br> +100% Enhanced Damage<br> +5 to Minimum Damage<br> 25% Chance of Crushing Blow<br> 20% Bonus to Attack Rating<br> +25 Defense<br> +2 to Light Radius<br>",
+      "Rixot's Keen<br>Short Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 9 to 14, Avg 11.5<br> Required Level: 2<br> +100% Enhanced Damage<br> +5 to Minimum Damage<br> 25% Chance of Crushing Blow<br> 20% Bonus to Attack Rating<br> +25 Defense<br> +2 to Light Radius<br>",
     properties: {
       speed: 0,
       onehandmin: 9,
@@ -2033,7 +2033,7 @@ const itemList = {
 
   "Blood Crescent": {
     description:
-      "Blood Crescent<br> Scimitar<br> Base Speed Modifier: -20<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 3 to 9, Avg 6<br> Required Dexterity: 21<br> Required Level: 7<br> +15% Increased Attack Speed<br> +60% Enhanced Damage<br> 15% Life Stolen per Hit<br> 33% Chance of Open Wounds<br> +4 Open Wounds Damage per Second<br> All Resistances +15<br> +4 to Light Radius<br>",
+      "Blood Crescent<br>Scimitar<br> Base Speed Modifier: -20<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 3 to 9, Avg 6<br> Required Dexterity: 21<br> Required Level: 7<br> +15% Increased Attack Speed<br> +60% Enhanced Damage<br> 15% Life Stolen per Hit<br> 33% Chance of Open Wounds<br> +4 Open Wounds Damage per Second<br> All Resistances +15<br> +4 to Light Radius<br>",
     properties: {
       speed: -20,
       onehandmin: 3,
@@ -2052,7 +2052,7 @@ const itemList = {
 
   "Skewer of Krintiz": {
     description:
-      "Skewer of Krintiz<br> Sabre<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 10 to 23, Avg 16.5<br> Required Strength: 25<br> Required Dexterity: 25<br> Required Level: 10<br> +70% Enhanced Damage<br> Adds 5-10 Damage<br> Ignore Target's Defense<br> 7% Mana Stolen per Hit<br> +10 to Strength<br> +10 to Dexterity<br>",
+      "Skewer of Krintiz<br>Sabre<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 10 to 23, Avg 16.5<br> Required Strength: 25<br> Required Dexterity: 25<br> Required Level: 10<br> +70% Enhanced Damage<br> Adds 5-10 Damage<br> Ignore Target's Defense<br> 7% Mana Stolen per Hit<br> +10 to Strength<br> +10 to Dexterity<br>",
     properties: {
       speed: -10,
       onehandmin: 10,
@@ -2072,7 +2072,7 @@ const itemList = {
 
   Gleamscythe: {
     description:
-      "Gleamscythe<br> Falchion<br> Base Speed Modifier: 20<br> Base Melee Range: 2 (was 0)<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 18 to 34, Avg 26<br> Required Strength: 33<br> Required Level: 13<br> +20% Increased Attack Speed<br> +100% Enhanced Damage<br> Adds 6-10 Cold Damage<br> +20 Defense<br> +30 to Mana<br> +3 to Light Radius<br>",
+      "Gleamscythe<br>Falchion<br> Base Speed Modifier: 20<br> Base Melee Range: 2 (was 0)<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 18 to 34, Avg 26<br> Required Strength: 33<br> Required Level: 13<br> +20% Increased Attack Speed<br> +100% Enhanced Damage<br> Adds 6-10 Cold Damage<br> +20 Defense<br> +30 to Mana<br> +3 to Light Radius<br>",
     properties: {
       speed: 20,
       onehandmin: 18,
@@ -2091,7 +2091,7 @@ const itemList = {
 
   "Griswold's Edge": {
     description:
-      "Griswold's Edge<br> Broad Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 15 to 30, Avg 22.5<br> Required Strength: 48<br> Required Level: 17<br> +30% Increased Attack Speed<br> +120% Enhanced Damage<br> +100 to Attack Rating<br> Adds 25-35 Fire Damage<br> +12 to Strength<br>",
+      "Griswold's Edge<br>Broad Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 15 to 30, Avg 22.5<br> Required Strength: 48<br> Required Level: 17<br> +30% Increased Attack Speed<br> +120% Enhanced Damage<br> +100 to Attack Rating<br> Adds 25-35 Fire Damage<br> +12 to Strength<br>",
     properties: {
       speed: 0,
       onehandmin: 15,
@@ -2109,7 +2109,7 @@ const itemList = {
 
   Hellplague: {
     description:
-      "Hellplague<br> Long Sword<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> One-Hand Damage: 5 to 34, Avg 19.5<br> Required Strength: 55<br> Required Dexterity: 39<br> Required Level: 22<br> +2 to Fire Skills<br> +80% Enhanced Damage<br> Adds 25-75 Fire Damage<br> Adds 28-56 Poison Damage over 6 Seconds<br> 5% Mana Stolen per Hit<br> 5% Life Stolen per Hit<br>",
+      "Hellplague<br>Long Sword<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> One-Hand Damage: 5 to 34, Avg 19.5<br> Required Strength: 55<br> Required Dexterity: 39<br> Required Level: 22<br> +2 to Fire Skills<br> +80% Enhanced Damage<br> Adds 25-75 Fire Damage<br> Adds 28-56 Poison Damage over 6 Seconds<br> 5% Mana Stolen per Hit<br> 5% Life Stolen per Hit<br>",
     properties: {
       speed: 0,
       onehandmin: 5,
@@ -2130,7 +2130,7 @@ const itemList = {
 
   "Culwen's Point": {
     description:
-      "Culwen's Point<br> War Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 20 to 50, Avg 35<br> Required Strength: 71<br> Required Dexterity: 45<br> Required Level: 29<br> +1 to All Skills<br> +20% Increased Attack Speed<br> +20% Faster Hit Recovery<br> +150% Enhanced Damage<br> +120 to Attack Rating<br> Poison Length Reduced by 50%<br>",
+      "Culwen's Point<br>War Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 20 to 50, Avg 35<br> Required Strength: 71<br> Required Dexterity: 45<br> Required Level: 29<br> +1 to All Skills<br> +20% Increased Attack Speed<br> +20% Faster Hit Recovery<br> +150% Enhanced Damage<br> +120 to Attack Rating<br> Poison Length Reduced by 50%<br>",
     properties: {
       speed: 0,
       onehandmin: 20,
@@ -2149,7 +2149,7 @@ const itemList = {
 
   Shadowfang: {
     description:
-      "Shadowfang<br> Two-Handed Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 3<br> Two-Hand Damage: 20 to 44, Avg 32<br> One-Hand Damage: 5 to 23, Avg 14<br> Required Strength: 35<br> Required Dexterity: 27<br> Required Level: 12<br> +20% Increased Attack Speed<br> +160% Enhanced Damage<br> Adds 10-30 Cold Damage<br> 9% Mana Stolen per Hit<br> 9% Life Stolen per Hit<br> Cold Resist +20%<br> -2 to Light Radius<br>",
+      "Shadowfang<br>Two-Handed Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 3<br> Two-Hand Damage: 20 to 44, Avg 32<br> One-Hand Damage: 5 to 23, Avg 14<br> Required Strength: 35<br> Required Dexterity: 27<br> Required Level: 12<br> +20% Increased Attack Speed<br> +160% Enhanced Damage<br> Adds 10-30 Cold Damage<br> 9% Mana Stolen per Hit<br> 9% Life Stolen per Hit<br> Cold Resist +20%<br> -2 to Light Radius<br>",
     properties: {
       speed: 0,
       onehandmin: 20,
@@ -2170,7 +2170,7 @@ const itemList = {
 
   Soulflay: {
     description:
-      "Soulflay<br> Claymore<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 39 to 69, Avg 49<br> One-Hand Damage: 11 to 27, Avg 19<br> Required Strength: 47<br> Required Level: 19<br> +30% Increased Attack Speed<br> +130% Enhanced Damage<br> 10% Mana Stolen per Hit<br> 10% Life Stolen per Hit<br> All Resistances +15<br>",
+      "Soulflay<br>Claymore<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 39 to 69, Avg 49<br> One-Hand Damage: 11 to 27, Avg 19<br> Required Strength: 47<br> Required Level: 19<br> +30% Increased Attack Speed<br> +130% Enhanced Damage<br> 10% Mana Stolen per Hit<br> 10% Life Stolen per Hit<br> All Resistances +15<br>",
     properties: {
       speed: 0,
       onehandmin: 39,
@@ -2187,7 +2187,7 @@ const itemList = {
 
   "Kinemil's Awl": {
     description:
-      "Kinemil's Awl<br> Giant Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 3<br> Two-Hand Damage: 26 to 60, Avg 43<br> One-Hand Damage: 6 to 32, Avg 19<br> Required Strength: 56<br> Required Dexterity: 34<br> Required Level: 23<br> +20% Increased Attack Speed<br> +100% Enhanced Damage<br> +150 to Attack Rating<br> Adds 16-40 Fire Damage<br> +6 to Holy Fire (Paladin Only)<br>",
+      "Kinemil's Awl<br>Giant Sword<br> Base Speed Modifier: 0<br> Base Melee Range: 3<br> Two-Hand Damage: 26 to 60, Avg 43<br> One-Hand Damage: 6 to 32, Avg 19<br> Required Strength: 56<br> Required Dexterity: 34<br> Required Level: 23<br> +20% Increased Attack Speed<br> +100% Enhanced Damage<br> +150 to Attack Rating<br> Adds 16-40 Fire Damage<br> +6 to Holy Fire (Paladin Only)<br>",
     properties: {
       speed: 0,
       onehandmin: 26,
@@ -2206,7 +2206,7 @@ const itemList = {
 
   Blacktongue: {
     description:
-      "Blacktongue<br> Bastard Sword<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 36 to 50, Avg 43<br> One-Hand Damage: 12 to 34, Avg 23<br> Required Strength: 62<br> Required Level: 26<br> +30% Increased Attack Speed<br> +80% Enhanced Damage<br> +100 to Attack Rating<br> Adds 300-360 Poison Damage over 3 Seconds<br> Prevent Monster Heal<br> Poison Resist +50%<br>",
+      "Blacktongue<br>Bastard Sword<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 36 to 50, Avg 43<br> One-Hand Damage: 12 to 34, Avg 23<br> Required Strength: 62<br> Required Level: 26<br> +30% Increased Attack Speed<br> +80% Enhanced Damage<br> +100 to Attack Rating<br> Adds 300-360 Poison Damage over 3 Seconds<br> Prevent Monster Heal<br> Poison Resist +50%<br>",
     properties: {
       speed: 0,
       onehandmin: 36,
@@ -2225,7 +2225,7 @@ const itemList = {
 
   Ripsaw: {
     description:
-      "Ripsaw<br> Flamberge<br> Base Speed Modifier: -10<br> Base Melee Range: 3<br> Two-Hand Damage: 33 to 82, Avg 57.5<br> One-Hand Damage: 23 to 35, Avg 29<br> Required Strength: 70<br> Required Dexterity: 49<br> Required Level: 26<br> +30% Increased Attack Speed<br> +160% Enhanced Damage<br> +15 to Maximum Damage<br> 6% Mana Stolen per Hit<br> 80% Chance of Open Wounds<br> +30 Open Wounds Damage per Second<br>",
+      "Ripsaw<br>Flamberge<br> Base Speed Modifier: -10<br> Base Melee Range: 3<br> Two-Hand Damage: 33 to 82, Avg 57.5<br> One-Hand Damage: 23 to 35, Avg 29<br> Required Strength: 70<br> Required Dexterity: 49<br> Required Level: 26<br> +30% Increased Attack Speed<br> +160% Enhanced Damage<br> +15 to Maximum Damage<br> 6% Mana Stolen per Hit<br> 80% Chance of Open Wounds<br> +30 Open Wounds Damage per Second<br>",
     properties: {
       speed: 0,
       onehandmin: 33,
@@ -2244,7 +2244,7 @@ const itemList = {
 
   "The Patriarch": {
     description:
-      "The Patriarch<br> Great Sword<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 105 to 176, Avg 140.5<br> One-Hand Damage: 50 to 84, Avg 67<br> Required Strength: 100<br> Required Dexterity: 60<br> Required Level: 29<br> -20% Increased Attack Speed<br> +290% Enhanced Damage<br> Hit Blinds Target<br> +10 to Strength<br> Physical Damage Taken Reduced by 5<br> Magic Damage Taken Reduced by 5<br> 100% Extra Gold from Monsters<br>",
+      "The Patriarch<br>Great Sword<br> Base Speed Modifier: 10<br> Base Melee Range: 3<br> Two-Hand Damage: 105 to 176, Avg 140.5<br> One-Hand Damage: 50 to 84, Avg 67<br> Required Strength: 100<br> Required Dexterity: 60<br> Required Level: 29<br> -20% Increased Attack Speed<br> +290% Enhanced Damage<br> Hit Blinds Target<br> +10 to Strength<br> Physical Damage Taken Reduced by 5<br> Magic Damage Taken Reduced by 5<br> 100% Extra Gold from Monsters<br>",
     properties: {
       speed: 0,
       twohandmin: 105,
@@ -2266,7 +2266,7 @@ const itemList = {
 
   Gull: {
     description:
-      "Gull<br> Dagger<br> Base Speed Modifier: -20<br> Base Melee Range: 1<br> Base Maximum Sockets: 1 (2 for upgraded versions)<br> One-Hand Damage: 2 to 19, Avg 10.5<br> Required Level: 4<br> Adds 1-15 Damage<br> 20% Deadly Strike<br> -5 to Mana<br> 100% Better Chance of Getting Magic Items<br>",
+      "Gull<br>Dagger<br>Base Speed Modifier: -20<br> Base Melee Range: 1<br> Base Maximum Sockets: 1 (2 for upgraded versions)<br> One-Hand Damage: 2 to 19, Avg 10.5<br> Required Level: 4<br> Adds 1-15 Damage<br> 20% Deadly Strike<br> -5 to Mana<br> 100% Better Chance of Getting Magic Items<br>",
     properties: {
       speed: -20,
       onehandmin: 2,
