@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Define corruption modifiers for each item type
   const helmCorruptions = [
     { mod: "+[20-30]% Faster Hit Recovery", type: "numeric", range: [20, 30] },
     {
@@ -615,9 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
     quiver: quiverCorruptions,
   };
 
-  // Create and add buttons and modal to the page
   function createCorruptionUI() {
-    // Add buttons HTML
     const buttonsHTML = `
         <div class="corruption-buttons" style="display: flex; gap: 10px; margin: 10px 0;">
           <button id="corruptHelm" class="corrupt-button" style="
@@ -712,7 +709,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-    // Add modal HTML
     const modalHTML = `
         <div id="corruptionModal" class="corruption-modal" style="
           position: absolute;
@@ -742,16 +738,13 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-    // Insert the HTML into the document
     document.body.insertAdjacentHTML("beforeend", modalHTML);
     document.body.insertAdjacentHTML("beforeend", buttonsHTML);
   }
 
-  // Call this to set up the UI
   createCorruptionUI();
 
   function showModal(type) {
-    console.log("showModal called with type:", type); // Add this at the start
     const modal = document.getElementById("corruptionModal");
     const optionsContainer = document.getElementById("corruptionOptions");
     modal.style.display = "block";
@@ -814,6 +807,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const sliderContainer = document.createElement("div");
         sliderContainer.className = "corruption-slider-container";
         sliderContainer.style.display = "none";
+        sliderContainer.style.padding = "10px";
+
+        // Set initial button text
+        button.textContent = mod.mod;
+
+        // First value group
+        const group1 = document.createElement("div");
+        group1.style.marginBottom = "15px";
+
+        const label1 = document.createElement("div");
+        label1.textContent = "Attack Rating:";
+        label1.style.marginBottom = "5px";
+        label1.style.color = "white"; // Make label visible
 
         const slider1 = document.createElement("input");
         slider1.type = "range";
@@ -822,6 +828,25 @@ document.addEventListener("DOMContentLoaded", () => {
         slider1.value = mod.range[0][0];
         slider1.className = "corruption-slider";
 
+        const value1 = document.createElement("span");
+        value1.className = "corruption-slider-value";
+        value1.textContent = slider1.value;
+        value1.style.marginLeft = "10px";
+        value1.style.color = "white"; // Make value visible
+
+        group1.appendChild(label1);
+        group1.appendChild(slider1);
+        group1.appendChild(value1);
+
+        // Second value group
+        const group2 = document.createElement("div");
+        group2.style.marginBottom = "15px";
+
+        const label2 = document.createElement("div");
+        label2.textContent = "Light Radius:";
+        label2.style.marginBottom = "5px";
+        label2.style.color = "white"; // Make label visible
+
         const slider2 = document.createElement("input");
         slider2.type = "range";
         slider2.min = mod.range[1][0];
@@ -829,13 +854,30 @@ document.addEventListener("DOMContentLoaded", () => {
         slider2.value = mod.range[1][0];
         slider2.className = "corruption-slider";
 
-        const value1 = document.createElement("span");
         const value2 = document.createElement("span");
-        value1.className = "corruption-slider-value";
         value2.className = "corruption-slider-value";
-        value1.textContent = slider1.value;
         value2.textContent = slider2.value;
+        value2.style.marginLeft = "10px";
+        value2.style.color = "white"; // Make value visible
 
+        group2.appendChild(label2);
+        group2.appendChild(slider2);
+        group2.appendChild(value2);
+
+        // Create confirm button
+        const confirm = document.createElement("button");
+        confirm.className = "corruption-confirm";
+        confirm.textContent = "Confirm";
+        confirm.style.marginTop = "10px";
+        confirm.style.padding = "5px 10px";
+        confirm.onclick = () => {
+          const modWithValues = mod.mod
+            .replace(/\[\d+-\d+\]/, slider1.value)
+            .replace(/\[\d+-\d+\]/, slider2.value);
+          selectMod({ ...mod, mod: modWithValues }, type);
+        };
+
+        // Update button text when sliders change
         const updateButtonText = () => {
           button.textContent = mod.mod
             .replace(/\[\d+-\d+\]/, slider1.value)
@@ -852,11 +894,6 @@ document.addEventListener("DOMContentLoaded", () => {
           updateButtonText();
         };
 
-        sliderContainer.appendChild(slider1);
-        sliderContainer.appendChild(value1);
-        sliderContainer.appendChild(slider2);
-        sliderContainer.appendChild(value2);
-
         button.onclick = () => {
           document
             .querySelectorAll(".corruption-slider-container")
@@ -866,29 +903,16 @@ document.addEventListener("DOMContentLoaded", () => {
           sliderContainer.style.display = "block";
         };
 
-        const confirm = document.createElement("button");
-        confirm.className = "corruption-confirm";
-        confirm.textContent = "Confirm";
-        confirm.onclick = (e) => {
-          e.stopPropagation(); // Prevent event from bubbling
-
-          // For Socketed mods, use the slider value to create sockets
-          if (mod.mod.includes("Socketed")) {
-            const modWithValue = `Socketed (${slider.value})`;
-            selectMod({ ...mod, mod: modWithValue }, type);
-          } else {
-            const modWithValue = mod.mod.replace(/\[\d+-\d+\]/, slider.value);
-            selectMod({ ...mod, mod: modWithValue }, type);
-          }
-        };
-
+        sliderContainer.appendChild(group1);
+        sliderContainer.appendChild(group2);
         sliderContainer.appendChild(confirm);
 
         modContainer.appendChild(button);
         modContainer.appendChild(sliderContainer);
-      } else {
-        button.onclick = () => selectMod(mod, type);
-        modContainer.appendChild(button);
+
+        // Remove the later button.textContent assignment for this case
+        optionsContainer.appendChild(modContainer);
+        return; // Skip the final button.textContent assignment
       }
 
       button.textContent = mod.mod;
@@ -897,12 +921,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function selectMod(mod, type) {
-    console.log("selectMod called with:", { mod, type });
-
     if (mod.mod.includes("Socketed")) {
       const socketMatch = mod.mod.match(/\((\d+)\)/);
       if (!socketMatch) {
-        console.error("No socket number found in mod description");
         return;
       }
 
@@ -910,65 +931,50 @@ document.addEventListener("DOMContentLoaded", () => {
       const weaponSelect = document.getElementById("weapons-dropdown");
       const selectedWeapon = weaponSelect.value;
       const baseType = getBaseWeaponType(selectedWeapon);
+
+      // Prevent socketing for items with 0 max sockets
+      if (maxSockets[baseType] === 0) {
+        // Prevent further processing
+        document.getElementById("corruptionModal").style.display = "none";
+        return false;
+      }
+
       const maxAllowed = maxSockets[baseType] || 2;
-
-      console.log({
-        selectedWeapon,
-        baseType,
-        maxAllowed,
-        requestedSockets: socketCount,
-      });
-
       const actualSockets = Math.min(socketCount, maxAllowed);
-      console.log("Actual sockets to create:", actualSockets);
 
       if (actualSockets > 0) {
         updateSocketCount("weapon", actualSockets);
 
-        // Store corruption with adjusted socket count
         typeCorruptions[type] = `Socketed (${actualSockets})`;
         localStorage.setItem(
           "typeCorruptions",
           JSON.stringify(typeCorruptions)
         );
 
-        // Update display
         updateCorruptionDisplay(type, `Socketed (${actualSockets})`);
       }
 
-      // Close the modal
       document.getElementById("corruptionModal").style.display = "none";
+      return true;
     } else {
-      // Existing logic for other mod types
+      // Existing logic for other corruption types
       let formattedMod;
       if (mod.type === "numeric") {
         formattedMod = mod.mod;
       } else if (mod.type === "double") {
-        const value1 = generateValue(mod.range[0]);
-        const value2 = generateValue(mod.range[1]);
-        formattedMod = mod.mod
-          .replace(/\[\d+-\d+\]/, value1)
-          .replace(/\[\d+-\d+\]/, value2);
+        formattedMod = mod.mod;
       } else {
         formattedMod = mod.mod;
       }
 
-      // Store corruption for the specific type
       typeCorruptions[type] = formattedMod;
       localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
-
-      // Update display for the current type
       updateCorruptionDisplay(type, formattedMod);
-
-      // Close the modal
       document.getElementById("corruptionModal").style.display = "none";
+      return true;
     }
   }
-
   function updateCorruptionDisplay(type, corruptionMod) {
-    console.log(`Updating corruption for type: ${type}, mod: ${corruptionMod}`);
-
-    // Mapping to handle special cases for rings
     const containerMap = {
       ringOne: "ringsone-info",
       ringTwo: "ringstwo-info",
@@ -977,10 +983,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const containerId = containerMap[type] || `${type}-info`;
     const container = document.getElementById(containerId);
 
-    // const container = document.getElementById(`${type}-info`);
     if (!container) return;
 
-    // Clear existing corruption display
     const existingMod = container.querySelector(".corrupted-mod");
     const existingText = container.querySelector(".corrupted-text");
     if (existingMod) existingMod.remove();
@@ -998,7 +1002,6 @@ document.addEventListener("DOMContentLoaded", () => {
     container.appendChild(corruptedText);
   }
 
-  // Function to restore corruptions on page interactions
   function restoreCorruptions() {
     const types = [
       { type: "helm", containerId: "helm-info" },
@@ -1023,7 +1026,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Attach restoration to various change events
   const elementsToWatch = [
     "lvlValue",
     "str",
@@ -1050,10 +1052,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Initial restoration on page load
   restoreCorruptions();
 
-  // Corruption buttons setup
   document
     .getElementById("corruptHelm")
     .addEventListener("click", () => showModal("helm"));
@@ -1088,13 +1088,6 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("corruptQuiver")
     .addEventListener("click", () => showModal("quiver"));
 
-  console.log("Initial typeCorruptions:", typeCorruptions);
-  console.log(
-    "Loaded from localStorage:",
-    JSON.parse(localStorage.getItem("typeCorruptions"))
-  );
-
-  // Close modal when clicking outside
   window.addEventListener("click", (event) => {
     const modal = document.getElementById("corruptionModal");
     if (event.target === modal) {
@@ -1104,8 +1097,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function getBaseWeaponType(selectedWeapon) {
-  console.log("getBaseWeaponType called with:", selectedWeapon);
-
   const itemData = itemList[selectedWeapon];
   if (!itemData) {
     console.error("No item data found for:", selectedWeapon);
@@ -1114,9 +1105,6 @@ function getBaseWeaponType(selectedWeapon) {
 
   const descriptionParts = itemData.description.split("<br>");
   const baseType = descriptionParts[1].trim();
-
-  console.log("Base type:", baseType);
-  console.log("Max sockets for this base type:", maxSockets[baseType]);
 
   return baseType;
 }
@@ -1163,11 +1151,7 @@ const maxSockets = {
   "Maiden Javelin": 0,
 };
 
-// Then update your existing getMaxSocketsForWeapon function to use this object
 function getMaxSocketsForWeapon(weaponName) {
-  console.log("DEBUG: itemList contents:", Object.keys(itemList));
-  console.log("DEBUG: weaponName:", weaponName);
-
   if (!itemList) {
     console.error("itemList is undefined!");
     return 2;
@@ -1175,27 +1159,18 @@ function getMaxSocketsForWeapon(weaponName) {
 
   const itemData = itemList[weaponName];
   if (!itemData) {
-    console.error("No item data found for:", weaponName);
-    console.log("Available weapons in itemList:", Object.keys(itemList));
     return 2;
   }
 
-  console.log("DEBUG: Full item data:", itemData);
-  console.log("DEBUG: item description:", itemData.description);
-
   const descriptionParts = itemData.description.split("<br>");
-  console.log("DEBUG: description parts:", descriptionParts);
 
   if (descriptionParts.length < 2) {
-    console.error("Description does not have enough parts:", descriptionParts);
     return 2;
   }
 
   const baseType = descriptionParts[1].trim();
-  console.log("Looking up max sockets for base type:", baseType);
 
   const maxSocket = maxSockets[baseType];
-  console.log("Found max sockets:", maxSocket);
 
   return maxSocket || 2;
 }
@@ -1203,64 +1178,85 @@ document
   .getElementById("weapons-dropdown")
   ?.addEventListener("change", (event) => {
     const selectedWeapon = event.target.value;
-    const weaponCorruption = typeCorruptions["weapon"];
+    const baseType = getBaseWeaponType(selectedWeapon);
 
-    // Check if there's a socket corruption
-    if (weaponCorruption && weaponCorruption.includes("Socketed")) {
-      const match = weaponCorruption.match(/(\d+)/);
-      if (match) {
-        const requestedSockets = parseInt(match[1]);
-        const maxAllowed = getMaxSocketsForWeapon(selectedWeapon);
-        const actualSockets = Math.min(requestedSockets, maxAllowed);
-
-        console.log("Updating sockets on weapon change:", {
-          weaponCorruption,
-          requestedSockets,
-          maxAllowed,
-          actualSockets,
-        });
-
-        updateSocketCount("weapon", actualSockets);
+    // Special handling for items with 0 sockets
+    if (maxSockets[baseType] === 0) {
+      const weaponSockets = document.querySelector(".weaponsockets");
+      if (weaponSockets) {
+        weaponSockets.innerHTML = ""; // Remove all sockets
+        return;
       }
+    }
+
+    const weaponInfo = document.getElementById("weapon-info");
+    const corruptedMod =
+      weaponInfo?.querySelector(".corrupted-mod")?.textContent;
+
+    if (corruptedMod && corruptedMod.includes("Socketed")) {
+      const currentSockets = parseInt(corruptedMod.match(/\((\d+)\)/)[1]);
+
+      // Only handle sockets through corruption
+      const adjustedSockets = Math.min(currentSockets, 2);
+
+      updateSocketCount("weapon", adjustedSockets);
+
+      const corruptModElement = weaponInfo?.querySelector(".corrupted-mod");
+      if (corruptModElement) {
+        corruptModElement.textContent = `Socketed (${adjustedSockets})`;
+      }
+
+      typeCorruptions.weapon = `Socketed (${adjustedSockets})`;
+      localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
+
+      updateCorruptionDisplay("weapon", `Socketed (${adjustedSockets})`);
     }
   });
 
 function updateSocketCount(section, socketCount) {
-  console.log(`Updating socket count for ${section} to ${socketCount}`);
-
   const containerClass =
     section === "weapon" ? "weaponsockets" : `${section}sockets`;
   const container = document.querySelector(`.${containerClass}`);
 
   if (!container) {
-    console.error(`Container .${containerClass} not found`);
     return;
   }
 
-  // Store currently filled sockets data if we're increasing socket count
+  // Get the current item name
+  const dropdownId = `${section}s-dropdown`;
+  const dropdown = document.getElementById(dropdownId);
+  const currentItem = dropdown.value;
+
+  // Check if the item can never have sockets
+  if (socketExceptions.noSockets.includes(currentItem)) {
+    container.innerHTML = ""; // Remove all sockets
+    return;
+  }
+
+  // Check if the item can only have 1 socket
+  const maxAllowedSockets = socketExceptions.maxOneSocket.includes(currentItem)
+    ? 1
+    : socketCount;
+
+  // Rest of the existing updateSocketCount logic remains the same
   const currentSockets = Array.from(container.querySelectorAll(".socketz"));
   const filledSocketsData = currentSockets
     .filter((socket) => socket.dataset.itemName)
-    .slice(0, socketCount)
+    .slice(0, maxAllowedSockets)
     .map((socket) => ({
       itemName: socket.dataset.itemName,
       stats: socket.dataset.stats,
       html: socket.innerHTML,
     }));
 
-  console.log("Filled socket data to preserve:", filledSocketsData);
-
-  // Clear existing sockets
   container.innerHTML = "";
 
-  // Create new sockets
-  for (let i = 0; i < socketCount; i++) {
+  for (let i = 0; i < maxAllowedSockets; i++) {
     const socket = document.createElement("div");
     socket.className = "socketz empty";
     socket.dataset.section = section;
     socket.dataset.index = i;
 
-    // Restore data for sockets that previously had items
     if (filledSocketsData[i]) {
       socket.className = "socketz filled";
       socket.dataset.itemName = filledSocketsData[i].itemName;
@@ -1268,14 +1264,12 @@ function updateSocketCount(section, socketCount) {
       socket.innerHTML = filledSocketsData[i].html;
     }
 
-    // Add click handler for socket item selection
     socket.addEventListener("click", (e) => {
       e.stopPropagation();
       currentSocket = socket;
       showItemModal();
     });
 
-    // Add right-click handler for clearing socket
     socket.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       clearSocket(socket);
@@ -1285,42 +1279,40 @@ function updateSocketCount(section, socketCount) {
     container.appendChild(socket);
   }
 
-  console.log(`Created ${socketCount} sockets in ${containerClass}`);
-
-  // Update all displays after changing sockets
   refreshSocketProperties();
 }
-// Modify the selectMod function to handle socket corruption
+
+const socketExceptions = {
+  noSockets: ["Maiden Javelin"],
+
+  maxOneSocket: ["Pelta Lunata", "Buckler"],
+};
+
 function handleSocketCorruption(mod, type, value) {
   if (mod.includes("Socketed")) {
     const socketCount = parseInt(value);
     const section = type.toLowerCase();
 
-    // Get weapon name and determine max sockets
     const weaponSelect = document.getElementById("weapons-dropdown");
     const selectedWeapon = weaponSelect?.value;
     const baseType = getBaseWeaponType(selectedWeapon);
+
+    // Completely prevent socketing for items with 0 max sockets
+    if (maxSockets[baseType] === 0) {
+      return false;
+    }
+
+    // For normal items, use existing max socket logic
     const maxAllowed = maxSockets[baseType] || 2;
-
-    console.log("Socket corruption handling:", {
-      socketCount,
-      selectedWeapon,
-      baseType,
-      maxAllowed,
-    });
-
-    // Respect maximum sockets for weapon type
     const finalSocketCount = Math.min(socketCount, maxAllowed);
 
     const containerClass =
       section === "weapon" ? "weaponsockets" : `${section}sockets`;
     const container = document.querySelector(`.${containerClass}`);
     if (!container) {
-      console.error(`Container .${containerClass} not found`);
       return false;
     }
 
-    // Clear container but preserve existing socket data
     const existingSockets = Array.from(container.querySelectorAll(".socketz"))
       .map((socket) => ({
         itemName: socket.dataset.itemName,
@@ -1331,14 +1323,12 @@ function handleSocketCorruption(mod, type, value) {
 
     container.innerHTML = "";
 
-    // Create new sockets
     for (let i = 0; i < finalSocketCount; i++) {
       const socket = document.createElement("div");
       socket.className = "socketz empty";
       socket.dataset.section = section;
       socket.dataset.index = i;
 
-      // Restore existing socket data if available
       if (existingSockets[i]) {
         socket.className = "socketz filled";
         socket.dataset.itemName = existingSockets[i].itemName;
@@ -1346,14 +1336,12 @@ function handleSocketCorruption(mod, type, value) {
         socket.innerHTML = existingSockets[i].html;
       }
 
-      // Add click handler
       socket.addEventListener("click", (e) => {
         e.stopPropagation();
         currentSocket = socket;
         showItemModal();
       });
 
-      // Add right-click handler
       socket.addEventListener("contextmenu", (e) => {
         e.preventDefault();
         clearSocket(socket);
@@ -1363,7 +1351,6 @@ function handleSocketCorruption(mod, type, value) {
       container.appendChild(socket);
     }
 
-    console.log(`Created ${finalSocketCount} sockets for ${section} weapon`);
     return true;
   }
   return true;
@@ -1376,19 +1363,15 @@ function clearSocket(socket) {
   delete socket.dataset.itemName;
   delete socket.dataset.stats;
 
-  // Get the section to update appropriate stats
   const section = socket.dataset.section;
 
-  // Update stats display
   updateStatsDisplay(section);
 
-  // If weapon socket, update weapon info
   if (section === "weapon") {
     updateWeaponDescription();
     updateWeaponDamageDisplay();
   }
 
-  // Force refresh of socket stats display
   const containerClass =
     section === "weapon" ? "weaponsockets" : `${section}sockets`;
   const statsContainer = document.querySelector(`.${containerClass}`);
@@ -1396,11 +1379,9 @@ function clearSocket(socket) {
     statsContainer.innerHTML = "";
   }
 
-  // If weapon, also update weapon info container
   if (section === "weapon") {
     const weaponInfo = document.getElementById("weapon-info");
     if (weaponInfo) {
-      // Save corruption info if exists
       const corruptionDiv = weaponInfo.querySelector(".corrupted-mod");
       const corruptedText = weaponInfo.querySelector(".corrupted-text");
 
@@ -1414,7 +1395,6 @@ function clearSocket(socket) {
           .map((line) => `<div>${line}</div>`)
           .join("");
 
-        // Add back corruption info if it existed
         if (corruptionDiv && corruptedText) {
           formattedDescription +=
             corruptionDiv.outerHTML + corruptedText.outerHTML;
@@ -1425,11 +1405,9 @@ function clearSocket(socket) {
     }
   }
 
-  // Force immediate update of all stats
   updateAllStatsDisplays();
 }
 
-// Update event listeners for sockets
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".socketz").forEach((socket) => {
     socket.addEventListener("click", (e) => {
@@ -1444,7 +1422,6 @@ document.addEventListener("DOMContentLoaded", () => {
       clearSocket(socket);
     });
 
-    // Add mutation observer to watch for changes
     const observer = new MutationObserver(() => {
       updateStatsDisplay(socket.dataset.section);
       if (socket.dataset.section === "weapon") {
@@ -1461,43 +1438,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-// Update the selectMod function to include socket handling
-document
-  .getElementById("weapons-dropdown")
-  ?.addEventListener("change", (event) => {
-    const selectedWeapon = event.target.value;
-    const baseType = getBaseWeaponType(selectedWeapon);
 
-    console.log("Weapon changed to:", selectedWeapon);
-    console.log("Base type:", baseType);
+// document
+//   .getElementById("weapons-dropdown")
+//   ?.addEventListener("change", (event) => {
+//     const selectedWeapon = event.target.value;
+//     const baseType = getBaseWeaponType(selectedWeapon);
+//     const maxAllowed = maxSockets[baseType] || 2;
 
-    // Get max sockets for this weapon type
-    const maxAllowed = maxSockets[baseType] || 2;
-    console.log("Max sockets allowed for this base:", maxAllowed);
+//     // Get current socket corruption if any
+//     const weaponInfo = document.getElementById("weapon-info");
+//     const corruptedMod = weaponInfo?.querySelector(".corrupted-mod");
 
-    // Get current socket corruption if any
-    const weaponInfo = document.getElementById("weapon-info");
-    const corruptedMod =
-      weaponInfo?.querySelector(".corrupted-mod")?.textContent;
+//     if (corruptedMod && corruptedMod.textContent.includes("Socketed")) {
+//       const currentSockets = parseInt(
+//         corruptedMod.textContent.match(/\((\d+)\)/)[1]
+//       );
+//       const adjustedSockets = Math.min(currentSockets, maxAllowed);
 
-    if (corruptedMod && corruptedMod.includes("Socketed")) {
-      const currentSockets = parseInt(corruptedMod.match(/\((\d+)\)/)[1]);
-      console.log("Current corrupted sockets:", currentSockets);
+//       // Update socket count and visuals
+//       updateSocketCount("weapon", adjustedSockets);
 
-      // If current sockets exceed new weapon's max, adjust them
-      const adjustedSockets = Math.min(currentSockets, maxAllowed);
-      if (adjustedSockets !== currentSockets) {
-        console.log("Adjusting sockets to:", adjustedSockets);
-        updateSocketCount("weapon", adjustedSockets);
+//       // Force a complete corruption display update
+//       updateCorruptionDisplay("weapon", `Socketed (${adjustedSockets})`);
 
-        // Update corruption display
-        const newCorruptionText = `Socketed (${adjustedSockets})`;
-        if (weaponInfo) {
-          const corruptModElement = weaponInfo.querySelector(".corrupted-mod");
-          if (corruptModElement) {
-            corruptModElement.textContent = newCorruptionText;
-          }
-        }
-      }
-    }
-  });
+//       // Update stored corruption
+//       typeCorruptions.weapon = `Socketed (${adjustedSockets})`;
+//       localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
+//     }
+//   });

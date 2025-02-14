@@ -11545,10 +11545,75 @@ function insertItem(itemName) {
     currentSocket.dataset.itemName = itemName;
     currentSocket.dataset.stats = stats;
 
-    // Refresh immediately after inserting
-    refreshSocketProperties();
+    // Get all sockets for this section
+    const sockets = document.querySelectorAll(`.socketz[data-section="${section}"]`);
+    
+    // Build combined stats for all filled sockets
+    const combinedStats = [];
+    sockets.forEach(socket => {
+      if (socket.dataset.itemName && socket.dataset.stats) {
+        let socketStats = socket.dataset.stats;
+        // If it's stored as JSON (like for jewels), parse it
+        try {
+          if (socket.dataset.itemName === 'jewel') {
+            socketStats = JSON.parse(socket.dataset.stats);
+          }
+        } catch (e) {
+          // If not JSON, use as is
+        }
+        if (Array.isArray(socketStats)) {
+          combinedStats.push(...socketStats);
+        } else {
+          combinedStats.push(socketStats);
+        }
+      }
+    });
+
+    // Update the stats container immediately
+    const infoContainerId = {
+      'helm': 'helm-info',
+      'armor': 'armor-info',
+      'weapon': 'weapon-info',
+      'shield': 'off-info'
+    }[section];
+
+    const infoContainer = document.getElementById(infoContainerId);
+    if (infoContainer) {
+      // Remove any existing socket stats
+      const existingStats = infoContainer.querySelector('.socket-stats');
+      if (existingStats) {
+        existingStats.remove();
+      }
+
+      // Create new stats container
+      const statsContainer = document.createElement('div');
+      statsContainer.className = 'socket-stats';
+      
+      // Add each stat
+      combinedStats.forEach(stat => {
+        const statDiv = document.createElement('div');
+        statDiv.textContent = stat;
+        statsContainer.appendChild(statDiv);
+      });
+
+      // Add the stats to the info container
+      infoContainer.appendChild(statsContainer);
+    }
+
+    // Update weapon-specific displays if needed
+    if (section === 'weapon') {
+      updateWeaponDamageDisplay();
+      updateWeaponDescription();
+    }
+
+    // Force an immediate update of the socket stats display
+    const statsDisplay = document.querySelector(`.${section}-socket-stats`);
+    if (statsDisplay) {
+      statsDisplay.innerHTML = combinedStats.map(stat => `<div>${stat}</div>`).join('');
+    }
   }
 }
+
 
 
 function getJewelImageSrc() {
@@ -11693,6 +11758,8 @@ function updateAllSocketStats() {
 
   
 }
+
+
 
 function updateStatsDisplay(section) {
 
