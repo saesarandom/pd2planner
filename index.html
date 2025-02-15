@@ -11521,6 +11521,41 @@ window.removeAffix = function(type, index) {
   }
 }
 
+function mergeNumericStats(stats) {
+  const statMap = new Map();
+
+  stats.forEach(stat => {
+    // Match patterns like "7% Life Stolen per Hit" or "+10 to Strength"
+    const numMatch = stat.match(/^([+-]?\d+)([%]?)\s+(.+)$/);
+    if (numMatch) {
+      const [_, value, symbol, restOfStat] = numMatch;
+      const numValue = parseInt(value);
+      const fullStatKey = symbol + restOfStat; // Include % in the key if it exists
+      
+      if (statMap.has(fullStatKey)) {
+        statMap.set(fullStatKey, statMap.get(fullStatKey) + numValue);
+      } else {
+        statMap.set(fullStatKey, numValue);
+      }
+    } else {
+      // For non-numeric stats, keep as is
+      if (!statMap.has(stat)) {
+        statMap.set(stat, stat);
+      }
+    }
+  });
+
+  // Convert back to strings
+  return Array.from(statMap).map(([stat, value]) => {
+    if (typeof value === 'number') {
+      if (stat.startsWith('%')) {
+        return `${value}${stat}`; // For percentage stats
+      }
+      return `+${value} ${stat}`; // For numeric stats
+    }
+    return value; // For non-numeric stats
+  });
+}
 
 function insertItem(itemName) {
   if (!currentSocket) return;
@@ -11545,31 +11580,42 @@ function insertItem(itemName) {
     currentSocket.dataset.itemName = itemName;
     currentSocket.dataset.stats = stats;
 
-    // Get all sockets for this section
-    const sockets = document.querySelectorAll(`.socketz[data-section="${section}"]`);
-    
-    // Build combined stats for all filled sockets
-    const combinedStats = [];
-    sockets.forEach(socket => {
-      if (socket.dataset.itemName && socket.dataset.stats) {
-        let socketStats = socket.dataset.stats;
-        // If it's stored as JSON (like for jewels), parse it
-        try {
-          if (socket.dataset.itemName === 'jewel') {
-            socketStats = JSON.parse(socket.dataset.stats);
-          }
-        } catch (e) {
-          // If not JSON, use as is
-        }
-        if (Array.isArray(socketStats)) {
-          combinedStats.push(...socketStats);
-        } else {
-          combinedStats.push(socketStats);
-        }
-      }
-    });
+    // Update the separate stats container
+    const separateStatsId = {
+      'helm': 'helmsocketstats',
+      'weapon': 'weaponsocketstats',
+      'armor': 'armorsocketstats',
+      'shield': 'shieldsocketstats'
+    }[section];
 
-    // Update the stats container immediately
+    const separateStatsContainer = document.getElementById(separateStatsId);
+    if (separateStatsContainer) {
+      // Collect all stats from filled sockets
+      const allStats = [];
+      document.querySelectorAll(`.socketz[data-section="${section}"]`).forEach(socket => {
+        if (socket.dataset.itemName && socket.dataset.stats) {
+          try {
+            const socketStats = socket.dataset.itemName === 'jewel' ? 
+              JSON.parse(socket.dataset.stats) :
+              socket.dataset.stats.split('\n');
+            allStats.push(...(Array.isArray(socketStats) ? socketStats : [socketStats]));
+          } catch (e) {
+            allStats.push(socket.dataset.stats);
+          }
+        }
+      });
+
+      // Merge and display stats
+      const mergedStats = mergeNumericStats(allStats);
+      separateStatsContainer.innerHTML = '';
+      mergedStats.forEach(stat => {
+        const statDiv = document.createElement('div');
+        statDiv.textContent = stat;
+        separateStatsContainer.appendChild(statDiv);
+      });
+    }
+
+    // Update main info container without merging
     const infoContainerId = {
       'helm': 'helm-info',
       'armor': 'armor-info',
@@ -11579,41 +11625,44 @@ function insertItem(itemName) {
 
     const infoContainer = document.getElementById(infoContainerId);
     if (infoContainer) {
-      // Remove any existing socket stats
       const existingStats = infoContainer.querySelector('.socket-stats');
       if (existingStats) {
         existingStats.remove();
       }
 
-      // Create new stats container
       const statsContainer = document.createElement('div');
       statsContainer.className = 'socket-stats';
       
-      // Add each stat
-      combinedStats.forEach(stat => {
-        const statDiv = document.createElement('div');
-        statDiv.textContent = stat;
-        statsContainer.appendChild(statDiv);
+      // For the main info container, don't merge stats
+      const sockets = document.querySelectorAll(`.socketz[data-section="${section}"]`);
+      sockets.forEach(socket => {
+        if (socket.dataset.itemName && socket.dataset.stats) {
+          let socketStats = socket.dataset.stats;
+          try {
+            if (socket.dataset.itemName === 'jewel') {
+              socketStats = JSON.parse(socket.dataset.stats);
+            }
+          } catch (e) {}
+          
+          if (Array.isArray(socketStats)) {
+            socketStats.forEach(stat => {
+              const statDiv = document.createElement('div');
+              statDiv.textContent = stat;
+              statsContainer.appendChild(statDiv);
+            });
+          } else {
+            const statDiv = document.createElement('div');
+            statDiv.textContent = socketStats;
+            statsContainer.appendChild(statDiv);
+          }
+        }
       });
-
-      // Add the stats to the info container
+      
       infoContainer.appendChild(statsContainer);
-    }
-
-    // Update weapon-specific displays if needed
-    if (section === 'weapon') {
-      updateWeaponDamageDisplay();
-      updateWeaponDescription();
-    }
-
-    // Force an immediate update of the socket stats display
-    const statsDisplay = document.querySelector(`.${section}-socket-stats`);
-    if (statsDisplay) {
-      statsDisplay.innerHTML = combinedStats.map(stat => `<div>${stat}</div>`).join('');
     }
   }
 }
-
+    
 
 
 function getJewelImageSrc() {
