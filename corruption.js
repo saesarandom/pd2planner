@@ -666,45 +666,51 @@ document.addEventListener("DOMContentLoaded", () => {
             cursor: pointer;
             ">Corrupt Belt</button>
             <button id="corruptBoot" class="corrupt-button" style="
-            padding: 8px 15px;
+            
+            margin-left: px; 
+            margin-top:  0px; 
             background-color:rgb(28, 27, 27);
             color: white;
             border: none;
-            border-radius: 5px;
+            
             cursor: pointer;
             ">Corrupt Boots</button>
             <button id="corruptRingOne" class="corrupt-button" style="
-            padding: 8px 15px;
+            
+            margin-left: 0px; 
+            margin-top:  0px;
             background-color:rgb(28, 27, 27);
             color: white;
             border: none;
-            border-radius: 5px;
+            
             cursor: pointer;
             ">Corrupt Ring One</button>
             <button id="corruptRingTwo" class="corrupt-button" style="
-            padding: 8px 15px;
+            margin-left: 0px; 
+            margin-top:  0px;
             background-color:rgb(28, 27, 27);
             color: white;
             border: none;
-            border-radius: 5px;
+            
             cursor: pointer;
             ">Corrupt Ring Two</button>
             <button id="corruptAmulet" class="corrupt-button" style="
-            padding: 8px 15px;
+            margin-left: 0px; 
+            margin-top:  0px;
             background-color:rgb(28, 27, 27);
             color: white;
             border: none;
-            border-radius: 5px;
+            
             cursor: pointer;
             ">Corrupt Amulet</button>
             <button id="corruptQuiver" class="corrupt-button" style="
-            padding: 8px 15px;
+            margin-left: 300px; 
+            margin-top:  0pxx;
             background-color:rgb(28, 27, 27);
             color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            ">Corrupt Quiver NOT AVAILABLE</button>
+            ">Corrupt Quiver NOT AVAILABLE YET</button>
 
         </div>
       `;
@@ -1467,3 +1473,140 @@ document.addEventListener("DOMContentLoaded", () => {
 //       localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
 //     }
 //   });
+
+document.addEventListener("DOMContentLoaded", () => {
+  // List of all dropdown IDs
+  const dropdowns = [
+    "helms-dropdown",
+    "armors-dropdown",
+    "weapons-dropdown",
+    "offs-dropdown",
+    "belts-dropdown",
+    "gloves-dropdown",
+    "boots-dropdown",
+    "ringsone-dropdown",
+    "ringstwo-dropdown",
+    "amulets-dropdown",
+  ];
+
+  // Add change event listener to each dropdown
+  dropdowns.forEach((dropdownId) => {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+      dropdown.addEventListener("change", () => {
+        // Update all socket stats after dropdown change
+        const sections = ["helm", "armor", "weapon", "shield"];
+        sections.forEach((section) => {
+          updateSocketInfo(section);
+        });
+      });
+    }
+  });
+
+  // Add change event listeners to level and attribute inputs
+  const inputs = ["lvlValue", "str", "dex", "vit", "enr"];
+  inputs.forEach((inputId) => {
+    const input = document.getElementById(inputId);
+    if (input) {
+      input.addEventListener("input", () => {
+        const sections = ["helm", "armor", "weapon", "shield"];
+        sections.forEach((section) => {
+          updateSocketInfo(section);
+        });
+      });
+    }
+  });
+});
+
+function updateSocketInfo(section) {
+  const sockets = document.querySelectorAll(
+    `.socketz[data-section="${section}"]`
+  );
+  const infoContainerId = {
+    helm: "helm-info",
+    armor: "armor-info",
+    weapon: "weapon-info",
+    shield: "off-info",
+  }[section];
+
+  const infoContainer = document.getElementById(infoContainerId);
+  if (!infoContainer) return;
+
+  // Save corruption info
+  const corruptedMod = infoContainer.querySelector(".corrupted-mod");
+  const corruptedText = infoContainer.querySelector(".corrupted-text");
+
+  // Build combined stats
+  const combinedStats = [];
+  sockets.forEach((socket) => {
+    if (socket.dataset.itemName && socket.dataset.stats) {
+      let socketStats = socket.dataset.stats;
+      try {
+        if (socket.dataset.itemName === "jewel") {
+          socketStats = JSON.parse(socket.dataset.stats);
+        }
+        if (Array.isArray(socketStats)) {
+          combinedStats.push(...socketStats);
+        } else {
+          combinedStats.push(socketStats);
+        }
+      } catch (e) {
+        combinedStats.push(socketStats);
+      }
+    }
+  });
+
+  // Remove existing socket stats
+  const existingStats = infoContainer.querySelector(".socket-stats");
+  if (existingStats) {
+    existingStats.remove();
+  }
+
+  // Create new stats container if we have stats
+  if (combinedStats.length > 0) {
+    const statsContainer = document.createElement("div");
+    statsContainer.className = "socket-stats";
+
+    combinedStats.forEach((stat) => {
+      const statDiv = document.createElement("div");
+      statDiv.textContent = stat;
+      statsContainer.appendChild(statDiv);
+    });
+
+    // Insert stats before corruption info if it exists
+    if (corruptedMod) {
+      infoContainer.insertBefore(statsContainer, corruptedMod);
+    } else {
+      infoContainer.appendChild(statsContainer);
+    }
+  }
+
+  // Restore corruption info
+  if (corruptedMod && !infoContainer.contains(corruptedMod)) {
+    infoContainer.appendChild(corruptedMod);
+  }
+  if (corruptedText && !infoContainer.contains(corruptedText)) {
+    infoContainer.appendChild(corruptedText);
+  }
+
+  // Update separate stats container
+  const separateStatsId = {
+    helm: "helmsocketstats",
+    weapon: "weaponsocketstats",
+    armor: "armorsocketstats",
+    shield: "shieldsocketstats",
+  }[section];
+
+  const separateStatsContainer = document.getElementById(separateStatsId);
+  if (separateStatsContainer) {
+    separateStatsContainer.innerHTML = "";
+
+    // Use the merged stats function for the separate container
+    const mergedStats = mergeNumericStats(combinedStats);
+    mergedStats.forEach((stat) => {
+      const statDiv = document.createElement("div");
+      statDiv.textContent = stat;
+      separateStatsContainer.appendChild(statDiv);
+    });
+  }
+}

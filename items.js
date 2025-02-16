@@ -3571,14 +3571,14 @@ const itemList = {
     },
   },
 
-  Souldrainer: {
+  "Soul Drainer": {
     description:
-      "Soul Drainer<br> Vambraces<br> Defense: 149<br> Required Strength: 106<br> Required Level: 74<br> -5% to Enemy Physical Resistance<br> 3% Mana Stolen per Hit<br> 3% Life Stolen per Hit<br> -50 to Monster Defense per Hit<br> +120% Enhanced Defense<br> Drain Life -30<br>",
+      "Soul Drainer<br>Vambraces<br>Defense: 149<br>Required Strength: 106<br>Required Level: 74<br>-5% to Enemy Physical Resistance<br>3% Mana Stolen per Hit<br>3% Life Stolen per Hit<br>-50 to Monster Defense per Hit<br>+120% Enhanced Defense<br>Drain Life -30<br>",
     properties: {
       defense: 149,
       reqstr: 106,
       reqlvl: 74,
-      physres: 5,
+      physpierce: 5,
       mleech: 3,
       lleech: 3,
       mondef: 50,
