@@ -129,7 +129,7 @@ body {
 
 .inventorycontainer {
   position: absolute;
-  margin-top: 440px;
+  margin-top: 590px;
   left: 675px;
   display: grid;
   padding: 1px;
@@ -2254,8 +2254,8 @@ option[value="Arcanna's Head"] {
   position: absolute;
   left: 1330px;
   top: 1070px;
-  width: 700px;
-  height: 600px;
+  width: 1300px;
+  height: 1300px;
   background-image: url("/img/mercback.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -2284,7 +2284,7 @@ option[value="Arcanna's Head"] {
 .socketcontainer {
   position: absolute;
   left: 1220px;
-  top: 124px;
+  top: 174px;
   display: block; /* Changed from inline-block to flex */
   align-items: center; /* Added to align sockets */
   gap: 10px;
@@ -2297,7 +2297,7 @@ option[value="Arcanna's Head"] {
   grid-template-columns: repeat(2, auto);
   grid-template-rows: repeat(3, auto);
   left: 1323px;
-  top: 124px;
+  top: 174px;
   display: grid;
   align-items: center;
   gap: 0px;
@@ -2309,7 +2309,7 @@ option[value="Arcanna's Head"] {
   grid-template-columns: repeat(2, auto);
   grid-template-rows: repeat(3, auto);
   left: 1446px;
-  top: 124px;
+  top: 174px;
   display: grid;
   align-items: center;
   gap: 0px;
@@ -2321,7 +2321,7 @@ option[value="Arcanna's Head"] {
   grid-template-columns: repeat(2, auto);
   grid-template-rows: repeat(3, auto);
   left: 1566px;
-  top: 124px;
+  top: 174px;
   display: grid;
   align-items: center;
   gap: 0px;
@@ -2458,7 +2458,7 @@ option[value="Arcanna's Head"] {
   margin: 2px 0;
   position: absolute;
   left: 1220px;
-  top: 20px;
+  top: 70px;
   width: 64px;
   height: 64px;
   background-image: url("/img/helmsocket.png");
@@ -2471,7 +2471,7 @@ option[value="Arcanna's Head"] {
   margin: 2px 0;
   position: absolute;
   left: 1340px;
-  top: 20px;
+  top: 70px;
   width: 64px;
   height: 96px;
   background-image: url("/img/armorsocket.png");
@@ -2484,7 +2484,7 @@ option[value="Arcanna's Head"] {
   margin: 2px 0;
   position: absolute;
   left: 1460px;
-  top: 0px;
+  top: 50px;
   width: 64px;
   height: 126px;
   background-image: url("/img/weaponsocket.png");
@@ -2497,7 +2497,7 @@ option[value="Arcanna's Head"] {
   margin: 2px 0;
   position: absolute;
   left: 1580px;
-  top: 20px;
+  top: 70px;
   width: 64px;
   height: 96px;
   background-image: url("/img/shieldsocket.png");
@@ -2509,7 +2509,7 @@ option[value="Arcanna's Head"] {
 .helm-socket-stats {
   position: absolute;
   left: 1200px;
-  top: 280px;
+  top: 290px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #a41515;
@@ -2523,7 +2523,7 @@ option[value="Arcanna's Head"] {
 .armor-socket-stats {
   position: absolute;
   left: 1320px;
-  top: 280px;
+  top: 290px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #a41515;
@@ -2537,7 +2537,7 @@ option[value="Arcanna's Head"] {
 .weapon-socket-stats {
   position: absolute;
   left: 1445px;
-  top: 280px;
+  top: 290px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #a41515;
@@ -2551,7 +2551,7 @@ option[value="Arcanna's Head"] {
 .shield-socket-stats {
   position: absolute;
   left: 1570px;
-  top: 280px;
+  top: 290px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #a41515;
@@ -3289,9 +3289,7 @@ option[value="Arcanna's Head"] {
 
 .mercenary-equipment {
   margin-top: 20px;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid #666;
+
   position: relative;
 }
 
@@ -3320,7 +3318,7 @@ option[value="Arcanna's Head"] {
 #mercarmors-dropdown {
   width: 150px;
   position: absolute;
-  left: 260px;
+  left: 420px;
   top: 20px; /* Same top value as helm */
   padding: 5px;
   background: #000;
@@ -3331,7 +3329,7 @@ option[value="Arcanna's Head"] {
 #mercweapons-dropdown {
   width: 150px;
   position: absolute;
-  left: 480px;
+  left: 740px;
   top: 20px; /* Same top value as helm */
   padding: 5px;
   background: #000;
@@ -3353,7 +3351,7 @@ option[value="Arcanna's Head"] {
 #mercgloves-dropdown {
   width: 150px;
   position: absolute;
-  left: 260px;
+  left: 420px;
   top: 540px; /* Same top value as helm */
   padding: 5px;
   background: #000;
@@ -3364,7 +3362,7 @@ option[value="Arcanna's Head"] {
 #mercbelts-dropdown {
   width: 150px;
   position: absolute;
-  left: 480px;
+  left: 740px;
   top: 540px; /* Same top value as helm */
   padding: 5px;
   background: #000;
@@ -3375,7 +3373,7 @@ option[value="Arcanna's Head"] {
 #mercboots-dropdown {
   width: 150px;
   position: absolute;
-  left: 260px;
+  left: 420px;
   top: 940px; /* Same top value as helm */
   padding: 5px;
   background: #000;
@@ -3388,49 +3386,49 @@ option[value="Arcanna's Head"] {
   position: absolute;
   left: 40px;
   top: 50px; /* Adjust based on dropdown height */
-  width: 150px;
+  width: auto;
 }
 
 #mercarmor-info {
   position: absolute;
-  left: 260px;
+  left: 420px;
   top: 50px; /* Adjust based on dropdown height */
-  width: 150px;
+  width: auto;
 }
 
 #mercweapon-info {
   position: absolute;
-  left: 480px;
+  left: 740px;
   top: 50px; /* Adjust based on dropdown height */
-  width: 150px;
+  width: 18em;
 }
 
 #mercoff-info {
   position: absolute;
   left: 40px;
   top: 570px; /* Adjust based on dropdown height */
-  width: 150px;
+  width: auto;
 }
 
 #mercglove-info {
   position: absolute;
-  left: 260px;
+  left: 420px;
   top: 570px; /* Adjust based on dropdown height */
-  width: 150px;
+  width: auto;
 }
 
 #mercbelt-info {
   position: absolute;
-  left: 480px;
+  left: 740px;
   top: 570px; /* Adjust based on dropdown height */
-  width: 150px;
+  width: 290px;
 }
 
 #mercboot-info {
   position: absolute;
-  left: 260px;
+  left: 420px;
   top: 990px; /* Adjust based on dropdown height */
-  width: 150px;
+  width: auto;
 }
 
 /* Common styles */
@@ -3467,11 +3465,11 @@ option[value="Arcanna's Head"] {
 }
 
 #mercarmors-label {
-  left: 260px;
+  left: 420px;
 }
 
 #mercweapons-label {
-  left: 480px;
+  left: 740px;
 }
 
 #mercoffs-label {
@@ -3480,16 +3478,26 @@ option[value="Arcanna's Head"] {
 }
 
 #mercgloves-label {
-  left: 260px;
+  left: 420px;
   top: 520px;
 }
 
 #mercbelts-label {
-  left: 480px;
+  left: 740px;
   top: 520px;
 }
 
 #mercboots-label {
-  left: 260px;
+  left: 420px;
   top: 920px;
+}
+
+.mercenary-stats {
+  position: absolute;
+  text-align: center;
+  width: 18em;
+  color: rgb(255, 255, 255);
+  font-size: 14px;
+  top: 20px;
+  left: 1040px;
 }

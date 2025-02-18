@@ -13,9 +13,9 @@ class MercenarySystem {
       armor: document.getElementById("mercarmors-dropdown"),
       weapon: document.getElementById("mercweapons-dropdown"),
       off: document.getElementById("mercoffs-dropdown"),
-      glove: document.getElementById("mercgloves-dropdown"),
+      gloves: document.getElementById("mercgloves-dropdown"),
       belt: document.getElementById("mercbelts-dropdown"),
-      boot: document.getElementById("mercboots-dropdown"),
+      boots: document.getElementById("mercboots-dropdown"),
     };
 
     // Equipment info containers
@@ -24,13 +24,94 @@ class MercenarySystem {
       armor: document.getElementById("mercarmor-info"),
       weapon: document.getElementById("mercweapon-info"),
       off: document.getElementById("mercoff-info"),
-      glove: document.getElementById("mercglove-info"),
+      gloves: document.getElementById("mercglove-info"),
       belt: document.getElementById("mercbelt-info"),
-      boot: document.getElementById("mercboot-info"),
+      boots: document.getElementById("mercboot-info"),
     };
 
+    // Initialize stats
+    this.stats = {
+      ias: 0,
+      fcr: 0,
+      frw: 0,
+      fhr: 0,
+      cbf: 0,
+      plr: 0,
+      dr: 0,
+      pdr: 0,
+      mdr: 0,
+      fireResist: 0,
+      coldResist: 0,
+      lightResist: 0,
+      poisonResist: 0,
+      curseResist: 0,
+      allSkills: 0,
+      magicFind: 0,
+      goldFind: 0,
+      ow: 0,
+      owDmg: 0,
+      cb: 0,
+      cbDmg: 0,
+      enhancedDamage: 0,
+      attackRating: 0,
+      defense: 0,
+      life: 0,
+    };
+
+    this.initializeStatContainers();
     this.initializeListeners();
     this.initializeEquipmentSystem();
+    this.updateInitialStats();
+  }
+
+  updateInitialStats() {
+    // Clear stats first
+    this.clearStats();
+
+    // Update stats for each equipped item
+    Object.entries(this.equipmentSlots).forEach(([slot, element]) => {
+      if (element && element.value) {
+        const selectedItem = element.value;
+        if (itemList[selectedItem]?.properties) {
+          this.updateStats(selectedItem);
+        }
+      }
+    });
+
+    // Make sure stats are displayed
+    this.displayStats();
+  }
+
+  initializeStatContainers() {
+    // Initialize stat containers
+    this.statContainers = {
+      ias: document.getElementById("merciascontainer"),
+      fcr: document.getElementById("mercfcrcontainer"),
+      frw: document.getElementById("mercfrwcontainer"),
+      fhr: document.getElementById("mercfhrcontainer"),
+      cbf: document.getElementById("merccbfcontainer"),
+      plr: document.getElementById("mercplrcontainer"),
+      dr: document.getElementById("mercdrcontainer"),
+      pdr: document.getElementById("mercpdrcontainer"),
+      mdr: document.getElementById("mercmdrcontainer"),
+      fireResist: document.getElementById("mercfireresistcontainer"),
+      coldResist: document.getElementById("merccoldresistcontainer"),
+      lightResist: document.getElementById("merclightresistcontainer"),
+      poisonResist: document.getElementById("mercpoisonresistcontainer"),
+      curseResist: document.getElementById("merccurseresistcontainer"),
+      allSkills: document.getElementById("mercallskillscontainer"),
+      magicFind: document.getElementById("mercmagicfindcontainer"),
+      goldFind: document.getElementById("mercgoldfindcontainer"),
+      ow: document.getElementById("mercowcontainer"),
+      owDmg: document.getElementById("mercowdmgcontainer"),
+      cb: document.getElementById("merccbcontainer"),
+      cbDmg: document.getElementById("merccbdmgcontainer"),
+      enhancedDamage: document.getElementById("mercenhancedDamagecontainer"),
+      attackRating: document.getElementById("mercattackRatingcontainer"),
+      defense: document.getElementById("mercdefensecontainer"),
+      life: document.getElementById("merclifecontainer"),
+      mana: document.getElementById("mercmanacontainer"),
+    };
   }
 
   getNextFreeBuffSlot() {
@@ -138,6 +219,7 @@ class MercenarySystem {
 
   handleEquipmentChange(slotName, event) {
     const selectedItem = event.target.value;
+    const infoContainer = this.equipmentInfo[slotName];
 
     const infoElements = {
       helm: "merchelm-info",
@@ -149,12 +231,106 @@ class MercenarySystem {
       boot: "mercboot-info",
     };
 
-    const infoId = infoElements[slotName];
-    if (infoId && itemList[selectedItem]) {
-      document.getElementById(infoId).innerHTML =
-        itemList[selectedItem].description;
+    if (selectedItem && infoContainer && itemList[selectedItem]) {
+      // Update item description
+      infoContainer.innerHTML = itemList[selectedItem].description;
+      infoContainer.style.display = "block";
+      infoContainer.style.visibility = "visible";
+
+      // Clear and recalculate all stats
+      this.clearStats();
+      Object.values(this.equipmentSlots).forEach((slot) => {
+        if (slot && slot.value) {
+          this.updateStats(slot.value);
+        }
+      });
     }
   }
+
+  clearStats() {
+    Object.keys(this.stats).forEach((stat) => {
+      this.stats[stat] = 0;
+    });
+    this.displayStats();
+  }
+
+  displayStats() {
+    // Display stat values in their respective containers
+    document.getElementById("merciascontainer").innerHTML =
+      this.stats.ias.toFixed(0);
+    document.getElementById("mercfcrcontainer").innerHTML =
+      this.stats.fcr.toFixed(0);
+    document.getElementById("mercfrwcontainer").innerHTML =
+      this.stats.frw.toFixed(0);
+    document.getElementById("mercfhrcontainer").innerHTML =
+      this.stats.fhr.toFixed(0);
+    document.getElementById("merccbfcontainer").innerHTML =
+      this.stats.cbf.toFixed(0);
+    document.getElementById("mercplrcontainer").innerHTML =
+      this.stats.plr.toFixed(0);
+    document.getElementById("mercdrcontainer").innerHTML =
+      this.stats.dr.toFixed(0);
+    document.getElementById("mercpdrcontainer").innerHTML =
+      this.stats.pdr.toFixed(0);
+    document.getElementById("mercmdrcontainer").innerHTML =
+      this.stats.mdr.toFixed(0);
+    document.getElementById("mercfireresistcontainer").innerHTML =
+      this.stats.fireResist.toFixed(0);
+    document.getElementById("merccoldresistcontainer").innerHTML =
+      this.stats.coldResist.toFixed(0);
+    document.getElementById("merclightresistcontainer").innerHTML =
+      this.stats.lightResist.toFixed(0);
+    document.getElementById("mercpoisonresistcontainer").innerHTML =
+      this.stats.poisonResist.toFixed(0);
+    document.getElementById("merccurseresistcontainer").innerHTML =
+      this.stats.curseResist.toFixed(0);
+    document.getElementById("mercallskillscontainer").innerHTML =
+      this.stats.allSkills.toFixed(0);
+    document.getElementById("mercmagicfindcontainer").innerHTML =
+      this.stats.magicFind.toFixed(0);
+    document.getElementById("mercgoldfindcontainer").innerHTML =
+      this.stats.goldFind.toFixed(0);
+    document.getElementById("mercowcontainer").innerHTML =
+      this.stats.ow.toFixed(0);
+    document.getElementById("mercowdmgcontainer").innerHTML =
+      this.stats.owDmg.toFixed(0);
+    document.getElementById("merccbcontainer").innerHTML =
+      this.stats.cb.toFixed(0);
+    document.getElementById("merccbdmgcontainer").innerHTML =
+      this.stats.cbDmg.toFixed(0);
+  }
+
+  updateStats(selectedItem) {
+    if (itemList[selectedItem]?.properties) {
+      const props = itemList[selectedItem].properties;
+
+      // Update stats based on equipped item's properties
+      this.stats.ias += props.ias || 0;
+      this.stats.fcr += props.fcr || 0;
+      this.stats.frw += props.frw || 0;
+      this.stats.fhr += props.fhr || 0;
+      this.stats.cbf += (props.cbf || 0) + (props.freezedur || 0);
+      this.stats.plr += props.plr || 0;
+      this.stats.dr += props.physdr || 0;
+      this.stats.pdr += props.pdr || 0;
+      this.stats.mdr += props.mdr || 0;
+      this.stats.fireResist += (props.firres || 0) + (props.allres || 0);
+      this.stats.coldResist += (props.coldres || 0) + (props.allres || 0);
+      this.stats.lightResist += (props.ligres || 0) + (props.allres || 0);
+      this.stats.poisonResist += (props.poisres || 0) + (props.allres || 0);
+      this.stats.curseResist += props.curres || 0;
+      this.stats.allSkills += props.allsk || 0;
+      this.stats.magicFind += props.magicfind || 0;
+      this.stats.goldFind += props.goldfind || 0;
+      this.stats.ow += props.ow || 0;
+      this.stats.owDmg += props.owdmg || 0;
+      this.stats.cb += props.cb || 0;
+      this.stats.cbDmg += props.cbdmg || 0;
+
+      this.displayStats();
+    }
+  }
+
   updateEquipmentInfo(slotName, itemName) {
     // TODO: Update to show item stats and properties
     if (this.equipmentInfo[slotName]) {
@@ -216,9 +392,6 @@ class MercenarySystem {
   }
 }
 
-// Initialize the mercenary system when the document loads
 document.addEventListener("DOMContentLoaded", () => {
   window.mercenarySystem = new MercenarySystem();
 });
-
-export default MercenarySystem;

@@ -1852,7 +1852,7 @@ const itemList = {
 
   Felloak: {
     description:
-      "Felloak<br>Club<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upgraded versions)<br> One-Hand Damage: 1 to 10, Avg 5.5<br> Required Level: 3<br> After<br> 80% Enhanced Damage<br> Adds 6-8 Fire Damage<br> +3 to Firestorm (Druid Only)<br> Knockback<br> Lightning Resist +50%<br> Fire Resist +30%<br> +50% Damage to Undead<br>",
+      "Felloak<br>Club<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> Base Maximum Sockets: 2 (3 for upped)<br> One-Hand Damage: 1 to 10, Avg 5.5<br>Required Level: 3<br>80% Enhanced Damage<br>Adds 6-8 Fire Damage<br>+3 to Firestorm (Druid Only)<br> Knockback<br> Lightning Resist +50%<br> Fire Resist +30%<br> +50% Damage to Undead<br>",
     properties: {
       speed: -10,
       onehandmin: 1,

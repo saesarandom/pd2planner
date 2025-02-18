@@ -5758,13 +5758,15 @@ skillvalues.forEach(skillvalue => {
   <script src="login.js"></script>
   <script src="achievements.obfuscated.js"></script>
   <script src="corruption.js"></script>
-  <script type="module" src="mercenary.js"></script>
+  <script src="mercenary.js"></script>
+    
+  
  
 
     
       
       
-  </script>
+  
 <script>
 
 const dragState = {
@@ -8934,9 +8936,32 @@ const updateAll = () => {
     <div class="merc-equipment-slot">
       <label id="mercgloves-label">Gloves</label>
       <select id="mercgloves-dropdown">
-        <option value="Magefist">Magefist</option>
-        <option value="Frostburn">Frostburn</option>
-        
+        <option value="The Hand of Broc">The Hand of Broc</option>
+<option value="Bloodfist">Bloodfist</option>
+<option value="Chance Guards">Chance Guards</option>
+<option value="Magefist">Magefist</option>
+<option value="Frostburn">Frostburn</option>
+<option value="Venom Grip">Venom Grip</option>
+<option value="Gravepalm">Gravepalm</option>
+<option value="Ghoulhide">Ghoulhide</option>
+<option value="Lava Gout">Lava Gout</option>
+<option value="Hellmouth">Hellmouth</option>
+<option value="Titan's Grip">Titan's Grip</option>
+<option value="Dracul's Grasp">Dracul's Grasp</option>
+<option value="Soul Drainer">Soul Drainer</option>
+<option value="Occultist">Occultist</option>
+<option value="Steelrend">Steelrend</option>
+<option value="Arctic Mitts">Arctic Mitts</option>
+<option value="Cleglaw's Pincers">Cleglaw's Pincers</option>
+<option value="Death's Hand">Death's Hand</option>
+<option value="Sigon's Gage">Sigon's Gage</option>
+<option value="Iratha's Cuff">Iratha's Cuff</option>
+<option value="Sander's Taboo">Sander's Taboo</option>
+<option value="Magnus' Skin">Magnus' Skin</option>
+<option value="Laying of Hands">Laying of Hands</option>
+<option value="Immortal King's Forge">Immortal King's Forge</option>
+<option value="M'avina's Icy Clutch">M'avina's Icy Clutch</option>
+<option value="Trang-Oul's Claws">Trang-Oul's Claws</option>
       </select>
       <div id="mercglove-info" class="equipment-info"></div>
     </div>
@@ -8945,27 +8970,154 @@ const updateAll = () => {
     <div class="merc-equipment-slot">
       <label id="mercbelts-label">Belt</label>
       <select id="mercbelts-dropdown">
-        <option value="Razortail">Razortail</option>
+        <option value="Lenymo">Lenymo</option>
+        <option value="Snakecord">Snakecord</option>
+        <option value="Nightsmoke">Nightsmoke</option>
         <option value="Goldwrap">Goldwrap</option>
-        
+        <option value="Bladebuckle">Bladebuckle</option>
+        <option value="String of Ears">String of Ears</option>
+        <option value="Razortail">Razortail</option>
+        <option value="Gloom's Trap">Gloom's Trap</option>
+        <option value="Snowclash">Snowclash</option>
+        <option value="Thundergod's Vigor">Thundergod's Vigor</option>
+        <option value="Arachnid Mesh">Arachnid Mesh</option>
+        <option value="Nosferatu's Coil">Nosferatu's Coil</option>
+        <option value="Verdungo's Hearty Cord">Verdungo's Hearty Cord</option>
+        <option value="Band of Skulls">Band of Skulls</option>
+        <option value="Arctic Binding">Arctic Binding</option>
+        <option value="Hsarus' Iron Stay">Hsarus' Iron Stay</option>
+        <option value="Infernal Sign">Infernal Sign</option>
+        <option value="Death's Guard">Death's Guard</option>
+        <option value="Sigon's Wrap">Sigon's Wrap</option>
+        <option value="Iratha's Cord">Iratha's Cord</option>
+        <option value="Hwanin's Blessing">Hwanin's Blessing</option>
+        <option value="Wilhelm's Pride">Wilhelm's Pride</option>
+        <option value="Credendum">Credendum</option>
+        <option value="Immortal King's Detail">Immortal King's Detail</option>
       </select>
       <div id="mercbelt-info" class="equipment-info"></div>
     </div>
   
-    <!-- Boots -->
+
     <div class="merc-equipment-slot">
       <label id="mercboots-label">Boots</label>
       <select id="mercboots-dropdown">
-        <option value="Gorefoot">Gorefoot</option>
         <option value="Hotspur">Hotspur</option>
-        <!-- Add boots options here -->
+        <option value="Gorefoot">Gorefoot</option>
+        <option value="Treads of Cthon">Treads of Cthon</option>
+        <option value="Goblin Toe">Goblin Toe</option>
+        <option value="Tearhaunch">Tearhaunch</option>
+        <option value="Infernostride">Infernostride</option>
+        <option value="Waterwalk">Waterwalk</option>
+        <option value="Silkweave">Silkweave</option>
+        <option value="War Traveler">War Traveler</option>
+        <option value="Gore Rider">Gore Rider</option>
+        <option value="Merman's Sprocket">Merman's Sprocket</option>
+        <option value="Sandstorm Trek">Sandstorm Trek</option>
+        <option value="Shadow Dancer">Shadow Dancer</option>
+        <option value="Marrowwalk">Marrowwalk</option>
+        <option value="Itherael's Path">Itherael's Path</option>
+        <option value="Hsarus' Iron Heel">Hsarus's Iron Heel</option>
+        <option value="Sigon's Sabot">Sigon's Sabot</option>
+        <option value="Vidala's Fetlock">Vidala's Fetlock</option>
+        <option value="Tancred's Hobnails">Tancred's Hobnails</option>
+        <option value="Cow King's Hooves">Cow King's Hooves</option>
+        <option value="Sander's Riprap">Sander's Riprap</option>
+        <option value="Rite of Passage">Rite of Passage</option>
+        <option value="Natalya's Soul">Natalya's Soul</option>
+        <option value="Immortal King's Pillar">Immortal King's Pillar</option>
+        <option value="Aldur's Advance">Aldur's Advance</option>
       </select>
       <div id="mercboot-info" class="equipment-info"></div>
     </div>
   </div>
 </div>
 
+<div class="mercenary-stats">
+  <div class="merciascontainer">IAS
+    <div id="merciascontainer"></div>
+  </div>
 
+  <div class="mercfcrcontainer">FCR
+    <div id="mercfcrcontainer"></div>
+  </div>
+
+  <div class="mercfrwcontainer">FRW
+    <div id="mercfrwcontainer"></div>
+  </div>
+
+  <div class="mercfhrcontainer">FHR
+    <div id="mercfhrcontainer"></div>
+  </div>
+
+  <div class="merccbfcontainer">CBF
+    <div id="merccbfcontainer"></div>
+  </div>
+
+  <div class="mercplrcontainer">PLR
+    <div id="mercplrcontainer"></div>
+  </div>
+
+  <div class="mercdrcontainer">DR%
+    <div id="mercdrcontainer"></div>
+  </div>
+
+  <div class="mercpdrcontainer">PDR
+    <div id="mercpdrcontainer"></div>
+  </div>
+
+  <div class="mercmdrcontainer">MDR
+    <div id="mercmdrcontainer"></div>
+  </div>
+
+  <div class="mercfireresistcontainer">Fire resist
+    <div id="mercfireresistcontainer"></div>
+  </div>
+
+  <div class="merccoldresistcontainer">Cold resist
+    <div id="merccoldresistcontainer"></div>
+  </div>
+
+  <div class="merclightresistcontainer">Light resist
+    <div id="merclightresistcontainer"></div>
+  </div>
+
+  <div class="mercpoisonresistcontainer">Poison resist
+    <div id="mercpoisonresistcontainer"></div>
+  </div>
+
+  <div class="merccurseresistcontainer">Curse resist
+    <div id="merccurseresistcontainer"></div>
+  </div>
+
+  <div class="mercallskillscontainer">All skills
+    <div id="mercallskillscontainer"></div>
+  </div>
+
+  <div class="mercmagicfindcontainer">Magic Find
+    <div id="mercmagicfindcontainer"></div>
+  </div>
+
+  <div class="mercgoldfindcontainer">Gold Find
+    <div id="mercgoldfindcontainer"></div>
+  </div>
+
+  <div class="mercowcontainer">Open Wounds
+    <div id="mercowcontainer"></div>
+  </div>
+
+  <div class="mercowdmgcontainer">OW Dmg/s
+    <div id="mercowdmgcontainer"></div>
+  </div>
+
+  <div class="merccbcontainer">Crushing Blow
+    <div id="merccbcontainer"></div>
+  </div>
+
+  <div class="merccbdmgcontainer">CB Dmg
+    <div id="merccbdmgcontainer"></div>
+  </div>
+</div>
 
 
 
