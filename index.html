@@ -5758,7 +5758,8 @@ skillvalues.forEach(skillvalue => {
   <script src="login.js"></script>
   <script src="achievements.obfuscated.js"></script>
   <script src="corruption.js"></script>
-  <!-- <script src="socketManager.js"></script> -->
+  <script type="module" src="mercenary.js"></script>
+ 
 
     
       
@@ -8712,6 +8713,264 @@ const updateAll = () => {
     <option value="Hell">Hell</option>
   </select>
   </div>
+
+
+  <div class="mercenary-equipment">
+    
+    <div class="merc-equip-row">
+      
+      <div class="merc-equipment-slot">
+        <label id="merchelms-label">Helm</label>
+        <select id="merchelms-dropdown">
+          <option value="Biggin's Bonnet">Biggin's Bonnet</option>
+<option value="Tarnhelm">Tarnhelm</option>
+<option value="Coif of Glory">Coif of Glory</option>
+<option value="Duskeep">Duskeep</option>
+<option value="The Face of Horror">The Face of Horror</option>
+<option value="Wormskull">Wormskull</option>
+<option value="Howltusk">Howltusk</option>
+<option value="Undead Crown">Undead Crown</option>
+<option value="Peasant Crown">Peasant Crown</option>
+<option value="Rockstopper">Rockstopper</option>
+<option value="Stealskull">Stealskull</option>
+<option value="Darksight Helm">Darksight Helm</option>
+<option value="Blackhorn's Face">Blackhorn's Face</option>
+<option value="Valkyrie Wing">Valkyrie Wing</option>
+<option value="Crown of Thieves">Crown of Thieves</option>
+<option value="Harlequin Crest">Harlequin Crest</option>
+<option value="Steel Shade">Steel Shade</option>
+<option value="Andariel's Visage">Andariel's Visage</option>
+<option value="Giant Skull">Giant Skull</option>
+<option value="Veil of Steel">Veil of Steel</option>
+<option value="Nightwing's Veil">Nightwing's Veil</option>
+<option value="Crown of Ages">Crown of Ages</option>
+<option value="Overlord's Helm">Overlord's Helm</option>
+<option value="Kira's Guardian">Kira's Guardian</option>
+<option value="Griffon's Eye">Griffon's Eye</option>
+<option value="Cyclopean Roar">Cyclopean Roar</option>
+<option value="Arreat's Face">Arreat's Face</option>
+<option value="Wolfhowl">Wolfhowl</option>
+<option value="Demonhorn's Edge">Demonhorn's Edge</option>
+<option value="Halaberd's Reign">Halaberd's Reign</option>
+<option value="Raekor's Virtue">Raekor's Virtue</option>
+<option value="Quetzalcoatl">Quetzalcoatl</option>
+<option value="Jalal's Mane">Jalal's Mane</option>
+<option value="Cerebus' Bite">Cerebus' Bite</option>
+<option value="Denmother">Denmother</option>
+<option value="Ravenlore">Ravenlore</option>
+<option value="Spirit Keeper">Spirit Keeper</option>
+<option value="Ursa's Nightmare">Ursa's Nightmare</option>
+<option value="Arcanna's Head">Arcanna's Head</option>
+<option value="Berserker's Headgear">Berserker's Headgear</option>
+<option value="Infernal Cranium">Infernal Cranium</option>
+<option value="Sigon's Visor">Sigon's Visor</option>
+<option value="Isenhart's Horns">Isenhart's Horns</option>
+<option value="Cathan's Visage">Cathan's Visage</option>
+<option value="Iratha's Coil">Iratha's Coil</option>
+<option value="Milabrega's Diadem">Milabrega's Diadem</option>
+<option value="Tancred's Skull">Tancred's Skull</option>
+<option value="Cow King's Horns">Cow King's Horns</option>
+<option value="Sander's Paragon">Sander's Paragon</option>
+<option value="Hwanin's Splendor">Hwanin's Splendor</option>
+<option value="Guillaume's Face">Guillaume's Face</option>
+<option value="Naj's Circlet">Naj's Circlet</option>
+<option value="Sazabi's Mental Sheath">Sazabi's Mental Sheath</option>
+<option value="Ondal's Almighty">Ondal's Almighty</option>
+<option value="Aldur's Stony Gaze">Aldur's Stony Gaze</option>
+<option value="Griswold's Valor">Griswold's Valor</option>
+<option value="Immortal King's Will">Immortal King's Will</option>
+<option value="M'avina's True Sight">M'avina's True Sight</option>
+<option value="Natalya's Totem">Natalya's Totem</option>
+<option value="Tal Rasha's Horadric Crest">Tal Rasha's Horadric Crest</option>
+<option value="Trang-Oul's Guise">Trang-Oul's Guise</option>
+        </select>
+        <div id="merchelm-info" class="equipment-info"></div>
+      </div>
+  
+      
+      <div class="merc-equipment-slot">
+        <label id="mercarmors-label">Armor</label>
+        <select id="mercarmors-dropdown">
+          <option value="Greyform">Greyform</option>
+<option value="Blinkbat's Form">Blinkbat's Form</option>
+<option value="The Centurion">The Centurion</option>
+<option value="Twitchthroe">Twitchthroe</option>
+<option value="Darkglow">Darkglow</option>
+<option value="Hawkmail">Hawkmail</option>
+<option value="Sparking Mail">Sparking Mail</option>
+<option value="Venom Ward">Venom Ward</option>
+<option value="Iceblink">Iceblink</option>
+<option value="Boneflesh">Boneflesh</option>
+<option value="Rockfleece">Rockfleece</option>
+<option value="Rattlecage">Rattlecage</option>
+<option value="Heavenly Garb">Heavenly Garb</option>
+<option value="Goldskin">Goldskin</option>
+<option value="Silks of the Victor">Silks of the Victor</option>
+<option value="Spirit Shroud">Spirit Shroud</option>
+<option value="Skin of the Vipermagi">Skin of the Vipermagi</option>
+<option value="Skin of the Flayed One">Skin of the Flayed One</option>
+<option value="Iron Pelt">Iron Pelt</option>
+<option value="Crow Caw">Crow Caw</option>
+<option value="Shaftstop">Shaftstop</option>
+<option value="Skullder's Ire">Skullder's Ire</option>
+<option value="Que-Hegan's Wisdom">Que-Hegan's Wisdom</option>
+<option value="Toothrow">Toothrow</option>
+<option value="Guardian Angel">Guardian Angel</option>
+<option value="Atma's Wail">Atma's Wail</option>
+<option value="Black Hades">Black Hades</option>
+<option value="Corpsemourn">Corpsemourn</option>
+<option value="Arctic Furs">Arctic Furs</option>
+<option value="Berserker's Hauberk">Berserker's Hauberk</option>
+<option value="Sigon's Shelter">Sigon's Shelter</option>
+<option value="Isenhart's Case">Isenhart's Case</option>
+<option value="Cathan's Mesh">Cathan's Mesh</option>
+<option value="Angelic Mantle">Angelic Mantle</option>
+<option value="Vidala's Ambush">Vidala's Ambush</option>
+<option value="Arcanna's Flesh">Arcanna's Flesh</option>
+        </select>
+        <div id="mercarmor-info" class="equipment-info"></div>
+      </div>
+  
+      <!-- Weapon -->
+      <div class="merc-equipment-slot">
+        <label id="mercweapons-label">Weapon</label>
+        <select id="mercweapons-dropdown">
+          <option value="The Gnasher">The Gnasher</option>
+    <option value="Bladebone">Bladebone</option>
+    <option value="Skull Splitter">Skull Splitter</option>
+    <option value="Rakescar">Rakescar</option>
+    <option value="Axe of Fechmar">Axe of Fechmar</option>
+    <option value="Goreshovel">Goreshovel</option>  
+    <option value="The Chieftain">The Chieftain</option>
+    <option value="Brainhew">Brainhew</option>
+    <option value="Humongous">Humongous</option>
+    <option value="Felloak">Felloak</option>
+    <option value="Stoutnail">Stoutnail</option>
+    <option value="Crushflange">Crushflange</option>
+    <option value="Bloodrise">Bloodrise</option>
+    <option value="The General's Tan Do Li Ga">The General's Tan Do Li Ga</option>
+    <option value="Ironstone">Ironstone</option>
+    <option value="Bonesnap">Bonesnap</option>
+    <option value="Upped Bonesnap">Upped Bonesnap</option>
+    <option value="Steeldriver">Steeldriver</option>
+    <option value="Rixot's Keen">Rixot's Keen</option>  
+    <option value="Blood Crescent">Blood Crescent</option>
+    <option value="Skewer of Krintiz">Skewer of Krintiz</option>
+    <option value="Gleamscythe">Gleamscythe</option>
+    <option value="Griswold's Edge">Griswold's Edge</option>
+    <option value="Hellplague">Hellplague</option>
+    <option value="Culwen's Point">Culwen's Point</option>
+    <option value="Shadowfang">Shadowfang</option>
+    <option value="Soulflay">Soulflay</option>
+    <option value="Kinemil's Awl">Kinemil's Awl</option>
+    <option value="Blacktongue">Blacktongue</option>
+    <option value="Ripsaw">Ripsaw</option>
+    <option value="The Patriarch">The Patriarch</option>
+    <option value="Gull">Gull</option>
+    <option value="The Diggler">The Diggler</option>
+    <option value="The Jade Tan Do">The Jade Tan Do</option>  
+    <option value="Spectral Shard">Spectral Shard</option>
+    <option value="The Gidbinn">The Gidbinn</option>
+    <option value="The Dragon Chang">The Dragon Chang</option>
+    <option value="Razortine">Razortine</option>
+    <option value="Bloodthief">Bloodthief</option>
+    <option value="Lance of Yaggai">Lance of Yaggai</option>
+    <option value="The Tannr Gorerod">The Tannr Gorerod</option>
+    <option value="Dimoak's Hew">Dimoak's Hew</option>
+    <option value="Steelgoad">Steelgoad</option>
+    <option value="The Battlebranch">The Battlebranch</option>
+    <option value="Woestave">Woestave</option>
+    <option value="The Grim Reaper">The Grim Reaper</option>
+    <option value="Pluckeye">Pluckeye</option>
+    <option value="Witherstring">Witherstring</option>
+    <option value="Raven Claw">Raven Claw</option>
+    <option value="Rogue's Bow">Rogue's Bow</option>
+    <option value="Stormstrike">Stormstrike</option>
+    <option value="Wizendraw">Wizendraw</option>
+    <option value="Hellclap">Hellclap</option>
+    <option value="Blastbark">Blastbark</option>
+    <option value="Skystrike">Skystrike</option>
+    <option value="Riphook">Riphook</option>
+    <option value="Kuko Shakaku">Kuko Shakaku</option>
+    <option value="Endlesshail">Endlesshail</option>
+    <option value="Witchwild String">Witchwild String</option>
+    <option value="Cliffkiller">Cliffkiller</option>
+    <option value="Magewrath">Magewrath</option>
+    <option value="Goldstrike Arch">Goldstrike Arch</option>
+    <option value="Eaglehorn">Eaglehorn</option>
+    <option value="Widowmaker">Widowmaker</option>
+    <option value="Windforce">Windforce</option> 
+    <option value="Leadcrow">Leadcrow</option>
+    <option value="Ichorsting">Ichorsting</option>
+    <option value="Hellcast">Hellcast</option>
+    <option value="Doomslinger">Doomslinger</option>
+    <option value="Bane Ash">Bane Ash</option>
+    <option value="Serpent Lord">Serpent Lord</option>
+    <option value="Spire of Lazarus">Spire of Lazarus</option>
+    <option value="The Salamander">The Salamander</option>
+    <option value="The Iron Jang Bong">The Iron Jang Bong</option>
+    <option value="Knell Striker">Knell Striker</option>
+    <option value="Rust Handle">Rust Handle</option>
+    <option value="Stormeye">Stormeye</option>
+    <option value="True Silver">True Silver</option>
+    <option value="Mage Slayer">Mage Slayer</option>
+    <option value="Tempest">Tempest</option>	
+        </select>
+        <div id="mercweapon-info" class="equipment-info"></div>
+      </div>
+    
+  
+    
+    <div class="merc-equipment-slot">
+      <label id="mercoffs-label">Shield/Off-hand</label>
+      <select id="mercoffs-dropdown">
+        <option value="Pelta Lunata">Pelta Lunata</option>
+        <option value="Umbral Disk">Umbral Disk</option>
+      </select>
+      <div id="mercoff-info" class="equipment-info"></div>
+    </div>
+  
+    
+    <div class="merc-equipment-slot">
+      <label id="mercgloves-label">Gloves</label>
+      <select id="mercgloves-dropdown">
+        <option value="Magefist">Magefist</option>
+        <option value="Frostburn">Frostburn</option>
+        
+      </select>
+      <div id="mercglove-info" class="equipment-info"></div>
+    </div>
+  
+    
+    <div class="merc-equipment-slot">
+      <label id="mercbelts-label">Belt</label>
+      <select id="mercbelts-dropdown">
+        <option value="Razortail">Razortail</option>
+        <option value="Goldwrap">Goldwrap</option>
+        
+      </select>
+      <div id="mercbelt-info" class="equipment-info"></div>
+    </div>
+  
+    <!-- Boots -->
+    <div class="merc-equipment-slot">
+      <label id="mercboots-label">Boots</label>
+      <select id="mercboots-dropdown">
+        <option value="Gorefoot">Gorefoot</option>
+        <option value="Hotspur">Hotspur</option>
+        <!-- Add boots options here -->
+      </select>
+      <div id="mercboot-info" class="equipment-info"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
 </div>
 <div id="buff1"></div>
 <div id="buff2"></div>

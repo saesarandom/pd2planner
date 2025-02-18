@@ -2252,8 +2252,8 @@ option[value="Arcanna's Head"] {
 }
 .hirelingcontainer {
   position: absolute;
-  left: 1400px;
-  top: 940px;
+  left: 1330px;
+  top: 1070px;
   width: 700px;
   height: 600px;
   background-image: url("/img/mercback.png");
@@ -3285,4 +3285,211 @@ option[value="Arcanna's Head"] {
 
 #corruptionModal {
   z-index: 1000;
+}
+
+.mercenary-equipment {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #666;
+  position: relative;
+}
+
+.merc-equipment-slot {
+  margin-bottom: 15px;
+}
+
+/* Container for the equipment dropdowns */
+.merc-equip-row {
+  display: flex;
+  gap: 70px; /* Space between dropdowns */
+  margin-bottom: 20px;
+}
+
+#merchelms-dropdown {
+  width: 150px;
+  position: absolute;
+  left: 40px;
+  top: 20px; /* Adjust this value as needed */
+  padding: 5px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+#mercarmors-dropdown {
+  width: 150px;
+  position: absolute;
+  left: 260px;
+  top: 20px; /* Same top value as helm */
+  padding: 5px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+#mercweapons-dropdown {
+  width: 150px;
+  position: absolute;
+  left: 480px;
+  top: 20px; /* Same top value as helm */
+  padding: 5px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+#mercoffs-dropdown {
+  width: 150px;
+  position: absolute;
+  left: 40px;
+  top: 540px; /* Adjust this value as needed */
+  padding: 5px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+#mercgloves-dropdown {
+  width: 150px;
+  position: absolute;
+  left: 260px;
+  top: 540px; /* Same top value as helm */
+  padding: 5px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+#mercbelts-dropdown {
+  width: 150px;
+  position: absolute;
+  left: 480px;
+  top: 540px; /* Same top value as helm */
+  padding: 5px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+#mercboots-dropdown {
+  width: 150px;
+  position: absolute;
+  left: 260px;
+  top: 940px; /* Same top value as helm */
+  padding: 5px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+/* Equipment info positioning */
+#merchelm-info {
+  position: absolute;
+  left: 40px;
+  top: 50px; /* Adjust based on dropdown height */
+  width: 150px;
+}
+
+#mercarmor-info {
+  position: absolute;
+  left: 260px;
+  top: 50px; /* Adjust based on dropdown height */
+  width: 150px;
+}
+
+#mercweapon-info {
+  position: absolute;
+  left: 480px;
+  top: 50px; /* Adjust based on dropdown height */
+  width: 150px;
+}
+
+#mercoff-info {
+  position: absolute;
+  left: 40px;
+  top: 570px; /* Adjust based on dropdown height */
+  width: 150px;
+}
+
+#mercglove-info {
+  position: absolute;
+  left: 260px;
+  top: 570px; /* Adjust based on dropdown height */
+  width: 150px;
+}
+
+#mercbelt-info {
+  position: absolute;
+  left: 480px;
+  top: 570px; /* Adjust based on dropdown height */
+  width: 150px;
+}
+
+#mercboot-info {
+  position: absolute;
+  left: 260px;
+  top: 990px; /* Adjust based on dropdown height */
+  width: 150px;
+}
+
+/* Common styles */
+.equipment-info {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: #ccc;
+  z-index: 5;
+  top: 0;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  padding: 10px;
+  border: 1px solid #666;
+}
+
+/* Labels */
+.merc-equipment-slot label {
+  position: absolute;
+  color: #ffd700;
+  top: 0;
+}
+
+.merc-equipment-slot select {
+  width: 150px;
+  padding: 1px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+#merchelms-label {
+  left: 40px;
+}
+
+#mercarmors-label {
+  left: 260px;
+}
+
+#mercweapons-label {
+  left: 480px;
+}
+
+#mercoffs-label {
+  left: 40px;
+  top: 520px;
+}
+
+#mercgloves-label {
+  left: 260px;
+  top: 520px;
+}
+
+#mercbelts-label {
+  left: 480px;
+  top: 520px;
+}
+
+#mercboots-label {
+  left: 260px;
+  top: 920px;
 }
