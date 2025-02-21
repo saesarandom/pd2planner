@@ -28,23 +28,20 @@ mongoose
 
 // Discord callback route
 app.get("/auth/discord/callback", async (req, res) => {
-  console.log("Received Discord callback");
   const code = req.query.code;
   console.log("Auth code:", code);
 
-  const data = {
-    client_id: process.env.DISCORD_CLIENT_ID,
-    client_secret: process.env.DISCORD_CLIENT_SECRET,
-    grant_type: "authorization_code",
-    code: code,
-    redirect_uri: process.env.DISCORD_REDIRECT_URI,
-  };
-
   try {
-    console.log("Requesting token from Discord...");
+    // Get Discord token
     const tokenResponse = await axios.post(
       "https://discord.com/api/oauth2/token",
-      qs.stringify(data),
+      qs.stringify({
+        client_id: process.env.DISCORD_CLIENT_ID,
+        client_secret: process.env.DISCORD_CLIENT_SECRET,
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: process.env.DISCORD_REDIRECT_URI,
+      }),
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -53,36 +50,49 @@ app.get("/auth/discord/callback", async (req, res) => {
     );
 
     const accessToken = tokenResponse.data.access_token;
-    console.log("Got access token");
 
+    // Get Discord user data
     const userResponse = await axios.get("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    const user = userResponse.data;
-    console.log("Got user data:", user.username);
+    const discordUser = userResponse.data;
 
-    res.json({
-      success: true,
-      user: {
-        id: user.id,
-        username: user.username,
-      },
-    });
+    // Find or create user
+    let user = await User.findOne({ discordId: discordUser.id });
+
+    if (!user) {
+      // Create new user if doesn't exist
+      user = new User({
+        username: discordUser.username,
+        discordId: discordUser.id,
+        discordUsername: discordUser.username,
+      });
+      await user.save();
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    // Redirect to frontend with token
+    res.redirect("https://pd2planner.net/");
   } catch (error) {
-    console.error("Discord auth error:", error.response?.data || error.message);
-    res.status(500).json({
-      error: "Authentication failed",
-      details: error.response?.data || error.message,
-    });
+    console.error("Auth error:", error.response?.data || error.message);
+    res.redirect("https://pd2planner.net/auth-error.html");
   }
 });
 
 // User model
 const User = mongoose.model("User", {
-  email: { type: String, unique: true, required: true },
-  username: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
+  email: { type: String, sparse: true }, // Make sparse to allow null
+  username: { type: String, required: true },
+  discordId: { type: String, unique: true }, // Add this
+  discordUsername: String,
+  password: { type: String, sparse: true }, // Make sparse to allow null for Discord users
   createdAt: { type: Date, default: Date.now },
   achievements: [
     {
