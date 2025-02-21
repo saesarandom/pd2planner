@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
+const axios = require("axios"); // Move this to the top
+const qs = require("querystring");
 require("dotenv").config();
 
 const app = express();
@@ -13,7 +15,7 @@ app.use(express.json());
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGODB_URI || "mongodb://localhost/auth_demo", {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -23,6 +25,58 @@ mongoose
   .catch((err) => {
     console.error("MongoDB connection error:", err);
   });
+
+// Discord callback route
+app.get("/auth/discord/callback", async (req, res) => {
+  console.log("Received Discord callback");
+  const code = req.query.code;
+  console.log("Auth code:", code);
+
+  const data = {
+    client_id: process.env.DISCORD_CLIENT_ID,
+    client_secret: process.env.DISCORD_CLIENT_SECRET,
+    grant_type: "authorization_code",
+    code: code,
+    redirect_uri: process.env.DISCORD_REDIRECT_URI,
+  };
+
+  try {
+    console.log("Requesting token from Discord...");
+    const tokenResponse = await axios.post(
+      "https://discord.com/api/oauth2/token",
+      qs.stringify(data),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+
+    const accessToken = tokenResponse.data.access_token;
+    console.log("Got access token");
+
+    const userResponse = await axios.get("https://discord.com/api/users/@me", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    const user = userResponse.data;
+    console.log("Got user data:", user.username);
+
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+      },
+    });
+  } catch (error) {
+    console.error("Discord auth error:", error.response?.data || error.message);
+    res.status(500).json({
+      error: "Authentication failed",
+      details: error.response?.data || error.message,
+    });
+  }
+});
 
 // User model
 const User = mongoose.model("User", {
@@ -271,47 +325,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.get("/auth/discord/callback", async (req, res) => {
-  const code = req.query.code;
-
-  const data = {
-    client_id: process.env.DISCORD_CLIENT_ID,
-    client_secret: process.env.DISCORD_CLIENT_SECRET,
-    grant_type: "authorization_code",
-    code: code,
-    redirect_uri: process.env.DISCORD_REDIRECT_URI,
-  };
-
-  try {
-    const tokenResponse = await axios.post(
-      "https://discord.com/api/oauth2/token",
-      qs.stringify(data),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
-    const accessToken = tokenResponse.data.access_token;
-
-    const userResponse = await axios.get("https://discord.com/api/users/@me", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const user = userResponse.data;
-
-    // Send back the user data
-    res.json({
-      success: true,
-      user: {
-        id: user.id,
-        username: user.username,
-        // add other fields you need
-      },
-    });
-  } catch (error) {
-    console.error("Discord auth error:", error.response?.data || error.message);
-    res
-      .status(500)
-      .json({ error: "Authentication failed", details: error.response?.data });
-  }
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
