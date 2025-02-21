@@ -12697,7 +12697,8 @@ document.getElementById('makeetherealboot').addEventListener('click', () => make
 document.getElementById('makeetherealweapon').addEventListener('click', () => makeEtherealItem('weapons'));
 </script>
 
-<a href="https://discord.com/api/oauth2/authorize?client_id=1342568970544484413&redirect_uri=https://pd2planner.net/auth/discord/callback&response_type=code&scope=identify">Connect with Discord</a>
+<a href="https://discord.com/api/oauth2/authorize?client_id=1342568970544484413&redirect_uri=https://pd2planner-backend-517bf7cfa307.herokuapp.com/auth/discord/callback&response_type=code&scope=identify">Connect with Discord</a>
+
 
 
 <script>const handleDiscordLogin = async (code) => {
@@ -12717,39 +12718,34 @@ document.getElementById('makeetherealweapon').addEventListener('click', () => ma
 };</script>
 
 <script>
-  // Get the 'code' from URL when Discord redirects back
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
-  
-  if (code) {
-    // If we have a code, we're in the callback
-    handleDiscordCallback(code);
-  }
-  
-  async function handleDiscordCallback(code) {
-    try {
-      // Replace with your actual backend URL
-      const response = await fetch(`https://pd2planner.net/auth/discord/callback?code=${code}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      
-      const data = await response.json();
-      if (data.success) {
-        // Store the user data or token
-        localStorage.setItem('user', JSON.stringify(data.user));
-        // Redirect to dashboard or update UI
-        window.location.href = '/dashboard.html';
-      } else {
-        console.error('Login failed:', data.error);
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
-  }
-  </script>
+ const urlParams = new URLSearchParams(window.location.search);
+const code = urlParams.get('code');
 
+if (code) {
+  handleDiscordCallback(code);
+}
+
+async function handleDiscordCallback(code) {
+  try {
+    const response = await fetch(`https://pd2planner-backend-517bf7cfa307.herokuapp.com/auth/discord/callback?code=${code}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      localStorage.setItem('user', JSON.stringify(data.user));
+      window.location.href = '/dashboard.html';
+    } else {
+      console.error('Login failed:', data.error);
+    }
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
+}
+</script>
+  
 </body>
 </html>

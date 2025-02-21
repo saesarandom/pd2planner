@@ -299,10 +299,7 @@ app.get("/auth/discord/callback", async (req, res) => {
     });
     const user = userResponse.data;
 
-    // Store user data in your database
-    // You might want to create a new user or link to existing one
-
-    // Instead of redirect, send the data back
+    // Send back the user data
     res.json({
       success: true,
       user: {
@@ -312,39 +309,9 @@ app.get("/auth/discord/callback", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Authentication failed" });
+    console.error("Discord auth error:", error.response?.data || error.message);
+    res
+      .status(500)
+      .json({ error: "Authentication failed", details: error.response?.data });
   }
 });
-
-const PORT = process.env.PORT || 3001; // Changed from 3000 to 3001
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// const axios = require("axios");
-// const qs = require("querystring");
-
-// app.get("/auth/discord/callback", async (req, res) => {
-//   const code = req.query.code;
-//   const data = {
-//     client_id: "1342568970544484413",
-//     client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-//     grant_type: "authorization_code",
-//     code: code,
-//     redirect_uri: "https://pd2planner.net/auth/discord/callback",
-//   };
-
-//   try {
-//     const response = await axios.post(
-//       "https://discord.com/api/oauth2/token",
-//       qs.stringify(data),
-//       {
-//         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-//       }
-//     );
-//     const accessToken = response.data.access_token;
-//     // Proceed to step 4
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.send("Authentication failed");
-//   }
-// });
