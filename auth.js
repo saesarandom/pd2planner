@@ -86,6 +86,23 @@ app.get("/auth/discord/callback", async (req, res) => {
   }
 });
 
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await User.find(
+      { discordId: { $exists: true } },
+      {
+        username: 1,
+        discordUsername: 1,
+        createdAt: 1,
+      }
+    );
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+});
+
 // User model
 const User = mongoose.model("User", {
   email: { type: String, sparse: true }, // Make sparse to allow null
