@@ -58,16 +58,23 @@ app.get("/auth/discord/callback", async (req, res) => {
 
     const discordUser = userResponse.data;
 
-    // Find or create user
+    // Get avatar URL
+    const avatarUrl = discordUser.avatar
+      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`
+      : "https://cdn.discordapp.com/embed/avatars/0.png"; // Default avatar
+
     let user = await User.findOne({ discordId: discordUser.id });
 
     if (!user) {
-      // Create new user if doesn't exist
       user = new User({
         username: discordUser.username,
         discordId: discordUser.id,
-        discordUsername: discordUser.username,
+        avatarUrl: avatarUrl,
       });
+      await user.save();
+    } else {
+      // Update avatar URL if changed
+      user.avatarUrl = avatarUrl;
       await user.save();
     }
 
@@ -92,8 +99,9 @@ app.get("/api/users", async (req, res) => {
       { discordId: { $exists: true } },
       {
         username: 1,
-        discordUsername: 1,
-        createdAt: 1,
+        // discordUsername: 1,
+        // createdAt: 1,
+        avatarUrl: 1,
       }
     );
     res.json(users);
@@ -109,6 +117,7 @@ const User = mongoose.model("User", {
   username: { type: String, required: true },
   discordId: { type: String, unique: true }, // Add this
   discordUsername: String,
+  avatarUrl: String,
   password: { type: String, sparse: true }, // Make sparse to allow null for Discord users
   createdAt: { type: Date, default: Date.now },
   achievements: [
