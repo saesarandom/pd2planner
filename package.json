@@ -2,9 +2,9 @@
   "name": "pd2planner",
   "version": "1.0.0",
   "description": "![totaldone](https://github.com/user-attachments/assets/fd6e1bde-3c9a-4d55-9102-2edb3461c335)",
-  "main": "DPSSimulator.js",
+  "main": "auth.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node auth.js"
   },
   "repository": {
     "type": "git",
@@ -28,3 +28,4 @@
     "qs": "^6.14.0"
   }
 }
+
