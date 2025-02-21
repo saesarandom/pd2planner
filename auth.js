@@ -57,11 +57,20 @@ app.get("/auth/discord/callback", async (req, res) => {
     });
 
     const discordUser = userResponse.data;
+    console.log("Discord user data:", {
+      id: discordUser.id,
+      username: discordUser.username,
+      avatar: discordUser.avatar,
+    });
 
     // Get avatar URL
     const avatarUrl = discordUser.avatar
-      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`
-      : "https://cdn.discordapp.com/embed/avatars/0.png"; // Default avatar
+      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=32`
+      : `https://cdn.discordapp.com/embed/avatars/${
+          parseInt(discordUser.id) % 5
+        }.png`;
+
+    console.log("Avatar URL:", avatarUrl);
 
     let user = await User.findOne({ discordId: discordUser.id });
 
@@ -71,12 +80,11 @@ app.get("/auth/discord/callback", async (req, res) => {
         discordId: discordUser.id,
         avatarUrl: avatarUrl,
       });
-      await user.save();
     } else {
-      // Update avatar URL if changed
       user.avatarUrl = avatarUrl;
-      await user.save();
     }
+    await user.save();
+    console.log("Saved user with avatar:", user.avatarUrl);
 
     // Create JWT token
     const token = jwt.sign(
@@ -104,6 +112,7 @@ app.get("/api/users", async (req, res) => {
         avatarUrl: 1,
       }
     );
+    console.log("Sending users data:", users);
     res.json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
