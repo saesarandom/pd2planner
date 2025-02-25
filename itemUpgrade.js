@@ -3463,14 +3463,17 @@ function makeEtherealItem(category) {
   const currentItem = select.value;
   const currentItemData = itemList[currentItem];
 
-  console.log("Starting makeEtherealItem:", {
-    category,
-    currentItem,
-    currentItemData,
-  });
-
   if (!currentItemData || currentItemData.description.includes("Ethereal"))
     return;
+
+  // Check if there's a socket corruption before making the item ethereal
+  let socketCorruption = null;
+  const categoryInfo = document.getElementById(`${category}-info`);
+  const corruptedMod = categoryInfo?.querySelector(".corrupted-mod");
+
+  if (corruptedMod && corruptedMod.textContent.includes("Socketed")) {
+    socketCorruption = corruptedMod.textContent;
+  }
 
   if (category === "weapons") {
     const baseType = currentItemData.description.split("<br>")[1];
@@ -3485,8 +3488,6 @@ function makeEtherealItem(category) {
       properties: currentItemData.properties,
     };
 
-    console.log("Created tempItem:", tempItem);
-
     const newProperties = {
       ...currentItemData.properties,
     };
@@ -3498,8 +3499,6 @@ function makeEtherealItem(category) {
       newProperties.onehandmin = calculateItemDamage(tempItem, baseType, false);
       newProperties.onehandmax = calculateItemDamage(tempItem, baseType, true);
     }
-
-    console.log("Calculated new properties:", newProperties);
 
     itemList[currentItem] = {
       description: buildDescriptionWeapon(
@@ -3516,8 +3515,6 @@ function makeEtherealItem(category) {
       ),
       properties: newProperties,
     };
-
-    console.log("Final item:", itemList[currentItem]);
 
     if (isTwoHanded) {
       document.getElementById("twohandmindmgcontainer").textContent =
@@ -3547,21 +3544,21 @@ function makeEtherealItem(category) {
     currentItemData.properties.defense = newDefense;
   }
 
+  // Trigger change event to update display
   select.dispatchEvent(new Event("change"));
+
+  // Reapply socket corruption if there was one
+  if (socketCorruption) {
+    const socketMatch = socketCorruption.match(/Socketed \((\d+)\)/);
+    if (socketMatch) {
+      const socketCount = parseInt(socketMatch[1]);
+      typeCorruptions[category] = `Socketed (${socketCount})`;
+      localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
+      updateCorruptionDisplay(category, `Socketed (${socketCount})`);
+      updateSocketCount(category, socketCount);
+    }
+  }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".socketz").forEach((socket) => {
-    socket.addEventListener("click", () => {
-      updateWeaponDamageDisplay();
-    });
-    socket.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-
-      updateWeaponDamageDisplay();
-    });
-  });
-});
 
 function updateWeaponDamageDisplay() {
   const weaponSelect = document.getElementById("weapons-dropdown");

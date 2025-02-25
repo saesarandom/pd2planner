@@ -1,5 +1,173 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Initialize sockets for all socketed items when the page loads
+  [
+    "helms-dropdown",
+    "armors-dropdown",
+    "weapons-dropdown",
+    "offs-dropdown",
+  ].forEach((id) => {
+    const dropdown = document.getElementById(id);
+    if (dropdown) {
+      // Add initial setup
+      dropdown.addEventListener("change", () => {
+        const sectionMap = {
+          "weapons-dropdown": "weapon",
+          "helms-dropdown": "helm",
+          "armors-dropdown": "armor",
+          "offs-dropdown": "shield",
+        };
+        const section = sectionMap[id];
+
+        // Force socket UI update based on the selected item
+        forceUpdateSockets(section);
+      });
+
+      // Trigger once on page load to initialize
+      if (dropdown.value) {
+        const sectionMap = {
+          "weapons-dropdown": "weapon",
+          "helms-dropdown": "helm",
+          "armors-dropdown": "armor",
+          "offs-dropdown": "shield",
+        };
+        const section = sectionMap[id];
+        setTimeout(() => forceUpdateSockets(section), 500);
+      }
+    }
+  });
+});
+
+function forceUpdateSockets(section) {
+  // Get the selected item
+  const dropdownId = `${section}s-dropdown`;
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown || !dropdown.value) return;
+
+  const selectedItem = dropdown.value;
+
+  // Get the base type
+  let baseType;
+  if (section === "weapon") {
+    baseType = getBaseWeaponType(selectedItem);
+  } else {
+    try {
+      const itemData = itemList[selectedItem];
+      baseType = itemData.description.split("<br>")[1].trim();
+    } catch (e) {
+      console.error("Error getting base type:", e);
+      baseType = "";
+    }
+  }
+
+  // Get the maximum allowed sockets for this base type
+  const maxBaseAllowed =
+    maxSockets[baseType] !== undefined ? maxSockets[baseType] : 2;
+  console.log(
+    `[forceUpdateSockets] Item: ${selectedItem}, Base: ${baseType}, Max sockets: ${maxBaseAllowed}`
+  );
+
+  // Check if there's a socket corruption
+  const containerClass =
+    section === "weapon" ? "weaponsockets" : `${section}sockets`;
+  const container = document.querySelector(`.${containerClass}`);
+
+  // For items that can't have sockets, clear UI, data, and any gems
+  if (
+    maxBaseAllowed === 0 ||
+    socketExceptions.noSockets.includes(selectedItem)
+  ) {
+    console.log(
+      `[forceUpdateSockets] Item cannot have sockets, clearing everything`
+    );
+
+    // Clear any socket data
+    if (container) {
+      // Remove any socketed items
+      const sockets = container.querySelectorAll(".socketz");
+      sockets.forEach((socket) => {
+        if (socket.dataset.itemName) {
+          clearSocket(socket, true);
+        }
+      });
+
+      // Then clear the container
+      container.innerHTML = "";
+    }
+
+    // Check if we need to remove a socket corruption
+    const type = section === "shield" ? "off" : section;
+    if (typeCorruptions[type] && typeCorruptions[type].includes("Socketed")) {
+      console.log(`[forceUpdateSockets] Removing socket corruption`);
+      delete typeCorruptions[type];
+      localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
+
+      // Also remove from the UI
+      const infoContainerId = {
+        helm: "helm-info",
+        armor: "armor-info",
+        weapon: "weapon-info",
+        shield: "off-info",
+      }[section];
+
+      const infoContainer = document.getElementById(infoContainerId);
+      if (infoContainer) {
+        const corruptedMod = infoContainer.querySelector(".corrupted-mod");
+        const corruptedText = infoContainer.querySelector(".corrupted-text");
+
+        if (corruptedMod) corruptedMod.remove();
+        if (corruptedText) corruptedText.remove();
+      }
+    }
+
+    return;
+  }
+
+  // Check if we have a socket corruption
+  const type = section === "shield" ? "off" : section;
+  const socketCorruption = typeCorruptions[type]?.includes("Socketed");
+
+  if (socketCorruption) {
+    // If we have a socket corruption, make sure it respects the base item maximum
+    const socketMatch = typeCorruptions[type].match(/\((\d+)\)/);
+    if (socketMatch) {
+      const currentSockets = parseInt(socketMatch[1]);
+      const adjustedSockets = Math.min(currentSockets, maxBaseAllowed);
+
+      if (adjustedSockets !== currentSockets) {
+        console.log(
+          `[forceUpdateSockets] Adjusting socket corruption from ${currentSockets} to ${adjustedSockets}`
+        );
+        typeCorruptions[type] = `Socketed (${adjustedSockets})`;
+        localStorage.setItem(
+          "typeCorruptions",
+          JSON.stringify(typeCorruptions)
+        );
+        updateCorruptionDisplay(type, `Socketed (${adjustedSockets})`);
+      }
+
+      updateSocketCount(section, adjustedSockets);
+    }
+  } else {
+    // No socket corruption, create the default number of sockets for this item type
+    const maxAllowedSockets = socketExceptions.maxOneSocket.includes(
+      selectedItem
+    )
+      ? 1
+      : maxBaseAllowed;
+
+    console.log(
+      `[forceUpdateSockets] Setting uncorrupted socket count to ${maxAllowedSockets}`
+    );
+    updateSocketCount(section, maxAllowedSockets);
+  }
+
+  // Make sure socket stats display is refreshed
+  refreshSocketProperties();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
   const helmCorruptions = [
+    { mod: "Socketed ([1-3])", type: "numeric", range: [1, 3] },
     { mod: "+[20-30]% Faster Hit Recovery", type: "numeric", range: [20, 30] },
     {
       mod: "Indestructible , +[50-80]% Enhanced Defense",
@@ -62,6 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   const armorCorruptions = [
+    { mod: "Socketed ([2-4])", type: "numeric", range: [2, 4] },
     { mod: "+[20-30]% Faster Hit Recovery", type: "numeric", range: [30, 30] },
     { mod: "+[50-80]% Enhanced Defense", type: "numeric", range: [50, 80] },
     {
@@ -933,32 +1102,58 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const socketCount = parseInt(socketMatch[1]);
-      const weaponSelect = document.getElementById("weapons-dropdown");
-      const selectedWeapon = weaponSelect.value;
-      const baseType = getBaseWeaponType(selectedWeapon);
+      const requestedSocketCount = parseInt(socketMatch[1]);
+      console.log(
+        `Requested socket corruption: ${requestedSocketCount} sockets for ${type}`
+      );
+
+      // Get item data based on type
+      let baseType, selectedItem;
+
+      if (type === "weapon") {
+        const weaponSelect = document.getElementById("weapons-dropdown");
+        selectedItem = weaponSelect.value;
+        baseType = getBaseWeaponType(selectedItem);
+      } else if (type === "helm") {
+        const helmSelect = document.getElementById("helms-dropdown");
+        selectedItem = helmSelect.value;
+        baseType = getItemBaseType(selectedItem);
+      } else if (type === "armor") {
+        const armorSelect = document.getElementById("armors-dropdown");
+        selectedItem = armorSelect.value;
+        baseType = getItemBaseType(selectedItem);
+      } else if (type === "off") {
+        const offSelect = document.getElementById("offs-dropdown");
+        selectedItem = offSelect.value;
+        baseType = getItemBaseType(selectedItem);
+      }
+
+      // Get the maximum allowed sockets for this base type
+      const maxAllowed =
+        maxSockets[baseType] !== undefined ? maxSockets[baseType] : 2;
+      console.log(`Base type: ${baseType}, Max allowed: ${maxAllowed}`);
 
       // Prevent socketing for items with 0 max sockets
-      if (maxSockets[baseType] === 0) {
-        // Prevent further processing
+      if (maxAllowed === 0) {
+        alert(`${selectedItem} (${baseType}) cannot have sockets.`);
         document.getElementById("corruptionModal").style.display = "none";
         return false;
       }
 
-      const maxAllowed = maxSockets[baseType] || 2;
-      const actualSockets = Math.min(socketCount, maxAllowed);
+      // For normal items, limit to the maximum for this base type
+      const actualSockets = Math.min(requestedSocketCount, maxAllowed);
+      console.log(`Resulting sockets: ${actualSockets}`);
 
-      if (actualSockets > 0) {
-        updateSocketCount("weapon", actualSockets);
+      // Update the corruption text and apply it
+      const corruptionText = `Socketed (${actualSockets})`;
+      typeCorruptions[type] = corruptionText;
+      localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
 
-        typeCorruptions[type] = `Socketed (${actualSockets})`;
-        localStorage.setItem(
-          "typeCorruptions",
-          JSON.stringify(typeCorruptions)
-        );
+      // Update the display
+      updateCorruptionDisplay(type, corruptionText);
 
-        updateCorruptionDisplay(type, `Socketed (${actualSockets})`);
-      }
+      // Update the socket UI
+      updateSocketCount(type, actualSockets);
 
       document.getElementById("corruptionModal").style.display = "none";
       return true;
@@ -980,6 +1175,25 @@ document.addEventListener("DOMContentLoaded", () => {
       return true;
     }
   }
+
+  // Add generic function to get base type for any item
+  function getItemBaseType(selectedItem) {
+    const itemData = itemList[selectedItem];
+    if (!itemData) {
+      console.error("No item data found for:", selectedItem);
+      return null;
+    }
+
+    const descriptionParts = itemData.description.split("<br>");
+    const baseType = descriptionParts[1].trim();
+
+    return baseType;
+  }
+  // Update the existing function to use the new generic one
+  function getBaseWeaponType(selectedWeapon) {
+    return getItemBaseType(selectedWeapon);
+  }
+
   function updateCorruptionDisplay(type, corruptionMod) {
     const containerMap = {
       ringOne: "ringsone-info",
@@ -1025,10 +1239,89 @@ document.addEventListener("DOMContentLoaded", () => {
 
     types.forEach(({ type, containerId }) => {
       const corruption = typeCorruptions[type];
+      if (!corruption) return;
 
-      if (corruption) {
-        updateCorruptionDisplay(type, corruption);
+      // Get the current item's base type
+      const dropdownId = `${type}s-dropdown`;
+      const dropdown = document.getElementById(dropdownId);
+      if (!dropdown) return;
+
+      const selectedItem = dropdown.value;
+      if (!selectedItem) return;
+
+      // Special handling for socket corruptions
+      if (corruption.includes("Socketed")) {
+        const socketMatch = corruption.match(/\((\d+)\)/);
+        if (socketMatch) {
+          const currentSockets = parseInt(socketMatch[1]);
+
+          let baseType;
+          if (type === "weapon") {
+            baseType = getBaseWeaponType(selectedItem);
+          } else {
+            try {
+              const itemData = itemList[selectedItem];
+              baseType = itemData.description.split("<br>")[1].trim();
+            } catch (e) {
+              console.error("Error getting base type:", e);
+              baseType = "";
+            }
+          }
+
+          // Calculate the max allowed sockets for this base type
+          const maxAllowed = maxSockets[baseType] || 2;
+
+          console.log(
+            `Item: ${selectedItem}, Base: ${baseType}, Max allowed: ${maxAllowed}, Current: ${currentSockets}`
+          );
+
+          // Special case for items with 0 max sockets
+          if (maxAllowed === 0) {
+            console.log("Item cannot have sockets, removing socket corruption");
+
+            // Remove socket corruption from display
+            const container = document.getElementById(containerId);
+            const corruptedMod = container.querySelector(".corrupted-mod");
+            const corruptedText = container.querySelector(".corrupted-text");
+
+            if (corruptedMod) corruptedMod.remove();
+            if (corruptedText) corruptedText.remove();
+
+            // Remove from state
+            delete typeCorruptions[type];
+            localStorage.setItem(
+              "typeCorruptions",
+              JSON.stringify(typeCorruptions)
+            );
+
+            // Clear any existing sockets UI
+            updateSocketCount(type, 0);
+            return;
+          }
+
+          // For items that can have sockets, adjust to respect max
+          const adjustedSockets = Math.min(currentSockets, maxAllowed);
+
+          // Update the corruption text if needed
+          if (adjustedSockets !== currentSockets) {
+            typeCorruptions[type] = `Socketed (${adjustedSockets})`;
+            localStorage.setItem(
+              "typeCorruptions",
+              JSON.stringify(typeCorruptions)
+            );
+          }
+
+          // Display the adjusted corruption
+          updateCorruptionDisplay(type, `Socketed (${adjustedSockets})`);
+
+          // Force the socket UI to update with the correct count
+          setTimeout(() => updateSocketCount(type, adjustedSockets), 50);
+          return;
+        }
       }
+
+      // Standard handling for non-socket corruptions
+      updateCorruptionDisplay(type, corruption);
     });
   }
 
@@ -1155,6 +1448,12 @@ const maxSockets = {
   Kris: 3,
   Blade: 2,
   "Maiden Javelin": 0,
+  Cap: 2,
+  "Skull Cap": 2,
+  Helm: 3,
+  "Full Helm": 3,
+  "Great Helm": 3,
+  Crown: 3,
 };
 
 function getMaxSocketsForWeapon(weaponName) {
@@ -1186,36 +1485,60 @@ document
     const selectedWeapon = event.target.value;
     const baseType = getBaseWeaponType(selectedWeapon);
 
-    // Special handling for items with 0 sockets
-    if (maxSockets[baseType] === 0) {
-      const weaponSockets = document.querySelector(".weaponsockets");
-      if (weaponSockets) {
-        weaponSockets.innerHTML = ""; // Remove all sockets
-        return;
+    // Get the maximum allowed sockets for this base item
+    const maxAllowed = maxSockets[baseType] || 2;
+
+    // Get corruption info from typeCorruptions object first
+    const weaponCorruption = typeCorruptions.weapon;
+    const socketMatch = weaponCorruption?.match(/Socketed \((\d+)\)/);
+
+    if (socketMatch) {
+      const currentSockets = parseInt(socketMatch[1]);
+
+      // Use the smaller of the corrupted count and the max allowed for THIS base item
+      const adjustedSockets = Math.min(currentSockets, maxAllowed);
+
+      // If the adjusted socket count is different, update the corruption display
+      if (adjustedSockets !== currentSockets) {
+        console.log(
+          `Adjusting sockets from ${currentSockets} to ${adjustedSockets} based on ${baseType} max`
+        );
+        typeCorruptions.weapon = `Socketed (${adjustedSockets})`;
+        localStorage.setItem(
+          "typeCorruptions",
+          JSON.stringify(typeCorruptions)
+        );
+
+        // Need to update the display after the item info is loaded
+        setTimeout(() => {
+          updateCorruptionDisplay("weapon", `Socketed (${adjustedSockets})`);
+          updateSocketCount("weapon", adjustedSockets);
+        }, 50);
+      } else {
+        // Socket count is valid, just update the sockets
+        updateSocketCount("weapon", adjustedSockets);
       }
+    } else {
+      // No socket corruption, use default sockets for the item (0)
+      updateSocketCount("weapon", 0);
     }
 
-    const weaponInfo = document.getElementById("weapon-info");
-    const corruptedMod =
-      weaponInfo?.querySelector(".corrupted-mod")?.textContent;
-
-    if (corruptedMod && corruptedMod.includes("Socketed")) {
-      const currentSockets = parseInt(corruptedMod.match(/\((\d+)\)/)[1]);
-
-      // Only handle sockets through corruption
-      const adjustedSockets = Math.min(currentSockets, 2);
-
-      updateSocketCount("weapon", adjustedSockets);
-
-      const corruptModElement = weaponInfo?.querySelector(".corrupted-mod");
-      if (corruptModElement) {
-        corruptModElement.textContent = `Socketed (${adjustedSockets})`;
+    // Update weapon description and other displays
+    const itemData = itemList[selectedWeapon];
+    if (itemData) {
+      // Update description container
+      const descriptionContainer = document.getElementById("weapon-info");
+      if (descriptionContainer) {
+        // Split the description into lines and create HTML
+        const descriptionLines = itemData.description.split("<br>");
+        const formattedDescription = descriptionLines
+          .map((line) => `<div>${line}</div>`)
+          .join("");
+        descriptionContainer.innerHTML = formattedDescription;
       }
 
-      typeCorruptions.weapon = `Socketed (${adjustedSockets})`;
-      localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
-
-      updateCorruptionDisplay("weapon", `Socketed (${adjustedSockets})`);
+      // Update damage display
+      updateWeaponDamageDisplay();
     }
   });
 
@@ -1225,26 +1548,62 @@ function updateSocketCount(section, socketCount) {
   const container = document.querySelector(`.${containerClass}`);
 
   if (!container) {
+    console.log(`Container not found for ${section}`);
     return;
   }
 
-  // Get the current item name
+  // Get the current item
   const dropdownId = `${section}s-dropdown`;
   const dropdown = document.getElementById(dropdownId);
   const currentItem = dropdown.value;
 
-  // Check if the item can never have sockets
-  if (socketExceptions.noSockets.includes(currentItem)) {
-    container.innerHTML = ""; // Remove all sockets
+  // Get the base type
+  let baseType;
+  if (section === "weapon") {
+    baseType = getBaseWeaponType(currentItem);
+  } else {
+    try {
+      const itemData = itemList[currentItem];
+      baseType = itemData.description.split("<br>")[1].trim();
+    } catch (e) {
+      console.error("Error getting base type:", e);
+      baseType = "";
+    }
+  }
+
+  // Get the maximum allowed sockets for this base type
+  const maxBaseAllowed =
+    maxSockets[baseType] !== undefined ? maxSockets[baseType] : 2;
+
+  // If item cannot have sockets, clear container and return
+  if (
+    maxBaseAllowed === 0 ||
+    socketExceptions.noSockets.includes(currentItem)
+  ) {
+    // Remove any socketed items (clear their data first)
+    const sockets = container.querySelectorAll(".socketz");
+    sockets.forEach((socket) => {
+      if (socket.dataset.itemName) {
+        clearSocket(socket, true);
+      }
+    });
+
+    // Then clear the container
+    container.innerHTML = "";
     return;
   }
 
-  // Check if the item can only have 1 socket
+  // Determine how many sockets to display
+  // (requested count or max for this item, whichever is lower)
   const maxAllowedSockets = socketExceptions.maxOneSocket.includes(currentItem)
     ? 1
-    : socketCount;
+    : Math.min(socketCount, maxBaseAllowed);
 
-  // Rest of the existing updateSocketCount logic remains the same
+  console.log(
+    `[updateSocketCount] Creating ${maxAllowedSockets} sockets for ${currentItem} (${baseType})`
+  );
+
+  // Save existing socket data for reuse
   const currentSockets = Array.from(container.querySelectorAll(".socketz"));
   const filledSocketsData = currentSockets
     .filter((socket) => socket.dataset.itemName)
@@ -1255,6 +1614,7 @@ function updateSocketCount(section, socketCount) {
       html: socket.innerHTML,
     }));
 
+  // Clear and rebuild the socket UI
   container.innerHTML = "";
 
   for (let i = 0; i < maxAllowedSockets; i++) {
@@ -1362,7 +1722,7 @@ function handleSocketCorruption(mod, type, value) {
   return true;
 }
 
-function clearSocket(socket) {
+function clearSocket(socket, force = false) {
   socket.classList.remove("filled");
   socket.classList.add("empty");
   socket.innerHTML = "";
@@ -1371,12 +1731,17 @@ function clearSocket(socket) {
 
   const section = socket.dataset.section;
 
+  // Update stats display
   updateStatsDisplay(section);
 
+  // If this is a weapon, update description and damage
   if (section === "weapon") {
     updateWeaponDescription();
     updateWeaponDamageDisplay();
   }
+
+  // Force a complete stats display refresh
+  updateAllStatsDisplays();
 
   const containerClass =
     section === "weapon" ? "weaponsockets" : `${section}sockets`;
@@ -1610,3 +1975,38 @@ function updateSocketInfo(section) {
     });
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Ensure sockets update when we change items
+  [
+    "weapons-dropdown",
+    "helms-dropdown",
+    "armors-dropdown",
+    "offs-dropdown",
+  ].forEach((id) => {
+    const dropdown = document.getElementById(id);
+    if (dropdown) {
+      dropdown.addEventListener("change", () => {
+        setTimeout(() => {
+          const sectionMap = {
+            "weapons-dropdown": "weapon",
+            "helms-dropdown": "helm",
+            "armors-dropdown": "armor",
+            "offs-dropdown": "shield",
+          };
+          const section = sectionMap[id];
+          const isSocketCorruption =
+            typeCorruptions[section]?.includes("Socketed");
+
+          if (isSocketCorruption) {
+            // If there's a socket corruption, let restoreCorruptions handle it
+            restoreCorruptions();
+          } else {
+            // For uncorrupted items, update socket display to match base type maximum
+            updateSocketCount(section, 0);
+          }
+        }, 50);
+      });
+    }
+  });
+});
