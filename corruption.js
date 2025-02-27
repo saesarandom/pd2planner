@@ -1158,19 +1158,126 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("corruptionModal").style.display = "none";
       return true;
     } else {
-      // Existing logic for other corruption types
-      let formattedMod;
-      if (mod.type === "numeric") {
-        formattedMod = mod.mod;
-      } else if (mod.type === "double") {
-        formattedMod = mod.mod;
-      } else {
-        formattedMod = mod.mod;
+      // Store the corruption
+      typeCorruptions[type] = mod.mod;
+      localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
+      updateCorruptionDisplay(type, mod.mod);
+
+      // Force update the weapon damage display if this is an enhanced damage corruption
+      if (type === "weapon" && mod.mod.includes("Enhanced Damage")) {
+        console.log("Updating weapon with Enhanced Damage corruption");
+
+        const weaponSelect = document.getElementById("weapons-dropdown");
+        if (weaponSelect) {
+          const currentItem = weaponSelect.value;
+          const currentItemData = itemList[currentItem];
+
+          if (currentItemData) {
+            const baseType = currentItemData.description.split("<br>")[1];
+            const isTwoHanded =
+              currentItemData.properties.twohandmin !== undefined;
+
+            // Recalculate damage with the new corruption
+            if (isTwoHanded) {
+              const newMin = calculateItemDamage(
+                currentItemData,
+                baseType,
+                false
+              );
+              const newMax = calculateItemDamage(
+                currentItemData,
+                baseType,
+                true
+              );
+
+              console.log(`Two-hand damage updated: ${newMin}-${newMax}`);
+
+              // Update properties
+              currentItemData.properties.twohandmin = newMin;
+              currentItemData.properties.twohandmax = newMax;
+
+              // Update displayed values
+              const minContainer = document.getElementById(
+                "twohandmindmgcontainer"
+              );
+              const maxContainer = document.getElementById(
+                "twohandmaxdmgcontainer"
+              );
+              if (minContainer) minContainer.textContent = newMin;
+              if (maxContainer) maxContainer.textContent = newMax;
+            } else {
+              const newMin = calculateItemDamage(
+                currentItemData,
+                baseType,
+                false
+              );
+              const newMax = calculateItemDamage(
+                currentItemData,
+                baseType,
+                true
+              );
+
+              console.log(`One-hand damage updated: ${newMin}-${newMax}`);
+
+              // Update properties
+              currentItemData.properties.onehandmin = newMin;
+              currentItemData.properties.onehandmax = newMax;
+
+              // Update displayed values
+              const minContainer = document.getElementById(
+                "onehandmindmgcontainer"
+              );
+              const maxContainer = document.getElementById(
+                "onehandmaxdmgcontainer"
+              );
+              if (minContainer) minContainer.textContent = newMin;
+              if (maxContainer) maxContainer.textContent = newMax;
+            }
+
+            // Update the weapon description with new damage values
+            const weaponInfo = document.getElementById("weapon-info");
+            if (weaponInfo) {
+              const lines = currentItemData.description.split("<br>");
+              const damageType = isTwoHanded ? "Two-Hand" : "One-Hand";
+              const min = isTwoHanded
+                ? currentItemData.properties.twohandmin
+                : currentItemData.properties.onehandmin;
+              const max = isTwoHanded
+                ? currentItemData.properties.twohandmax
+                : currentItemData.properties.onehandmax;
+
+              // Find and update the damage line
+              for (let i = 0; i < lines.length; i++) {
+                if (lines[i].includes("Damage:")) {
+                  lines[i] = `${damageType} Damage: ${min}-${max}`;
+                  break;
+                }
+              }
+
+              // Save corruption info
+              const corruptedMod = weaponInfo.querySelector(".corrupted-mod");
+              const corruptedText = weaponInfo.querySelector(".corrupted-text");
+
+              // Update description without losing corruption text
+              currentItemData.description = lines.join("<br>");
+
+              // Keep any existing socket stats
+              const socketStats = weaponInfo.querySelector(".socket-stats");
+
+              // Update the HTML
+              weaponInfo.innerHTML = currentItemData.description;
+
+              // Re-add socket stats if they existed
+              if (socketStats) weaponInfo.appendChild(socketStats);
+
+              // Re-add corruption text
+              if (corruptedMod) weaponInfo.appendChild(corruptedMod);
+              if (corruptedText) weaponInfo.appendChild(corruptedText);
+            }
+          }
+        }
       }
 
-      typeCorruptions[type] = formattedMod;
-      localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
-      updateCorruptionDisplay(type, formattedMod);
       document.getElementById("corruptionModal").style.display = "none";
       return true;
     }
@@ -1450,10 +1557,107 @@ const maxSockets = {
   "Maiden Javelin": 0,
   Cap: 2,
   "Skull Cap": 2,
-  Helm: 3,
-  "Full Helm": 3,
+  Helm: 2,
+  "Full Helm": 2,
+  Mask: 3,
+  "Bone Helm": 2,
   "Great Helm": 3,
   Crown: 3,
+  "War Hat": 2,
+  Sallet: 2,
+  Casque: 2,
+  Basinet: 2,
+  "Death Mask": 3,
+  "Grim Helm": 2,
+  "Winged Helm": 3,
+  "Grand Crown": 3,
+  Shako: 2,
+  Hydraskull: 2,
+  Armet: 2,
+  "Giant Conch": 2,
+  Demonhead: 3,
+  "Bone Visage": 3,
+  "Spired Helm": 3,
+  Corona: 3,
+  Circlet: 2,
+  Coronet: 2,
+  Tiara: 3,
+  Diadem: 3,
+  "Wolf Head": 3,
+  "Hawk Helm": 3,
+  Antlers: 3,
+  "Falcon Mask": 3,
+  "Spirit Mask": 3,
+  "Alpha Helm": 3,
+  "Griffon Headress": 3,
+  "Hunter's Guise": 3,
+  "Sacred Feathers": 3,
+  "Totemic Mask": 3,
+  "Blood Spirit": 3,
+  "Sun Spirit": 3,
+  "Earth Spirit": 3,
+  "Sky Spirit": 3,
+  "Dream Spirit": 3,
+  "Jawbone Cap": 3,
+  "Fanged Helm": 3,
+  "Horned Helm": 3,
+  "Assault Helmet": 3,
+  "Avenger Guard": 3,
+  "Jawbone Visor": 3,
+  "Lion Helm": 3,
+  "Rage Mask": 3,
+  "Savage Helmet": 3,
+  "Slayer Guard": 3,
+  "Carnage Helm": 3,
+  "Fury Visor": 3,
+  "Destroyer Helm": 3,
+  "Conquerer Crown": 3,
+  "Guardian Crown": 3,
+  "Quilted Armor": 2,
+  "Leather Armor": 2,
+  "Hard Leather Armor": 2,
+  "Studded Leather": 2,
+  "Ring Mail": 3,
+  "Scale Mail": 2,
+  "Chain Mail": 2,
+  "Breast Plate": 3,
+  "Splint Mail": 2,
+  "Plate Mail": 2,
+  "Field Plate": 2,
+  "Gothic Plate": 4,
+  "Light Plate": 3,
+  "Full Plate Mail": 4,
+  "Ancient Armor": 4,
+  "Ghost Armor": 2,
+  "Serpentskin Armor": 2,
+  "Demonhide Armor": 2,
+  "Trellised Armor": 2,
+  "Linked Mail": 3,
+  "Tigulated Mail": 3,
+  "Mesh Armor": 3,
+  Cuirass: 3,
+  "Russet Armor": 3,
+  "Templar Coat": 3,
+  "Sharktooth Armor": 3,
+  "Embossed Plate": 4,
+  "Mage Plate": 3,
+  "Chaos Armor": 4,
+  "Ornate Plate": 4,
+  "Dusk Shroud": 4,
+  Wyrmhide: 4,
+  "Scarab Husk": 4,
+  "Wire Fleece": 4,
+  "Diamond Mail": 4,
+  "Loricated Mail": 4,
+  Boneweave: 4,
+  "Great Hauberk": 4,
+  "Balrog Skin": 4,
+  "Hellforge Plate": 4,
+  "Kraken Shell": 4,
+  "Lacquered Plate": 4,
+  "Archon Plate": 4,
+  "Shadow Plate": 4,
+  "Sacred Armor": 4,
 };
 
 function getMaxSocketsForWeapon(weaponName) {
