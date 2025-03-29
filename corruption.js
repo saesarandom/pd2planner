@@ -1126,6 +1126,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const offSelect = document.getElementById("offs-dropdown");
         selectedItem = offSelect.value;
         baseType = getItemBaseType(selectedItem);
+      } else {
+        // Store the corruption
+        typeCorruptions[type] = mod.mod;
+        localStorage.setItem(
+          "typeCorruptions",
+          JSON.stringify(typeCorruptions)
+        );
+        updateCorruptionDisplay(type, mod.mod);
+
+        // If it's a weapon with Enhanced Damage corruption, update the damage display
+        if (type === "weapon") {
+          applyWeaponCorruption(mod.mod);
+        }
+
+        return true;
       }
 
       // Get the maximum allowed sockets for this base type
@@ -1158,15 +1173,38 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("corruptionModal").style.display = "none";
       return true;
     } else {
+      // For weapons, always reset enhanced damage from corruption first
+      if (type === "weapon") {
+        const weaponSelect = document.getElementById("weapons-dropdown");
+        if (weaponSelect) {
+          const currentItem = weaponSelect.value;
+          const currentItemData = itemList[currentItem];
+
+          if (currentItemData) {
+            // Reset any previous enhanced damage corruption
+            resetCorruptionEnhancedDamage(currentItemData);
+
+            // If this is an enhanced damage corruption, add it
+            if (mod.mod.includes("Enhanced Damage")) {
+              const edmgMatch = mod.mod.match(/\+(\d+)%\s*Enhanced\s*Damage/i);
+              if (edmgMatch) {
+                const corruptionEdmg = parseInt(edmgMatch[1]);
+                currentItemData.properties.edmgFromCorruption = corruptionEdmg;
+                currentItemData.properties.edmg =
+                  (currentItemData.properties.edmg || 0) + corruptionEdmg;
+              }
+            }
+          }
+        }
+      }
+
       // Store the corruption
       typeCorruptions[type] = mod.mod;
       localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
       updateCorruptionDisplay(type, mod.mod);
 
-      // Force update the weapon damage display if this is an enhanced damage corruption
-      if (type === "weapon" && mod.mod.includes("Enhanced Damage")) {
-        console.log("Updating weapon with Enhanced Damage corruption");
-
+      // For weapons, always update damage display for any corruption type
+      if (type === "weapon") {
         const weaponSelect = document.getElementById("weapons-dropdown");
         if (weaponSelect) {
           const currentItem = weaponSelect.value;
@@ -1177,7 +1215,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const isTwoHanded =
               currentItemData.properties.twohandmin !== undefined;
 
-            // Recalculate damage with the new corruption
+            // Recalculate damage with the new corruption state
             if (isTwoHanded) {
               const newMin = calculateItemDamage(
                 currentItemData,
@@ -1189,8 +1227,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 baseType,
                 true
               );
-
-              console.log(`Two-hand damage updated: ${newMin}-${newMax}`);
 
               // Update properties
               currentItemData.properties.twohandmin = newMin;
@@ -1216,8 +1252,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 baseType,
                 true
               );
-
-              console.log(`One-hand damage updated: ${newMin}-${newMax}`);
 
               // Update properties
               currentItemData.properties.onehandmin = newMin;
@@ -1319,10 +1353,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const resultDiv = document.createElement("div");
     resultDiv.className = "corrupted-mod";
+    resultDiv.style.color = "#ff5555"; // Make sure it's red
     resultDiv.textContent = corruptionMod;
 
     const corruptedText = document.createElement("div");
     corruptedText.className = "corrupted-text";
+    corruptedText.style.color = "#ff5555"; // Make sure it's red
     corruptedText.textContent = "Corrupted";
 
     container.appendChild(resultDiv);
@@ -1429,6 +1465,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Standard handling for non-socket corruptions
       updateCorruptionDisplay(type, corruption);
+      if (type === "weapon" && corruption.includes("Enhanced Damage")) {
+        setTimeout(() => {
+          applyWeaponCorruption(corruption);
+        }, 100);
+      }
     });
   }
 
@@ -1797,6 +1838,17 @@ function updateSocketCount(section, socketCount) {
     return;
   }
 
+  // Save existing socket data for reuse
+  const currentSockets = Array.from(container.querySelectorAll(".socketz"));
+  const filledSocketsData = currentSockets
+    .filter((socket) => socket.dataset.itemName)
+    .slice(0, socketCount)
+    .map((socket) => ({
+      itemName: socket.dataset.itemName,
+      stats: socket.dataset.stats,
+      html: socket.innerHTML,
+    }));
+
   // Determine how many sockets to display
   // (requested count or max for this item, whichever is lower)
   const maxAllowedSockets = socketExceptions.maxOneSocket.includes(currentItem)
@@ -1806,17 +1858,6 @@ function updateSocketCount(section, socketCount) {
   console.log(
     `[updateSocketCount] Creating ${maxAllowedSockets} sockets for ${currentItem} (${baseType})`
   );
-
-  // Save existing socket data for reuse
-  const currentSockets = Array.from(container.querySelectorAll(".socketz"));
-  const filledSocketsData = currentSockets
-    .filter((socket) => socket.dataset.itemName)
-    .slice(0, maxAllowedSockets)
-    .map((socket) => ({
-      itemName: socket.dataset.itemName,
-      stats: socket.dataset.stats,
-      html: socket.innerHTML,
-    }));
 
   // Clear and rebuild the socket UI
   container.innerHTML = "";
@@ -2214,3 +2255,390 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+document
+  .getElementById("weapons-dropdown")
+  ?.addEventListener("change", (event) => {
+    const selectedWeapon = event.target.value;
+    const baseType = getBaseWeaponType(selectedWeapon);
+
+    // Get the maximum allowed sockets for this base item
+    const maxAllowed = maxSockets[baseType] || 2;
+
+    // Get corruption info from window.typeCorruptions object first
+    const weaponCorruption = window.typeCorruptions.weapon;
+    const socketMatch = weaponCorruption?.match(/Socketed \((\d+)\)/);
+
+    // Preserve existing socket data before updating
+    const container = document.querySelector(`.weaponsockets`);
+    let socketData = [];
+    if (container) {
+      const sockets = container.querySelectorAll(".socketz");
+      socketData = Array.from(sockets).map((socket) => ({
+        itemName: socket.dataset.itemName,
+        stats: socket.dataset.stats,
+        html: socket.innerHTML,
+      }));
+    }
+
+    if (socketMatch) {
+      const currentSockets = parseInt(socketMatch[1]);
+
+      // Use the smaller of the corrupted count and the max allowed for THIS base item
+      const adjustedSockets = Math.min(currentSockets, maxAllowed);
+
+      // If the adjusted socket count is different, update the corruption display
+      if (adjustedSockets !== currentSockets) {
+        console.log(
+          `Adjusting sockets from ${currentSockets} to ${adjustedSockets} based on ${baseType} max`
+        );
+        window.typeCorruptions.weapon = `Socketed (${adjustedSockets})`;
+        localStorage.setItem(
+          "typeCorruptions",
+          JSON.stringify(window.typeCorruptions)
+        );
+
+        // Need to update the display after the item info is loaded
+        setTimeout(() => {
+          updateCorruptionDisplay("weapon", `Socketed (${adjustedSockets})`);
+          updateSocketCount("weapon", adjustedSockets);
+
+          // Restore socket data
+          restoreSocketData("weapon", socketData, adjustedSockets);
+        }, 100);
+      } else {
+        // Socket count is valid, just update the sockets
+        setTimeout(() => {
+          updateSocketCount("weapon", adjustedSockets);
+
+          // Restore socket data
+          restoreSocketData("weapon", socketData, adjustedSockets);
+        }, 100);
+      }
+    } else {
+      // No socket corruption, use default sockets for the item (0)
+      setTimeout(() => {
+        updateSocketCount("weapon", 0);
+      }, 100);
+    }
+
+    // Update weapon description and other displays
+    const itemData = itemList[selectedWeapon];
+    if (itemData) {
+      // Update description container
+      const descriptionContainer = document.getElementById("weapon-info");
+      if (descriptionContainer) {
+        // Save existing corruption information
+        const corruptionDiv =
+          descriptionContainer.querySelector(".corrupted-mod");
+        const corruptedText =
+          descriptionContainer.querySelector(".corrupted-text");
+
+        // Split the description into lines and create HTML
+        const descriptionLines = itemData.description.split("<br>");
+        const formattedDescription = descriptionLines
+          .map((line) => `<div>${line}</div>`)
+          .join("");
+        descriptionContainer.innerHTML = formattedDescription;
+
+        // Re-add corruption information if it exists
+        if (corruptionDiv) descriptionContainer.appendChild(corruptionDiv);
+        if (corruptedText) descriptionContainer.appendChild(corruptedText);
+      }
+
+      // Update damage display
+      updateWeaponDamageDisplay();
+    }
+  });
+
+// Helper function to restore socket data
+function restoreSocketData(section, socketData, count) {
+  const containerClass =
+    section === "weapon" ? "weaponsockets" : `${section}sockets`;
+  const container = document.querySelector(`.${containerClass}`);
+
+  if (!container) return;
+
+  const sockets = container.querySelectorAll(".socketz");
+
+  // Only restore data for the number of sockets that should exist
+  for (let i = 0; i < Math.min(count, socketData.length, sockets.length); i++) {
+    if (socketData[i] && socketData[i].itemName) {
+      const socket = sockets[i];
+      socket.dataset.itemName = socketData[i].itemName;
+      socket.dataset.stats = socketData[i].stats;
+      socket.innerHTML = socketData[i].html;
+      socket.classList.remove("empty");
+      socket.classList.add("filled");
+    }
+  }
+
+  // Refresh socket properties to update stats display
+  refreshSocketProperties();
+}
+
+const weaponDropdown = document.getElementById("weapons-dropdown");
+if (weaponDropdown) {
+  weaponDropdown.addEventListener("change", () => {
+    setTimeout(() => {
+      // Check if there's an existing damage corruption
+      if (
+        typeCorruptions.weapon &&
+        typeCorruptions.weapon.includes("Enhanced Damage")
+      ) {
+        applyWeaponCorruption(typeCorruptions.weapon);
+      }
+    }, 100);
+  });
+}
+
+const weaponCorruptBtn = document.getElementById("corruptWeapon");
+if (weaponCorruptBtn) {
+  weaponCorruptBtn.addEventListener("click", () => {
+    // After showing the modal, add a listener for when corruption is applied
+    const corruptionOptions = document.getElementById("corruptionOptions");
+    if (corruptionOptions) {
+      const observer = new MutationObserver(() => {
+        if (
+          typeCorruptions.weapon &&
+          typeCorruptions.weapon.includes("Enhanced Damage")
+        ) {
+          updateWeaponDisplayWithCorruption();
+        }
+      });
+
+      observer.observe(corruptionOptions, {
+        childList: true,
+        subtree: true,
+      });
+    }
+  });
+}
+
+function handleCorruptionWithDamage(mod, type) {
+  // Store the corruption
+  typeCorruptions[type] = mod.mod;
+  localStorage.setItem("typeCorruptions", JSON.stringify(typeCorruptions));
+
+  // Update the corruption display
+  updateCorruptionDisplay(type, mod.mod);
+
+  // For enhanced damage corruptions on weapons, update the damage display
+  if (type === "weapon" && mod.mod.includes("Enhanced Damage")) {
+    // Delay slightly to ensure the corruption is registered
+    setTimeout(() => {
+      updateWeaponDamageDisplay();
+    }, 50);
+
+    return true;
+  }
+
+  return true;
+}
+
+function restoreCorruptionsWithDamage() {
+  // Normal corruption restoration logic
+  const types = [
+    { type: "helm", containerId: "helm-info" },
+    { type: "armor", containerId: "armor-info" },
+    { type: "weapon", containerId: "weapon-info" },
+    { type: "off", containerId: "off-info" },
+    // ... other equipment types
+  ];
+
+  types.forEach(({ type, containerId }) => {
+    const corruption = typeCorruptions[type];
+    if (!corruption) return;
+
+    // Apply the corruption display
+    updateCorruptionDisplay(type, corruption);
+
+    // Special handling for weapon with enhanced damage
+    if (type === "weapon" && corruption.includes("Enhanced Damage")) {
+      setTimeout(updateWeaponDamageDisplay, 100);
+    }
+  });
+}
+
+// Replace original restoreCorruptions with this enhanced version
+function restoreCorruptions() {
+  restoreCorruptionsWithDamage();
+}
+
+function applyWeaponCorruption(corruptionMod) {
+  // Get the current weapon
+  const weaponSelect = document.getElementById("weapons-dropdown");
+  if (!weaponSelect || !weaponSelect.value) return;
+
+  const weaponName = weaponSelect.value;
+  const itemData = itemList[weaponName];
+  if (!itemData) return;
+
+  // First, reset any previous enhanced damage corruption
+  resetCorruptionEnhancedDamage(itemData);
+
+  // Extract enhanced damage from the corruption if present
+  const edmgMatch = corruptionMod.match(/\+(\d+)%\s*Enhanced\s*Damage/i);
+  if (edmgMatch) {
+    const corruptionEdmg = parseInt(edmgMatch[1]);
+
+    // Store the corruption enhanced damage separately
+    itemData.properties.edmgFromCorruption = corruptionEdmg;
+
+    // Add corruption edmg to the item's properties
+    itemData.properties.edmg = (itemData.properties.edmg || 0) + corruptionEdmg;
+  }
+
+  // Get the weapon base type for damage calculation
+  const baseType = itemData.description.split("<br>")[1];
+
+  // Determine if it's one-handed or two-handed
+  const isTwoHanded = itemData.properties.twohandmin !== undefined;
+
+  // Calculate new min/max with all factors
+  if (isTwoHanded) {
+    itemData.properties.twohandmin = calculateItemDamage(
+      itemData,
+      baseType,
+      false
+    );
+    itemData.properties.twohandmax = calculateItemDamage(
+      itemData,
+      baseType,
+      true
+    );
+  } else {
+    itemData.properties.onehandmin = calculateItemDamage(
+      itemData,
+      baseType,
+      false
+    );
+    itemData.properties.onehandmax = calculateItemDamage(
+      itemData,
+      baseType,
+      true
+    );
+  }
+
+  // Update the description with new damage values
+  updateWeaponDescription(itemData, isTwoHanded);
+
+  // Update damage displays in UI
+  const min = isTwoHanded
+    ? itemData.properties.twohandmin
+    : itemData.properties.onehandmin;
+  const max = isTwoHanded
+    ? itemData.properties.twohandmax
+    : itemData.properties.onehandmax;
+
+  if (isTwoHanded) {
+    const minContainer = document.getElementById("twohandmindmgcontainer");
+    const maxContainer = document.getElementById("twohandmaxdmgcontainer");
+    if (minContainer) minContainer.textContent = min;
+    if (maxContainer) maxContainer.textContent = max;
+  } else {
+    const minContainer = document.getElementById("onehandmindmgcontainer");
+    const maxContainer = document.getElementById("onehandmaxdmgcontainer");
+    if (minContainer) minContainer.textContent = min;
+    if (maxContainer) maxContainer.textContent = max;
+  }
+
+  return true;
+}
+
+function updateItemDescription(itemData, isTwoHanded) {
+  const min = isTwoHanded
+    ? itemData.properties.twohandmin
+    : itemData.properties.onehandmin;
+  const max = isTwoHanded
+    ? itemData.properties.twohandmax
+    : itemData.properties.onehandmax;
+  const avg = ((min + max) / 2).toFixed(1);
+  const damageType = isTwoHanded ? "Two-Hand" : "One-Hand";
+
+  // Split the description into lines
+  const lines = itemData.description.split("<br>");
+
+  // Find the damage line
+  const damageIndex = lines.findIndex((line) => line.includes("Damage:"));
+  if (damageIndex !== -1) {
+    // Replace with updated damage values
+    lines[damageIndex] = `${damageType} Damage: ${min} to ${max}, Avg ${avg}`;
+  }
+
+  // Find the enhanced damage line
+  const edmgIndex = lines.findIndex((line) => line.includes("Enhanced Damage"));
+  if (edmgIndex !== -1) {
+    // Replace with updated edmg percentage
+    lines[edmgIndex] = `+${itemData.properties.edmg}% Enhanced Damage`;
+  } else {
+    // If not found, we might need to add it (though probably not necessary)
+  }
+
+  // Reassemble the description
+  itemData.description = lines.join("<br>");
+
+  // Update the description display in UI
+  const weaponInfo = document.getElementById("weapon-info");
+  if (weaponInfo) {
+    // Save corruption display elements
+    const corruptModElem = weaponInfo.querySelector(".corrupted-mod");
+    const corruptTextElem = weaponInfo.querySelector(".corrupted-text");
+
+    // Update the HTML
+    weaponInfo.innerHTML = itemData.description;
+
+    // Re-add corruption elements
+    if (corruptModElem) weaponInfo.appendChild(corruptModElem);
+    if (corruptTextElem) weaponInfo.appendChild(corruptTextElem);
+  }
+}
+
+function updateDamageDisplays(itemData, isTwoHanded) {
+  if (isTwoHanded) {
+    const minElem = document.getElementById("twohandmindmgcontainer");
+    const maxElem = document.getElementById("twohandmaxdmgcontainer");
+    if (minElem) minElem.textContent = itemData.properties.twohandmin;
+    if (maxElem) maxElem.textContent = itemData.properties.twohandmax;
+  } else {
+    const minElem = document.getElementById("onehandmindmgcontainer");
+    const maxElem = document.getElementById("onehandmaxdmgcontainer");
+    if (minElem) minElem.textContent = itemData.properties.onehandmin;
+    if (maxElem) maxElem.textContent = itemData.properties.onehandmax;
+  }
+}
+
+function resetCorruptionEnhancedDamage(itemData) {
+  // Check if the item has corruption enhanced damage
+  if (itemData.properties.edmgFromCorruption) {
+    // Subtract the corruption enhanced damage from the total
+    itemData.properties.edmg -= itemData.properties.edmgFromCorruption;
+    // Reset the corruption enhanced damage
+    itemData.properties.edmgFromCorruption = 0;
+  }
+}
+
+document
+  .getElementById("weapons-dropdown")
+  ?.addEventListener("change", (event) => {
+    const selectedWeapon = event.target.value;
+    const itemData = itemList[selectedWeapon];
+
+    if (itemData) {
+      // Reset any corruption enhanced damage when changing weapons
+      resetCorruptionEnhancedDamage(itemData);
+
+      // If there's existing corruption and it has enhanced damage, apply it
+      if (typeCorruptions && typeCorruptions.weapon) {
+        const edmgMatch = typeCorruptions.weapon.match(
+          /\+(\d+)%\s*Enhanced\s*Damage/i
+        );
+        if (edmgMatch) {
+          const corruptionEdmg = parseInt(edmgMatch[1]);
+          itemData.properties.edmgFromCorruption = corruptionEdmg;
+          itemData.properties.edmg =
+            (itemData.properties.edmg || 0) + corruptionEdmg;
+        }
+      }
+    }
+  });
