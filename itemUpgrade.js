@@ -1474,6 +1474,24 @@ const upgradeDefinitions = {
         },
       },
     },
+    "True Silver": {
+      exceptional: {
+        name: "True Silver",
+        base: "Ceremonial Javelin",
+        properties: {
+          reqstr: 195,
+          reqlvl: 26,
+        },
+      },
+      elite: {
+        name: "True Silver",
+        base: "Matriarchal Javelin",
+        properties: {
+          reqstr: 195,
+          reqlvl: 48,
+        },
+      },
+    },
   },
   gloves: {
     "The Hand of Broc": {
@@ -2425,8 +2443,8 @@ const baseDamages = {
   "Short Spear (melee)": { min: 2, max: 13 },
   "Glaive (melee)": { min: 5, max: 17 },
   "Throwing Spear (melee)": { min: 5, max: 15 },
-  "Maiden Javelin": { min: 6, max: 22 },
-  "Maiden Javelin (melee)": { min: 8, max: 14 },
+  "Maiden Javelin": { min: 8, max: 14 },
+  "Maiden Javelin (throw)": { min: 6, max: 22 },
 
   // Spears and Polearms
   "Maiden Spear": { min: 20, max: 26 },
@@ -2561,8 +2579,8 @@ const baseDamages = {
   "Simbilan (melee)": { min: 10, max: 40 },
   "Spiculum (melee)": { min: 16, max: 48 },
   "Harpoon (melee)": { min: 16, max: 44 },
-  "Ceremonial Javelin": { min: 25, max: 69 },
-  "Ceremonial Javelin (melee)": { min: 26, max: 51 },
+  "Ceremonial Javelin": { min: 26, max: 51 },
+  "Ceremonial Javelin (throw)": { min: 25, max: 69 },
 
   // Spears and Polearms
   "Ceremonial Spear": { min: 49, max: 74 },
@@ -2940,11 +2958,19 @@ function calculateItemDamage(item, baseType, isMax = false) {
   const totalEnhancedDamage = itemEdmg + socketEnhancedDamage;
 
   // Calculate final damage with all bonuses
-  const finalDamage = Math.floor(ethBase * (1 + totalEnhancedDamage / 100));
+  let finalDamage = Math.floor(ethBase * (1 + totalEnhancedDamage / 100));
+
+  // Add per-level damage bonus to max damage only as the LAST step
+  if (isMax && item.properties.maxdmgperlvl) {
+    // Get current character level
+    const charLevel = parseInt(document.getElementById("lvlValue").value) || 1;
+    // Calculate the per-level damage bonus and floor it
+    const perLevelDamage = Math.floor(charLevel * item.properties.maxdmgperlvl);
+    finalDamage += perLevelDamage;
+  }
 
   return finalDamage;
 }
-
 if (typeof typeCorruptions !== "undefined" && typeCorruptions.weapon) {
   console.log("Checking for weapon corruption:", typeCorruptions.weapon);
   const corruptionStat = typeCorruptions.weapon;
@@ -4062,6 +4088,69 @@ document
     }
   });
 
+if (weaponDropdown) {
+  weaponDropdown.addEventListener(
+    "change",
+    function () {
+      // First check if the selected weapon has per-level damage
+      const selectedWeapon = weaponDropdown.value;
+      const itemData = itemList[selectedWeapon];
+
+      if (itemData && itemData.properties.maxdmgperlvl) {
+        // If it has per-level damage, update the display
+        updateWeaponDisplayWithPerLevelDamage();
+      }
+    },
+    100
+  ); // Small delay to ensure other event handlers complete first
+
+  const lvlInput = document.getElementById("lvlValue");
+  if (lvlInput) {
+    lvlInput.addEventListener("input", function () {
+      const weaponDropdown = document.getElementById("weapons-dropdown");
+      if (weaponDropdown) {
+        const selectedWeapon = weaponDropdown.value;
+        const itemData = itemList[selectedWeapon];
+
+        if (itemData && itemData.properties.maxdmgperlvl) {
+          // Update the display with the new level value
+          updateWeaponDisplayWithPerLevelDamage();
+        }
+      }
+    });
+  }
+}
+
+const originalWeaponChangeHandler =
+  document.getElementById("weapons-dropdown")?.onchange;
+document
+  .getElementById("weapons-dropdown")
+  ?.addEventListener("change", function (event) {
+    const selectedWeapon = event.target.value;
+    const itemData = itemList[selectedWeapon];
+
+    // Reset per-level damage to prevent accumulation when switching weapons
+    if (itemData && itemData.properties.maxdmgperlvl) {
+      // Store the original max damage value from the item data
+      if (itemData.properties.onehandmax !== undefined) {
+        // For one-handed weapons
+        itemData._originalOneHandMax =
+          itemData._originalOneHandMax || itemData.properties.onehandmax;
+        itemData.properties.onehandmax = itemData._originalOneHandMax;
+      } else if (itemData.properties.twohandmax !== undefined) {
+        // For two-handed weapons
+        itemData._originalTwoHandMax =
+          itemData._originalTwoHandMax || itemData.properties.twohandmax;
+        itemData.properties.twohandmax = itemData._originalTwoHandMax;
+      }
+    }
+
+    // Then let the other handlers run
+    if (originalWeaponChangeHandler) {
+      originalWeaponChangeHandler.call(this, event);
+    }
+  });
+
 function updateWeaponDescription() {
   const weaponSelect = document.getElementById("weapons-dropdown");
   if (!weaponSelect) return;
@@ -4406,4 +4495,127 @@ function updateWeaponDescription(itemData, isTwoHanded) {
   if (socketStats) weaponInfo.appendChild(socketStats);
   if (corruptedMod) weaponInfo.appendChild(corruptedMod);
   if (corruptedText) weaponInfo.appendChild(corruptedText);
+}
+
+function updateWeaponDisplayWithPerLevelDamage() {
+  const weaponSelect = document.getElementById("weapons-dropdown");
+  if (!weaponSelect || !weaponSelect.value) return;
+
+  const selectedWeapon = weaponSelect.value;
+  const currentItemData = itemList[selectedWeapon];
+
+  if (!currentItemData || !currentItemData.properties.maxdmgperlvl) return;
+
+  // Get base type for damage calculation
+  const baseType = currentItemData.description.split("<br>")[1];
+  const weaponInfo = document.getElementById("weapon-info");
+
+  if (!weaponInfo) return;
+
+  // Determine if it's one-handed or two-handed
+  const isTwoHanded = currentItemData.properties.twohandmin !== undefined;
+
+  // Calculate the base enhanced damage values first
+  let minDamage, maxDamage;
+  if (isTwoHanded) {
+    // For two-handed weapons
+    minDamage = calculateItemDamage(currentItemData, baseType, false);
+    // For max damage, first calculate without per-level bonus
+    const baseMaxDamage = calculateItemDamage(
+      {
+        ...currentItemData,
+        properties: { ...currentItemData.properties, maxdmgperlvl: 0 },
+      },
+      baseType,
+      true
+    );
+
+    // Get current character level
+    const charLevel = parseInt(document.getElementById("lvlValue").value) || 1;
+    // Calculate the per-level damage bonus and floor it
+    const perLevelDamage = Math.floor(
+      charLevel * currentItemData.properties.maxdmgperlvl
+    );
+
+    // Add per-level bonus to max damage
+    maxDamage = baseMaxDamage + perLevelDamage;
+  } else {
+    // For one-handed weapons
+    minDamage = calculateItemDamage(currentItemData, baseType, false);
+    // For max damage, first calculate without per-level bonus
+    const baseMaxDamage = calculateItemDamage(
+      {
+        ...currentItemData,
+        properties: { ...currentItemData.properties, maxdmgperlvl: 0 },
+      },
+      baseType,
+      true
+    );
+
+    // Get current character level
+    const charLevel = parseInt(document.getElementById("lvlValue").value) || 1;
+    // Calculate the per-level damage bonus and floor it
+    const perLevelDamage = Math.floor(
+      charLevel * currentItemData.properties.maxdmgperlvl
+    );
+
+    // Add per-level bonus to max damage
+    maxDamage = baseMaxDamage + perLevelDamage;
+  }
+
+  // Store the calculated damage values on the item for display and further calculations
+  if (isTwoHanded) {
+    currentItemData.properties.twohandmin = minDamage;
+    currentItemData.properties.twohandmax = maxDamage;
+  } else {
+    currentItemData.properties.onehandmin = minDamage;
+    currentItemData.properties.onehandmax = maxDamage;
+  }
+
+  // Update the UI to show the damage with per-level bonus added
+  const damageType = isTwoHanded ? "Two-Hand" : "One-Hand";
+  const min = isTwoHanded
+    ? currentItemData.properties.twohandmin
+    : currentItemData.properties.onehandmin;
+  const max = isTwoHanded
+    ? currentItemData.properties.twohandmax
+    : currentItemData.properties.onehandmax;
+
+  // Update description
+  const lines = currentItemData.description.split("<br>");
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].includes("Damage:")) {
+      lines[i] = `${damageType} Damage: ${min}-${max}`;
+      break;
+    }
+  }
+
+  // Save corruption and socket info
+  const corruptedMod = weaponInfo.querySelector(".corrupted-mod");
+  const corruptedText = weaponInfo.querySelector(".corrupted-text");
+  const socketStats = weaponInfo.querySelector(".socket-stats");
+
+  // Update description
+  currentItemData.description = lines.join("<br>");
+
+  // Update the HTML
+  weaponInfo.innerHTML = currentItemData.description;
+
+  // Re-add socket stats and corruption text
+  if (socketStats) weaponInfo.appendChild(socketStats);
+  if (corruptedMod) weaponInfo.appendChild(corruptedMod);
+  if (corruptedText) weaponInfo.appendChild(corruptedText);
+
+  // Update damage display containers
+  if (isTwoHanded) {
+    const minContainer = document.getElementById("twohandmindmgcontainer");
+    const maxContainer = document.getElementById("twohandmaxdmgcontainer");
+    if (minContainer) minContainer.textContent = min;
+    if (maxContainer) maxContainer.textContent = max;
+  } else {
+    const minContainer = document.getElementById("onehandmindmgcontainer");
+    const maxContainer = document.getElementById("onehandmaxdmgcontainer");
+    if (minContainer) minContainer.textContent = min;
+    if (maxContainer) maxContainer.textContent = max;
+  }
 }

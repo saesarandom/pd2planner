@@ -3180,14 +3180,14 @@ const itemList = {
 
   "True Silver": {
     description:
-      "True Silver<br>Maiden Javelin<br>Base Speed Modifier: -10<br>Throw Damage: 13 to 270, Avg 141.5<br>Melee Damage: 17 to 252, Avg 134.5<br>Required Strength: 33<br>Required Dexterity: 47<br>Required Level: 20<br>+40% Increased Attack Speed<br>+120% Enhanced Damage<br>+[2-222] to Maximum Damage (+2.25 per Character Level)<br>15% Chance of Crushing Blow<br>45% Better Chance of Getting Magic Items<br>",
+      "True Silver<br>Maiden Javelin<br>Base Speed Modifier: -10<br>One-Hand Damage: 17 to 252, Avg 141.5<br>Throw Damage: 13 to 270, Avg 134.5<br>Required Strength: 33<br>Required Dexterity: 47<br>Required Level: 20<br>+40% Increased Attack Speed<br>+120% Enhanced Damage<br>+[2-222] to Maximum Damage (+2.25 per Character Level)<br>15% Chance of Crushing Blow<br>45% Better Chance of Getting Magic Items<br>",
     properties: {
       javelin: 1,
       speed: -10,
-      throwmin: 13,
-      throwmax: 270,
       onehandmin: 17,
       onehandmax: 252,
+      throwmin: 13,
+      throwmax: 270,
       reqstr: 33,
       reqdex: 47,
       reqlvl: 20,
