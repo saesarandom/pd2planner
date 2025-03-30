@@ -8690,7 +8690,7 @@ const updateAll = () => {
 <div class="hireling-container">
   <div class="hireling-header">
  
-  </div>
+  
   
   <div class="hireling-main">
     <!-- Basic Mercenary Info Section -->
@@ -9047,6 +9047,7 @@ const updateAll = () => {
   </div>
 </div>
 
+
 <div class="stats-panel">
 
   <div class="stats-grid">
@@ -9135,7 +9136,7 @@ const updateAll = () => {
       <div id="merccbdmgcontainer" class="stat-value">0</div>
     </div>
   </div>
-</div>
+
 
 
 
@@ -9152,7 +9153,7 @@ const updateAll = () => {
   <div id="buff8" class="buff-icon"></div>
   <div id="buff9" class="buff-icon"></div>
   <div id="buff10" class="buff-icon"></div>
-</div></div></div></div></div>
+</div></div></div>
 
 <!-- <iframe 
   src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSKOc3YUtoywqTuV7x3Qo6NRGIF8sjS_eoa4cfNaXPP3VAehmgPRBICfipWLWjhRxONiiKrVHBV2ODf/pubhtml?gid=0&single=true&range=E9" 
@@ -9551,7 +9552,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="sock-name">Perfect Ruby</div>
           <div class="sock-stats">
             <div>Weapon: Adds 15-20 Fire Damage</div>
-            <div>Armor/Helm: +40 to Life</div>
+            <div>Armor/Helm: +38 to Life</div>
             <div>Shield: Fire Resist +40%</div>
           </div>
         </div>
@@ -10408,9 +10409,9 @@ document.addEventListener('DOMContentLoaded', function() {
       shield: 'Fire Resist +28%'
     },
     'perfect-ruby': {
-      helm: '+40 to Life',
+      helm: '+38 to Life',
       weapon: 'Adds 15-20 Fire Damage',
-      armor: '+40 to Life',
+      armor: '+38 to Life',
       shield: 'Fire Resist +40%'
     },
     'chipped-amethyst': {
@@ -11647,8 +11648,8 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
   },
   'Perfect Ruby': {
     weapon: 'Adds 15-20 Fire Damage',
-    helm: '+40 to Life',
-    armor: '+40 to Life',
+    helm: '+38 to Life',
+    armor: '+38 to Life',
     shield: 'Fire Resist +40%'
   },
   'Chipped Diamond': {
@@ -12750,7 +12751,7 @@ window.addEventListener('click', (e) => {
 });
   </script>
 
-<button id="upgradeButton" class="upgrade-button">Upgrade Helm, it works, u just need lvl and str for upgrade</button>
+<button id="upgradeButton" class="upgrade-button">Upgrade Helm</button>
 <button id="upgradeArmorButton" class="upgrade-buttonarmor">Upgrade Armor</button>
 <button id="upgradeWeaponButton" class="upgrade-buttonweapon">Upgrade Weapon</button>
 <button id="upgradeShieldButton" class="upgrade-buttonshield">Upgrade Shield/Off-Weapon</button>
@@ -12760,7 +12761,7 @@ window.addEventListener('click', (e) => {
 <button id="makeethereal" onclick="makeEthereal()">Ethereal</button>
 <button id="makeetherealarmor" onclick="makeEtherealArmor()">Ethereal</button>
 <button id="makeetherealweapon" onclick="makeEtherealWeapon()">Ethereal</button>
-<button id="makeetherealshield" onclick="makeEtherealShield()">Ethereal</button>
+<button id="makeetherealshield" onclick="makeEtherealShield()">Ethereal</button> <!-- Ethereal buttonsFOR SHIELD for other items -->
 <button id="makeetherealglove" onclick="makeEtherealGlove()">Ethereal</button>
 <button id="makeetherealbelt" onclick="makeEtherealBelt()">Ethereal</button>
 <button id="makeetherealboot" onclick="makeEtherealBoot()">Ethereal</button>
@@ -12775,6 +12776,7 @@ document.getElementById('upgradeBeltButton').addEventListener('click', handleBel
 document.getElementById('upgradeBootButton').addEventListener('click', () => handleArmorUpgrade('boots'));
 document.getElementById('makeethereal').addEventListener('click', () => makeEtherealItem('helms'));
 document.getElementById('makeetherealarmor').addEventListener('click', () => makeEtherealItem('armor'));
+document.getElementById('makeetherealshield').addEventListener('click', makeEtherealShield);
 document.getElementById('makeetherealglove').addEventListener('click', () => makeEtherealItem('gloves'));
 document.getElementById('makeetherealbelt').addEventListener('click', () => makeEtherealItem('belts'));
 document.getElementById('makeetherealboot').addEventListener('click', () => makeEtherealItem('boots'));

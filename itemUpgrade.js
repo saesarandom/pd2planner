@@ -1807,6 +1807,15 @@ const baseDefenses = {
   "Avenger Guard": 50,
   "Slayer Guard": 120,
   "Guardian Crown": 168,
+  Buckler: 6, //nEW MAYBE BUG?
+  "Small Shield": 10,
+  "Large Shield": 14,
+  "Spiked Shield": 25,
+  "Kite Shield": 18,
+  "Bone Shield": 30,
+  "Tower Shield": 25,
+  "Gothic Shield": 35,
+  Defender: 49,
   "Leather Gloves": 3,
   "Demonhide Gloves": 35,
   "Bramble Mitts": 62,
@@ -1939,6 +1948,15 @@ const baseStrengths = {
   "Battle Axe": 54,
   "Great Axe": 63,
   "Giant Axe": 70,
+  Buckler: 12,
+  "Small Shield": 22,
+  "Large Shield": 34,
+  "Spiked Shield": 30,
+  "Kite Shield": 47,
+  "Bone Shield": 25,
+  "Tower Shield": 75,
+  "Gothic Shield": 60,
+  Defender: 38,
   "Leather Gloves": 0,
   "Demonhide Gloves": 20,
   "Bramble Mitts": 50,
@@ -3726,6 +3744,7 @@ function updateDefense() {
     { id: "gloves-dropdown", type: "gloves" },
     { id: "boots-dropdown", type: "boots" },
     { id: "belts-dropdown", type: "belts" },
+    { id: "offs-dropdown", type: "offs" },
   ];
 
   sections.forEach(({ id, type }) => {
@@ -3775,6 +3794,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "gloves-dropdown",
     "boots-dropdown",
     "belts-dropdown",
+    "offs-dropdown",
   ].forEach((id) => {
     document.getElementById(id)?.addEventListener("change", updateDefense);
   });
@@ -4619,3 +4639,80 @@ function updateWeaponDisplayWithPerLevelDamage() {
     if (maxContainer) maxContainer.textContent = max;
   }
 }
+
+// This is a standalone function that only handles shield ethereal conversion
+function makeEtherealShield() {
+  const select = document.getElementById("offs-dropdown");
+  const currentItem = select.value;
+  const currentItemData = itemList[currentItem];
+
+  if (!currentItemData || currentItemData.description.includes("Ethereal")) {
+    return;
+  }
+
+  // Log initial state for debugging
+  console.log("Making shield ethereal:", currentItem);
+  console.log("Initial defense:", currentItemData.properties.defense);
+
+  // Get base type from description
+  const baseType = currentItemData.description.split("<br>")[1];
+  console.log("Shield base type:", baseType);
+
+  // Get base defense from your table
+  const baseDefense = baseDefenses[baseType] || 0;
+  console.log("Base defense from table:", baseDefense);
+
+  // Get item's enhanced defense and other properties
+  const edef = currentItemData.properties.edef || 0;
+  const todef = currentItemData.properties.todef || 0;
+  console.log("Enhanced defense:", edef, "Bonus defense:", todef);
+
+  // Mark as ethereal in properties
+  currentItemData.properties.ethereal = true;
+
+  // Add ethereal text to description
+  let lines = currentItemData.description.split("<br>");
+  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+
+  // Calculate new defense manually for shields
+  // Apply 50% ethereal bonus to base defense
+  const baseWithEth = Math.floor(baseDefense * 1.5);
+  console.log("Base defense after ethereal bonus:", baseWithEth);
+
+  // Calculate final defense based on enhanced defense and bonuses
+  let newDefense;
+  if (edef > 0) {
+    // If there's enhanced defense, apply it to the ethereal base value
+    newDefense = Math.floor(baseWithEth * (1 + edef / 100));
+    if (todef > 0) {
+      newDefense += todef;
+    }
+  } else if (todef > 0) {
+    // If there's only flat defense bonus
+    newDefense = baseWithEth + todef;
+  } else {
+    // If there's neither, just use the ethereal base
+    newDefense = baseWithEth;
+  }
+
+  console.log("Calculated new defense:", newDefense);
+
+  // Update defense in properties
+  currentItemData.properties.defense = newDefense;
+
+  // Update defense in description
+  const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
+  if (defenseIndex !== -1) {
+    lines[defenseIndex] = `Defense: ${newDefense}`;
+  }
+
+  // Update description
+  currentItemData.description = lines.join("<br>");
+
+  // Trigger display update
+  select.dispatchEvent(new Event("change"));
+
+  console.log("Shield made ethereal with defense:", newDefense);
+}
+
+// Add this line to your event listeners

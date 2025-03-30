@@ -3251,7 +3251,7 @@ const itemList = {
 
   "Pelta Lunata": {
     description:
-      "Pelta Lunata<br> Buckler<br> Base Smite Damage: 1 to 3, Avg 2<br> Base Maximum Sockets: 1 (2 for upgraded elite versions)<br> Defense: 39<br> Block: 40% (Dru/Nec/Sor), 45% (Ama/Ass/Bar), 50% (Pal)<br> Required Strength: 12<br> Required Level: 2<br> +40% Faster Block Rate<br> 20% Increased Chance of Blocking<br> +40% Enhanced Defense<br> +30 Defense<br> +2 to Strength<br> +10 to Vitality<br> +10 to Energy<br>",
+      "Pelta Lunata<br>Buckler<br>Base Smite Damage: 1 to 3, Avg 2<br>Base Maximum Sockets: 1 (2 for upgraded elite versions)<br>Defense: 39<br>Block: 40% (Dru/Nec/Sor), 45% (Ama/Ass/Bar), 50% (Pal)<br>Required Strength: 12<br>Required Level: 2<br>+40% Faster Block Rate<br>20% Increased Chance of Blocking<br>+40% Enhanced Defense<br>+30 Defense<br>+2 to Strength<br>+10 to Vitality<br>+10 to Energy<br>",
     properties: {
       smitedmgmin: 1,
       smitedmgmax: 3,
@@ -3260,6 +3260,7 @@ const itemList = {
       fbr: 40,
       block: 20,
       edef: 40,
+      todef: 30,
       str: 2,
       vit: 10,
       enr: 10,
@@ -3269,7 +3270,7 @@ const itemList = {
 
   "Umbral Disk": {
     description:
-      "Umbral Disk<br> Small Shield<br> Base Smite Damage: 2 to 3, Avg 2.5<br> Defense: 46<br> Block: 55% (Dru/Nec/Sor), 60% (Ama/Ass/Bar), 65% (Pal)<br> Required Strength: 22<br> Required Level: 9<br> 30% Increased Chance of Blocking<br> Adds 4-8 Damage<br> Hit Blinds Target<br> +50% Enhanced Defense<br> +30 Defense<br> +10 to Dexterity<br> +20 to Life<br>",
+      "Umbral Disk<br>Small Shield<br>Base Smite Damage: 2 to 3, Avg 2.5<br>Defense: 46<br>Block: 55% (Dru/Nec/Sor), 60% (Ama/Ass/Bar), 65% (Pal)<br>Required Strength: 22<br>Required Level: 9<br>30% Increased Chance of Blocking<br>Adds 4-8 Damage<br>Hit Blinds Target<br>+50% Enhanced Defense<br>+30 Defense<br>+10 to Dexterity<br>+20 to Life<br>",
     properties: {
       smitedmgmin: 2,
       smitedmgmax: 3,
@@ -3288,7 +3289,7 @@ const itemList = {
 
   "Swordback Hold": {
     description:
-      "Swordback Hold<br> Spiked Shield<br> Base Smite Damage: 9 to 16, Avg 12.5<br> Base Maximum Sockets: 2 (3 for upgraded elite versions)<br> Defense: 51<br> Block: 50% (Dru/Nec/Sor), 55% (Ama/Ass/Bar), 60% (Pal)<br> Required Strength: 30<br> Required Level: 15<br> 20% Increased Chance of Blocking<br> 50% Chance of Open Wounds<br> +8 Open Wounds Damage per Second<br> +60% Enhanced Defense<br> +10 Defense<br> Attacker Takes Damage of 32<br>",
+      "Swordback Hold<br>Spiked Shield<br>Base Smite Damage: 9 to 16, Avg 12.5<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 51<br>Block: 50% (Dru/Nec/Sor), 55% (Ama/Ass/Bar), 60% (Pal)<br>Required Strength: 30<br>Required Level: 15<br>20% Increased Chance of Blocking<br>50% Chance of Open Wounds<br>+8 Open Wounds Damage per Second<br>+60% Enhanced Defense<br>+10 Defense<br>Attacker Takes Damage of 32<br>",
     properties: {
       smitedmgmin: 9,
       smitedmgmax: 16,
@@ -3304,7 +3305,7 @@ const itemList = {
 
   Steelclash: {
     description:
-      "Steelclash<br> Kite Shield<br> Base Smite Damage: 4 to 11, Avg 7.5<br> Defense: 58<br> Block: 53% (Dru/Nec/Sor), 58% (Ama/Ass/Bar), 63% (Pal)<br> Required Strength: 47<br> Required Level: 17<br> +1 to All Skills<br> +20% Faster Block Rate<br> 25% Increased Chance of Blocking<br> +100% Enhanced Defense<br> +20 Defense<br> All Resistances +10<br> +3 to Light Radius<br> +20 Durability<br>",
+      "Steelclash<br>Kite Shield<br>Base Smite Damage: 4 to 11, Avg 7.5<br>Defense: 58<br>Block: 53% (Dru/Nec/Sor), 58% (Ama/Ass/Bar), 63% (Pal)<br>Required Strength: 47<br>Required Level: 17<br>+1 to All Skills<br>+20% Faster Block Rate<br>25% Increased Chance of Blocking<br>+100% Enhanced Defense<br>+20 Defense<br>All Resistances +10<br>+3 to Light Radius<br>+20 Durability<br>",
     properties: {
       smitedmgmin: 4,
       smitedmgmax: 11,
@@ -3313,7 +3314,7 @@ const itemList = {
 
   "Wall of the Eyeless": {
     description:
-      "Wall of the Eyeless<br> Bone Shield<br> Base Smite Damage: 5 to 10, Avg 7.5<br> Base Maximum Sockets: 2 (3 for upgraded elite versions)<br> Defense: 53<br> Block: 40% (Dru/Nec/Sor), 45% (Ama/Ass/Bar), 50% (Pal)<br> Required Strength: 25<br> Required Level: 20<br> +20% Faster Cast Rate<br> 3% Mana Stolen per Hit<br> +40% Enhanced Defense<br> +10 Defense<br> Cold Resist +20%<br> Fire Resist +20%<br> Poison Resist +20%<br> +5 to Mana after each Kill<br>",
+      "Wall of the Eyeless<br>Bone Shield<br>Base Smite Damage: 5 to 10, Avg 7.5<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 53<br>Block: 40% (Dru/Nec/Sor), 45% (Ama/Ass/Bar), 50% (Pal)<br>Required Strength: 25<br>Required Level: 20<br>+20% Faster Cast Rate<br>3% Mana Stolen per Hit<br>+40% Enhanced Defense<br>+10 Defense<br>Cold Resist +20%<br>Fire Resist +20%<br>Poison Resist +20%<br>+5 to Mana after each Kill<br>",
     properties: {
       smitedmgmin: 5,
       smitedmgmax: 10,
@@ -3323,7 +3324,7 @@ const itemList = {
 
   "Bverrit Keep": {
     description:
-      "Bverrit Keep<br> Tower Shield<br> Base Smite Damage: 5 to 23, Avg 14<br> Defense: 87<br> Block: 54% (Dru/Nec/Sor), 59% (Ama/Ass/Bar), 64% (Pal)<br> Required Strength: 75<br> Required Level: 19<br> 10% Increased Chance of Blocking<br> +120% Enhanced Defense<br> +30 Defense<br> +15 to Strength<br> Fire Resist +50%<br> Physical Damage Taken Reduced by 10%<br> Magic Damage Taken Reduced by 5<br> +100 Durability<br>",
+      "Bverrit Keep<br>Tower Shield<br>Base Smite Damage: 5 to 23, Avg 14<br>Defense: 87<br>Block: 54% (Dru/Nec/Sor), 59% (Ama/Ass/Bar), 64% (Pal)<br>Required Strength: 75<br>Required Level: 19<br>10% Increased Chance of Blocking<br>+120% Enhanced Defense<br>+30 Defense<br>+15 to Strength<br>Fire Resist +50%<br>Physical Damage Taken Reduced by 10%<br>Magic Damage Taken Reduced by 5<br>+100 Durability<br>",
     properties: {
       smitedmgmin: 2,
       smitedmgmax: 3,
@@ -3334,7 +3335,7 @@ const itemList = {
 
   "The Ward": {
     description:
-      "The Ward<br> Gothic Shield<br> Base Smite Damage: 4 to 11, Avg 7.5<br> Defense: 112<br> Block: 46% (Dru/Nec/Sor), 51% (Ama/Ass/Bar), 56% (Pal)<br> Required Strength: 60<br> Required Level: 26<br> 10% Increased Chance of Blocking<br> +100% Enhanced Defense<br> +40 Defense<br> +10 to Strength<br> All Resistances +50<br> Magic Damage Taken Reduced by 2<br>",
+      "The Ward<br>Gothic Shield<br>Base Smite Damage: 4 to 11, Avg 7.5<br>Defense: 112<br>Block: 46% (Dru/Nec/Sor), 51% (Ama/Ass/Bar), 56% (Pal)<br>Required Strength: 60<br>Required Level: 26<br>10% Increased Chance of Blocking<br>+100% Enhanced Defense<br>+40 Defense<br>+10 to Strength<br>All Resistances +50<br>Magic Damage Taken Reduced by 2<br>",
     properties: {
       smitedmgmin: 4,
       smitedmgmax: 11,
@@ -3345,7 +3346,7 @@ const itemList = {
 
   Visceratuant: {
     description:
-      "Visceratuant<br> Defender<br> Base Smite Damage: 10 to 15, Avg 12.5<br> Base Maximum Sockets: 1 (2 for upgraded versions)<br> Defense: 125<br> Block: 60% (Dru/Nec/Sor), 65% (Ama/Ass/Bar), 70% (Pal)<br> Required Strength: 38<br> Required Level: 28<br> +1 to Sorceress Skills<br> +30% Faster Block Rate<br> 30% Increased Chance of Blocking<br> +10% to Lightning Skill Damage<br> +150% Enhanced Defense<br> Attacker Takes Lightning Damage of 50<br>",
+      "Visceratuant<br>Defender<br>Base Smite Damage: 10 to 15, Avg 12.5<br>Base Maximum Sockets: 1 (2 for upgraded versions)<br>Defense: 125<br>Block: 60% (Dru/Nec/Sor), 65% (Ama/Ass/Bar), 70% (Pal)<br>Required Strength: 38<br>Required Level: 28<br>+1 to Sorceress Skills<br>+30% Faster Block Rate<br>30% Increased Chance of Blocking<br>+10% to Lightning Skill Damage<br>+150% Enhanced Defense<br>Attacker Takes Lightning Damage of 50<br>",
     properties: {
       smitedmgmin: 10,
       smitedmgmax: 15,

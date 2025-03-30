@@ -114,7 +114,7 @@ body {
 .menucontainer {
   position: absolute;
   top: 0px;
-  width: 100%;
+  width: auto;
   color: rgb(255, 255, 255);
 }
 
@@ -2250,40 +2250,6 @@ select:has(option[value="Arcanna's Head"]:checked),
 option[value="Arcanna's Head"] {
   background-color: rgb(4, 186, 95);
 }
-/* .hirelingcontainer {
-  position: absolute;
-  left: 1330px;
-  top: 1070px;
-  width: 1500px;
-  height: 1500px;
-  background-image: url("/img/mercback.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-
-
-#buff1 {
-  position: absolute;
-  left: 1350px;
-  top: 2920px;
-  width: 38px;
-  height: 38px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  
-}
-
-#buff2 {
-  position: absolute;
-  left: 1390px;
-  top: 1220px;
-  width: 38px;
-  height: 38px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  
-} */
 
 .socketcontainer {
   position: absolute;
@@ -3050,7 +3016,7 @@ option[value="Arcanna's Head"] {
   left: 720px;
   height: 40px;
   width: 80px;
-  color: rgb(201, 1, 1);
+  color: rgb(102, 100, 100);
   border: none;
   padding: 5px 10px;
   margin-left: 10px;
@@ -3061,11 +3027,26 @@ option[value="Arcanna's Head"] {
 .upgrade-buttonshield {
   background-color: #4a4a4a;
   position: absolute;
-  top: 650px;
+  top: 690px;
+  left: 220px;
+  height: 60px;
+  width: 80px;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+#makeetherealshield {
+  background-color: #1d1d1d;
+  position: absolute;
+  top: 640px;
   left: 220px;
   height: 40px;
   width: 80px;
-  color: white;
+  color: rgb(102, 100, 100);
   border: none;
   padding: 5px 10px;
   margin-left: 10px;
@@ -3518,10 +3499,10 @@ option[value="Arcanna's Head"] {
   left: 1040px;
 }
 
-/* .discord-button {
+.discord-button {
   position: absolute;
-  
-  top: 2220px;
+
+  top: 220px;
   left: 1740px;
   background-color: #5865f2;
   padding: 5px 16px;
@@ -3539,7 +3520,7 @@ option[value="Arcanna's Head"] {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   transition: background-color 0.2s;
-} */
+}
 
 /* .discord-button:hover {
   background-color: #4752c4;
@@ -3554,42 +3535,21 @@ option[value="Arcanna's Head"] {
 }
 
 /* Base styling */
-:root {
-  --primary-bg: #181818;
-  --text-color: #e6e6e6;
-  --gold-color: #ffd700;
-  --border-color: #444;
-  --input-bg: #2a2a2a;
-}
 
 /* Main hireling container */
 .hireling-container {
   position: absolute;
-  left: 2150px;
-  top: 150px;
-  width: 1550px;
-  height: 1600px;
+  left: 1250px;
+  top: 1250px;
+  width: 1350px;
+  height: auto;
   color: var(--text-color);
   font-family: "overlock sc";
-  z-index: 5;
+  z-index: 1;
   background-image: url("/img/mercback.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-/* Basic info panel at top */
-.hireling-info-panel {
-  display: flex;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: calc(100% - 40px);
-  gap: 20px;
-}
-
-.info-group {
-  flex: 1;
 }
 
 .info-group label {
@@ -3600,8 +3560,8 @@ option[value="Arcanna's Head"] {
 
 .styled-select,
 .styled-input {
-  width: 100%;
-  padding: 8px;
+  width: auto;
+  padding: 1px;
   background-color: var(--input-bg);
   color: var(--text-color);
   border: 1px solid var(--border-color);
@@ -3612,14 +3572,14 @@ option[value="Arcanna's Head"] {
 .equipment-row {
   position: relative;
   display: flex;
-  top: 280px;
-  left: 20px;
+  top: 680px;
+  left: 50px;
   width: calc(100% - 40px);
   height: 50px; /* Fixed height for the row */
 }
 
 ..merc-equipment-slot {
-  position: fixed;
+  position: absolute;
   width: 150px;
   z-index: 9999; /* Extremely high z-index to ensure visibility */
 }
@@ -3654,7 +3614,7 @@ option[value="Arcanna's Head"] {
 /* Stats panel positioned below equipment */
 .stats-panel {
   position: absolute;
-  top: 200px;
+  top: 500px;
   right: 20px;
   width: 300px; /* Adjust width as needed */
 }
@@ -3681,9 +3641,8 @@ option[value="Arcanna's Head"] {
 /* Buff icons */
 .buffs-container {
   position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+
+  left: 1360px;
   display: flex;
   gap: 10px;
 }
@@ -3712,32 +3671,32 @@ iframe {
 
 #mercarmors-dropdown {
   top: 150px;
-  left: 220px;
+  left: 350px;
 }
 
 #mercweapons-dropdown {
   top: 150px;
-  left: 390px;
+  left: 600px;
 }
 
 #mercoffs-dropdown {
   top: 150px;
-  left: 560px;
+  left: 850px;
 }
 
 #mercgloves-dropdown {
-  top: 150px;
-  left: 730px;
+  top: 550px;
+  left: 50px;
 }
 
 #mercbelts-dropdown {
-  top: 150px;
-  left: 900px;
+  top: 550px;
+  left: 350px;
 }
 
 #mercboots-dropdown {
-  top: 150px;
-  left: 1070px;
+  top: 550px;
+  left: 600px;
 }
 
 /* Common dropdown styling */
@@ -3755,16 +3714,15 @@ iframe {
 /* Info tooltips for equipment */
 .equipment-info {
   position: fixed;
-  width: 200px;
+  width: 100px;
   background-color: rgba(0, 0, 0, 0.9);
   border: 1px solid #ffd700;
   padding: 10px;
   color: #ffffff;
-  z-index: 10000; /* Even higher to appear above dropdowns */
+  z-index: 1; /* Even higher to appear above dropdowns */
   display: none;
   margin-top: 5px;
   max-height: 300px;
-  overflow-y: auto;
 }
 
 /* Position tooltips below their respective dropdowns */
@@ -3775,32 +3733,32 @@ iframe {
 
 #mercarmor-info {
   top: 185px;
-  left: 220px;
+  left: 350px;
 }
 
 #mercweapon-info {
   top: 185px;
-  left: 390px;
+  left: 600px;
 }
 
 #mercoff-info {
   top: 185px;
-  left: 560px;
+  left: 850px;
 }
 
 #mercglove-info {
-  top: 185px;
-  left: 730px;
+  top: 585px;
+  left: 50px;
 }
 
 #mercbelt-info {
-  top: 185px;
-  left: 900px;
+  top: 585px;
+  left: 350px;
 }
 
 #mercboot-info {
-  top: 185px;
-  left: 1070px;
+  top: 585px;
+  left: 600px;
 }
 
 /* Buff positioning */
@@ -3811,17 +3769,18 @@ iframe {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  z-index: 9998;
+  z-index: 1;
 }
 
 /* Position buff icons in a different area */
 #buff1 {
-  top: 250px;
-  left: 50px;
+  top: 601px;
+  right: 60px;
+  z-index: 999; /* Ensure it's above other elements */
 }
 #buff2 {
-  top: 250px;
-  left: 100px;
+  top: 600px;
+  right: 20px;
 }
 #buff3 {
   top: 250px;
