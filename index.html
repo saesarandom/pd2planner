@@ -88,12 +88,15 @@
 <input type="number" min="1" max="99" value="1" id="lvlValue">
 <span id="startLvlValue"></span> 
 <span id="lifeValue"></span> 
+<span id="manaValue"></span> 
 </div>
 
 <div>	
 <div class="total-life" div id="totalLifeDisplay">
 </div>	
-
+<div>	
+<div class="total-mana" div id="totalManaDisplay">
+ </div>	
 
 <div class="statcontainer">
 Stats
@@ -326,7 +329,44 @@ Resistance to fire %
     <option value="True Silver">True Silver</option>
     <option value="Mage Slayer">Mage Slayer</option>
     <option value="Tempest">Tempest</option>	
-    <option value="Spraynard Trash Eth True Silver">Spraynard Trash Eth True Silver</option>	
+    <option value="Coldkill">Coldkill</option>
+    <option value="Butcher's Pupil">Butcher's Pupil</option>
+    <option value="Islestrike">Islestrike</option>
+    <option value="Pompeii's Wrath">Pompeii's Wrath</option>
+    <option value="Guardian Naga">Guardian Naga</option>
+    <option value="Warlord's Trust">Warlord's Trust</option>
+    <option value="Spellsteel">Spellsteel</option>
+    <option value="Stormrider">Stormrider</option>
+    <option value="Boneslayer Blade">Boneslayer Blade</option>
+    <option value="The Minotaur">The Minotaur</option>
+    <option value="Razor's Edge">Razor's Edge</option>
+    <option value="Rune Master">Rune Master</option>
+    <option value="Cranebeak">Cranebeak</option>	
+    <option value="Death Cleaver">Death Cleaver</option>
+    <option value="Ethereal Edge">Ethereal Edge</option>
+    <option value="Hellslayer">Hellslayer</option>
+    <option value="Messerschmidt's Reaver">Messerschmidt's Reaver</option>
+    <option value="Executioner's Justice">Executioner's Justice</option>	
+    <option value="Dark Clan Crusher">Dark Clan Crusher</option>
+    <option value="Fleshrender">Fleshrender</option>
+    <option value="Sureshrill Frost">Sureshrill Frost</option>
+    <option value="Moonfall">Moonfall</option>
+    <option value="Baezil's Vortex">Baezil's Vortex</option>
+    <option value="Earthshaker">Earthshaker</option>
+    <option value="Bloodtree Stump">Bloodtree Stump</option>
+    <option value="The Gavel of Pain">The Gavel of Pain</option>
+    <option value="Nord's Tenderizer">Nord's Tenderizer</option>
+    <option value="Demon Limb">Demon Limb</option>
+    <option value="Baranar's Star">Razor's Edge</option>
+    <option value="Horizon's Tornado">Horizon's Tornado</option>
+    <option value="Stormlash">Stormlash</option>
+    <option value="Stone Crusher">Stone Crusher</option>		
+    <option value="Schaefer's Hammer">Schaefer's Hammer</option>
+    <option value="Windhammer">Windhammer</option>
+    <option value="Earth Shifter">Earth Shifter</option>
+    <option value="The Cranium Basher">The Cranium Basher</option>
+  
+
  
   </select>
   <div id="weapon-info"></div>
@@ -3013,6 +3053,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const select_Class = document.getElementById('selectClass');
   const lvlInput = document.getElementById('lvlValue');
   const lifeDisplay = document.getElementById('lifeValue');
+  const manaDisplay = document.getElementById('manaValue');
   const helmDropdown = document.getElementById('helms-dropdown');
   const armorDropdown = document.getElementById('armors-dropdown');
   const weaponDropdown = document.getElementById('weapons-dropdown');
@@ -3158,6 +3199,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let dexValue = Math.min(Math.max(parseInt(document.getElementById('dex').value, 10) || 15, 15), 530);
     let enrValue = Math.min(Math.max(parseInt(document.getElementById('enr').value, 10) || 15, 15), 530);
     let totalLife;
+    let totalMana;
   
    
 
@@ -3509,6 +3551,14 @@ document.getElementById('enr').addEventListener('input', () => {
       totalLife = 50 + (startLvlValue * 1 - 1 + 2 * vitValue);
     }
 
+
+    if (select_Class.value == "Amazon" || select_Class.value === "Assassin" || select_Class.value === "Paladin") {
+      totalMana =  (startLvlValue * 1.5 +  1.5 * enrValue);
+    }
+
+
+
+
   
     function calculateCbDmg(startLvlValue) {
     if (startLvlValue >= 1 && startLvlValue < 10) {
@@ -3605,6 +3655,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
     if (helmData) {
       totalLife += helmData.properties.tolife || 0;
+      totalMana += helmData.properties.tomana || 0; 
       totalDefense += helmData.properties.defense || 0;
       totalBlock += helmData.properties.block || 0;
       totalIas += helmData.properties.ias || 0;
@@ -3653,6 +3704,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
     }
     if (armorData) {
       totalLife += armorData.properties.tolife || 0;
+      totalMana += armorData.properties.tomana || 0; 
       totalDefense += armorData.properties.defense || 0;
       totalBlock += armorData.properties.block || 0;
       totalIas += armorData.properties.ias || 0;
@@ -3704,6 +3756,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
     }
     if (weaponData) {
       totalLife += weaponData.properties.tolife || 0;
+      totalMana += weaponData.properties.tomana || 0; 
       totalDefense += weaponData.properties.todef || 0;
       totalBlock += weaponData.properties.block || 0;
       totalIas += weaponData.properties.ias || 0;
@@ -3761,6 +3814,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
     if (offData?.properties?.defense > 0) {
       totalDefense += offData.properties.defense;
       totalLife += offData.properties.tolife || 0;
+      totalMana += offData.properties.tomana || 0; 
       totalBlock += offData.properties.block1 || 0;
       totalFcr += offData.properties.fcr || 0;
       totalFrw += offData.properties.frw || 0;
@@ -3804,7 +3858,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
     } else {
       totalDefense += offData.properties.todef;
       totalLife += offData.properties.tolife || 0;
-     
+      totalMana += offData.properties.tomana || 0;
       totalBlock += offData.properties.block1 || 0;
       totalIas += offData.properties.ias || 0;
       totalFcr += offData.properties.fcr || 0;
@@ -3847,6 +3901,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
     }
     if (gloveData) {
       totalLife += gloveData.properties.tolife || 0;
+      totalMana += gloveData.properties.tomana || 0;
       totalDefense += gloveData.properties.defense || 0;
       totalBlock += gloveData.properties.block || 0;
       totalIas += gloveData.properties.ias || 0;
@@ -3896,6 +3951,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
     if (beltData) {
       totalLife += beltData.properties.tolife || 0;
+      totalMana += beltData.properties.tomana || 0; 
       totalDefense += beltData.properties.defense || 0;
       totalBlock += beltData.properties.block || 0;
       totalIas += beltData.properties.ias || 0;
@@ -3945,6 +4001,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
     if (bootData) {
       totalLife += bootData.properties.tolife || 0;
+      totalMana += bootData.properties.tomana || 0; 
       totalDefense += bootData.properties.defense || 0;
       totalBlock += bootData.properties.block || 0;
       totalIas += bootData.properties.ias || 0;
@@ -3994,7 +4051,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
     if (ringOneData) {
       totalLife += ringOneData.properties.tolife || 0;
-      
+      totalMana += ringOneData.properties.tomana || 0;
       totalBlock += ringOneData.properties.block || 0;
       totalIas += ringOneData.properties.ias || 0;
       totalFcr += ringOneData.properties.fcr || 0;
@@ -4043,7 +4100,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
     if (ringTwoData) {
       totalLife += ringTwoData.properties.tolife || 0;
-      
+      totalMana += ringTwoData.properties.tomana || 0;
       totalBlock += ringTwoData.properties.block || 0;
       totalIas += ringTwoData.properties.ias || 0;
       totalFcr += ringTwoData.properties.fcr || 0;
@@ -4092,7 +4149,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
     if (amuletData) {
       totalLife += amuletData.properties.tolife || 0;
-      
+      totalMana += amuletData.properties.tomana || 0;
       totalBlock += amuletData.properties.block || 0;
       totalIas += amuletData.properties.ias || 0;
       totalFcr += amuletData.properties.fcr || 0;
@@ -4175,8 +4232,15 @@ let totalEDMG = 0; // total Enhanced Damage defined
     totalLifeAccr = (totalVit * 2 - vitValue * 2) + totalLife; 
     }
     
-    
+    let totalManaAccr;
+    if (select_Class.value === "Amazon") {
+      totalManaAccr = (totalEnr * 1.5 - enrValue * 1.5 - 9) + totalMana; // Example for Amazon, adjust as needed
+    } else {
+      // For other classes, mana is calculated differently
+      totalManaAccr = (totalEnr * 2); // Example for Barbarian and Sorceress
+    }
     lifeDisplay.textContent = `Life: ${totalLifeAccr}`;
+    manaDisplay.textContent = `Mana: ${totalManaAccr}`;
 
     document.getElementById('helm-info').innerHTML = helmData.description; 
     document.getElementById('armor-info').innerHTML = armorData.description; 
@@ -4194,7 +4258,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
 
     updateCriticalAndDeadly();
-    calculateBlock(totalLifeAccr, totalDefense, totalStr, totalDex, totalVit, totalEnr, totalBlock, totalIas, totalFcr, totalFrw, totalFhr, totalCbf, totalPlr, totalDr, totalPdr, totalMdr, totalFireRes, totalColdRes, totalLightRes, totalPoisonRes, totalCurseRes, totalMinDmg, totalMaxDmg, totalTwoMinDmg, totalTwoMaxDmg, totalAllSkill, totalMagicFind, totalGoldFind, totalOw, totalOwDmg, totalCb, totalCbDmg,
+    calculateBlock(totalLifeAccr, totalManaAccr, totalDefense, totalStr, totalDex, totalVit, totalEnr, totalBlock, totalIas, totalFcr, totalFrw, totalFhr, totalCbf, totalPlr, totalDr, totalPdr, totalMdr, totalFireRes, totalColdRes, totalLightRes, totalPoisonRes, totalCurseRes, totalMinDmg, totalMaxDmg, totalTwoMinDmg, totalTwoMaxDmg, totalAllSkill, totalMagicFind, totalGoldFind, totalOw, totalOwDmg, totalCb, totalCbDmg,
       totalPiercePhys, totalPierceFire, totalPierceCold, totalPierceLight, totalPiercePoison, totalPierceMagic, totalFlatFireDmgMin, totalFlatFireDmgMax, totalFlatColdDmgMin, totalFlatColdDmgMax, totalFlatLightDmgMin, totalFlatLightDmgMax, totalFlatMagicDmgMin, totalFlatMagicDmgMax, totalFlatPoisonDmgMin, totalFlatPoisonDmgMax, totalCriticalHit, totalDeadlyStrike, totalWeaponMastery, totalCritMultiplier
     );
   }
@@ -4204,7 +4268,7 @@ let totalEDMG = 0; // total Enhanced Damage defined
 
 
 
-  function calculateBlock(totalLifeAccr, totalDefense, totalStr, totalDex, totalVit, totalEnr, totalBlock, totalIas, totalFcr, totalFrw, totalFhr, totalCbf, totalPlr, totalDr, totalPdr, totalMdr, totalFireRes, totalColdRes, totalLightRes, totalPoisonRes, totalCurseRes, totalMinDmg, totalMaxDmg, totalTwoMinDmg, totalTwoMaxDmg, totalAllSkill, totalMagicFind, totalGoldFind, totalOw, totalOwDmg, totalCb, totalCbDmg, 
+  function calculateBlock(totalLifeAccr, totalManaAccr, totalDefense, totalStr, totalDex, totalVit, totalEnr, totalBlock, totalIas, totalFcr, totalFrw, totalFhr, totalCbf, totalPlr, totalDr, totalPdr, totalMdr, totalFireRes, totalColdRes, totalLightRes, totalPoisonRes, totalCurseRes, totalMinDmg, totalMaxDmg, totalTwoMinDmg, totalTwoMaxDmg, totalAllSkill, totalMagicFind, totalGoldFind, totalOw, totalOwDmg, totalCb, totalCbDmg, 
     totalPiercePhys, totalPierceFire, totalPierceCold, totalPierceLight, totalPiercePoison, totalPierceMagic, totalFlatFireDmgMin, totalFlatFireDmgMax, totalFlatColdDmgMin, totalFlatColdDmgMax, totalFlatLightDmgMin, totalFlatLightDmgMax, totalFlatMagicDmgMin, totalFlatMagicDmgMax, totalFlatPoisonDmgMin, totalFlatPoisonDmgMax, totalCriticalHit, totalDeadlyStrike, totalWeaponMastery, totalCritMultiplier) {
     let blockValue = parseInt(document.getElementById('blockValue').value, 10) || 0;
     let getHitValue = parseInt(document.getElementById('getHitValue').value, 10) || 0; 
@@ -8307,88 +8371,149 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
 function updateLifeFromCharms() {
-  let totalCharmLife = 0;
-  
-  // Get all charms in the inventory
-  document.querySelectorAll('.charm1').forEach(charm => {
-    if (!charm.textContent || charm.textContent.includes('X')) return;
+    let totalCharmLife = 0;
+    let totalCharmMana = 0;
     
-    const text = charm.textContent;
-    
-    // Match all variations of life bonus text
-    const lifePatterns = [
-      /\+(\d+)\s+Life/,
-      /\+(\d+)\s+to Life/,
-      /\+(\d+)\s+Maximum Life/
-    ];
-    
-    for (const pattern of lifePatterns) {
-      const match = text.match(pattern);
-      if (match) {
-        totalCharmLife += parseInt(match[1]);
-        break;
-      }
+    // Get all charms in the inventory
+    document.querySelectorAll('.charm1').forEach(charm => {
+        if (!charm.textContent || charm.textContent.includes('X')) return;
+        
+        const text = charm.textContent;
+        
+        // Match all variations of life bonus text
+        const lifePatterns = [
+            /\+(\d+)\s+Life/,
+            /\+(\d+)\s+to Life/,
+            /\+(\d+)\s+Maximum Life/
+        ];
+        
+        // Match all variations of mana bonus text
+        const manaPatterns = [
+            /\+(\d+)\s+Mana/,
+            /\+(\d+)\s+to Mana/,
+            /\+(\d+)\s+Maximum Mana/
+        ];
+        
+        // Extract life bonus
+        for (const pattern of lifePatterns) {
+            const match = text.match(pattern);
+            if (match) {
+                totalCharmLife += parseInt(match[1]);
+                break;
+            }
+        }
+        
+        // Extract mana bonus
+        for (const pattern of manaPatterns) {
+            const match = text.match(pattern);
+            if (match) {
+                totalCharmMana += parseInt(match[1]);
+                break;
+            }
+        }
+    });
+
+    // For updating life stats
+    const lifeDisplay = document.getElementById('lifeValue');
+    if (lifeDisplay) {
+        // Extract current base life value
+        const currentLifeMatch = lifeDisplay.textContent.match(/Life:\s*(\d+)/);
+        const currentLife = currentLifeMatch ? parseInt(currentLifeMatch[1]) : 0;
+
+        // Create or update total life display
+        let totalLifeDisplay = document.getElementById('totalLifeValue');
+        if (!totalLifeDisplay) {
+            totalLifeDisplay = document.createElement('span');
+            totalLifeDisplay.id = 'totalLifeValue';
+            totalLifeDisplay.style.marginLeft = '10px';
+            totalLifeDisplay.style.color = '#FF0000';
+            lifeDisplay.parentNode.insertBefore(totalLifeDisplay, lifeDisplay.nextSibling);
+        }
+        
+        // Update total life display
+        const totalLife = currentLife + totalCharmLife;
+        totalLifeDisplay.textContent = `Total Life: ${totalLife}`;
+        
+        // Make sure there's a line break after the life displays
+        let lineBreak = document.getElementById('stats-break');
+        if (!lineBreak) {
+            lineBreak = document.createElement('br');
+            lineBreak.id = 'stats-break';
+            
+            // Insert the break after the total life display
+            lifeDisplay.parentNode.insertBefore(lineBreak, totalLifeDisplay.nextSibling);
+        }
     }
-  });
 
-  // Get current life display
-  const lifeDisplay = document.getElementById('lifeValue');
-  if (!lifeDisplay) return;
-  
-  // Extract current base life value
-  const currentLifeMatch = lifeDisplay.textContent.match(/Life:\s*(\d+)/);
-  const currentLife = currentLifeMatch ? parseInt(currentLifeMatch[1]) : 0;
+    // For updating mana stats
+    const manaDisplay = document.getElementById('manaValue');
+    if (manaDisplay) {
+        // Extract current base mana value
+        const currentManaMatch = manaDisplay.textContent.match(/Mana:\s*(\d+)/);
+        const currentMana = currentManaMatch ? parseInt(currentManaMatch[1]) : 0;
 
-  // Create or update total life display
-  let totalLifeDisplay = document.getElementById('totalLifeValue');
-  if (!totalLifeDisplay) {
-    totalLifeDisplay = document.createElement('span');
-    totalLifeDisplay.id = 'totalLifeValue';
-    totalLifeDisplay.style.marginLeft = '10px';
-    totalLifeDisplay.style.color = '#888';
-    lifeDisplay.parentNode.insertBefore(totalLifeDisplay, lifeDisplay.nextSibling);
-  }
-  
-  // Update total life display
-  const totalLife = currentLife + totalCharmLife;
-  totalLifeDisplay.textContent = `Total Life: ${totalLife}`;
+        // Create or update total mana display
+        let totalManaDisplay = document.getElementById('totalManaValue');
+        if (!totalManaDisplay) {
+            totalManaDisplay = document.createElement('span');
+            totalManaDisplay.id = 'totalManaValue';
+            totalManaDisplay.style.marginLeft = '10px';
+            totalManaDisplay.style.color = '#0000FF';
+            
+            // Get the line break we inserted
+            const lineBreak = document.getElementById('stats-break');
+            
+            // Make sure manaDisplay is positioned right after the line break
+            if (lineBreak && lineBreak.nextSibling !== manaDisplay) {
+                // Move manaDisplay to after the line break
+                lineBreak.parentNode.insertBefore(manaDisplay, lineBreak.nextSibling);
+            }
+            
+            // Add totalManaDisplay after manaDisplay
+            manaDisplay.parentNode.insertBefore(totalManaDisplay, manaDisplay.nextSibling);
+        }
+        
+        // Update total mana display
+        manaDisplay.style.marginLeft = '70px';
+        const totalMana = currentMana + totalCharmMana;
+        totalManaDisplay.textContent = `Total Mana: ${totalMana}`;
+    }
 }
 
 // Add this to existing event listeners
 document.addEventListener('DOMContentLoaded', () => {
-  // Create a MutationObserver that updates total life for multiple scenarios
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'childList' || mutation.type === 'characterData') {
-        updateLifeFromCharms();
-      }
+    // Create a MutationObserver that updates total stats for multiple scenarios
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                updateLifeFromCharms();
+            }
+        });
     });
-  });
 
-  // Watch for changes to inventory
-  const inventoryContainer = document.querySelector('.inventorycontainer');
-  if (inventoryContainer) {
-    observer.observe(inventoryContainer, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
-  }
+    // Watch for changes to inventory
+    const inventoryContainer = document.querySelector('.inventorycontainer');
+    if (inventoryContainer) {
+        observer.observe(inventoryContainer, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    }
 
-  // Watch for changes to base life value
-  const lifeDisplay = document.getElementById('lifeValue');
-  if (lifeDisplay) {
-    observer.observe(lifeDisplay, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
-  }
+    // Watch for changes to base life and mana values
+    const statsContainer = document.querySelector('.slidecontainer');
+    if (statsContainer) {
+        observer.observe(statsContainer, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    }
 
-  // Initial update
-  updateLifeFromCharms();
+    // Initial update
+    updateLifeFromCharms();
 });
-
 </script>
 
 
@@ -8930,7 +9055,45 @@ const updateAll = () => {
     <option value="Stormeye">Stormeye</option>
     <option value="True Silver">True Silver</option>
     <option value="Mage Slayer">Mage Slayer</option>
-    <option value="Tempest">Tempest</option>	
+    <option value="Tempest">Tempest</option>
+    <option value="Coldkill">Coldkill</option>
+    <option value="Butcher's Pupil">Butcher's Pupil</option>
+    <option value="Islestrike">Islestrike</option>
+    <option value="Pompeii's Wrath">Pompeii's Wrath</option>
+    <option value="Guardian Naga">Guardian Naga</option>
+    <option value="Warlord's Trust">Warlord's Trust</option>
+    <option value="Spellsteel">Spellsteel</option>
+    <option value="Stormrider">Stormrider</option>
+    <option value="Boneslayer Blade">Boneslayer Blade</option>
+    <option value="The Minotaur">The Minotaur</option>
+    <option value="Razor's Edge">Razor's Edge</option>
+    <option value="Rune Master">Rune Master</option>
+    <option value="Cranebeak">Cranebeak</option>	
+    <option value="Death Cleaver">Death Cleaver</option>
+    <option value="Ethereal Edge">Ethereal Edge</option>
+    <option value="Hellslayer">Hellslayer</option>
+    <option value="Messerschmidt's Reaver">Messerschmidt's Reaver</option>
+    <option value="Executioner's Justice">Executioner's Justice</option>
+    <option value="Dark Clan Crusher">Dark Clan Crusher</option>
+    <option value="Fleshrender">Fleshrender</option>
+    <option value="Sureshrill Frost">Sureshrill Frost</option>
+    <option value="Moonfall">Moonfall</option>
+    <option value="Baezil's Vortex">Baezil's Vortex</option>
+    <option value="Earthshaker">Earthshaker</option>
+    <option value="Bloodtree Stump">Bloodtree Stump</option>
+    <option value="The Gavel of Pain">The Gavel of Pain</option>
+    <option value="Nord's Tenderizer">Nord's Tenderizer</option>
+    <option value="Demon Limb">Demon Limb</option>
+    <option value="Baranar's Star">Razor's Edge</option>
+    <option value="Horizon's Tornado">Horizon's Tornado</option>
+    <option value="Stormlash">Stormlash</option>
+    <option value="Stone Crusher">Stone Crusher</option>		
+    <option value="Schaefer's Hammer">Schaefer's Hammer</option>
+    <option value="Windhammer">Windhammer</option>
+    <option value="Earth Shifter">Earth Shifter</option>
+    <option value="The Cranium Basher">The Cranium Basher</option>	
+
+
         </select>
         <div id="mercweapon-info" class="equipment-info"></div>
       </div>

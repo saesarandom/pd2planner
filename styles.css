@@ -504,6 +504,13 @@ body {
   color: rgb(241, 234, 247);
 }
 
+.total-mana {
+  margin-top: 30px;
+  font-size: 12px;
+  width: 33%;
+  color: rgb(58, 14, 96);
+}
+
 .grouphelms {
   position: static;
   overflow: hidden;

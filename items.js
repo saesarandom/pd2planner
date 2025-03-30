@@ -3238,16 +3238,491 @@ const itemList = {
       regmana: 30,
     },
   },
-  //shields/
 
-  "Spraynard Trash Eth True Silver": {
-    description: "Bad True Silver",
+  Coldkill: {
+    description:
+      "Coldkill<br>Base Melee Range: 2<br>Base Maximum Sockets: 3<br>One-Hand Damage: 43 to 87, Avg 65<br>Required Strength: 25<br>Required Dexterity: 25<br>Required Level: 36<br>14% Chance to Cast Level 18 Ice Blast on Striking<br>25% Chance to Cast Level 20 Frost Nova when Struck<br>+30% Increased Attack Speed<br>+190% Enhanced Damage<br>Adds 160-240 Cold Damage<br>+10% to Maximum Cold Resist<br>Cold Resist +15%<br>",
     properties: {
-      speed: -10,
-      onehandmin: 106,
-      onehandmax: 210,
+      onehandmin: 43, // One-Hand Damage Min
+      onehandmax: 87, // One-Hand Damage Max
+      reqstr: 25, // Required Strength
+      reqdex: 25, // Required Dexterity
+      reqlvl: 36, // Required Level
+      ctciceblast: (14, 18), // Chance to Cast Ice Blast on Striking (14% chance, level 18)
+      ctcfrostnovastruck: (25, 20), // Chance to Cast Frost Nova when Struck (25% chance, level 20)
+      ias: 30, // Increased Attack Speed (30%)
+      edmg: 150, // Enhanced Damage (150%)
+      colddmgmin: 160, // Cold Damage Min (160)
+      colddmgmax: 240, // Cold Damage Max (240)
+      maxcoldres: 10, // Maximum Cold Resist (10%)
+      coldres: 15, // Cold Resist (15%)
     },
   },
+  "Butcher's Pupil": {
+    description:
+      "Butcher's Pupil<br>Cleaver<br>Base Melee Range: 2<br>One-Hand Damage: 62 to 171, Avg 116.5<br>Required Strength: 68<br>Required Level: 39<br>+30% Increased Attack Speed<br>+200% Enhanced Damage<br>Adds 20-30 Damage<br>35% Deadly Strike<br>25% Chance of Open Wounds<br>+120 Open Wounds Damage per Second<br>",
+    properties: {
+      onehandmin: 62, // One-Hand Damage Min
+      onehandmax: 171, // One-Hand Damage Max
+      reqstr: 68, // Required Strength
+      reqlvl: 39, // Required Level
+      ias: 30, // Increased Attack Speed (30%)
+      edmg: 200, // Enhanced Damage (200%)
+      tomindmg: 20, // Additional Damage Min (20)
+      tomaxdmg: 30, // Additional Damage Max (30)
+      deadlystrike: 35, // Deadly Strike Chance (35%)
+      openwounds: 25, // Open Wounds Chance (25%)
+      openwoundsdps: 120, // Open Wounds Damage per Second (120)
+    },
+  },
+
+  Islestrike: {
+    description:
+      "Islestrike<br>Twin Axe<br>Base Melee Range: 2<br>One-Hand Damage: 52 to 156, Avg 104<br>Required Strength: 85<br>Required Level: 43<br>+2 to Druid Skills<br>+50% Increased Attack Speed<br>+190% Enhanced Damage<br>25% Chance of Crushing Blow<br>+4 to Fury (Druid Only)<br>+4 to Maul (Druid Only)<br>+10 to All Attributes<br>",
+    properties: {
+      onehandmin: 52, // One-Hand Damage Min
+      onehandmax: 156, // One-Hand Damage Max
+      reqstr: 85, // Required Strength
+      reqlvl: 43, // Required Level
+      druidskills: 2, // Druid Skills (+2)
+      ias: 50, // Increased Attack Speed (50%)
+      edmg: 190, // Enhanced Damage (190%)
+      crushingblow: 25, // Crushing Blow Chance (25%)
+      fury: 4, // Fury Skill (+4)
+      maul: 4, // Maul Skill (+4)
+      allattributes: 10, // All Attributes (+10)
+    },
+  },
+
+  "Pompeii's Wrath": {
+    description:
+      "Pompeii's Wrath<br>Crowbill<br>Base Melee Range: 2<br>One-Hand Damage: 63 to 144, Avg 103.5<br>Required Strength: 94<br>Required Dexterity: 70<br>Required Level: 45<br>8% Chance to Cast Level 28 Molten Boulder on Striking<br>+40% Increased Attack Speed<br>+200% Enhanced Damage<br>Adds 60-175 Fire Damage<br>Slows Target by 10%<br>",
+    properties: {
+      onehandmin: 63, // One-Hand Damage Min
+      onehandmax: 144, // One-Hand Damage Max
+      reqstr: 94, // Required Strength
+      reqdex: 70, // Required Dexterity
+      reqlvl: 45, // Required Level
+      ctcmoletnboulder: (8, 28), // Chance to Cast Molten Boulder on Striking (8% chance, level 28)
+      ias: 40, // Increased Attack Speed (40%)
+      edmg: 200, // Enhanced Damage (200%)
+      tomindmg: 60, // Fire Damage Min (60)
+      tomaxdmg: 175, // Fire Damage Max (175)
+      slows: 10, // Slows Target by 10%
+    },
+  },
+
+  "Guardian Naga": {
+    description:
+      "Guardian Naga<br>Naga<br>Base Melee Range: 2<br>One-Hand Damage: 64 to 199, Avg 131.5<br>Required Strength: 121<br>Required Level: 48<br>10% Chance to Cast Level 25 Poison Nova on Striking<br>+180% Enhanced Damage<br>+20 to Maximum Damage<br>+250 Poison Damage over 2 Seconds<br>Poison Resist +30%<br>Attacker Takes Damage of 150<br>",
+    properties: {
+      onehandmin: 64, // One-Hand Damage Min
+      onehandmax: 199, // One-Hand Damage Max
+      reqstr: 121, // Required Strength
+      reqlvl: 48, // Required Level
+      ctcpoisonnova: (10, 25), // Chance to Cast Poison Nova on Striking (10% chance, level 25)
+      edmg: 180, // Enhanced Damage (180%)
+      tomindmg: 20, // Additional Maximum Damage (20)
+      poisondmgmin: 250, // Poison Damage Min (250)
+      poisondmgmax: 250, // Poison Damage Max (250)
+      poisontime: 2, // Poison Duration in seconds (2)
+      poisres: 30, // Poison Resist (+30%)
+      attackerdamagereduction: 150, // Attacker Takes Damage of 150
+    },
+  },
+
+  "Warlord's Trust": {
+    description:
+      "Warlord's Trust<br>Military Axe<br>Base Melee Range: 3<br>Two-Hand Damage: 74 to 216, Avg 145<br>Required Strength: 73<br>Required Level: 35<br>+40% Increased Attack Speed<br>+255% Enhanced Damage<br>+75 Defense<br>Physical Damage Taken Reduced by 20%<br>+[0-49] to Vitality (+0.5 per Character Level)<br>Replenish Life +20<br>All Resistances +20<br>Repairs 1 Durability in 4 Seconds<br>",
+    properties: {
+      twohandmin: 74, // Two-Hand Damage Min
+      twohandmax: 216, // Two-Hand Damage Max
+      reqstr: 73, // Required Strength
+      reqlvl: 35, // Required Level
+      ias: 40, // Increased Attack Speed (40%)
+      edmg: 255, // Enhanced Damage (255%)
+      defense: 75, // Defense (+75)
+      pdr: 20, // Physical Damage Taken Reduced by 20%
+      vitalityperlvl: 0.5, // Vitality per Character Level (0.5)
+      vitality: 49, // Vitality Range (0-49) based on character level
+    },
+  },
+
+  Spellsteel: {
+    description:
+      "Spellsteel<br>Bearded Axe<br>Base Melee Range: 3<br>Two-Hand Damage: 103 to 241, Avg 172<br>Required Strength: 37<br>Required Level: 39<br>+30% Faster Cast Rate<br>+245% Enhanced Damage<br>+100 to Mana<br>Regenerate Mana 25%<br>Magic Damage Taken Reduced by 15<br>Level 18 Amplify Damage (60 Charges)<br>Level 1 Blink (60 Charges)<br>30% Chance to Cast Level 25 Firestorm on Striking<br>30% Chance to Cast Level 25 Holy Bolt on Striking<br>Requirements -60%<br>",
+    properties: {
+      twohandmin: 103, // Two-Hand Damage Min
+      twohandmax: 241, // Two-Hand Damage Max
+      reqstr: 37, // Required Strength
+      reqlvl: 39, // Required Level
+      fcr: 30, // Faster Cast Rate (30%)
+      edmg: 245, // Enhanced Damage (245%)
+      tomana: 100, // Mana (+100)
+      regmana: 25, // Regenerate Mana (25%)
+      mdr: 15, // Magic Damage Taken Reduced by 15
+      amplifydamagecharges: 60, // Level 18 Amplify Damage Charges (60 Charges)
+      blinkcharges: 60, // Level 1 Blink Charges (60 Charges)
+      ctcfirestorm: (30, 25), // Chance to Cast Level 25 Firestorm on Striking (30% chance, level 25)
+      ctcholydbolt: (30, 25), // Chance to Cast Level 25 Holy Bolt on Striking (30% chance, level 25)
+      req: -60, // Requirements -60% (this is a flat reduction to the requirements of the item)
+    },
+  },
+
+  Stormrider: {
+    description:
+      "Stormrider<br>Tabar<br>Base Melee Range: 3 (was 1)<br>Two-Hand Damage: 105 to 273, Avg 189<br>Required Strength: 101<br>Required Level: 41<br>14% Chance to Cast Level 25 Chain Lightning on Striking<br>30% Chance to Cast Level 27 Charged Bolt on Striking<br>25% Chance to Cast Level 25 Charged Bolt when Struck<br>+100% Enhanced Damage<br>Adds 35-75 Damage<br>Adds 1-200 Lightning Damage<br>Attacker Takes Lightning Damage of [75-150]<br>+50 Durability<br>",
+    properties: {
+      twohandmin: 105, // Two-Hand Damage Min
+      twohandmax: 273, // Two-Hand Damage Max
+      reqstr: 101, // Required Strength
+      reqlvl: 41, // Required Level
+      ctcchainlightning: (14, 25), // Chance to Cast Level 25 Chain Lightning on Striking (14% chance, level 25)
+      ctcchargedboltstriking: (30, 27), // Chance to Cast Level 27 Charged Bolt on Striking (30% chance, level 27)
+      ctcchargedboltstruck: (25, 25), // Chance to Cast Level 25 Charged Bolt when Struck (25% chance, level 25)
+      edmg: 100, // Enhanced Damage (100%)
+      tomin: 35, // Additional Damage Min (35)
+      tomax: 75, // Additional Damage Max (75)
+      lightdmgmin: 1, // Lightning Damage Min (1)
+      lightdmgmax: 200, // Lightning Damage Max (200)
+    },
+  },
+  "Boneslayer Blade": {
+    description:
+      "Boneslayer Blade<br>Gothic Axe<br>Base Melee Range: 4<br>Two-Hand Damage: 73 to 320, Avg 196.5<br>Required Strength: 115<br>Required Dexterity: 79<br>Required Level: 42<br>20% Chance to Cast Level 30 Holy Bolt on Striking<br>+40% Increased Attack Speed<br>+220% Enhanced Damage<br>35% Bonus to Attack Rating<br>+[2-247]% Damage to Undead (+2.5% per Character Level)<br>+[5-495] to Attack Rating against Undead (+5 per Character Level)<br>+12 to Zeal<br>+8 to Strength<br>",
+    properties: {
+      twohandmin: 73, // Two-Hand Damage Min
+      twohandmax: 320, // Two-Hand Damage Max
+      reqstr: 115, // Required Strength
+      reqdex: 79, // Required Dexterity
+      reqlvl: 42, // Required Level
+      ctcholybolt: (20, 30), // Chance to Cast Level 30 Holy Bolt on Striking (20% chance, level 30)
+      ias: 40, // Increased Attack Speed (40%)
+      edmg: 220, // Enhanced Damage (220%)
+      toattpercent: 35, // Bonus to Attack Rating (35%)
+      dmgtound: 2.5, // Damage to Undead per Character Level (2.5%)
+      maxdmgperlvl: 2.5, // Maximum Damage to Undead per Character Level (2.5%)
+      toattundeadlvl: 5, // Additional Attack Rating against Undead per Character Level (5)
+      zealosk: 12,
+      str: 8,
+    },
+  },
+
+  "The Minotaur": {
+    description:
+      "The Minotaur<br>Ancient Axe<br>Base Melee Range: 3<br>Two-Hand Damage: 263 to 489, Avg 376<br>Required Strength: 125<br>Required Level: 45<br>+260% Enhanced Damage<br>Adds 40-50 Damage<br>30% Chance of Crushing Blow<br>Hit Blinds Target +2<br>Slows Target by 10%<br>+20 to Strength<br>Cannot Be Frozen<br>",
+    properties: {
+      twohandmin: 263, // Two-Hand Damage Min
+      twohandmax: 489, // Two-Hand Damage Max
+      reqstr: 125, // Required Strength
+      reqlvl: 45, // Required Level
+      edmg: 260, // Enhanced Damage (260%)
+      tomindmg: 40, // Additional Damage Min (40)
+      tomaxdmg: 50, // Additional Damage Max (50)
+      crushingblow: 30, // Crushing Blow Chance (30%)
+      hitblinds: 2, // Hit Blinds Target (+2)
+      slows: 10, // Slows Target by 10%
+      str: 20, // Additional Strength (+20)
+      cbf: 1,
+    },
+  },
+  "Razor's Edge": {
+    description:
+      "Razor's Edge<br>Tomahawk<br>Base Melee Range: 2 (was 0)<br>Base Maximum Sockets: 3<br>One-Hand Damage: 176 to 300, Avg 238<br>Required Strength: 125<br>Required Dexterity: 67<br>Required Level: 67<br>+60% Increased Attack Speed<br>+300% Enhanced Damage<br>-25% Target Defense<br>40% Deadly Strike<br>60% Chance of Open Wounds<br>+340 Open Wounds Damage Per Second<br>",
+    properties: {
+      onehandmin: 176, // One-Hand Damage Min
+      onehandmax: 300, // One-Hand Damage Max
+      reqstr: 125, // Required Strength
+      reqdex: 67, // Required Dexterity
+      reqlvl: 67, // Required Level
+      ias: 60, // Increased Attack Speed (60%)
+    },
+  },
+
+  "Rune Master": {
+    description:
+      "Rune Master<br>Ettin Axe<br>Base Melee Range: 2<br>One-Hand Damage: 164 to 332, Avg 248<br>Required Strength: 145<br>Required Dexterity: 45<br>Required Level: 72<br>+40% Increased Attack Speed<br>+300% Enhanced Damage<br>+5% to Maximum Cold Resist<br>Curse Resistance +20%<br>Cannot Be Frozen<br>Socketed [5]<br>",
+    properties: {
+      onehandmin: 164, // One-Hand Damage Min
+      onehandmax: 332, // One-Hand Damage Max
+      reqstr: 145, // Required Strength
+      reqdex: 45, // Required Dexterity
+      reqlvl: 72, // Required Level
+      ias: 40, // Increased Attack Speed (40%)
+    },
+  },
+
+  Cranebeak: {
+    description:
+      "Cranebeak<br>War Spike<br>Base Melee Range: 2<br>One-Hand Damage: 152 to 240, Avg 196<br>Required Strength: 133<br>Required Dexterity: 54<br>Required Level: 63<br>+40% Increased Attack Speed<br>+300% Enhanced Damage<br>-25% Target Defense<br>Adds 1-450 Lightning Damage<br>60% Better Chance of Getting Magic Items<br>+6 to Raven (Druid Only)<br>",
+    properties: {
+      onehandmin: 152, // One-Hand Damage Min
+      onehandmax: 240, // One-Hand Damage Max
+      reqstr: 133, // Required Strength
+      reqdex: 54, // Required Dexterity
+      reqlvl: 63, // Required Level
+      ias: 40, // Increased Attack Speed (40%)
+      edmg: 300, // Enhanced Damage (300%)
+    },
+  },
+
+  "Death Cleaver": {
+    description:
+      "Death Cleaver<br>Berserker Axe<br>Base Melee Range: 2<br>One-Hand Damage: 214 to 373, Avg 293.5<br>Required Strength: 138<br>Required Dexterity: 59<br>Required Level: 70<br>+40% Increased Attack Speed<br>+350% Enhanced Damage<br>+30 to Minimum Damage<br>-33% Target Defense<br>60% Deadly Strike<br>5% Maximum Deadly Strike<br>+9 Life after each Kill<br>",
+    properties: {
+      onehandmin: 214, // One-Hand Damage Min
+      onehandmax: 373, // One-Hand Damage Max
+    },
+  },
+
+  "Ethereal Edge": {
+    description:
+      "Ethereal Edge<br>Silver-Edged Axe<br>Base Melee Range: 3<br>Two-Hand Damage (Ethereal): 271 to 481, Avg 376<br>Required Strength: 156<br>Required Dexterity: 55<br>Required Level: 74<br>Indestructible<br>+45% Increased Attack Speed<br>+180% Enhanced Damage<br>+350 to Attack Rating<br>+200% Damage to Demons<br>+12 Fire Absorb<br>+20 Life after each Demon Kill<br>Ethereal<br>",
+    properties: {
+      twohandmin: 271, // Two-Hand Damage Min (Ethereal)
+      twohandmax: 481, // Two-Hand Damage Max (Ethereal)
+      reqstr: 156, // Required Strength
+      reqdex: 55, // Required Dexterity
+    },
+  },
+
+  Hellslayer: {
+    description:
+      "Hellslayer<br>Decapitator<br>Base Melee Range: 3<br>Two-Hand Damage: 183 to [415-1020], Avg 280.5-601.5<br>Required Strength: 189<br>Required Dexterity: 33<br>Required Level: 66<br>30% Chance to Cast Level 30 Fire Ball on Striking<br>+40% Increased Attack Speed<br>+200% Enhanced Damage<br>+[3-297]% Enhanced Maximum Damage (+3% per Character Level)<br>Adds 600 Fire Damage<br>-35% to Enemy Fire Resistance<br>+[0-49] to Strength (+0.5 per Character Level)<br>+[0-49] to Vitality (+0.5 per Character Level)<br>",
+    properties: {
+      twohandmin: 183, // Two-Hand Damage Min
+      twohandmax: 415, // Two-Hand Damage Max (lower bound)
+    },
+  },
+
+  "Messerschmidt's Reaver": {
+    description:
+      "Messerschmidt's Reaver<br>Champion Axe<br>Base Melee Range: 4<br>Two-Hand Damage: 259 to 704, Avg 481.5<br>Required Strength: 167<br>Required Dexterity: 59<br>Required Level: 70<br>+20% Increased Attack Speed<br>+250% Enhanced Damage<br>+[2-247]% Enhanced Maximum Damage (+2.5% per Character Level)<br>100% Bonus to Attack Rating<br>20% Chance of Open Wounds<br>+850 Open Wounds Damage per Second<br>+20 to All Attributes<br>",
+    properties: {
+      twohandmin: 259, // Two-Hand Damage Min
+      twohandmax: 704, // Two-Hand Damage Max
+      reqstr: 167, // Required Strength
+      reqdex: 59, // Required Dexterity
+      reqlvl: 70, // Required Level
+    },
+  },
+
+  "Executioner's Justice": {
+    description:
+      "Executioner's Justice<br>Glorious Axe<br>Base Melee Range: 3<br>Two-Hand Damage: 315 to 651, Avg 483<br>Required Strength: 164<br>Required Dexterity: 55<br>Required Level: 77<br>50% Chance to Cast Level 25 Decrepify when you Kill an Enemy<br>+30% Increased Attack Speed<br>+335% Enhanced Damage<br>-33% Target Defense<br>50% Chance of Crushing Blow<br>Curse Resistance +20%<br>",
+    properties: {
+      twohandmin: 315, // Two-Hand Damage Min
+      twohandmax: 651, // Two-Hand Damage Max
+      reqstr: 164, // Required Strength
+      reqdex: 55, // Required Dexterity
+    },
+  },
+
+  "Dark Clan Crusher": {
+    description:
+      "Dark Clan Crusher<br>Cudgel<br>Base Melee Range: 2<br>Base Maximum Sockets: 3<br>One-Hand Damage: 34 to 10, Avg 68<br>Required Strength: 25<br>Required Level: 34<br>+2 to Druid Skills<br>+40% Increased Attack Speed<br>+240% Enhanced Damage<br>25% Bonus to Attack Rating<br>+200% Damage to Demons<br>+200 to Attack Rating against Demons<br>+15 Life after each Demon Kill<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 34, // One-Hand Damage Min
+      onehandmax: 10, // One-Hand Damage Max (this should be a positive number, but it seems to be a placeholder in the original text)
+      reqstr: 25, // Required Strength
+      reqlvl: 34, // Required Level
+      ias: 40, // Increased Attack Speed (40%)
+      edmg: 240, // Enhanced Damage (240%)
+    },
+  },
+
+  Fleshrender: {
+    description:
+      "Fleshrender<br>Barbed Club<br>Base Speed Modifier: 0<br>Base Melee Range: 2<br>One-Hand Damage: 85 to 150, Avg 117.5<br>Required Strength: 30<br>Required Level: 38<br>+2 to Shape Shifting Skills (Druid Only)<br>+2 to Druid Skills<br>+40% Increased Attack Speed<br>+180% Enhanced Damage<br>Adds 35-50 Damage<br>20% Chance of Crushing Blow<br>20% Deadly Strike<br>25% Chance of Open Wounds<br>+50 Open Wounds Damage per Second<br>+50% Damage to Undead<br>+20 Durability<br>",
+    properties: {
+      onehandmin: 85, // One-Hand Damage Min
+      onehandmax: 150, // One-Hand Damage Max
+      reqstr: 30, // Required Strength
+      reqlvl: 38, // Required Level
+      shapeshiftingskills: 2, // Shape Shifting Skills (+2)
+    },
+  },
+
+  "Sureshrill Frost": {
+    description:
+      "Sureshrill Frost<br>Flanged Mace<br>Base Melee Range: 2<br>Base Maximum Sockets: 3<br>One-Hand Damage: 76 to 122, Avg 99<br>Required Strength: 61<br>Required Level: 39<br>10% Chance to Cast Level 14 Frozen Orb on Striking<br>+3 to Cold Skills<br>+180% Enhanced Damage<br>Adds 15-30 Damage<br>Adds 63-112 Cold Damage<br>Freezes Target +3<br>Cannot Be Frozen<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 76, // One-Hand Damage Min
+      onehandmax: 122, // One-Hand Damage Max
+      reqstr: 61, // Required Strength
+      reqlvl: 39, // Required Level
+      ctcfrozenorb: (10, 14), // Chance to Cast Frozen Orb on Striking (10% chance, level 14)
+      coldsks: 3, // Cold Skills (+3)
+      ias: 0, // No IAS bonus in the original description
+      edmg: 180, // Enhanced Damage (180%)
+      tomin: 15, // Additional Damage Min (15)
+      tomax: 30, // Additional Damage Max (30)
+      colddmgmin: 63, // Cold Damage Min (63)
+      colddmgmax: 112, // Cold Damage Max (112)
+      freezestarget: 3, // Freezes Target (+3)
+      cbf: 1, // Cannot Be Frozen
+    },
+  },
+
+  Moonfall: {
+    description:
+      "Moonfall<br>Jagged Star<br>Base Melee Range: 2<br>One-Hand Damage: 88 to 136, Avg 112<br>Required Strength: 74<br>Required Level: 42<br>12% Chance to Cast Level 26 Meteor on Striking<br>+3 to Magic Skills<br>+170% Enhanced Damage<br>Adds 10-15 Damage<br>Adds 55-115 Fire Damage<br>Magic Damage Taken Reduced by [9-12]<br>+2 to Light Radius<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 88, // One-Hand Damage Min
+      onehandmax: 136, // One-Hand Damage Max
+      reqstr: 74, // Required Strength
+      reqlvl: 42, // Required Level
+      ctcmeteor: (12, 26), // Chance to Cast Meteor on Striking (12% chance, level 26)
+    },
+  },
+
+  "Baezil's Vortex": {
+    description:
+      "Baezil's Vortex<br>Knout<br>Base Melee Range: 2<br>One-Hand Damage: 54 to 150, Avg 102<br>Required Strength: 82<br>Required Dexterity: 73<br>Required Level: 45<br>20% Chance to Cast Level 25 Nova on Striking<br>+20% Increased Attack Speed<br>+200% Enhanced Damage<br>Adds 1-150 Lightning Damage<br>+100 to Mana<br>Lightning Resist +25%<br>Level 25 Nova (80 Charges)<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 54, // One-Hand Damage Min
+      onehandmax: 150, // One-Hand Damage Max
+      reqstr: 82, // Required Strength
+      reqdex: 73, // Required Dexterity
+      reqlvl: 45, // Required Level
+    },
+  },
+
+  Earthshaker: {
+    description:
+      "Earthshaker<br>Battle Hammer<br>Base Melee Range: 2<br>One-Hand Damage: 128 to 198, Avg 163<br>Required Strength: 100<br>Required Level: 43<br>14% Chance to Cast Level 24 Fissure on Striking<br>+4 to Elemental Skills (Druid Only)<br>+30% Increased Attack Speed<br>+20% Faster Cast Rate<br>+230% Enhanced Damage<br>Hit Blinds Target<br>+50% Damage to Undead<br>+50 Durability<br>",
+    properties: {
+      onehandmin: 128, // One-Hand Damage Min
+      onehandmax: 198, // One-Hand Damage Max
+    },
+  },
+
+  "Bloodtree Stump": {
+    description:
+      "Bloodtree Stump<br>War Club<br>Base Melee Range: 4<br>Two-Hand Damage: 248 to 406, Avg 327<br>Required Strength: 124<br>Required Level: 48<br>+2 to Masteries (Barbarian Only)<br>+260% Enhanced Damage<br>50% Chance of Crushing Blow<br>+3 to General Mastery (Barbarian Only)<br>+3 to Leap Attack (Barbarian Only)<br>+25 to Strength<br>All Resistances +20<br>+50% Damage to Undead<br>+40 Durability<br>",
+    properties: {
+      twohandmin: 248, // Two-Hand Damage Min
+      twohandmax: 406, // Two-Hand Damage Max
+    },
+  },
+
+  "The Gavel of Pain": {
+    description:
+      "The Gavel of Pain<br>Martel de Fer<br>Base Melee Range: 3<br>Two-Hand Damage: 274 to 481, Avg 377.5<br>Required Strength: 169<br>Required Level: 45<br>12% Chance to Cast Level 31 Amplify Damage on Striking<br>5% Chance to Cast Level 1 Iron Maiden when Struck<br>+245% Enhanced Damage<br>Adds 12-30 Damage<br>Curse Resistance +20%<br>Attacker Takes Damage of 260<br>Level 8 Amplify Damage (3 Charges)<br>Replenish 1 Charge in 3 Seconds<br>+50% Damage to Undead<br>",
+    properties: {
+      twohandmin: 274, // Two-Hand Damage Min
+      twohandmax: 481, // Two-Hand Damage Max
+    },
+  },
+
+  "Nord's Tenderizer": {
+    description:
+      "Nord's Tenderizer<br>Truncheon<br>Base Melee Range: 2<br>Base Maximum Socets: 3<br>One-Hand Damage: 189 to 232, Avg 210.5<br>Required Strength: 88<br>Required Dexterity: 43<br>Required Level: 68<br>18% Chance to Cast Level 32 Blizzard on Striking<br>+25% Increased Attack Speed<br>+330% Enhanced Damage<br>180% Bonus to Attack Rating<br>Adds 205-455 Cold Damage<br>Freezes Target +4<br>Cold Absorb 15%<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 189, // One-Hand Damage Min
+      onehandmax: 232, // One-Hand Damage Max
+      reqstr: 88, // Required Strength
+      reqdex: 43, // Required Dexterity
+    },
+  },
+
+  "Demon Limb": {
+    description:
+      "Demon Limb<br>Tyrant Club<br>Base Melee Range: 2<br>One-Hand Damage: 141 to 247, Avg 194<br>Required Strength: 133<br>Required Level: 63<br>+230% Enhanced Damage<br>+123% Damage to Demons<br>Adds 222-333 Fire Damage<br>13% Life Stolen per Hit<br>Fire Resist +20%<br>Level 23 Enchant Fire (20 Charges)<br>Replenish 1 Charge in 3 Seconds<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 141, // One-Hand Damage Min
+      onehandmax: 247, // One-Hand Damage Max
+    },
+  },
+
+  "Baranar's Star": {
+    description:
+      "Baranar's Star<br>Devil Star<br>Base Melee Range: 2<br>One-Hand Damage: 196 to 241, Avg 218.5<br>Required Strength: 153<br>Required Dexterity: 44<br>Required Level: 65<br>+50% Increased Attack Speed<br>+200% Enhanced Damage<br>200% Bonus to Attack Rating<br>Adds 50-300 Fire Damage<br>Adds 50-300 Lightning Damage<br>Adds 50-300 Cold Damage<br>+15 to Strength<br>+15 to Dexterity<br>+50% Damage to Undead<br>+100 Durability<br>",
+    properties: {
+      onehandmin: 196, // One-Hand Damage Min
+      onehandmax: 241, // One-Hand Damage Max
+    },
+  },
+
+  "Horizon's Tornado": {
+    description:
+      "Horizon's Tornado<br>Scourge<br>Base Melee Range: 2<br>One-Hand Damage: 56 to 400, Avg 228<br>Required Strength: 125<br>Required Dexterity: 77<br>Required Level: 64<br>25% Chance to Cast Level 28 Tornado on Striking<br>15% Chance to Cast Level 28 Twister on Casting<br>+50% Increased Attack Speed<br>+35% Faster Cast Rate<br>+300% Enhanced Damage<br>+6 to Tornado (Druid Only)<br>+6 to Twister (Druid Only)<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 56, // One-Hand Damage Min
+      onehandmax: 400, // One-Hand Damage Max (this is a placeholder, it should be a positive number)
+      reqstr: 125, // Required Strength
+      reqdex: 77, // Required Dexterity
+      reqlvl: 64, // Required Level
+    },
+  },
+
+  Stormlash: {
+    description:
+      "Stormlash<br>Scourge<br>Base Melee Range: 2<br>One-Hand Damage: 61 to 440, Avg 250.5<br>Required Strength: 125<br>Required Dexterity: 77<br>Required Level: 82<br>30% Chance to Cast Level 28 Tornado on Striking<br>20% Chance to Cast Level 25 Static Field on Striking<br>+30% Increased Attack Speed<br>+340% Enhanced Damage<br>Adds 1-600 Lightning Damage<br>33% Chance of Crushing Blow<br>+9 Lightning Absorb<br>Attacker Takes Lightning Damage of 360<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 61, // One-Hand Damage Min
+      onehandmax: 440, // One-Hand Damage Max (this is a placeholder, it should be a positive number)
+      reqstr: 125, // Required Strength
+      reqdex: 77, // Required Dexterity
+      reqlvl: 82, // Required Level
+    },
+  },
+
+  "Stone Crusher": {
+    description:
+      "Stone Crusher<br>Legendary Mallet<br>Base Melee Range: 2<br>One-Hand Damage: 226 to 273, Avg 249.5<br>Required Strength: 189<br>Required Level: 68<br>-10% to Enemy Physical Resistance<br>+260% Enhanced Damage<br>Removed<br>-25% Target Defense<br>40% Chance of Crushing Blow<br>-75 to Monster Defense per Hit<br>+30 to Strength<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 226, // One-Hand Damage Min
+      onehandmax: 273, // One-Hand Damage Max
+      reqstr: 189, // Required Strength
+    },
+  },
+
+  "Schaefer's Hammer": {
+    description:
+      "Schaefer's Hammer<br>Legendary Mallet<br>Base Melee Range: 2<br>One-Hand Damage: 226 to 471, Avg 348.5<br>Required Strength: 189<br>Required Level: 79<br>20% Chance to Cast Level 25 Static Field on Striking<br>Repairs 1 Durability in 10 Seconds<br>+40% Increased Attack Speed<br>+260% Enhanced Damage<br>+[2-198] to Maximum Damage (+2 per Character Level)<br>+[8-792] to Attack Rating (+8 per Character Level)<br>Adds 75-585 Lightning Damage<br>+50 to Life<br>Lightning Resist +75%<br>+4-8 to Light Radius<br>+50% Damage to Undead<br>",
+    properties: {
+      onehandmin: 226, // One-Hand Damage Min
+      onehandmax: 471, // One-Hand Damage Max
+      reqstr: 189, // Required Strength
+      reqlvl: 79, // Required Level
+      ctcstaticfield: (20, 25), // Chance to Cast Level 25 Static Field on Striking (20% chance, level 25)
+    },
+  },
+
+  Windhammer: {
+    description:
+      "Windhammer<br>Ogre Maul<br>Base Melee Range: 4<br>Two-Hand Damage: 364 to 501, Avg 432.5<br>Required Strength: 225<br>Required Level: 68<br>33% Chance to Cast Level 35 Twister on Striking<br>+40% Increased Attack Speed<br>+280% Enhanced Damage<br>50% Chance of Crushing Blow<br>+50% Damage to Undead<br>",
+    properties: {
+      twohandmin: 364, // Two-Hand Damage Min
+      twohandmax: 501, // Two-Hand Damage Max
+    },
+  },
+
+  "Earth Shifter": {
+    description:
+      "Earth Shifter<br>Thunder Maul<br>Base Melee Range: 3<br>Two-Hand Damage: 164 to 900, Avg 532<br>Required Strength: 190<br>Required Level: 69<br>8% Chance to Cast level 25 Volcano on Kill<br>25% Chance to Cast Level 28 Fissure on Striking<br>+4 to Fire Skills<br>+40% Increased Attack Speed<br>+60% Faster Cast Rate<br>+300% Enhanced Damage<br>33% Chance of Crushing Blow<br>+50% Damage to Undead<br>Requirements -25%<br>",
+    properties: {
+      twohandmin: 164, // Two-Hand Damage Min
+      twohandmax: 900, // Two-Hand Damage Max (this is a placeholder, it should be a positive number)
+      reqstr: 190, // Required Strength
+      reqlvl: 69, // Required Level
+      ctcvolcano: (8, 25), // Chance to Cast Level 25 Volcano on Kill (8% chance, level 25)
+    },
+  },
+
+  "The Cranium Basher": {
+    description:
+      "The Cranium Basher<br>Thunder Maul<br>Base Melee Range: 3<br>Two-Hand Damage: 167 to 835, Avg 501<br>Required Strength: 253<br>Required Level: 87<br>8% Chance to Cast Level 33 Amplify Damage on Striking<br>+30% Increased Attack Speed<br>+260% Enhanced Damage<br>Adds 20-25 Damage<br>75% Chance of Crushing Blow<br>+25 to Strength<br>All Resistances +25<br>+50% Damage to Undead<br>",
+    properties: {
+      twohandmin: 167, // Two-Hand Damage Min
+      twohandmax: 835, // Two-Hand Damage Max (this is a placeholder, it should be a positive number)
+      reqstr: 253, // Required Strength
+      reqlvl: 87, // Required Level
+      ctcampdamage: (8, 33), // Chance to Cast Level 33 Amplify Damage on Striking (8% chance, level 33)
+    },
+  },
+  //shields/
 
   "Pelta Lunata": {
     description:
