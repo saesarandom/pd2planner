@@ -114,7 +114,7 @@ body {
 .menucontainer {
   position: absolute;
   top: 0px;
-  width: 100%;
+  width: auto;
   color: rgb(255, 255, 255);
 }
 
@@ -2250,36 +2250,6 @@ select:has(option[value="Arcanna's Head"]:checked),
 option[value="Arcanna's Head"] {
   background-color: rgb(4, 186, 95);
 }
-.hirelingcontainer {
-  position: absolute;
-  left: 1330px;
-  top: 1070px;
-  width: 1300px;
-  height: 1300px;
-  background-image: url("/img/mercback.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-#buff1 {
-  position: absolute;
-  left: 1350px;
-  top: 20px;
-  width: 38px;
-  height: 38px;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-#buff2 {
-  position: absolute;
-  left: 1390px;
-  top: 20px;
-  width: 38px;
-  height: 38px;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
 
 .socketcontainer {
   position: absolute;
@@ -3046,7 +3016,7 @@ option[value="Arcanna's Head"] {
   left: 720px;
   height: 40px;
   width: 80px;
-  color: rgb(201, 1, 1);
+  color: rgb(102, 100, 100);
   border: none;
   padding: 5px 10px;
   margin-left: 10px;
@@ -3057,11 +3027,26 @@ option[value="Arcanna's Head"] {
 .upgrade-buttonshield {
   background-color: #4a4a4a;
   position: absolute;
-  top: 650px;
+  top: 690px;
+  left: 220px;
+  height: 60px;
+  width: 80px;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+#makeetherealshield {
+  background-color: #1d1d1d;
+  position: absolute;
+  top: 640px;
   left: 220px;
   height: 40px;
   width: 80px;
-  color: white;
+  color: rgb(102, 100, 100);
   border: none;
   padding: 5px 10px;
   margin-left: 10px;
@@ -3287,21 +3272,29 @@ option[value="Arcanna's Head"] {
   z-index: 1000;
 }
 
-.mercenary-equipment {
+/* .mercenary-equipment {
   margin-top: 20px;
-
   position: relative;
+  z-index: 5;
 }
 
 .merc-equipment-slot {
   margin-bottom: 15px;
+  z-index: 10; /* Higher z-index to stay on top */
+
+/* } */
+
+.merc-equipment-slot label {
+  position: absolute;
+  color: #ffd700;
+  z-index: 15; /* Higher than dropdowns */
 }
 
 /* Container for the equipment dropdowns */
 .merc-equip-row {
-  display: flex;
-  gap: 70px; /* Space between dropdowns */
-  margin-bottom: 20px;
+  display: center;
+
+  position: relative;
 }
 
 #merchelms-dropdown {
@@ -3436,7 +3429,7 @@ option[value="Arcanna's Head"] {
   position: absolute;
   background: rgba(0, 0, 0, 0.8);
   color: #ccc;
-  z-index: 5;
+  z-index: 20; /* Highest z-index for tooltips/info */
   top: 0;
   width: 200px;
   background-color: rgba(0, 0, 0, 0.4);
@@ -3458,6 +3451,10 @@ option[value="Arcanna's Head"] {
   background: #000;
   color: #fff;
   border: 1px solid #666;
+}
+
+.merc-equipment-slot select:focus {
+  z-index: 20;
 }
 
 #merchelms-label {
@@ -3504,7 +3501,7 @@ option[value="Arcanna's Head"] {
 
 .discord-button {
   position: absolute;
-  /* You can adjust these values to position the button where you want */
+
   top: 220px;
   left: 1740px;
   background-color: #5865f2;
@@ -3525,9 +3522,9 @@ option[value="Arcanna's Head"] {
   transition: background-color 0.2s;
 }
 
-.discord-button:hover {
+/* .discord-button:hover {
   background-color: #4752c4;
-}
+} */
 
 .discord-icon {
   width: 55px;
@@ -3535,4 +3532,285 @@ option[value="Arcanna's Head"] {
   background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z'/%3E%3C/svg%3E");
   background-size: contain;
   background-repeat: no-repeat;
+}
+
+/* Base styling */
+
+/* Main hireling container */
+.hireling-container {
+  position: absolute;
+  left: 1250px;
+  top: 1250px;
+  width: 1350px;
+  height: auto;
+  color: var(--text-color);
+  font-family: "overlock sc";
+  z-index: 1;
+  background-image: url("/img/mercback.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.info-group label {
+  display: block;
+  color: var(--gold-color);
+  margin-bottom: 5px;
+}
+
+.styled-select,
+.styled-input {
+  width: auto;
+  padding: 1px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+/* Equipment dropdowns in a single horizontal row */
+.equipment-row {
+  position: relative;
+  display: flex;
+  top: 680px;
+  left: 50px;
+  width: calc(100% - 40px);
+  height: 50px; /* Fixed height for the row */
+}
+
+..merc-equipment-slot {
+  position: absolute;
+  width: 150px;
+  z-index: 9999; /* Extremely high z-index to ensure visibility */
+}
+
+.merc-equipment-slot select {
+  width: 100%;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--text-color);
+  border: 1px solid var(--gold-color);
+  border-radius: 4px;
+}
+
+/* Equipment info tooltips */
+.equipment-info {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid var(--gold-color);
+  padding: 10px;
+  color: var(--text-color);
+  z-index: 100;
+  display: none;
+}
+
+.merc-equipment-slot:hover .equipment-info {
+  display: block;
+}
+
+/* Stats panel positioned below equipment */
+.stats-panel {
+  position: absolute;
+  top: 500px;
+  right: 20px;
+  width: 300px; /* Adjust width as needed */
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.stat-label {
+  color: var(--gold-color);
+  font-weight: bold;
+}
+
+/* Buff icons */
+.buffs-container {
+  position: absolute;
+
+  left: 1360px;
+  display: flex;
+  gap: 10px;
+}
+
+.buff-icon {
+  width: 40px;
+  height: 40px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Google Sheet iframe */
+iframe {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: invert(1) hue-rotate(180deg);
+}
+
+#merchelms-dropdown {
+  top: 150px;
+  left: 50px;
+}
+
+#mercarmors-dropdown {
+  top: 150px;
+  left: 350px;
+}
+
+#mercweapons-dropdown {
+  top: 150px;
+  left: 600px;
+}
+
+#mercoffs-dropdown {
+  top: 150px;
+  left: 850px;
+}
+
+#mercgloves-dropdown {
+  top: 550px;
+  left: 50px;
+}
+
+#mercbelts-dropdown {
+  top: 550px;
+  left: 350px;
+}
+
+#mercboots-dropdown {
+  top: 550px;
+  left: 600px;
+}
+
+/* Common dropdown styling */
+.merc-equipment-slot select {
+  width: 100%;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  font-family: "overlock sc", sans-serif;
+  font-size: 14px;
+}
+
+/* Info tooltips for equipment */
+.equipment-info {
+  position: fixed;
+  width: 100px;
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 1px solid #ffd700;
+  padding: 10px;
+  color: #ffffff;
+  z-index: 1; /* Even higher to appear above dropdowns */
+  display: none;
+  margin-top: 5px;
+  max-height: 300px;
+}
+
+/* Position tooltips below their respective dropdowns */
+#merchelm-info {
+  top: 185px;
+  left: 50px;
+}
+
+#mercarmor-info {
+  top: 185px;
+  left: 350px;
+}
+
+#mercweapon-info {
+  top: 185px;
+  left: 600px;
+}
+
+#mercoff-info {
+  top: 185px;
+  left: 850px;
+}
+
+#mercglove-info {
+  top: 585px;
+  left: 50px;
+}
+
+#mercbelt-info {
+  top: 585px;
+  left: 350px;
+}
+
+#mercboot-info {
+  top: 585px;
+  left: 600px;
+}
+
+/* Buff positioning */
+.buff-icon {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+/* Position buff icons in a different area */
+#buff1 {
+  top: 601px;
+  right: 60px;
+  z-index: 999; /* Ensure it's above other elements */
+}
+#buff2 {
+  top: 600px;
+  right: 20px;
+}
+#buff3 {
+  top: 250px;
+  left: 150px;
+}
+#buff4 {
+  top: 250px;
+  left: 200px;
+}
+#buff5 {
+  top: 250px;
+  left: 250px;
+}
+#buff6 {
+  top: 250px;
+  left: 300px;
+}
+#buff7 {
+  top: 250px;
+  left: 350px;
+}
+#buff8 {
+  top: 250px;
+  left: 400px;
+}
+#buff9 {
+  top: 250px;
+  left: 450px;
+}
+#buff10 {
+  top: 250px;
+  left: 500px;
 }

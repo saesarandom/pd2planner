@@ -361,6 +361,14 @@ document.addEventListener("DOMContentLoaded", () => {
       range: [30, 40],
     },
     {
+      mod: "+[20-20]% Increased Attack Speed, +[80-120]% Enhanced Damage",
+      type: "double",
+      range: [
+        [20, 20],
+        [80, 120],
+      ],
+    },
+    {
       mod: "[20-30]% Chance of Crushing Blow",
       type: "numeric",
       range: [20, 30],
@@ -1592,10 +1600,20 @@ const maxSockets = {
   "Colossus Blade": 6,
   Flamberge: 5,
   Dagger: 1,
+  Poignard: 1,
+  "Bone Knife": 1,
+  Rondel: 1,
+  "Mithril Point": 1,
+  Cinquedeas: 1,
+  "Fanged Knife": 1,
+  Stiletto: 1,
+  "Legend Spike": 1,
   Dirk: 1,
   Kris: 3,
   Blade: 2,
   "Maiden Javelin": 0,
+  "Ceremonial Javelin": 0,
+  "Matriarchal Javelin": 0,
   Cap: 2,
   "Skull Cap": 2,
   Helm: 2,
@@ -2642,3 +2660,62 @@ document
       }
     }
   });
+
+function enforceDaggerSocketLimits() {
+  const weaponDropdown = document.getElementById("weapons-dropdown");
+  if (!weaponDropdown || !weaponDropdown.value) return;
+
+  const selectedWeapon = weaponDropdown.value;
+  const baseType = getBaseWeaponType(selectedWeapon);
+
+  // List of all dagger base types
+  const daggerTypes = [
+    "Dagger",
+    "Dirk",
+    "Kris",
+    "Blade",
+    "Poignard",
+    "Rondel",
+    "Cinquedeas",
+    "Stiletto",
+    "Bone Knife",
+    "Mithril Point",
+    "Fanged Knife",
+    "Legend Spike",
+  ];
+
+  // If this is a dagger, enforce 1 socket maximum
+  if (daggerTypes.includes(baseType)) {
+    console.log(
+      `DOM ENFORCER: Limiting ${selectedWeapon} (${baseType}) to 1 socket`
+    );
+
+    // Get the socket container
+    const socketContainer = document.querySelector(".weaponsockets");
+    if (!socketContainer) return;
+
+    // Get all socket elements
+    const sockets = socketContainer.querySelectorAll(".socketz");
+
+    // If there's more than 1 socket, remove extras
+    if (sockets.length > 1) {
+      for (let i = 1; i < sockets.length; i++) {
+        sockets[i].remove();
+      }
+    }
+  }
+}
+
+// Add a listener to the weapons dropdown to enforce limits when changing weapons
+document.addEventListener("DOMContentLoaded", function () {
+  const weaponDropdown = document.getElementById("weapons-dropdown");
+  if (weaponDropdown) {
+    weaponDropdown.addEventListener("change", function () {
+      // Wait a bit for the sockets to be created, then enforce limits
+      setTimeout(enforceDaggerSocketLimits, 100);
+    });
+  }
+
+  // Also run on page load
+  setTimeout(enforceDaggerSocketLimits, 200);
+});

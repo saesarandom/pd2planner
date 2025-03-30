@@ -7704,7 +7704,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
 </script>
 
 <br><br><br><br><br>
-<iframe src="https://ptb.discord.com/widget?id=284432411553562624&theme=dark" width="250" height="300" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+<!-- <iframe src="https://ptb.discord.com/widget?id=284432411553562624&theme=dark" width="250" height="300" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe> -->
 <div class="auth-container">
   <form id="loginForm" onsubmit="handleLogin(event)">
       <h2>Login</h2>
@@ -8687,44 +8687,57 @@ const updateAll = () => {
 
 
 
-<div class="hirelingcontainer">Mercenary Class
-  <select id="mercclass">
-    <option value="No Mercenary">No Mercenary</option>
-    <option value="A1 Fire (Vigor)">A1 Fire (Vigor)</option>
-    <option value="A1 Cold (Meditation)">A1 Cold (Meditation)</option>
-    <option value="A1 Magic (Slow Movement)">A1 Magic (Slow Movement)</option>
-    <option value="A2 Defensive (Defiance)">A2 Defensive (Defiance)</option>
-    <option value="A2 Offensive (Blessed Aim)">A2 Offensive (Blessed Aim)</option>
-    <option value="A2 Combat (Thorns)">A2 Combat (Thorns)</option>
-    <option value="A3 Fire (Cleansing)">A3 Fire (Cleansing)</option>
-    <option value="A3 Cold (Prayer)">A3 Cold (Prayer)</option>
-    <option value="A3 Lightning (Holy Shock)">A3 Lightning (Holy Shock)</option>
-    <option value="A4 Light (Sanctuary)">A4 Light (Sanctuary)</option>
-    <option value="A4 Dark (Amplify Damage)">A4 Dark (Amplify Damage)</option>
-    <option value="A5 Combat (Might)">A5 Combat (Might)</option>
-    <option value="A5 Warcries (Battle Orders)">A5 Warcries (Battle Orders)</option>
-  </select>
-  <div class="merclvl">
-    Mercenary Level
-    <input type="number" min="1" max="99" value="1" id="merclvlValue">
-  </div>
-  <div class="mercdifficulty">
-    Hired Difficulty
-  <select id="mercdiff">
-    <option value="Normal">Normal</option>
-    <option value="Nightmare">Nightmare</option>
-    <option value="Hell">Hell</option>
-  </select>
-  </div>
-
-
-  <div class="mercenary-equipment">
-    
-    <div class="merc-equip-row">
+<div class="hireling-container">
+  <div class="hireling-header">
+ 
+  
+  
+  <div class="hireling-main">
+    <!-- Basic Mercenary Info Section -->
+    <div class="hireling-info-panel">
+      <div class="info-group">
+        <label for="mercclass">Mercenary Class</label>
+        <select id="mercclass" class="styled-select">
+          <option value="No Mercenary">No Mercenary</option>
+          <option value="A1 Fire (Vigor)">A1 Fire (Vigor)</option>
+          <option value="A1 Cold (Meditation)">A1 Cold (Meditation)</option>
+          <option value="A1 Magic (Slow Movement)">A1 Magic (Slow Movement)</option>
+          <option value="A2 Defensive (Defiance)">A2 Defensive (Defiance)</option>
+          <option value="A2 Offensive (Blessed Aim)">A2 Offensive (Blessed Aim)</option>
+          <option value="A2 Combat (Thorns)">A2 Combat (Thorns)</option>
+          <option value="A3 Fire (Cleansing)">A3 Fire (Cleansing)</option>
+          <option value="A3 Cold (Prayer)">A3 Cold (Prayer)</option>
+          <option value="A3 Lightning (Holy Shock)">A3 Lightning (Holy Shock)</option>
+          <option value="A4 Light (Sanctuary)">A4 Light (Sanctuary)</option>
+          <option value="A4 Dark (Amplify Damage)">A4 Dark (Amplify Damage)</option>
+          <option value="A5 Combat (Might)">A5 Combat (Might)</option>
+          <option value="A5 Warcries (Battle Orders)">A5 Warcries (Battle Orders)</option>
+        </select>
+      </div>
       
-      <div class="merc-equipment-slot">
-        <label id="merchelms-label">Helm</label>
-        <select id="merchelms-dropdown">
+      <div class="info-group">
+        <label for="merclvlValue">Mercenary Level</label>
+        <input type="number" min="1" max="99" value="1" id="merclvlValue" class="styled-input">
+      </div>
+      
+      <div class="info-group">
+        <label for="mercdiff">Hired Difficulty</label>
+        <select id="mercdiff" class="styled-select">
+          <option value="Normal">Normal</option>
+          <option value="Nightmare">Nightmare</option>
+          <option value="Hell">Hell</option>
+        </select>
+      </div>
+    </div>
+
+
+    
+      
+      <div class="equipment-grid">
+        <!-- First Row -->
+        <div class="merc-equipment-slot">
+          
+          <select id="merchelms-dropdown" class="styled-select">
           <option value="Biggin's Bonnet">Biggin's Bonnet</option>
 <option value="Tarnhelm">Tarnhelm</option>
 <option value="Coif of Glory">Coif of Glory</option>
@@ -8792,8 +8805,8 @@ const updateAll = () => {
   
       
       <div class="merc-equipment-slot">
-        <label id="mercarmors-label">Armor</label>
-        <select id="mercarmors-dropdown">
+       
+        <select id="mercarmors-dropdown" class="styled-select">
           <option value="Greyform">Greyform</option>
 <option value="Blinkbat's Form">Blinkbat's Form</option>
 <option value="The Centurion">The Centurion</option>
@@ -8836,7 +8849,7 @@ const updateAll = () => {
   
       <!-- Weapon -->
       <div class="merc-equipment-slot">
-        <label id="mercweapons-label">Weapon</label>
+       
         <select id="mercweapons-dropdown">
           <option value="The Gnasher">The Gnasher</option>
     <option value="Bladebone">Bladebone</option>
@@ -8925,7 +8938,7 @@ const updateAll = () => {
   
     
     <div class="merc-equipment-slot">
-      <label id="mercoffs-label">Shield/Off-hand</label>
+     
       <select id="mercoffs-dropdown">
         <option value="Pelta Lunata">Pelta Lunata</option>
         <option value="Umbral Disk">Umbral Disk</option>
@@ -8935,7 +8948,7 @@ const updateAll = () => {
   
     
     <div class="merc-equipment-slot">
-      <label id="mercgloves-label">Gloves</label>
+      
       <select id="mercgloves-dropdown">
         <option value="The Hand of Broc">The Hand of Broc</option>
 <option value="Bloodfist">Bloodfist</option>
@@ -8969,7 +8982,7 @@ const updateAll = () => {
   
     
     <div class="merc-equipment-slot">
-      <label id="mercbelts-label">Belt</label>
+      
       <select id="mercbelts-dropdown">
         <option value="Lenymo">Lenymo</option>
         <option value="Snakecord">Snakecord</option>
@@ -9001,7 +9014,7 @@ const updateAll = () => {
   
 
     <div class="merc-equipment-slot">
-      <label id="mercboots-label">Boots</label>
+      
       <select id="mercboots-dropdown">
         <option value="Hotspur">Hotspur</option>
         <option value="Gorefoot">Gorefoot</option>
@@ -9034,187 +9047,258 @@ const updateAll = () => {
   </div>
 </div>
 
-<div class="mercenary-stats">
-  <div class="merciascontainer">IAS
-    <div id="merciascontainer"></div>
+
+<div class="stats-panel">
+
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-label">IAS</div>
+      <div id="merciascontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">FCR</div>
+      <div id="mercfcrcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">FRW</div>
+      <div id="mercfrwcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">FHR</div>
+      <div id="mercfhrcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">CBF</div>
+      <div id="merccbfcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">PLR</div>
+      <div id="mercplrcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">DR%</div>
+      <div id="mercdrcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">PDR</div>
+      <div id="mercpdrcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">MDR</div>
+      <div id="mercmdrcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Fire Resist</div>
+      <div id="mercfireresistcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Cold Resist</div>
+      <div id="merccoldresistcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Light Resist</div>
+      <div id="merclightresistcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Poison Resist</div>
+      <div id="mercpoisonresistcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Curse Resist</div>
+      <div id="merccurseresistcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">All Skills</div>
+      <div id="mercallskillscontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Magic Find</div>
+      <div id="mercmagicfindcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Gold Find</div>
+      <div id="mercgoldfindcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Open Wounds</div>
+      <div id="mercowcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">OW Dmg/s</div>
+      <div id="mercowdmgcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Crushing Blow</div>
+      <div id="merccbcontainer" class="stat-value">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">CB Dmg</div>
+      <div id="merccbdmgcontainer" class="stat-value">0</div>
+    </div>
   </div>
 
-  <div class="mercfcrcontainer">FCR
-    <div id="mercfcrcontainer"></div>
-  </div>
-
-  <div class="mercfrwcontainer">FRW
-    <div id="mercfrwcontainer"></div>
-  </div>
-
-  <div class="mercfhrcontainer">FHR
-    <div id="mercfhrcontainer"></div>
-  </div>
-
-  <div class="merccbfcontainer">CBF
-    <div id="merccbfcontainer"></div>
-  </div>
-
-  <div class="mercplrcontainer">PLR
-    <div id="mercplrcontainer"></div>
-  </div>
-
-  <div class="mercdrcontainer">DR%
-    <div id="mercdrcontainer"></div>
-  </div>
-
-  <div class="mercpdrcontainer">PDR
-    <div id="mercpdrcontainer"></div>
-  </div>
-
-  <div class="mercmdrcontainer">MDR
-    <div id="mercmdrcontainer"></div>
-  </div>
-
-  <div class="mercfireresistcontainer">Fire resist
-    <div id="mercfireresistcontainer"></div>
-  </div>
-
-  <div class="merccoldresistcontainer">Cold resist
-    <div id="merccoldresistcontainer"></div>
-  </div>
-
-  <div class="merclightresistcontainer">Light resist
-    <div id="merclightresistcontainer"></div>
-  </div>
-
-  <div class="mercpoisonresistcontainer">Poison resist
-    <div id="mercpoisonresistcontainer"></div>
-  </div>
-
-  <div class="merccurseresistcontainer">Curse resist
-    <div id="merccurseresistcontainer"></div>
-  </div>
-
-  <div class="mercallskillscontainer">All skills
-    <div id="mercallskillscontainer"></div>
-  </div>
-
-  <div class="mercmagicfindcontainer">Magic Find
-    <div id="mercmagicfindcontainer"></div>
-  </div>
-
-  <div class="mercgoldfindcontainer">Gold Find
-    <div id="mercgoldfindcontainer"></div>
-  </div>
-
-  <div class="mercowcontainer">Open Wounds
-    <div id="mercowcontainer"></div>
-  </div>
-
-  <div class="mercowdmgcontainer">OW Dmg/s
-    <div id="mercowdmgcontainer"></div>
-  </div>
-
-  <div class="merccbcontainer">Crushing Blow
-    <div id="merccbcontainer"></div>
-  </div>
-
-  <div class="merccbdmgcontainer">CB Dmg
-    <div id="merccbdmgcontainer"></div>
-  </div>
-</div>
 
 
 
 
 
-</div>
-<div id="buff1"></div>
-<div id="buff2"></div>
-<div id="buff3"></div>
-<div id="buff4"></div>
-<div id="buff5"></div>
-<div id="buff6"></div>
-<div id="buff7"></div>
-<div id="buff8"></div>
-<div id="buff9"></div>
-<div id="buff10"></div>
-<iframe 
+<div class="buffs-container">
+  <div id="buff1" class="buff-icon"></div>
+  <div id="buff2" class="buff-icon"></div>
+  <div id="buff3" class="buff-icon"></div>
+  <div id="buff4" class="buff-icon"></div>
+  <div id="buff5" class="buff-icon"></div>
+  <div id="buff6" class="buff-icon"></div>
+  <div id="buff7" class="buff-icon"></div>
+  <div id="buff8" class="buff-icon"></div>
+  <div id="buff9" class="buff-icon"></div>
+  <div id="buff10" class="buff-icon"></div>
+</div></div></div>
+
+<!-- <iframe 
   src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSKOc3YUtoywqTuV7x3Qo6NRGIF8sjS_eoa4cfNaXPP3VAehmgPRBICfipWLWjhRxONiiKrVHBV2ODf/pubhtml?gid=0&single=true&range=E9" 
   width="160px" 
   height="80px" 
   style="filter: invert(1) hue-rotate(180deg); border: none;"
 scrolling="no">
-</iframe>
+</iframe> -->
 
 <script>
-const mercbuff = document.getElementById('mercclass');
-const buffs = document.querySelectorAll('[id^="buff"]');
-const merclvlValue = document.getElementById('merclvlValue');
-
-function getNextFreeBuffSlot() {
- for (let i = 0; i < buffs.length; i++) {
-   if (!buffs[i].style.backgroundImage) {
-     return buffs[i];
-   }
- }
- return null;
-}
-
-function clearAllBuffs() {
- buffs.forEach(buff => buff.style.backgroundImage = '');
-}
-
-mercbuff.addEventListener('change', (e) => {
- clearAllBuffs();
- const selectedValue = e.target.value;
-
- if (selectedValue === 'A1 Fire (Vigor)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/vigor2.png")';
- } else if (selectedValue === 'A1 Cold (Meditation)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/meditation2.png")';
-  } else if (selectedValue === 'A1 Magic (Slow Movement)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/slowmovement2.png")';
-  } else if (selectedValue === 'A2 Defensive (Defiance)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/defiance2.png")';
-  } else if (selectedValue === 'A2 Offensive (Blessed Aim)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/blessedaim2.png")'; 
-  } else if (selectedValue === 'A2 Combat (Thorns)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/thorns2.png")'; 
-  } else if (selectedValue === 'A3 Fire (Cleansing)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/cleansing2.png")'; 
-  } else if (selectedValue === 'A3 Cold (Prayer)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/prayer2.png")'; 
-  } else if (selectedValue === 'A3 Lightning (Holy Shock)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/holyshock2.png")'; 
-  } else if (selectedValue === 'A4 Light (Sanctuary)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/sanctuary2.png")'; 
-  } else if (selectedValue === 'A4 Dark (Amplify Damage)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/amplifydamage2.png")'; 
-  } else if (selectedValue === 'A5 Combat (Might)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/might2.png")'; 
-  } else if (selectedValue === 'A5 Warcries (Battle Orders)') {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/battleorders2.png")'; 
+document.addEventListener('DOMContentLoaded', function() {
+  // Force all dropdowns to be visible
+  function forceDropdownsVisible() {
+    // Get all select elements
+    const allSelects = document.querySelectorAll('select');
+    
+    // Make sure they're all visible and with high z-index
+    allSelects.forEach(select => {
+      select.style.visibility = 'visible';
+      select.style.display = 'block';
+      select.style.zIndex = '9999';
+      
+      // Make parent visible too (in case it's hidden)
+      if (select.parentElement) {
+        select.parentElement.style.visibility = 'visible';
+        select.parentElement.style.display = 'block';
+        select.parentElement.style.zIndex = '9999';
+      }
+    });
+    
+    // Specifically target the equipment dropdowns
+    const equipmentDropdowns = [
+      'mercoffs-dropdown',
+      'mercgloves-dropdown',
+      'mercbelts-dropdown',
+      'mercboots-dropdown'
+    ];
+    
+    // Make sure each one is visible
+    equipmentDropdowns.forEach(id => {
+      const dropdown = document.getElementById(id);
+      if (dropdown) {
+        dropdown.style.visibility = 'visible';
+        dropdown.style.display = 'block';
+        dropdown.style.zIndex = '9999';
+      }
+    });
   }
-
- if (parseInt(merclvlValue.value) > 10) {
-   let slot = getNextFreeBuffSlot();
-   if (slot) slot.style.backgroundImage = 'url("img/holyshock2.png")';
- }
-});
-
-merclvlValue.addEventListener('input', () => {
- clearAllBuffs();
- mercbuff.dispatchEvent(new Event('change'));
+  
+  // Run immediately and periodically check to make sure dropdowns remain visible
+  forceDropdownsVisible();
+  setInterval(forceDropdownsVisible, 5000); // Check every second
+  
+  // Handle equipment tooltip functionality
+  document.querySelectorAll('.merc-equipment-slot select').forEach(select => {
+    select.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex].text;
+      const infoElement = document.getElementById(this.id.replace('-dropdown', '-info'));
+      
+      if (infoElement) {
+        infoElement.textContent = `${selectedOption} stats`;
+        infoElement.style.display = 'block';
+        
+        // Hide tooltip after 3 seconds
+        setTimeout(() => {
+          infoElement.style.display = 'none';
+        }, 3000);
+      }
+    });
+    
+    select.addEventListener('mouseenter', function() {
+      const infoElement = document.getElementById(this.id.replace('-dropdown', '-info'));
+      if (infoElement) {
+        infoElement.style.display = 'block';
+      }
+    });
+    
+    select.addEventListener('mouseleave', function() {
+      const infoElement = document.getElementById(this.id.replace('-dropdown', '-info'));
+      if (infoElement) {
+        // Delay hiding to allow moving to the info box
+        setTimeout(() => {
+          if (!infoElement.matches(':hover')) {
+            infoElement.style.display = 'none';
+          }
+        }, 500);
+      }
+    });
+  });
+  
+  // Buff icon handling
+  const mercbuff = document.getElementById('mercclass');
+  const buffs = document.querySelectorAll('.buff-icon');
+  const merclvlValue = document.getElementById('merclvlValue');
+  
+  function updateBuffs() {
+    // Clear existing buffs
+    buffs.forEach(buff => {
+      buff.style.backgroundImage = '';
+    });
+    
+    const selectedMerc = mercbuff.value;
+    const level = parseInt(merclvlValue.value);
+    
+    // Set buff based on selection
+    if (selectedMerc && selectedMerc !== 'No Mercenary') {
+      let buffImage = '';
+      
+      if (selectedMerc.includes('Vigor')) buffImage = 'img/vigor2.png';
+      else if (selectedMerc.includes('Meditation')) buffImage = 'img/meditation2.png';
+      else if (selectedMerc.includes('Slow Movement')) buffImage = 'img/slowmovement2.png';
+      else if (selectedMerc.includes('Defiance')) buffImage = 'img/defiance2.png';
+      else if (selectedMerc.includes('Blessed Aim')) buffImage = 'img/blessedaim2.png';
+      else if (selectedMerc.includes('Thorns')) buffImage = 'img/thorns2.png';
+      else if (selectedMerc.includes('Cleansing')) buffImage = 'img/cleansing2.png';
+      else if (selectedMerc.includes('Prayer')) buffImage = 'img/prayer2.png';
+      else if (selectedMerc.includes('Holy Shock')) buffImage = 'img/holyshock2.png';
+      else if (selectedMerc.includes('Sanctuary')) buffImage = 'img/sanctuary2.png';
+      else if (selectedMerc.includes('Amplify Damage')) buffImage = 'img/amplifydamage2.png';
+      else if (selectedMerc.includes('Might')) buffImage = 'img/might2.png';
+      else if (selectedMerc.includes('Battle Orders')) buffImage = 'img/battleorders2.png';
+      
+      if (buffImage && buffs[0]) {
+        buffs[0].style.backgroundImage = `url("${buffImage}")`;
+      }
+      
+      // Add Holy Shock for level > 10
+      if (level > 10 && buffs[1]) {
+        buffs[1].style.backgroundImage = 'url("img/holyshock2.png")';
+      }
+    }
+  }
+  
+  // Add event listeners for merc selections
+  if (mercbuff) {
+    mercbuff.addEventListener('change', updateBuffs);
+  }
+  
+  if (merclvlValue) {
+    merclvlValue.addEventListener('change', updateBuffs);
+    merclvlValue.addEventListener('input', updateBuffs);
+  }
+  
+  // Run initial updates
+  updateBuffs();
 });
 </script>
 
@@ -9468,7 +9552,7 @@ merclvlValue.addEventListener('input', () => {
           <div class="sock-name">Perfect Ruby</div>
           <div class="sock-stats">
             <div>Weapon: Adds 15-20 Fire Damage</div>
-            <div>Armor/Helm: +40 to Life</div>
+            <div>Armor/Helm: +38 to Life</div>
             <div>Shield: Fire Resist +40%</div>
           </div>
         </div>
@@ -10325,9 +10409,9 @@ merclvlValue.addEventListener('input', () => {
       shield: 'Fire Resist +28%'
     },
     'perfect-ruby': {
-      helm: '+40 to Life',
+      helm: '+38 to Life',
       weapon: 'Adds 15-20 Fire Damage',
-      armor: '+40 to Life',
+      armor: '+38 to Life',
       shield: 'Fire Resist +40%'
     },
     'chipped-amethyst': {
@@ -11564,8 +11648,8 @@ function attachSocketListeners(socket, containerKey, socketIndex) {
   },
   'Perfect Ruby': {
     weapon: 'Adds 15-20 Fire Damage',
-    helm: '+40 to Life',
-    armor: '+40 to Life',
+    helm: '+38 to Life',
+    armor: '+38 to Life',
     shield: 'Fire Resist +40%'
   },
   'Chipped Diamond': {
@@ -12667,7 +12751,7 @@ window.addEventListener('click', (e) => {
 });
   </script>
 
-<button id="upgradeButton" class="upgrade-button">Upgrade Helm, it works, u just need lvl and str for upgrade</button>
+<button id="upgradeButton" class="upgrade-button">Upgrade Helm</button>
 <button id="upgradeArmorButton" class="upgrade-buttonarmor">Upgrade Armor</button>
 <button id="upgradeWeaponButton" class="upgrade-buttonweapon">Upgrade Weapon</button>
 <button id="upgradeShieldButton" class="upgrade-buttonshield">Upgrade Shield/Off-Weapon</button>
@@ -12677,7 +12761,7 @@ window.addEventListener('click', (e) => {
 <button id="makeethereal" onclick="makeEthereal()">Ethereal</button>
 <button id="makeetherealarmor" onclick="makeEtherealArmor()">Ethereal</button>
 <button id="makeetherealweapon" onclick="makeEtherealWeapon()">Ethereal</button>
-<button id="makeetherealshield" onclick="makeEtherealShield()">Ethereal</button>
+<button id="makeetherealshield" onclick="makeEtherealShield()">Ethereal</button> <!-- Ethereal buttonsFOR SHIELD for other items -->
 <button id="makeetherealglove" onclick="makeEtherealGlove()">Ethereal</button>
 <button id="makeetherealbelt" onclick="makeEtherealBelt()">Ethereal</button>
 <button id="makeetherealboot" onclick="makeEtherealBoot()">Ethereal</button>
@@ -12692,6 +12776,7 @@ document.getElementById('upgradeBeltButton').addEventListener('click', handleBel
 document.getElementById('upgradeBootButton').addEventListener('click', () => handleArmorUpgrade('boots'));
 document.getElementById('makeethereal').addEventListener('click', () => makeEtherealItem('helms'));
 document.getElementById('makeetherealarmor').addEventListener('click', () => makeEtherealItem('armor'));
+document.getElementById('makeetherealshield').addEventListener('click', makeEtherealShield);
 document.getElementById('makeetherealglove').addEventListener('click', () => makeEtherealItem('gloves'));
 document.getElementById('makeetherealbelt').addEventListener('click', () => makeEtherealItem('belts'));
 document.getElementById('makeetherealboot').addEventListener('click', () => makeEtherealItem('boots'));
