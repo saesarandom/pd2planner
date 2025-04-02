@@ -8514,6 +8514,201 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial update
     updateLifeFromCharms();
 });
+
+// // Wait for DOM to be fully loaded
+// document.addEventListener('DOMContentLoaded', function() {
+//   console.log("Socket Life/Mana tracking script loaded");
+  
+//   // Function to get life/mana bonuses from sockets
+//   function getSocketBonuses() {
+//     let totalSocketLife = 0;
+//     let totalSocketMana = 0;
+    
+//     // Process all socket sections
+//     ['helm', 'armor', 'weapon', 'shield'].forEach(section => {
+//       // Get all sockets for this section
+//       document.querySelectorAll(`.socketz[data-section="${section}"]`).forEach(socket => {
+//         // Skip empty sockets
+//         if (!socket.dataset.itemName || !socket.dataset.stats) return;
+        
+//         console.log(`Processing socket in ${section}: ${socket.dataset.itemName}`);
+        
+//         let stats = socket.dataset.stats;
+        
+//         // Handle jewel stats (stored as JSON)
+//         if (socket.dataset.itemName === 'jewel') {
+//           try {
+//             const parsedStats = JSON.parse(stats);
+//             if (Array.isArray(parsedStats)) {
+//               parsedStats.forEach(stat => {
+//                 const lifeMatch = stat.match(/\+(\d+)(?:\s+to)?\s+(?:Maximum\s+)?Life/i);
+//                 const manaMatch = stat.match(/\+(\d+)(?:\s+to)?\s+(?:Maximum\s+)?Mana/i);
+                
+//                 if (lifeMatch) {
+//                   totalSocketLife += parseInt(lifeMatch[1]);
+//                   console.log(`Found life bonus in jewel: +${lifeMatch[1]}`);
+//                 }
+                
+//                 if (manaMatch) {
+//                   totalSocketMana += parseInt(manaMatch[1]);
+//                   console.log(`Found mana bonus in jewel: +${manaMatch[1]}`);
+//                 }
+//               });
+//             }
+//           } catch (e) {
+//             console.error('Error parsing jewel stats:', e);
+//           }
+//         } 
+//         // Handle gem and rune stats
+//         else {
+//           // Check for life bonus
+//           const lifeMatch = stats.match(/\+(\d+)(?:\s+to)?\s+(?:Maximum\s+)?Life/i);
+//           if (lifeMatch) {
+//             totalSocketLife += parseInt(lifeMatch[1]);
+//             console.log(`Found life bonus in ${socket.dataset.itemName}: +${lifeMatch[1]}`);
+//           }
+          
+//           // Check for mana bonus
+//           const manaMatch = stats.match(/\+(\d+)(?:\s+to)?\s+(?:Maximum\s+)?Mana/i);
+//           if (manaMatch) {
+//             totalSocketMana += parseInt(manaMatch[1]);
+//             console.log(`Found mana bonus in ${socket.dataset.itemName}: +${manaMatch[1]}`);
+//           }
+//         }
+//       });
+//     });
+    
+//     console.log(`Total socket life bonus: ${totalSocketLife}, Total socket mana bonus: ${totalSocketMana}`);
+//     return { life: totalSocketLife, mana: totalSocketMana };
+//   }
+  
+//   // Function to update total life and mana displays
+//   function updateTotalDisplay() {
+//     // Get socket bonuses
+//     const socketBonuses = getSocketBonuses();
+    
+//     // Calculate total life and mana
+//     const lifeValue = document.getElementById('lifeValue');
+//     const manaValue = document.getElementById('manaValue');
+    
+//     let baseLife = 0;
+//     let baseMana = 0;
+    
+//     if (lifeValue) {
+//       const lifeMatch = lifeValue.textContent.match(/Life:\s*(\d+)/);
+//       baseLife = lifeMatch ? parseInt(lifeMatch[1]) : 0;
+//     }
+    
+//     if (manaValue) {
+//       const manaMatch = manaValue.textContent.match(/Mana:\s*(\d+)/);
+//       baseMana = manaMatch ? parseInt(manaMatch[1]) : 0;
+//     }
+    
+//     const totalLife = baseLife + socketBonuses.life;
+//     const totalMana = baseMana + socketBonuses.mana;
+    
+//     // Find the existing total display elements
+//     const totalLifeDisplay = document.getElementById('totalLifeDisplay');
+//     const totalManaDisplay = document.getElementById('totalManaDisplay');
+    
+//     if (totalLifeDisplay) {
+//       totalLifeDisplay.textContent = `TOTAL LIFE: ${totalLife}`;
+//       totalLifeDisplay.style.color = '#FF0000';
+//       console.log("Updated total life display:", totalLife);
+//     } else {
+//       console.warn("Could not find total life display element");
+//     }
+    
+//     if (totalManaDisplay) {
+//       totalManaDisplay.textContent = `TOTAL MANA: ${totalMana}`;
+//       totalManaDisplay.style.color = '#0000FF';
+//       console.log("Updated total mana display:", totalMana);
+//     } else {
+//       console.warn("Could not find total mana display element");
+//     }
+//   }
+  
+//   // Set up event listeners
+//   function setupEventListeners() {
+//     // Watch for socket changes
+//     document.addEventListener('click', function(event) {
+//       const socketElement = event.target.closest('.socketz');
+//       if (socketElement) {
+//         // Wait for the socket to be updated
+//         setTimeout(updateTotalDisplay, 500);
+//       }
+//     });
+    
+//     // Listen for right-clicks to clear sockets
+//     document.addEventListener('contextmenu', function(event) {
+//       const socketElement = event.target.closest('.socketz');
+//       if (socketElement) {
+//         setTimeout(updateTotalDisplay, 100);
+//       }
+//     });
+    
+//     // Listen for jewel confirmation
+//     const confirmJewelButton = document.getElementById('confirmJewel');
+//     if (confirmJewelButton) {
+//       confirmJewelButton.addEventListener('click', function() {
+//         setTimeout(updateTotalDisplay, 500);
+//       });
+//     }
+    
+//     // Watch socket containers for changes
+//     ['helmsockets', 'armorsockets', 'weaponsockets', 'shieldsockets'].forEach(containerClass => {
+//       const container = document.querySelector(`.${containerClass}`);
+//       if (container) {
+//         const observer = new MutationObserver(function() {
+//           console.log(`Socket change detected in ${containerClass}`);
+//           updateTotalDisplay();
+//         });
+        
+//         observer.observe(container, {
+//           childList: true,
+//           subtree: true,
+//           attributes: true,
+//           attributeFilter: ['data-item-name', 'data-stats', 'class']
+//         });
+//       }
+//     });
+    
+//     // Watch for equipment changes
+//     const equipmentDropdowns = [
+//       'helms-dropdown', 
+//       'armors-dropdown', 
+//       'weapons-dropdown', 
+//       'offs-dropdown',
+//       'gloves-dropdown',
+//       'belts-dropdown',
+//       'boots-dropdown',
+//       'ringsone-dropdown',
+//       'ringstwo-dropdown',
+//       'amulets-dropdown'
+//     ];
+    
+//     equipmentDropdowns.forEach(dropdownId => {
+//       const dropdown = document.getElementById(dropdownId);
+//       if (dropdown) {
+//         dropdown.addEventListener('change', updateTotalDisplay);
+//       }
+//     });
+    
+//     console.log("All event listeners set up");
+//   }
+  
+//   // Initialize everything
+//   function initialize() {
+//     setupEventListeners();
+//     updateTotalDisplay();
+//     console.log("Socket life/mana tracking initialized");
+//   }
+  
+//   // Start the process
+//   initialize();
+// });
+
+
 </script>
 
 

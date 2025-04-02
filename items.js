@@ -1812,7 +1812,7 @@ const itemList = {
 
   Brainhew: {
     description:
-      "Brainhew<br>Great Axe<br> Base Speed Modifier: -10<br> Base Melee Range: 4<br> Two-Hand Damage: 41 to 90, Avg 65.5<br> Required Strength: 63<br> Required Level: 25<br> +40% Increased Attack Speed<br> +200% Enhanced Damage<br> +14 to Minimum Damage<br> Adds 15-35 Fire Damage<br> 13% Mana Stolen per Hit<br> +25 to Mana<br> +4 to Light Radius<br>",
+      "Brainhew<br>Great Axe<br>Base Speed Modifier: -10<br>Base Melee Range: 4<br>Two-Hand Damage: 41 to 90, Avg 65.5<br>Required Strength: 63<br>Required Level: 25<br>+40% Increased Attack Speed<br>+200% Enhanced Damage<br>+14 to Minimum Damage<br>Adds 15-35 Fire Damage<br>13% Mana Stolen per Hit<br>+25 to Mana<br>+4 to Light Radius<br>",
     properties: {
       speed: -10,
       twohandmin: 41,
@@ -1925,7 +1925,7 @@ const itemList = {
 
   "The General's Tan Do Li Ga": {
     description:
-      "The General's Tan Do Li Ga<br>Flail<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br> One-Hand Damage: 2 to 78, Avg 40<br> Required Strength: 41<br> Required Dexterity: 35<br> Required Level: 21<br> +20% Increased Attack Speed<br> +60% Enhanced Damage<br> Adds 10 to 40 Damage<br> 5% Mana Stolen per Hit<br> Slows Target by 10%<br> +75 Defense<br> +50% Damage to Undead<br>",
+      "The General's Tan Do Li Ga<br>Flail<br> Base Speed Modifier: -10<br> Base Melee Range: 2<br>One-Hand Damage: 2 to 78, Avg 40<br> Required Strength: 41<br> Required Dexterity: 35<br> Required Level: 21<br> +20% Increased Attack Speed<br> +60% Enhanced Damage<br> Adds 10 to 40 Damage<br> 5% Mana Stolen per Hit<br> Slows Target by 10%<br> +75 Defense<br> +50% Damage to Undead<br>",
     properties: {
       speed: -10,
       onehandmin: 2,
@@ -3472,6 +3472,10 @@ const itemList = {
     properties: {
       onehandmin: 214, // One-Hand Damage Min
       onehandmax: 373, // One-Hand Damage Max
+      edmg: 350, // Enhanced Damage (350%)
+      reqstr: 138, // Required Strength
+      reqdex: 59, // Required Dexterity
+      tomindmg: 30,
     },
   },
 
@@ -3720,6 +3724,102 @@ const itemList = {
       reqstr: 253, // Required Strength
       reqlvl: 87, // Required Level
       ctcampdamage: (8, 33), // Chance to Cast Level 33 Amplify Damage on Striking (8% chance, level 33)
+    },
+  },
+
+  Bloodletter: {
+    description:
+      "Bloodletter<br>Gladius<br>Base Melee Range: 2<br>Base Maximum Sockets: 3<br>One-Hand Damage: 64 to 185, Avg 124.5<br>Required Strength: 25<br>Required Level: 30<br>-20% Increased Attack Speed<br>+340% Enhanced Damage<br>Adds 12-45 Damage<br>+90 to Attack Rating<br>8% Life Stolen per Hit<br>+3 to Whirlwind (Barbarian Only)<br>+4 to General Mastery (Barbarian Only)<br>10% Slower Stamina Drain<br>+30 Durability<br>",
+    properties: {
+      onehandmin: 64, // One-Hand Damage Min
+      onehandmax: 185, // One-Hand Damage Max
+      reqstr: 25, // Required Strength
+      reqlvl: 30, // Required Level
+      ias: -20, // Decreased Attack Speed (-20%)
+      edmg: 340, // Enhanced Damage (340%)
+      tomindmg: 12, // Additional Damage Min (12)
+      tomaxdmg: 45, // Additional Damage Max (45)
+      toatt: 90, // Attack Rating Bonus (90)
+      lifesteal: 8, // Life Stolen per Hit (8%)
+      whirlwindosk: 3,
+      generalmasteryosk: 4,
+    },
+  },
+
+  "Coldsteel Eye": {
+    description:
+      "Coldsteel Eye<br>Cutlass<br>Base Melee Range: 2<br>Base Maximum Sockets: 3<br>One-Hand Damage: 45 to 112, Avg 78.5<br>Required Strength: 25<br>Required Dexterity: 52<br>Required Level: 31<br>+20% Increased Attack Speed<br>+275% Enhanced Damage<br>Adds 50-80 Cold Damage<br>6% Mana Stolen per Hit<br>50% Deadly Strike<br>Hit Blinds Target<br>Freezes Target<br>+50 Durability<br>",
+    properties: {
+      onehandmin: 45, // One-Hand Damage Min
+      onehandmax: 112, // One-Hand Damage Max
+      reqstr: 25, // Required Strength
+      reqdex: 52, // Required Dexterity
+      reqlvl: 31, // Required Level
+      ias: 20, // Increased Attack Speed (20%)
+      edmg: 275, // Enhanced Damage (275%)
+      colddmgmin: 50, // Cold Damage Min (50)
+      colddmgmax: 80, // Cold Damage Max (80)
+      manasteal: 6, // Mana Stolen per Hit (6%)
+    },
+  },
+
+  Hexfire: {
+    description:
+      "Hexfire<br>Shamshir<br>Base Melee Range: 2<br>Base Maximum Sockets: 3<br>One-Hand Damage: 77 to 145, Avg 111<br>Required Strength: 58<br>Required Dexterity: 58<br>Required Level: 33<br>+3 to Fire Skills<br>+25% Faster Cast Rate<br>+200% Enhanced Damage<br>Adds 35-40 Damage<br>Ignore Target's Defense<br>+5% to Maximum Fire Resist<br>Fire Resist +25%<br>",
+    properties: {
+      onehandmin: 77, // One-Hand Damage Min
+      onehandmax: 145, // One-Hand Damage Max
+      reqstr: 58, // Required Strength
+      reqdex: 58, // Required Dexterity
+      reqlvl: 33, // Required Level
+      edmg: 200, // Enhanced Damage (200%)
+      firemaxresist: 5, // Maximum Fire Resist (+5%)
+      fireresist: 25, // Fire Resist (+25%)
+    },
+  },
+
+  "Blade of Ali Baba": {
+    description:
+      "Blade of Ali Baba<br>Tulwar<br>Base Melee Range: 2<br>Base Maximum Sockets: 3<br>One-Hand Damage: 50 to 110, Avg 80<br>Required Strength: 70<br>Required Dexterity: 42<br>Required Level: 35<br>+120% Enhanced Damage<br>+15 to Dexterity<br>+15 to Mana<br>[2-247]% Extra Gold from Monsters (2.5% per Character Level)<br>[1-99]% Better Chance of Getting Magic Items (1% per Character Level)<br>Socketed (3)<br>",
+    properties: {
+      onehandmin: 50, // One-Hand Damage Min
+      onehandmax: 110, // One-Hand Damage Max
+      reqstr: 70, // Required Strength
+      reqdex: 42, // Required Dexterity
+      reqlvl: 35, // Required Level
+      edmg: 120, // Enhanced Damage (120%)
+      toatt: 15, // Attack Rating Bonus (15)
+      tomana: 15, // Mana Bonus (15)
+    },
+  },
+
+  "Ginther's Rift": {
+    description:
+      "Ginther's Rift<br>Dimensional Blade<br>Base Melee Range: 2<br>One-Hand Damage: 63 to 178, Avg 120.5<br>Required Strength: 85<br>Required Dexterity: 60<br>Required Level: 37<br>+30% Increased Attack Speed<br>+250% Enhanced Damage<br>Adds 75-180 Magic Damage<br>Magic Damage Taken Reduced by 12<br>Repairs 1 Durability in 5 Seconds<br>+40 Durability<br>",
+    properties: {
+      onehandmin: 63, // One-Hand Damage Min
+      onehandmax: 178, // One-Hand Damage Max
+      reqstr: 85, // Required Strength
+      reqdex: 60, // Required Dexterity
+      reqlvl: 37, // Required Level
+      ias: 30, // Increased Attack Speed (30%)
+      edmg: 250, // Enhanced Damage (250%)
+    },
+  },
+
+  Headstriker: {
+    description:
+      "Headstriker<br>Battle Sword<br>Base Melee Range: 2<br>One-Hand Damage: 69 to 243, Avg 156<br>Required Strength: 92<br>Required Dexterity: 43<br>Required Level: 39<br>+20% Increased Attack Speed<br>+200% Enhanced Damage<br>+[1-99] to Maximum Damage (+1 per Character Level)<br>15% Maximum Deadly Strike<br>[0-74]% Deadly Strike (0.75% per Character Level)<br>Prevent Monster Heal<br>+15 to Strength<br>",
+    properties: {
+      onehandmin: 69, // One-Hand Damage Min
+      onehandmax: 243, // One-Hand Damage Max
+      reqstr: 92, // Required Strength
+      reqdex: 43, // Required Dexterity
+      reqlvl: 39, // Required Level
+      ias: 20, // Increased Attack Speed (20%)
+      edmg: 200, // Enhanced Damage (200%)
+      tomaxdmg: 1, // Maximum Damage Bonus (+1 per Character Level)
+      maxdeadlystrike: 15, // Maximum Deadly Strike (+15%)
     },
   },
   //shields/

@@ -2407,7 +2407,7 @@ const baseDamages = {
   "Spiked Club": { min: 5, max: 8 },
   Mace: { min: 3, max: 10 },
   "Morning Star": { min: 7, max: 16 },
-  Flail: { min: 12, max: 24 },
+  Flail: { min: 1, max: 24 },
   "War Hammer": { min: 22, max: 32 },
   Maul: { min: 30, max: 43 },
   "Great Maul": { min: 38, max: 58 },
@@ -2977,6 +2977,12 @@ function calculateItemDamage(item, baseType, isMax = false) {
 
   // Calculate final damage with all bonuses
   let finalDamage = Math.floor(ethBase * (1 + totalEnhancedDamage / 100));
+
+  if (isMax && item.properties.tomaxdmg) {
+    finalDamage += item.properties.tomaxdmg;
+  } else if (!isMax && item.properties.tomindmg) {
+    finalDamage += item.properties.tomindmg;
+  }
 
   // Add per-level damage bonus to max damage only as the LAST step
   if (isMax && item.properties.maxdmgperlvl) {
@@ -4524,7 +4530,7 @@ function updateWeaponDisplayWithPerLevelDamage() {
   const selectedWeapon = weaponSelect.value;
   const currentItemData = itemList[selectedWeapon];
 
-  if (!currentItemData || !currentItemData.properties.maxdmgperlvl) return;
+  if (!currentItemData) return;
 
   // Get base type for damage calculation
   const baseType = currentItemData.description.split("<br>")[1];
@@ -4539,9 +4545,10 @@ function updateWeaponDisplayWithPerLevelDamage() {
   let minDamage, maxDamage;
   if (isTwoHanded) {
     // For two-handed weapons
-    minDamage = calculateItemDamage(currentItemData, baseType, false);
+    let baseMinDamage = calculateItemDamage(currentItemData, baseType, false);
+
     // For max damage, first calculate without per-level bonus
-    const baseMaxDamage = calculateItemDamage(
+    let baseMaxDamage = calculateItemDamage(
       {
         ...currentItemData,
         properties: { ...currentItemData.properties, maxdmgperlvl: 0 },
@@ -4550,20 +4557,54 @@ function updateWeaponDisplayWithPerLevelDamage() {
       true
     );
 
-    // Get current character level
-    const charLevel = parseInt(document.getElementById("lvlValue").value) || 1;
-    // Calculate the per-level damage bonus and floor it
-    const perLevelDamage = Math.floor(
-      charLevel * currentItemData.properties.maxdmgperlvl
-    );
+    // Get flat damage bonuses from tomindmg and tomaxdmg properties
+    const toMinDamage = currentItemData.properties.tomindmg || 0;
+    const toMaxDamage = currentItemData.properties.tomaxdmg || 0;
 
-    // Add per-level bonus to max damage
-    maxDamage = baseMaxDamage + perLevelDamage;
+    console.log("Flat min damage bonus:", toMinDamage);
+    console.log("Flat max damage bonus:", toMaxDamage);
+
+    // Add flat min damage bonus
+    minDamage = baseMinDamage + toMinDamage;
+
+    // Get current character level for per-level damage calculation
+    const charLevel = parseInt(document.getElementById("lvlValue").value) || 1;
+
+    // Calculate the per-level damage bonus if present
+    let perLevelDamage = 0;
+    if (currentItemData.properties.maxdmgperlvl) {
+      perLevelDamage = Math.floor(
+        charLevel * currentItemData.properties.maxdmgperlvl
+      );
+    }
+
+    // Add per-level bonus and flat max damage bonus
+    maxDamage = baseMaxDamage + perLevelDamage + toMaxDamage;
+
+    console.log(
+      "Base min damage:",
+      baseMinDamage,
+      "+ flat bonus:",
+      toMinDamage,
+      "= final:",
+      minDamage
+    );
+    console.log(
+      "Base max damage:",
+      baseMaxDamage,
+      "+ per-level:",
+      perLevelDamage,
+      "+ flat bonus:",
+      toMaxDamage,
+      "= final:",
+      maxDamage
+    );
   } else {
     // For one-handed weapons
-    minDamage = calculateItemDamage(currentItemData, baseType, false);
+    let baseMinDamage = calculateItemDamage(currentItemData, baseType, false);
+
     // For max damage, first calculate without per-level bonus
-    const baseMaxDamage = calculateItemDamage(
+    let baseMaxDamage = calculateItemDamage(
       {
         ...currentItemData,
         properties: { ...currentItemData.properties, maxdmgperlvl: 0 },
@@ -4572,15 +4613,48 @@ function updateWeaponDisplayWithPerLevelDamage() {
       true
     );
 
-    // Get current character level
-    const charLevel = parseInt(document.getElementById("lvlValue").value) || 1;
-    // Calculate the per-level damage bonus and floor it
-    const perLevelDamage = Math.floor(
-      charLevel * currentItemData.properties.maxdmgperlvl
-    );
+    // Get flat damage bonuses from tomindmg and tomaxdmg properties
+    const toMinDamage = currentItemData.properties.tomindmg || 0;
+    const toMaxDamage = currentItemData.properties.tomaxdmg || 0;
 
-    // Add per-level bonus to max damage
-    maxDamage = baseMaxDamage + perLevelDamage;
+    console.log("Flat min damage bonus:", toMinDamage);
+    console.log("Flat max damage bonus:", toMaxDamage);
+
+    // Add flat min damage bonus
+    minDamage = baseMinDamage + toMinDamage;
+
+    // Get current character level for per-level damage calculation
+    const charLevel = parseInt(document.getElementById("lvlValue").value) || 1;
+
+    // Calculate the per-level damage bonus if present
+    let perLevelDamage = 0;
+    if (currentItemData.properties.maxdmgperlvl) {
+      perLevelDamage = Math.floor(
+        charLevel * currentItemData.properties.maxdmgperlvl
+      );
+    }
+
+    // Add per-level bonus and flat max damage bonus
+    maxDamage = baseMaxDamage + perLevelDamage + toMaxDamage;
+
+    console.log(
+      "Base min damage:",
+      baseMinDamage,
+      "+ flat bonus:",
+      toMinDamage,
+      "= final:",
+      minDamage
+    );
+    console.log(
+      "Base max damage:",
+      baseMaxDamage,
+      "+ per-level:",
+      perLevelDamage,
+      "+ flat bonus:",
+      toMaxDamage,
+      "= final:",
+      maxDamage
+    );
   }
 
   // Store the calculated damage values on the item for display and further calculations
