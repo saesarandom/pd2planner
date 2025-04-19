@@ -3821,3 +3821,131 @@ iframe {
   top: 250px;
   left: 500px;
 }
+
+#create-craft-container {
+  z-index: 1000;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+}
+
+#create-craft-button {
+  padding: 10px 15px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+#create-craft-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.modalcraft {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modalcraft-content {
+  background-color: #222;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #444;
+  width: 80%;
+  max-width: 800px;
+  color: #eee;
+  border-radius: 5px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #fff;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.property-row,
+.affix-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#base-properties,
+#additional-affixes {
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #333;
+  margin-bottom: 15px;
+}
+
+#item-preview {
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #333;
+  min-height: 150px;
+  font-family: monospace;
+}
+
+/* Styling for custom items in dropdowns */
+optgroup[label="Custom Crafted Items"] {
+  background-color: #333;
+  color: #e74c3c;
+}
+
+optgroup[label="Custom Crafted Items"] option {
+  background-color: #222;
+  color: #fff;
+}
+
+/* Item color styling based on craft type */
+.color-blood {
+  color: #e74c3c;
+}
+.color-caster {
+  color: #3498db;
+}
+.color-hitpower {
+  color: #f39c12;
+}
+.color-safety {
+  color: #27ae60;
+}
+.color-vampiric {
+  color: #8e44ad;
+}
+.color-bountiful {
+  color: #f1c40f;
+}
+.color-brilliant {
+  color: #1abc9c;
+}

@@ -5823,6 +5823,7 @@ skillvalues.forEach(skillvalue => {
   <script src="achievements.obfuscated.js"></script>
   <script src="corruption.js"></script>
   <script src="mercenary.js"></script>
+  <script src="craftitems.js"></script>
   <!-- <script src="socketfix.js"></script> -->
     
   
@@ -13223,6 +13224,29 @@ loadUsers();
 // Refresh users every 30 seconds
 setInterval(loadUsers, 60000);
 </script>
+
+<script>
+  // Handle user authentication events for custom craft items
+  document.addEventListener('DOMContentLoaded', function() {
+    // Listen for login event
+    document.addEventListener('userLoggedIn', function(event) {
+      console.log('User logged in, initializing custom craft system...');
+      // This will be handled by customCraftItems.js
+    });
+    
+    // Listen for logout event
+    document.addEventListener('userLoggedOut', function() {
+      console.log('User logged out, hiding custom craft UI...');
+      // This will be handled by customCraftItems.js
+    });
+  });
+</script>
+
+
+
+
+
+
 
 </body>
 </html>

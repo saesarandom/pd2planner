@@ -1,9 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const axios = require("axios"); // Move this to the top
+const axios = require("axios");
 const qs = require("querystring");
 require("dotenv").config();
 
@@ -239,48 +240,6 @@ app.post("/achievement/:id", auth, async (req, res) => {
   }
 });
 
-app.post("/achievement/:id", auth, async (req, res) => {
-  try {
-    const achievementId = req.params.id;
-    const { value, values } = req.body;
-
-    // Convert single value to array format for consistency
-    const valuesArray = values || [value];
-
-    // Check if this is a valid achievement type
-    if (!achievementValidators[achievementId]) {
-      return res.status(400).json({ error: "Invalid achievement type" });
-    }
-
-    // Validate the achievement conditions
-    if (!achievementValidators[achievementId](valuesArray)) {
-      return res.json({ message: "Keep trying!" });
-    }
-
-    const user = await User.findById(req.userData.userId);
-
-    // Check if user already has this achievement
-    const hasAchievement = user.achievements.some(
-      (a) => a.name === achievementNames[achievementId]
-    );
-
-    if (!hasAchievement) {
-      user.achievements.push({
-        name: achievementNames[achievementId],
-        unlockedAt: new Date(),
-      });
-      await user.save();
-      res.json({ message: "Achievement unlocked!" });
-    } else {
-      // Silently acknowledge without message for already unlocked achievements
-      res.json({ message: "" });
-    }
-  } catch (error) {
-    console.error("Achievement error:", error);
-    res.status(500).json({ error: "Failed to process achievement" });
-  }
-});
-
 // Login route
 app.post("/login", async (req, res) => {
   try {
@@ -370,7 +329,220 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+// =====================================================================
+// CUSTOM CRAFT ITEMS FUNCTIONALITY - START
+// =====================================================================
+
+// Create Schema for custom craft items
+const CraftItemSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  itemName: {
+    type: String,
+    required: true,
+  },
+  itemType: {
+    type: String,
+    required: true,
+    enum: ["weapon", "armor", "helm", "shield"],
+  },
+  baseType: {
+    type: String,
+    required: true,
+  },
+  craftType: {
+    type: String,
+    required: true,
+  },
+  affixes: [
+    {
+      name: { type: String },
+      type: { type: String },
+      stat: { type: String },
+      value: { type: Number },
+      min: { type: Number },
+      max: { type: Number },
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// Create CraftItem model
+const CraftItem = mongoose.model("CraftItem", CraftItemSchema);
+
+// Verify token endpoint for craft items
+app.get("/verify-token", (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Return user data
+    res.json({
+      valid: true,
+      userId: decoded.userId,
+      username: decoded.username,
+    });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    res.json({ valid: false });
+  }
+});
+
+// GET all custom craft items for the logged-in user
+app.get("/api/custom-crafts", auth, async (req, res) => {
+  try {
+    const items = await CraftItem.find({ userId: req.userData.userId });
+    res.json({ success: true, items });
+  } catch (error) {
+    console.error("Error fetching custom craft items:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// GET a specific custom craft item by ID
+app.get("/api/custom-crafts/:id", auth, async (req, res) => {
+  try {
+    const item = await CraftItem.findOne({
+      _id: req.params.id,
+      userId: req.userData.userId,
+    });
+
+    if (!item) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Item not found" });
+    }
+
+    res.json({ success: true, item });
+  } catch (error) {
+    console.error("Error fetching custom craft item:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// POST create a new custom craft item
+app.post("/api/custom-crafts", auth, async (req, res) => {
+  try {
+    // Log the entire request for debugging
+    console.log("Request userData:", req.userData);
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+    // Extract data from request body
+    const { itemName, itemType, baseType, craftType, affixes } = req.body;
+
+    // Validate required fields
+    if (!itemName || !itemType || !baseType || !craftType || !affixes) {
+      console.log("Missing required fields:", {
+        itemName,
+        itemType,
+        baseType,
+        craftType,
+        affixesProvided: !!affixes,
+      });
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
+
+    // Make sure affixes is an array of objects
+    if (!Array.isArray(affixes)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Affixes must be an array" });
+    }
+
+    // Create new item
+    try {
+      const newItem = new CraftItem({
+        userId: req.userData.userId,
+        itemName,
+        itemType,
+        baseType,
+        craftType,
+        affixes: affixes, // This should now be handled properly by the updated schema
+      });
+
+      console.log("Attempting to save item:", JSON.stringify(newItem, null, 2));
+
+      // Save to database
+      await newItem.save();
+      console.log("Item saved successfully");
+
+      res.status(201).json({ success: true, item: newItem });
+    } catch (saveError) {
+      console.error("Database save error:", saveError);
+      return res
+        .status(500)
+        .json({
+          success: false,
+          message: `Database error: ${saveError.message}`,
+        });
+    }
+  } catch (error) {
+    console.error("Error creating custom craft item:", error);
+    res
+      .status(500)
+      .json({ success: false, message: `Server error: ${error.message}` });
+  }
+});
+
+// PUT update a custom craft item
+app.put("/api/custom-crafts/:id", auth, async (req, res) => {
+  try {
+    const { itemName, itemType, baseType, craftType, affixes } = req.body;
+
+    // Find and update the item
+    const updatedItem = await CraftItem.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userData.userId },
+      { itemName, itemType, baseType, craftType, affixes },
+      { new: true }
+    );
+
+    if (!updatedItem) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Item not found or unauthorized" });
+    }
+
+    res.json({ success: true, item: updatedItem });
+  } catch (error) {
+    console.error("Error updating custom craft item:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// DELETE a custom craft item
+app.delete("/api/custom-crafts/:id", auth, async (req, res) => {
+  try {
+    const result = await CraftItem.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.userData.userId,
+    });
+
+    if (!result) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Item not found or unauthorized" });
+    }
+
+    res.json({ success: true, message: "Item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting custom craft item:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// =====================================================================
+// CUSTOM CRAFT ITEMS FUNCTIONALITY - END
+// =====================================================================
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
