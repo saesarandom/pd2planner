@@ -44,11 +44,22 @@ function checkUserLoginStatus() {
             },
           });
           document.dispatchEvent(loginEvent);
+        } else {
+          // Token invalid, treat as logged out
+          localStorage.removeItem("token");
+          const logoutEvent = new CustomEvent("userLoggedOut");
+          document.dispatchEvent(logoutEvent);
         }
       })
       .catch((error) => {
         console.error("Token verification error:", error);
+        // On error, consider user logged out
+        hideCustomCraftUI();
       });
+  } else {
+    // No token, definitely logged out
+    const logoutEvent = new CustomEvent("userLoggedOut");
+    document.dispatchEvent(logoutEvent);
   }
 }
 
@@ -172,6 +183,12 @@ function setupDropdownEventHandlers() {
     "armors-dropdown": "armor-info",
     "helms-dropdown": "helm-info",
     "offs-dropdown": "off-info",
+    "gloves-dropdown": "glove-info",
+    "boots-dropdown": "boot-info",
+    "belts-dropdown": "belt-info",
+    "ringsone-dropdown": "ringsone-info",
+    "ringstwo-dropdown": "ringstwo-info",
+    "amulets-dropdown": "amulet-info",
   };
 
   // Add change event handler to each dropdown
@@ -230,13 +247,19 @@ function setupDropdownEventHandlers() {
 function displayCustomItemInfo(item, infoDiv) {
   // Format the HTML for display
   let html = `
-    <div style="color: #${getCraftTypeColor(item.craftType)};">
-      <strong>${item.itemName}</strong>
-    </div>
-    <div>Base Item: ${item.baseType}</div>
-    <div>Craft Type: ${item.craftType}</div>
-    <hr style="border-color: #666; margin: 5px 0;">
-  `;
+  <div style="color: #${getCraftTypeColor(item.craftType)};">
+    <strong>${item.itemName}</strong>
+  </div>
+  <div>${item.baseType}</div>`;
+
+  // Add strength requirement if available
+  if (getStrengthRequirement(item.baseType) > 0) {
+    html += `<div>Required Strength: ${getStrengthRequirement(
+      item.baseType
+    )}</div>`;
+  }
+
+  html += `<hr style="border-color: #666; margin: 5px 0;">`;
 
   // Add base properties
   const baseProps = item.affixes.filter((affix) => affix.type === "base");
@@ -246,25 +269,121 @@ function displayCustomItemInfo(item, infoDiv) {
 
   // Add prefixes
   const prefixes = item.affixes.filter((affix) => affix.type === "prefix");
-  if (prefixes.length > 0) {
-    html += '<hr style="border-color: #666; margin: 5px 0;">';
-    prefixes.forEach((prefix) => {
-      html += `<div>${formatCustomItemProperty(prefix)}</div>`;
-    });
-  }
+  prefixes.forEach((prefix) => {
+    html += `<div>${formatCustomItemProperty(prefix)}</div>`;
+  });
 
   // Add suffixes
   const suffixes = item.affixes.filter((affix) => affix.type === "suffix");
-  if (suffixes.length > 0) {
-    html += '<hr style="border-color: #666; margin: 5px 0;">';
-    suffixes.forEach((suffix) => {
-      html += `<div>${formatCustomItemProperty(suffix)}</div>`;
-    });
-  }
+  suffixes.forEach((suffix) => {
+    html += `<div>${formatCustomItemProperty(suffix)}</div>`;
+  });
 
   // Update the info div
   infoDiv.innerHTML = html;
   console.log(`Updated info div for ${item.itemName}`);
+}
+
+// Helper function to get the strength requirement for a base item
+function getStrengthRequirement(baseItemName) {
+  // Look through all categories
+  for (const category in baseItems) {
+    const item = baseItems[category].find((item) => item.name === baseItemName);
+    if (item && item.strengthReq !== undefined) {
+      return item.strengthReq;
+    }
+  }
+  return 0; // Default to 0 if not found
+}
+
+// Update the item preview function to show strength requirements
+function updateItemPreview() {
+  const previewContainer = document.getElementById("item-preview");
+  if (!previewContainer) return;
+
+  const itemType = document.getElementById("item-type").value;
+  const baseItem = document.getElementById("base-item").value;
+  const craftType = document.getElementById("craft-type").value;
+  const itemName =
+    document.getElementById("item-name").value || `${craftType} ${baseItem}`;
+
+  // Start building preview HTML
+  let html = `<div style="color: #${getCraftTypeColor(
+    craftType
+  )};">${itemName}</div>`;
+  html += `<div>${baseItem}</div>`;
+
+  // Add strength requirement
+  const strengthReq = getStrengthRequirement(baseItem);
+  if (strengthReq > 0) {
+    html += `<div>Required Strength: ${strengthReq}</div>`;
+  }
+
+  html += '<div style="margin-top: 10px;">';
+
+  // Add base properties
+  const basePropsSliders = document.querySelectorAll(".base-prop-slider");
+  basePropsSliders.forEach((slider) => {
+    const propName = slider.dataset.name;
+    const propType = slider.dataset.type;
+    const propValue = slider.value;
+
+    if (propType === "percentage") {
+      html += `<div>${propValue}% ${propName}</div>`;
+    } else if (propName.includes("to All Skills")) {
+      html += `<div>+${propValue} ${propName}</div>`;
+    } else {
+      html += `<div>+${propValue} ${propName}</div>`;
+    }
+  });
+
+  // Add additional affixes
+  const affixRows = document.querySelectorAll(".affix-row");
+  let prefixCount = 0;
+  let suffixCount = 0;
+
+  affixRows.forEach((row) => {
+    const affixType = row.querySelector(".affix-type").value;
+    const affixSelect = row.querySelector(".affix-select");
+    const affixValue = row.querySelector(".affix-value").value;
+
+    if (affixSelect.selectedIndex === -1) return;
+
+    const affixData = JSON.parse(
+      affixSelect.options[affixSelect.selectedIndex].dataset.affixData || "{}"
+    );
+
+    // Skip counting if it's an automod
+    if (!affixData.automod) {
+      if (affixType === "prefix") {
+        prefixCount++;
+        if (prefixCount > 3) return; // Max 3 prefixes
+      } else {
+        suffixCount++;
+        if (suffixCount > 3) return; // Max 3 suffixes
+      }
+    }
+
+    // Format the display of the affix
+    if (
+      affixData.stat &&
+      (affixData.stat.includes("Enhanced Damage") ||
+        affixData.stat.includes("Deadly Strike") ||
+        affixData.stat.includes("Rate") ||
+        affixData.stat.includes("Find") ||
+        affixData.stat.includes("Stolen") ||
+        affixData.stat.includes("Resistances"))
+    ) {
+      html += `<div>${affixValue}% ${affixData.stat}</div>`;
+    } else {
+      html += `<div>+${affixValue} ${affixData.stat}</div>`;
+    }
+  });
+
+  html += "</div>";
+
+  // Update preview
+  previewContainer.innerHTML = html;
 }
 
 // Format a custom item property for display
@@ -273,18 +392,40 @@ function formatCustomItemProperty(prop) {
 
   // Percentage-based properties
   if (
-    prop.stat &&
-    (prop.stat.includes("Damage") ||
-      prop.stat.includes("Rate") ||
-      prop.stat.includes("Find") ||
-      prop.stat.includes("Resistances"))
+    (prop.stat &&
+      (prop.stat.includes("Enhanced Damage") ||
+        prop.stat.includes("Rate") ||
+        prop.stat.includes("Deadly Strike") ||
+        prop.stat.includes("Find") ||
+        prop.stat.includes("Stolen") ||
+        prop.stat.includes("Resistances"))) ||
+    (prop.name &&
+      (prop.name.includes("Deadly Strike") ||
+        prop.name.includes("Stolen per Hit") ||
+        prop.name.includes("Rate") ||
+        prop.name.includes("Find") ||
+        prop.name.includes("Resistances")))
   ) {
-    return `${prop.value || 0}% ${prop.stat}`;
-  }
-  // Skills-related properties
-  else if (prop.name && prop.name.includes("to All Skills")) {
+    // Use either stat or name depending on which one is present
+    const displayName = prop.stat || prop.name;
+
+    // Special handling for certain properties (adding + sign)
+    if (
+      displayName.includes("Gold") ||
+      displayName.includes("Rate") ||
+      displayName.includes("Better Chance")
+    ) {
+      return `+${prop.value || 0}% ${displayName}`;
+    } else {
+      // Regular percentage display for other properties
+      return `${prop.value || 0}% ${displayName}`;
+    }
+  } else if (prop.name && prop.name.includes("to All Skills")) {
     return `+${prop.value || 0} ${prop.name}`;
+  } else if (prop.name && prop.name.includes("Replenish Life")) {
+    return `${prop.name || 0} +${prop.value}`;
   }
+
   // Default flat value properties
   else {
     return `+${prop.value || 0} ${prop.stat || prop.name || "Unknown"}`;
@@ -351,7 +492,11 @@ function updateItemDisplay(item) {
   item.affixes.forEach((affix) => {
     if (affix.type === "base") {
       // Format based on property type
-      if (affix.name.includes("Damage") || affix.name.includes("Rate")) {
+      if (
+        affix.name.includes("Enhanced Damage") ||
+        affix.name.includes("Rate") ||
+        affix.name.includes("Deadly Strike")
+      ) {
         html += `<div class="property">${affix.value}% ${affix.name}</div>`;
       } else if (affix.name.includes("to All Skills")) {
         html += `<div class="property">+${affix.value} ${affix.name}</div>`;
@@ -386,7 +531,8 @@ function updateItemDisplay(item) {
 function formatAffixProperty(affix) {
   // Format based on property type
   if (
-    affix.stat.includes("Damage") ||
+    affix.stat.includes("Enhanced Damage") ||
+    affix.stat.includes("Deadly Strike") ||
     affix.stat.includes("Rate") ||
     affix.stat.includes("Find") ||
     affix.stat.includes("Resistances")
@@ -433,8 +579,11 @@ function updateItemColor(craftType) {
 // Setup UI components for custom crafting
 function setupCustomCraftUI() {
   // Check if the button already exists
-  if (document.getElementById("create-craft-button")) return;
-
+  const existingButton = document.getElementById("create-craft-button");
+  if (existingButton) {
+    existingButton.parentElement.style.display = "block";
+    return;
+  }
   // Create button container
   const container = document.createElement("div");
   container.id = "create-craft-container";
@@ -871,9 +1020,9 @@ function addAffixToForm(itemType) {
   const affixesContainer = document.getElementById("additional-affixes");
   const affixCount = affixesContainer.childElementCount;
 
-  // Limit to 4 affixes
+  // Limit to 6 affixes total (including automods)
   if (affixCount >= 4) {
-    alert("Maximum of 4 affixes allowed");
+    alert("Maximum of 6 affixes allowed (including automods)");
     return;
   }
 
@@ -904,8 +1053,6 @@ function addAffixToForm(itemType) {
   const suffixOption = document.createElement("option");
   suffixOption.value = "suffix";
   suffixOption.textContent = "Suffix";
-  suffixOption.value = "suffix";
-  suffixOption.textContent = "Suffix";
   affixTypeSelect.appendChild(suffixOption);
 
   // Create affix select
@@ -918,6 +1065,18 @@ function addAffixToForm(itemType) {
   affixSelect.style.color = "#eee";
   affixSelect.style.border = "1px solid #555";
   affixSelect.style.borderRadius = "4px";
+
+  // Create automod indicator
+  const automodIndicator = document.createElement("div");
+  automodIndicator.className = "automod-indicator";
+  automodIndicator.style.flex = "0 0 80px";
+  automodIndicator.style.marginRight = "10px";
+  automodIndicator.style.padding = "5px";
+  automodIndicator.style.textAlign = "center";
+  automodIndicator.style.borderRadius = "4px";
+  automodIndicator.style.display = "none";
+  automodIndicator.style.fontSize = "0.8em";
+  automodIndicator.style.fontWeight = "bold";
 
   // Create value slider
   const valueSlider = document.createElement("input");
@@ -952,7 +1111,8 @@ function addAffixToForm(itemType) {
       affixSelect,
       valueSlider,
       valueDisplay,
-      affixTypeSelect.value
+      affixTypeSelect.value,
+      automodIndicator
     );
     updateItemPreview();
   });
@@ -962,7 +1122,8 @@ function addAffixToForm(itemType) {
       affixSelect,
       valueSlider,
       valueDisplay,
-      affixTypeSelect.value
+      affixTypeSelect.value,
+      automodIndicator
     );
     updateItemPreview();
   });
@@ -975,7 +1136,8 @@ function addAffixToForm(itemType) {
       );
       if (
         affixData.stat &&
-        (affixData.stat.includes("Damage") ||
+        (affixData.stat.includes("Enhanced Damage") ||
+          affixData.stat.includes("Deadly Strike") ||
           affixData.stat.includes("Rate") ||
           affixData.stat.includes("Find") ||
           affixData.stat.includes("Resistances"))
@@ -994,6 +1156,7 @@ function addAffixToForm(itemType) {
   // Add elements to row
   affixRow.appendChild(affixTypeSelect);
   affixRow.appendChild(affixSelect);
+  affixRow.appendChild(automodIndicator);
   affixRow.appendChild(valueSlider);
   affixRow.appendChild(valueDisplay);
   affixRow.appendChild(removeButton);
@@ -1003,7 +1166,13 @@ function addAffixToForm(itemType) {
 
   // Populate initial affixes and update slider range
   populateAffixes(affixSelect, itemType, "prefix");
-  updateSliderRange(affixSelect, valueSlider, valueDisplay, "prefix");
+  updateSliderRange(
+    affixSelect,
+    valueSlider,
+    valueDisplay,
+    "prefix",
+    automodIndicator
+  );
 }
 
 // Populate affix select with options based on item type and affix type
@@ -1023,18 +1192,74 @@ function populateAffixes(affixSelect, itemType, affixType) {
     affixes = affixes.concat(affixPool[affixType].all);
   }
 
-  // Add options to select
-  affixes.forEach((affix) => {
-    const option = document.createElement("option");
-    option.value = affix.name;
-    option.textContent = `${affix.name} (${affix.stat})`;
-    option.dataset.affixData = JSON.stringify(affix);
-    affixSelect.appendChild(option);
-  });
+  // Group affixes by regular and automod
+  const regularAffixes = affixes.filter((affix) => !affix.automod);
+  const automodAffixes = affixes.filter((affix) => affix.automod);
+
+  // Add regular affixes first
+  if (regularAffixes.length > 0) {
+    const regularGroup = document.createElement("optgroup");
+    regularGroup.label = "Regular Affixes";
+
+    regularAffixes.forEach((affix) => {
+      const option = document.createElement("option");
+      option.value = affix.name;
+      option.textContent = `${affix.name} (${affix.stat})`;
+      option.dataset.affixData = JSON.stringify(affix);
+      regularGroup.appendChild(option);
+    });
+
+    affixSelect.appendChild(regularGroup);
+  }
+
+  // Add automods in a separate group
+  if (automodAffixes.length > 0) {
+    // Group automods by class
+    const automodsByClass = {};
+
+    automodAffixes.forEach((affix) => {
+      if (!automodsByClass[affix.automod]) {
+        automodsByClass[affix.automod] = [];
+      }
+      automodsByClass[affix.automod].push(affix);
+    });
+
+    // Add each class group
+    const classNames = {
+      ass: "Assassin Skills",
+      sor: "Sorceress Skills",
+      nec: "Necromancer Skills",
+      pal: "Paladin Skills",
+      bar: "Barbarian Skills",
+      dru: "Druid Skills",
+      ama: "Amazon Skills",
+    };
+
+    Object.keys(automodsByClass).forEach((classKey) => {
+      const classGroup = document.createElement("optgroup");
+      classGroup.label = classNames[classKey] || "Class Skills";
+
+      automodsByClass[classKey].forEach((affix) => {
+        const option = document.createElement("option");
+        option.value = affix.name;
+        option.textContent = `${affix.name} (${affix.stat})`;
+        option.dataset.affixData = JSON.stringify(affix);
+        classGroup.appendChild(option);
+      });
+
+      affixSelect.appendChild(classGroup);
+    });
+  }
 }
 
 // Update slider range based on selected affix
-function updateSliderRange(affixSelect, valueSlider, valueDisplay, affixType) {
+function updateSliderRange(
+  affixSelect,
+  valueSlider,
+  valueDisplay,
+  affixType,
+  automodIndicator
+) {
   if (affixSelect.options.length === 0) return;
 
   const selectedOption = affixSelect.options[affixSelect.selectedIndex];
@@ -1050,12 +1275,50 @@ function updateSliderRange(affixSelect, valueSlider, valueDisplay, affixType) {
     valueDisplay.textContent = valueSlider.value;
     if (
       affixData.stat &&
-      (affixData.stat.includes("Damage") ||
+      (affixData.stat.includes("Enhanced Damage") ||
+        affixData.stat.includes("Deadly Strike") ||
         affixData.stat.includes("Rate") ||
         affixData.stat.includes("Find") ||
         affixData.stat.includes("Resistances"))
     ) {
       valueDisplay.textContent += "%";
+    }
+  }
+
+  // Show automod indicator if it's an automod
+  if (automodIndicator) {
+    if (affixData.automod) {
+      automodIndicator.style.display = "block";
+      automodIndicator.textContent = "AUTOMOD";
+
+      // Set color based on class
+      switch (affixData.automod) {
+        case "ass":
+          automodIndicator.style.backgroundColor = "#8e44ad"; // Purple for Assassin
+          break;
+        case "sor":
+          automodIndicator.style.backgroundColor = "#3498db"; // Blue for Sorceress
+          break;
+        case "nec":
+          automodIndicator.style.backgroundColor = "#2c3e50"; // Dark Blue for Necromancer
+          break;
+        case "pal":
+          automodIndicator.style.backgroundColor = "#f1c40f"; // Yellow for Paladin
+          break;
+        case "bar":
+          automodIndicator.style.backgroundColor = "#e74c3c"; // Red for Barbarian
+          break;
+        case "dru":
+          automodIndicator.style.backgroundColor = "#27ae60"; // Green for Druid
+          break;
+        case "ama":
+          automodIndicator.style.backgroundColor = "#f39c12"; // Orange for Amazon
+          break;
+        default:
+          automodIndicator.style.backgroundColor = "#7f8c8d"; // Gray default
+      }
+    } else {
+      automodIndicator.style.display = "none";
     }
   }
 }
@@ -1121,9 +1384,11 @@ function updateItemPreview() {
     // Format the display of the affix
     if (
       affixData.stat &&
-      (affixData.stat.includes("Damage") ||
+      (affixData.stat.includes("Enhanced Damage") ||
+        affixData.stat.includes("Deadly Strike") ||
         affixData.stat.includes("Rate") ||
         affixData.stat.includes("Find") ||
+        affixData.stat.includes("Stolen") ||
         affixData.stat.includes("Resistances"))
     ) {
       html += `<div>${affixValue}% ${affixData.stat}</div>`;
@@ -1211,23 +1476,33 @@ function createCustomItem() {
       affixSelect.options[affixSelect.selectedIndex].dataset.affixData || "{}"
     );
 
-    // Check limits on prefixes and suffixes
-    if (affixType === "prefix") {
-      prefixCount++;
-      if (prefixCount > 3) return; // Max 3 prefixes
-    } else {
-      suffixCount++;
-      if (suffixCount > 3) return; // Max 3 suffixes
+    // Check limits on prefixes and suffixes (excluding automods)
+    if (!affixData.automod) {
+      if (affixType === "prefix") {
+        prefixCount++;
+        if (prefixCount > 3) return; // Max 3 prefixes
+      } else {
+        suffixCount++;
+        if (suffixCount > 3) return; // Max 3 suffixes
+      }
     }
 
-    additionalAffixes.push({
+    // Build the affix object
+    const affix = {
       name: affixData.name,
       type: affixType,
       stat: affixData.stat,
       value: affixValue,
       min: affixData.min,
       max: affixData.max,
-    });
+    };
+
+    // Add automod flag if it exists
+    if (affixData.automod) {
+      affix.automod = affixData.automod;
+    }
+
+    additionalAffixes.push(affix);
   });
 
   // Create item object
@@ -1249,29 +1524,39 @@ function validateCraftForm() {
   const itemName = document.getElementById("item-name").value;
   const affixRows = document.querySelectorAll(".affix-row");
 
-  // Check prefixes and suffixes count
+  // Check prefixes and suffixes count (excluding automods)
   let prefixCount = 0;
   let suffixCount = 0;
 
   affixRows.forEach((row) => {
     const type = row.querySelector(".affix-type").value;
+    const affixSelect = row.querySelector(".affix-select");
+
+    if (affixSelect.selectedIndex === -1) return;
+
+    const affixData = JSON.parse(
+      affixSelect.options[affixSelect.selectedIndex].dataset.affixData || "{}"
+    );
+
+    // Skip counting if it's an automod
+    if (affixData.automod) return;
+
     if (type === "prefix") prefixCount++;
     else suffixCount++;
   });
 
   if (prefixCount > 3) {
-    alert("Maximum of 3 prefixes allowed");
+    alert("Maximum of 3 prefixes allowed (automods excluded)");
     return false;
   }
 
   if (suffixCount > 3) {
-    alert("Maximum of 3 suffixes allowed");
+    alert("Maximum of 3 suffixes allowed (automods excluded)");
     return false;
   }
 
   return true;
 }
-
 // Save the crafted item to the server
 function saveCraftedItem(item) {
   console.log("Saving craft item:", item);
@@ -1316,45 +1601,249 @@ function saveCraftedItem(item) {
 // External variables needed from craftItems.js
 const baseItems = {
   weapon: [
-    { name: "Hand Axe", itemClass: "Axe", twoHanded: false },
-    { name: "Axe", itemClass: "Axe", twoHanded: false },
-    { name: "Double Axe", itemClass: "Axe", twoHanded: false },
-    { name: "Two-Handed Sword", itemClass: "Sword", twoHanded: true },
-    { name: "Scimitar", itemClass: "Sword", twoHanded: false },
-    { name: "Sabre", itemClass: "Sword", twoHanded: false },
-    { name: "Long Sword", itemClass: "Sword", twoHanded: false },
-    { name: "Dagger", itemClass: "Dagger", twoHanded: false },
-    { name: "Claymore", itemClass: "Sword", twoHanded: true },
-    { name: "Mace", itemClass: "Mace", twoHanded: false },
-    { name: "Flail", itemClass: "Mace", twoHanded: false },
-    { name: "War Hammer", itemClass: "Mace", twoHanded: false },
+    { name: "Hand Axe", itemClass: "Axe", twoHanded: false, strengthReq: 0 },
+    { name: "Axe", itemClass: "Axe", twoHanded: false, strengthReq: 32 },
+    { name: "Double Axe", itemClass: "Axe", twoHanded: false, strengthReq: 43 },
+    {
+      name: "Military Pick",
+      itemClass: "Axe",
+      twoHanded: false,
+      strengthReq: 49,
+    },
+    { name: "War Axe", itemClass: "Axe", twoHanded: false, strengthReq: 67 },
+    { name: "Large Axe", itemClass: "Axe", twoHanded: true, strengthReq: 35 },
+    { name: "Broad Axe", itemClass: "Axe", twoHanded: true, strengthReq: 48 },
+    { name: "Battle Axe", itemClass: "Axe", twoHanded: true, strengthReq: 54 },
+    { name: "Great Axe", itemClass: "Axe", twoHanded: true, strengthReq: 63 },
+    { name: "Giant Axe", itemClass: "Axe", twoHanded: true, strengthReq: 70 },
+    {
+      name: "Two-Handed Sword",
+      itemClass: "Sword",
+      twoHanded: true,
+      strengthReq: 35,
+    },
+    { name: "Claymore", itemClass: "Sword", twoHanded: true, strengthReq: 47 },
+    {
+      name: "Giant Sword",
+      itemClass: "Sword",
+      twoHanded: true,
+      strengthReq: 56,
+    },
+    {
+      name: "Bastard Sword",
+      itemClass: "Sword",
+      twoHanded: true,
+      strengthReq: 62,
+    },
+    { name: "Flamberge", itemClass: "Sword", twoHanded: true, strengthReq: 70 },
+    {
+      name: "Great Sword",
+      itemClass: "Sword",
+      twoHanded: true,
+      strengthReq: 100,
+    },
+    {
+      name: "Short Sword",
+      itemClass: "Sword",
+      twoHanded: false,
+      strengthReq: 0,
+    },
+    { name: "Scimitar", itemClass: "Sword", twoHanded: false, strengthReq: 0 },
+    { name: "Sabre", itemClass: "Sword", twoHanded: false, strengthReq: 25 },
+    { name: "Falchion", itemClass: "Sword", twoHanded: false, strengthReq: 33 },
+    {
+      name: "Crystal Sword",
+      itemClass: "Sword",
+      twoHanded: false,
+      strengthReq: 43,
+    },
+    {
+      name: "Broad Sword",
+      itemClass: "Sword",
+      twoHanded: false,
+      strengthReq: 48,
+    },
+    {
+      name: "Long Sword",
+      itemClass: "Sword",
+      twoHanded: false,
+      strengthReq: 55,
+    },
+    {
+      name: "War Sword",
+      itemClass: "Sword",
+      twoHanded: false,
+      strengthReq: 71,
+    },
+    { name: "Dagger", itemClass: "Dagger", twoHanded: false, strengthReq: 0 },
+    { name: "Dirk", itemClass: "Dagger", twoHanded: false, strengthReq: 0 },
+    { name: "Kris", itemClass: "Dagger", twoHanded: false, strengthReq: 0 },
+    { name: "Blade", itemClass: "Dagger", twoHanded: false, strengthReq: 35 },
+    { name: "Club", itemClass: "Mace", twoHanded: false, strengthReq: 0 },
+    {
+      name: "Spiked Club",
+      itemClass: "Mace",
+      twoHanded: false,
+      strengthReq: 0,
+    },
+    { name: "Mace", itemClass: "Mace", twoHanded: false, strengthReq: 27 },
+    {
+      name: "Morning Star",
+      itemClass: "Mace",
+      twoHanded: false,
+      strengthReq: 36,
+    },
+    { name: "Flail", itemClass: "Mace", twoHanded: false, strengthReq: 41 },
+    {
+      name: "War Hammer",
+      itemClass: "Mace",
+      twoHanded: false,
+      strengthReq: 53,
+    },
+    { name: "Maul", itemClass: "Mace", twoHanded: true, strengthReq: 69 },
+    { name: "Great Maul", itemClass: "Mace", twoHanded: true, strengthReq: 99 },
+    {
+      name: "Blade Talons",
+      itemClass: "Claw",
+      twoHanded: false,
+      strengthReq: 0,
+    },
   ],
   armor: [
-    { name: "Quilted Armor", itemClass: "Light Armor" },
-    { name: "Leather Armor", itemClass: "Light Armor" },
-    { name: "Hard Leather Armor", itemClass: "Light Armor" },
-    { name: "Ring Mail", itemClass: "Medium Armor" },
-    { name: "Scale Mail", itemClass: "Medium Armor" },
-    { name: "Chain Mail", itemClass: "Medium Armor" },
-    { name: "Breast Plate", itemClass: "Heavy Armor" },
-    { name: "Plate Mail", itemClass: "Heavy Armor" },
-    { name: "Field Plate", itemClass: "Heavy Armor" },
+    { name: "Quilted Armor", itemClass: "Light Armor", strengthReq: 12 },
+    { name: "Leather Armor", itemClass: "Light Armor", strengthReq: 15 },
+    { name: "Hard Leather Armor", itemClass: "Light Armor", strengthReq: 20 },
+    { name: "Studded Leather", itemClass: "Light Armor", strengthReq: 27 },
+    { name: "Ring Mail", itemClass: "Medium Armor", strengthReq: 36 },
+    { name: "Scale Mail", itemClass: "Medium Armor", strengthReq: 44 },
+    { name: "Chain Mail", itemClass: "Medium Armor", strengthReq: 48 },
+    { name: "Breast Plate", itemClass: "Heavy Armor", strengthReq: 30 },
+    { name: "Splint Mail", itemClass: "Heavy Armor", strengthReq: 51 },
+    { name: "Plate Mail", itemClass: "Heavy Armor", strengthReq: 65 },
+    { name: "Field Plate", itemClass: "Heavy Armor", strengthReq: 55 },
+    { name: "Gothic Plate", itemClass: "Heavy Armor", strengthReq: 70 },
+    { name: "Full Plate Mail", itemClass: "Heavy Armor", strengthReq: 80 },
+    { name: "Ancient Armor", itemClass: "Heavy Armor", strengthReq: 100 },
+    { name: "Light Plate", itemClass: "Heavy Armor", strengthReq: 41 },
+    { name: "Ghost Armor", itemClass: "Light Armor", strengthReq: 38 },
+    { name: "Serpentskin Armor", itemClass: "Light Armor", strengthReq: 43 },
+    { name: "Demonhide Armor", itemClass: "Light Armor", strengthReq: 50 },
+    { name: "Trellised Armor", itemClass: "Light Armor", strengthReq: 61 },
+    { name: "Linked Mail", itemClass: "Medium Armor", strengthReq: 74 },
+    { name: "Tigulated Mail", itemClass: "Medium Armor", strengthReq: 86 },
+    { name: "Mesh Armor", itemClass: "Medium Armor", strengthReq: 92 },
+    { name: "Cuirass", itemClass: "Heavy Armor", strengthReq: 65 },
+    { name: "Russet Armor", itemClass: "Heavy Armor", strengthReq: 97 },
+    { name: "Templar Coat", itemClass: "Heavy Armor", strengthReq: 118 },
+    { name: "Sharktooth Armor", itemClass: "Heavy Armor", strengthReq: 103 },
+    { name: "Embossed Plate", itemClass: "Heavy Armor", strengthReq: 125 },
+    { name: "Chaos Armor", itemClass: "Heavy Armor", strengthReq: 140 },
+    { name: "Ornate Plate", itemClass: "Heavy Armor", strengthReq: 170 },
+    { name: "Mage Plate", itemClass: "Light Armor", strengthReq: 55 },
+    { name: "Dusk Shroud", itemClass: "Light Armor", strengthReq: 77 },
+    { name: "Wyrmhide", itemClass: "Light Armor", strengthReq: 84 },
+    { name: "Scarab Husk", itemClass: "Light Armor", strengthReq: 95 },
+    { name: "Wire Fleece", itemClass: "Light Armor", strengthReq: 111 },
+    { name: "Diamond Mail", itemClass: "Medium Armor", strengthReq: 131 },
+    { name: "Loricated Mail", itemClass: "Medium Armor", strengthReq: 149 },
+    { name: "Boneweave", itemClass: "Medium Armor", strengthReq: 158 },
+    { name: "Great Hauberk", itemClass: "Medium Armor", strengthReq: 118 },
+    { name: "Balrog Skin", itemClass: "Heavy Armor", strengthReq: 165 },
+    { name: "Hellforge Plate", itemClass: "Heavy Armor", strengthReq: 196 },
+    { name: "Kraken Shell", itemClass: "Heavy Armor", strengthReq: 174 },
+    { name: "Lacquered Plate", itemClass: "Heavy Armor", strengthReq: 208 },
+    { name: "Archon Plate", itemClass: "Heavy Armor", strengthReq: 103 },
+    { name: "Shadow Plate", itemClass: "Heavy Armor", strengthReq: 220 },
+    { name: "Sacred Armor", itemClass: "Heavy Armor", strengthReq: 232 },
   ],
   helm: [
-    { name: "Cap", itemClass: "Light Helm" },
-    { name: "Skull Cap", itemClass: "Light Helm" },
-    { name: "Helm", itemClass: "Medium Helm" },
-    { name: "Full Helm", itemClass: "Medium Helm" },
-    { name: "Crown", itemClass: "Heavy Helm" },
-    { name: "Great Helm", itemClass: "Heavy Helm" },
+    { name: "Cap", itemClass: "Light Helm", strengthReq: 0 },
+    { name: "Skull Cap", itemClass: "Light Helm", strengthReq: 15 },
+    { name: "Helm", itemClass: "Medium Helm", strengthReq: 26 },
+    { name: "Full Helm", itemClass: "Medium Helm", strengthReq: 41 },
+    { name: "Great Helm", itemClass: "Heavy Helm", strengthReq: 63 },
+    { name: "Crown", itemClass: "Heavy Helm", strengthReq: 55 },
+    { name: "Mask", itemClass: "Light Helm", strengthReq: 23 },
+    { name: "Bone Helm", itemClass: "Light Helm", strengthReq: 25 },
+    { name: "War Hat", itemClass: "Light Helm", strengthReq: 20 },
+    { name: "Shako", itemClass: "Light Helm", strengthReq: 50 },
+    { name: "Sallet", itemClass: "Medium Helm", strengthReq: 43 },
+    { name: "Hydraskull", itemClass: "Medium Helm", strengthReq: 84 },
+    { name: "Casque", itemClass: "Medium Helm", strengthReq: 59 },
+    { name: "Basinet", itemClass: "Medium Helm", strengthReq: 82 },
+    { name: "Giant Conch", itemClass: "Heavy Helm", strengthReq: 142 },
+    { name: "Armet", itemClass: "Heavy Helm", strengthReq: 109 },
+    { name: "Death Mask", itemClass: "Light Helm", strengthReq: 55 },
+    { name: "Demonhead", itemClass: "Light Helm", strengthReq: 102 },
+    { name: "Grim Helm", itemClass: "Light Helm", strengthReq: 58 },
+    { name: "Bone Visage", itemClass: "Light Helm", strengthReq: 106 },
+    { name: "Winged Helm", itemClass: "Heavy Helm", strengthReq: 115 },
+    { name: "Spired Helm", itemClass: "Heavy Helm", strengthReq: 192 },
+    { name: "Grand Crown", itemClass: "Heavy Helm", strengthReq: 103 },
+    { name: "Corona", itemClass: "Heavy Helm", strengthReq: 174 },
+    { name: "Circlet", itemClass: "Circlet", strengthReq: 0 },
+    { name: "Coronet", itemClass: "Circlet", strengthReq: 0 },
+    { name: "Tiara", itemClass: "Circlet", strengthReq: 0 },
+    { name: "Diadem", itemClass: "Circlet", strengthReq: 0 },
+    { name: "Wolf Head", itemClass: "Druid Helm", strengthReq: 16 },
+    { name: "Hawk Helm", itemClass: "Druid Helm", strengthReq: 20 },
+    { name: "Antlers", itemClass: "Druid Helm", strengthReq: 24 },
+    { name: "Falcon Mask", itemClass: "Druid Helm", strengthReq: 28 },
+    { name: "Spirit Mask", itemClass: "Druid Helm", strengthReq: 30 },
+    { name: "Jawbone Cap", itemClass: "Barbarian Helm", strengthReq: 25 },
+    { name: "Fanged Helm", itemClass: "Barbarian Helm", strengthReq: 35 },
+    { name: "Horned Helm", itemClass: "Barbarian Helm", strengthReq: 45 },
+    { name: "Assault Helmet", itemClass: "Barbarian Helm", strengthReq: 55 },
+    { name: "Avenger Guard", itemClass: "Barbarian Helm", strengthReq: 65 },
+    { name: "Jawbone Visor", itemClass: "Barbarian Helm", strengthReq: 58 },
+    { name: "Carnage Helm", itemClass: "Barbarian Helm", strengthReq: 106 },
+    { name: "Slayer Guard", itemClass: "Barbarian Helm", strengthReq: 118 },
+    { name: "Guardian Crown", itemClass: "Barbarian Helm", strengthReq: 196 },
   ],
   shield: [
-    { name: "Buckler", itemClass: "Light Shield" },
-    { name: "Small Shield", itemClass: "Light Shield" },
-    { name: "Large Shield", itemClass: "Medium Shield" },
-    { name: "Kite Shield", itemClass: "Medium Shield" },
-    { name: "Tower Shield", itemClass: "Heavy Shield" },
-    { name: "Gothic Shield", itemClass: "Heavy Shield" },
+    { name: "Buckler", itemClass: "Light Shield", strengthReq: 12 },
+    { name: "Small Shield", itemClass: "Light Shield", strengthReq: 22 },
+    { name: "Large Shield", itemClass: "Medium Shield", strengthReq: 34 },
+    { name: "Kite Shield", itemClass: "Medium Shield", strengthReq: 47 },
+    { name: "Tower Shield", itemClass: "Heavy Shield", strengthReq: 75 },
+    { name: "Gothic Shield", itemClass: "Heavy Shield", strengthReq: 60 },
+    { name: "Bone Shield", itemClass: "Light Shield", strengthReq: 25 },
+    { name: "Spiked Shield", itemClass: "Medium Shield", strengthReq: 30 },
+    { name: "Defender", itemClass: "Medium Shield", strengthReq: 38 },
+  ],
+  gloves: [
+    { name: "Leather Gloves", itemClass: "Light Gloves", strengthReq: 0 },
+    { name: "Heavy Gloves", itemClass: "Medium Gloves", strengthReq: 0 },
+    { name: "Chain Gloves", itemClass: "Medium Gloves", strengthReq: 25 },
+    { name: "Light Gauntlets", itemClass: "Heavy Gloves", strengthReq: 45 },
+    { name: "Gauntlets", itemClass: "Heavy Gloves", strengthReq: 60 },
+    { name: "Demonhide Gloves", itemClass: "Light Gloves", strengthReq: 20 },
+    { name: "Sharkskin Gloves", itemClass: "Light Gloves", strengthReq: 20 },
+    { name: "Heavy Bracers", itemClass: "Medium Gloves", strengthReq: 58 },
+    { name: "Battle Gauntlets", itemClass: "Heavy Gloves", strengthReq: 88 },
+    { name: "War Gauntlets", itemClass: "Heavy Gloves", strengthReq: 110 },
+    { name: "Bramble Mitts", itemClass: "Light Gloves", strengthReq: 50 },
+    { name: "Vampirebone Gloves", itemClass: "Light Gloves", strengthReq: 50 },
+    { name: "Vambraces", itemClass: "Medium Gloves", strengthReq: 106 },
+    { name: "Crusader Gauntlets", itemClass: "Heavy Gloves", strengthReq: 151 },
+    { name: "Ogre Gauntlets", itemClass: "Heavy Gloves", strengthReq: 185 },
+  ],
+  belt: [
+    { name: "Sash", itemClass: "Light Belt", strengthReq: 0 },
+    { name: "Light Belt", itemClass: "Light Belt", strengthReq: 0 },
+    { name: "Belt", itemClass: "Medium Belt", strengthReq: 25 },
+    { name: "Heavy Belt", itemClass: "Medium Belt", strengthReq: 45 },
+    { name: "Plated Belt", itemClass: "Heavy Belt", strengthReq: 60 },
+    { name: "Demonhide Sash", itemClass: "Light Belt", strengthReq: 20 },
+    { name: "Sharkskin Belt", itemClass: "Light Belt", strengthReq: 20 },
+    { name: "Mesh Belt", itemClass: "Medium Belt", strengthReq: 58 },
+    { name: "Battle Belt", itemClass: "Medium Belt", strengthReq: 88 },
+    { name: "War Belt", itemClass: "Heavy Belt", strengthReq: 110 },
+    { name: "Spiderweb Sash", itemClass: "Light Belt", strengthReq: 50 },
+    { name: "Vampirefang Belt", itemClass: "Light Belt", strengthReq: 50 },
+    { name: "Mithril Coil", itemClass: "Medium Belt", strengthReq: 106 },
+    { name: "Troll Belt", itemClass: "Medium Belt", strengthReq: 151 },
+    { name: "Colossus Girdle", itemClass: "Heavy Belt", strengthReq: 185 },
   ],
 };
 
@@ -1410,9 +1899,9 @@ const craftDefinitions = {
     Vampiric: {
       name: "Vampiric",
       baseProperties: [
-        { name: "Life Stolen per Hit", type: "percentage", min: 3, max: 6 },
-        { name: "Mana Stolen per Hit", type: "percentage", min: 3, max: 6 },
-        { name: "Enhanced Defense", type: "percentage", min: 50, max: 80 },
+        { name: "Deadly Strike", type: "percentage", min: 10, max: 20 },
+        { name: "Mana Stolen per Hit", type: "percentage", min: 2, max: 4 },
+        { name: "Replenish Life", type: "flat", min: 5, max: 10 },
       ],
     },
   },
@@ -1420,8 +1909,18 @@ const craftDefinitions = {
     Bountiful: {
       name: "Bountiful",
       baseProperties: [
-        { name: "Magic Find", type: "percentage", min: 15, max: 30 },
-        { name: "Gold Find", type: "percentage", min: 30, max: 60 },
+        {
+          name: "Better Chance of Getting Magic Items",
+          type: "percentage",
+          min: 15,
+          max: 30,
+        },
+        {
+          name: "Extra Gold from Monsters",
+          type: "percentage",
+          min: 30,
+          max: 60,
+        },
         { name: "to All Attributes", type: "flat", min: 5, max: 10 },
       ],
     },
@@ -1443,7 +1942,7 @@ const affixPool = {
       { name: "Cruel", stat: "Enhanced Damage", min: 151, max: 200 },
       { name: "Master's", stat: "Attack Rating", min: 121, max: 150 },
       { name: "Accurate", stat: "Attack Rating", min: 81, max: 120 },
-      { name: "Sharp", stat: "Maximum Damage", min: 7, max: 10 },
+      { name: "Sharp", stat: "Maximum Damage", min: 7, max: 15 },
       { name: "Fine", stat: "Maximum Damage", min: 4, max: 6 },
       { name: "Fiery", stat: "Fire Damage", min: 11, max: 20 },
       { name: "Shocking", stat: "Lightning Damage", min: 1, max: 40 },
@@ -1454,20 +1953,30 @@ const affixPool = {
       { name: "Strong", stat: "Enhanced Defense", min: 66, max: 100 },
       { name: "Glorious", stat: "Enhanced Defense", min: 101, max: 150 },
       { name: "Blessed", stat: "All Resistances", min: 5, max: 10 },
-      { name: "Crimson", stat: "Fire Resistance", min: 11, max: 20 },
-      { name: "Azure", stat: "Cold Resistance", min: 11, max: 20 },
-      { name: "Amber", stat: "Lightning Resistance", min: 11, max: 20 },
+      { name: "Crimson", stat: "to Fire Resistance", min: 11, max: 20 },
+      { name: "Azure", stat: "to Cold Resistance", min: 11, max: 20 },
+      { name: "Amber", stat: "to Lightning Resistance", min: 11, max: 20 },
     ],
     helm: [
-      { name: "Stout", stat: "Life", min: 21, max: 40 },
-      { name: "Lizard's", stat: "Mana", min: 11, max: 20 },
+      { name: "Stout", stat: "to Life", min: 21, max: 40 },
+      { name: "Lizard's", stat: "to Mana", min: 11, max: 20 },
       { name: "Jade", stat: "Poison Resistance", min: 11, max: 20 },
     ],
     all: [
-      { name: "Lucky", stat: "Magic Find", min: 11, max: 25 },
-      { name: "Fortuitous", stat: "Gold Find", min: 31, max: 80 },
-      { name: "Hawk's", stat: "Dexterity", min: 6, max: 9 },
-      { name: "Granite", stat: "Strength", min: 6, max: 9 },
+      {
+        name: "Lucky",
+        stat: "Better Chance of Getting Magic Items",
+        min: 11,
+        max: 25,
+      },
+      {
+        name: "Fortuitous",
+        stat: "Extra Gold from Monsters",
+        min: 31,
+        max: 80,
+      },
+      { name: "Hawk's", stat: "to Dexterity", min: 6, max: 9 },
+      { name: "Granite", stat: "to Strength", min: 6, max: 9 },
     ],
   },
   suffix: {
@@ -1481,13 +1990,161 @@ const affixPool = {
         max: 20,
       },
       { name: "of Quickness", stat: "Faster Cast Rate", min: 10, max: 15 },
-      { name: "of Flames", stat: "Fire Damage", min: 21, max: 40 },
-      { name: "of Frost", stat: "Cold Damage", min: 11, max: 20 },
-      { name: "of Shock", stat: "Lightning Damage", min: 41, max: 80 },
+      { name: "of Flames", stat: "to Fire Damage", min: 21, max: 40 },
+      { name: "of Frost", stat: "to Cold Damage", min: 11, max: 20 },
+      { name: "of Shock", stat: "to Lightning Damage", min: 41, max: 80 },
+      { name: "of Life Stolen", stat: "Life Stolen per Hit", min: 1, max: 4 },
+      // Assassin skill automods
+      {
+        name: "of WoF",
+        stat: "to Wake of Fire (Assassin Only)",
+        min: 1,
+        max: 3,
+        automod: "ass",
+      },
+      {
+        name: "of Traps",
+        stat: "to Traps (Assassin Only)",
+        min: 1,
+        max: 2,
+        automod: "ass",
+      },
+      {
+        name: "of LS",
+        stat: "to Lightning Sentry (Assassin Only)",
+        min: 1,
+        max: 3,
+        automod: "ass",
+      },
+      {
+        name: "of DS",
+        stat: "to Death Sentry (Assassin Only)",
+        min: 1,
+        max: 3,
+        automod: "ass",
+      },
+      {
+        name: "of Fire Blast",
+        stat: "to Fire Blast (Assassin Only)",
+        min: 1,
+        max: 3,
+        automod: "ass",
+      },
+      {
+        name: "of Inferno",
+        stat: "to Wake of Inferno (Assassin Only)",
+        min: 1,
+        max: 3,
+        automod: "ass",
+      },
+      // Sorceress skill automods
+      {
+        name: "of Nova",
+        stat: "to Nova (Sorceress Only)",
+        min: 1,
+        max: 3,
+        automod: "sor",
+      },
+      {
+        name: "of Lightning",
+        stat: "to Lightning (Sorceress Only)",
+        min: 1,
+        max: 3,
+        automod: "sor",
+      },
+      {
+        name: "of Fire Ball",
+        stat: "to Fire Ball (Sorceress Only)",
+        min: 1,
+        max: 3,
+        automod: "sor",
+      },
+      {
+        name: "of Blizzard",
+        stat: "to Blizzard (Sorceress Only)",
+        min: 1,
+        max: 3,
+        automod: "sor",
+      },
+      // Necromancer skill automods
+      {
+        name: "of Bone",
+        stat: "to Bone Spear (Necromancer Only)",
+        min: 1,
+        max: 3,
+        automod: "nec",
+      },
+      {
+        name: "of Poison",
+        stat: "to Poison Nova (Necromancer Only)",
+        min: 1,
+        max: 3,
+        automod: "nec",
+      },
+      // Paladin skill automods
+      {
+        name: "of Blessed Hammer",
+        stat: "to Blessed Hammer (Paladin Only)",
+        min: 1,
+        max: 3,
+        automod: "pal",
+      },
+      {
+        name: "of Holy Shield",
+        stat: "to Holy Shield (Paladin Only)",
+        min: 1,
+        max: 3,
+        automod: "pal",
+      },
+      // Barbarian skill automods
+      {
+        name: "of Battle Orders",
+        stat: "to Battle Orders (Barbarian Only)",
+        min: 1,
+        max: 3,
+        automod: "bar",
+      },
+      {
+        name: "of Whirlwind",
+        stat: "to Whirlwind (Barbarian Only)",
+        min: 1,
+        max: 3,
+        automod: "bar",
+      },
+      // Druid skill automods
+      {
+        name: "of Tornado",
+        stat: "to Tornado (Druid Only)",
+        min: 1,
+        max: 3,
+        automod: "dru",
+      },
+      {
+        name: "of Hurricane",
+        stat: "to Hurricane (Druid Only)",
+        min: 1,
+        max: 3,
+        automod: "dru",
+      },
+      // Amazon skill automods
+      {
+        name: "of Lightning Fury",
+        stat: "to Lightning Fury (Amazon Only)",
+        min: 1,
+        max: 3,
+        automod: "ama",
+      },
+      {
+        name: "of Strafe",
+        stat: "to Strafe (Amazon Only)",
+        min: 1,
+        max: 3,
+        automod: "ama",
+      },
     ],
     armor: [
-      { name: "of the Whale", stat: "Life", min: 41, max: 80 },
-      { name: "of Health", stat: "Life", min: 21, max: 40 },
+      { name: "of the Whale", stat: "to Life", min: 41, max: 80 },
+      { name: "of Health", stat: "to Life", min: 21, max: 40 },
       { name: "of Warding", stat: "All Resistances", min: 11, max: 15 },
       { name: "of Deflection", stat: "Faster Block Rate", min: 10, max: 20 },
       { name: "of Absorption", stat: "Magic Damage Reduction", min: 1, max: 2 },
@@ -1498,9 +2155,14 @@ const affixPool = {
       { name: "of Light", stat: "Light Radius", min: 1, max: 3 },
     ],
     all: [
-      { name: "of Worth", stat: "Gold Find", min: 81, max: 120 },
-      { name: "of Fortune", stat: "Magic Find", min: 26, max: 40 },
-      { name: "of Vita", stat: "Vitality", min: 6, max: 9 },
+      { name: "of Worth", stat: "Extra Gold from Monsters", min: 81, max: 120 },
+      {
+        name: "of Fortune",
+        stat: "Better Chance of Getting Magic Items",
+        min: 26,
+        max: 40,
+      },
+      { name: "of Vita", stat: "to Vitality", min: 6, max: 9 },
     ],
   },
 };
@@ -1576,6 +2238,147 @@ document.addEventListener("DOMContentLoaded", () => {
       craftModal.style.display = "none";
     }
   });
+});
+
+// Format a custom item property for display
+function formatCustomItemProperty(prop) {
+  if (!prop) return "Unknown property";
+
+  // Add a class-specific indicator for automods
+  let automodPrefix = "";
+  if (prop.automod) {
+    switch (prop.automod) {
+      case "ass":
+        automodPrefix = "[Assassin] ";
+        break;
+      case "sor":
+        automodPrefix = "[Sorceress] ";
+        break;
+      case "nec":
+        automodPrefix = "[Necromancer] ";
+        break;
+      case "pal":
+        automodPrefix = "[Paladin] ";
+        break;
+      case "bar":
+        automodPrefix = "[Barbarian] ";
+        break;
+      case "dru":
+        automodPrefix = "[Druid] ";
+        break;
+      case "ama":
+        automodPrefix = "[Amazon] ";
+        break;
+    }
+  }
+
+  // Special handling for Gold from Monsters
+  if (
+    (prop.stat && prop.stat.includes("Gold from Monsters")) ||
+    (prop.name && prop.name.includes("Gold from Monsters"))
+  ) {
+    return `${automodPrefix}+${prop.value || 0}% ${prop.stat || prop.name}`;
+  }
+
+  if (
+    (prop.stat && prop.stat.includes("Better Chance")) ||
+    (prop.name && prop.name.includes("Better Chance"))
+  ) {
+    return `${automodPrefix}+${prop.value || 0}% ${prop.stat || prop.name}`;
+  }
+
+  if (
+    (prop.stat && prop.stat.includes("Enhanced Damage")) ||
+    (prop.name && prop.name.includes("Enhanced Damage"))
+  ) {
+    return `${automodPrefix}+${prop.value || 0}% ${prop.stat || prop.name}`;
+  }
+
+  if (
+    (prop.stat && prop.stat.includes("Damage to Demons")) ||
+    (prop.name && prop.name.includes("Damage to Demons"))
+  ) {
+    return `${automodPrefix}+${prop.value || 0}% ${prop.stat || prop.name}`;
+  }
+
+  // Check if it's a percentage-based property - checking both stat and name fields
+  if (
+    (prop.stat &&
+      (prop.stat.includes("Rate") ||
+        prop.stat.includes("Deadly Strike") ||
+        prop.stat.includes("Find") ||
+        prop.stat.includes("Stolen") ||
+        prop.stat.includes("Resistance"))) ||
+    (prop.name &&
+      (prop.name.includes("Deadly Strike") ||
+        prop.name.includes("Stolen per Hit") ||
+        prop.name.includes("Rate") ||
+        prop.name.includes("Find") ||
+        prop.name.includes("Resistance")))
+  ) {
+    // Use either stat or name depending on which one is present
+    const displayName = prop.stat || prop.name;
+
+    // Special handling for certain properties (adding + sign)
+    if (displayName.includes("Rate") || displayName.includes("Find")) {
+      return `${automodPrefix}+${prop.value || 0}% ${displayName}`;
+    } else {
+      // Regular percentage display for other properties
+      return `${automodPrefix}${prop.value || 0}% ${displayName}`;
+    }
+  }
+
+  // Skills-related properties
+  else if (prop.name && prop.name.includes("to All Skills")) {
+    return `${automodPrefix}+${prop.value || 0} ${prop.name}`;
+  } else if (prop.name && prop.name.includes("Replenish Life")) {
+    return `${automodPrefix}${prop.name || 0} +${prop.value}`;
+  }
+  // Class-specific skills (typically automods)
+  else if (
+    prop.stat &&
+    (prop.stat.includes("Only") ||
+      prop.stat.includes("Skill") ||
+      prop.stat.includes("to "))
+  ) {
+    return `${automodPrefix}+${prop.value || 0} ${
+      prop.stat || prop.name || "Unknown"
+    }`;
+  }
+
+  // Default flat value properties
+  else {
+    return `${automodPrefix}+${prop.value || 0} ${
+      prop.stat || prop.name || "Unknown"
+    }`;
+  }
+}
+
+// Apply these style improvements to the automods
+document.addEventListener("DOMContentLoaded", () => {
+  // Add a style for autmod indicators
+  const style = document.createElement("style");
+  style.textContent = `
+    .automod-indicator {
+      background-color: #7f8c8d;
+      color: white;
+      font-size: 0.8em;
+      padding: 3px 5px;
+      border-radius: 3px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+    
+    .affix-row[data-automod="true"] .affix-select {
+      border-left: 3px solid #e74c3c;
+    }
+  `;
+  document.head.appendChild(style);
 });
 
 // Expose our functions to the global scope

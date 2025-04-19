@@ -27,6 +27,55 @@ mongoose
     console.error("MongoDB connection error:", err);
   });
 
+// Auth middleware - improved with better error handling
+function auth(req, res, next) {
+  try {
+    // Check if Authorization header exists
+    if (!req.headers.authorization) {
+      console.error("No authorization header found");
+      return res
+        .status(401)
+        .json({ error: "Authentication failed - no token provided" });
+    }
+
+    // Extract token
+    const authParts = req.headers.authorization.split(" ");
+    if (authParts.length !== 2 || authParts[0] !== "Bearer") {
+      console.error("Invalid authorization format");
+      return res
+        .status(401)
+        .json({ error: "Authentication failed - invalid token format" });
+    }
+
+    const token = authParts[1];
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Make sure userId exists in decoded token
+    if (!decoded.userId) {
+      console.error("Token missing userId:", decoded);
+      return res
+        .status(401)
+        .json({ error: "Authentication failed - invalid token content" });
+    }
+
+    // Set user data
+    req.userData = {
+      userId: decoded.userId,
+      username: decoded.username || "unknown",
+    };
+
+    console.log("Auth successful for user:", req.userData.userId);
+    next();
+  } catch (error) {
+    console.error("Auth middleware error:", error);
+    return res
+      .status(401)
+      .json({ error: "Authentication failed - " + error.message });
+  }
+}
+
 // Discord callback route
 app.get("/auth/discord/callback", async (req, res) => {
   const code = req.query.code;
@@ -141,18 +190,6 @@ const User = mongoose.model("User", {
     notifications: { type: Boolean, default: true },
   },
 });
-
-// Auth middleware
-function auth(req, res, next) {
-  try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userData = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: "Authentication failed" });
-  }
-}
 
 const achievementValidators = {
   "flying-start": (values) => values[0] === 99,
@@ -329,6 +366,24 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+// Verify token endpoint for craft items
+app.get("/verify-token", (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Return user data
+    res.json({
+      valid: true,
+      userId: decoded.userId,
+      username: decoded.username,
+    });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    res.json({ valid: false });
+  }
+});
+
 // =====================================================================
 // CUSTOM CRAFT ITEMS FUNCTIONALITY - START
 // =====================================================================
@@ -376,24 +431,6 @@ const CraftItemSchema = new mongoose.Schema({
 // Create CraftItem model
 const CraftItem = mongoose.model("CraftItem", CraftItemSchema);
 
-// Verify token endpoint for craft items
-app.get("/verify-token", (req, res) => {
-  try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Return user data
-    res.json({
-      valid: true,
-      userId: decoded.userId,
-      username: decoded.username,
-    });
-  } catch (error) {
-    console.error("Token verification error:", error);
-    res.json({ valid: false });
-  }
-});
-
 // GET all custom craft items for the logged-in user
 app.get("/api/custom-crafts", auth, async (req, res) => {
   try {
@@ -429,8 +466,16 @@ app.get("/api/custom-crafts/:id", auth, async (req, res) => {
 // POST create a new custom craft item
 app.post("/api/custom-crafts", auth, async (req, res) => {
   try {
-    // Extract username from authenticated request
-    const { username } = req.userData;
+    // Make sure userId is correctly extracted from req.userData
+    if (!req.userData || !req.userData.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated properly",
+      });
+    }
+
+    const userId = req.userData.userId;
+    console.log("Creating item for user:", userId);
 
     // Validate incoming request body
     const { itemName, itemType, baseType, craftType, affixes } = req.body;
@@ -493,17 +538,28 @@ app.post("/api/custom-crafts", auth, async (req, res) => {
       });
     }
 
-    // Validate each affix
-    const isValidAffix = affixes.every(
-      (affix) =>
-        affix.name &&
-        affix.type &&
-        (affix.type === "base" ||
-          affix.type === "prefix" ||
-          affix.type === "suffix") &&
-        affix.stat &&
-        typeof affix.value === "number"
-    );
+    // Validate each affix with improved validation
+    const isValidAffix = affixes.every((affix) => {
+      // Each affix must have a type
+      if (!affix.type || !["base", "prefix", "suffix"].includes(affix.type)) {
+        console.log("Invalid affix type:", affix);
+        return false;
+      }
+
+      // Each affix must have either a name or a stat (or both)
+      if (!affix.name && !affix.stat) {
+        console.log("Missing name and stat:", affix);
+        return false;
+      }
+
+      // Each affix must have a numeric value
+      if (typeof affix.value !== "number") {
+        console.log("Invalid value type:", affix);
+        return false;
+      }
+
+      return true;
+    });
 
     if (!isValidAffix) {
       return res.status(400).json({
@@ -512,9 +568,9 @@ app.post("/api/custom-crafts", auth, async (req, res) => {
       });
     }
 
-    // Create new craft item
+    // Create new craft item with the correct userId
     const newCraftItem = new CraftItem({
-      username,
+      userId: userId, // Explicitly use the extracted userId
       itemName,
       itemType,
       baseType,
@@ -522,23 +578,24 @@ app.post("/api/custom-crafts", auth, async (req, res) => {
       affixes,
     });
 
+    // Log the item being created for debugging
+    console.log("Creating craft item:", {
+      userId,
+      itemName,
+      itemType,
+      baseType,
+      craftType,
+      affixCount: affixes.length,
+    });
+
     // Save to database
     await newCraftItem.save();
-
-    // Log the created item for server-side tracking
-    console.log("Custom craft item created:", {
-      id: newCraftItem._id,
-      username: newCraftItem.username,
-      itemName: newCraftItem.itemName,
-      itemType: newCraftItem.itemType,
-    });
 
     // Respond with success and the created item
     res.status(201).json({
       success: true,
       item: {
         _id: newCraftItem._id,
-        username: newCraftItem.username,
         itemName: newCraftItem.itemName,
         itemType: newCraftItem.itemType,
         baseType: newCraftItem.baseType,
@@ -620,14 +677,6 @@ app.delete("/api/custom-crafts/:id", auth, async (req, res) => {
 // =====================================================================
 // CUSTOM CRAFT ITEMS FUNCTIONALITY - END
 // =====================================================================
-
-const loginEvent = new CustomEvent("userLoggedIn", {
-  detail: {
-    userId: user._id,
-    username: user.username,
-  },
-});
-document.dispatchEvent(loginEvent);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
