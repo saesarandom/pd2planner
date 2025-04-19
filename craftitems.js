@@ -1,4 +1,4 @@
-// customCraftItems.js - Fixed version to prevent conflicts with existing modals
+// customCraftItems.js - Fixed version for displaying custom craft items
 
 // Establish connection with the server
 let serverConnection = null;
@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("userLoggedIn", (event) => {
     currentUser = event.detail.userId;
     initializeCustomCraftSystem();
+    setupCustomCraftUI();
   });
 
   // Listen for logout events
@@ -36,8 +37,13 @@ function checkUserLoginStatus() {
       .then((response) => response.json())
       .then((data) => {
         if (data.valid) {
-          currentUser = data.userId;
-          initializeCustomCraftSystem();
+          const loginEvent = new CustomEvent("userLoggedIn", {
+            detail: {
+              userId: data.userId,
+              username: data.username,
+            },
+          });
+          document.dispatchEvent(loginEvent);
         }
       })
       .catch((error) => {
@@ -48,27 +54,37 @@ function checkUserLoginStatus() {
 
 // Initialize the custom craft system
 function initializeCustomCraftSystem() {
+  console.log("Initializing custom craft system");
   // Load user's custom craft items
   loadCustomCraftItems();
-
-  // Setup UI components if they don't exist
+  // Setup custom craft UI
   setupCustomCraftUI();
 }
 
-// Load the user's custom craft items from the server
+// Load custom items from the server and add to dropdowns
 function loadCustomCraftItems() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found, user not logged in");
+    return;
+  }
+
+  console.log("Loading custom craft items from server");
+
   fetch("http://localhost:3001/api/custom-crafts", {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   })
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        // Add items to the appropriate dropdowns
+        console.log(`Loaded ${data.items.length} custom items`);
         addCustomItemsToDropdowns(data.items);
+      } else {
+        console.error("Failed to load custom items:", data);
       }
     })
     .catch((error) => {
@@ -76,7 +92,7 @@ function loadCustomCraftItems() {
     });
 }
 
-// Add the custom items to the appropriate dropdowns
+// Add custom items to the dropdowns
 function addCustomItemsToDropdowns(items) {
   if (!items || items.length === 0) return;
 
@@ -94,67 +110,207 @@ function addCustomItemsToDropdowns(items) {
     }
   });
 
-  // Add items to the appropriate dropdowns
+  // Map item types to dropdown IDs
+  const dropdownIds = {
+    weapon: "weapons-dropdown",
+    armor: "armors-dropdown",
+    helm: "helms-dropdown",
+    shield: "offs-dropdown",
+  };
+
+  // Add items to each dropdown
   Object.keys(groupedItems).forEach((type) => {
     const items = groupedItems[type];
-    const dropdown = document.getElementById(`${type}-dropdown`);
+    if (items.length === 0) return;
 
-    if (dropdown && items.length > 0) {
-      // Create or find a custom items optgroup
-      let optgroup = dropdown.querySelector(
-        'optgroup[label="Custom Crafted Items"]'
-      );
-      if (!optgroup) {
-        optgroup = document.createElement("optgroup");
-        optgroup.label = "Custom Crafted Items";
-        dropdown.appendChild(optgroup);
-      }
+    const dropdownId = dropdownIds[type];
+    const dropdown = document.getElementById(dropdownId);
 
-      // Add the items to the optgroup
-      items.forEach((item) => {
-        const option = document.createElement("option");
-        option.value = item._id;
-        option.textContent = item.itemName;
-        option.dataset.custom = "true";
-        option.dataset.craftType = item.craftType;
-        option.dataset.itemType = item.itemType;
-        optgroup.appendChild(option);
-      });
+    if (!dropdown) {
+      console.error(`Dropdown not found: ${dropdownId}`);
+      return;
     }
+
+    // Find or create the optgroup
+    let optgroup = dropdown.querySelector(
+      'optgroup[label="Custom Crafted Items"]'
+    );
+    if (!optgroup) {
+      optgroup = document.createElement("optgroup");
+      optgroup.label = "Custom Crafted Items";
+      dropdown.appendChild(optgroup);
+    } else {
+      // Clear existing options to avoid duplicates
+      while (optgroup.firstChild) {
+        optgroup.removeChild(optgroup.firstChild);
+      }
+    }
+
+    // Add items to the optgroup
+    items.forEach((item) => {
+      const option = document.createElement("option");
+      option.value = item._id;
+      option.textContent = item.itemName;
+      option.dataset.custom = "true";
+      option.dataset.craftType = item.craftType;
+      option.dataset.itemType = item.itemType;
+      optgroup.appendChild(option);
+    });
+
+    console.log(`Added ${items.length} custom ${type} items to ${dropdownId}`);
   });
 
-  // If there are any event handlers that need to be updated when the dropdowns change
-  updateDropdownEventHandlers();
+  // Setup event handlers for showing custom items in info divs
+  setupDropdownEventHandlers();
 }
 
-// Update any event handlers for the dropdowns
-function updateDropdownEventHandlers() {
-  // Get all dropdowns
-  const dropdowns = [
-    document.getElementById("weapon-dropdown"),
-    document.getElementById("armor-dropdown"),
-    document.getElementById("helm-dropdown"),
-    document.getElementById("shield-dropdown"),
-  ];
+// Set up event handlers for the dropdowns
+function setupDropdownEventHandlers() {
+  // Map dropdown IDs to info div IDs
+  const dropdownInfoMap = {
+    "weapons-dropdown": "weapon-info",
+    "armors-dropdown": "armor-info",
+    "helms-dropdown": "helm-info",
+    "offs-dropdown": "off-info",
+  };
 
-  // For each dropdown, ensure custom items have the proper event handlers
-  dropdowns.forEach((dropdown) => {
-    if (!dropdown) return;
+  // Add change event handler to each dropdown
+  Object.entries(dropdownInfoMap).forEach(([dropdownId, infoDivId]) => {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown) {
+      console.error(`Dropdown not found: ${dropdownId}`);
+      return;
+    }
 
-    // Find all custom item options
-    const customOptions = dropdown.querySelectorAll(
-      'option[data-custom="true"]'
-    );
+    // Add change event handler without removing existing handlers
+    dropdown.addEventListener("change", function () {
+      const selectedOption = this.options[this.selectedIndex];
+      if (!selectedOption) return;
 
-    customOptions.forEach((option) => {
-      // When this option is selected, we need to load the custom item data
-      option.addEventListener("change", () => {
-        if (dropdown.value === option.value) {
-          loadCustomItemData(option.value);
+      // If this is a custom item, handle it
+      if (selectedOption.dataset && selectedOption.dataset.custom === "true") {
+        const infoDiv = document.getElementById(infoDivId);
+        if (!infoDiv) {
+          console.error(`Info div not found: ${infoDivId}`);
+          return;
         }
-      });
+
+        // Fetch and display custom item data
+        fetch(
+          `http://localhost:3001/api/custom-crafts/${selectedOption.value}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success && data.item) {
+              displayCustomItemInfo(data.item, infoDiv);
+            } else {
+              console.error("Failed to load custom item", data);
+              infoDiv.innerHTML = "Error loading custom item data";
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching custom item:", error);
+            infoDiv.innerHTML = "Error loading item details";
+          });
+      }
     });
+
+    console.log(`Added custom item handler to ${dropdownId}`);
   });
+}
+
+// Display custom item info in the info div
+function displayCustomItemInfo(item, infoDiv) {
+  // Format the HTML for display
+  let html = `
+    <div style="color: #${getCraftTypeColor(item.craftType)};">
+      <strong>${item.itemName}</strong>
+    </div>
+    <div>Base Item: ${item.baseType}</div>
+    <div>Craft Type: ${item.craftType}</div>
+    <hr style="border-color: #666; margin: 5px 0;">
+  `;
+
+  // Add base properties
+  const baseProps = item.affixes.filter((affix) => affix.type === "base");
+  baseProps.forEach((prop) => {
+    html += `<div>${formatCustomItemProperty(prop)}</div>`;
+  });
+
+  // Add prefixes
+  const prefixes = item.affixes.filter((affix) => affix.type === "prefix");
+  if (prefixes.length > 0) {
+    html += '<hr style="border-color: #666; margin: 5px 0;">';
+    prefixes.forEach((prefix) => {
+      html += `<div>${formatCustomItemProperty(prefix)}</div>`;
+    });
+  }
+
+  // Add suffixes
+  const suffixes = item.affixes.filter((affix) => affix.type === "suffix");
+  if (suffixes.length > 0) {
+    html += '<hr style="border-color: #666; margin: 5px 0;">';
+    suffixes.forEach((suffix) => {
+      html += `<div>${formatCustomItemProperty(suffix)}</div>`;
+    });
+  }
+
+  // Update the info div
+  infoDiv.innerHTML = html;
+  console.log(`Updated info div for ${item.itemName}`);
+}
+
+// Format a custom item property for display
+function formatCustomItemProperty(prop) {
+  if (!prop) return "Unknown property";
+
+  // Percentage-based properties
+  if (
+    prop.stat &&
+    (prop.stat.includes("Damage") ||
+      prop.stat.includes("Rate") ||
+      prop.stat.includes("Find") ||
+      prop.stat.includes("Resistances"))
+  ) {
+    return `${prop.value || 0}% ${prop.stat}`;
+  }
+  // Skills-related properties
+  else if (prop.name && prop.name.includes("to All Skills")) {
+    return `+${prop.value || 0} ${prop.name}`;
+  }
+  // Default flat value properties
+  else {
+    return `+${prop.value || 0} ${prop.stat || prop.name || "Unknown"}`;
+  }
+}
+
+// Get color for craft type display
+function getCraftTypeColor(craftType) {
+  switch (craftType) {
+    case "Blood":
+      return "e74c3c";
+    case "Caster":
+      return "3498db";
+    case "Hitpower":
+      return "f39c12";
+    case "Safety":
+      return "27ae60";
+    case "Vampiric":
+      return "8e44ad";
+    case "Bountiful":
+      return "f1c40f";
+    case "Brilliant":
+      return "1abc9c";
+    default:
+      return "ffffff";
+  }
 }
 
 // Load custom item data when selected
@@ -748,6 +904,8 @@ function addAffixToForm(itemType) {
   const suffixOption = document.createElement("option");
   suffixOption.value = "suffix";
   suffixOption.textContent = "Suffix";
+  suffixOption.value = "suffix";
+  suffixOption.textContent = "Suffix";
   affixTypeSelect.appendChild(suffixOption);
 
   // Create affix select
@@ -980,28 +1138,6 @@ function updateItemPreview() {
   previewContainer.innerHTML = html;
 }
 
-// Get color for craft type display
-function getCraftTypeColor(craftType) {
-  switch (craftType) {
-    case "Blood":
-      return "e74c3c";
-    case "Caster":
-      return "3498db";
-    case "Hitpower":
-      return "f39c12";
-    case "Safety":
-      return "27ae60";
-    case "Vampiric":
-      return "8e44ad";
-    case "Bountiful":
-      return "f1c40f";
-    case "Brilliant":
-      return "1abc9c";
-    default:
-      return "ffffff";
-  }
-}
-
 // Reset craft form to default values
 function resetCraftForm() {
   // Reset item type to weapon
@@ -1138,7 +1274,7 @@ function validateCraftForm() {
 
 // Save the crafted item to the server
 function saveCraftedItem(item) {
-  console.log("Saving item:", item);
+  console.log("Saving craft item:", item);
 
   fetch("http://localhost:3001/api/custom-crafts", {
     method: "POST",
@@ -1165,7 +1301,7 @@ function saveCraftedItem(item) {
         const modal = document.getElementById("craft-modal");
         if (modal) modal.style.display = "none";
 
-        // Reload custom items
+        // Reload all custom items to update dropdowns
         loadCustomCraftItems();
       } else {
         alert("Error creating item: " + (data.message || "Unknown error"));
@@ -1441,3 +1577,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// Expose our functions to the global scope
+window.loadCustomCraftItems = loadCustomCraftItems;
+window.saveCraftedItem = saveCraftedItem;

@@ -429,66 +429,145 @@ app.get("/api/custom-crafts/:id", auth, async (req, res) => {
 // POST create a new custom craft item
 app.post("/api/custom-crafts", auth, async (req, res) => {
   try {
-    // Log the entire request for debugging
-    console.log("Request userData:", req.userData);
-    console.log("Request body:", JSON.stringify(req.body, null, 2));
+    // Extract username from authenticated request
+    const { username } = req.userData;
 
-    // Extract data from request body
+    // Validate incoming request body
     const { itemName, itemType, baseType, craftType, affixes } = req.body;
 
-    // Validate required fields
-    if (!itemName || !itemType || !baseType || !craftType || !affixes) {
-      console.log("Missing required fields:", {
-        itemName,
-        itemType,
-        baseType,
-        craftType,
-        affixesProvided: !!affixes,
+    // Comprehensive input validation
+    if (!itemName || typeof itemName !== "string") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or missing item name",
       });
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
     }
 
-    // Make sure affixes is an array of objects
-    if (!Array.isArray(affixes)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Affixes must be an array" });
-    }
-
-    // Create new item
-    try {
-      const newItem = new CraftItem({
-        userId: req.userData.userId,
-        itemName,
-        itemType,
-        baseType,
-        craftType,
-        affixes: affixes, // This should now be handled properly by the updated schema
+    // Validate item type against allowed types
+    const validItemTypes = ["weapon", "armor", "helm", "shield"];
+    if (!validItemTypes.includes(itemType)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid item type",
       });
-
-      console.log("Attempting to save item:", JSON.stringify(newItem, null, 2));
-
-      // Save to database
-      await newItem.save();
-      console.log("Item saved successfully");
-
-      res.status(201).json({ success: true, item: newItem });
-    } catch (saveError) {
-      console.error("Database save error:", saveError);
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: `Database error: ${saveError.message}`,
-        });
     }
+
+    // Validate craft type
+    const validCraftTypes = [
+      "Blood",
+      "Caster",
+      "Hitpower",
+      "Safety",
+      "Vampiric",
+      "Bountiful",
+      "Brilliant",
+    ];
+    if (!validCraftTypes.includes(craftType)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid craft type",
+      });
+    }
+
+    // Validate affixes
+    if (!Array.isArray(affixes) || affixes.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Affixes must be a non-empty array",
+      });
+    }
+
+    // Count prefixes and suffixes
+    const prefixCount = affixes.filter(
+      (affix) => affix.type === "prefix"
+    ).length;
+    const suffixCount = affixes.filter(
+      (affix) => affix.type === "suffix"
+    ).length;
+
+    // Validate prefix and suffix counts
+    if (prefixCount > 3 || suffixCount > 3) {
+      return res.status(400).json({
+        success: false,
+        message: "Maximum of 3 prefixes and 3 suffixes allowed",
+      });
+    }
+
+    // Validate each affix
+    const isValidAffix = affixes.every(
+      (affix) =>
+        affix.name &&
+        affix.type &&
+        (affix.type === "base" ||
+          affix.type === "prefix" ||
+          affix.type === "suffix") &&
+        affix.stat &&
+        typeof affix.value === "number"
+    );
+
+    if (!isValidAffix) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid affix structure",
+      });
+    }
+
+    // Create new craft item
+    const newCraftItem = new CraftItem({
+      username,
+      itemName,
+      itemType,
+      baseType,
+      craftType,
+      affixes,
+    });
+
+    // Save to database
+    await newCraftItem.save();
+
+    // Log the created item for server-side tracking
+    console.log("Custom craft item created:", {
+      id: newCraftItem._id,
+      username: newCraftItem.username,
+      itemName: newCraftItem.itemName,
+      itemType: newCraftItem.itemType,
+    });
+
+    // Respond with success and the created item
+    res.status(201).json({
+      success: true,
+      item: {
+        _id: newCraftItem._id,
+        username: newCraftItem.username,
+        itemName: newCraftItem.itemName,
+        itemType: newCraftItem.itemType,
+        baseType: newCraftItem.baseType,
+        craftType: newCraftItem.craftType,
+        affixes: newCraftItem.affixes,
+      },
+    });
   } catch (error) {
-    console.error("Error creating custom craft item:", error);
-    res
-      .status(500)
-      .json({ success: false, message: `Server error: ${error.message}` });
+    // Detailed error logging
+    console.error("Error creating custom craft item:", {
+      message: error.message,
+      stack: error.stack,
+      body: req.body,
+    });
+
+    // Differentiate between validation and server errors
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    // Generic server error for unexpected issues
+    res.status(500).json({
+      success: false,
+      message: "Failed to create custom craft item",
+      error: error.message,
+    });
   }
 });
 
@@ -541,6 +620,14 @@ app.delete("/api/custom-crafts/:id", auth, async (req, res) => {
 // =====================================================================
 // CUSTOM CRAFT ITEMS FUNCTIONALITY - END
 // =====================================================================
+
+const loginEvent = new CustomEvent("userLoggedIn", {
+  detail: {
+    userId: user._id,
+    username: user.username,
+  },
+});
+document.dispatchEvent(loginEvent);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

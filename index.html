@@ -7780,7 +7780,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
 
 
   <div id="welcomeMsg" class="welcome-message" style="display: none;">
-      Welcome, so there is not much to do right now... except you can try to unlock 2 achievements while building your character! <span id="userDisplay"></span>
+      Welcome, so there is not much to do right now... except you can try to unlock 4 achievements while building your character! <span id="userDisplay"></span>
       <button onclick="handleLogout()" id="logoutBtn">Logout</button>
   </div>
 
@@ -7860,7 +7860,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
     passwordError.style.display = 'none';
     
     try {
-        const response = await fetch('http://localhost:3000/signup', {
+        const response = await fetch('http://localhost:3001/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -7896,7 +7896,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
     console.log('Attempting login for:', login);
     
     try {
-        const response = await fetch('http://localhost:3000/login', {
+        const response = await fetch('http://localhost:3001/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -7945,7 +7945,7 @@ function updateUIState(username = null) {
 async function loadProfileData() {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/profile', {
+        const response = await fetch('http://localhost:3001/profile', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -7996,7 +7996,7 @@ async function saveSettings() {
     };
     
     try {
-        const response = await fetch('http://localhost:3000/profile/settings', {
+        const response = await fetch('http://localhost:3001/profile/settings', {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
