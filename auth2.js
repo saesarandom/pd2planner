@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -7,7 +8,6 @@ const axios = require("axios");
 const qs = require("querystring");
 require("dotenv").config();
 
-// Express initialization
 const app = express();
 
 // Middleware
@@ -27,94 +27,7 @@ mongoose
     console.error("MongoDB connection error:", err);
   });
 
-// Models
-const userSchema = new mongoose.Schema({
-  email: { type: String, sparse: true }, // Make sparse to allow null
-  username: { type: String, required: true },
-  discordId: { type: String, unique: true }, // Add this
-  discordUsername: String,
-  avatarUrl: String,
-  password: { type: String, sparse: true }, // Make sparse to allow null for Discord users
-  createdAt: { type: Date, default: Date.now },
-  achievements: [
-    {
-      name: String,
-      unlockedAt: Date,
-    },
-  ],
-  settings: {
-    theme: { type: String, default: "light" },
-    notifications: { type: Boolean, default: true },
-  },
-});
-
-const User = mongoose.model("User", userSchema);
-
-// Create Schema for custom craft items
-const CraftItemSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
-  itemName: {
-    type: String,
-    required: true,
-  },
-  itemType: {
-    type: String,
-    required: true,
-    enum: ["weapon", "armor", "helm", "shield"],
-  },
-  baseType: {
-    type: String,
-    required: true,
-  },
-  craftType: {
-    type: String,
-    required: true,
-  },
-  affixes: [
-    {
-      name: { type: String },
-      type: { type: String },
-      stat: { type: String },
-      value: { type: Number },
-      min: { type: Number },
-      max: { type: Number },
-    },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const CraftItem = mongoose.model("CraftItem", CraftItemSchema);
-
-// Achievement configuration
-const achievementValidators = {
-  "flying-start": (values) => values[0] === 99,
-  "max-stats": (values) => {
-    const value = Number(values[0]);
-    console.log("Validating max-stats:", value);
-    return value >= 400; // Changed to 400
-  },
-  "perfect-res": (values) => {
-    const [fireRes, coldRes, lightRes, poisonRes] = values;
-    return fireRes >= 75 && coldRes >= 75 && lightRes >= 75 && poisonRes >= 75;
-  },
-  "charm-master": (values) => values[0] >= 20,
-};
-
-const achievementNames = {
-  "flying-start": "Off to a flying start",
-  "max-stats": "Peak performance",
-  "perfect-res": "Elemental master",
-  "charm-master": "Charm collector",
-};
-
-// Middleware
+// Auth middleware - improved with better error handling
 function auth(req, res, next) {
   try {
     // Check if Authorization header exists
@@ -163,84 +76,7 @@ function auth(req, res, next) {
   }
 }
 
-// Authentication Routes
-app.post("/login", async (req, res) => {
-  try {
-    const { login, password } = req.body;
-    const user = await User.findOne({
-      $or: [{ email: login }, { username: login }],
-    });
-
-    if (!user) {
-      return res.status(401).json({ error: "Authentication failed" });
-    }
-
-    const validPassword = await bcrypt.compare(password, user.password);
-
-    if (!validPassword) {
-      return res.status(401).json({ error: "Authentication failed" });
-    }
-
-    const token = jwt.sign(
-      { userId: user._id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    );
-
-    res.json({ token, username: user.username });
-  } catch (error) {
-    res.status(500).json({ error: "Login failed" });
-  }
-});
-
-app.post("/signup", async (req, res) => {
-  try {
-    const { email, username, password } = req.body;
-
-    // Check if user exists
-    const existingUser = await User.findOne({
-      $or: [{ email }, { username }],
-    });
-
-    if (existingUser) {
-      return res.status(400).json({
-        error: "Email or username already exists",
-      });
-    }
-
-    // Hash password and create user
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({
-      email,
-      username,
-      password: hashedPassword,
-    });
-
-    await user.save();
-    res.status(201).json({ message: "User created successfully" });
-  } catch (error) {
-    res.status(500).json({ error: "Signup failed" });
-  }
-});
-
-app.get("/verify-token", (req, res) => {
-  try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Return user data
-    res.json({
-      valid: true,
-      userId: decoded.userId,
-      username: decoded.username,
-    });
-  } catch (error) {
-    console.error("Token verification error:", error);
-    res.json({ valid: false });
-  }
-});
-
-// Discord OAuth Routes
+// Discord callback route
 app.get("/auth/discord/callback", async (req, res) => {
   const code = req.query.code;
   console.log("Auth code:", code);
@@ -315,13 +151,14 @@ app.get("/auth/discord/callback", async (req, res) => {
   }
 });
 
-// User Routes
 app.get("/api/users", async (req, res) => {
   try {
     const users = await User.find(
       { discordId: { $exists: true } },
       {
         username: 1,
+        // discordUsername: 1,
+        // createdAt: 1,
         avatarUrl: 1,
       }
     );
@@ -333,34 +170,49 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
-app.get("/profile", auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.userData.userId);
-    res.json({
-      username: user.username,
-      createdAt: user.createdAt,
-      achievements: user.achievements,
-      settings: user.settings,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch profile" });
-  }
+// User model
+const User = mongoose.model("User", {
+  email: { type: String, sparse: true }, // Make sparse to allow null
+  username: { type: String, required: true },
+  discordId: { type: String, unique: true }, // Add this
+  discordUsername: String,
+  avatarUrl: String,
+  password: { type: String, sparse: true }, // Make sparse to allow null for Discord users
+  createdAt: { type: Date, default: Date.now },
+  achievements: [
+    {
+      name: String,
+      unlockedAt: Date,
+    },
+  ],
+  settings: {
+    theme: { type: String, default: "light" },
+    notifications: { type: Boolean, default: true },
+  },
 });
 
-app.put("/profile/settings", auth, async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.userData.userId,
-      { settings: req.body },
-      { new: true }
-    );
-    res.json({ settings: user.settings });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to update settings" });
-  }
-});
+const achievementValidators = {
+  "flying-start": (values) => values[0] === 99,
+  "max-stats": (values) => {
+    const value = Number(values[0]);
+    console.log("Validating max-stats:", value);
+    return value >= 400; // Changed to 400
+  },
+  "perfect-res": (values) => {
+    const [fireRes, coldRes, lightRes, poisonRes] = values;
+    return fireRes >= 75 && coldRes >= 75 && lightRes >= 75 && poisonRes >= 75;
+  },
+  "charm-master": (values) => values[0] >= 20,
+};
 
-// Achievement Routes
+const achievementNames = {
+  "flying-start": "Off to a flying start",
+  "max-stats": "Peak performance",
+  "perfect-res": "Elemental master",
+  "charm-master": "Charm collector",
+};
+
+// Achievement route - placing it before other routes
 app.post("/achievement/:id", auth, async (req, res) => {
   try {
     const achievementId = req.params.id;
@@ -425,7 +277,161 @@ app.post("/achievement/:id", auth, async (req, res) => {
   }
 });
 
-// Custom Craft Items Routes
+// Login route
+app.post("/login", async (req, res) => {
+  try {
+    const { login, password } = req.body;
+    const user = await User.findOne({
+      $or: [{ email: login }, { username: login }],
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Authentication failed" });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      return res.status(401).json({ error: "Authentication failed" });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    res.json({ token, username: user.username });
+  } catch (error) {
+    res.status(500).json({ error: "Login failed" });
+  }
+});
+
+// Profile route
+app.get("/profile", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userData.userId);
+    res.json({
+      username: user.username,
+      createdAt: user.createdAt,
+      achievements: user.achievements,
+      settings: user.settings,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch profile" });
+  }
+});
+
+// Settings route
+app.put("/profile/settings", auth, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.userData.userId,
+      { settings: req.body },
+      { new: true }
+    );
+    res.json({ settings: user.settings });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update settings" });
+  }
+});
+
+app.post("/signup", async (req, res) => {
+  try {
+    const { email, username, password } = req.body;
+
+    // Check if user exists
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }],
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        error: "Email or username already exists",
+      });
+    }
+
+    // Hash password and create user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
+      email,
+      username,
+      password: hashedPassword,
+    });
+
+    await user.save();
+    res.status(201).json({ message: "User created successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Signup failed" });
+  }
+});
+
+// Verify token endpoint for craft items
+app.get("/verify-token", (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Return user data
+    res.json({
+      valid: true,
+      userId: decoded.userId,
+      username: decoded.username,
+    });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    res.json({ valid: false });
+  }
+});
+
+// =====================================================================
+// CUSTOM CRAFT ITEMS FUNCTIONALITY - START
+// =====================================================================
+
+// Create Schema for custom craft items
+const CraftItemSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  itemName: {
+    type: String,
+    required: true,
+  },
+  itemType: {
+    type: String,
+    required: true,
+    enum: ["weapon", "armor", "helm", "shield"],
+  },
+  baseType: {
+    type: String,
+    required: true,
+  },
+  craftType: {
+    type: String,
+    required: true,
+  },
+  affixes: [
+    {
+      name: { type: String },
+      type: { type: String },
+      stat: { type: String },
+      value: { type: Number },
+      min: { type: Number },
+      max: { type: Number },
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// Create CraftItem model
+const CraftItem = mongoose.model("CraftItem", CraftItemSchema);
+
+// GET all custom craft items for the logged-in user
 app.get("/api/custom-crafts", auth, async (req, res) => {
   try {
     const items = await CraftItem.find({ userId: req.userData.userId });
@@ -436,6 +442,7 @@ app.get("/api/custom-crafts", auth, async (req, res) => {
   }
 });
 
+// GET a specific custom craft item by ID
 app.get("/api/custom-crafts/:id", auth, async (req, res) => {
   try {
     const item = await CraftItem.findOne({
@@ -456,6 +463,7 @@ app.get("/api/custom-crafts/:id", auth, async (req, res) => {
   }
 });
 
+// POST create a new custom craft item
 app.post("/api/custom-crafts", auth, async (req, res) => {
   try {
     // Make sure userId is correctly extracted from req.userData
@@ -620,6 +628,7 @@ app.post("/api/custom-crafts", auth, async (req, res) => {
   }
 });
 
+// PUT update a custom craft item
 app.put("/api/custom-crafts/:id", auth, async (req, res) => {
   try {
     const { itemName, itemType, baseType, craftType, affixes } = req.body;
@@ -644,6 +653,7 @@ app.put("/api/custom-crafts/:id", auth, async (req, res) => {
   }
 });
 
+// DELETE a custom craft item
 app.delete("/api/custom-crafts/:id", auth, async (req, res) => {
   try {
     const result = await CraftItem.findOneAndDelete({
@@ -664,7 +674,10 @@ app.delete("/api/custom-crafts/:id", auth, async (req, res) => {
   }
 });
 
-// Start server
+// =====================================================================
+// CUSTOM CRAFT ITEMS FUNCTIONALITY - END
+// =====================================================================
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
