@@ -7715,17 +7715,18 @@ document.querySelectorAll('[data-property]').forEach(button => {
   
 <!-- <button id="saveButton">Save as hexcode HTML</button> --> 
 
-<!-- <script>
+<script>
      function generateHexCode() {
-            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const characters = "aAbBcCdDeEfFgGhHiIJKLMNOPQRSTUVWXYZ0123456789";
             let hexCode = "";
             for (let i = 0; i < 7; i++) {
                 hexCode += characters.charAt(Math.floor(Math.random() * characters.length));
             }
             return hexCode;
         }
+</script>
 
-    document.getElementById("saveButton").addEventListener("click", () => {
+    <!-- document.getElementById("saveButton").addEventListener("click", () => {
         
         const inputs = document.querySelectorAll("input, select, textarea");
         inputs.forEach(input => {
@@ -13285,6 +13286,243 @@ setInterval(loadUsers, 60000);
 
 </script>
 <script>
+
+const SKILL_IDS = [
+  // Amazon skills
+  "jabcontainer",
+  "poisonjavelincontainer",
+  "javelinandspearmasterycontainer",
+  "powerstrikecontainer",
+  "lightningboltcontainer",
+  "fendcontainer",
+  "chargedstrikecontainer",
+  "plaguejavelincontainer",
+  "lightningstrikecontainer",
+  "lightningfurycontainer",
+  "innersightcontainer",
+  "criticalstrikecontainer",
+  "evadecontainer",
+  "slowmovementcontainer",
+  "piercecontainer",
+  "dodgecontainer",
+  "decoycontainer",
+  "penetratecontainer",
+  "valkyriecontainer",
+  "magicarrowcontainer",
+  "multipleshotcontainer",
+  "firearrowcontainer",
+  "coldarrowcontainer",
+  "icearrowcontainer",
+  "guidedarrowcontainer",
+  "explodingarrowcontainer",
+  "strafecontainer",
+  "immolationarrowcontainer",
+  "freezingarrowcontainer",
+  
+  // Assassin skills
+  "tigerstrikecontainer",
+  "dragontaloncontainer",
+  "dragonclawcontainer",
+  "fistsoffirecontainer",
+  "cobrastrikecontainer",
+  "clawsofthundercontainer",
+  "dragontailcontainer",
+  "dragonflightcontainer",
+  "bladesoficecontainer",
+  "phoenixstrikecontainer",
+  "clawanddaggermasterycontainer",
+  "psychichammercontainer",
+  "burstofspeedcontainer",
+  "weaponblockcontainer",
+  "cloakofshadowscontainer",
+  "mindblastcontainer",
+  "fadecontainer",
+  "shadowwarriorcontainer",
+  "shadowmastercontainer",
+  "venomcontainer",
+  "fireblastcontainer",
+  "shockwebcontainer",
+  "bladesentinelcontainer",
+  "chargedboltsentrycontainer",
+  "wakeoffirecontainer",
+  "bladefurycontainer",
+  "bladeshieldcontainer",
+  "lightningsentrycontainer",
+  "wakeofinfernocontainer",
+  "chainlightningsentrycontainer",
+  "deathsentrycontainer",
+  "howlcontainer",
+  "findpotioncontainer",
+  "shoutcontainer",
+  "warcrycontainer",
+  "finditemcontainer",
+  "tauntcontainer",
+  "battleorderscontainer",
+  "grimwardcontainer",
+  "battlecommandcontainer",
+  "battlecrycontainer",
+  "generalmasterycontainer",
+  "throwingmasterycontainer",
+  "polearmandspearmasterycontainer",
+  "combatreflexescontainer",
+  "ironskincontainer",
+  "increasedspeedcontainer",
+  "naturalresistancecontainer",
+  "deepwoundscontainer",
+  "bashcontainer",
+  "doubleswingcontainer",
+  "frenzycontainer",
+  "stuncontainer",
+  "concentratecontainer",
+  "doublethrowcontainer",
+  "leapcontainer",
+  "leapattackcontainer",
+  "berserkcontainer",
+  "whirlwindcontainer",
+  "firestormcontainer",
+  "arcticblastcontainer",
+  "moltenbouldercontainer",
+  "cyclonearmorcontainer",
+  "fissurecontainer",
+  "twistercontainer",
+  "gustcontainer",
+  "volcanocontainer",
+  "tornadocontainer",
+  "hurricanecontainer",
+  "armageddoncontainer",
+  "werewolfcontainer",
+  "werebearcontainer",
+  "lycantropycontainer",
+  "feralragecontainer",
+  "maulcontainer",
+  "hungercontainer",
+  "rabiescontainer",
+  "shockwavecontainer",
+  "fireclawscontainer",
+  "furycontainer",
+  "ravencontainer",
+  "poisoncreepercontainer",
+  "heartofwolverinecontainer",
+  "summonspiritwolfcontainer",
+  "carrionvinecontainer",
+  "spiritofbarbscontainer",
+  "summondirewolfcontainer",
+  "solarcreepercontainer",
+  "oaksagecontainer",
+  "summongrizzlycontainer",
+  "raiseskeletonwarriorcontainer",
+  "skeletonmasterycontainer",
+  "claygolemcontainer",
+  "raiseskeletalmagecontainer",
+  "golemmasterycontainer",
+  "bloodgolemcontainer",
+  "bloodwarpcontainer",
+  "irongolemcontainer",
+  "raiseskeletonarchercontainer",
+  "firegolemcontainer",
+  "revivecontainer",
+  "teethcontainer",
+  "poisonstrikecontainer",
+  "bonearmorcontainer",
+  "corpseexplosioncontainer",
+  "bonewallcontainer",
+  "desecratecontainer",
+  "bonespearcontainer",
+  "boneprisoncontainer",
+  "poisonnovacontainer",
+  "bonespiritcontainer",
+  "amplifydamagecontainer",
+  "cursemasterycontainer",
+  "dimvisioncontainer",
+  "darkpactcontainer",
+  "ironmaidencontainer",
+  "lifetapcontainer",
+  "terrorcontainer",
+  "weakencontainer",
+  "confusecontainer",
+  "attractcontainer",
+  "decrepifycontainer",
+  "lowerresistcontainer",
+  "prayercontainer",
+  "resistfirecontainer",
+  "resistcoldcontainer",
+  "resistlightningcontainer",
+  "defiancecontainer",
+  "cleansingcontainer",
+  "vigorcontainer",
+  "meditationcontainer",
+  "redemptioncontainer",
+  "salvationcontainer",
+  "mightcontainer",
+  "holyfirecontainer",
+  "thornscontainer",
+  "blessedaimcontainer",
+  "concentrationcontainer",
+  "holyfreezecontainer",
+  "holyshockcontainer",
+  "sanctuarycontainer",
+  "fanaticismcontainer",
+  "convictioncontainer",
+  "sacrificecontainer",
+  "holyboltcontainer",
+  "smitecontainer",
+  "zealcontainer",
+  "holylightcontainer",
+  "chargecontainer",
+  "vengeancecontainer",
+  "blessedhammercontainer",
+  "holyswordcontainer",
+  "joustcontainer",
+  "fistofheavenscontainer",
+  "holyshieldcontainer",
+  "holynovacontainer",
+  "iceboltcontainer",
+  "coldenchantcontainer",
+  "frostnovacontainer",
+  "iceblastcontainer",
+  "shiverarmorcontainer",
+  "glacialspikecontainer",
+  "chillingarmorcontainer",
+  "icebarragecontainer",
+  "blizzardcontainer",
+  "frozenorbcontainer",
+  "coldmasterycontainer",
+  "chargedboltcontainer",
+  "telekinesiscontainer",
+  "staticfieldcontainer",
+  "novacontainer",
+  "lightningcontainer",
+  "teleportcontainer",
+  "chainlightningcontainer",
+  "thunderstormcontainer",
+  "energyshieldcontainer",
+  "lightningmasterycontainer",
+  "fireboltcontainer",
+  "warmthcontainer",
+  "infernocontainer",
+  "blazecontainer",
+  "firewallcontainer",
+  "fireballcontainer",
+  "lesserhydracontainer",
+  "enchantfirecontainer",
+  "meteorcontainer",
+  "combustioncontainer",
+  "hydracontainer",
+  "firemasterycontainer",
+  
+];
+
+// Function to check if an element ID is in the skills list
+function isSkill(id) {
+  return SKILL_IDS.includes(id);
+}
+
+
+
+
+
+
+
 function saveCharacter() {
   // Log that the function was called
   console.log("saveCharacter function called!");
@@ -13305,29 +13543,73 @@ function saveCharacter() {
     alert("Character name must be 2-13 letters only. No numbers, spaces, or special characters.");
     return;
   }
+
+  const shareCode = generateHexCode();
   
   // Create character state object with all important data
-  const characterState = {};
+ const characterState = {
+    skills: {} // Create a nested skills object
+  };
+
+  // // Get values from all selects
+  // document.querySelectorAll("select").forEach(select => {
+  //   if (select.id) characterState[select.id] = select.value;
+  // });
   
-  // Get values from all selects
-  document.querySelectorAll("select").forEach(select => {
-    if (select.id) characterState[select.id] = select.value;
+  // // Get values from all stat elements
+  // document.querySelectorAll(".stat-value").forEach(stat => {
+  //   if (stat.id) characterState[stat.id] = stat.textContent || stat.innerText;
+  // });
+  
+  // // Get values from all inputs
+  // document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+  //   if (input.id && input.value) characterState[input.id] = input.value;
+  // });
+  
+
+document.querySelectorAll("select").forEach(select => {
+    if (select.id) {
+      if (isSkill(select.id)) {
+        // It's a skill - add to skills object
+        characterState.skills[select.id] = select.value;
+      } else {
+        // Regular select - add to root
+        characterState[select.id] = select.value;
+      }
+    }
   });
   
-  // Get values from all stat elements
+  // Then stats
   document.querySelectorAll(".stat-value").forEach(stat => {
-    if (stat.id) characterState[stat.id] = stat.textContent || stat.innerText;
+    if (stat.id) {
+      if (isSkill(stat.id)) {
+        characterState.skills[stat.id] = stat.textContent || stat.innerText;
+      } else {
+        characterState[stat.id] = stat.textContent || stat.innerText;
+      }
+    }
   });
   
-  // Get values from all inputs
+  // And inputs
   document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
-    if (input.id && input.value) characterState[input.id] = input.value;
+    if (input.id && input.value) {
+      if (isSkill(input.id)) {
+        characterState.skills[input.id] = input.value;
+      } else {
+        characterState[input.id] = input.value;
+      }
+    }
   });
   
   // If character level is defined, include it
   if (typeof characterLevel !== "undefined") {
     characterState.characterLevel = characterLevel;
   }
+
+
+
+
+
   
   console.log("Character data captured:", {
     name: characterName,
@@ -13337,6 +13619,7 @@ function saveCharacter() {
   // Prepare data for sending
   const saveData = {
     name: characterName,
+    shareCode: shareCode,
     state: characterState,
     createdAt: new Date().toISOString()
   };
@@ -13370,9 +13653,19 @@ function saveCharacter() {
     }
     return response.json();
   })
-  .then(data => {
+ .then(data => {
     if (data.success) {
-      alert(`Character "${characterName}" saved successfully!`);
+      // Generate the share URL
+      const shareUrl = `https://pd2planner.net/${characterName}${shareCode}`;
+      
+      // Success message with share URL
+      alert(`Character "${characterName}" saved successfully!\n\nShare URL: ${shareUrl}\n\nCopy this link to share your build with others.`);
+      
+      // Add share URL to clipboard
+      navigator.clipboard.writeText(shareUrl)
+        .then(() => console.log("Share URL copied to clipboard"))
+        .catch(err => console.error("Could not copy URL: ", err));
+      
       // Refresh character list if function exists
       if (typeof loadSavedCharacters === "function") {
         loadSavedCharacters();
@@ -13390,60 +13683,107 @@ function saveCharacter() {
 // Make sure this function is available globally
 window.saveCharacter = saveCharacter;
 
-// === Helper function to inspect responses ===
-// This helps diagnose issues with API responses
-function inspectApiResponse(url, options = {}) {
-  console.log(`Testing API endpoint: ${url}`);
-  
-  return fetch(url, options)
-    .then(response => {
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-      
-      // Clone the response so we can both check it and return it
-      const clonedResponse = response.clone();
-      
-      // Try to read as text first
-      return response.text().then(text => {
-        console.log("Response text (first 100 chars):", text.substring(0, 100));
-        
-        try {
-          // Try to parse as JSON
-          const json = JSON.parse(text);
-          console.log("JSON parsed successfully:", json);
-        } catch (e) {
-          console.log("Not valid JSON:", e.message);
-        }
-        
-        // Return the original response
-        return clonedResponse;
-      });
-    })
-    .catch(error => {
-      console.error("Fetch error:", error);
-      throw error;
-    });
-}
 
-// Test the API endpoint
-function testCharacterApi() {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.error("No authentication token found");
+
+
+// Display saved characters with share URLs
+function displaySavedCharacters(characters) {
+  console.log(`Displaying ${characters.length} saved characters`);
+  
+  const charactersList = document.getElementById("savedCharactersList");
+  if (!charactersList) {
+    console.error("savedCharactersList element not found");
     return;
   }
   
-  inspectApiResponse(`${API_BASE_URL}/api/characters`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
+  // Clear previous content
+  charactersList.innerHTML = "";
+  
+  // If no characters, show message
+  if (!characters || characters.length === 0) {
+    charactersList.innerHTML = "<p>No saved characters found. Save your current character to see it here.</p>";
+    return;
+  }
+  
+  // Create list of characters
+  const list = document.createElement("ul");
+  list.className = "saved-characters-list";
+
+  
+  
+  // Add each character to list
+    characters.forEach(character => {
+    // Generate a share code if missing
+    if (!character.shareCode) {
+      character.shareCode = generateHexCode();
+      console.log(`Generated missing shareCode ${character.shareCode} for ${character.name}`);
     }
-  })
-  .then(response => response.json())
-  .then(data => console.log("API test result:", data))
-  .catch(error => console.error("API test error:", error));
+    
+    // Format date
+    const savedDate = new Date(character.createdAt).toLocaleDateString();
+    
+    // Generate share URL if character has a shareCode
+    const shareUrl = character.shareCode 
+      ? `https://pd2planner.net/${character.name}${character.shareCode}`
+      : null;
+    
+ const displayUrl = `/${character.name}${character.shareCode}`;
+
+    // Create character entry HTML
+    item.innerHTML = `
+      <div class="character-info">
+        <div class="character-primary-info">
+          <span class="character-name">${character.name}</span>
+          <span class="character-date">Saved on: ${savedDate}</span>
+        </div>
+        <div class="character-share-info">
+          <span class="share-url-label">Share URL:</span>
+          <a href="${shareUrl}" target="_blank" class="share-url-link" title="${shareUrl}">${displayUrl}</a>
+        </div>
+      </div>
+      <div class="character-actions">
+        <button class="load-character-btn" data-id="${character._id}">Load</button>
+        <button class="copy-url-btn" data-url="${shareUrl}">Copy Link</button>
+        <button class="delete-character-btn" data-id="${character._id}">Delete</button>
+      </div>
+    `;
+    
+    // Add to list
+    list.appendChild(item);
+  });
+  
+  // Add list to container
+  charactersList.appendChild(list);
+  
+  // Add event listeners to buttons
+  addCharacterButtonListeners();
+  
+  // Add event listeners to copy URL buttons
+  document.querySelectorAll(".copy-url-btn").forEach(button => {
+    button.addEventListener("click", function() {
+      const url = this.getAttribute("data-url");
+      navigator.clipboard.writeText(url)
+        .then(() => {
+          // Temporary visual feedback
+          const originalText = this.textContent;
+          this.textContent = "Copied!";
+          this.style.backgroundColor = "#27ae60";
+          setTimeout(() => {
+            this.textContent = originalText;
+            this.style.backgroundColor = "";
+          }, 1500);
+        })
+        .catch(err => {
+          console.error("Could not copy URL: ", err);
+          alert("Could not copy URL: " + err);
+        });
+    });
+  });
 }
+
+// === Helper function to inspect responses ===
+// This helps diagnose issues with API responses
+
 
 function loadSavedCharacters() {
   console.log("Loading saved characters");
@@ -13522,13 +13862,27 @@ function displaySavedCharacters(characters) {
     const savedDate = new Date(character.createdAt).toLocaleDateString();
     
     // Create character entry HTML
+ const shareUrl = character.shareCode 
+      ? `https://pd2planner.net/${character.name}${character.shareCode}`
+      : null;
+    
+ const displayUrl = `/${character.name}${character.shareCode}`;
+
+    // Create character entry HTML
     item.innerHTML = `
       <div class="character-info">
-        <span class="character-name">${character.name}</span>
-        <span class="character-date">Saved on: ${savedDate}</span>
+        <div class="character-primary-info">
+          <span class="character-name">${character.name}</span>
+          <span class="character-date">Saved on: ${savedDate}</span>
+        </div>
+        <div class="character-share-info">
+          <span class="share-url-label">Share URL:</span>
+          <a href="${shareUrl}" target="_blank" class="share-url-link" title="${shareUrl}">${displayUrl}</a>
+        </div>
       </div>
       <div class="character-actions">
         <button class="load-character-btn" data-id="${character._id}">Load</button>
+        <button class="copy-url-btn" data-url="${shareUrl}">Copy Link</button>
         <button class="delete-character-btn" data-id="${character._id}">Delete</button>
       </div>
     `;
@@ -13539,10 +13893,80 @@ function displaySavedCharacters(characters) {
   
   // Add list to container
   charactersList.appendChild(list);
-  
   // Add event listeners to buttons
   addCharacterButtonListeners();
 }
+
+  document.querySelectorAll(".copy-url-btn").forEach(button => {
+    button.addEventListener("click", function() {
+      const url = this.getAttribute("data-url");
+      navigator.clipboard.writeText(url)
+        .then(() => {
+          // Temporary visual feedback
+          const originalText = this.textContent;
+          this.textContent = "Copied!";
+          this.style.backgroundColor = "#27ae60";
+          setTimeout(() => {
+            this.textContent = originalText;
+            this.style.backgroundColor = "";
+          }, 1500);
+        })
+        .catch(err => {
+          console.error("Could not copy URL: ", err);
+          alert("Could not copy URL: " + err);
+        });
+    });
+  });
+
+
+function addShareUrlStyles() {
+  const styleExists = document.getElementById("share-url-styles");
+  if (styleExists) return;
+  
+  const style = document.createElement("style");
+  style.id = "share-url-styles";
+  style.textContent = `
+    .share-url {
+      font-size: 0.8em;
+      color: #aaa;
+      margin-top: 4px;
+    }
+    
+    .share-url a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    
+    .share-url a:hover {
+      text-decoration: underline;
+    }
+    
+    .copy-url-btn {
+      padding: 5px 10px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .copy-url-btn:hover {
+      background-color: #2980b9;
+    }
+  `;
+  
+  document.head.appendChild(style);
+}
+
+// Call this in your initialization
+function initShareUrlFeature() {
+  addShareUrlStyles();
+}
+
+// Add to your existing initialization
+document.addEventListener("DOMContentLoaded", function() {
+  initShareUrlFeature();
+});
 
 // Add event listeners to load and delete buttons
 function addCharacterButtonListeners() {
@@ -13609,15 +14033,18 @@ function loadCharacter(characterId) {
 
 // Function to apply character state to the UI
 function applyCharacterState(state) {
-  console.log("Applying character state:", Object.keys(state).length, "properties");
+  console.log("Applying character state with explicit skills");
   
-  // Apply to dropdown selects
+  // Apply regular properties (except skills)
   Object.keys(state).forEach(key => {
+    // Skip skills object, we'll handle it separately
+    if (key === "skills") return;
+    
     const element = document.getElementById(key);
     if (element) {
       if (element.tagName === "SELECT") {
         element.value = state[key];
-        // Trigger change event to update UI
+        // Trigger change event
         const event = new Event("change");
         element.dispatchEvent(event);
       } else if (element.tagName === "INPUT") {
@@ -13632,6 +14059,29 @@ function applyCharacterState(state) {
     }
   });
   
+  // Now apply skills if they exist
+  if (state.skills) {
+    Object.keys(state.skills).forEach(skillId => {
+      const element = document.getElementById(skillId);
+      if (element) {
+        if (element.tagName === "SELECT") {
+          element.value = state.skills[skillId];
+          // Trigger change event
+          const event = new Event("change");
+          element.dispatchEvent(event);
+        } else if (element.tagName === "INPUT") {
+          element.value = state.skills[skillId];
+          // Trigger input event
+          const event = new Event("input");
+          element.dispatchEvent(event);
+        } else {
+          // For non-input elements
+          element.textContent = state.skills[skillId];
+        }
+      }
+    });
+  }
+  
   // Set character level if available
   if (state.characterLevel && typeof characterLevel !== "undefined") {
     characterLevel = state.characterLevel;
@@ -13642,6 +14092,7 @@ function applyCharacterState(state) {
     updateCharacter();
   }
 }
+
 
 // Function to delete a character
 function deleteCharacter(characterId) {
@@ -13838,6 +14289,239 @@ document.addEventListener("DOMContentLoaded", initCharacterSystem);
 if (document.readyState === "complete" || document.readyState === "interactive") {
   initCharacterSystem();
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Get the path from the URL
+  const path = window.location.pathname;
+  
+  // Skip if it's just the root path
+  if (path === "/" || path === "") return;
+  
+  // Check if this is potentially a shared character URL
+  const match = path.match(/^\/([A-Za-z]{2,13})([0-9a-f]{6})$/);
+  if (match) {
+    const characterName = match[1];
+    const shareCode = match[2];
+    
+    console.log("Detected shared character URL:", characterName, shareCode);
+    
+    // Load the shared character
+    loadSharedCharacter(characterName, shareCode);
+  }
+});
+
+// Function to load a shared character
+function loadSharedCharacter(name, shareCode) {
+  console.log("Loading shared character:", name, shareCode);
+  
+  // Show loading message
+  const loadingMessage = document.createElement("div");
+  loadingMessage.id = "shared-character-loading";
+  loadingMessage.className = "shared-character-message";
+  loadingMessage.innerHTML = `
+    <div class="loading-overlay">
+      <div class="loading-content">
+        <h2>Loading Shared Character</h2>
+        <p>Loading ${name}...</p>
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(loadingMessage);
+  
+  // Fetch shared character from API
+  fetch(`${API_BASE_URL}/api/shared-character/${name}/${shareCode}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        // Apply the character state
+        applyCharacterState(data.character.state);
+        
+        // Remove loading message
+        document.body.removeChild(loadingMessage);
+        
+        // Show success message
+        showSharedCharacterBanner(data.character.name);
+      } else {
+        throw new Error(data.message || "Failed to load character");
+      }
+    })
+    .catch(error => {
+      console.error("Error loading shared character:", error);
+      
+      // Update loading message to show error
+      loadingMessage.innerHTML = `
+        <div class="loading-overlay">
+          <div class="loading-content error">
+            <h2>Error Loading Character</h2>
+            <p>${error.message}</p>
+            <button onclick="this.parentNode.parentNode.parentNode.remove()">Close</button>
+          </div>
+        </div>
+      `;
+    });
+}
+
+// Function to show a banner when a shared character is loaded
+function showSharedCharacterBanner(characterName) {
+  const banner = document.createElement("div");
+  banner.className = "shared-character-banner";
+  banner.innerHTML = `
+    <div class="banner-content">
+      <span>Viewing shared character: <strong>${characterName}</strong></span>
+      <button class="save-copy-btn">Save a Copy</button>
+      <button class="close-banner-btn">×</button>
+    </div>
+  `;
+  
+  document.body.appendChild(banner);
+  
+  // Add event listener to close button
+  banner.querySelector(".close-banner-btn").addEventListener("click", function() {
+    banner.remove();
+  });
+  
+  // Add event listener to save copy button
+  banner.querySelector(".save-copy-btn").addEventListener("click", function() {
+    saveCharacter();
+  });
+  
+  // Auto-hide banner after 10 seconds
+  setTimeout(() => {
+    if (document.body.contains(banner)) {
+      banner.style.opacity = "0";
+      setTimeout(() => banner.remove(), 500);
+    }
+  }, 10000);
+}
+
+// Add styles for shared character UI
+function addSharedCharacterStyles() {
+  const styleExists = document.getElementById("shared-character-styles");
+  if (styleExists) return;
+  
+  const style = document.createElement("style");
+  style.id = "shared-character-styles";
+  style.textContent = `
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .loading-content {
+      background-color: #333;
+      border-radius: 5px;
+      padding: 20px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      color: #eee;
+    }
+    
+    .loading-content.error {
+      border-left: 4px solid #e74c3c;
+    }
+    
+    .loading-content h2 {
+      margin-top: 0;
+    }
+    
+    .loading-spinner {
+      border: 4px solid #555;
+      border-top: 4px solid #e74c3c;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin: 20px auto;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-content button {
+      padding: 8px 15px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    .shared-character-banner {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #2ecc71;
+      color: white;
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      transition: opacity 0.5s ease;
+    }
+    
+    .banner-content {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+    }
+    
+    .save-copy-btn {
+      margin-left: 15px;
+      padding: 5px 10px;
+      background-color: white;
+      color: #2ecc71;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .close-banner-btn {
+      margin-left: 10px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    
+    .close-banner-btn:hover {
+      opacity: 1;
+    }
+  `;
+  
+  document.head.appendChild(style);
+}
+
+// Initialize shared character feature
+function initSharedCharacterFeature() {
+  addSharedCharacterStyles();
+}
+
+// Add to your existing initialization
+document.addEventListener("DOMContentLoaded", function() {
+  initSharedCharacterFeature();
+});
 
 </script>
 

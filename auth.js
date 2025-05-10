@@ -104,6 +104,9 @@ const CharacterSchema = new mongoose.Schema({
     required: true,
     match: /^[A-Za-z]{2,13}$/,
   },
+  shareCode: {
+    type: String,
+  },
   state: {
     type: Object,
     required: true,
@@ -113,6 +116,10 @@ const CharacterSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+// CharacterSchema.statics.findByShareCode = async function (name, shareCode) {
+//   return this.findOne({ name, shareCode });
+// };
 
 // Create the model
 const Character = mongoose.model("Character", CharacterSchema);
@@ -792,6 +799,87 @@ app.delete("/api/characters/:id", auth, async (req, res) => {
   } catch (error) {
     console.error("Error deleting character:", error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+app.get("/api/shared-character/:name/:shareCode", async (req, res) => {
+  try {
+    const { name, shareCode } = req.params;
+
+    // Find the character by name and share code
+    const character = await Character.findOne({
+      name: name,
+      shareCode: shareCode,
+    });
+
+    if (!character) {
+      return res.status(404).json({
+        success: false,
+        message: "Character not found",
+      });
+    }
+
+    // Return the character without sensitive information
+    res.json({
+      success: true,
+      character: {
+        name: character.name,
+        shareCode: character.shareCode,
+        state: character.state,
+        createdAt: character.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching shared character:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+});
+
+// Add route to handle share URLs in the frontend
+app.get("/:nameWithCode", (req, res) => {
+  // This route will be handled by your frontend to load shared characters
+  // Just serve your main HTML file, and let the frontend handle the parsing
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.put("/api/characters/:id", auth, async (req, res) => {
+  try {
+    // Find the character by ID and user ID
+    const character = await Character.findOne({
+      _id: req.params.id,
+      userId: req.userData.userId,
+    });
+
+    if (!character) {
+      return res.status(404).json({
+        success: false,
+        message: "Character not found or not owned by current user",
+      });
+    }
+
+    // Update only the fields that are provided
+    if (req.body.name) character.name = req.body.name;
+    if (req.body.shareCode) character.shareCode = req.body.shareCode;
+    if (req.body.state) character.state = req.body.state;
+
+    // Save the updated character
+    await character.save();
+
+    // Return the updated character
+    res.json({
+      success: true,
+      message: "Character updated successfully",
+      character: character,
+    });
+  } catch (error) {
+    console.error("Error updating character:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error: " + error.message,
+    });
   }
 });
 
