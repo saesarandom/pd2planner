@@ -5824,6 +5824,7 @@ skillvalues.forEach(skillvalue => {
   <script src="corruption.js"></script>
   <script src="mercenary.js"></script>
   <script src="craftitems.js"></script>
+ 
   <!-- <script src="socketfix.js"></script> -->
     
   
@@ -7714,7 +7715,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
   
 <!-- <button id="saveButton">Save as hexcode HTML</button> --> 
 
-<script>
+<!-- <script>
      function generateHexCode() {
             const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             let hexCode = "";
@@ -7766,7 +7767,7 @@ document.querySelectorAll('[data-property]').forEach(button => {
 
         alert(`File saved as ${hexCode}.html`);
     });
-</script>
+</script> -->
 
 <br><br><br><br><br>
 <!-- <iframe src="https://ptb.discord.com/widget?id=284432411553562624&theme=dark" width="250" height="300" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe> -->
@@ -7786,13 +7787,15 @@ document.querySelectorAll('[data-property]').forEach(button => {
 
   <div id="passwordError" class="error-message">
     Password must be at least 10 characters long and contain at least one number
-</div>
+  </div>
 
 
 <div class="profile-container" id="profileContainer">
   <div class="tabs">
       <button class="tab active" onclick="showTab('profile')">Profile</button>
       <button class="tab" onclick="showTab('achievements')">Achievements</button>
+      <button class="tab" onclick="showTab('customItems')">Custom Items</button>
+       <button class="tab" onclick="showTab('characters')">Characters</button>
       <button class="tab" onclick="showTab('settings')">Settings</button>
   </div>
 
@@ -7810,6 +7813,45 @@ document.querySelectorAll('[data-property]').forEach(button => {
          
       </div>
   </div>
+  
+  <div id="customItemsTab" class="tab-content">
+      <h2>Custom Craft Items</h2>
+      <div class="craft-items-container">
+          <button id="modal-create-craft-button" onclick="openCraftModal()">Create Custom Item</button>
+      </div>
+  </div>
+
+<div id="charactersTab" class="tab-content">
+    <h2>Character Management</h2>
+    <p>Save your current character build or load a previously saved one.</p>
+    <button id="saveCharacterButton" onclick="saveCharacter()">Save Character</button>
+    <div id="savedCharactersList" class="saved-characters-container">
+        <!-- Character list will be populated here -->
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM loaded, looking for saveCharacterButton");
+  const saveButton = document.getElementById("saveCharacterButton");
+  if (saveButton) {
+    console.log("Found saveCharacterButton, attaching direct click handler");
+    
+    // Remove any existing event listeners to avoid conflicts
+    const newSaveButton = saveButton.cloneNode(true);
+    saveButton.parentNode.replaceChild(newSaveButton, saveButton);
+    
+    // Add the click event listener directly
+    newSaveButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      console.log("Save character button clicked");
+      saveCharacter();
+    });
+  } else {
+    console.error("saveCharacterButton not found in DOM on page load");
+  }
+});</script>
+
 
   <div id="settingsTab" class="tab-content">
       <h2>Settings</h2>
@@ -13240,6 +13282,563 @@ setInterval(loadUsers, 60000);
       // This will be handled by customCraftItems.js
     });
   });
+
+</script>
+<script>
+function saveCharacter() {
+  // Log that the function was called
+  console.log("saveCharacter function called!");
+  
+  // Check if user is logged in
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("You must be logged in to save a character.");
+    return;
+  }
+  
+  // Simple character name prompt with validation
+  let characterName = prompt("Enter a character name (2-13 letters only):", "");
+  if (!characterName) return; // User cancelled
+  
+  // Validate character name
+  if (!/^[A-Za-z]{2,13}$/.test(characterName)) {
+    alert("Character name must be 2-13 letters only. No numbers, spaces, or special characters.");
+    return;
+  }
+  
+  // Create character state object with all important data
+  const characterState = {};
+  
+  // Get values from all selects
+  document.querySelectorAll("select").forEach(select => {
+    if (select.id) characterState[select.id] = select.value;
+  });
+  
+  // Get values from all stat elements
+  document.querySelectorAll(".stat-value").forEach(stat => {
+    if (stat.id) characterState[stat.id] = stat.textContent || stat.innerText;
+  });
+  
+  // Get values from all inputs
+  document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+    if (input.id && input.value) characterState[input.id] = input.value;
+  });
+  
+  // If character level is defined, include it
+  if (typeof characterLevel !== "undefined") {
+    characterState.characterLevel = characterLevel;
+  }
+  
+  console.log("Character data captured:", {
+    name: characterName,
+    properties: Object.keys(characterState).length
+  });
+  
+  // Prepare data for sending
+  const saveData = {
+    name: characterName,
+    state: characterState,
+    createdAt: new Date().toISOString()
+  };
+  
+  // Show a processing message
+  const processingMessage = alert("Saving character...");
+  
+  // Send to server with improved error handling
+  fetch(`${API_BASE_URL}/api/characters`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(saveData)
+  })
+  .then(response => {
+    // First check if response is OK
+    if (!response.ok) {
+      // Try to get error message from response
+      return response.text().then(text => {
+        try {
+          // Try to parse as JSON
+          const jsonError = JSON.parse(text);
+          throw new Error(jsonError.message || "Server error");
+        } catch (e) {
+          // If not JSON, use text or status
+          throw new Error(`Server error (${response.status}): ${text.substring(0, 100)}...`);
+        }
+      });
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      alert(`Character "${characterName}" saved successfully!`);
+      // Refresh character list if function exists
+      if (typeof loadSavedCharacters === "function") {
+        loadSavedCharacters();
+      }
+    } else {
+      alert(`Error: ${data.message || "Unknown error"}`);
+    }
+  })
+  .catch(error => {
+    console.error("Save character error:", error);
+    alert(`Error saving character: ${error.message}`);
+  });
+}
+
+// Make sure this function is available globally
+window.saveCharacter = saveCharacter;
+
+// === Helper function to inspect responses ===
+// This helps diagnose issues with API responses
+function inspectApiResponse(url, options = {}) {
+  console.log(`Testing API endpoint: ${url}`);
+  
+  return fetch(url, options)
+    .then(response => {
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+      
+      // Clone the response so we can both check it and return it
+      const clonedResponse = response.clone();
+      
+      // Try to read as text first
+      return response.text().then(text => {
+        console.log("Response text (first 100 chars):", text.substring(0, 100));
+        
+        try {
+          // Try to parse as JSON
+          const json = JSON.parse(text);
+          console.log("JSON parsed successfully:", json);
+        } catch (e) {
+          console.log("Not valid JSON:", e.message);
+        }
+        
+        // Return the original response
+        return clonedResponse;
+      });
+    })
+    .catch(error => {
+      console.error("Fetch error:", error);
+      throw error;
+    });
+}
+
+// Test the API endpoint
+function testCharacterApi() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No authentication token found");
+    return;
+  }
+  
+  inspectApiResponse(`${API_BASE_URL}/api/characters`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  })
+  .then(response => response.json())
+  .then(data => console.log("API test result:", data))
+  .catch(error => console.error("API test error:", error));
+}
+
+function loadSavedCharacters() {
+  console.log("Loading saved characters");
+  
+  // Check if user is logged in
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found, user not logged in");
+    return;
+  }
+  
+  // Show loading message
+  const charactersList = document.getElementById("savedCharactersList");
+  if (charactersList) {
+    charactersList.innerHTML = "<p>Loading saved characters...</p>";
+  }
+  
+  // Fetch characters from API
+  fetch(`${API_BASE_URL}/api/characters`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Error loading characters: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      displaySavedCharacters(data.characters);
+    } else {
+      throw new Error(data.message || "Unknown error loading characters");
+    }
+  })
+  .catch(error => {
+    console.error("Error loading saved characters:", error);
+    if (charactersList) {
+      charactersList.innerHTML = `<p class="error-message">Error loading characters: ${error.message}</p>`;
+    }
+  });
+}
+
+// Function to display saved characters
+function displaySavedCharacters(characters) {
+  console.log(`Displaying ${characters.length} saved characters`);
+  
+  const charactersList = document.getElementById("savedCharactersList");
+  if (!charactersList) {
+    console.error("savedCharactersList element not found");
+    return;
+  }
+  
+  // Clear previous content
+  charactersList.innerHTML = "";
+  
+  // If no characters, show message
+  if (!characters || characters.length === 0) {
+    charactersList.innerHTML = "<p>No saved characters found. Save your current character to see it here.</p>";
+    return;
+  }
+  
+  // Create list of characters
+  const list = document.createElement("ul");
+  list.className = "saved-characters-list";
+  
+  // Add each character to list
+  characters.forEach(character => {
+    const item = document.createElement("li");
+    item.className = "saved-character-item";
+    
+    // Format date
+    const savedDate = new Date(character.createdAt).toLocaleDateString();
+    
+    // Create character entry HTML
+    item.innerHTML = `
+      <div class="character-info">
+        <span class="character-name">${character.name}</span>
+        <span class="character-date">Saved on: ${savedDate}</span>
+      </div>
+      <div class="character-actions">
+        <button class="load-character-btn" data-id="${character._id}">Load</button>
+        <button class="delete-character-btn" data-id="${character._id}">Delete</button>
+      </div>
+    `;
+    
+    // Add to list
+    list.appendChild(item);
+  });
+  
+  // Add list to container
+  charactersList.appendChild(list);
+  
+  // Add event listeners to buttons
+  addCharacterButtonListeners();
+}
+
+// Add event listeners to load and delete buttons
+function addCharacterButtonListeners() {
+  // Add load button listeners
+  document.querySelectorAll(".load-character-btn").forEach(button => {
+    button.addEventListener("click", function() {
+      const characterId = this.getAttribute("data-id");
+      loadCharacter(characterId);
+    });
+  });
+  
+  // Add delete button listeners
+  document.querySelectorAll(".delete-character-btn").forEach(button => {
+    button.addEventListener("click", function() {
+      const characterId = this.getAttribute("data-id");
+      deleteCharacter(characterId);
+    });
+  });
+}
+
+// Function to load a character
+function loadCharacter(characterId) {
+  console.log("Loading character:", characterId);
+  
+  // Confirm before loading
+  if (!confirm("Loading this character will replace your current build. Continue?")) {
+    return;
+  }
+  
+  // Check if user is logged in
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("You must be logged in to load characters.");
+    return;
+  }
+  
+  // Fetch character from API
+  fetch(`${API_BASE_URL}/api/characters/${characterId}`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Error loading character: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      applyCharacterState(data.character.state);
+      alert(`Character "${data.character.name}" loaded successfully!`);
+    } else {
+      throw new Error(data.message || "Unknown error loading character");
+    }
+  })
+  .catch(error => {
+    console.error("Error loading character:", error);
+    alert(`Error loading character: ${error.message}`);
+  });
+}
+
+// Function to apply character state to the UI
+function applyCharacterState(state) {
+  console.log("Applying character state:", Object.keys(state).length, "properties");
+  
+  // Apply to dropdown selects
+  Object.keys(state).forEach(key => {
+    const element = document.getElementById(key);
+    if (element) {
+      if (element.tagName === "SELECT") {
+        element.value = state[key];
+        // Trigger change event to update UI
+        const event = new Event("change");
+        element.dispatchEvent(event);
+      } else if (element.tagName === "INPUT") {
+        element.value = state[key];
+        // Trigger input event
+        const event = new Event("input");
+        element.dispatchEvent(event);
+      } else {
+        // For non-input elements (like stats)
+        element.textContent = state[key];
+      }
+    }
+  });
+  
+  // Set character level if available
+  if (state.characterLevel && typeof characterLevel !== "undefined") {
+    characterLevel = state.characterLevel;
+  }
+  
+  // Refresh character display if function exists
+  if (typeof updateCharacter === "function") {
+    updateCharacter();
+  }
+}
+
+// Function to delete a character
+function deleteCharacter(characterId) {
+  console.log("Deleting character:", characterId);
+  
+  // Confirm before deleting
+  if (!confirm("Are you sure you want to delete this character? This cannot be undone.")) {
+    return;
+  }
+  
+  // Check if user is logged in
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("You must be logged in to delete characters.");
+    return;
+  }
+  
+  // Delete character from API
+  fetch(`${API_BASE_URL}/api/characters/${characterId}`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Error deleting character: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      alert("Character deleted successfully!");
+      // Reload character list
+      loadSavedCharacters();
+    } else {
+      throw new Error(data.message || "Unknown error deleting character");
+    }
+  })
+  .catch(error => {
+    console.error("Error deleting character:", error);
+    alert(`Error deleting character: ${error.message}`);
+  });
+}
+
+// Add styles for the character list
+function addCharacterStyles() {
+  // Check if styles are already added
+  if (document.getElementById("character-list-styles")) {
+    return;
+  }
+  
+  // Create style element
+  const style = document.createElement("style");
+  style.id = "character-list-styles";
+  style.textContent = `
+    .saved-characters-container {
+      margin-top: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .saved-characters-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .saved-character-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      margin-bottom: 8px;
+      background-color: #333;
+      border-radius: 4px;
+      border-left: 3px solid #e74c3c;
+    }
+    
+    .character-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .character-name {
+      font-weight: bold;
+      color: #eee;
+      margin-bottom: 4px;
+    }
+    
+    .character-date {
+      font-size: 0.8em;
+      color: #aaa;
+    }
+    
+    .character-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .load-character-btn {
+      padding: 5px 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .load-character-btn:hover {
+      background-color: #2980b9;
+    }
+    
+    .delete-character-btn {
+      padding: 5px 10px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .delete-character-btn:hover {
+      background-color: #c0392b;
+    }
+    
+    .error-message {
+      color: #e74c3c;
+      padding: 10px;
+      background-color: rgba(231, 76, 60, 0.1);
+      border-radius: 4px;
+      border-left: 3px solid #e74c3c;
+    }
+  `;
+  
+  // Add to document
+  document.head.appendChild(style);
+  console.log("Character list styles added");
+}
+
+// Initialize system - add this to your page load logic
+function initCharacterSystem() {
+  console.log("Initializing character system");
+  
+  // Add styles
+  addCharacterStyles();
+  
+  // Load saved characters if on the characters tab
+  if (document.getElementById("charactersTab") && 
+      document.getElementById("charactersTab").classList.contains("active")) {
+    loadSavedCharacters();
+  }
+  
+  // Add click listener to saveCharacterButton if not already added
+  const saveButton = document.getElementById("saveCharacterButton");
+  if (saveButton) {
+    // Remove existing listeners to avoid duplicates
+    const newButton = saveButton.cloneNode(true);
+    saveButton.parentNode.replaceChild(newButton, saveButton);
+    
+    // Add new listener
+    newButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      saveCharacter();
+    });
+  }
+  
+  // Update showTab function to load characters when tab is shown
+  if (typeof window.originalShowTab !== "function") {
+    window.originalShowTab = window.showTab || function() {};
+    
+    window.showTab = function(tabName) {
+      window.originalShowTab(tabName);
+      
+      if (tabName === "characters") {
+        loadSavedCharacters();
+      }
+    };
+  }
+}
+
+// Make functions available globally
+window.loadSavedCharacters = loadSavedCharacters;
+window.displaySavedCharacters = displaySavedCharacters;
+window.loadCharacter = loadCharacter;
+window.deleteCharacter = deleteCharacter;
+window.applyCharacterState = applyCharacterState;
+
+// Initialize on page load
+document.addEventListener("DOMContentLoaded", initCharacterSystem);
+
+// If page is already loaded, initialize now
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  initCharacterSystem();
+}
+
 </script>
 
 

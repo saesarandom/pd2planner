@@ -14,9 +14,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/pd2planner", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -26,6 +25,8 @@ mongoose
   .catch((err) => {
     console.error("MongoDB connection error:", err);
   });
+
+mongoose.set("strictQuery", true);
 
 // Models
 const userSchema = new mongoose.Schema({
@@ -91,6 +92,30 @@ const CraftItemSchema = new mongoose.Schema({
 });
 
 const CraftItem = mongoose.model("CraftItem", CraftItemSchema);
+
+const CharacterSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  name: {
+    type: String,
+    required: true,
+    match: /^[A-Za-z]{2,13}$/,
+  },
+  state: {
+    type: Object,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// Create the model
+const Character = mongoose.model("Character", CharacterSchema);
 
 // Achievement configuration
 const achievementValidators = {
@@ -660,6 +685,112 @@ app.delete("/api/custom-crafts/:id", auth, async (req, res) => {
     res.json({ success: true, message: "Item deleted successfully" });
   } catch (error) {
     console.error("Error deleting custom craft item:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+app.get("/api/characters", auth, async (req, res) => {
+  try {
+    console.log("Fetching characters for user:", req.userData.userId);
+
+    const characters = await Character.find({ userId: req.userData.userId })
+      .sort({ createdAt: -1 }) // Most recent first
+      .limit(10); // Limit to 10 save slots
+
+    res.json({ success: true, characters });
+  } catch (error) {
+    console.error("Error fetching characters:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// GET a specific character
+app.get("/api/characters/:id", auth, async (req, res) => {
+  try {
+    const character = await Character.findOne({
+      _id: req.params.id,
+      userId: req.userData.userId,
+    });
+
+    if (!character) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Character not found" });
+    }
+
+    res.json({ success: true, character });
+  } catch (error) {
+    console.error("Error fetching character:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// POST a new character
+app.post("/api/characters", auth, async (req, res) => {
+  try {
+    console.log("Saving character for user:", req.userData.userId);
+    console.log(
+      "Character data:",
+      JSON.stringify(req.body).substring(0, 100) + "..."
+    );
+
+    // Validate character name - letters only, 2-13 characters
+    const nameRegex = /^[A-Za-z]{2,13}$/;
+    if (!req.body.name || !nameRegex.test(req.body.name)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Character name must be 2-13 letters only. No numbers, spaces, or special characters.",
+      });
+    }
+
+    // Check if the user already has 10 characters
+    const characterCount = await Character.countDocuments({
+      userId: req.userData.userId,
+    });
+    if (characterCount >= 10) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Maximum character limit reached (10). Please delete a character before saving a new one.",
+      });
+    }
+
+    const newCharacter = new Character({
+      userId: req.userData.userId,
+      name: req.body.name,
+      state: req.body.state,
+      createdAt: req.body.createdAt || new Date(),
+    });
+
+    await newCharacter.save();
+    res.json({ success: true, character: newCharacter });
+  } catch (error) {
+    console.error("Error saving character:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error: " + error.message });
+  }
+});
+
+// DELETE a character
+app.delete("/api/characters/:id", auth, async (req, res) => {
+  try {
+    const character = await Character.findOne({
+      _id: req.params.id,
+      userId: req.userData.userId,
+    });
+
+    if (!character) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Character not found" });
+    }
+
+    await Character.deleteOne({ _id: req.params.id });
+    res.json({ success: true, message: "Character deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting character:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });

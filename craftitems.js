@@ -68,19 +68,16 @@ function checkUserLoginStatus() {
     })
     .catch((error) => {
       console.error("Token verification error:", error);
-      hideCustomCraftUI();
     });
 }
 
 function onUserLoggedIn(event) {
   currentUser = event.detail.userId;
   initializeCustomCraftSystem();
-  setupCustomCraftUI();
 }
 
 function onUserLoggedOut() {
   currentUser = null;
-  hideCustomCraftUI();
 }
 
 function dispatchLogoutEvent() {
@@ -94,7 +91,6 @@ function dispatchLogoutEvent() {
 function initializeCustomCraftSystem() {
   console.log("Initializing custom craft system");
   loadCustomCraftItems();
-  setupCustomCraftUI();
 }
 
 function loadCustomCraftItems() {
@@ -130,57 +126,6 @@ function loadCustomCraftItems() {
 /**
  * UI Management
  */
-function setupCustomCraftUI() {
-  // Check if the button already exists
-  const existingButton = document.getElementById("create-craft-button");
-  if (existingButton) {
-    existingButton.parentElement.style.display = "block";
-    return;
-  }
-
-  // Create button container
-  const container = createCraftButtonContainer();
-  document.body.appendChild(container);
-
-  // Create the craft modal if it doesn't exist
-  if (!document.getElementById("craft-modal")) {
-    createCraftModal();
-  }
-}
-
-function hideCustomCraftUI() {
-  const container = document.getElementById("create-craft-container");
-  if (container) {
-    container.style.display = "none";
-  }
-}
-
-function createCraftButtonContainer() {
-  const container = document.createElement("div");
-  container.id = "create-craft-container";
-  container.style.position = "fixed";
-  container.style.bottom = "80px";
-  container.style.right = "20px";
-  container.style.zIndex = "2";
-
-  // Create button
-  const button = document.createElement("button");
-  button.id = "create-craft-button";
-  button.textContent = "Create Custom Item";
-  button.style.padding = "10px 15px";
-  button.style.backgroundColor = "#e74c3c";
-  button.style.color = "white";
-  button.style.border = "none";
-  button.style.borderRadius = "5px";
-  button.style.cursor = "pointer";
-  button.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
-
-  // Add event listener
-  button.addEventListener("click", openCraftModal);
-
-  container.appendChild(button);
-  return container;
-}
 
 function openCraftModal() {
   const modal = document.getElementById("craft-modal");
@@ -3199,3 +3144,192 @@ const craftDefinitions = {
     },
   },
 };
+
+function showTab(tabName) {
+  // Hide all tabs
+  document.querySelectorAll(".tab-content").forEach((tab) => {
+    tab.classList.remove("active");
+  });
+
+  // Remove active class from all tab buttons
+  document.querySelectorAll(".tab").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+
+  // Show the selected tab
+  document.getElementById(tabName + "Tab").classList.add("active");
+
+  // Add active class to the clicked button
+  document
+    .querySelector(`.tab[onclick="showTab('${tabName}')"]`)
+    .classList.add("active");
+}
+
+// Update the onUserLoggedIn function to also initialize the craft system
+function onUserLoggedIn(event) {
+  currentUser = event.detail.userId;
+
+  // Initialize custom craft system
+  initializeCustomCraftSystem();
+
+  // In the original code, this would show the floating button
+  // Instead of showing the floating button, we'll make sure our tab is ready
+  setupCustomItemsTab();
+}
+
+// Set up the Custom Items tab content
+function setupCustomItemsTab() {
+  // Check if the craft modal already exists, if not, create it
+  if (!document.getElementById("craft-modal")) {
+    createCraftModal();
+  }
+
+  // Load custom items for the user
+  loadCustomCraftItems();
+
+  // Add items to the Custom Items tab list
+  updateCustomItemsList();
+}
+
+// Update the custom items list in the tab
+function updateCustomItemsList() {
+  const craftItemsList = document.getElementById("craft-items-list");
+
+  // Clear existing content except for the first paragraph
+  const firstParagraph = craftItemsList.querySelector("p:first-child");
+  craftItemsList.innerHTML = "";
+  if (firstParagraph) {
+    craftItemsList.appendChild(firstParagraph);
+  }
+
+  // Fetch custom items for the user
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found, user not logged in");
+    return;
+  }
+
+  fetch(`${API_BASE_URL}/api/custom-crafts`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success && data.items && data.items.length > 0) {
+        // Create a list of items
+        const itemList = document.createElement("ul");
+        itemList.className = "custom-items-list";
+
+        data.items.forEach((item) => {
+          const listItem = document.createElement("li");
+          const itemColor = getCraftTypeColor(item.craftType);
+
+          listItem.innerHTML = `
+                    <span style="color: #${itemColor};">${item.itemName}</span>
+                    <span class="item-type">(${item.itemType})</span>
+                `;
+
+          itemList.appendChild(listItem);
+        });
+
+        craftItemsList.appendChild(itemList);
+      } else {
+        // No items found
+        const noItems = document.createElement("p");
+        noItems.textContent =
+          "You have no custom items yet. Create one to get started!";
+        craftItemsList.appendChild(noItems);
+      }
+    })
+    .catch((error) => {
+      console.error("Error loading custom craft items:", error);
+      craftItemsList.innerHTML +=
+        "<p>Error loading your custom items. Please try again.</p>";
+    });
+}
+
+// Update the saveCraftedItem function to refresh the items list
+function saveCraftedItem(item) {
+  console.log("Saving craft item:", item);
+
+  fetch(`${API_BASE_URL}/api/custom-crafts`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(item),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((text) => {
+          console.error("Server error response:", text);
+          throw new Error(`Server returned ${response.status}: ${text}`);
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        alert("Item created successfully!");
+
+        // Close the modal
+        const modal = document.getElementById("craft-modal");
+        if (modal) modal.style.display = "none";
+
+        // Reload all custom items to update dropdowns
+        loadCustomCraftItems();
+
+        // Update the items list in the Custom Items tab
+        updateCustomItemsList();
+      } else {
+        alert("Error creating item: " + (data.message || "Unknown error"));
+      }
+    })
+    .catch((error) => {
+      console.error("Error saving custom craft item:", error);
+      alert("Error saving item: " + error.message);
+    });
+}
+
+// Add styles for the Custom Items tab
+document.addEventListener("DOMContentLoaded", () => {
+  const style = document.createElement("style");
+  style.textContent = `
+        .craft-items-container {
+            padding: 10px;
+        }
+        
+        #modal-create-craft-button {
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .custom-items-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .custom-items-list li {
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: #2c2c2c;
+            border-radius: 4px;
+        }
+        
+        .item-type {
+            color: #888;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+    `;
+  document.head.appendChild(style);
+});
