@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const axios = require("axios");
 const qs = require("querystring");
+const path = require("path");
 require("dotenv").config();
 
 // Express initialization
@@ -839,11 +840,11 @@ app.get("/api/shared-character/:name/:shareCode", async (req, res) => {
 });
 
 // Add route to handle share URLs in the frontend
-app.get("/:nameWithCode", (req, res) => {
-  // This route will be handled by your frontend to load shared characters
-  // Just serve your main HTML file, and let the frontend handle the parsing
-  res.sendFile(path.join(__dirname, "index.html"));
-});
+// app.get("/:nameWithCode", (req, res) => {
+//   // This route will be handled by your frontend to load shared characters
+//   // Just serve your main HTML file, and let the frontend handle the parsing
+//   res.sendFile(path.join(__dirname, "index.html"));
+// });
 
 app.put("/api/characters/:id", auth, async (req, res) => {
   try {
