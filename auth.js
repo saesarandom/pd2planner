@@ -842,7 +842,7 @@ app.get("/api/shared-character/:name/:shareCode", async (req, res) => {
 app.get("/:nameWithCode", (req, res) => {
   // This route will be handled by your frontend to load shared characters
   // Just serve your main HTML file, and let the frontend handle the parsing
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.put("/api/characters/:id", auth, async (req, res) => {
