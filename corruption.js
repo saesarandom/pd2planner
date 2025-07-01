@@ -165,6 +165,26 @@ function forceUpdateSockets(section) {
   refreshSocketProperties();
 }
 
+
+function refreshSocketProperties() {
+  const sections = ['helm', 'armor', 'weapon', 'shield'];
+  
+  sections.forEach(section => {
+    updateSocketInfo(section);
+  });
+
+  // Update weapon specific displays if they exist
+  if (document.querySelector('.socketz[data-section="weapon"]')) {
+    if (typeof updateWeaponDamageDisplay === 'function') {
+      updateWeaponDamageDisplay();
+    }
+    if (typeof updateWeaponDescription === 'function') {
+      updateWeaponDescription();
+    }
+  }
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const helmCorruptions = [
     { mod: "Socketed ([1-3])", type: "numeric", range: [1, 3] },
@@ -2176,7 +2196,9 @@ function updateSocketInfo(section) {
         if (Array.isArray(socketStats)) {
           combinedStats.push(...socketStats);
         } else {
-          combinedStats.push(socketStats);
+          // Split multi-line stats properly
+          const statsArray = socketStats.split(/\n/).filter(s => s.trim());
+          combinedStats.push(...statsArray);
         }
       } catch (e) {
         combinedStats.push(socketStats);
@@ -2184,40 +2206,13 @@ function updateSocketInfo(section) {
     }
   });
 
-  // Remove existing socket stats
+  // Remove existing socket stats from main container
   const existingStats = infoContainer.querySelector(".socket-stats");
   if (existingStats) {
     existingStats.remove();
   }
 
-  // Create new stats container if we have stats
-  if (combinedStats.length > 0) {
-    const statsContainer = document.createElement("div");
-    statsContainer.className = "socket-stats";
-
-    combinedStats.forEach((stat) => {
-      const statDiv = document.createElement("div");
-      statDiv.textContent = stat;
-      statsContainer.appendChild(statDiv);
-    });
-
-    // Insert stats before corruption info if it exists
-    if (corruptedMod) {
-      infoContainer.insertBefore(statsContainer, corruptedMod);
-    } else {
-      infoContainer.appendChild(statsContainer);
-    }
-  }
-
-  // Restore corruption info
-  if (corruptedMod && !infoContainer.contains(corruptedMod)) {
-    infoContainer.appendChild(corruptedMod);
-  }
-  if (corruptedText && !infoContainer.contains(corruptedText)) {
-    infoContainer.appendChild(corruptedText);
-  }
-
-  // Update separate stats container
+  // ONLY update the separate stats container (not the main info container)
   const separateStatsId = {
     helm: "helmsocketstats",
     weapon: "weaponsocketstats",
@@ -2237,6 +2232,114 @@ function updateSocketInfo(section) {
       separateStatsContainer.appendChild(statDiv);
     });
   }
+
+  // Restore corruption info
+  if (corruptedMod && !infoContainer.contains(corruptedMod)) {
+    infoContainer.appendChild(corruptedMod);
+  }
+  if (corruptedText && !infoContainer.contains(corruptedText)) {
+    infoContainer.appendChild(corruptedText);
+  }
+}
+
+  // Update separate stats container
+  const separateStatsId = {
+    helm: "helmsocketstats",
+    weapon: "weaponsocketstats",
+    armor: "armorsocketstats",
+    shield: "shieldsocketstats",
+  }[section];
+
+
+function mergeNumericStats(stats) {
+  const statMap = new Map();
+
+  stats.forEach(stat => {
+    if (!stat || typeof stat !== 'string') return;
+    
+    // Skip empty stats
+    const trimmedStat = stat.trim();
+    if (!trimmedStat) return;
+
+    // Match patterns for numeric stats
+    const patterns = [
+      // +X% Enhanced Damage
+      /^([+-]?\d+)%\s+(.+)$/,
+      // +X to Something
+      /^([+-]?\d+)\s+to\s+(.+)$/,
+      // X% Life Stolen per Hit
+      /^(\d+)%\s+(.*Stolen per Hit)$/,
+      // Regenerate Mana X%
+      /^(Regenerate Mana)\s+(\d+)%$/,
+      // Replenish Life +X
+      /^(Replenish Life)\s+\+(\d+)$/,
+      // +X Something
+      /^([+-]?\d+)\s+(.+)$/
+    ];
+
+    let matched = false;
+    for (const pattern of patterns) {
+      const match = trimmedStat.match(pattern);
+      if (match) {
+        let value, statName;
+        
+        // Handle different match groups based on pattern
+        if (pattern.source.includes('Regenerate Mana')) {
+          statName = match[1];
+          value = parseInt(match[2]);
+          const key = `${statName} %`;
+          statMap.set(key, (statMap.get(key) || 0) + value);
+        } else if (pattern.source.includes('Replenish Life')) {
+          statName = match[1];
+          value = parseInt(match[2]);
+          const key = statName;
+          statMap.set(key, (statMap.get(key) || 0) + value);
+        } else if (pattern.source.includes('Stolen per Hit')) {
+          value = parseInt(match[1]);
+          statName = match[2];
+          statMap.set(statName, (statMap.get(statName) || 0) + value);
+        } else {
+          value = parseInt(match[1]);
+          statName = match[2];
+          
+          // Determine if it's a percentage stat
+          const isPercentage = trimmedStat.includes('%');
+          const key = isPercentage ? `% ${statName}` : statName;
+          
+          statMap.set(key, (statMap.get(key) || 0) + value);
+        }
+        
+        matched = true;
+        break;
+      }
+    }
+
+    // Non-numeric stats
+    if (!matched) {
+      if (!statMap.has(trimmedStat)) {
+        statMap.set(trimmedStat, trimmedStat);
+      }
+    }
+  });
+
+  // Convert back to strings
+  return Array.from(statMap).map(([stat, value]) => {
+    if (typeof value === 'number') {
+      // Format based on stat type
+      if (stat.includes('Regenerate Mana')) {
+        return `Regenerate Mana ${value}%`;
+      } else if (stat.includes('Replenish Life')) {
+        return `Replenish Life +${value}`;
+      } else if (stat.includes('Stolen per Hit')) {
+        return `${value}% ${stat}`;
+      } else if (stat.startsWith('% ')) {
+        return `+${value}${stat}`;
+      } else {
+        return `+${value} to ${stat}`;
+      }
+    }
+    return value;
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

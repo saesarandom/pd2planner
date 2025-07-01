@@ -3047,68 +3047,309 @@ Resistance to fire %
       Damage: <span id="damageOutput">0</span><br>
       Mana Cost: <span id="manaCostOutput">0</span>
   </div>
-<script>
-
-// Simple fix for debugger environment - add this at the TOP of your HTML <head>
-// This is much lighter and won't hang the page
-
-(function() {
-    // Quick environment check
-    const isDebuggerEnv = window.location.protocol === 'file:' || 
-                         window.location.href.includes('chrome-devtools') ||
-                         !window.location.hostname;
+  <script>(function() {
+    'use strict';
     
-    if (!isDebuggerEnv) return; // Only run in problematic environments
+    console.log('Initializing socket system fix...');
     
-    console.log('Debug environment detected, applying minimal fixes...');
+    // 1. Define the items structure properly
+    window.items = window.items || {
+        // Gems
+        'chipped-sapphire': {
+            weapon: '+1-3 Cold Damage',
+            helm: '+10 to Mana',
+            armor: '+10 to Mana',
+            shield: 'Cold Resist +12%'
+        },
+        'flawed-sapphire': {
+            weapon: '+3-5 Cold Damage',
+            helm: '+17 to Mana',
+            armor: '+17 to Mana',
+            shield: 'Cold Resist +16%'
+        },
+        'sapphire': {
+            weapon: '+4-7 Cold Damage',
+            helm: '+24 to Mana',
+            armor: '+24 to Mana',
+            shield: 'Cold Resist +22%'
+        },
+        // Runes
+        'el': {
+            weapon: '+50 to Attack Rating\n+1 Light Radius',
+            helm: '+15 Defense\n+1 Light Radius',
+            armor: '+15 Defense\n+1 Light Radius',
+            shield: '+15 Defense\n+1 Light Radius'
+        },
+        'eld': {
+            weapon: '+75% Damage to Undead\n+50 to Attack Rating against Undead',
+            helm: '15% Slower Stamina Drain',
+            armor: '15% Slower Stamina Drain',
+            shield: '7% Increased Chance of Blocking'
+        },
+        'tir': {
+            weapon: '+2 to Mana after each Kill',
+            helm: '+2 to Mana after each Kill',
+            armor: '+2 to Mana after each Kill',
+            shield: '+2 to Mana after each Kill'
+        },
+        'nef': {
+            weapon: 'Knockback',
+            helm: '+30 Defense vs. Missile',
+            armor: '+30 Defense vs. Missile',
+            shield: '+30 Defense vs. Missile'
+        },
+        // Add more items as needed
+    };
     
-    // Fix 1: Ensure CSS loads
-    document.addEventListener('DOMContentLoaded', function() {
-        // Force visibility of key elements
-        const style = document.createElement('style');
-        style.textContent = `
-            select, button, input { 
-                pointer-events: auto !important; 
-                display: block !important; 
+    // 2. Define showItemModal function
+    window.showItemModal = function() {
+        console.log('Opening item modal');
+        const modal = document.getElementById('socketModal');
+        if (modal) {
+            modal.style.display = 'block';
+            modal.classList.remove('hidden');
+        }
+    };
+    
+    // 3. Fix the socket item click handler
+    window.handleSocketItemClick = function(itemElement) {
+        if (!window.currentSocket) {
+            console.error('No socket selected');
+            return;
+        }
+        
+        const itemType = itemElement.dataset.gem || 
+                        itemElement.dataset.rune || 
+                        itemElement.dataset.jewel;
+        
+        if (!itemType) {
+            console.error('No item type found');
+            return;
+        }
+        
+        console.log('Inserting item:', itemType);
+        
+        const section = window.currentSocket.dataset.section;
+        const stats = window.items[itemType]?.[section];
+        
+        if (!stats) {
+            console.error('No stats found for', itemType, 'in section', section);
+            return;
+        }
+        
+        // Update the socket
+        window.currentSocket.classList.remove('empty');
+        window.currentSocket.classList.add('filled');
+        
+        // Create image
+        const img = document.createElement('img');
+        const imgName = itemType.replace(/-/g, '');
+        img.src = `/img/${imgName}.png`;
+        img.alt = itemType;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        
+        // Clear and add image
+        window.currentSocket.innerHTML = '';
+        window.currentSocket.appendChild(img);
+        
+        // Store data
+        window.currentSocket.dataset.itemName = itemType;
+        window.currentSocket.dataset.stats = stats;
+        
+        // Close modal
+        const modal = document.getElementById('socketModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        
+        // Update displays
+        if (typeof refreshSocketProperties === 'function') {
+            refreshSocketProperties();
+        }
+        if (typeof updateSocketInfo === 'function') {
+            updateSocketInfo(section);
+        }
+    };
+    
+    // 4. Initialize socket system when DOM is ready
+    function initializeSockets() {
+        console.log('Initializing socket event listeners...');
+        
+        // Add click handlers to all socket items in modal
+        document.querySelectorAll('.socket-item').forEach(item => {
+            item.style.cursor = 'pointer';
+            item.onclick = function(e) {
+                e.stopPropagation();
+                handleSocketItemClick(this);
+            };
+        });
+        
+        // Add click handlers to all sockets
+        document.querySelectorAll('.socketz').forEach(socket => {
+            socket.style.cursor = 'pointer';
+            
+            // Left click - open modal
+            socket.onclick = function(e) {
+                e.stopPropagation();
+                window.currentSocket = this;
+                showItemModal();
+            };
+            
+            // Right click - clear socket
+            socket.oncontextmenu = function(e) {
+                e.preventDefault();
+                clearSocketFixed(this);
+            };
+        });
+        
+        // Modal close handlers
+        const modal = document.getElementById('socketModal');
+        if (modal) {
+            const closeBtn = modal.querySelector('.socket-close');
+            if (closeBtn) {
+                closeBtn.onclick = function() {
+                    modal.style.display = 'none';
+                    window.currentSocket = null;
+                };
             }
-            .socketz { 
-                cursor: pointer !important; 
-                display: flex !important; 
-            }
-            #socketModal { 
-                display: none !important; 
-            }
-        `;
-        document.head.appendChild(style);
-    });
+            
+            // Click outside to close
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    window.currentSocket = null;
+                }
+            });
+        }
+        
+        // Category tabs in socket modal
+        document.querySelectorAll('.socket-category-tab').forEach(tab => {
+            tab.onclick = function() {
+                const category = this.dataset.category;
+                
+                // Update active tab
+                document.querySelectorAll('.socket-category-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show corresponding content
+                document.querySelectorAll('.socket-content').forEach(content => {
+                    content.classList.remove('active');
+                    if (content.dataset.category === category) {
+                        content.classList.add('active');
+                    }
+                });
+            };
+        });
+    }
     
-    // Fix 2: Bypass module loading issues
-    window.addEventListener('error', function(e) {
-        console.log('Script error caught:', e.filename, e.message);
-        // Don't let script errors break the page
-        return true;
-    });
+    // 5. Fixed clear socket function
+    window.clearSocketFixed = function(socket) {
+        console.log('Clearing socket');
+        
+        socket.classList.remove('filled');
+        socket.classList.add('empty');
+        socket.innerHTML = '';
+        delete socket.dataset.itemName;
+        delete socket.dataset.stats;
+        
+        const section = socket.dataset.section;
+        
+        // Update displays
+        if (typeof refreshSocketProperties === 'function') {
+            refreshSocketProperties();
+        }
+        if (typeof updateSocketInfo === 'function') {
+            updateSocketInfo(section);
+        }
+        
+        // Update weapon damage if needed
+        if (section === 'weapon') {
+            if (typeof updateWeaponDamageDisplay === 'function') {
+                updateWeaponDamageDisplay();
+            }
+            if (typeof updateWeaponDescription === 'function') {
+                updateWeaponDescription();
+            }
+        }
+    };
     
-    // Fix 3: Ensure basic functionality works
-    setTimeout(function() {
-        // Make sure dropdowns are clickable
-        document.querySelectorAll('select').forEach(select => {
-            if (select.style.display === 'none') {
-                select.style.display = 'block';
+    // 6. Fixed updateSocketInfo function
+    window.updateSocketInfo = function(section) {
+        console.log('Updating socket info for', section);
+        
+        const sockets = document.querySelectorAll(`.socketz[data-section="${section}"]`);
+        const separateStatsId = {
+            helm: "helmsocketstats",
+            weapon: "weaponsocketstats",
+            armor: "armorsocketstats",
+            shield: "shieldsocketstats",
+        }[section];
+        
+        const separateStatsContainer = document.getElementById(separateStatsId);
+        if (!separateStatsContainer) {
+            console.log('No stats container found for', section);
+            return;
+        }
+        
+        // Collect all stats
+        const allStats = [];
+        sockets.forEach(socket => {
+            if (socket.dataset.itemName && socket.dataset.stats) {
+                let stats = socket.dataset.stats;
+                
+                // Parse jewel stats if needed
+                if (socket.dataset.itemName === 'jewel') {
+                    try {
+                        stats = JSON.parse(stats);
+                        if (Array.isArray(stats)) {
+                            allStats.push(...stats);
+                        } else {
+                            allStats.push(stats);
+                        }
+                    } catch (e) {
+                        // If not JSON, split by newlines
+                        const splitStats = stats.split('\n').filter(s => s.trim());
+                        allStats.push(...splitStats);
+                    }
+                } else {
+                    // Split multi-line stats
+                    const splitStats = stats.split('\n').filter(s => s.trim());
+                    allStats.push(...splitStats);
+                }
             }
         });
         
-        // Make sure buttons are clickablealert("test")
-        document.querySelectorAll('button').forEach(button => {
-            if (button.style.pointerEvents === 'none') {
-                button.style.pointerEvents = 'auto';
-            }
-        });
+        // Clear and update container
+        separateStatsContainer.innerHTML = '';
         
-        console.log('Basic fixes applied');
-    }, 1000);
+        if (allStats.length === 0) {
+            separateStatsContainer.innerHTML = '<div style="color: #666;">No socketables socketed</div>';
+        } else {
+            // Merge similar stats
+            const mergedStats = mergeNumericStats(allStats);
+            mergedStats.forEach(stat => {
+                const statDiv = document.createElement('div');
+                statDiv.textContent = stat;
+                statDiv.style.color = '#7d49ff';
+                separateStatsContainer.appendChild(statDiv);
+            });
+        }
+    };
     
+    // 7. Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeSockets);
+    } else {
+        setTimeout(initializeSockets, 100);
+    }
+    
+    console.log('Socket system fix loaded');
 })();
+
 
 document.addEventListener('DOMContentLoaded', function() {
   const select_Class = document.getElementById('selectClass');
@@ -13644,9 +13885,9 @@ setInterval(loadUsers, 60000);
 // ];
 
 // Function to check if an element ID is in the skills list
-function isSkill(id) {
-  return SKILL_IDS.includes(id);
-}
+// function isSkill(id) {
+//   return SKILL_IDS.includes(id);
+// }
 
 
 
@@ -13654,1007 +13895,1211 @@ function isSkill(id) {
 
 
 
-function saveCharacter() {
-  // Log that the function was called
-  console.log("saveCharacter function called!");
+// function saveCharacter() {
+//   // Log that the function was called
+//   console.log("saveCharacter function called!");
   
-  // Check if user is logged in
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("You must be logged in to save a character.");
-    return;
-  }
+//   // Check if user is logged in
+//   const token = localStorage.getItem("token");
+//   if (!token) {
+//     alert("You must be logged in to save a character.");
+//     return;
+//   }
   
-  // Simple character name prompt with validation
-  let characterName = prompt("Enter a character name (2-13 letters only):", "");
-  if (!characterName) return; // User cancelled
+//   // Simple character name prompt with validation
+//   let characterName = prompt("Enter a character name (2-13 letters only):", "");
+//   if (!characterName) return; // User cancelled
   
-  // Validate character name
-  if (!/^[A-Za-z]{2,13}$/.test(characterName)) {
-    alert("Character name must be 2-13 letters only. No numbers, spaces, or special characters.");
-    return;
-  }
+//   // Validate character name
+//   if (!/^[A-Za-z]{2,13}$/.test(characterName)) {
+//     alert("Character name must be 2-13 letters only. No numbers, spaces, or special characters.");
+//     return;
+//   }
 
-  const shareCode = generateHexCode();
+//   const shareCode = generateHexCode();
   
-  // Create character state object with all important data
- const characterState = {
-    skills: {} // Create a nested skills object
-  };
+//   // Create character state object with all important data
+//  const characterState = {
+//     skills: {} // Create a nested skills object
+//   };
 
-  // // Get values from all selects
-  // document.querySelectorAll("select").forEach(select => {
-  //   if (select.id) characterState[select.id] = select.value;
-  // });
+//   // // Get values from all selects
+//   // document.querySelectorAll("select").forEach(select => {
+//   //   if (select.id) characterState[select.id] = select.value;
+//   // });
   
-  // // Get values from all stat elements
-  // document.querySelectorAll(".stat-value").forEach(stat => {
-  //   if (stat.id) characterState[stat.id] = stat.textContent || stat.innerText;
-  // });
+//   // // Get values from all stat elements
+//   // document.querySelectorAll(".stat-value").forEach(stat => {
+//   //   if (stat.id) characterState[stat.id] = stat.textContent || stat.innerText;
+//   // });
   
-  // // Get values from all inputs
-  // document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
-  //   if (input.id && input.value) characterState[input.id] = input.value;
-  // });
+//   // // Get values from all inputs
+//   // document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+//   //   if (input.id && input.value) characterState[input.id] = input.value;
+//   // });
   
 
-document.querySelectorAll("select").forEach(select => {
-    if (select.id) {
-      if (isSkill(select.id)) {
-        // It's a skill - add to skills object
-        characterState.skills[select.id] = select.value;
-      } else {
-        // Regular select - add to root
-        characterState[select.id] = select.value;
-      }
-    }
-  });
+// document.querySelectorAll("select").forEach(select => {
+//     if (select.id) {
+//       if (isSkill(select.id)) {
+//         // It's a skill - add to skills object
+//         characterState.skills[select.id] = select.value;
+//       } else {
+//         // Regular select - add to root
+//         characterState[select.id] = select.value;
+//       }
+//     }
+//   });
   
-  // Then stats
-  document.querySelectorAll(".stat-value").forEach(stat => {
-    if (stat.id) {
-      if (isSkill(stat.id)) {
-        characterState.skills[stat.id] = stat.textContent || stat.innerText;
-      } else {
-        characterState[stat.id] = stat.textContent || stat.innerText;
-      }
-    }
-  });
+//   // Then stats
+//   document.querySelectorAll(".stat-value").forEach(stat => {
+//     if (stat.id) {
+//       if (isSkill(stat.id)) {
+//         characterState.skills[stat.id] = stat.textContent || stat.innerText;
+//       } else {
+//         characterState[stat.id] = stat.textContent || stat.innerText;
+//       }
+//     }
+//   });
   
-  // And inputs
-  document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
-    if (input.id && input.value) {
-      if (isSkill(input.id)) {
-        characterState.skills[input.id] = input.value;
-      } else {
-        characterState[input.id] = input.value;
-      }
-    }
-  });
+//   // And inputs
+//   document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+//     if (input.id && input.value) {
+//       if (isSkill(input.id)) {
+//         characterState.skills[input.id] = input.value;
+//       } else {
+//         characterState[input.id] = input.value;
+//       }
+//     }
+//   });
   
-  // If character level is defined, include it
-  if (typeof characterLevel !== "undefined") {
-    characterState.characterLevel = characterLevel;
-  }
-
-
+//   // If character level is defined, include it
+//   if (typeof characterLevel !== "undefined") {
+//     characterState.characterLevel = characterLevel;
+//   }
 
 
 
+
+
   
-  console.log("Character data captured:", {
-    name: characterName,
-    properties: Object.keys(characterState).length
-  });
+//   console.log("Character data captured:", {
+//     name: characterName,
+//     properties: Object.keys(characterState).length
+//   });
   
-  // Prepare data for sending
-  const saveData = {
-    name: characterName,
-    shareCode: shareCode,
-    state: characterState,
-    createdAt: new Date().toISOString()
-  };
+//   // Prepare data for sending
+//   const saveData = {
+//     name: characterName,
+//     shareCode: shareCode,
+//     state: characterState,
+//     createdAt: new Date().toISOString()
+//   };
   
-  // Show a processing message
-  const processingMessage = alert("Saving character...");
+//   // Show a processing message
+//   const processingMessage = alert("Saving character...");
   
-  // Send to server with improved error handling
-  fetch(`${API_BASE_URL}/api/characters`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(saveData)
-  })
-  .then(response => {
-    // First check if response is OK
-    if (!response.ok) {
-      // Try to get error message from response
-      return response.text().then(text => {
-        try {
-          // Try to parse as JSON
-          const jsonError = JSON.parse(text);
-          throw new Error(jsonError.message || "Server error");
-        } catch (e) {
-          // If not JSON, use text or status
-          throw new Error(`Server error (${response.status}): ${text.substring(0, 100)}...`);
-        }
-      });
-    }
-    return response.json();
-  })
- .then(data => {
-    if (data.success) {
-      // Generate the share URL
-      const shareUrl = `https://pd2planner.net/${characterName}${shareCode}`;
+//   // Send to server with improved error handling
+//   fetch(`${API_BASE_URL}/api/characters`, {
+//     method: "POST",
+//     headers: {
+//       "Authorization": `Bearer ${token}`,
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify(saveData)
+//   })
+//   .then(response => {
+//     // First check if response is OK
+//     if (!response.ok) {
+//       // Try to get error message from response
+//       return response.text().then(text => {
+//         try {
+//           // Try to parse as JSON
+//           const jsonError = JSON.parse(text);
+//           throw new Error(jsonError.message || "Server error");
+//         } catch (e) {
+//           // If not JSON, use text or status
+//           throw new Error(`Server error (${response.status}): ${text.substring(0, 100)}...`);
+//         }
+//       });
+//     }
+//     return response.json();
+//   })
+//  .then(data => {
+//     if (data.success) {
+//       // Generate the share URL
+//       const shareUrl = `https://pd2planner.net/${characterName}${shareCode}`;
       
-      // Success message with share URL
-      alert(`Character "${characterName}" saved successfully!\n\nShare URL: ${shareUrl}\n\nCopy this link to share your build with others.`);
+//       // Success message with share URL
+//       alert(`Character "${characterName}" saved successfully!\n\nShare URL: ${shareUrl}\n\nCopy this link to share your build with others.`);
       
-      // Add share URL to clipboard
-      navigator.clipboard.writeText(shareUrl)
-        .then(() => console.log("Share URL copied to clipboard"))
-        .catch(err => console.error("Could not copy URL: ", err));
+//       // Add share URL to clipboard
+//       navigator.clipboard.writeText(shareUrl)
+//         .then(() => console.log("Share URL copied to clipboard"))
+//         .catch(err => console.error("Could not copy URL: ", err));
       
-      // Refresh character list if function exists
-      if (typeof loadSavedCharacters === "function") {
-        loadSavedCharacters();
-      }
-    } else {
-      alert(`Error: ${data.message || "Unknown error"}`);
-    }
-  })
-  .catch(error => {
-    console.error("Save character error:", error);
-    alert(`Error saving character: ${error.message}`);
-  });
-}
+//       // Refresh character list if function exists
+//       if (typeof loadSavedCharacters === "function") {
+//         loadSavedCharacters();
+//       }
+//     } else {
+//       alert(`Error: ${data.message || "Unknown error"}`);
+//     }
+//   })
+//   .catch(error => {
+//     console.error("Save character error:", error);
+//     alert(`Error saving character: ${error.message}`);
+//   });
+// }
 
-// Make sure this function is available globally
-window.saveCharacter = saveCharacter;
-
-
+// // Make sure this function is available globally
+// window.saveCharacter = saveCharacter;
 
 
-// Display saved characters with share URLs
-function displaySavedCharacters(characters) {
-  console.log(`Displaying ${characters.length} saved characters`);
+
+
+// // Display saved characters with share URLs
+// function displaySavedCharacters(characters) {
+//   console.log(`Displaying ${characters.length} saved characters`);
   
-  const charactersList = document.getElementById("savedCharactersList");
-  if (!charactersList) {
-    console.error("savedCharactersList element not found");
-    return;
-  }
+//   const charactersList = document.getElementById("savedCharactersList");
+//   if (!charactersList) {
+//     console.error("savedCharactersList element not found");
+//     return;
+//   }
   
-  // Clear previous content
-  charactersList.innerHTML = "";
+//   // Clear previous content
+//   charactersList.innerHTML = "";
   
-  // If no characters, show message
-  if (!characters || characters.length === 0) {
-    charactersList.innerHTML = "<p>No saved characters found. Save your current character to see it here.</p>";
-    return;
-  }
+//   // If no characters, show message
+//   if (!characters || characters.length === 0) {
+//     charactersList.innerHTML = "<p>No saved characters found. Save your current character to see it here.</p>";
+//     return;
+//   }
   
-  // Create list of characters
-  const list = document.createElement("ul");
-  list.className = "saved-characters-list";
+//   // Create list of characters
+//   const list = document.createElement("ul");
+//   list.className = "saved-characters-list";
 
   
   
-  // Add each character to list
-    characters.forEach(character => {
-    // Generate a share code if missing
-    if (!character.shareCode) {
-      character.shareCode = generateHexCode();
-      console.log(`Generated missing shareCode ${character.shareCode} for ${character.name}`);
-    }
+//   // Add each character to list
+//     characters.forEach(character => {
+//     // Generate a share code if missing
+//     if (!character.shareCode) {
+//       character.shareCode = generateHexCode();
+//       console.log(`Generated missing shareCode ${character.shareCode} for ${character.name}`);
+//     }
     
-    // Format date
-    const savedDate = new Date(character.createdAt).toLocaleDateString();
+//     // Format date
+//     const savedDate = new Date(character.createdAt).toLocaleDateString();
     
-    // Generate share URL if character has a shareCode
-    const shareUrl = character.shareCode 
-      ? `https://pd2planner.net/${character.name}${character.shareCode}`
-      : null;
+//     // Generate share URL if character has a shareCode
+//     const shareUrl = character.shareCode 
+//       ? `https://pd2planner.net/${character.name}${character.shareCode}`
+//       : null;
     
- const displayUrl = `/${character.name}${character.shareCode}`;
+//  const displayUrl = `/${character.name}${character.shareCode}`;
 
-    // Create character entry HTML
-    item.innerHTML = `
-      <div class="character-info">
-        <div class="character-primary-info">
-          <span class="character-name">${character.name}</span>
-          <span class="character-date">Saved on: ${savedDate}</span>
-        </div>
-        <div class="character-share-info">
-          <span class="share-url-label">Share URL:</span>
-          <a href="${shareUrl}" target="_blank" class="share-url-link" title="${shareUrl}">${displayUrl}</a>
-        </div>
-      </div>
-      <div class="character-actions">
-        <button class="load-character-btn" data-id="${character._id}">Load</button>
-        <button class="copy-url-btn" data-url="${shareUrl}">Copy Link</button>
-        <button class="delete-character-btn" data-id="${character._id}">Delete</button>
-      </div>
-    `;
+//     // Create character entry HTML
+//     item.innerHTML = `
+//       <div class="character-info">
+//         <div class="character-primary-info">
+//           <span class="character-name">${character.name}</span>
+//           <span class="character-date">Saved on: ${savedDate}</span>
+//         </div>
+//         <div class="character-share-info">
+//           <span class="share-url-label">Share URL:</span>
+//           <a href="${shareUrl}" target="_blank" class="share-url-link" title="${shareUrl}">${displayUrl}</a>
+//         </div>
+//       </div>
+//       <div class="character-actions">
+//         <button class="load-character-btn" data-id="${character._id}">Load</button>
+//         <button class="copy-url-btn" data-url="${shareUrl}">Copy Link</button>
+//         <button class="delete-character-btn" data-id="${character._id}">Delete</button>
+//       </div>
+//     `;
     
-    // Add to list
-    list.appendChild(item);
-  });
+//     // Add to list
+//     list.appendChild(item);
+//   });
   
-  // Add list to container
-  charactersList.appendChild(list);
+//   // Add list to container
+//   charactersList.appendChild(list);
   
-  // Add event listeners to buttons
-  addCharacterButtonListeners();
+//   // Add event listeners to buttons
+//   addCharacterButtonListeners();
   
-  // Add event listeners to copy URL buttons
-  document.querySelectorAll(".copy-url-btn").forEach(button => {
-    button.addEventListener("click", function() {
-      const url = this.getAttribute("data-url");
-      navigator.clipboard.writeText(url)
-        .then(() => {
-          // Temporary visual feedback
-          const originalText = this.textContent;
-          this.textContent = "Copied!";
-          this.style.backgroundColor = "#27ae60";
-          setTimeout(() => {
-            this.textContent = originalText;
-            this.style.backgroundColor = "";
-          }, 1500);
-        })
-        .catch(err => {
-          console.error("Could not copy URL: ", err);
-          alert("Could not copy URL: " + err);
-        });
-    });
-  });
-}
+//   // Add event listeners to copy URL buttons
+//   document.querySelectorAll(".copy-url-btn").forEach(button => {
+//     button.addEventListener("click", function() {
+//       const url = this.getAttribute("data-url");
+//       navigator.clipboard.writeText(url)
+//         .then(() => {
+//           // Temporary visual feedback
+//           const originalText = this.textContent;
+//           this.textContent = "Copied!";
+//           this.style.backgroundColor = "#27ae60";
+//           setTimeout(() => {
+//             this.textContent = originalText;
+//             this.style.backgroundColor = "";
+//           }, 1500);
+//         })
+//         .catch(err => {
+//           console.error("Could not copy URL: ", err);
+//           alert("Could not copy URL: " + err);
+//         });
+//     });
+//   });
+// }
 
-// === Helper function to inspect responses ===
-// This helps diagnose issues with API responses
-
-
-function loadSavedCharacters() {
-  console.log("Loading saved characters");
-  
-  // Check if user is logged in
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.error("No token found, user not logged in");
-    return;
-  }
-  
-  // Show loading message
-  const charactersList = document.getElementById("savedCharactersList");
-  if (charactersList) {
-    charactersList.innerHTML = "<p>Loading saved characters...</p>";
-  }
-  
-  // Fetch characters from API
-  fetch(`${API_BASE_URL}/api/characters`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
-    }
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Error loading characters: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    if (data.success) {
-      displaySavedCharacters(data.characters);
-    } else {
-      throw new Error(data.message || "Unknown error loading characters");
-    }
-  })
-  .catch(error => {
-    console.error("Error loading saved characters:", error);
-    if (charactersList) {
-      charactersList.innerHTML = `<p class="error-message">Error loading characters: ${error.message}</p>`;
-    }
-  });
-}
-
-// Function to display saved characters
-function displaySavedCharacters(characters) {
-  console.log(`Displaying ${characters.length} saved characters`);
-  
-  const charactersList = document.getElementById("savedCharactersList");
-  if (!charactersList) {
-    console.error("savedCharactersList element not found");
-    return;
-  }
-  
-  // Clear previous content
-  charactersList.innerHTML = "";
-  
-  // If no characters, show message
-  if (!characters || characters.length === 0) {
-    charactersList.innerHTML = "<p>No saved characters found. Save your current character to see it here.</p>";
-    return;
-  }
-  
-  // Create list of characters
-  const list = document.createElement("ul");
-  list.className = "saved-characters-list";
-  
-  // Add each character to list
-  characters.forEach(character => {
-    const item = document.createElement("li");
-    item.className = "saved-character-item";
-    
-    // Format date
-    const savedDate = new Date(character.createdAt).toLocaleDateString();
-    
-    // Create character entry HTML
- const shareUrl = character.shareCode 
-      ? `https://pd2planner.net/${character.name}${character.shareCode}`
-      : null;
-    
- const displayUrl = `/${character.name}${character.shareCode}`;
-
-    // Create character entry HTML
-    item.innerHTML = `
-      <div class="character-info">
-        <div class="character-primary-info">
-          <span class="character-name">${character.name}</span>
-          <span class="character-date">Saved on: ${savedDate}</span>
-        </div>
-        <div class="character-share-info">
-          <span class="share-url-label">Share URL:</span>
-          <a href="${shareUrl}" target="_blank" class="share-url-link" title="${shareUrl}">${displayUrl}</a>
-        </div>
-      </div>
-      <div class="character-actions">
-        <button class="load-character-btn" data-id="${character._id}">Load</button>
-        <button class="copy-url-btn" data-url="${shareUrl}">Copy Link</button>
-        <button class="delete-character-btn" data-id="${character._id}">Delete</button>
-      </div>
-    `;
-    
-    // Add to list
-    list.appendChild(item);
-  });
-  
-  // Add list to container
-  charactersList.appendChild(list);
-  // Add event listeners to buttons
-  addCharacterButtonListeners();
-}
-
-  document.querySelectorAll(".copy-url-btn").forEach(button => {
-    button.addEventListener("click", function() {
-      const url = this.getAttribute("data-url");
-      navigator.clipboard.writeText(url)
-        .then(() => {
-          // Temporary visual feedback
-          const originalText = this.textContent;
-          this.textContent = "Copied!";
-          this.style.backgroundColor = "#27ae60";
-          setTimeout(() => {
-            this.textContent = originalText;
-            this.style.backgroundColor = "";
-          }, 1500);
-        })
-        .catch(err => {
-          console.error("Could not copy URL: ", err);
-          alert("Could not copy URL: " + err);
-        });
-    });
-  });
+// // === Helper function to inspect responses ===
+// // This helps diagnose issues with API responses
 
 
-function addShareUrlStyles() {
-  const styleExists = document.getElementById("share-url-styles");
-  if (styleExists) return;
+// function loadSavedCharacters() {
+//   console.log("Loading saved characters");
   
-  const style = document.createElement("style");
-  style.id = "share-url-styles";
-  style.textContent = `
-    .share-url {
-      font-size: 0.8em;
-      color: #aaa;
-      margin-top: 4px;
-    }
-    
-    .share-url a {
-      color: #3498db;
-      text-decoration: none;
-    }
-    
-    .share-url a:hover {
-      text-decoration: underline;
-    }
-    
-    .copy-url-btn {
-      padding: 5px 10px;
-      background-color: green;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    
-    .copy-url-btn:hover {
-      background-color: #2980b9;
-    }
-  `;
+//   // Check if user is logged in
+//   const token = localStorage.getItem("token");
+//   if (!token) {
+//     console.error("No token found, user not logged in");
+//     return;
+//   }
   
-  document.head.appendChild(style);
-}
+//   // Show loading message
+//   const charactersList = document.getElementById("savedCharactersList");
+//   if (charactersList) {
+//     charactersList.innerHTML = "<p>Loading saved characters...</p>";
+//   }
+  
+//   // Fetch characters from API
+//   fetch(`${API_BASE_URL}/api/characters`, {
+//     method: "GET",
+//     headers: {
+//       "Authorization": `Bearer ${token}`,
+//       "Content-Type": "application/json"
+//     }
+//   })
+//   .then(response => {
+//     if (!response.ok) {
+//       throw new Error(`Error loading characters: ${response.status}`);
+//     }
+//     return response.json();
+//   })
+//   .then(data => {
+//     if (data.success) {
+//       displaySavedCharacters(data.characters);
+//     } else {
+//       throw new Error(data.message || "Unknown error loading characters");
+//     }
+//   })
+//   .catch(error => {
+//     console.error("Error loading saved characters:", error);
+//     if (charactersList) {
+//       charactersList.innerHTML = `<p class="error-message">Error loading characters: ${error.message}</p>`;
+//     }
+//   });
+// }
 
-// Call this in your initialization
-function initShareUrlFeature() {
-  addShareUrlStyles();
-}
-
-// Add to your existing initialization
-document.addEventListener("DOMContentLoaded", function() {
-  initShareUrlFeature();
-});
-
-// Add event listeners to load and delete buttons
-function addCharacterButtonListeners() {
-  // Add load button listeners
-  document.querySelectorAll(".load-character-btn").forEach(button => {
-    button.addEventListener("click", function() {
-      const characterId = this.getAttribute("data-id");
-      loadCharacter(characterId);
-    });
-  });
+// // Function to display saved characters
+// function displaySavedCharacters(characters) {
+//   console.log(`Displaying ${characters.length} saved characters`);
   
-  // Add delete button listeners
-  document.querySelectorAll(".delete-character-btn").forEach(button => {
-    button.addEventListener("click", function() {
-      const characterId = this.getAttribute("data-id");
-      deleteCharacter(characterId);
-    });
-  });
-}
-
-// Function to load a character
-function loadCharacter(characterId) {
-  console.log("Loading character:", characterId);
+//   const charactersList = document.getElementById("savedCharactersList");
+//   if (!charactersList) {
+//     console.error("savedCharactersList element not found");
+//     return;
+//   }
   
-  // Confirm before loading
-  if (!confirm("Loading this character will replace your current build. Continue?")) {
-    return;
-  }
+//   // Clear previous content
+//   charactersList.innerHTML = "";
   
-  // Check if user is logged in
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("You must be logged in to load characters.");
-    return;
-  }
+//   // If no characters, show message
+//   if (!characters || characters.length === 0) {
+//     charactersList.innerHTML = "<p>No saved characters found. Save your current character to see it here.</p>";
+//     return;
+//   }
   
-  // Fetch character from API
-  fetch(`${API_BASE_URL}/api/characters/${characterId}`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
-    }
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Error loading character: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    if (data.success) {
-      applyCharacterState(data.character.state);
-      alert(`Character "${data.character.name}" loaded successfully!`);
-    } else {
-      throw new Error(data.message || "Unknown error loading character");
-    }
-  })
-  .catch(error => {
-    console.error("Error loading character:", error);
-    alert(`Error loading character: ${error.message}`);
-  });
-}
-
-// Function to apply character state to the UI
-function applyCharacterState(state) {
-  console.log("Applying character state with explicit skills");
+//   // Create list of characters
+//   const list = document.createElement("ul");
+//   list.className = "saved-characters-list";
   
-  // Apply regular properties (except skills)
-  Object.keys(state).forEach(key => {
-    // Skip skills object, we'll handle it separately
-    if (key === "skills") return;
+//   // Add each character to list
+//   characters.forEach(character => {
+//     const item = document.createElement("li");
+//     item.className = "saved-character-item";
     
-    const element = document.getElementById(key);
-    if (element) {
-      if (element.tagName === "SELECT") {
-        element.value = state[key];
-        // Trigger change event
-        const event = new Event("change");
-        element.dispatchEvent(event);
-      } else if (element.tagName === "INPUT") {
-        element.value = state[key];
-        // Trigger input event
-        const event = new Event("input");
-        element.dispatchEvent(event);
-      } else {
-        // For non-input elements (like stats)
-        element.textContent = state[key];
-      }
-    }
-  });
+//     // Format date
+//     const savedDate = new Date(character.createdAt).toLocaleDateString();
+    
+//     // Create character entry HTML
+//  const shareUrl = character.shareCode 
+//       ? `https://pd2planner.net/${character.name}${character.shareCode}`
+//       : null;
+    
+//  const displayUrl = `/${character.name}${character.shareCode}`;
+
+//     // Create character entry HTML
+//     item.innerHTML = `
+//       <div class="character-info">
+//         <div class="character-primary-info">
+//           <span class="character-name">${character.name}</span>
+//           <span class="character-date">Saved on: ${savedDate}</span>
+//         </div>
+//         <div class="character-share-info">
+//           <span class="share-url-label">Share URL:</span>
+//           <a href="${shareUrl}" target="_blank" class="share-url-link" title="${shareUrl}">${displayUrl}</a>
+//         </div>
+//       </div>
+//       <div class="character-actions">
+//         <button class="load-character-btn" data-id="${character._id}">Load</button>
+//         <button class="copy-url-btn" data-url="${shareUrl}">Copy Link</button>
+//         <button class="delete-character-btn" data-id="${character._id}">Delete</button>
+//       </div>
+//     `;
+    
+//     // Add to list
+//     list.appendChild(item);
+//   });
   
-  // Now apply skills if they exist
-  if (state.skills) {
-    Object.keys(state.skills).forEach(skillId => {
-      const element = document.getElementById(skillId);
-      if (element) {
-        if (element.tagName === "SELECT") {
-          element.value = state.skills[skillId];
-          // Trigger change event
-          const event = new Event("change");
-          element.dispatchEvent(event);
-        } else if (element.tagName === "INPUT") {
-          element.value = state.skills[skillId];
-          // Trigger input event
-          const event = new Event("input");
-          element.dispatchEvent(event);
-        } else {
-          // For non-input elements
-          element.textContent = state.skills[skillId];
-        }
-      }
-    });
-  }
-  
-  // Set character level if available
-  if (state.characterLevel && typeof characterLevel !== "undefined") {
-    characterLevel = state.characterLevel;
-  }
-  
-  // Refresh character display if function exists
-  if (typeof updateCharacter === "function") {
-    updateCharacter();
-  }
-}
+//   // Add list to container
+//   charactersList.appendChild(list);
+//   // Add event listeners to buttons
+//   addCharacterButtonListeners();
+// }
+
+//   document.querySelectorAll(".copy-url-btn").forEach(button => {
+//     button.addEventListener("click", function() {
+//       const url = this.getAttribute("data-url");
+//       navigator.clipboard.writeText(url)
+//         .then(() => {
+//           // Temporary visual feedback
+//           const originalText = this.textContent;
+//           this.textContent = "Copied!";
+//           this.style.backgroundColor = "#27ae60";
+//           setTimeout(() => {
+//             this.textContent = originalText;
+//             this.style.backgroundColor = "";
+//           }, 1500);
+//         })
+//         .catch(err => {
+//           console.error("Could not copy URL: ", err);
+//           alert("Could not copy URL: " + err);
+//         });
+//     });
+//   });
 
 
-// Function to delete a character
-function deleteCharacter(characterId) {
-  console.log("Deleting character:", characterId);
+// function addShareUrlStyles() {
+//   const styleExists = document.getElementById("share-url-styles");
+//   if (styleExists) return;
   
-  // Confirm before deleting
-  if (!confirm("Are you sure you want to delete this character? This cannot be undone.")) {
-    return;
-  }
+//   const style = document.createElement("style");
+//   style.id = "share-url-styles";
+//   style.textContent = `
+//     .share-url {
+//       font-size: 0.8em;
+//       color: #aaa;
+//       margin-top: 4px;
+//     }
+    
+//     .share-url a {
+//       color: #3498db;
+//       text-decoration: none;
+//     }
+    
+//     .share-url a:hover {
+//       text-decoration: underline;
+//     }
+    
+//     .copy-url-btn {
+//       padding: 5px 10px;
+//       background-color: green;
+//       color: white;
+//       border: none;
+//       border-radius: 3px;
+//       cursor: pointer;
+//     }
+    
+//     .copy-url-btn:hover {
+//       background-color: #2980b9;
+//     }
+//   `;
   
-  // Check if user is logged in
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("You must be logged in to delete characters.");
-    return;
-  }
-  
-  // Delete character from API
-  fetch(`${API_BASE_URL}/api/characters/${characterId}`, {
-    method: "DELETE",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
-    }
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Error deleting character: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    if (data.success) {
-      alert("Character deleted successfully!");
-      // Reload character list
-      loadSavedCharacters();
-    } else {
-      throw new Error(data.message || "Unknown error deleting character");
-    }
-  })
-  .catch(error => {
-    console.error("Error deleting character:", error);
-    alert(`Error deleting character: ${error.message}`);
-  });
-}
+//   document.head.appendChild(style);
+// }
 
-// Add styles for the character list
-function addCharacterStyles() {
-  // Check if styles are already added
-  if (document.getElementById("character-list-styles")) {
-    return;
-  }
-  
-  // Create style element
-  const style = document.createElement("style");
-  style.id = "character-list-styles";
-  style.textContent = `
-    .saved-characters-container {
-      margin-top: 20px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    
-    .saved-characters-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    
-    .saved-character-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px;
-      margin-bottom: 8px;
-      background-color: #333;
-      border-radius: 4px;
-      border-left: 3px solid #e74c3c;
-    }
-    
-    .character-info {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .character-name {
-      font-weight: bold;
-      color: #eee;
-      margin-bottom: 4px;
-    }
-    
-    .character-date {
-      font-size: 0.8em;
-      color: #aaa;
-    }
-    
-    .character-actions {
-      display: flex;
-      gap: 8px;
-    }
-    
-    .load-character-btn {
-      padding: 5px 10px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    
-    .load-character-btn:hover {
-      background-color: #2980b9;
-    }
-    
-    .delete-character-btn {
-      padding: 5px 10px;
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    
-    .delete-character-btn:hover {
-      background-color: #c0392b;
-    }
-    
-    .error-message {
-      color: #e74c3c;
-      padding: 10px;
-      background-color: rgba(231, 76, 60, 0.1);
-      border-radius: 4px;
-      border-left: 3px solid #e74c3c;
-    }
-  `;
-  
-  // Add to document
-  document.head.appendChild(style);
-  console.log("Character list styles added");
-}
+// // Call this in your initialization
+// function initShareUrlFeature() {
+//   addShareUrlStyles();
+// }
 
-// Initialize system - add this to your page load logic
-function initCharacterSystem() {
-  console.log("Initializing character system");
+// // Add to your existing initialization
+// document.addEventListener("DOMContentLoaded", function() {
+//   initShareUrlFeature();
+// });
+
+// // Add event listeners to load and delete buttons
+// function addCharacterButtonListeners() {
+//   // Add load button listeners
+//   document.querySelectorAll(".load-character-btn").forEach(button => {
+//     button.addEventListener("click", function() {
+//       const characterId = this.getAttribute("data-id");
+//       loadCharacter(characterId);
+//     });
+//   });
   
-  // Add styles
-  addCharacterStyles();
+//   // Add delete button listeners
+//   document.querySelectorAll(".delete-character-btn").forEach(button => {
+//     button.addEventListener("click", function() {
+//       const characterId = this.getAttribute("data-id");
+//       deleteCharacter(characterId);
+//     });
+//   });
+// }
+
+// // Function to load a character
+// function loadCharacter(characterId) {
+//   console.log("Loading character:", characterId);
   
-  // Load saved characters if on the characters tab
-  if (document.getElementById("charactersTab") && 
-      document.getElementById("charactersTab").classList.contains("active")) {
-    loadSavedCharacters();
-  }
+//   // Confirm before loading
+//   if (!confirm("Loading this character will replace your current build. Continue?")) {
+//     return;
+//   }
   
-  // Add click listener to saveCharacterButton if not already added
-  const saveButton = document.getElementById("saveCharacterButton");
-  if (saveButton) {
-    // Remove existing listeners to avoid duplicates
-    const newButton = saveButton.cloneNode(true);
-    saveButton.parentNode.replaceChild(newButton, saveButton);
+//   // Check if user is logged in
+//   const token = localStorage.getItem("token");
+//   if (!token) {
+//     alert("You must be logged in to load characters.");
+//     return;
+//   }
+  
+//   // Fetch character from API
+//   fetch(`${API_BASE_URL}/api/characters/${characterId}`, {
+//     method: "GET",
+//     headers: {
+//       "Authorization": `Bearer ${token}`,
+//       "Content-Type": "application/json"
+//     }
+//   })
+//   .then(response => {
+//     if (!response.ok) {
+//       throw new Error(`Error loading character: ${response.status}`);
+//     }
+//     return response.json();
+//   })
+//   .then(data => {
+//     if (data.success) {
+//       applyCharacterState(data.character.state);
+//       alert(`Character "${data.character.name}" loaded successfully!`);
+//     } else {
+//       throw new Error(data.message || "Unknown error loading character");
+//     }
+//   })
+//   .catch(error => {
+//     console.error("Error loading character:", error);
+//     alert(`Error loading character: ${error.message}`);
+//   });
+// }
+
+// // Function to apply character state to the UI
+// function applyCharacterState(state) {
+//   console.log("Applying character state with explicit skills");
+  
+//   // Apply regular properties (except skills)
+//   Object.keys(state).forEach(key => {
+//     // Skip skills object, we'll handle it separately
+//     if (key === "skills") return;
     
-    // Add new listener
-    newButton.addEventListener("click", function(event) {
-      event.preventDefault();
-      saveCharacter();
-    });
-  }
+//     const element = document.getElementById(key);
+//     if (element) {
+//       if (element.tagName === "SELECT") {
+//         element.value = state[key];
+//         // Trigger change event
+//         const event = new Event("change");
+//         element.dispatchEvent(event);
+//       } else if (element.tagName === "INPUT") {
+//         element.value = state[key];
+//         // Trigger input event
+//         const event = new Event("input");
+//         element.dispatchEvent(event);
+//       } else {
+//         // For non-input elements (like stats)
+//         element.textContent = state[key];
+//       }
+//     }
+//   });
   
-  // Update showTab function to load characters when tab is shown
-  if (typeof window.originalShowTab !== "function") {
-    window.originalShowTab = window.showTab || function() {};
+//   // Now apply skills if they exist
+//   if (state.skills) {
+//     Object.keys(state.skills).forEach(skillId => {
+//       const element = document.getElementById(skillId);
+//       if (element) {
+//         if (element.tagName === "SELECT") {
+//           element.value = state.skills[skillId];
+//           // Trigger change event
+//           const event = new Event("change");
+//           element.dispatchEvent(event);
+//         } else if (element.tagName === "INPUT") {
+//           element.value = state.skills[skillId];
+//           // Trigger input event
+//           const event = new Event("input");
+//           element.dispatchEvent(event);
+//         } else {
+//           // For non-input elements
+//           element.textContent = state.skills[skillId];
+//         }
+//       }
+//     });
+//   }
+  
+//   // Set character level if available
+//   if (state.characterLevel && typeof characterLevel !== "undefined") {
+//     characterLevel = state.characterLevel;
+//   }
+  
+//   // Refresh character display if function exists
+//   if (typeof updateCharacter === "function") {
+//     updateCharacter();
+//   }
+// }
+
+
+// // Function to delete a character
+// function deleteCharacter(characterId) {
+//   console.log("Deleting character:", characterId);
+  
+//   // Confirm before deleting
+//   if (!confirm("Are you sure you want to delete this character? This cannot be undone.")) {
+//     return;
+//   }
+  
+//   // Check if user is logged in
+//   const token = localStorage.getItem("token");
+//   if (!token) {
+//     alert("You must be logged in to delete characters.");
+//     return;
+//   }
+  
+//   // Delete character from API
+//   fetch(`${API_BASE_URL}/api/characters/${characterId}`, {
+//     method: "DELETE",
+//     headers: {
+//       "Authorization": `Bearer ${token}`,
+//       "Content-Type": "application/json"
+//     }
+//   })
+//   .then(response => {
+//     if (!response.ok) {
+//       throw new Error(`Error deleting character: ${response.status}`);
+//     }
+//     return response.json();
+//   })
+//   .then(data => {
+//     if (data.success) {
+//       alert("Character deleted successfully!");
+//       // Reload character list
+//       loadSavedCharacters();
+//     } else {
+//       throw new Error(data.message || "Unknown error deleting character");
+//     }
+//   })
+//   .catch(error => {
+//     console.error("Error deleting character:", error);
+//     alert(`Error deleting character: ${error.message}`);
+//   });
+// }
+
+// // Add styles for the character list
+// function addCharacterStyles() {
+//   // Check if styles are already added
+//   if (document.getElementById("character-list-styles")) {
+//     return;
+//   }
+  
+//   // Create style element
+//   const style = document.createElement("style");
+//   style.id = "character-list-styles";
+//   style.textContent = `
+//     .saved-characters-container {
+//       margin-top: 20px;
+//       max-height: 400px;
+//       overflow-y: auto;
+//     }
     
-    window.showTab = function(tabName) {
-      window.originalShowTab(tabName);
+//     .saved-characters-list {
+//       list-style: none;
+//       padding: 0;
+//       margin: 0;
+//     }
+    
+//     .saved-character-item {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: center;
+//       padding: 12px;
+//       margin-bottom: 8px;
+//       background-color: #333;
+//       border-radius: 4px;
+//       border-left: 3px solid #e74c3c;
+//     }
+    
+//     .character-info {
+//       display: flex;
+//       flex-direction: column;
+//     }
+    
+//     .character-name {
+//       font-weight: bold;
+//       color: #eee;
+//       margin-bottom: 4px;
+//     }
+    
+//     .character-date {
+//       font-size: 0.8em;
+//       color: #aaa;
+//     }
+    
+//     .character-actions {
+//       display: flex;
+//       gap: 8px;
+//     }
+    
+//     .load-character-btn {
+//       padding: 5px 10px;
+//       background-color: #3498db;
+//       color: white;
+//       border: none;
+//       border-radius: 3px;
+//       cursor: pointer;
+//     }
+    
+//     .load-character-btn:hover {
+//       background-color: #2980b9;
+//     }
+    
+//     .delete-character-btn {
+//       padding: 5px 10px;
+//       background-color: #e74c3c;
+//       color: white;
+//       border: none;
+//       border-radius: 3px;
+//       cursor: pointer;
+//     }
+    
+//     .delete-character-btn:hover {
+//       background-color: #c0392b;
+//     }
+    
+//     .error-message {
+//       color: #e74c3c;
+//       padding: 10px;
+//       background-color: rgba(231, 76, 60, 0.1);
+//       border-radius: 4px;
+//       border-left: 3px solid #e74c3c;
+//     }
+//   `;
+  
+//   // Add to document
+//   document.head.appendChild(style);
+//   console.log("Character list styles added");
+// }
+
+// // Initialize system - add this to your page load logic
+// function initCharacterSystem() {
+//   console.log("Initializing character system");
+  
+//   // Add styles
+//   addCharacterStyles();
+  
+//   // Load saved characters if on the characters tab
+//   if (document.getElementById("charactersTab") && 
+//       document.getElementById("charactersTab").classList.contains("active")) {
+//     loadSavedCharacters();
+//   }
+  
+//   // Add click listener to saveCharacterButton if not already added
+//   const saveButton = document.getElementById("saveCharacterButton");
+//   if (saveButton) {
+//     // Remove existing listeners to avoid duplicates
+//     const newButton = saveButton.cloneNode(true);
+//     saveButton.parentNode.replaceChild(newButton, saveButton);
+    
+//     // Add new listener
+//     newButton.addEventListener("click", function(event) {
+//       event.preventDefault();
+//       saveCharacter();
+//     });
+//   }
+  
+//   // Update showTab function to load characters when tab is shown
+//   if (typeof window.originalShowTab !== "function") {
+//     window.originalShowTab = window.showTab || function() {};
+    
+//     window.showTab = function(tabName) {
+//       window.originalShowTab(tabName);
       
-      if (tabName === "characters") {
-        loadSavedCharacters();
-      }
-    };
-  }
-}
+//       if (tabName === "characters") {
+//         loadSavedCharacters();
+//       }
+//     };
+//   }
+// }
 
-// Make functions available globally
-window.loadSavedCharacters = loadSavedCharacters;
-window.displaySavedCharacters = displaySavedCharacters;
-window.loadCharacter = loadCharacter;
-window.deleteCharacter = deleteCharacter;
-window.applyCharacterState = applyCharacterState;
+// // Make functions available globally
+// window.loadSavedCharacters = loadSavedCharacters;
+// window.displaySavedCharacters = displaySavedCharacters;
+// window.loadCharacter = loadCharacter;
+// window.deleteCharacter = deleteCharacter;
+// window.applyCharacterState = applyCharacterState;
 
-// Initialize on page load
-document.addEventListener("DOMContentLoaded", initCharacterSystem);
+// // Initialize on page load
+// document.addEventListener("DOMContentLoaded", initCharacterSystem);
 
-// If page is already loaded, initialize now
-if (document.readyState === "complete" || document.readyState === "interactive") {
-  initCharacterSystem();
-}
+// // If page is already loaded, initialize now
+// if (document.readyState === "complete" || document.readyState === "interactive") {
+//   initCharacterSystem();
+// }
 
 
-document.addEventListener("DOMContentLoaded", function() {
-  // Get the path from the URL
-  const path = window.location.pathname;
+// document.addEventListener("DOMContentLoaded", function() {
+//   // Get the path from the URL
+//   const path = window.location.pathname;
   
-  // Skip if it's just the root path
-  if (path === "/" || path === "") return;
+//   // Skip if it's just the root path
+//   if (path === "/" || path === "") return;
   
-  // Check if this is potentially a shared character URL
-  const match = path.match(/^\/([A-Za-z]{2,13})([0-9a-f]{6})$/);
-  if (match) {
-    const characterName = match[1];
-    const shareCode = match[2];
+//   // Check if this is potentially a shared character URL
+//   const match = path.match(/^\/([A-Za-z]{2,13})([0-9a-f]{6})$/);
+//   if (match) {
+//     const characterName = match[1];
+//     const shareCode = match[2];
     
-    console.log("Detected shared character URL:", characterName, shareCode);
+//     console.log("Detected shared character URL:", characterName, shareCode);
     
-    // Load the shared character
-    loadSharedCharacter(characterName, shareCode);
-  }
-});
+//     // Load the shared character
+//     loadSharedCharacter(characterName, shareCode);
+//   }
+// });
 
-// Function to load a shared character
-function loadSharedCharacter(name, shareCode) {
-  console.log("Loading shared character:", name, shareCode);
+// // Function to load a shared character
+// function loadSharedCharacter(name, shareCode) {
+//   console.log("Loading shared character:", name, shareCode);
   
-  // Show loading message
-  const loadingMessage = document.createElement("div");
-  loadingMessage.id = "shared-character-loading";
-  loadingMessage.className = "shared-character-message";
-  loadingMessage.innerHTML = `
-    <div class="loading-overlay">
-      <div class="loading-content">
-        <h2>Loading Shared Character</h2>
-        <p>Loading ${name}...</p>
-        <div class="loading-spinner"></div>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(loadingMessage);
+//   // Show loading message
+//   const loadingMessage = document.createElement("div");
+//   loadingMessage.id = "shared-character-loading";
+//   loadingMessage.className = "shared-character-message";
+//   loadingMessage.innerHTML = `
+//     <div class="loading-overlay">
+//       <div class="loading-content">
+//         <h2>Loading Shared Character</h2>
+//         <p>Loading ${name}...</p>
+//         <div class="loading-spinner"></div>
+//       </div>
+//     </div>
+//   `;
+//   document.body.appendChild(loadingMessage);
   
-  // Fetch shared character from API
-  fetch(`${API_BASE_URL}/api/shared-character/${name}/${shareCode}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data.success) {
-        // Apply the character state
-        applyCharacterState(data.character.state);
+//   // Fetch shared character from API
+//   fetch(`${API_BASE_URL}/api/shared-character/${name}/${shareCode}`)
+//     .then(response => {
+//       if (!response.ok) {
+//         throw new Error(`Error ${response.status}: ${response.statusText}`);
+//       }
+//       return response.json();
+//     })
+//     .then(data => {
+//       if (data.success) {
+//         // Apply the character state
+//         applyCharacterState(data.character.state);
         
-        // Remove loading message
-        document.body.removeChild(loadingMessage);
+//         // Remove loading message
+//         document.body.removeChild(loadingMessage);
         
-        // Show success message
-        showSharedCharacterBanner(data.character.name);
-      } else {
-        throw new Error(data.message || "Failed to load character");
-      }
-    })
-    .catch(error => {
-      console.error("Error loading shared character:", error);
+//         // Show success message
+//         showSharedCharacterBanner(data.character.name);
+//       } else {
+//         throw new Error(data.message || "Failed to load character");
+//       }
+//     })
+//     .catch(error => {
+//       console.error("Error loading shared character:", error);
       
-      // Update loading message to show error
-      loadingMessage.innerHTML = `
-        <div class="loading-overlay">
-          <div class="loading-content error">
-            <h2>Error Loading Character</h2>
-            <p>${error.message}</p>
-            <button onclick="this.parentNode.parentNode.parentNode.remove()">Close</button>
-          </div>
-        </div>
-      `;
-    });
-}
+//       // Update loading message to show error
+//       loadingMessage.innerHTML = `
+//         <div class="loading-overlay">
+//           <div class="loading-content error">
+//             <h2>Error Loading Character</h2>
+//             <p>${error.message}</p>
+//             <button onclick="this.parentNode.parentNode.parentNode.remove()">Close</button>
+//           </div>
+//         </div>
+//       `;
+//     });
+// }
 
-// Function to show a banner when a shared character is loaded
-function showSharedCharacterBanner(characterName) {
-  const banner = document.createElement("div");
-  banner.className = "shared-character-banner";
-  banner.innerHTML = `
-    <div class="banner-content">
-      <span>Viewing shared character: <strong>${characterName}</strong></span>
-      <button class="save-copy-btn">Save a Copy</button>
-      <button class="close-banner-btn">×</button>
-    </div>
-  `;
+// // Function to show a banner when a shared character is loaded
+// function showSharedCharacterBanner(characterName) {
+//   const banner = document.createElement("div");
+//   banner.className = "shared-character-banner";
+//   banner.innerHTML = `
+//     <div class="banner-content">
+//       <span>Viewing shared character: <strong>${characterName}</strong></span>
+//       <button class="save-copy-btn">Save a Copy</button>
+//       <button class="close-banner-btn">×</button>
+//     </div>
+//   `;
   
-  document.body.appendChild(banner);
+//   document.body.appendChild(banner);
   
-  // Add event listener to close button
-  banner.querySelector(".close-banner-btn").addEventListener("click", function() {
-    banner.remove();
-  });
+//   // Add event listener to close button
+//   banner.querySelector(".close-banner-btn").addEventListener("click", function() {
+//     banner.remove();
+//   });
   
-  // Add event listener to save copy button
-  banner.querySelector(".save-copy-btn").addEventListener("click", function() {
-    saveCharacter();
-  });
+//   // Add event listener to save copy button
+//   banner.querySelector(".save-copy-btn").addEventListener("click", function() {
+//     saveCharacter();
+//   });
   
-  // Auto-hide banner after 10 seconds
-  setTimeout(() => {
-    if (document.body.contains(banner)) {
-      banner.style.opacity = "0";
-      setTimeout(() => banner.remove(), 500);
-    }
-  }, 10000);
-}
+//   // Auto-hide banner after 10 seconds
+//   setTimeout(() => {
+//     if (document.body.contains(banner)) {
+//       banner.style.opacity = "0";
+//       setTimeout(() => banner.remove(), 500);
+//     }
+//   }, 10000);
+// }
 
-// Add styles for shared character UI
-function addSharedCharacterStyles() {
-  const styleExists = document.getElementById("shared-character-styles");
-  if (styleExists) return;
+// // Add styles for shared character UI
+// function addSharedCharacterStyles() {
+//   const styleExists = document.getElementById("shared-character-styles");
+//   if (styleExists) return;
   
-  const style = document.createElement("style");
-  style.id = "shared-character-styles";
-  style.textContent = `
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+//   const style = document.createElement("style");
+//   style.id = "shared-character-styles";
+//   style.textContent = `
+//     .loading-overlay {
+//       position: fixed;
+//       top: 0;
+//       left: 0;
+//       width: 100%;
+//       height: 100%;
+//       background-color: rgba(0, 0, 0, 0.7);
+//       z-index: 1000;
+//       display: flex;
+//       justify-content: center;
+//       align-items: center;
+//     }
     
-    .loading-content {
-      background-color: #333;
-      border-radius: 5px;
-      padding: 20px;
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      color: #eee;
-    }
+//     .loading-content {
+//       background-color: #333;
+//       border-radius: 5px;
+//       padding: 20px;
+//       text-align: center;
+//       max-width: 400px;
+//       width: 90%;
+//       color: #eee;
+//     }
     
-    .loading-content.error {
-      border-left: 4px solid #e74c3c;
-    }
+//     .loading-content.error {
+//       border-left: 4px solid #e74c3c;
+//     }
     
-    .loading-content h2 {
-      margin-top: 0;
-    }
+//     .loading-content h2 {
+//       margin-top: 0;
+//     }
     
-    .loading-spinner {
-      border: 4px solid #555;
-      border-top: 4px solid #e74c3c;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      margin: 20px auto;
-      animation: spin 1s linear infinite;
-    }
+//     .loading-spinner {
+//       border: 4px solid #555;
+//       border-top: 4px solid #e74c3c;
+//       border-radius: 50%;
+//       width: 40px;
+//       height: 40px;
+//       margin: 20px auto;
+//       animation: spin 1s linear infinite;
+//     }
     
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+//     @keyframes spin {
+//       0% { transform: rotate(0deg); }
+//       100% { transform: rotate(360deg); }
+//     }
     
-    .loading-content button {
-      padding: 8px 15px;
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+//     .loading-content button {
+//       padding: 8px 15px;
+//       background-color: #e74c3c;
+//       color: white;
+//       border: none;
+//       border-radius: 3px;
+//       cursor: pointer;
+//       margin-top: 10px;
+//     }
     
-    .shared-character-banner {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #2ecc71;
-      color: white;
-      border-radius: 4px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      z-index: 100;
-      transition: opacity 0.5s ease;
-    }
+//     .shared-character-banner {
+//       position: fixed;
+//       top: 20px;
+//       left: 50%;
+//       transform: translateX(-50%);
+//       background-color: #2ecc71;
+//       color: white;
+//       border-radius: 4px;
+//       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+//       z-index: 100;
+//       transition: opacity 0.5s ease;
+//     }
     
-    .banner-content {
-      display: flex;
-      align-items: center;
-      padding: 12px 15px;
-    }
+//     .banner-content {
+//       display: flex;
+//       align-items: center;
+//       padding: 12px 15px;
+//     }
     
-    .save-copy-btn {
-      margin-left: 15px;
-      padding: 5px 10px;
-      background-color: white;
-      color: #2ecc71;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+//     .save-copy-btn {
+//       margin-left: 15px;
+//       padding: 5px 10px;
+//       background-color: white;
+//       color: #2ecc71;
+//       border: none;
+//       border-radius: 3px;
+//       cursor: pointer;
+//       font-weight: bold;
+//     }
     
-    .close-banner-btn {
-      margin-left: 10px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-      opacity: 0.7;
-    }
+//     .close-banner-btn {
+//       margin-left: 10px;
+//       background: none;
+//       border: none;
+//       color: white;
+//       font-size: 20px;
+//       cursor: pointer;
+//       opacity: 0.7;
+//     }
     
-    .close-banner-btn:hover {
-      opacity: 1;
-    }
-  `;
+//     .close-banner-btn:hover {
+//       opacity: 1;
+//     }
+//   `;
   
-  document.head.appendChild(style);
-}
+//   document.head.appendChild(style);
+// }
 
-// Initialize shared character feature
-function initSharedCharacterFeature() {
-  addSharedCharacterStyles();
-}
+// // Initialize shared character feature
+// function initSharedCharacterFeature() {
+//   addSharedCharacterStyles();
+// }
 
-// Add to your existing initialization
-document.addEventListener("DOMContentLoaded", function() {
-  initSharedCharacterFeature();
-});
+// // Add to your existing initialization
+// document.addEventListener("DOMContentLoaded", function() {
+//   initSharedCharacterFeature();
+// });
+
+
+
+
+// Simple initialization to ensure socket system works
+(function() {
+    console.log('Running simple socket initialization...');
+    
+    // Wait a bit for all scripts to load
+    setTimeout(function() {
+        // 1. Make sure socket containers exist
+        const socketContainers = document.querySelectorAll('.helmsockets, .armorsockets, .weaponsockets, .shieldsockets');
+        console.log('Found socket containers:', socketContainers.length);
+        
+        // 2. Initialize empty sockets if they don't exist
+        socketContainers.forEach(container => {
+            if (container.children.length === 0) {
+                // Add 2 empty sockets to each container
+                for (let i = 0; i < 2; i++) {
+                    const socket = document.createElement('div');
+                    socket.className = 'socketz empty';
+                    socket.dataset.section = container.className.replace('sockets', '');
+                    socket.dataset.index = i;
+                    container.appendChild(socket);
+                }
+            }
+        });
+        
+        // 3. Make sockets clickable
+        document.querySelectorAll('.socketz').forEach(socket => {
+            // Remove any existing handlers
+            socket.onclick = null;
+            socket.oncontextmenu = null;
+            
+            // Add new handlers
+            socket.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log('Socket clicked:', this.dataset.section, this.dataset.index);
+                window.currentSocket = this;
+                
+                // Try to show modal
+                const modal = document.getElementById('socketModal');
+                if (modal) {
+                    modal.style.display = 'block';
+                    modal.classList.remove('hidden');
+                }
+            });
+            
+            socket.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                console.log('Socket right-clicked');
+                
+                // Clear the socket
+                this.classList.remove('filled');
+                this.classList.add('empty');
+                this.innerHTML = '';
+                delete this.dataset.itemName;
+                delete this.dataset.stats;
+                
+                // Update stats
+                const updateFunctions = [
+                    'refreshSocketProperties',
+                    'updateSocketInfo',
+                    'updateAllSocketStats'
+                ];
+                
+                updateFunctions.forEach(funcName => {
+                    if (typeof window[funcName] === 'function') {
+                        try {
+                            if (funcName === 'updateSocketInfo') {
+                                window[funcName](this.dataset.section);
+                            } else {
+                                window[funcName]();
+                            }
+                        } catch (e) {
+                            console.log('Error calling', funcName, e);
+                        }
+                    }
+                });
+            });
+        });
+        
+        // 4. Make socket items clickable
+        document.querySelectorAll('.socket-item').forEach(item => {
+            item.style.cursor = 'pointer';
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log('Socket item clicked');
+                
+                if (!window.currentSocket) {
+                    console.log('No socket selected');
+                    return;
+                }
+                
+                // Get item info
+                const itemName = this.dataset.gem || this.dataset.rune || this.dataset.jewel;
+                const imgElement = this.querySelector('img');
+                const statsElement = this.querySelector('.sock-stats');
+                
+                if (!itemName || !imgElement) {
+                    console.log('Missing item data');
+                    return;
+                }
+                
+                // Update socket
+                window.currentSocket.classList.remove('empty');
+                window.currentSocket.classList.add('filled');
+                
+                // Clone the image
+                const newImg = imgElement.cloneNode(true);
+                newImg.style.width = '100%';
+                newImg.style.height = '100%';
+                newImg.style.objectFit = 'contain';
+                
+                window.currentSocket.innerHTML = '';
+                window.currentSocket.appendChild(newImg);
+                
+                // Store stats
+                if (statsElement) {
+                    const section = window.currentSocket.dataset.section;
+                    const statLines = statsElement.querySelectorAll('div');
+                    let stats = '';
+                    
+                    statLines.forEach(line => {
+                        const text = line.textContent.trim();
+                        if (text.includes(section === 'weapon' ? 'Weapon:' : 
+                                       section === 'helm' ? 'Helm:' : 
+                                       section === 'armor' ? 'Armor:' : 
+                                       'Shield:')) {
+                            stats = text.split(':')[1].trim();
+                        }
+                    });
+                    
+                    window.currentSocket.dataset.itemName = itemName;
+                    window.currentSocket.dataset.stats = stats;
+                }
+                
+                // Close modal
+                const modal = document.getElementById('socketModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+                
+                // Update displays
+                console.log('Updating displays after socket fill');
+                ['refreshSocketProperties', 'updateSocketInfo', 'updateAllSocketStats'].forEach(funcName => {
+                    if (typeof window[funcName] === 'function') {
+                        try {
+                            if (funcName === 'updateSocketInfo') {
+                                window[funcName](window.currentSocket.dataset.section);
+                            } else {
+                                window[funcName]();
+                            }
+                        } catch (e) {
+                            console.log('Error calling', funcName, e);
+                        }
+                    }
+                });
+            });
+        });
+        
+        // 5. Setup modal close button
+        const closeBtn = document.querySelector('.socket-close');
+        if (closeBtn) {
+            closeBtn.onclick = function() {
+                const modal = document.getElementById('socketModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+                window.currentSocket = null;
+            };
+        }
+        
+        // 6. Setup category tabs
+        document.querySelectorAll('.socket-category-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // Update active states
+                document.querySelectorAll('.socket-category-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show/hide content
+                document.querySelectorAll('.socket-content').forEach(content => {
+                    if (content.dataset.category === category) {
+                        content.classList.add('active');
+                        content.style.display = 'block';
+                    } else {
+                        content.classList.remove('active');
+                        content.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        console.log('Socket system initialized');
+        
+    }, 500); // Wait 500ms for other scripts to load
+})();
+
+
 
 </script>
+
 
 
 

@@ -44,13 +44,14 @@ class SkillUpdates {
   }
 
   setupStatListeners() {
-    const statContainers = document.querySelectorAll('[id$="container"]');
-    statContainers.forEach((container) => {
-      container.addEventListener("DOMSubtreeModified", () => {
-        this.updateCritMultiplier();
-      });
+  const statContainers = document.querySelectorAll('[id$="container"]');
+  statContainers.forEach((container) => {
+    const observer = new MutationObserver(() => {
+      this.updateCritMultiplier();
     });
-  }
+    observer.observe(container, { childList: true, subtree: true });
+  });
+}
 
   setupJavelinMastery() {
     const javelinMasteryInput = document.getElementById(

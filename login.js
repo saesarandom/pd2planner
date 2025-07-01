@@ -41,15 +41,36 @@ function logout() {
     localStorage.removeItem('token');
 }
 
-// Example usage:
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+
+
+function initializeLoginForm() {
+    const loginForm = document.getElementById('loginForm');
     
-    const success = await login(email, password);
-    if (success) {
-        console.log('Logged in successfully');
-        // Redirect or update UI
-    }
-});
+    // Exit early if form doesn't exist
+    if (!loginForm) return;
+    
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        const success = await login(email, password);
+        if (success) {
+            console.log('Logged in successfully');
+        }
+    });
+}
+
+
+// Example usage:
+// document.getElementById('loginForm').addEventListener('submit', async (e) => {
+//     e.preventDefault();
+//     const email = document.getElementById('email').value;
+//     const password = document.getElementById('password').value;
+    
+//     const success = await login(email, password);
+//     if (success) {
+//         console.log('Logged in successfully');
+//         // Redirect or update UI
+//     }
+// });

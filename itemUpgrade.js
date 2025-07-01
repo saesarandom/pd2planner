@@ -2821,6 +2821,36 @@ function buildDescription(itemName, baseType, properties, magicalProps) {
   ].join("<br>");
 }
 
+
+function getSocketStats(socket) {
+  if (!socket.dataset.itemName || !socket.dataset.stats) {
+    return [];
+  }
+
+  let stats = [];
+  
+  try {
+    if (socket.dataset.itemName === "jewel") {
+      stats = JSON.parse(socket.dataset.stats);
+    } else {
+      // Get stats from items object
+      const itemStats = items[socket.dataset.itemName]?.weapon;
+      if (itemStats) {
+        // Handle multi-line stats properly
+        stats = itemStats
+          .split(/\n/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+    }
+  } catch (e) {
+    console.error("Error parsing socket stats:", e);
+  }
+
+  return Array.isArray(stats) ? stats : [stats];
+}
+
+
 function buildDescriptionWeapon(itemName, baseType, properties, magicalProps) {
   const damageType =
     properties.twohandmin !== undefined ? "Two-Hand" : "One-Hand";

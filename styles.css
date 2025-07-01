@@ -4035,3 +4035,13 @@ optgroup[label="Custom Crafted Items"] option {
     opacity: 1;
   }
 }
+
+/* Hide the duplicate socket modal completely */
+#socketModal {
+    display: none !important;
+}
+
+/* If you need to hide it only in certain conditions, use this instead: */
+.socketingmodal {
+    display: none !important;
+}
