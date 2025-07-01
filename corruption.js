@@ -2244,13 +2244,13 @@ function updateSocketInfo(section) {
 }
 
   // Update separate stats container
-  // console.log("DEBUG: The value of 'section' is:", section);
-  // const separateStatsId = {
-  //   helm: "helmsocketstats",
-  //   weapon: "weaponsocketstats",
-  //   armor: "armorsocketstats",
-  //   shield: "shieldsocketstats",
-  // }[section];
+  console.log("DEBUG: The value of 'section' is:", section);
+  const separateStatsId = {
+    helm: "helmsocketstats",
+    weapon: "weaponsocketstats",
+    armor: "armorsocketstats",
+    shield: "shieldsocketstats",
+  }[section];
 
 
 function mergeNumericStats(stats) {
