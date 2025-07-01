@@ -5,7 +5,7 @@
     <title>PD2 Character Planner</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="/icon.png">
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="72048bb5-a72a-4c78-9750-4c1c9a17e30c"></script>
+    <!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="72048bb5-a72a-4c78-9750-4c1c9a17e30c"></script> -->
     <script src="items.js"></script>
     <script src="itemUpgrade.js"></script>
     <script src="relativeLife.js"></script>
@@ -10064,11 +10064,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Fixed double img path:', img.src);
             }
             
-            // Fix localhost:3001 to localhost:3000
-            if (img.src.includes('localhost:3001')) {
-                img.src = img.src.replace('localhost:3001', 'localhost:3000');
-                console.log('Fixed port in image path:', img.src);
-            }
+            
         });
         
         console.log('Image path fixes applied');

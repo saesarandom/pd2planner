@@ -2213,6 +2213,7 @@ function updateSocketInfo(section) {
   }
 
   // ONLY update the separate stats container (not the main info container)
+  console.log("Section value:", section); // <--- ADD THIS LINE
   const separateStatsId = {
     helm: "helmsocketstats",
     weapon: "weaponsocketstats",
@@ -2243,12 +2244,13 @@ function updateSocketInfo(section) {
 }
 
   // Update separate stats container
-  const separateStatsId = {
-    helm: "helmsocketstats",
-    weapon: "weaponsocketstats",
-    armor: "armorsocketstats",
-    shield: "shieldsocketstats",
-  }[section];
+  // console.log("DEBUG: The value of 'section' is:", section);
+  // const separateStatsId = {
+  //   helm: "helmsocketstats",
+  //   weapon: "weaponsocketstats",
+  //   armor: "armorsocketstats",
+  //   shield: "shieldsocketstats",
+  // }[section];
 
 
 function mergeNumericStats(stats) {
