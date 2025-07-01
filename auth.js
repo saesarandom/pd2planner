@@ -1,5 +1,4 @@
 const express = require("express");
-const path = require('path');
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -14,12 +13,6 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
-app.use('/img', express.static(path.join(__dirname, 'img')));
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-}); // Serve static files from root directory
 
 mongoose
   .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/pd2planner", {
@@ -845,11 +838,11 @@ app.get("/api/shared-character/:name/:shareCode", async (req, res) => {
   }
 });
 
-
+// Add route to handle share URLs in the frontend
 app.get("/:nameWithCode", (req, res) => {
   // This route will be handled by your frontend to load shared characters
   // Just serve your main HTML file, and let the frontend handle the parsing
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.put("/api/characters/:id", auth, async (req, res) => {
