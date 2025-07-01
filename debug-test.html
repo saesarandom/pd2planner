@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Test</title>
+    <style>
+        body { background: #222; color: white; font-family: Arial; padding: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #666; }
+        .success { border-color: green; background: #003300; }
+        .error { border-color: red; background: #330000; }
+    </style>
+</head>
+<body>
+    <h1>Environment Debug Test</h1>
+    
+    <div class="test" id="basic-test">
+        <h3>Basic HTML/CSS Test</h3>
+        <p>If you can see this styled text, HTML and CSS are working.</p>
+    </div>
+    
+    <div class="test" id="js-test">
+        <h3>JavaScript Test</h3>
+        <p id="js-result">JavaScript not loaded yet...</p>
+        <button onclick="testJavaScript()">Test JS</button>
+    </div>
+    
+    <div class="test" id="dom-test">
+        <h3>DOM Manipulation Test</h3>
+        <p id="dom-result">Waiting for DOM test...</p>
+    </div>
+    
+    <div class="test" id="fetch-test">
+        <h3>Network/Fetch Test</h3>
+        <p id="fetch-result">Click to test network requests</p>
+        <button onclick="testNetwork()">Test Network</button>
+    </div>
+    
+    <div class="test" id="console-test">
+        <h3>Console Test</h3>
+        <p>Check browser console (F12) for debug messages</p>
+    </div>
+
+    <script>
+        console.log('=== DEBUG TEST STARTING ===');
+        console.log('URL:', window.location.href);
+        console.log('Protocol:', window.location.protocol);
+        console.log('Host:', window.location.host);
+        console.log('User Agent:', navigator.userAgent);
+        
+        // Test 1: Basic JavaScript
+        function testJavaScript() {
+            console.log('JavaScript function called');
+            document.getElementById('js-result').textContent = 'JavaScript is working!';
+            document.getElementById('js-test').className = 'test success';
+        }
+        
+        // Test 2: DOM Ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            document.getElementById('dom-result').textContent = 'DOM manipulation working!';
+            document.getElementById('dom-test').className = 'test success';
+            
+            // Auto-test JavaScript
+            setTimeout(testJavaScript, 100);
+        });
+        
+        // Test 3: Network requests
+        function testNetwork() {
+            console.log('Testing network request...');
+            
+            // Test with a simple same-origin request
+            fetch('./debug-test.html')
+                .then(response => {
+                    console.log('Fetch response:', response);
+                    document.getElementById('fetch-result').textContent = 'Network requests working! Status: ' + response.status;
+                    document.getElementById('fetch-test').className = 'test success';
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    document.getElementById('fetch-result').textContent = 'Network error: ' + error.message;
+                    document.getElementById('fetch-test').className = 'test error';
+                });
+        }
+        
+        // Test 4: Environment detection
+        setTimeout(function() {
+            console.log('=== ENVIRONMENT ANALYSIS ===');
+            console.log('Is file protocol?', window.location.protocol === 'file:');
+            console.log('Is localhost?', window.location.hostname === 'localhost');
+            console.log('Is 127.0.0.1?', window.location.hostname === '127.0.0.1');
+            console.log('Port:', window.location.port);
+            
+            // Check for common issues
+            if (window.location.protocol === 'file:') {
+                console.warn('WARNING: Using file:// protocol - this causes many restrictions');
+            }
+            
+            if (!window.fetch) {
+                console.error('ERROR: Fetch API not available');
+            }
+            
+            if (!window.console) {
+                console.error('ERROR: Console not available');
+            }
+            
+            console.log('=== TEST COMPLETE ===');
+        }, 500);
+    </script>
+</body>
+</html>

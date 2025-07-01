@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>Authentication Success</title>
+  </head>
+  <body>
+    <script>
+      // Get token from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get("token");
+
+      if (token) {
+        // Store token
+        localStorage.setItem("authToken", token);
+        // Redirect to dashboard
+        window.location.href = "/index.html";
+      } else {
+        console.error("No token received");
+        window.location.href = "/auth-error.html";
+      }
+    </script>
+  </body>
+</html>
