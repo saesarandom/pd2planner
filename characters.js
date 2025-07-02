@@ -2,7 +2,9 @@
 
 // Configuration
 const MAX_SAVE_SLOTS = 10; // Maximum number of character save slots per user
-const API_BASE_URL = "http://localhost:3001"; // Same as in your CustomCraftItems.js
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? `http://${window.location.hostname}:3001`
+  : 'http://localhost:3001'; // Same as in your CustomCraftItems.js
 
 // Add a debug log function to track execution
 function logDebug(message) {

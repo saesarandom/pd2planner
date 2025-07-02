@@ -27,8 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
 function checkUserLoginStatus() {
   const token = localStorage.getItem("token");
   if (token) {
-    // Verify token with server
-    fetch("http://localhost:3001/verify-token", {
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? `http://${window.location.hostname}:3001`
+      : 'http://localhost:3001';
+      
+    fetch(`${baseUrl}/verify-token`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

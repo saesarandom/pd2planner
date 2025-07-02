@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- <meta http-equiv="Content-Security-Policy" 
+      content="default-src 'self'; 
+               connect-src 'self' http://localhost:3001 http://127.0.0.1:3001; 
+               script-src 'self' 'unsafe-inline' 'unsafe-eval';"> -->
     <meta charset="UTF-8">
     <title>PD2 Character Planner</title>
     <link rel="stylesheet" href="styles.css">
@@ -6122,7 +6126,7 @@ skillvalues.forEach(skillvalue => {
   <script src="skillUpdates.js"></script>
   <script src="DPSSimulator.js"></script>
   <script src="login.js"></script>
-  <script src="achievements.obfuscated.js"></script>
+  <script src="achievements.js"></script>
   <script src="corruption.js"></script>
   <script src="mercenary.js"></script>
   <script src="craftitems.js"></script>
@@ -15093,7 +15097,169 @@ setInterval(loadUsers, 60000);
 })();
 
 
+// Add this function to synchronize both systems
+function syncSocketSystems() {
+  // Get all socket elements
+  document.querySelectorAll('.socketz').forEach(socket => {
+    const section = socket.dataset.section;
+    const index = parseInt(socket.dataset.index);
+    
+    if (!section || isNaN(index)) return;
+    
+    // Map section to containerKey
+    const containerMap = {
+      'helm': 'container1',
+      'armor': 'container2', 
+      'weapon': 'container3',
+      'shield': 'container4'
+    };
+    
+    const containerKey = containerMap[section];
+    if (!containerKey || !socketStates[containerKey]) return;
+    
+    const state = socketStates[containerKey][index];
+    if (!state) return;
+    
+    // Sync DOM attributes with socketStates
+    if (state.gemType) {
+      socket.dataset.itemName = state.gemType;
+      
+      // Convert gemStats to string format for DOM
+      if (state.gemStats && state.gemStats[section]) {
+        socket.dataset.stats = state.gemStats[section];
+      }
+    } else {
+      delete socket.dataset.itemName;
+      delete socket.dataset.stats;
+    }
+  });
+}
 
+// Call sync function after any socket changes
+function updateSocketWithSync(socket, gemType, gemImg, stats) {
+  // Update socketStates
+  const section = socket.dataset.section;
+  const index = parseInt(socket.dataset.index);
+  const containerMap = {
+    'helm': 'container1',
+    'armor': 'container2',
+    'weapon': 'container3', 
+    'shield': 'container4'
+  };
+  
+  const containerKey = containerMap[section];
+  socketStates[containerKey][index] = {
+    gemType: gemType,
+    gemImg: gemImg,
+    gemStats: stats
+  };
+  
+  // Update DOM attributes
+  socket.dataset.itemName = gemType;
+  if (stats && stats[section]) {
+    socket.dataset.stats = stats[section];
+  }
+  
+  // Update display
+  updateStatsDisplay();
+  
+  // Trigger weapon damage recalculation if weapon socket
+  if (section === 'weapon') {
+    setTimeout(() => {
+      if (typeof updateWeaponDamageDisplay === 'function') {
+        updateWeaponDamageDisplay();
+      }
+    }, 100);
+  }
+}
+
+// Replace socket click handlers with synced version
+document.addEventListener('DOMContentLoaded', () => {
+  // Sync systems on page load
+  setTimeout(syncSocketSystems, 500);
+  
+  // Add sync to all socket operations
+  const originalUpdateStatsDisplay = updateStatsDisplay;
+  updateStatsDisplay = function() {
+    syncSocketSystems();
+    return originalUpdateStatsDisplay.apply(this, arguments);
+  };
+});
+
+function testConnection() {
+  const testUrl = `http://${window.location.hostname}:3001/verify-token`;
+  console.log('Testing connection to:', testUrl);
+  
+  fetch(testUrl, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(response => {
+    console.log('Connection test result:', response.status);
+    if (response.ok) {
+      console.log('✓ Server reachable');
+    } else {
+      console.log('✗ Server error:', response.status);
+    }
+  })
+  .catch(error => {
+    console.log('✗ Connection failed:', error.message);
+  });
+}
+// === ADD THIS TO YOUR MAIN JS OR index.html <script> SECTION ===
+
+// Main dropdown change handler - this is what's missing!
+function setupMainDropdownHandlers() {
+  const dropdownMap = {
+    'helms-dropdown': 'helm-info',
+    'armors-dropdown': 'armor-info', 
+    'weapons-dropdown': 'weapon-info',
+    'offs-dropdown': 'off-info',
+    'gloves-dropdown': 'glove-info',
+    'belts-dropdown': 'belt-info',
+    'boots-dropdown': 'boot-info',
+    'ringsone-dropdown': 'ringsone-info',
+    'ringstwo-dropdown': 'ringstwo-info',
+    'amulets-dropdown': 'amulet-info'
+  };
+
+  Object.entries(dropdownMap).forEach(([dropdownId, infoId]) => {
+    const dropdown = document.getElementById(dropdownId);
+    const infoDiv = document.getElementById(infoId);
+    
+    if (!dropdown || !infoDiv) {
+      console.log(`Missing: ${dropdownId} or ${infoId}`);
+      return;
+    }
+
+    dropdown.addEventListener('change', function() {
+      const selectedValue = this.value;
+      console.log(`${dropdownId} changed to: ${selectedValue}`);
+      
+      if (!selectedValue) {
+        infoDiv.innerHTML = '';
+        return;
+      }
+
+      // Check if it's a custom item
+      const selectedOption = this.options[this.selectedIndex];
+      if (selectedOption && selectedOption.dataset.custom === 'true') {
+        // Handle custom items (already handled by craftitems.js)
+        return;
+      }
+
+      // Handle regular items from itemList
+      const itemData = window.itemList && window.itemList[selectedValue];
+      if (itemData && itemData.description) {
+        infoDiv.innerHTML = itemData.description;
+        console.log(`Updated ${infoId} with item data`);
+      } else {
+        console.log(`No item data found for: ${selectedValue}`);
+        infoDiv.innerHTML = 'Item data not found';
+      }
+    });
+  });
+}
 </script>
 
 

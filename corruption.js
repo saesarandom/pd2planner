@@ -1,3 +1,14 @@
+// Error handler to catch issues
+window.addEventListener('error', function(e) {
+    console.error('Script error:', e.message, 'at', e.filename, ':', e.lineno);
+});
+
+// Add missing function
+function mergeNumericStats(stats) {
+    if (!stats || !Array.isArray(stats)) return [];
+    return stats.filter(Boolean);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize sockets for all socketed items when the page loads
   [

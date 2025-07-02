@@ -1,5 +1,6 @@
 {
     "livePreview.portNumber": 3001,
     "vscode-edge-devtools.headless": false,
-    "vscode-edge-devtools.defaultUrl": "http://127.0.0.1:3001"
+    "vscode-edge-devtools.defaultUrl": "http://127.0.0.1:3001",
+    "livePreview.hostIP": ""
 }

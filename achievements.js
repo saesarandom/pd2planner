@@ -128,7 +128,7 @@ async function checkAchievement(achievementId, ...values) {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/achievement/${achievement.id}`,
+      `http://localhost:3001/achievement/${achievement.id}`,
       {
         method: "POST",
         headers: {

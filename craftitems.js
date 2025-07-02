@@ -8,7 +8,9 @@ let currentUser = null;
 let characterLevel = 75; // Default character level
 
 // Configuration & Data
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? `http://${window.location.hostname}:3001` 
+  : 'http://localhost:3001';
 const CRAFT_TYPES_COLORS = {
   Blood: "e74c3c",
   Caster: "3498db",
