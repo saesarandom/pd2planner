@@ -15,6 +15,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Or specify your domain
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 
 mongoose
   .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/pd2planner", {
@@ -842,9 +848,8 @@ app.get("/api/shared-character/:name/:shareCode", async (req, res) => {
 
 
 app.get("/:nameWithCode", (req, res) => {
-  // This route will be handled by your frontend to load shared characters
-  // Just serve your main HTML file, and let the frontend handle the parsing
-  res.sendFile(path.join(__dirname, "index.html"));
+    console.log("Serving index.html for:", req.params.nameWithCode);
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.put("/api/characters/:id", auth, async (req, res) => {
