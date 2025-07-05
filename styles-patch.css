@@ -196,7 +196,13 @@ body {
   padding: 15px;
   font-family: inherit;
   border-radius: 4px;
-  width: 300px;
+  width: 200px;
+}
+
+#str, #dex, #vit, #enr, #lvlValue {
+  width: 30%;
+  background-color: rgba(1, 105, 169, 0.8);
+  text-align: center;
 }
 
 .stats-section h3 {
@@ -550,6 +556,12 @@ body {
     text-align: right; /* All values align to the right */
     flex-shrink: 0; /* Prevents shrinking */
 }
+
+.socket-enhanced-stat {
+  color: #00BFFF !important;
+  font-weight: bold !important;
+}
+
 
 /* Responsive design */
 @media (max-width: 768px) {

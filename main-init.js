@@ -830,3 +830,6 @@ window.handleSignup = async function(event) {
 // Export for global access
 window.PD2State = PD2State;
 window.updateAllCalculations = updateAllCalculations;
+window.recalculateStats = function() {
+  console.log('Stats calculation called - but no stats calculator loaded');
+};

@@ -1,3 +1,51 @@
+let isProcessingWeaponChange = false;
+
+// Override the weapon dropdown event handling to prevent loops
+document.addEventListener('DOMContentLoaded', function() {
+    const weaponDropdown = document.getElementById('weapons-dropdown');
+    if (weaponDropdown) {
+        // Remove all existing event listeners by cloning the element
+        const newWeaponDropdown = weaponDropdown.cloneNode(true);
+        weaponDropdown.parentNode.replaceChild(newWeaponDropdown, weaponDropdown);
+        
+        // Add single, safe event listener
+        newWeaponDropdown.addEventListener('change', function(event) {
+            if (isProcessingWeaponChange) return; // Prevent loops
+            isProcessingWeaponChange = true;
+            
+            try {
+                const selectedItemName = event.target.value;
+                
+                // Update item info display
+                const infoDiv = document.getElementById('weapon-info');
+                if (infoDiv) {
+                    if (selectedItemName && itemList[selectedItemName]) {
+                        infoDiv.innerHTML = itemList[selectedItemName].description;
+                    } else {
+                        infoDiv.innerHTML = '';
+                    }
+                }
+                
+                // Call your existing weapon update functions safely
+                if (typeof updateWeaponDamageDisplay === 'function') {
+                    updateWeaponDamageDisplay();
+                }
+                
+                // Calculate stats if function exists
+                if (typeof calculateAllEquippedStats === 'function') {
+                    calculateAllEquippedStats();
+                }
+                
+            } catch (error) {
+                console.error('Error in weapon dropdown change:', error);
+            } finally {
+                setTimeout(() => { isProcessingWeaponChange = false; }, 100);
+            }
+        });
+    }
+});
+
+
 const upgradeDefinitions = {
   helms: {
     "Biggin's Bonnet": {
