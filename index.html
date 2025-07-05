@@ -6,10 +6,10 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="/icon.png">
     <!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="72048bb5-a72a-4c78-9750-4c1c9a17e30c"></script> -->
-    <!-- <script src="items.js"></script> -->
-    <!-- <script src="corruption.js"></script>
-    <script src="itemUpgrade.js"></script> -->
-    <!-- <script src="relativeLife.js"></script> -->
+    <script src="items.js"></script> 
+    <script src="corruption.js"></script>
+    <script src="itemUpgrade.js"></script>
+    <script src="relativeLife.js"></script>
     </head>
 
 
@@ -5951,10 +5951,10 @@
             <script src="DPSSimulator.js"></script>
             <script src="login.js"></script>
             <script src="achievements.js"></script>
-            <script src="items.js"></script>
-            <script src="relativeLife.js"></script>
-            <script src="corruption.js"></script>
-            <script src="itemUpgrade.js"></script>
+            <!-- <script src="items.js"></script> -->
+            <!-- <script src="relativeLife.js"></script>
+            <script src="corruption.js"></script> -->
+            <!-- <script src="itemUpgrade.js"></script> -->
             <script src="mercenary.js"></script>
             <script src="craftitems.js"></script>
 
@@ -8541,6 +8541,107 @@
 
 
 
+ let equipmentStats = {
+        allSkills: 0, magicFind: 0, goldFind: 0, 
+        ias: 0, fcr: 0, frw: 0, fhr: 0,
+        cbf: false, plr: 0, dr: 0, pdr: 0, mdr: 0
+    };
+    
+    // Check equipment dropdowns
+    const equipmentDropdowns = [
+        'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 
+        'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown',
+        'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'
+    ];
+    
+    equipmentDropdowns.forEach(dropdownId => {
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown?.value || dropdown.value === '') return;
+        
+        const item = itemList[dropdown.value];
+        if (!item) return;
+        
+        // Add from properties
+        if (item.properties?.allskills) equipmentStats.allSkills += item.properties.allskills;
+        
+        // Parse description for stats
+        if (item.description) {
+            const desc = item.description;
+            
+            // Magic Find
+            const mfMatch = desc.match(/(\d+)%.*Better Chance.*Magic/i);
+            if (mfMatch) equipmentStats.magicFind += parseInt(mfMatch[1]);
+            
+            // Gold Find
+            const gfMatch = desc.match(/(\d+)%.*Extra Gold/i);
+            if (gfMatch) equipmentStats.goldFind += parseInt(gfMatch[1]);
+            
+            // All Skills
+            const asMatch = desc.match(/\+(\d+) to All Skills/i);
+            if (asMatch) equipmentStats.allSkills += parseInt(asMatch[1]);
+            
+            // FCR
+            const fcrMatch = desc.match(/(\d+)%.*Faster Cast Rate/i);
+            if (fcrMatch) equipmentStats.fcr += parseInt(fcrMatch[1]);
+            
+            // IAS
+            const iasMatch = desc.match(/(\d+)%.*Increased Attack Speed/i);
+            if (iasMatch) equipmentStats.ias += parseInt(iasMatch[1]);
+            
+            // FRW
+            const frwMatch = desc.match(/(\d+)%.*Faster Run.*Walk/i);
+            if (frwMatch) equipmentStats.frw += parseInt(frwMatch[1]);
+            
+            // FHR
+            const fhrMatch = desc.match(/(\d+)%.*Faster Hit Recovery/i);
+            if (fhrMatch) equipmentStats.fhr += parseInt(fhrMatch[1]);
+            
+            // Cannot Be Frozen
+            if (desc.toLowerCase().includes('cannot be frozen')) {
+                equipmentStats.cbf = true;
+            }
+            
+            // PLR
+            const plrMatch = desc.match(/Poison Length Reduced by (\d+)%/i);
+            if (plrMatch) equipmentStats.plr += parseInt(plrMatch[1]);
+            
+            // DR
+            const drMatch = desc.match(/Damage Reduced by (\d+)%/i);
+            if (drMatch) equipmentStats.dr += parseInt(drMatch[1]);
+            
+            // PDR
+            const pdrMatch = desc.match(/Physical Damage Taken Reduced by (\d+)/i);
+            if (pdrMatch) equipmentStats.pdr += parseInt(pdrMatch[1]);
+            
+            // MDR
+            const mdrMatch = desc.match(/Magic Damage Taken Reduced by (\d+)/i);
+            if (mdrMatch) equipmentStats.mdr += parseInt(mdrMatch[1]);
+        }
+    });
+    
+    // Update stat containers (only if they exist)
+    const statUpdates = [
+        ['allskillscontainer', equipmentStats.allSkills],
+        ['magicfindcontainer', equipmentStats.magicFind],
+        ['goldfindcontainer', equipmentStats.goldFind],
+        ['iascontainer', equipmentStats.ias],
+        ['fcrcontainer', equipmentStats.fcr],
+        ['frwcontainer', equipmentStats.frw],
+        ['fhrcontainer', equipmentStats.fhr],
+        ['cbfcontainer', equipmentStats.cbf ? 'Yes' : 'No'],
+        ['plrcontainer', equipmentStats.plr],
+        ['drcontainer', equipmentStats.dr],
+        ['pdrcontainer', equipmentStats.pdr],
+        ['mdrcontainer', equipmentStats.mdr]
+    ];
+    
+    statUpdates.forEach(([containerId, value]) => {
+        const container = document.getElementById(containerId);
+        if (container) {
+            const displayValue = typeof value === 'number' ? Math.round(value) : value;
+            container.textContent = displayValue;
+        }
+    });
 
 
 

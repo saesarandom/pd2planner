@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PD2 Character Planner</title>
+    <link rel="stylesheet" href="styles-patch.css">
+    <link href="https://fonts.googleapis.com/css2?family=Overlock SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/icon.png">
+</head>
+<body>
+    <button onclick="document.body.classList.toggle('moody')" 
+            style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: black; color: white; padding: 10px; border-radius: 5px;">
+        Toggle Theme
+    </button>
+
+    <div class="particles-container"></div>
+
+    <div class="main-wrapper">
+        <div class="polyrellife">
+            Polynomial Relative Life: <span id="polyrellife">0</span>
+        </div>
+
+        <div class="menucontainer">
+            <h4>Class</h4>
+            <select id="selectClass">
+                <option>Amazon</option>
+                <option>Assassin</option>
+                <option>Barbarian</option>
+                <option>Druid</option>
+                <option>Necromancer</option>
+                <option>Paladin</option>
+                <option>Sorceress</option>
+            </select>
+            
+
+            <h4>Character Name</h4>
+            <input type="text" id="character-name" placeholder="Enter character name">
+
+            <div class="stats-section">
+                <div class="stat-row">
+                    <label>Level: <input type="number" id="lvlValue" value="1" min="1" max="99"></label>
+                </div>
+                <div class="stat-row">
+                    <label>Strength: <input type="number" id="str" value="0" min="0"></label>
+                </div>
+                <div class="stat-row">
+                    <label>Dexterity: <input type="number" id="dex" value="0" min="0"></label>
+                </div>
+                <div class="stat-row">
+                    <label>Vitality: <input type="number" id="vit" value="0" min="0"></label>
+                </div>
+                <div class="stat-row">
+                    <label>Energy: <input type="number" id="enr" value="0" min="0"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="lifecontainer">
+            <span id="totalLifeValue">Total Life: 0</span>
+        </div>
+
+        <div class="equipment-section">
+          <div class="equipment-container">
+            <div class="groupweapons">
+              <label>Weapon</label>
+              <select id="weapons-dropdown">
+                <option value="">None</option>
+              </select>
+              <button id="upgradeWeaponButton">Upgrade</button>
+              <button id="makeetherealweapon">Make Ethereal</button>
+              <button id="corruptWeapon">Corrupt</button>
+              <div id="weapon-info" class="item-info"></div>
+              <div class="socket-container" data-section="weapon">
+                <div class="socket-grid sockets-0">     
+                  <div class="socket-slot empty" data-index="0"></div>
+                  <div class="socket-slot empty" data-index="1"></div>
+                </div>
+                  <button class="add-socket-btn" onclick="addSocket('weapon')">+</button>
+                </div>
+            </div>
+                
+            <div class="grouphelms">
+              <label>Helm</label>
+              <select id="helms-dropdown">
+                <option value="">None</option>
+              </select>
+              <button id="upgradeHelmButton">Upgrade</button>
+              <button id="makeethereal">Make Ethereal</button>
+              <button id="corruptHelm">Corrupt</button>
+              <div id="helm-info" class="item-info"></div>
+              <div class="socket-container" data-section="helm">
+                <div class="socket-grid sockets-0">
+  <div class="socket-slot empty" data-index="0"></div>
+  <div class="socket-slot empty" data-index="1"></div>
+  </div>
+  <button class="add-socket-btn" onclick="addSocket('helm')">+</button>
+</div>
+            </div>
+            <div class="grouparmor">
+              <label>Armor</label>
+              <select id="armors-dropdown">
+                <option value="">None</option>
+              </select>
+              <button id="upgradeArmorButton">Upgrade</button>
+              <button id="makeetherealarmor">Make Ethereal</button>
+              <button id="corruptArmor">Corrupt</button>
+              <div id="armor-info" class="item-info"></div>
+              <div class="socket-container" data-section="armor">
+                <div class="socket-grid sockets-0">
+  <div class="socket-slot empty" data-index="0"></div>
+  <div class="socket-slot empty" data-index="1"></div>
+</div>
+  <button class="add-socket-btn" onclick="addSocket('armor')">+</button>
+</div>
+            </div>
+            
+
+            <div class="groupoffhand">
+                <label>Shield/Off-hand</label>
+                <select id="offs-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeShieldButton">Upgrade</button>
+            <button id="makeetherealshield">Make Ethereal</button>
+            <button id="corruptShield">Corrupt</button>
+           
+            <div id="off-info" class="item-info"></div>
+            <div class="socket-container" data-section="shield">
+                <div class="socket-grid sockets-0">
+  <div class="socket-slot empty" data-index="0"></div>
+  <div class="socket-slot empty" data-index="1"></div>
+</div>
+  <button class="add-socket-btn" onclick="addSocket('shield')">+</button>
+</div>
+            </div>
+
+            <div class="groupgloves">
+                <label>Gloves</label>
+                <select id="gloves-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeGloveButton">Upgrade</button>
+            <button id="makeetherealglove">Make Ethereal</button>
+            <button id="corruptGlove">Corrupt</button>
+        
+            <div id="glove-info" class="item-info"></div>
+            </div>
+            
+    
+
+            <div class="groupbelts">
+                <label>Belt</label>
+                <select id="belts-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeBeltButton">Upgrade</button>
+            <button id="makeetherealbelt">Make Ethereal</button>
+            <button id="corruptBelt">Corrupt</button>
+            <div id="belt-info" class="item-info"></div>
+            </div>
+            
+                 
+
+            <div class="groupboots">
+                <label>Boots</label>
+                <select id="boots-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeBootButton">Upgrade</button>
+            <button id="makeetherealboot">Make Ethereal</button>
+            <button id="corruptBoot">Corrupt</button>
+            <div id="boot-info" class="item-info"></div>
+            </div>
+
+            <div class="groupringone">
+                <label>Ring 1</label>
+                <select id="ringsone-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="corruptRingOne">Corrupt</button>
+                <div id="ringsone-info" class="item-info"></div>
+            </div>
+            <div class="groupringtwo">
+                <label>Ring 2</label>
+            <select id="ringstwo-dropdown">
+                <option value="">None</option>
+            </select>
+            <button id="corruptRingTwo">Corrupt</button>
+            <div id="ringstwo-info" class="item-info"></div>
+            </div>
+
+            <div class="groupamulet">
+                <label>Amulet</label>
+                <select id="amulets-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="corruptAmulet">Corrupt</button>
+                <div id="amulet-info" class="item-info"></div>
+            </div>
+        </div>
+        
+        
+
+        <div id="skill-containers">
+            <div id="javelinandspearskillscontainer" class="skill-container" style="display:none;">
+                <h3>Javelin and Spear Skills</h3>
+            </div>
+            <div id="passiveskillscontainer" class="skill-container" style="display:none;">
+                <h3>Passive Skills</h3>
+            </div>
+            <div id="bowandcrossbowskillscontainer" class="skill-container" style="display:none;">
+                <h3>Bow and Crossbow Skills</h3>
+            </div>
+
+            </div>
+
+        <div class="damage-display">
+            <div>One-hand Min: <span id="onehandmindmgcontainer">0</span></div>
+            <div>One-hand Max: <span id="onehandmaxdmgcontainer">0</span></div>
+            <div>Two-hand Min: <span id="twohandmindmgcontainer">0</span></div>
+            <div>Two-hand Max: <span id="twohandmaxdmgcontainer">0</span></div>
+        </div>
+
+        <div class="stats-display-grid">
+    <!-- Core Stats -->
+    <div class="stat-group">
+        <h4>Core Stats</h4>
+        <div class="stat-item">
+            <span class="stat-label">All Skills:</span>
+            <span id="allskillscontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Magic Find:</span>
+            <span id="magicfindcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Gold Find:</span>
+            <span id="goldfindcontainer" class="stat-value">0</span>%
+        </div>
+        <!-- ADD THIS TO YOUR EXISTING stats-display-grid in index2.html -->
+
+    <!-- Defensive Stats -->
+    
+        <div class="stat-item">
+            <span class="stat-label">Defense:</span>
+            <span id="defensecontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Block Chance:</span>
+            <span id="realblockcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">DR%:</span>
+            <span id="drcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">PDR:</span>
+            <span id="pdrcontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">MDR:</span>
+            <span id="mdrcontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">PLR:</span>
+            <span id="plrcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Cannot Be Frozen:</span>
+            <span id="cbfcontainer" class="stat-value">No</span>
+        </div>
+    
+        <div class="stat-item">
+            <span class="stat-label">IAS:</span>
+            <span id="iascontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">FCR:</span>
+            <span id="fcrcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">FRW:</span>
+            <span id="frwcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">FHR:</span>
+            <span id="fhrcontainer" class="stat-value">0</span>%
+        </div>
+    
+        <div class="stat-item">
+            <span class="stat-label">Fire Resist:</span>
+            <span id="fireresistcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Cold Resist:</span>
+            <span id="coldresistcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Lightning Resist:</span>
+            <span id="lightresistcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Poison Resist:</span>
+            <span id="poisonresistcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Curse Resist:</span>
+            <span id="curseresistcontainer" class="stat-value">0</span>%
+        </div>
+    </div>
+
+    <!-- Combat Stats -->
+    <div class="stat-group">
+        <h4>Combat Stats</h4>
+        <div class="stat-item">
+            <span class="stat-label">Open Wounds:</span>
+            <span id="owcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">OW Dmg/s:</span>
+            <span id="owdmgcontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Crushing Blow:</span>
+            <span id="cbcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">CB Damage:</span>
+            <span id="cbdmgcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Critical Hit:</span>
+            <span id="criticalhitcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Deadly Strike:</span>
+            <span id="deadlystrikecontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Weapon Mastery:</span>
+            <span id="weaponmasterycontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Crit Multiplier:</span>
+            <span id="crithitmultipliercontainer" class="stat-value">2.0</span>x
+        </div>
+    </div>
+
+    <!-- Pierce Stats -->
+    <div class="stat-group">
+        <h4>Enemy Resistance Pierce</h4>
+        <div class="stat-item">
+            <span class="stat-label">Pierce Physical:</span>
+            <span id="piercephyscontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Pierce Fire:</span>
+            <span id="piercefirecontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Pierce Cold:</span>
+            <span id="piercecoldcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Pierce Lightning:</span>
+            <span id="piercelightcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Pierce Poison:</span>
+            <span id="piercepoisoncontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Pierce Magic:</span>
+            <span id="piercemagiccontainer" class="stat-value">0</span>%
+        </div>
+    </div>
+
+    <!-- Flat Damage Stats -->
+    <div class="stat-group">
+        <h4>Added Damage</h4>
+        <div class="stat-item">
+            <span class="stat-label">Fire Damage:</span>
+            <span id="flatfiremincontainer" class="stat-value">0</span>-<span id="flatfiremaxcontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Cold Damage:</span>
+            <span id="flatcoldmincontainer" class="stat-value">0</span>-<span id="flatcoldmaxcontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Lightning Damage:</span>
+            <span id="flatlightmincontainer" class="stat-value">0</span>-<span id="flatlightmaxcontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Poison Damage:</span>
+            <span id="flatpoisonmincontainer" class="stat-value">0</span>-<span id="flatpoisonmaxcontainer" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Magic Damage:</span>
+            <span id="flatmagicmincontainer" class="stat-value">0</span>-<span id="flatmagicmaxcontainer" class="stat-value">0</span>
+        </div>
+    </div>
+</div>
+
+        <div class="inventorycontainer">
+            </div>
+
+        <div class="mercenary-section">
+            <h3>Mercenary</h3>
+            <select id="mercclass">
+                <option value="No Mercenary">No Mercenary</option>
+                <option value="A1 Fire (Vigor)">A1 Fire (Vigor)</option>
+                <option value="A1 Cold (Meditation)">A1 Cold (Meditation)</option>
+                <option value="A2 Defensive (Defiance)">A2 Defensive (Defiance)</option>
+                <option value="A2 Offensive (Blessed Aim)">A2 Offensive (Blessed Aim)</option>
+                <option value="A3 Fire (Cleansing)">A3 Fire (Cleansing)</option>
+                <option value="A3 Cold (Prayer)">A3 Cold (Prayer)</option>
+                <option value="A5 Combat (Might)">A5 Combat (Might)</option>
+            </select>
+            <input type="number" id="merclvlValue" min="1" max="99" value="1">
+            
+            <div class="merc-equipment">
+                <select id="merchelms-dropdown"><option value="">None</option></select>
+                <select id="mercarmors-dropdown"><option value="">None</option></select>
+                <select id="mercweapons-dropdown"><option value="">None</option></select>
+            </div>
+        </div>
+
+        <div class="auth-container">
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <h2>Login</h2>
+                <input type="text" id="loginInput" placeholder="Email or Username" required>
+                <input type="password" id="passwordInput" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+
+            <div id="welcomeMsg" class="welcome-message" style="display: none;">
+                Welcome! Build your character and unlock achievements!
+            </div>
+
+            <form id="signupForm" onsubmit="handleSignup(event)" style="display: none;">
+                <h2>Sign Up</h2>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="text" id="signupUsername" placeholder="Username" required>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
+        
+        
+
+       
+
+        <div class="character-management">
+            <button id="saveCharacterButton">Save Character</button>
+            <button id="loadCharacterButton">Load Character</button>
+            <div id="charactersList"></div>
+        </div>
+
+        <div id="create-craft-container">
+            <button id="create-craft-button">Create Custom Item</button>
+        </div>
+    </div>
+
+    
+
+   
+
+    <div id="craftModal" class="modalcraft">
+        <div class="modalcraft-content">
+            <span class="close">&times;</span>
+            <h2>Create Custom Item</h2>
+            </div>
+    </div>
+
+
+
+   
+
+    <script src="items.js"></script>
+
+<script src="relativeLife.js"></script>
+<script src="corruption.js"></script>
+<script src="itemUpgrade.js"></script>
+
+
+<script src="socket-system.js"></script>
+
+<script src="SkillHandler.js"></script>
+<script src="skillRestriction.js"></script>
+<script src="skillUpdates.js"></script>
+
+<script src="DPSSimulator.js"></script>
+<script src="login.js"></script>
+<script src="achievements.js"></script>
+<script src="mercenary.js"></script>
+<script src="craftitems.js"></script>
+<!-- <script src="stats-calculator.js"></script> -->
+
+<script src="main-init.js"></script>
+
+    <script>
+        // Initialize particles effect
+        function createParticles() {
+            const container = document.querySelector('.particles-container');
+            
+            function spawnParticle() {
+                if (!document.body.classList.contains('moody')) return;
+                
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const randomType = Math.floor(Math.random() * 3) + 1;
+                particle.classList.add('type' + randomType);
+                
+                const size = Math.random() * 60 + 12;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                particle.style.animation = `float ${Math.random() * 3 + 2}s ease-out`;
+                
+                container.appendChild(particle);
+                
+                particle.addEventListener('animationend', () => {
+                    particle.remove();
+                });
+            }
+            
+            setInterval(spawnParticle, 35);
+        }
+
+        // Initialize inventory grid
+        function createInventoryGrid() {
+            const inventory = document.querySelector('.inventorycontainer');
+            for (let i = 0; i < 40; i++) {
+                const charm = document.createElement('div');
+                charm.className = 'charm1';
+                inventory.appendChild(charm);
+            }
+        }
+
+      // FIXED: Consistent data structure for all categories
+const itemDropdownData = {
+  helm: [
+    // Unique items
+    { name: "Biggin's Bonnet", quality: "unique" },
+    { name: "Tarnhelm", quality: "unique" },
+    { name: "Coif of Glory", quality: "unique" },
+    { name: "Duskeep", quality: "unique" },
+    { name: "The Face of Horror", quality: "unique" },
+    { name: "Wormskull", quality: "unique" },
+    { name: "Howltusk", quality: "unique" },
+    { name: "Undead Crown", quality: "unique" },
+    { name: "Peasant Crown", quality: "unique" },
+    { name: "Rockstopper", quality: "unique" },
+    { name: "Stealskull", quality: "unique" },
+    { name: "Darksight Helm", quality: "unique" },
+    { name: "Blackhorn's Face", quality: "unique" },
+    { name: "Valkyrie Wing", quality: "unique" },
+    { name: "Crown of Thieves", quality: "unique" },
+    { name: "Harlequin Crest", quality: "unique" },
+    { name: "Steel Shade", quality: "unique" },
+    { name: "Andariel's Visage", quality: "unique" },
+    { name: "Giant Skull", quality: "unique" },
+    { name: "Veil of Steel", quality: "unique" },
+    { name: "Nightwing's Veil", quality: "unique" },
+    { name: "Crown of Ages", quality: "unique" },
+    { name: "Overlord's Helm", quality: "unique" },
+    { name: "Kira's Guardian", quality: "unique" },
+    { name: "Griffon's Eye", quality: "unique" },
+    { name: "Cyclopean Roar", quality: "unique" },
+    { name: "Arreat's Face", quality: "unique" },
+    { name: "Wolfhowl", quality: "unique" },
+    { name: "Demonhorn's Edge", quality: "unique" },
+    { name: "Halaberd's Reign", quality: "unique" },
+    { name: "Raekor's Virtue", quality: "unique" },
+    { name: "Quetzalcoatl", quality: "unique" },
+    { name: "Jalal's Mane", quality: "unique" },
+    { name: "Cerebus' Bite", quality: "unique" },
+    { name: "Denmother", quality: "unique" },
+    { name: "Ravenlore", quality: "unique" },
+    { name: "Spirit Keeper", quality: "unique" },
+    { name: "Ursa's Nightmare", quality: "unique" },
+    
+    // Set items
+    { name: "Arcanna's Head", quality: "set" },
+    { name: "Berserker's Headgear", quality: "set" },
+    { name: "Infernal Cranium", quality: "set" },
+    { name: "Sigon's Visor", quality: "set" },
+    { name: "Isenhart's Horns", quality: "set" },
+    { name: "Cathan's Visage", quality: "set" },
+    { name: "Iratha's Coil", quality: "set" },
+    { name: "Milabrega's Diadem", quality: "set" },
+    { name: "Tancred's Skull", quality: "set" },
+    { name: "Cow King's Horns", quality: "set" },
+    { name: "Sander's Paragon", quality: "set" },
+    { name: "Hwanin's Splendor", quality: "set" },
+    { name: "Guillaume's Face", quality: "set" },
+    { name: "Najs's Circlet", quality: "set" },
+    { name: "Sazabi's Mental Sheath", quality: "set" },
+    { name: "Ondal's Almighty", quality: "set" },
+    { name: "Aldur's Stony Gaze", quality: "set" },
+    { name: "Griswold's Valor", quality: "set" },
+    { name: "Immortal King's Will", quality: "set" },
+    { name: "M'avina's True Sight", quality: "set" },
+    { name: "Natalya's Totem", quality: "set" },
+    { name: "Tal Rasha's Horadric Crest", quality: "set" },
+    { name: "Trang-Oul's Guise", quality: "set" }
+  ],
+
+  armor: [
+    // Unique items
+    { name: "Greyform", quality: "unique" },
+    { name: "Blinkbat's Form", quality: "unique" },
+    { name: "The Centurion", quality: "unique" },
+    { name: "Twitchthroe", quality: "unique" },
+    { name: "Darkglow", quality: "unique" },
+    { name: "Hawkmail", quality: "unique" },
+    { name: "Sparking Mail", quality: "unique" },
+    { name: "Venom Ward", quality: "unique" },
+    { name: "Iceblink", quality: "unique" },
+    { name: "Boneflesh", quality: "unique" },
+    { name: "Rockfleece", quality: "unique" },
+    { name: "Rattlecage", quality: "unique" },
+    { name: "Heavenly Garb", quality: "unique" },
+    { name: "Goldskin", quality: "unique" },
+    { name: "Silks of the Victor", quality: "unique" },
+    { name: "Spirit Shroud", quality: "unique" },
+    { name: "Skin of the Vipermagi", quality: "unique" },
+    { name: "Skin of the Flayed One", quality: "unique" },
+    { name: "Iron Pelt", quality: "unique" },
+    { name: "Crow Caw", quality: "unique" },
+    { name: "Shaftstop", quality: "unique" },
+    { name: "Skullder's Ire", quality: "unique" },
+    { name: "Que-Hegan's Wisdom", quality: "unique" },
+    { name: "Toothrow", quality: "unique" },
+    { name: "Guardian Angel", quality: "unique" },
+    { name: "Atma's Wail", quality: "unique" },
+    { name: "Black Hades", quality: "unique" },
+    { name: "Corpsemourn", quality: "unique" },
+    
+    // Set items
+    { name: "Arctic Furs", quality: "set" },
+    { name: "Berserker's Hauberk", quality: "set" },
+    { name: "Sigon's Shelter", quality: "set" },
+    { name: "Isenhart's Case", quality: "set" },
+    { name: "Cathan's Mesh", quality: "set" },
+    { name: "Angelic Mantle", quality: "set" },
+    { name: "Vidala's Ambush", quality: "set" },
+    { name: "Arcanna's Flesh", quality: "set" }
+  ],
+
+  // FIXED: Convert weapon array to object structure
+  weapon: [
+    // Unique weapons
+    { name: "The Gnasher", quality: "unique" },
+    { name: "Bladebone", quality: "unique" },
+    { name: "Skull Splitter", quality: "unique" },
+    { name: "Rakescar", quality: "unique" },
+    { name: "Axe of Fechmar", quality: "unique" },
+    { name: "Goreshovel", quality: "unique" },
+    { name: "The Chieftain", quality: "unique" },
+    { name: "Brainhew", quality: "unique" },
+    { name: "Humongous", quality: "unique" },
+    { name: "Felloak", quality: "unique" },
+    { name: "Stoutnail", quality: "unique" },
+    { name: "Crushflange", quality: "unique" },
+    { name: "Bloodrise", quality: "unique" },
+    { name: "The General's Tan Do Li Ga", quality: "unique" },
+    { name: "Ironstone", quality: "unique" },
+    { name: "Bonesnap", quality: "unique" },
+    { name: "Upped Bonesnap", quality: "unique" },
+    { name: "Steeldriver", quality: "unique" },
+    { name: "Rixot's Keen", quality: "unique" },
+    { name: "Blood Crescent", quality: "unique" },
+    { name: "Skewer of Krintiz", quality: "unique" },
+    { name: "Gleamscythe", quality: "unique" },
+    { name: "Griswold's Edge", quality: "set" },
+    { name: "Hellplague", quality: "unique" },
+    { name: "Culwen's Point", quality: "unique" },
+    { name: "Shadowfang", quality: "unique" },
+    { name: "Soulflay", quality: "unique" },
+    { name: "Kinemil's Awl", quality: "unique" },
+    { name: "Blacktongue", quality: "unique" },
+    { name: "Ripsaw", quality: "unique" },
+    { name: "The Patriarch", quality: "unique" },
+    { name: "Gull", quality: "unique" },
+    { name: "The Diggler", quality: "unique" },
+    { name: "The Jade Tan Do", quality: "unique" },
+    { name: "Spectral Shard", quality: "unique" },
+    { name: "The Gidbinn", quality: "unique" },
+    { name: "The Dragon Chang", quality: "unique" },
+    { name: "Razortine", quality: "unique" },
+    { name: "Bloodthief", quality: "unique" },
+    { name: "Lance of Yaggai", quality: "unique" },
+    { name: "The Tannr Gorerod", quality: "unique" },
+    { name: "Dimoak's Hew", quality: "unique" },
+    { name: "Steelgoad", quality: "unique" },
+    { name: "The Battlebranch", quality: "unique" },
+    { name: "Woestave", quality: "unique" },
+    { name: "The Grim Reaper", quality: "unique" },
+    { name: "Pluckeye", quality: "unique" },
+    { name: "Witherstring", quality: "unique" },
+    { name: "Raven Claw", quality: "unique" },
+    { name: "Rogue's Bow", quality: "unique" },
+    { name: "Stormstrike", quality: "unique" },
+    { name: "Wizendraw", quality: "unique" },
+    { name: "Hellclap", quality: "unique" },
+    { name: "Blastbark", quality: "unique" },
+    { name: "Skystrike", quality: "unique" },
+    { name: "Riphook", quality: "unique" },
+    { name: "Kuko Shakaku", quality: "unique" },
+    { name: "Endlesshail", quality: "unique" },
+    { name: "Witchwild String", quality: "unique" },
+    { name: "Cliffkiller", quality: "unique" },
+    { name: "Magewrath", quality: "unique" },
+    { name: "Goldstrike Arch", quality: "unique" },
+    { name: "Eaglehorn", quality: "unique" },
+    { name: "Widowmaker", quality: "unique" },
+    { name: "Windforce", quality: "unique" },
+    { name: "Leadcrow", quality: "unique" },
+    { name: "Ichorsting", quality: "unique" },
+    { name: "Hellcast", quality: "unique" },
+    { name: "Doomslinger", quality: "unique" },
+    { name: "Bane Ash", quality: "unique" },
+    { name: "Serpent Lord", quality: "unique" },
+    { name: "Spire of Lazarus", quality: "unique" },
+    { name: "The Salamander", quality: "unique" },
+    { name: "The Iron Jang Bong", quality: "unique" },
+    { name: "Knell Striker", quality: "unique" },
+    { name: "Rust Handle", quality: "unique" },
+    { name: "Stormeye", quality: "unique" },
+    { name: "True Silver", quality: "unique" },
+    { name: "Mage Slayer", quality: "unique" },
+    { name: "Tempest", quality: "unique" },
+    { name: "Coldkill", quality: "unique" },
+    { name: "Butcher's Pupil", quality: "unique" },
+    { name: "Islestrike", quality: "unique" },
+    { name: "Pompeii's Wrath", quality: "unique" },
+    { name: "Guardian Naga", quality: "unique" },
+    { name: "Warlord's Trust", quality: "unique" },
+    { name: "Spellsteel", quality: "unique" },
+    { name: "Stormrider", quality: "unique" },
+    { name: "Boneslayer Blade", quality: "unique" },
+    { name: "The Minotaur", quality: "unique" },
+    { name: "Razor's Edge", quality: "unique" },
+    { name: "Rune Master", quality: "unique" },
+    { name: "Cranebeak", quality: "unique" },
+    { name: "Death Cleaver", quality: "unique" },
+    { name: "Ethereal Edge", quality: "unique" },
+    { name: "Hellslayer", quality: "unique" },
+    { name: "Messerschmidt's Reaver", quality: "unique" },
+    { name: "Executioner's Justice", quality: "unique" },
+    { name: "Dark Clan Crusher", quality: "unique" },
+    { name: "Fleshrender", quality: "unique" },
+    { name: "Sureshrill Frost", quality: "unique" },
+    { name: "Moonfall", quality: "unique" },
+    { name: "Baezil's Vortex", quality: "unique" },
+    { name: "Earthshaker", quality: "unique" },
+    { name: "Bloodtree Stump", quality: "unique" },
+    { name: "The Gavel of Pain", quality: "unique" },
+    { name: "Nord's Tenderizer", quality: "unique" },
+    { name: "Demon Limb", quality: "unique" },
+    { name: "Baranar's Star", quality: "unique" },
+    { name: "Horizon's Tornado", quality: "unique" },
+    { name: "Stormlash", quality: "unique" },
+    { name: "Stone Crusher", quality: "unique" },
+    { name: "Schaefer's Hammer", quality: "unique" },
+    { name: "Windhammer", quality: "unique" },
+    { name: "Earth Shifter", quality: "unique" },
+    { name: "The Cranium Basher", quality: "unique" }
+  ],
+
+  // FIXED: Convert all remaining arrays to object structure
+  shield: [
+    { name: "Pelta Lunata", quality: "unique" },
+    { name: "Umbral Disk", quality: "unique" },
+    { name: "Swordback Hold", quality: "unique" },
+    { name: "Steelclash", quality: "unique" },
+    { name: "Wall of the Eyeless", quality: "unique" },
+    { name: "Bverrit Keep", quality: "unique" },
+    { name: "The Ward", quality: "unique" },
+    { name: "Visceratuant", quality: "unique" }
+  ],
+
+  gloves: [
+    { name: "The Hand of Broc", quality: "unique" },
+    { name: "Bloodfist", quality: "unique" },
+    { name: "Chance Guards", quality: "unique" },
+    { name: "Magefist", quality: "unique" },
+    { name: "Frostburn", quality: "unique" },
+    { name: "Venom Grip", quality: "unique" },
+    { name: "Gravepalm", quality: "unique" },
+    { name: "Ghoulhide", quality: "unique" },
+    { name: "Lava Gout", quality: "unique" },
+    { name: "Hellmouth", quality: "unique" },
+    { name: "Dracul's Grasp", quality: "unique" },
+    { name: "Soul Drainer", quality: "unique" },
+    { name: "Steelrend", quality: "unique" }
+  ],
+
+  belts: [
+    { name: "Arachnid Mesh", quality: "unique" },
+    { name: "Lenymo", quality: "unique" },
+    { name: "Snakecord", quality: "unique" },
+    { name: "Nightsmoke", quality: "unique" },
+    { name: "Goldwrap", quality: "unique" },
+    { name: "Bladebuckle", quality: "unique" },
+    { name: "String of Ears", quality: "unique" },
+    { name: "Razortail", quality: "unique" },
+    { name: "Gloom's Trap", quality: "unique" },
+    { name: "Snowclash", quality: "unique" },
+    { name: "Thundergod's Vigor", quality: "unique" },
+   
+    { name: "Nosferatu's Coil", quality: "unique" },
+    { name: "Verdungo's Hearty Cord", quality: "unique" },
+    { name: "Band of Skulls", quality: "unique" }
+    
+  ],
+
+  boots: [
+    { name: "Hotspur", quality: "unique" },
+    { name: "Gorefoot", quality: "unique" },
+    { name: "Treads of Cthon", quality: "unique" },
+    { name: "Goblin Toe", quality: "unique" },
+    { name: "Tearhaunch", quality: "unique" },
+    { name: "Infernostride", quality: "unique" },
+    { name: "Waterwalk", quality: "unique" },
+    { name: "Silkweave", quality: "unique" },
+    { name: "War Traveler", quality: "unique" },
+    { name: "Gore Rider", quality: "unique" },
+    { name: "Sandstorm Trek", quality: "unique" },
+    { name: "Marrowwalk", quality: "unique" },
+    { name: "Shadow Dancer", quality: "unique" }
+  ],
+
+  ringsone: [
+    { name: "Nagelring", quality: "unique" },
+    { name: "Manald Heal", quality: "unique" },
+    { name: "The Stone of Jordan", quality: "unique" },
+    { name: "Dwarf Star", quality: "unique" },
+    { name: "Raven Frost", quality: "unique" },
+    { name: "Bul-Kathos' Wedding Band", quality: "unique" },
+    { name: "Carrion Wind", quality: "unique" },
+    { name: "Nature's Peace", quality: "unique" },
+    { name: "Wisp Projector", quality: "unique" }
+  ],
+
+  ringstwo: [
+    { name: "Nagelring", quality: "unique" },
+    { name: "Manald Heal", quality: "unique" },
+    { name: "The Stone of Jordan", quality: "unique" },
+    { name: "Dwarf Star", quality: "unique" },
+    { name: "Raven Frost", quality: "unique" },
+    { name: "Bul-Kathos' Wedding Band", quality: "unique" },
+    { name: "Carrion Wind", quality: "unique" },
+    { name: "Nature's Peace", quality: "unique" },
+    { name: "Wisp Projector", quality: "unique" }
+  ],
+
+  amulets: [
+    { name: "Nokozan Relic", quality: "unique" },
+    { name: "The Eye of Etlich", quality: "unique" },
+    { name: "The Mahim-Oak Curio", quality: "unique" },
+    { name: "Saracen's Chance", quality: "unique" },
+    { name: "Crescent Moon", quality: "unique" },
+    { name: "The Cat's Eye", quality: "unique" },
+    { name: "Atma's Scarab", quality: "unique" },
+    { name: "Highlord's Wrath", quality: "unique" },
+    { name: "The Rising Sun", quality: "unique" },
+    { name: "Seraph's Hymn", quality: "unique" },
+    { name: "Mara's Kaleidoscope", quality: "unique" },
+    { name: "Metalgrid", quality: "unique" }
+  ]
+};
+
+// FIXED: Updated populate function to work with new structure
+function populateItemDropdowns() {
+  const dropdownMap = {
+    helm: 'helms-dropdown',
+    armor: 'armors-dropdown',
+    weapon: 'weapons-dropdown',
+    shield: 'offs-dropdown',
+    gloves: 'gloves-dropdown',
+    belts: 'belts-dropdown',
+    boots: 'boots-dropdown',
+    ringsone: 'ringsone-dropdown',
+    ringstwo: 'ringstwo-dropdown',
+    amulets: 'amulets-dropdown'
+  };
+
+  // Clear all dropdowns first
+  Object.values(dropdownMap).forEach(id => {
+    const dropdown = document.getElementById(id);
+    if (dropdown) dropdown.innerHTML = '<option value="">None</option>';
+  });
+
+  // Populate with new structure
+  for (const category in itemDropdownData) {
+    const items = itemDropdownData[category];
+    const dropdownId = dropdownMap[category];
+    
+    if (dropdownId && items) {
+      const dropdown = document.getElementById(dropdownId);
+      if (dropdown) {
+        items.forEach(item => {
+          // Check if item exists in itemList
+          if (itemList[item.name]) {
+            const option = document.createElement('option');
+            option.value = item.name;
+            option.textContent = item.name;
+            option.setAttribute('data-quality', item.quality);
+            
+            // Add CSS class for styling
+            if (item.quality === 'unique') {
+              option.className = 'unique-item';
+            } else if (item.quality === 'set') {
+              option.className = 'set-item';
+            }
+            
+            dropdown.appendChild(option);
+          }
+        });
+      }
+    }
+  }
+}
+
+        // CORRECTED: This function now correctly finds the info div for each dropdown.
+        function updateItemInfo(event) {
+            const dropdown = event.target;
+            const selectedItemName = dropdown.value;
+
+            // A map to find the correct info div for each dropdown
+            const infoDivIdMap = {
+                'weapons-dropdown': 'weapon-info',
+                'helms-dropdown': 'helm-info',
+                'armors-dropdown': 'armor-info',
+                'offs-dropdown': 'off-info',
+                'gloves-dropdown': 'glove-info',
+                'belts-dropdown': 'belt-info',
+                'boots-dropdown': 'boot-info',
+                'ringsone-dropdown': 'ringsone-info',
+                'ringstwo-dropdown': 'ringstwo-info',
+                'amulets-dropdown': 'amulet-info'
+            };
+
+            const infoDivId = infoDivIdMap[dropdown.id];
+            if (!infoDivId) {
+                return; // Exit if the dropdown ID isn't in our map
+            }
+
+            const infoDiv = document.getElementById(infoDivId);
+            if (infoDiv) {
+                if (selectedItemName && itemList[selectedItemName]) {
+                    const item = itemList[selectedItemName];
+                    infoDiv.innerHTML = item.description; // Display the full item description
+                } else {
+                    infoDiv.innerHTML = ''; // Clear the info div if 'None' is selected
+                }
+            }
+        }
+
+        // Function to set up event handlers for all dropdowns
+        function setupDropdownHandlers() {
+            const dropdowns = document.querySelectorAll('.equipment-container select');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('change', updateItemInfo);
+            });
+        }
+
+        // Authentication handlers
+        async function handleLogin(event) {
+            event.preventDefault();
+            const login = document.getElementById('loginInput').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            try {
+                const baseUrl = window.location.hostname === 'localhost' ? 
+                    'http://localhost:3001' : 'https://pd2planner-backend-517bf7cfa307.herokuapp.com';
+                    
+                const response = await fetch(`${baseUrl}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login, password })
+                });
+                
+                const data = await response.json();
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('username', data.username);
+                    updateUIState(data.username);
+                    alert('Login successful!');
+                } else {
+                    alert('Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed');
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            // Similar to login...
+        }
+
+        function updateUIState(username = null) {
+            const loginForm = document.getElementById('loginForm');
+            const welcomeMsg = document.getElementById('welcomeMsg');
+            
+            if (username) {
+                loginForm.style.display = 'none';
+                welcomeMsg.style.display = 'block';
+            } else {
+                loginForm.style.display = 'block';
+                welcomeMsg.style.display = 'none';
+            }
+        }
+
+        // Socket modal handlers
+        let currentSocket = null;
+
+        function showItemModal() {
+            document.getElementById('itemModal').classList.remove('hidden');
+        }
+
+        function hideItemModal() {
+            document.getElementById('itemModal').classList.add('hidden');
+        }
+
+        function showCorruptionModal() {
+            document.getElementById('corruptionModal').classList.remove('hidden');
+        }
+
+        function hideCorruptionModal() {
+            document.getElementById('corruptionModal').classList.add('hidden');
+        }
+
+        // Initialize socket click handlers
+        function setupSocketHandlers() {
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('socketz')) {
+                    currentSocket = e.target;
+                    showItemModal();
+                }
+            });
+
+            // Socket category tabs
+            document.querySelectorAll('.socket-category-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.socket-category-tab').forEach(t => 
+                        t.classList.remove('active'));
+                    document.querySelectorAll('.socket-content').forEach(c => 
+                        c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.querySelector(`.socket-content[data-category="${this.dataset.category}"]`)
+                        .classList.add('active');
+                });
+            });
+        }
+
+        // Main initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            createInventoryGrid();
+            populateItemDropdowns();
+            setupDropdownHandlers();
+            setupSocketHandlers();
+            
+            // Initialize other systems
+            if (typeof updatePolyLife === 'function') updatePolyLife();
+            
+            // Check login state
+            const username = localStorage.getItem('username');
+            if (username) updateUIState(username);
+        });
+
+        class NuclearDropdownFilter {
+  constructor() {
+    this.allowedItems = {
+      helm: new Set(),
+      armor: new Set(), 
+      weapon: new Set(),
+      shield: new Set(),
+      gloves: new Set(),
+      belts: new Set(),
+      boots: new Set(),
+      ringsone: new Set(),
+      ringstwo: new Set(),
+      amulets: new Set()
+    };
+    
+    this.dropdownMap = {
+      helm: 'helms-dropdown',
+      armor: 'armors-dropdown',
+      weapon: 'weapons-dropdown',
+      shield: 'offs-dropdown',
+      gloves: 'gloves-dropdown',
+      belts: 'belts-dropdown',
+      boots: 'boots-dropdown',
+      ringsone: 'ringsone-dropdown',
+      ringstwo: 'ringstwo-dropdown',
+      amulets: 'amulets-dropdown'
+    };
+    
+    this.init();
+  }
+  
+  init() {
+    // Build allowed items sets from itemDropdownData
+    if (typeof itemDropdownData !== 'undefined') {
+      Object.keys(this.allowedItems).forEach(category => {
+        if (itemDropdownData[category]) {
+          itemDropdownData[category].forEach(item => {
+            this.allowedItems[category].add(item.name);
+          });
+        }
+      });
+    } else {
+      console.error('itemDropdownData not found! Nuclear filter cannot work.');
+      return;
+    }
+    
+    // Start filtering with multiple attempts to catch all scripts
+    this.startNuclearFiltering();
+  }
+  
+  startNuclearFiltering() {
+    // Immediate filter
+    this.nukeUnwantedItems();
+    
+    // Filter after short delay (catches most scripts)
+    setTimeout(() => this.nukeUnwantedItems(), 100);
+    
+    // Filter after medium delay (catches slower scripts)
+    setTimeout(() => this.nukeUnwantedItems(), 500);
+    
+    // Filter after long delay (catches really slow scripts)
+    setTimeout(() => this.nukeUnwantedItems(), 1000);
+    
+    // Set up continuous monitoring
+    this.setupContinuousMonitoring();
+  }
+  
+  nukeUnwantedItems() {
+    console.log('🚀 NUCLEAR DROPDOWN FILTER: Starting purge...');
+    
+    let totalRemoved = 0;
+    let totalKept = 0;
+    
+    Object.entries(this.dropdownMap).forEach(([category, dropdownId]) => {
+      const dropdown = document.getElementById(dropdownId);
+      if (!dropdown) {
+        console.warn(`❌ Dropdown not found: ${dropdownId}`);
+        return;
+      }
+      
+      const allowedSet = this.allowedItems[category];
+      const initialCount = dropdown.options.length;
+      
+      // Convert to array to avoid live NodeList issues
+      const options = Array.from(dropdown.options);
+      let removedFromThis = 0;
+      let keptFromThis = 0;
+      
+      options.forEach(option => {
+        const value = option.value;
+        const text = option.textContent || option.text;
+        
+        // Always keep empty/None options
+        if (!value || value === '' || value === 'None' || text === 'None') {
+          keptFromThis++;
+          return;
+        }
+        
+        // Check if item is allowed (check both value and text)
+        const isAllowed = allowedSet.has(value) || allowedSet.has(text);
+        
+        if (!isAllowed) {
+          console.log(`💥 NUKING: "${value || text}" from ${category}`);
+          option.remove();
+          removedFromThis++;
+          totalRemoved++;
+        } else {
+          // Apply quality styling to allowed items
+          this.applyQualityStyling(option, category, value || text);
+          keptFromThis++;
+          totalKept++;
+        }
+      });
+      
+      console.log(`📊 ${category}: ${initialCount} → ${keptFromThis} (removed ${removedFromThis})`);
+      
+      // Remove any optgroups that might be messing things up
+      this.removeOptgroups(dropdown);
+    });
+    
+    console.log(`🎯 NUCLEAR FILTER COMPLETE: Removed ${totalRemoved} items, Kept ${totalKept} items`);
+  }
+  
+  applyQualityStyling(option, category, itemName) {
+    if (typeof itemDropdownData === 'undefined') return;
+    
+    const categoryData = itemDropdownData[category];
+    if (!categoryData) return;
+    
+    const itemData = categoryData.find(item => item.name === itemName);
+    if (!itemData) return;
+    
+    // Apply quality-based styling
+    if (itemData.quality === 'unique') {
+      option.style.color = '#D4AF37'; // Gold
+      option.style.fontWeight = 'bold';
+      option.className = 'unique-item';
+    } else if (itemData.quality === 'set') {
+      option.style.color = '#32CD32'; // Green  
+      option.style.fontWeight = 'bold';
+      option.className = 'set-item';
+    }
+  }
+  
+  removeOptgroups(dropdown) {
+    // Remove all optgroups (they often cause categorization issues)
+    const optgroups = Array.from(dropdown.querySelectorAll('optgroup'));
+    optgroups.forEach(optgroup => {
+      // Move options out of optgroup before removing it
+      Array.from(optgroup.options).forEach(option => {
+        dropdown.appendChild(option);
+      });
+      optgroup.remove();
+    });
+  }
+  
+
+  
+  setupContinuousMonitoring() {
+    // Monitor for changes and re-filter if needed
+    const observer = new MutationObserver((mutations) => {
+      let needsRefilter = false;
+      
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          // Check if new options were added
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeName === 'OPTION' || node.nodeName === 'OPTGROUP') {
+              needsRefilter = true;
+            }
+          });
+        }
+      });
+      
+      if (needsRefilter) {
+        console.log('🔄 Detected dropdown changes, re-filtering...');
+        setTimeout(() => this.nukeUnwantedItems(), 50);
+      }
+    });
+    
+    // Observe all dropdowns
+    Object.values(this.dropdownMap).forEach(dropdownId => {
+      const dropdown = document.getElementById(dropdownId);
+      if (dropdown) {
+        observer.observe(dropdown, { 
+          childList: true, 
+          subtree: true 
+        });
+      }
+    });
+    
+    console.log('👁️ Continuous monitoring activated');
+  }
+  
+  // Manual trigger function
+  forceFilter() {
+    console.log('🔥 Manual nuclear filter triggered');
+    this.nukeUnwantedItems();
+  }
+}
+
+// Initialize nuclear filter
+let nuclearFilter;
+
+function initNuclearFilter() {
+  if (nuclearFilter) {
+    console.warn('Nuclear filter already initialized');
+    return;
+  }
+  
+  nuclearFilter = new NuclearDropdownFilter();
+  
+  // Expose global function for manual triggering
+  window.forceFilterDropdowns = () => {
+    if (nuclearFilter) {
+      nuclearFilter.forceFilter();
+    }
+  };
+}
+
+// Multiple initialization methods to ensure it runs
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initNuclearFilter, 100);
+  });
+} else {
+  setTimeout(initNuclearFilter, 100);
+}
+
+// Also initialize after window load (catches everything)
+window.addEventListener('load', () => {
+  setTimeout(initNuclearFilter, 200);
+});
+
+// Export for manual use
+window.NuclearDropdownFilter = NuclearDropdownFilter;
+    </script>
+</body>
+</html>

@@ -3207,9 +3207,9 @@ function handleUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      select.dispatchEvent(new Event("change"));
-      // alert("Item upgraded to elite version!");
-      return;
+      //   select.dispatchEvent(new Event("change"));
+      //   // alert("Item upgraded to elite version!");
+      //   return;
     }
   } else {
     if (
@@ -3235,9 +3235,9 @@ function handleUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      select.dispatchEvent(new Event("change"));
-      // alert("Item upgraded to exceptional version!");
-      return;
+      //     select.dispatchEvent(new Event("change"));
+      //     // alert("Item upgraded to exceptional version!");
+      //     return;
     }
   }
 
@@ -3288,9 +3288,9 @@ function handleArmorUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      select.dispatchEvent(new Event("change"));
-      // alert("Item upgraded to elite version!");
-      return;
+      //   select.dispatchEvent(new Event("change"));
+      //   // alert("Item upgraded to elite version!");
+      //   return;
     }
   } else {
     if (
@@ -3316,9 +3316,9 @@ function handleArmorUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      select.dispatchEvent(new Event("change"));
-      // alert("Item upgraded to exceptional version!");
-      return;
+      //     select.dispatchEvent(new Event("change"));
+      //     // alert("Item upgraded to exceptional version!");
+      //     return;
     }
   }
 
@@ -3404,12 +3404,10 @@ function handleWeaponUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      // Manually trigger the change event to update the display
-      select.dispatchEvent(new Event("change"));
-      return;
+      //   select.dispatchEvent(new Event("change"));
+      //   return;
     }
   } else {
-    // Similar logic for exceptional upgrade
     if (
       level >= upgrades.exceptional.properties.reqlvl &&
       str >= baseStrengths[upgrades.exceptional.base]
@@ -3463,9 +3461,8 @@ function handleWeaponUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      // Manually trigger the change event to update the display
-      select.dispatchEvent(new Event("change"));
-      return;
+      //     select.dispatchEvent(new Event("change"));
+      //     return;
     }
   }
 
@@ -3522,20 +3519,20 @@ function handleWeaponUpgradeWithCorruption() {
       alert("Character does not meet requirements for upgrade");
       return;
     }
+  }
 
-    if (window.typeCorruptions[category]) {
-      const socketMatch =
-        window.typeCorruptions[category].match(/Socketed \((\d+)\)/);
-      if (socketMatch) {
-        const socketCount = parseInt(socketMatch[1]);
-        window.typeCorruptions[category] = `Socketed (${socketCount})`;
-        localStorage.setItem(
-          "typeCorruptions",
-          JSON.stringify(window.typeCorruptions)
-        );
-        updateCorruptionDisplay(category, `Socketed (${socketCount})`);
-        updateSocketCount(category, socketCount);
-      }
+  if (window.typeCorruptions && window.typeCorruptions[category]) {
+    const socketMatch =
+      window.typeCorruptions[category].match(/Socketed \((\d+)\)/);
+    if (socketMatch) {
+      const socketCount = parseInt(socketMatch[1]);
+      window.typeCorruptions[category] = `Socketed (${socketCount})`;
+      localStorage.setItem(
+        "typeCorruptions",
+        JSON.stringify(window.typeCorruptions)
+      );
+      updateCorruptionDisplay(category, `Socketed (${socketCount})`);
+      updateSocketCount(category, socketCount);
     }
   }
 
@@ -3592,7 +3589,7 @@ function handleWeaponUpgradeWithCorruption() {
   };
 
   // Trigger update
-  select.dispatchEvent(new Event("change"));
+  // select.dispatchEvent(new Event("change"));
   updateWeaponDamageDisplay();
 
   // Make sure corruptions are still displayed
@@ -3649,9 +3646,9 @@ function handleGloveUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      select.dispatchEvent(new Event("change"));
-      // alert("Item upgraded to elite version!");
-      return;
+      //   select.dispatchEvent(new Event("change"));
+      //   // alert("Item upgraded to elite version!");
+      //   return;
     }
   } else {
     if (
@@ -3662,7 +3659,7 @@ function handleGloveUpgrade() {
         ...upgrades.exceptional.properties,
         defense: calculateItemDefense(
           currentItemData,
-          upgrades.elite.base,
+          upgrades.exceptional.base,
           "gloves"
         ),
         reqstr: baseStrengths[upgrades.exceptional.base],
@@ -3678,9 +3675,9 @@ function handleGloveUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      select.dispatchEvent(new Event("change"));
-      // alert("Item upgraded to exceptional version!");
-      return;
+      //     select.dispatchEvent(new Event("change"));
+      //     // alert("Item upgraded to exceptional version!");
+      //     return;
     }
   }
 
@@ -3735,8 +3732,8 @@ function handleBeltUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      select.dispatchEvent(new Event("change"));
-      // alert("Item upgraded to elite version!");
+      //   select.dispatchEvent(new Event("change"));
+      //   // alert("Item upgraded to elite version!");
       return;
     }
   } else {
@@ -3748,7 +3745,7 @@ function handleBeltUpgrade() {
         ...upgrades.exceptional.properties,
         defense: calculateItemDefense(
           currentItemData,
-          upgrades.elite.base,
+          upgrades.exceptional.base,
           "belts"
         ),
         reqstr: baseStrengths[upgrades.exceptional.base],
@@ -3764,9 +3761,9 @@ function handleBeltUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      select.dispatchEvent(new Event("change"));
-      // alert("Item upgraded to exceptional version!");
-      return;
+      //     select.dispatchEvent(new Event("change"));
+      //     // alert("Item upgraded to exceptional version!");
+      //     return;
     }
   }
 
@@ -3801,7 +3798,7 @@ function updateDefense() {
       lines[defenseIndex] = `Defense: ${newDefense}`;
       item.description = lines.join("<br>");
       item.properties.defense = newDefense;
-      select.dispatchEvent(new Event("change"));
+      // select.dispatchEvent(new Event("change"));
     }
   });
 }
@@ -3955,7 +3952,7 @@ function makeEtherealItem(category) {
   }
 
   // Trigger change event to update display
-  select.dispatchEvent(new Event("change"));
+  // select.dispatchEvent(new Event("change"));
 
   // Reapply socket corruption if there was one
   if (socketCorruption) {
@@ -4010,6 +4007,7 @@ function makeEtherealWeapon(weaponName) {
     );
   }
 
+  // Update display elements
   // Update display elements
   document
     .getElementById("weapons-dropdown")
@@ -4815,9 +4813,9 @@ function makeEtherealShield() {
   currentItemData.description = lines.join("<br>");
 
   // Trigger display update
-  select.dispatchEvent(new Event("change"));
+  // select.dispatchEvent(new Event("change"));
 
   console.log("Shield made ethereal with defense:", newDefense);
 }
-
 // Add this line to your event listeners
+

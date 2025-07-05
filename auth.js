@@ -15,11 +15,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+
+
+
+// Log static file requests for debugging
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Or specify your domain
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
+    if (req.url.endsWith('.js')) {
+        console.log('🔍 JS file requested:', req.url);
+        console.log('📁 Looking in directory:', __dirname);
+    }
+    next();
 });
 
 mongoose
