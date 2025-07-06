@@ -9,12 +9,9 @@
     <link rel="icon" type="image/png" href="/icon.png">
 </head>
 <body>
-    <button onclick="document.body.classList.toggle('moody')" 
-            style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: black; color: white; padding: 10px; border-radius: 5px;">
-        Toggle Theme
-    </button>
+    
 
-    <div class="particles-container"></div>
+
 
     <div class="main-wrapper">
         <div class="polyrellife">
@@ -96,7 +93,8 @@
   </div>
   <button class="add-socket-btn" onclick="addSocket('helm')">+</button>
 </div>
-            </div>
+</div>
+
             <div class="grouparmor">
               <label>Armor</label>
               <select id="armors-dropdown">
@@ -419,14 +417,63 @@
             </select>
             <input type="number" id="merclvlValue" min="1" max="99" value="1">
             
-            <div class="merc-equipment">
-                <select id="merchelms-dropdown"><option value="">None</option></select>
-                <select id="mercarmors-dropdown"><option value="">None</option></select>
-                <select id="mercweapons-dropdown"><option value="">None</option></select>
+            <div class="mercequipment-container">
+
+                <div class="mercgroupweapons">
+              <label>Merc Weapon</label>
+              <select id="mercweapons-dropdown">
+                <option value="">None</option>
+              </select>
+              <button id="upgradeHelmButton">Upgrade</button>
+              <button id="makeethereal">Make Ethereal</button>
+              <button id="corruptHelm">Corrupt</button>
+              <div id="merc-weapon-info" class="item-info"></div>
+              <div class="socket-container" data-section="mercweapon">
+                <div class="socket-grid sockets-0">
+  <div class="socket-slot empty" data-index="0"></div>
+  <div class="socket-slot empty" data-index="1"></div>
+  </div>
+  <button class="add-socket-btn" onclick="addSocket('mercweapon')">+</button>
+</div>
+</div>
+               <div class="mercgrouphelms">
+              <label>Merc Helm</label>
+              <select id="merchelms-dropdown">
+                <option value="">None</option>
+              </select>
+              <button id="upgradeHelmButton">Upgrade</button>
+              <button id="makeethereal">Make Ethereal</button>
+              <button id="corruptHelm">Corrupt</button>
+              <div id="merc-helm-info" class="item-info"></div>
+              <div class="socket-container" data-section="merchelm">
+                <div class="socket-grid sockets-0">
+  <div class="socket-slot empty" data-index="0"></div>
+  <div class="socket-slot empty" data-index="1"></div>
+  </div>
+  <button class="add-socket-btn" onclick="addSocket('merchelm')">+</button>
+</div>
+</div>
+                 <div class="mercgrouparmors">
+              <label>Merc Armor</label>
+              <select id="mercarmors-dropdown">
+                <option value="">None</option>
+              </select>
+              <button id="upgradeHelmButton">Upgrade</button>
+              <button id="makeethereal">Make Ethereal</button>
+              <button id="corruptHelm">Corrupt</button>
+              <div id="merc-armor-info" class="item-info"></div>
+              <div class="socket-container" data-section="mercarmor">
+                <div class="socket-grid sockets-0">
+  <div class="socket-slot empty" data-index="0"></div>
+  <div class="socket-slot empty" data-index="1"></div>
+  </div>
+  <button class="add-socket-btn" onclick="addSocket('mercarmor')">+</button>
+</div>
+</div>
             </div>
         </div>
 
-        <div class="auth-container">
+        <!-- <div class="auth-container">
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <h2>Login</h2>
                 <input type="text" id="loginInput" placeholder="Email or Username" required>
@@ -445,14 +492,14 @@
                 <input type="password" id="signupPassword" placeholder="Password" required>
                 <button type="submit">Sign Up</button>
             </form>
-        </div>
+        </div> -->
 
         
         
 
        
 
-        <div class="character-management">
+        <!-- <div class="character-management">
             <button id="saveCharacterButton">Save Character</button>
             <button id="loadCharacterButton">Load Character</button>
             <div id="charactersList"></div>
@@ -472,7 +519,7 @@
             <span class="close">&times;</span>
             <h2>Create Custom Item</h2>
             </div>
-    </div>
+    </div> -->
 
 
 
@@ -504,39 +551,8 @@
 <!-- <script src="stats-calculator.js"></script> -->
 
     <script>
-        // Initialize particles effect
-        function createParticles() {
-            const container = document.querySelector('.particles-container');
-            
-            function spawnParticle() {
-                if (!document.body.classList.contains('moody')) return;
-                
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                const randomType = Math.floor(Math.random() * 3) + 1;
-                particle.classList.add('type' + randomType);
-                
-                const size = Math.random() * 60 + 12;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                particle.style.left = `${x}px`;
-                particle.style.top = `${y}px`;
-                
-                particle.style.animation = `float ${Math.random() * 3 + 2}s ease-out`;
-                
-                container.appendChild(particle);
-                
-                particle.addEventListener('animationend', () => {
-                    particle.remove();
-                });
-            }
-            
-            setInterval(spawnParticle, 35);
-        }
+       
+       
 
         // Initialize inventory grid
         function createInventoryGrid() {
@@ -548,7 +564,7 @@
             }
         }
 
-      // FIXED: Consistent data structure for all categories
+      
 const itemDropdownData = {
   helm: [
     // Unique items
@@ -684,7 +700,7 @@ const itemDropdownData = {
     { name: "Blood Crescent", quality: "unique" },
     { name: "Skewer of Krintiz", quality: "unique" },
     { name: "Gleamscythe", quality: "unique" },
-    { name: "Griswold's Edge", quality: "set" },
+    { name: "Griswold's Edge", quality: "unique" },
     { name: "Hellplague", quality: "unique" },
     { name: "Culwen's Point", quality: "unique" },
     { name: "Shadowfang", quality: "unique" },
@@ -880,15 +896,29 @@ const itemDropdownData = {
     { name: "Seraph's Hymn", quality: "unique" },
     { name: "Mara's Kaleidoscope", quality: "unique" },
     { name: "Metalgrid", quality: "unique" }
-  ]
-};
+  ],
 
+  
+
+};
+itemDropdownData.merchelm = itemDropdownData.helm;
+itemDropdownData.mercarmor = itemDropdownData.armor;
+itemDropdownData.mercweapon = itemDropdownData.weapon;
+
+// Then make sure populateItemDropdowns() is called AFTER the assignment
+document.addEventListener('DOMContentLoaded', function() {
+  // Assignment should be done by now
+  populateItemDropdowns();
+  });
 // FIXED: Updated populate function to work with new structure
 function populateItemDropdowns() {
   const dropdownMap = {
     helm: 'helms-dropdown',
+    merchelm: 'merchelms-dropdown',
     armor: 'armors-dropdown',
+    mercarmor: 'mercarmors-dropdown',    // ADD THIS
     weapon: 'weapons-dropdown',
+    mercweapon: 'mercweapons-dropdown', // ADD THIS
     shield: 'offs-dropdown',
     gloves: 'gloves-dropdown',
     belts: 'belts-dropdown',
@@ -935,6 +965,24 @@ function populateItemDropdowns() {
   }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+  populateItemDropdowns();
+  
+  // Add event listeners to all dropdowns
+  const allDropdowns = [
+    'helms-dropdown', 'merchelms-dropdown', 'armors-dropdown', 'mercarmors-dropdown',
+    'mercweapons-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 
+    'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 
+    'ringstwo-dropdown', 'amulets-dropdown'
+  ];
+  
+  allDropdowns.forEach(dropdownId => {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+      dropdown.addEventListener('change', updateItemInfo);
+    }
+  });
+});
         // CORRECTED: This function now correctly finds the info div for each dropdown.
         function updateItemInfo(event) {
             const dropdown = event.target;
@@ -944,6 +992,9 @@ function populateItemDropdowns() {
             const infoDivIdMap = {
                 'weapons-dropdown': 'weapon-info',
                 'helms-dropdown': 'helm-info',
+                'merchelms-dropdown': 'merc-helm-info',
+                'mercarmors-dropdown': 'merc-armor-info',
+                'mercweapons-dropdown': 'merc-weapon-info',
                 'armors-dropdown': 'armor-info',
                 'offs-dropdown': 'off-info',
                 'gloves-dropdown': 'glove-info',
@@ -1086,242 +1137,250 @@ function populateItemDropdowns() {
             if (username) updateUIState(username);
         });
 
-        class NuclearDropdownFilter {
-  constructor() {
-    this.allowedItems = {
-      helm: new Set(),
-      armor: new Set(), 
-      weapon: new Set(),
-      shield: new Set(),
-      gloves: new Set(),
-      belts: new Set(),
-      boots: new Set(),
-      ringsone: new Set(),
-      ringstwo: new Set(),
-      amulets: new Set()
-    };
+//         class NuclearDropdownFilter {
+//   constructor() {
+//     this.allowedItems = {
+//       helm: new Set(),
+//       merchelm: new Set(),
+//       armor: new Set(), 
+//       mercarmor: new Set(),
+//       weapon: new Set(),
+//       mercweapon: new Set(),
+//       shield: new Set(),
+//       gloves: new Set(),
+//       belts: new Set(),
+//       boots: new Set(),
+//       ringsone: new Set(),
+//       ringstwo: new Set(),
+//       amulets: new Set()
+//     };
     
-    this.dropdownMap = {
-      helm: 'helms-dropdown',
-      armor: 'armors-dropdown',
-      weapon: 'weapons-dropdown',
-      shield: 'offs-dropdown',
-      gloves: 'gloves-dropdown',
-      belts: 'belts-dropdown',
-      boots: 'boots-dropdown',
-      ringsone: 'ringsone-dropdown',
-      ringstwo: 'ringstwo-dropdown',
-      amulets: 'amulets-dropdown'
-    };
+//     this.dropdownMap = {
+//       helm: 'helms-dropdown',
+//       merchelm: 'merchelms-dropdown',
+//       armor: 'armors-dropdown',
+//       mercarmor: 'mercarmors-dropdown',
+//       weapon: 'weapons-dropdown',
+//       mercweapon: 'mercweapons-dropdown',
+//       shield: 'offs-dropdown',
+//       gloves: 'gloves-dropdown',
+//       belts: 'belts-dropdown',
+//       boots: 'boots-dropdown',
+//       ringsone: 'ringsone-dropdown',
+//       ringstwo: 'ringstwo-dropdown',
+//       amulets: 'amulets-dropdown'
+//     };
     
-    this.init();
-  }
+//     this.init();
+//   }
   
-  init() {
-    // Build allowed items sets from itemDropdownData
-    if (typeof itemDropdownData !== 'undefined') {
-      Object.keys(this.allowedItems).forEach(category => {
-        if (itemDropdownData[category]) {
-          itemDropdownData[category].forEach(item => {
-            this.allowedItems[category].add(item.name);
-          });
-        }
-      });
-    } else {
-      console.error('itemDropdownData not found! Nuclear filter cannot work.');
-      return;
-    }
+//   init() {
+//     // Build allowed items sets from itemDropdownData
+//     if (typeof itemDropdownData !== 'undefined') {
+//       Object.keys(this.allowedItems).forEach(category => {
+//         if (itemDropdownData[category]) {
+//           itemDropdownData[category].forEach(item => {
+//             this.allowedItems[category].add(item.name);
+//           });
+//         }
+//       });
+//     } else {
+//       console.error('itemDropdownData not found! Nuclear filter cannot work.');
+//       return;
+//     }
     
-    // Start filtering with multiple attempts to catch all scripts
-    this.startNuclearFiltering();
-  }
+//     // Start filtering with multiple attempts to catch all scripts
+//     this.startNuclearFiltering();
+//   }
   
-  startNuclearFiltering() {
-    // Immediate filter
-    this.nukeUnwantedItems();
+//   startNuclearFiltering() {
+//     // Immediate filter
+//     this.nukeUnwantedItems();
     
-    // Filter after short delay (catches most scripts)
-    setTimeout(() => this.nukeUnwantedItems(), 100);
+//     // Filter after short delay (catches most scripts)
+//     setTimeout(() => this.nukeUnwantedItems(), 100);
     
-    // Filter after medium delay (catches slower scripts)
-    setTimeout(() => this.nukeUnwantedItems(), 500);
+//     // Filter after medium delay (catches slower scripts)
+//     setTimeout(() => this.nukeUnwantedItems(), 500);
     
-    // Filter after long delay (catches really slow scripts)
-    setTimeout(() => this.nukeUnwantedItems(), 1000);
+//     // Filter after long delay (catches really slow scripts)
+//     setTimeout(() => this.nukeUnwantedItems(), 1000);
     
-    // Set up continuous monitoring
-    this.setupContinuousMonitoring();
-  }
+//     // Set up continuous monitoring
+//     this.setupContinuousMonitoring();
+//   }
   
-  nukeUnwantedItems() {
-    console.log('🚀 NUCLEAR DROPDOWN FILTER: Starting purge...');
+//   nukeUnwantedItems() {
+//     console.log(' NUCLEAR DROPDOWN FILTER: Starting purge...');
     
-    let totalRemoved = 0;
-    let totalKept = 0;
+//     let totalRemoved = 0;
+//     let totalKept = 0;
     
-    Object.entries(this.dropdownMap).forEach(([category, dropdownId]) => {
-      const dropdown = document.getElementById(dropdownId);
-      if (!dropdown) {
-        console.warn(`❌ Dropdown not found: ${dropdownId}`);
-        return;
-      }
+//     Object.entries(this.dropdownMap).forEach(([category, dropdownId]) => {
+//       const dropdown = document.getElementById(dropdownId);
+//       if (!dropdown) {
+//         console.warn(` Dropdown not found: ${dropdownId}`);
+//         return;
+//       }
       
-      const allowedSet = this.allowedItems[category];
-      const initialCount = dropdown.options.length;
+//       const allowedSet = this.allowedItems[category];
+//       const initialCount = dropdown.options.length;
       
-      // Convert to array to avoid live NodeList issues
-      const options = Array.from(dropdown.options);
-      let removedFromThis = 0;
-      let keptFromThis = 0;
+//       // Convert to array to avoid live NodeList issues
+//       const options = Array.from(dropdown.options);
+//       let removedFromThis = 0;
+//       let keptFromThis = 0;
       
-      options.forEach(option => {
-        const value = option.value;
-        const text = option.textContent || option.text;
+//       options.forEach(option => {
+//         const value = option.value;
+//         const text = option.textContent || option.text;
         
-        // Always keep empty/None options
-        if (!value || value === '' || value === 'None' || text === 'None') {
-          keptFromThis++;
-          return;
-        }
+//         // Always keep empty/None options
+//         if (!value || value === '' || value === 'None' || text === 'None') {
+//           keptFromThis++;
+//           return;
+//         }
         
-        // Check if item is allowed (check both value and text)
-        const isAllowed = allowedSet.has(value) || allowedSet.has(text);
+//         // Check if item is allowed (check both value and text)
+//         const isAllowed = allowedSet.has(value) || allowedSet.has(text);
         
-        if (!isAllowed) {
-          console.log(`💥 NUKING: "${value || text}" from ${category}`);
-          option.remove();
-          removedFromThis++;
-          totalRemoved++;
-        } else {
-          // Apply quality styling to allowed items
-          this.applyQualityStyling(option, category, value || text);
-          keptFromThis++;
-          totalKept++;
-        }
-      });
+//         if (!isAllowed) {
+//           console.log(` NUKING: "${value || text}" from ${category}`);
+//           option.remove();
+//           removedFromThis++;
+//           totalRemoved++;
+//         } else {
+//           // Apply quality styling to allowed items
+//           this.applyQualityStyling(option, category, value || text);
+//           keptFromThis++;
+//           totalKept++;
+//         }
+//       });
       
-      console.log(`📊 ${category}: ${initialCount} → ${keptFromThis} (removed ${removedFromThis})`);
+//       console.log(`📊 ${category}: ${initialCount} → ${keptFromThis} (removed ${removedFromThis})`);
       
-      // Remove any optgroups that might be messing things up
-      this.removeOptgroups(dropdown);
-    });
+//       // Remove any optgroups that might be messing things up
+//       this.removeOptgroups(dropdown);
+//     });
     
-    console.log(`🎯 NUCLEAR FILTER COMPLETE: Removed ${totalRemoved} items, Kept ${totalKept} items`);
-  }
+//     console.log(` NUCLEAR FILTER COMPLETE: Removed ${totalRemoved} items, Kept ${totalKept} items`);
+//   }
   
-  applyQualityStyling(option, category, itemName) {
-    if (typeof itemDropdownData === 'undefined') return;
+//   applyQualityStyling(option, category, itemName) {
+//     if (typeof itemDropdownData === 'undefined') return;
     
-    const categoryData = itemDropdownData[category];
-    if (!categoryData) return;
+//     const categoryData = itemDropdownData[category];
+//     if (!categoryData) return;
     
-    const itemData = categoryData.find(item => item.name === itemName);
-    if (!itemData) return;
+//     const itemData = categoryData.find(item => item.name === itemName);
+//     if (!itemData) return;
     
-    // Apply quality-based styling
-    if (itemData.quality === 'unique') {
-      option.style.color = '#D4AF37'; // Gold
-      option.style.fontWeight = 'bold';
-      option.className = 'unique-item';
-    } else if (itemData.quality === 'set') {
-      option.style.color = '#32CD32'; // Green  
-      option.style.fontWeight = 'bold';
-      option.className = 'set-item';
-    }
-  }
+//     // Apply quality-based styling
+//     if (itemData.quality === 'unique') {
+//       option.style.color = '#D4AF37'; // Gold
+//       option.style.fontWeight = 'bold';
+//       option.className = 'unique-item';
+//     } else if (itemData.quality === 'set') {
+//       option.style.color = '#32CD32'; // Green  
+//       option.style.fontWeight = 'bold';
+//       option.className = 'set-item';
+//     }
+//   }
   
-  removeOptgroups(dropdown) {
-    // Remove all optgroups (they often cause categorization issues)
-    const optgroups = Array.from(dropdown.querySelectorAll('optgroup'));
-    optgroups.forEach(optgroup => {
-      // Move options out of optgroup before removing it
-      Array.from(optgroup.options).forEach(option => {
-        dropdown.appendChild(option);
-      });
-      optgroup.remove();
-    });
-  }
+//   removeOptgroups(dropdown) {
+//     // Remove all optgroups (they often cause categorization issues)
+//     const optgroups = Array.from(dropdown.querySelectorAll('optgroup'));
+//     optgroups.forEach(optgroup => {
+//       // Move options out of optgroup before removing it
+//       Array.from(optgroup.options).forEach(option => {
+//         dropdown.appendChild(option);
+//       });
+//       optgroup.remove();
+//     });
+//   }
   
 
   
-  setupContinuousMonitoring() {
-    // Monitor for changes and re-filter if needed
-    const observer = new MutationObserver((mutations) => {
-      let needsRefilter = false;
+//   setupContinuousMonitoring() {
+//     // Monitor for changes and re-filter if needed
+//     const observer = new MutationObserver((mutations) => {
+//       let needsRefilter = false;
       
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'childList') {
-          // Check if new options were added
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeName === 'OPTION' || node.nodeName === 'OPTGROUP') {
-              needsRefilter = true;
-            }
-          });
-        }
-      });
+//       mutations.forEach((mutation) => {
+//         if (mutation.type === 'childList') {
+//           // Check if new options were added
+//           mutation.addedNodes.forEach((node) => {
+//             if (node.nodeName === 'OPTION' || node.nodeName === 'OPTGROUP') {
+//               needsRefilter = true;
+//             }
+//           });
+//         }
+//       });
       
-      if (needsRefilter) {
-        console.log('🔄 Detected dropdown changes, re-filtering...');
-        setTimeout(() => this.nukeUnwantedItems(), 50);
-      }
-    });
+//       if (needsRefilter) {
+//         console.log('🔄 Detected dropdown changes, re-filtering...');
+//         setTimeout(() => this.nukeUnwantedItems(), 50);
+//       }
+//     });
     
-    // Observe all dropdowns
-    Object.values(this.dropdownMap).forEach(dropdownId => {
-      const dropdown = document.getElementById(dropdownId);
-      if (dropdown) {
-        observer.observe(dropdown, { 
-          childList: true, 
-          subtree: true 
-        });
-      }
-    });
+//     // Observe all dropdowns
+//     Object.values(this.dropdownMap).forEach(dropdownId => {
+//       const dropdown = document.getElementById(dropdownId);
+//       if (dropdown) {
+//         observer.observe(dropdown, { 
+//           childList: true, 
+//           subtree: true 
+//         });
+//       }
+//     });
     
-    console.log('👁️ Continuous monitoring activated');
-  }
+//     console.log(' Continuous monitoring activated');
+//   }
   
-  // Manual trigger function
-  forceFilter() {
-    console.log('🔥 Manual nuclear filter triggered');
-    this.nukeUnwantedItems();
-  }
-}
+//   // Manual trigger function
+//   forceFilter() {
+//     console.log(' Manual nuclear filter triggered');
+//     this.nukeUnwantedItems();
+//   }
+// }
 
-// Initialize nuclear filter
-let nuclearFilter;
+// // Initialize nuclear filter
+// let nuclearFilter;
 
-function initNuclearFilter() {
-  if (nuclearFilter) {
-    console.warn('Nuclear filter already initialized');
-    return;
-  }
+// function initNuclearFilter() {
+//   if (nuclearFilter) {
+//     console.warn('Nuclear filter already initialized');
+//     return;
+//   }
   
-  nuclearFilter = new NuclearDropdownFilter();
+//   nuclearFilter = new NuclearDropdownFilter();
   
-  // Expose global function for manual triggering
-  window.forceFilterDropdowns = () => {
-    if (nuclearFilter) {
-      nuclearFilter.forceFilter();
-    }
-  };
-}
+//   // Expose global function for manual triggering
+//   window.forceFilterDropdowns = () => {
+//     if (nuclearFilter) {
+//       nuclearFilter.forceFilter();
+//     }
+//   };
+// }
 
-// Multiple initialization methods to ensure it runs
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(initNuclearFilter, 100);
-  });
-} else {
-  setTimeout(initNuclearFilter, 100);
-}
+// // Multiple initialization methods to ensure it runs
+// if (document.readyState === 'loading') {
+//   document.addEventListener('DOMContentLoaded', () => {
+//     setTimeout(initNuclearFilter, 100);
+//   });
+// } else {
+//   setTimeout(initNuclearFilter, 100);
+// }
 
-// Also initialize after window load (catches everything)
-window.addEventListener('load', () => {
-  setTimeout(initNuclearFilter, 200);
-});
+// // Also initialize after window load (catches everything)
+// window.addEventListener('load', () => {
+//   setTimeout(initNuclearFilter, 200);
+// });
 
-// Export for manual use
-window.NuclearDropdownFilter = NuclearDropdownFilter;
+// // Export for manual use
+// window.NuclearDropdownFilter = NuclearDropdownFilter;
+
+
 
 </script>
 

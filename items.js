@@ -413,13 +413,11 @@ const itemList = {
       defense: 169,
       reqstr: 58,
       reqlvl: 28,
-      lleech: 10,
+      battlecryctc: (8 / 6),
+      warcries: 3,
+      frw: 20,
+      // leapmov: 20,
       edef: 145,
-      dex: 25,
-      tolife: 50,
-      firres: 33,
-      goldfind: 100,
-      magicfind: 65,
     },
   },
 
@@ -3303,7 +3301,7 @@ const itemList = {
       reqstr: 94, // Required Strength
       reqdex: 70, // Required Dexterity
       reqlvl: 45, // Required Level
-      ctcmoletnboulder: (8, 28), // Chance to Cast Molten Boulder on Striking (8% chance, level 28)
+      ctcmoltenboulder: (8, 28), // Chance to Cast Molten Boulder on Striking (8% chance, level 28)
       ias: 40, // Increased Attack Speed (40%)
       edmg: 200, // Enhanced Damage (200%)
       tomindmg: 60, // Fire Damage Min (60)

@@ -111,7 +111,7 @@ class StatsCalculator {
           name: 'Perfect Sapphire', 
           img: 'img/perfectsapphire.png', 
           stats: { 
-            weapon: 'Adds 10-14 Cold Damage', 
+            weapon: '+10-14 Cold Damage', 
             helm: '+38 to Mana', 
             armor: '+38 to Mana', 
             shield: 'Cold Resist +40%' 
@@ -149,14 +149,24 @@ class StatsCalculator {
         }
       },
       runes: {
-        'shael': { 
-          name: 'Shael Rune', 
-          img: 'img/shaelrune.png', 
+        'el': { 
+          name: 'El Rune', 
+          img: 'img/elrune.png', 
           stats: { 
-            weapon: '+20% Increased Attack Speed', 
-            helm: '+20% Faster Hit Recovery', 
-            armor: '+20% Faster Hit Recovery', 
-            shield: '+20% Faster Block Rate' 
+            weapon: '+50 Attack Rating, +1 Light Radius', 
+            helm: '+15 Defense, +1 Light Radius', 
+            armor: '+15 Defense, +1 Light Radius', 
+            shield: '+15 Defense, +1 Light Radius' 
+          }
+        },
+        'eld': { 
+          name: 'Eld Rune', 
+          img: 'img/eldrune.png', 
+          stats: { 
+            weapon: '+75% Damage vs Undead, +50 Attack Rating vs Undead', 
+            helm: '15% Slower Stamina Drain', 
+            armor: '15% Slower Stamina Drain', 
+            shield: '7% Increased Chance of Blocking' 
           }
         },
         'tir': { 
@@ -169,6 +179,56 @@ class StatsCalculator {
             shield: '+2 to Mana after each Kill' 
           }
         },
+        'nef': { 
+          name: 'Nef Rune', 
+          img: 'img/nefrune.png', 
+          stats: { 
+            weapon: 'Knockback', 
+            helm: '+30 Defense vs. Missile', 
+            armor: '+30 Defense vs. Missile', 
+            shield: '+30 Defense vs. Missile' 
+          }
+        },
+        'eth': { 
+          name: 'Eth Rune', 
+          img: 'img/ethrune.png', 
+          stats: { 
+            weapon: '-25% Target Defense', 
+            helm: 'Regenerate Mana 15%', 
+            armor: 'Regenerate Mana 15%', 
+            shield: 'Regenerate Mana 15%' 
+          }
+        },
+        'ith': { 
+          name: 'Ith Rune', 
+          img: 'img/ithrune.png', 
+          stats: { 
+            weapon: '+9 to Maximum Damage', 
+            helm: '15% Damage Taken Gained as Mana when Hit', 
+            armor: '15% Damage Taken Gained as Mana when Hit', 
+            shield: '15% Damage Taken Gained as Mana when Hit' 
+          }
+        },
+        'tal': { 
+          name: 'Tal Rune', 
+          img: 'img/talrune.png', 
+          stats: { 
+            weapon: '+75 Poison Damage over 5 Seconds', 
+            helm: 'Poison Resist +30%', 
+            armor: 'Poison Resist +30%', 
+            shield: 'Poison Resist +35%' 
+          }
+        },
+        'ral': { 
+          name: 'Ral Rune', 
+          img: 'img/ralrune.png', 
+          stats: { 
+            weapon: 'Adds 5-30 Fire Damage', 
+            helm: 'Fire Resist +30%', 
+            armor: 'Fire Resist +30%', 
+            shield: 'Fire Resist +35%' 
+          }
+        },
         'ort': { 
           name: 'Ort Rune', 
           img: 'img/ortrune.png', 
@@ -179,6 +239,146 @@ class StatsCalculator {
             shield: 'Lightning Resist +35%' 
           }
         },
+        'thul': { 
+          name: 'Thul Rune', 
+          img: 'img/thulrune.png', 
+          stats: { 
+            weapon: 'Adds 3-14 Cold Damage', 
+            helm: 'Cold Resist +30%', 
+            armor: 'Cold Resist +30%', 
+            shield: 'Cold Resist +35%' 
+          }
+        },
+        'amn': { 
+          name: 'Amn Rune', 
+          img: 'img/amnrune.png', 
+          stats: { 
+            weapon: '7% Life Stolen per Hit', 
+            helm: 'Attacker Takes Damage of 14', 
+            armor: 'Attacker Takes Damage of 14', 
+            shield: 'Attacker Takes Damage of 14' 
+          }
+        },
+        'sol': { 
+          name: 'Sol Rune', 
+          img: 'img/solrune.png', 
+          stats: { 
+            weapon: '+9 to Minimum Damage', 
+            helm: 'Physical Damage Taken Reduced by 7', 
+            armor: 'Physical Damage Taken Reduced by 7', 
+            shield: 'Physical Damage Taken Reduced by 7' 
+          }
+        },
+        'shael': { 
+          name: 'Shael Rune', 
+          img: 'img/shaelrune.png', 
+          stats: { 
+            weapon: '+20% Increased Attack Speed', 
+            helm: '+20% Faster Hit Recovery', 
+            armor: '+20% Faster Hit Recovery', 
+            shield: '+20% Faster Block Rate' 
+          }
+        },
+        'dol': { 
+          name: 'Dol Rune', 
+          img: 'img/dolrune.png', 
+          stats: { 
+            weapon: '+20% Enhanced Damage', 
+            helm: 'Replenish Life +10', 
+            armor: 'Replenish Life +10', 
+            shield: 'Replenish Life +10' 
+          }
+        },
+        'hel': { 
+          name: 'Hel Rune', 
+          img: 'img/helrune.png', 
+          stats: { 
+            weapon: 'Requirements -20%', 
+            helm: 'Requirements -20%', 
+            armor: 'Requirements -20%', 
+            shield: 'Requirements -20%' 
+          }
+        },
+        'io': { 
+          name: 'Io Rune', 
+          img: 'img/iorune.png', 
+          stats: { 
+            weapon: '+10 to Vitality', 
+            helm: '+10 to Vitality', 
+            armor: '+10 to Vitality', 
+            shield: '+10 to Vitality' 
+          }
+        },
+        'lum': { 
+          name: 'Lum Rune', 
+          img: 'img/lumrune.png', 
+          stats: { 
+            weapon: '+10 to Energy', 
+            helm: '+10 to Energy', 
+            armor: '+10 to Energy', 
+            shield: '+10 to Energy' 
+          }
+        },
+        'ko': { 
+          name: 'Ko Rune', 
+          img: 'img/korune.png', 
+          stats: { 
+            weapon: '+10 to Dexterity', 
+            helm: '+10 to Dexterity', 
+            armor: '+10 to Dexterity', 
+            shield: '+10 to Dexterity' 
+          }
+        },
+        'fal': { 
+          name: 'Fal Rune', 
+          img: 'img/falrune.png', 
+          stats: { 
+            weapon: '+10 to Strength', 
+            helm: '+10 to Strength', 
+            armor: '+10 to Strength', 
+            shield: '+10 to Strength' 
+          }
+        },
+        'lem': { 
+          name: 'Lem Rune', 
+          img: 'img/lemrune.png', 
+          stats: { 
+            weapon: '75% Extra Gold From Monsters', 
+            helm: '50% Extra Gold From Monsters', 
+            armor: '50% Extra Gold From Monsters', 
+            shield: '50% Extra Gold From Monsters' 
+          }
+        },
+        'pul': { 
+          name: 'Pul Rune', 
+          img: 'img/pulrune.png', 
+          stats: { 
+            weapon: '+75% Damage to Demons, +100 to Attack Rating against Demons', 
+            helm: '+30% Enhanced Defense', 
+            armor: '+30% Enhanced Defense', 
+            shield: '+30% Enhanced Defense' 
+          }
+        },
+        'um': { 
+          name: 'Um Rune', 
+          img: 'img/umrune.png', 
+          stats: { 
+            weapon: '10% Chance of Open Wounds, +120 Open Wounds Damage per Second', 
+            helm: 'All Resistances +15', 
+            armor: 'All Resistances +15', 
+            shield: 'All Resistances +22' 
+          }
+        },
+        'mal': { 
+          name: 'Mal Rune', 
+          img: 'img/malrune.png', 
+          stats: { 
+            weapon: 'Prevent Monster Heal', 
+            helm: 'Magic Damage Taken Reduced by 7', 
+            armor: 'Magic Damage Taken Reduced by 7', 
+            shield: 'Magic Damage Taken Reduced by 7' 
+          }
+        },
         'ist': { 
           name: 'Ist Rune', 
           img: 'img/istrune.png', 
@@ -187,6 +387,96 @@ class StatsCalculator {
             helm: '30% Better Chance of Getting Magic Items', 
             armor: '30% Better Chance of Getting Magic Items', 
             shield: '30% Better Chance of Getting Magic Items' 
+          }
+        },
+        'gul': { 
+          name: 'Gul Rune', 
+          img: 'img/gulrune.png', 
+          stats: { 
+            weapon: '20% Bonus to Attack Rating', 
+            helm: '+4% to Maximum Poison Resist', 
+            armor: '+4% to Maximum Poison Resist', 
+            shield: '+4% to Maximum Poison Resist' 
+          }
+        },
+        'vex': { 
+          name: 'Vex Rune', 
+          img: 'img/vexrune.png', 
+          stats: { 
+            weapon: '7% Mana Stolen per Hit', 
+            helm: '+4% to Maximum Fire Resist', 
+            armor: '+4% to Maximum Fire Resist', 
+            shield: '+4% to Maximum Fire Resist' 
+          }
+        },
+        'ohm': { 
+          name: 'Ohm Rune', 
+          img: 'img/ohmrune.png', 
+          stats: { 
+            weapon: '+45% Enhanced Damage', 
+            helm: '+4% to Maximum Cold Resist', 
+            armor: '+4% to Maximum Cold Resist', 
+            shield: '+4% to Maximum Cold Resist' 
+          }
+        },
+        'lo': { 
+          name: 'Lo Rune', 
+          img: 'img/lorune.png', 
+          stats: { 
+            weapon: '20% Deadly Strike', 
+            helm: '+4% to Maximum Lightning Resist', 
+            armor: '+4% to Maximum Lightning Resist', 
+            shield: '+4% to Maximum Lightning Resist' 
+          }
+        },
+        'sur': { 
+          name: 'Sur Rune', 
+          img: 'img/surrune.png', 
+          stats: { 
+            weapon: '+4 Life after each Kill', 
+            helm: 'Increase Maximum Mana 5%', 
+            armor: 'Increase Maximum Mana 5%', 
+            shield: '50 to Mana' 
+          }
+        },
+        'ber': { 
+          name: 'Ber Rune', 
+          img: 'img/berrune.png', 
+          stats: { 
+            weapon: '20% Chance of Crushing Blow', 
+            helm: 'Physical Damage Taken Reduced by 5%', 
+            armor: 'Physical Damage Taken Reduced by 5%', 
+            shield: 'Physical Damage Taken Reduced by 5%' 
+          }
+        },
+        'jah': { 
+          name: 'Jah Rune', 
+          img: 'img/jahrune.png', 
+          stats: { 
+            weapon: 'Ignore Target\'s Defense', 
+            helm: 'Increase Maximum Life 5%', 
+            armor: 'Increase Maximum Life 5%', 
+            shield: '+75 to Life' 
+          }
+        },
+        'cham': { 
+          name: 'Cham Rune', 
+          img: 'img/chamrune.png', 
+          stats: { 
+            weapon: 'Freezes Target +3', 
+            helm: 'Cannot Be Frozen', 
+            armor: 'Cannot Be Frozen', 
+            shield: 'Cannot Be Frozen' 
+          }
+        },
+        'zod': { 
+          name: 'Zod Rune', 
+          img: 'img/zodrune.png', 
+          stats: { 
+            weapon: 'Indestructible', 
+            helm: 'Indestructible', 
+            armor: 'Indestructible', 
+            shield: 'Indestructible' 
           }
         }
       },
@@ -540,7 +830,10 @@ class StatsCalculator {
     this.hideSocketModal();
     this.updateItemDisplay(section);
     this.calculateAllStats();
+  if (window.characterStats) {
+    setTimeout(() => window.characterStats.updateTotalStats(), 100);
   }
+}
   
   updateItemDisplay(section) {
     const infoIdMap = {
@@ -637,6 +930,14 @@ class StatsCalculator {
           return `${socketStat.value}% Increased Attack Speed`;
         case 'fhr':
           return `${socketStat.value}% Faster Hit Recovery`;
+        case 'strength':
+          return `+${socketStat.value} to Strength`;
+        case 'dexterity':
+          return `+${socketStat.value} to Dexterity`;
+        case 'vitality':
+          return `+${socketStat.value} to Vitality`;
+        case 'energy':
+          return `+${socketStat.value} to Energy`;
         case 'fcr':
           return `${socketStat.value}% Faster Cast Rate`;
         default:
@@ -880,6 +1181,27 @@ class StatsCalculator {
         unit: '%'
       };
     }
+
+    // Attributes - more flexible matching
+match = stat.match(/\+(\d+)\s+(?:to\s+)?Strength/i);
+if (match) {
+  return { stackable: true, type: 'strength', value: parseInt(match[1]), displayName: 'to Strength', unit: '' };
+}
+
+match = stat.match(/\+(\d+)\s+(?:to\s+)?Dexterity/i);
+if (match) {
+  return { stackable: true, type: 'dexterity', value: parseInt(match[1]), displayName: 'to Dexterity', unit: '' };
+}
+
+match = stat.match(/\+(\d+)\s+(?:to\s+)?Vitality/i);
+if (match) {
+  return { stackable: true, type: 'vitality', value: parseInt(match[1]), displayName: 'to Vitality', unit: '' };
+}
+
+match = stat.match(/\+(\d+)\s+(?:to\s+)?Energy/i);
+if (match) {
+  return { stackable: true, type: 'energy', value: parseInt(match[1]), displayName: 'to Energy', unit: '' };
+}
     
     // Not stackable
     return {
@@ -986,6 +1308,22 @@ class StatsCalculator {
       fhr: [{
         regex: /(\d+)% Faster Hit Recovery/i,
         replacement: (value) => `${value}% Faster Hit Recovery`
+      }],
+      strength: [{
+        regex: /\+(\d+) to Strength/i,
+        replacement: (value) => `+${value} to Strength`
+      }],
+      dexterity: [{
+        regex: /\+(\d+) to Dexterity/i,
+        replacement: (value) => `+${value} to Dexterity`
+      }],
+      vitality: [{
+        regex: /\+(\d+) to Vitality/i,
+        replacement: (value) => `+${value} to Vitality`
+      }],
+      energy: [{
+        regex: /\+(\d+) to Energy/i,
+        replacement: (value) => `+${value} to Energy`
       }],
       fcr: [{
         regex: /(\d+)% Faster Cast Rate/i,

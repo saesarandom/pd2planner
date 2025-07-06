@@ -23,28 +23,48 @@ class CharacterStats {
   }
   
   setupEventListeners() {
-    // Level input
-    const lvlInput = document.getElementById('lvlValue');
-    if (lvlInput) {
-      lvlInput.addEventListener('input', () => this.handleLevelChange());
-      lvlInput.addEventListener('blur', () => this.validateLevel());
-    }
-    
-    // Class selection
-    const classSelect = document.getElementById('selectClass');
-    if (classSelect) {
-      classSelect.addEventListener('change', () => this.handleClassChange());
-    }
-    
-    // Stat inputs
-    ['str', 'dex', 'vit', 'enr'].forEach(statId => {
-      const input = document.getElementById(statId);
-      if (input) {
-        input.addEventListener('input', () => this.handleStatChange(statId));
-        input.addEventListener('blur', () => this.validateStats());
-      }
-    });
+  // Level input
+  const lvlInput = document.getElementById('lvlValue');
+  if (lvlInput) {
+    lvlInput.addEventListener('input', () => this.handleLevelChange());
+    lvlInput.addEventListener('blur', () => this.validateLevel());
   }
+  
+  // Class selection
+  const classSelect = document.getElementById('selectClass');
+  if (classSelect) {
+    classSelect.addEventListener('change', () => this.handleClassChange());
+  }
+  
+  // Stat inputs
+  ['str', 'dex', 'vit', 'enr'].forEach(statId => {
+    const input = document.getElementById(statId);
+    if (input) {
+      input.addEventListener('input', () => this.handleStatChange(statId));
+      input.addEventListener('blur', () => this.validateStats());
+    }
+  });
+
+  // Equipment dropdown changes - immediate total update
+  const equipmentDropdowns = ['weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'];
+  
+  equipmentDropdowns.forEach(dropdownId => {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+      dropdown.addEventListener('change', () => {
+        setTimeout(() => this.updateTotalStats(), 100);
+      });
+    }
+  });
+
+  // Socket clicks - immediate total update
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('socket-slot') || e.target.classList.contains('socket-item')) {
+      setTimeout(() => this.updateTotalStats(), 200);
+    }
+  });
+}
+  
   
   setInitialStats() {
     this.currentClass = document.getElementById('selectClass')?.value || 'Amazon';
@@ -261,12 +281,80 @@ class CharacterStats {
   }
   
   recalculateStats() {
-    // Trigger stats calculator recalculation
-    if (typeof window.recalculateStats === 'function') {
-      window.recalculateStats();
-    }
+  // Trigger stats calculator recalculation
+  if (typeof window.recalculateStats === 'function') {
+    window.recalculateStats();
   }
   
+  // Update total stats display
+  setTimeout(() => this.updateTotalStats(), 100);
+}
+
+
+
+// Add this method to the CharacterStats class
+// Add this method to CharacterStats class
+updateTotalStats() {
+  const baseStats = {
+    str: parseInt(document.getElementById('str').value) || 0,
+    dex: parseInt(document.getElementById('dex').value) || 0,
+    vit: parseInt(document.getElementById('vit').value) || 0,
+    enr: parseInt(document.getElementById('enr').value) || 0
+  };
+
+  // Get bonuses from all equipped items
+  const itemBonuses = this.getAllItemBonuses();
+  
+  // Update total displays
+  this.updateTotalDisplay('str', baseStats.str + itemBonuses.str);
+  this.updateTotalDisplay('dex', baseStats.dex + itemBonuses.dex);
+  this.updateTotalDisplay('vit', baseStats.vit + itemBonuses.vit);
+  this.updateTotalDisplay('enr', baseStats.enr + itemBonuses.enr);
+}
+
+getAllItemBonuses() {
+  const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+  const infoContainers = ['weapon-info', 'helm-info', 'armor-info', 'off-info', 'glove-info', 'belt-info', 'boot-info', 'ringsone-info', 'ringstwo-info', 'amulet-info'];
+  
+  infoContainers.forEach(containerId => {
+    const container = document.getElementById(containerId);
+    if (container && container.innerHTML) {
+      const text = container.innerHTML;
+      
+      // Parse stat bonuses from item descriptions
+      const strMatch = text.match(/\+(\d+)\s+(?:to\s+)?Strength/gi);
+      const dexMatch = text.match(/\+(\d+)\s+(?:to\s+)?Dexterity/gi);
+      const vitMatch = text.match(/\+(\d+)\s+(?:to\s+)?Vitality/gi);
+      const enrMatch = text.match(/\+(\d+)\s+(?:to\s+)?Energy/gi);
+      
+      if (strMatch) strMatch.forEach(match => bonuses.str += parseInt(match.match(/\+(\d+)/)[1]));
+      if (dexMatch) dexMatch.forEach(match => bonuses.dex += parseInt(match.match(/\+(\d+)/)[1]));
+      if (vitMatch) vitMatch.forEach(match => bonuses.vit += parseInt(match.match(/\+(\d+)/)[1]));
+      if (enrMatch) enrMatch.forEach(match => bonuses.enr += parseInt(match.match(/\+(\d+)/)[1]));
+    }
+  });
+  
+  return bonuses;
+}
+
+updateTotalDisplay(statId, total) {
+  let totalDiv = document.getElementById(statId + 'Total');
+  if (!totalDiv) {
+    totalDiv = document.createElement('span');
+    totalDiv.id = statId + 'Total';
+    totalDiv.style.cssText = 'color: #00ff00; font-weight: bold; margin-left: 10px;';
+    
+    const statRow = document.getElementById(statId).closest('.stat-row');
+    if (statRow) statRow.appendChild(totalDiv);
+  }
+  
+  const base = parseInt(document.getElementById(statId).value) || 0;
+  totalDiv.textContent = total > base ? ` ${total}` : '';
+}
+
+
+
+
   // Public method to get character stats
   getCharacterStats() {
     return {
