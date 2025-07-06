@@ -230,7 +230,7 @@ body {
 /* Mercenary section */
 .mercenary-section {
   position: absolute;
-  left: 180vh;
+  left: 200vh;
   top: 50px;
   min-width: 400px;
   background: rgba(26, 26, 46, 0.9);

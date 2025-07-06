@@ -1434,12 +1434,13 @@ if (match) {
   }
   
   calculateAllStats() {
-    this.resetStats();
-    this.calculateEquipmentStats();
-    this.calculateSocketStats();
-    this.calculateDerivedStats();
-    this.updateDisplay();
-  }
+  this.resetStats();
+  this.calculateEquipmentStats();
+  this.calculateSocketStats();
+  this.calculateCharmStats(); // ADD THIS LINE
+  this.calculateDerivedStats();
+  this.updateDisplay();
+}
   
   resetStats() {
     Object.keys(this.stats).forEach(key => {
@@ -1774,6 +1775,147 @@ if (match) {
     return 2.0 + (this.stats.weaponMastery * 0.05);
   }
   
+
+calculateCharmStats() {
+  const container = document.querySelector('.inventorycontainer');
+  if (!container) return;
+  
+  // Get all charm slots with data
+  const charmSlots = container.querySelectorAll('.charm1[data-charm-data]');
+  const charmOverlays = container.querySelectorAll('.charm-overlay[data-charm-data]');
+  
+  // Process regular charm slots (small charms)
+  charmSlots.forEach(slot => {
+    const charmData = slot.dataset.charmData;
+    if (charmData && charmData.trim()) {
+      this.parseCharmStats(charmData);
+    }
+  });
+  
+  // Process overlay charms (large/grand charms)
+  charmOverlays.forEach(overlay => {
+    const charmData = overlay.dataset.charmData;
+    if (charmData && charmData.trim()) {
+      this.parseCharmStats(charmData);
+    }
+  });
+}
+
+parseCharmStats(charmData) {
+  const lines = charmData.split('\n');
+  
+  // Skip the first line (charm name) and process stats
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    this.parseCharmStatLine(line);
+  }
+}
+
+parseCharmStatLine(line) {
+  // Core Stats
+  this.extractStatFromLine(line, /\+(\d+) to All Skills/, 'allSkills');
+  this.extractStatFromLine(line, /\+(\d+) to Strength/, 'str');
+  this.extractStatFromLine(line, /\+(\d+) to Dexterity/, 'dex');
+  this.extractStatFromLine(line, /\+(\d+) to Vitality/, 'vit');
+  this.extractStatFromLine(line, /\+(\d+) to Energy/, 'enr');
+  
+  // Life and Mana
+  this.extractStatFromLine(line, /\+(\d+) to Life/, 'life');
+  this.extractStatFromLine(line, /\+(\d+) to Mana/, 'mana');
+  
+  // Resistances
+  this.extractStatFromLine(line, /Fire Resist \+(\d+)%/, 'fireResist');
+  this.extractStatFromLine(line, /Cold Resist \+(\d+)%/, 'coldResist');
+  this.extractStatFromLine(line, /Lightning Resist \+(\d+)%/, 'lightResist');
+  this.extractStatFromLine(line, /Poison Resist \+(\d+)%/, 'poisonResist');
+  this.extractStatFromLine(line, /All Resistances \+(\d+)/, 'allResist');
+  
+  // Speed Stats
+  this.extractStatFromLine(line, /(\d+)% Faster Cast Rate/, 'fcr');
+  this.extractStatFromLine(line, /(\d+)% Increased Attack Speed/, 'ias');
+  this.extractStatFromLine(line, /(\d+)% Faster Run\/Walk/, 'frw');
+  this.extractStatFromLine(line, /(\d+)% Faster Hit Recovery/, 'fhr');
+  
+  // Damage
+  this.extractStatFromLine(line, /\+(\d+) to Maximum Damage/, 'maxDamage');
+  this.extractStatFromLine(line, /\+(\d+) to Minimum Damage/, 'minDamage');
+  this.extractStatFromLine(line, /\+(\d+) to Attack Rating/, 'attackRating');
+  
+  // Defensive Stats
+  this.extractStatFromLine(line, /\+(\d+) Defense/, 'defense');
+  this.extractStatFromLine(line, /(\d+)% Damage Reduced/, 'dr');
+  this.extractStatFromLine(line, /Physical Damage Reduced by (\d+)/, 'pdr');
+  this.extractStatFromLine(line, /Magic Damage Reduced by (\d+)/, 'mdr');
+  
+  // Magic Find and Gold Find
+  this.extractStatFromLine(line, /(\d+)% Better Chance of Getting Magic Items/, 'magicFind');
+  this.extractStatFromLine(line, /(\d+)% Extra Gold from Monsters/, 'goldFind');
+  
+  // Elemental Damage
+  const fireMatch = line.match(/\+(\d+) Fire Damage/);
+  if (fireMatch) {
+    this.stats.flatFireMin += parseInt(fireMatch[1]);
+    this.stats.flatFireMax += parseInt(fireMatch[1]);
+  }
+  
+  const coldMatch = line.match(/\+(\d+) Cold Damage/);
+  if (coldMatch) {
+    this.stats.flatColdMin += parseInt(coldMatch[1]);
+    this.stats.flatColdMax += parseInt(coldMatch[1]);
+  }
+  
+  const lightMatch = line.match(/\+(\d+) Lightning Damage/);
+  if (lightMatch) {
+    this.stats.flatLightMin += parseInt(lightMatch[1]);
+    this.stats.flatLightMax += parseInt(lightMatch[1]);
+  }
+  
+  const poisonMatch = line.match(/\+(\d+) Poison Damage/);
+  if (poisonMatch) {
+    this.stats.flatPoisonMin += parseInt(poisonMatch[1]);
+    this.stats.flatPoisonMax += parseInt(poisonMatch[1]);
+  }
+  
+  // Handle damage ranges like "Adds 1-3 Lightning Damage"
+  const lightRangeMatch = line.match(/Adds (\d+)-(\d+) Lightning Damage/);
+  if (lightRangeMatch) {
+    this.stats.flatLightMin += parseInt(lightRangeMatch[1]);
+    this.stats.flatLightMax += parseInt(lightRangeMatch[2]);
+  }
+  
+  const fireRangeMatch = line.match(/Adds (\d+)-(\d+) Fire Damage/);
+  if (fireRangeMatch) {
+    this.stats.flatFireMin += parseInt(fireRangeMatch[1]);
+    this.stats.flatFireMax += parseInt(fireRangeMatch[2]);
+  }
+  
+  const coldRangeMatch = line.match(/Adds (\d+)-(\d+) Cold Damage/);
+  if (coldRangeMatch) {
+    this.stats.flatColdMin += parseInt(coldRangeMatch[1]);
+    this.stats.flatColdMax += parseInt(coldRangeMatch[2]);
+  }
+  
+  const poisonRangeMatch = line.match(/Adds (\d+)-(\d+) Poison Damage/);
+  if (poisonRangeMatch) {
+    this.stats.flatPoisonMin += parseInt(poisonRangeMatch[1]);
+    this.stats.flatPoisonMax += parseInt(poisonRangeMatch[2]);
+  }
+}
+
+extractStatFromLine(line, regex, statKey) {
+  const match = line.match(regex);
+  if (match) {
+    const value = parseInt(match[1]);
+    if (!isNaN(value)) {
+      this.stats[statKey] += value;
+    }
+  }
+}
+
+
+
   updateDisplay() {
     // Core Stats
     this.updateContainer('allskillscontainer', this.stats.allSkills);

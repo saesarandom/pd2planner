@@ -5,10 +5,26 @@ class CharmInventory {
     this.selectedSlot = null;
     this.clickPosition = { x: 0, y: 0 };
     this.charmImages = {
-      'small-charm': 'img/small.png',
-      'large-charm': 'img/large.png', 
-      'grand-charm': 'img/grand.png'
-    };
+  'small-charm': [
+    'img/small1.png',
+    'img/small2.png', 
+    'img/small3.png',
+    'img/small4.png'
+  ],
+  'large-charm': [
+    'img/large1.png',
+    'img/large2.png',
+    'img/large3.png', 
+    'img/large4.png'
+  ],
+  'grand-charm': [
+    'img/grand1.png',
+    'img/grand2.png',
+    'img/grand3.png',
+    'img/grand4.png'
+  ]
+};
+
     this.occupiedSlots = new Set(); // Track occupied slots
     this.charmElements = new Map(); // Track charm elements and their occupied slots
     this.initialized = false;
@@ -95,14 +111,14 @@ createModal() {
         border-radius: 5px;
         border: 2px solid rgb(164, 19, 19);
         color: white;
-        font-family: monospace;
+        font-family: overlock sc;
         font-size: 14px;
         min-width: 400px;
         max-width: 500px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
       ">
         <span class="close">&times;</span>
-        <h3 style="margin: 0 0 20px 0; color: rgb(164, 19, 19);">Create Charm</h3>
+        <h3 style="margin: 0 0 20px 0; color: rgb(164, 19, 19);">Create Charm, right click and drag to duplicate on charm, left click to delete</h3>
         
         <!-- Charm Type Selection -->
         <div id="charmTypeSelection">
@@ -235,6 +251,16 @@ populateAffixOptions(type) {
   });
 }
 
+getRandomCharmImage(charmType) {
+  const imageArray = this.charmImages[charmType];
+  if (!imageArray || imageArray.length === 0) {
+    return 'img/placeholder.png';
+  }
+  const randomIndex = Math.floor(Math.random() * imageArray.length);
+  return imageArray[randomIndex];
+}
+
+
 updateCharmPreview() {
   const prefixSelect = document.getElementById('prefixSelect');
   const suffixSelect = document.getElementById('suffixSelect');
@@ -317,6 +343,46 @@ createStatSlider(type, statInfo) {
   const sliderId = `${type}Slider`;
   const valueId = `${type}Value`;
   
+  // Check if this is a range damage affix
+  if (statInfo.minRange && statInfo.maxRange) {
+    const minSliderId = `${type}MinSlider`;
+    const maxSliderId = `${type}MaxSlider`;
+    const minValueId = `${type}MinValue`;
+    const maxValueId = `${type}MaxValue`;
+    
+    return `
+      <div style="margin: 5px 0;">
+        <div style="color: #FFD700; margin-bottom: 5px;">Damage Range</div>
+        
+        <div style="margin-bottom: 10px;">
+          <label style="color: white; font-size: 11px;">Min Damage:</label>
+          <input type="range" id="${minSliderId}" 
+                 min="${statInfo.minRange.min}" 
+                 max="${statInfo.minRange.max}" 
+                 value="${statInfo.minRange.min}" 
+                 style="width: 100%; margin: 2px 0;" 
+                 oninput="window.charmInventory.updateRangeSliderValue('${type}'); window.charmInventory.updatePreviewOnly();">
+          <div style="text-align: center; color: white; font-size: 11px;">
+            <span id="${minValueId}">${statInfo.minRange.min}</span> / ${statInfo.minRange.max}
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 5px;">
+          <label style="color: white; font-size: 11px;">Max Damage:</label>
+          <input type="range" id="${maxSliderId}" 
+                 min="${statInfo.maxRange.min}" 
+                 max="${statInfo.maxRange.max}" 
+                 value="${statInfo.maxRange.min}" 
+                 style="width: 100%; margin: 2px 0;" 
+                 oninput="window.charmInventory.updateRangeSliderValue('${type}'); window.charmInventory.updatePreviewOnly();">
+          <div style="text-align: center; color: white; font-size: 11px;">
+            <span id="${maxValueId}">${statInfo.maxRange.min}</span> / ${statInfo.maxRange.max}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
   // Check if this is a multi-stat affix
   if (statInfo.stats) {
     let html = '';
@@ -378,6 +444,21 @@ updateSliderValue(type) {
   }
 }
 
+updateRangeSliderValue(type) {
+  const minSlider = document.getElementById(`${type}MinSlider`);
+  const maxSlider = document.getElementById(`${type}MaxSlider`);
+  const minValueSpan = document.getElementById(`${type}MinValue`);
+  const maxValueSpan = document.getElementById(`${type}MaxValue`);
+  
+  if (minSlider && minValueSpan) {
+    minValueSpan.textContent = minSlider.value;
+  }
+  if (maxSlider && maxValueSpan) {
+    maxValueSpan.textContent = maxSlider.value;
+  }
+}
+
+
 updatePreviewOnly() {
   const prefixSelect = document.getElementById('prefixSelect');
   const suffixSelect = document.getElementById('suffixSelect');
@@ -386,7 +467,7 @@ updatePreviewOnly() {
   const selectedPrefix = prefixSelect.value;
   const selectedSuffix = suffixSelect.value;
   
-  // Build charm name with FULL charm type name
+  // Build charm name
   const charmTypeNames = {
     'small-charm': 'Small Charm',
     'large-charm': 'Large Charm', 
@@ -401,52 +482,61 @@ updatePreviewOnly() {
     charmName += ` ${this.cleanAffixName(selectedSuffix)}`;
   }
   
-  // Update preview with current slider values
   let previewHTML = `<div style="color: #FFD700; font-weight: bold; margin-bottom: 5px;">${charmName}</div>`;
   
   // Handle prefix stats
   if (selectedPrefix) {
     const prefixStatInfo = this.getStatForAffix(selectedPrefix);
-    if (prefixStatInfo.stats) {
-      // Multi-stat prefix
-      prefixStatInfo.stats.forEach((stat, index) => {
-        const slider = document.getElementById(`prefixSlider${index}`);
-        if (slider) {
-          const value = slider.value;
-          previewHTML += `<div style="color: #87CEEB;">${stat.text.replace('{value}', value)}</div>`;
-        }
-      });
-    } else {
-      // Single stat prefix
-      const slider = document.getElementById('prefixSlider');
-      if (slider) {
-        const value = slider.value;
-        previewHTML += `<div style="color: #87CEEB;">${prefixStatInfo.text.replace('{value}', value)}</div>`;
-      }
-    }
+    previewHTML += this.generateStatPreview('prefix', prefixStatInfo);
   }
   
-  // Handle suffix stats (similar logic)
+  // Handle suffix stats
   if (selectedSuffix) {
     const suffixStatInfo = this.getStatForAffix(selectedSuffix);
-    if (suffixStatInfo.stats) {
-      suffixStatInfo.stats.forEach((stat, index) => {
-        const slider = document.getElementById(`suffixSlider${index}`);
-        if (slider) {
-          const value = slider.value;
-          previewHTML += `<div style="color: #87CEEB;">${stat.text.replace('{value}', value)}</div>`;
-        }
-      });
-    } else {
-      const slider = document.getElementById('suffixSlider');
-      if (slider) {
-        const value = slider.value;
-        previewHTML += `<div style="color: #87CEEB;">${suffixStatInfo.text.replace('{value}', value)}</div>`;
-      }
-    }
+    previewHTML += this.generateStatPreview('suffix', suffixStatInfo);
   }
   
   preview.innerHTML = previewHTML;
+}
+
+generateStatPreview(type, statInfo) {
+  if (!statInfo) return '';
+  
+  // Handle range damage
+  if (statInfo.minRange && statInfo.maxRange) {
+    const minSlider = document.getElementById(`${type}MinSlider`);
+    const maxSlider = document.getElementById(`${type}MaxSlider`);
+    
+    if (minSlider && maxSlider) {
+      const minValue = minSlider.value;
+      const maxValue = maxSlider.value;
+      const text = statInfo.text.replace('{minValue}', minValue).replace('{maxValue}', maxValue);
+      return `<div style="color: #87CEEB;">${text}</div>`;
+    }
+    return '';
+  }
+  
+  // Handle multi-stat affixes
+  if (statInfo.stats) {
+    let html = '';
+    statInfo.stats.forEach((stat, index) => {
+      const slider = document.getElementById(`${type}Slider${index}`);
+      if (slider) {
+        const value = slider.value;
+        html += `<div style="color: #87CEEB;">${stat.text.replace('{value}', value)}</div>`;
+      }
+    });
+    return html;
+  }
+  
+  // Handle single stat affixes
+  const slider = document.getElementById(`${type}Slider`);
+  if (slider) {
+    const value = slider.value;
+    return `<div style="color: #87CEEB;">${statInfo.text.replace('{value}', value)}</div>`;
+  }
+  
+  return '';
 }
 
 getStatForAffix(affix) {
@@ -495,11 +585,109 @@ getStatForAffix(affix) {
     'Serpents': { min: 11, max: 15, text: '+{value} to Mana' },
     
     // Resistances
-    'Azure': { min: 12, max: 17, text: 'Cold Resist +{value}%' },
-    'Crimson': { min: 12, max: 17, text: 'Fire Resist +{value}%' },
-    'Tangerine': { min: 12, max: 17, text: 'Lightning Resist +{value}%' },
-    'Beryl': { min: 12, max: 17, text: 'Poison Resist +{value}%' },
-    
+    'Shimmering': { min: 3, max: 5, text: 'All Resistances +{value}%' },
+    'Azure': { min: 3, max: 5, text: 'Cold Resist +{value}%' },
+    'Crimson': { min: 3, max: 5, text: 'Fire Resist +{value}%' },
+    'Tangerine': { min: 3, max: 5, text: 'Lightning Resist +{value}%' },
+    'Beryl': { min: 3, max: 5, text: 'Poison Resist +{value}%' },
+    'Lapis': { min: 6, max: 7, text: 'Cold Resist +{value}%' },
+    'Cobalt': { min: 8, max: 9, text: 'Cold Resist +{value}%' },
+    'Sapphire': { min: 10, max: 11, text: 'Cold Resist +{value}%' },
+    'Russet': { min: 6, max: 7, text: 'Fire Resist +{value}%' },
+    'Garnet': { min: 8, max: 9, text: 'Fire Resist +{value}%' },
+    'Ruby': { min: 10, max: 11, text: 'Fire Resist +{value}%' },
+    'Viridian': { min: 6, max: 7, text: 'Poison Resist +{value}%' },
+    'Jade': { min: 8, max: 9, text: 'Poison Resist +{value}%' },
+    'Emerald': { min: 10, max: 11, text: 'Poison Resist +{value}%' },
+
+    'Snowy': { 
+    minRange: { min: 1, max: 2 }, 
+    maxRange: { min: 2, max: 4 }, 
+    text: 'Adds {minValue}-{maxValue} Cold Damage (1 second chill)' 
+  },
+  'Shivering': { 
+    minRange: { min: 3, max: 4 }, 
+    maxRange: { min: 5, max: 8 }, 
+    text: 'Adds {minValue}-{maxValue} Cold Damage (1 second chill)' 
+  },
+  'Boreal': { 
+    minRange: { min: 6, max: 8 }, 
+    maxRange: { min: 10, max: 16 }, 
+    text: 'Adds {minValue}-{maxValue} Cold Damage (1 second chill)' 
+  },
+  'Hibernal': { 
+    minRange: { min: 11, max: 13 }, 
+    maxRange: { min: 20, max: 27 }, 
+    text: 'Adds {minValue}-{maxValue} Cold Damage (1 second chill)' 
+  },
+  
+  // FIRE DAMAGE RANGES
+  'Fiery': { 
+    minRange: { min: 1, max: 1 }, 
+    maxRange: { min: 2, max: 3 }, 
+    text: 'Adds {minValue}-{maxValue} Fire Damage' 
+  },
+  'Smoldering': { 
+    minRange: { min: 2, max: 3 }, 
+    maxRange: { min: 4, max: 10 }, 
+    text: 'Adds {minValue}-{maxValue} Fire Damage' 
+  },
+  'Smoking': { 
+    minRange: { min: 4, max: 9 }, 
+    maxRange: { min: 11, max: 19 }, 
+    text: 'Adds {minValue}-{maxValue} Fire Damage' 
+  },
+  'Flaming': { 
+    minRange: { min: 10, max: 19 }, 
+    maxRange: { min: 20, max: 29 }, 
+    text: 'Adds {minValue}-{maxValue} Fire Damage' 
+  },
+  
+  // LIGHTNING DAMAGE RANGES
+  'Static': { 
+    minRange: { min: 1, max: 1 }, 
+    maxRange: { min: 6, max: 11 }, 
+    text: 'Adds {minValue}-{maxValue} Lightning Damage' 
+  },
+  'Glowing': { 
+    minRange: { min: 1, max: 1 }, 
+    maxRange: { min: 8, max: 17 }, 
+    text: 'Adds {minValue}-{maxValue} Lightning Damage' 
+  },
+  'Arcing': { 
+    minRange: { min: 1, max: 1 }, 
+    maxRange: { min: 17, max: 30 }, 
+    text: 'Adds {minValue}-{maxValue} Lightning Damage' 
+  },
+  'Shocking': { 
+    minRange: { min: 1, max: 1 }, 
+    maxRange: { min: 31, max: 50 }, 
+    text: 'Adds {minValue}-{maxValue} Lightning Damage' 
+  },
+  
+  // POISON DAMAGE RANGES
+  'Septic': { 
+    minRange: { min: 4, max: 4 }, 
+    maxRange: { min: 4, max: 4 }, 
+    text: '+{minValue} Poison Damage over 3 seconds' 
+  },
+  'Foul': { 
+    minRange: { min: 13, max: 13 }, 
+    maxRange: { min: 13, max: 13 }, 
+    text: '+{minValue} Poison Damage over 2 seconds' 
+  },
+  'Toxic': { 
+    minRange: { min: 25, max: 25 }, 
+    maxRange: { min: 25, max: 25 }, 
+    text: '+{minValue} Poison Damage over 2 seconds' 
+  },
+  'Pestilent': { 
+    minRange: { min: 65, max: 65 }, 
+    maxRange: { min: 65, max: 65 }, 
+    text: '+{minValue} Poison Damage over 2 seconds' 
+  },
+  
+
     // Life suffixes
     'Oflife': { min: 1, max: 5, text: '+{value} to Life' },
     'Ofsustenance': { min: 1, max: 5, text: '+{value} to Life' },
@@ -513,7 +701,96 @@ getStatForAffix(affix) {
     'Ofinertia': { min: 3, max: 7, text: '+{value}% Faster Run/Walk' },
     'Ofgreed': { min: 10, max: 20, text: '+{value}% Extra Gold from Monsters' },
     'Offortune': { min: 5, max: 15, text: '+{value}% Better Chance of Getting Magic Items' },
+    'Ofgoodluck': { min: 1, max: 3, text: '+{value}% Better Chance of Getting Magic Items' },
     'Ofbalance': { min: 5, max: 10, text: '+{value}% Faster Hit Recovery' },
+    'Offrost': { 
+  minRange: { min: 1, max: 1 }, 
+  maxRange: { min: 2, max: 2 }, 
+  text: 'Adds {minValue}-{maxValue} Cold Damage (1 second chill)' 
+},
+'Oficicle': { 
+  minRange: { min: 2, max: 2 }, 
+  maxRange: { min: 3, max: 5 }, 
+  text: 'Adds {minValue}-{maxValue} Cold Damage (1 second chill)' 
+},
+'Ofglacier': { 
+  minRange: { min: 4, max: 4 }, 
+  maxRange: { min: 6, max: 8 }, 
+  text: 'Adds {minValue}-{maxValue} Cold Damage (1 second chill)' 
+},
+'Ofwinter': { 
+  minRange: { min: 6, max: 7 }, 
+  maxRange: { min: 10, max: 13 }, 
+  text: 'Adds [{minValue}]-{maxValue} Cold Damage (1 second chill)' 
+},
+
+// FIRE DAMAGE SUFFIXES
+'Offlame': { 
+  minRange: { min: 1, max: 1 }, 
+  maxRange: { min: 2, max: 2 }, 
+  text: 'Adds {minValue}-{maxValue} Fire Damage' 
+},
+'Offire': { 
+  minRange: { min: 2, max: 2 }, 
+  maxRange: { min: 3, max: 5 }, 
+  text: 'Adds {minValue}-{maxValue} Fire Damage' 
+},
+'Ofburning': { 
+  minRange: { min: 3, max: 5 }, 
+  maxRange: { min: 7, max: 9 }, 
+  text: 'Adds {minValue}-{maxValue} Fire Damage' 
+},
+'Ofincineration': { 
+  minRange: { min: 6, max: 8 }, 
+  maxRange: { min: 10, max: 15 }, 
+  text: 'Adds {minValue}-{maxValue} Fire Damage' 
+},
+
+// LIGHTNING DAMAGE SUFFIXES
+'Ofshock': { 
+  minRange: { min: 1, max: 1 }, 
+  maxRange: { min: 3, max: 5 }, 
+  text: 'Adds {minValue}-{maxValue} Lightning Damage' 
+},
+'Oflightning': { 
+  minRange: { min: 1, max: 1 }, 
+  maxRange: { min: 6, max: 9 }, 
+  text: 'Adds {minValue}-{maxValue} Lightning Damage' 
+},
+'Ofthunder': { 
+  minRange: { min: 1, max: 1 }, 
+  maxRange: { min: 10, max: 16 }, 
+  text: 'Adds {minValue}-{maxValue} Lightning Damage' 
+},
+'Ofstorms': { 
+  minRange: { min: 1, max: 1 }, 
+  maxRange: { min: 17, max: 25 }, 
+  text: 'Adds {minValue}-{maxValue} Lightning Damage' 
+},
+
+
+'Ofcraftsmanship': { 
+  min: 1, max: 1, 
+  text: '+{value} to Maximum Damage' 
+},
+
+
+'Ofblight': { 
+  min: 3, max: 3, 
+  text: '+{value} Poison Damage over 2 seconds' 
+},
+'Ofvenom': { 
+  min: 6, max: 6, 
+  text: '+{value} Poison Damage over 2 seconds' 
+},
+'Ofpestilence': { 
+  min: 12, max: 12, 
+  text: '+{value} Poison Damage over 2 seconds' 
+},
+'Ofanthrax': { 
+  min: 20, max: 20, 
+  text: '+{value} Poison Damage over 2 seconds' 
+},
   };
   
  if (statMap[affix]) {
@@ -563,7 +840,6 @@ createManualCharm() {
     return;
   }
   
-  // Build charm data with FULL charm type name
   const charmTypeNames = {
     'small-charm': 'Small Charm',
     'large-charm': 'Large Charm', 
@@ -577,55 +853,62 @@ createManualCharm() {
   if (prefixSelect.value) {
     charmName = `${this.cleanAffixName(prefixSelect.value)} ${charmName}`;
     const prefixStat = this.getStatForAffix(prefixSelect.value);
-    
-    if (prefixStat.stats) {
-      // Multi-stat prefix
-      prefixStat.stats.forEach((stat, index) => {
-        const slider = document.getElementById(`prefixSlider${index}`);
-        if (slider) {
-          const value = slider.value;
-          stats.push(stat.text.replace('{value}', value));
-        }
-      });
-    } else {
-      // Single stat prefix
-      const slider = document.getElementById('prefixSlider');
-      if (slider) {
-        const value = slider.value;
-        stats.push(prefixStat.text.replace('{value}', value));
-      }
-    }
+    const prefixStatLine = this.generateStatLine('prefix', prefixStat);
+    if (prefixStatLine) stats.push(prefixStatLine);
   }
   
   // Handle suffix stats
   if (suffixSelect.value) {
     charmName += ` ${this.cleanAffixName(suffixSelect.value)}`;
     const suffixStat = this.getStatForAffix(suffixSelect.value);
-    
-    if (suffixStat.stats) {
-      // Multi-stat suffix
-      suffixStat.stats.forEach((stat, index) => {
-        const slider = document.getElementById(`suffixSlider${index}`);
-        if (slider) {
-          const value = slider.value;
-          stats.push(stat.text.replace('{value}', value));
-        }
-      });
-    } else {
-      // Single stat suffix
-      const slider = document.getElementById('suffixSlider');
-      if (slider) {
-        const value = slider.value;
-        stats.push(suffixStat.text.replace('{value}', value));
-      }
-    }
+    const suffixStatLine = this.generateStatLine('suffix', suffixStat);
+    if (suffixStatLine) stats.push(suffixStatLine);
   }
   
   const charmData = `${charmName}\n${stats.join('\n')}`;
-  const backgroundImage = `url('${this.charmImages[this.selectedCharmType]}')`;
+  const backgroundImage = `url('${this.getRandomCharmImage(this.selectedCharmType)}')`;
   
   this.placeCharm(position, this.selectedCharmType, backgroundImage, charmData);
   this.hideModal();
+}
+
+generateStatLine(type, statInfo) {
+  if (!statInfo) return '';
+  
+  // Handle range damage
+  if (statInfo.minRange && statInfo.maxRange) {
+    const minSlider = document.getElementById(`${type}MinSlider`);
+    const maxSlider = document.getElementById(`${type}MaxSlider`);
+    
+    if (minSlider && maxSlider) {
+      const minValue = minSlider.value;
+      const maxValue = maxSlider.value;
+      return statInfo.text.replace('{minValue}', minValue).replace('{maxValue}', maxValue);
+    }
+    return '';
+  }
+  
+  // Handle multi-stat affixes
+  if (statInfo.stats) {
+    const lines = [];
+    statInfo.stats.forEach((stat, index) => {
+      const slider = document.getElementById(`${type}Slider${index}`);
+      if (slider) {
+        const value = slider.value;
+        lines.push(stat.text.replace('{value}', value));
+      }
+    });
+    return lines.join('\n');
+  }
+  
+  // Handle single stat affixes
+  const slider = document.getElementById(`${type}Slider`);
+  if (slider) {
+    const value = slider.value;
+    return statInfo.text.replace('{value}', value);
+  }
+  
+  return '';
 }
 
 
@@ -638,12 +921,15 @@ getCharmAffixes() {
         'Bronze', 'Bronze2', 'Iron', 'Steel', 'Lizards', 'Lizards2', 
         'Snakes', 'Serpents', 'Shimmering', 'Azure', 'Lapis', 'Cobalt', 
         'Sapphire', 'Crimson', 'Russet', 'Garnet', 'Ruby', 'Tangerine', 
-        'Ocher', 'Coral', 'Amber', 'Beryl', 'Viridian', 'Jade', 'Emerald'
+        'Ocher', 'Coral', 'Amber', 'Beryl', 'Viridian', 'Jade', 'Emerald',
+         'Snowy', 'Shivering', 'Boreal', 'Hibernal', 'Fiery', 'Smoldering',
+          'Smoking', 'Flaming', 'Static', 'Glowing', 'Arcing', 'Shocking',
+           'Septic', 'Foul', 'Toxic', 'Pestilent'
       ],
       suffixes: [
         'Oflife', 'Ofsustenance', 'Ofvita', 'Ofstrength', 'Ofstrength2',
-        'Ofdexterity', 'Ofdexterity2', 'Ofinertia', 'Ofgreed', 'Offortune',
-        'Ofbalance', 'Ofcraftsmanship'
+        'Ofdexterity', 'Ofdexterity2', 'Ofinertia', 'Ofgreed', 'Offortune', 'Ofgoodluck',
+        'Ofbalance', 'Ofanthrax', 'Ofpestilence', 'Ofvenom', 'Ofblight', 'Ofcraftsmanship', 'Ofstorms', 'Ofthunder', 'Oflightning', 'Ofshock', 'Ofincineration', 'Ofburning', 'Offire', 'Offlame', 'Ofwinter', 'Ofglacier', 'Oficicle', 'Offrost'
       ]
     },
     'large-charm': {
@@ -731,15 +1017,25 @@ setupEventListeners() {
 });
 
   // Left-click to create
-  container.addEventListener('click', (e) => {
-    if (e.target.classList.contains('charm1') && !e.target.style.backgroundImage && !this.occupiedSlots.has(parseInt(e.target.dataset.index))) {
-      this.clickPosition.x = e.clientX;
-      this.clickPosition.y = e.clientY;
-      this.selectedSlot = e.target;
-      this.showModal();
-    }
-  });
-
+  // Left-click to create or delete
+container.addEventListener('click', (e) => {
+  // Check if clicking on an existing charm to delete it
+  if (e.target.classList.contains('charm-overlay')) {
+    // Delete overlay charm (large/grand)
+    const position = parseInt(e.target.dataset.position);
+    this.removeCharm(position);
+  } else if (e.target.classList.contains('charm1') && e.target.style.backgroundImage) {
+    // Delete small charm
+    const position = parseInt(e.target.dataset.index);
+    this.removeCharm(position);
+  } else if (e.target.classList.contains('charm1') && !e.target.style.backgroundImage && !this.occupiedSlots.has(parseInt(e.target.dataset.index))) {
+    // Create new charm on empty slot
+    this.clickPosition.x = e.clientX;
+    this.clickPosition.y = e.clientY;
+    this.selectedSlot = e.target;
+    this.showModal();
+  }
+});
   // Tooltips - FIXED to handle both overlays and regular charms
   container.addEventListener('mouseover', (e) => {
     let targetElement = null;
@@ -840,6 +1136,14 @@ placeCharm(position, charmType, backgroundImage, charmData) {
       }
     }
   }
+
+  // Recalculate stats after placing ANY charm (moved outside the if/else and loop)
+  if (window.statsCalculator) {
+    setTimeout(() => window.statsCalculator.calculateAllStats(), 50);
+  }
+  if (window.characterStats) {
+  setTimeout(() => window.characterStats.updateTotalStats(), 100);
+}
 }
 
 
@@ -907,6 +1211,14 @@ removeCharm(position) {
     mainSlot.classList.remove('small-charm', 'large-charm', 'grand-charm');
     mainSlot.dataset.charmData = '';
   }
+
+  // Recalculate stats after removing ANY charm (moved outside the if/else)
+  if (window.statsCalculator) {
+    setTimeout(() => window.statsCalculator.calculateAllStats(), 50);
+  }
+  if (window.characterStats) {
+  setTimeout(() => window.characterStats.updateTotalStats(), 100);
+}
 }
 
 
@@ -932,7 +1244,7 @@ removeCharm(position) {
     padding: 8px;
     border: 1px solid rgb(164, 19, 19);
     border-radius: 4px;
-    font-family: monospace;
+    font-family: overlock sc;
     font-size: 12px;
     z-index: 10001;
     pointer-events: none;

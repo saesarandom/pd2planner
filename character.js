@@ -305,11 +305,22 @@ updateTotalStats() {
   // Get bonuses from all equipped items
   const itemBonuses = this.getAllItemBonuses();
   
+  // Get bonuses from charms via statsCalculator
+  const charmBonuses = this.getCharmBonuses();
+  
+  // Calculate total bonuses
+  const totalBonuses = {
+    str: itemBonuses.str + charmBonuses.str,
+    dex: itemBonuses.dex + charmBonuses.dex,
+    vit: itemBonuses.vit + charmBonuses.vit,
+    enr: itemBonuses.enr + charmBonuses.enr
+  };
+  
   // Update total displays
-  this.updateTotalDisplay('str', baseStats.str + itemBonuses.str);
-  this.updateTotalDisplay('dex', baseStats.dex + itemBonuses.dex);
-  this.updateTotalDisplay('vit', baseStats.vit + itemBonuses.vit);
-  this.updateTotalDisplay('enr', baseStats.enr + itemBonuses.enr);
+  this.updateTotalDisplay('str', baseStats.str + totalBonuses.str);
+  this.updateTotalDisplay('dex', baseStats.dex + totalBonuses.dex);
+  this.updateTotalDisplay('vit', baseStats.vit + totalBonuses.vit);
+  this.updateTotalDisplay('enr', baseStats.enr + totalBonuses.enr);
 }
 
 getAllItemBonuses() {
@@ -333,6 +344,21 @@ getAllItemBonuses() {
       if (enrMatch) enrMatch.forEach(match => bonuses.enr += parseInt(match.match(/\+(\d+)/)[1]));
     }
   });
+  
+  return bonuses;
+}
+
+getCharmBonuses() {
+  const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+  
+  // Get charm stats from the statsCalculator if it exists
+  if (window.statsCalculator && window.statsCalculator.stats) {
+    const stats = window.statsCalculator.stats;
+    bonuses.str = stats.str || 0;
+    bonuses.dex = stats.dex || 0;
+    bonuses.vit = stats.vit || 0;
+    bonuses.enr = stats.enr || 0;
+  }
   
   return bonuses;
 }
