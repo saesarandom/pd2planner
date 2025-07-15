@@ -302,7 +302,7 @@ updateTotalStats() {
     enr: parseInt(document.getElementById('enr').value) || 0
   };
 
-  // Get bonuses from all equipped items
+  // Get bonuses from items (now level-filtered)
   const itemBonuses = this.getAllItemBonuses();
   
   // Get bonuses from charms via statsCalculator
@@ -321,30 +321,100 @@ updateTotalStats() {
   this.updateTotalDisplay('dex', baseStats.dex + totalBonuses.dex);
   this.updateTotalDisplay('vit', baseStats.vit + totalBonuses.vit);
   this.updateTotalDisplay('enr', baseStats.enr + totalBonuses.enr);
+  
+  // ALSO calculate life with level requirements in mind
+  this.updateLifeCalculation(itemBonuses, baseStats);
+}
+
+
+updateLifeCalculation(itemBonuses, baseStats) {
+  const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
+  
+  // Base life calculation
+  let totalLife = 100; // Base life for all classes
+  
+  // Life from vitality (3.5 life per vit point)
+  const totalVit = baseStats.vit + itemBonuses.vit;
+  totalLife += totalVit * 3.5;
+  
+  // Life from items (only if level requirement met)
+  let lifeFromItems = 0;
+  if (window.levelRequirementSystem) {
+    const validStats = window.levelRequirementSystem.getValidItemStats();
+    lifeFromItems = validStats.tolife || 0;
+    lifeFromItems += (validStats.tolifeperlevel || 0) * currentLevel;
+  }
+  
+  totalLife += lifeFromItems;
+  
+  // Update life display
+  const totalLifeElement = document.getElementById('totalLifeValue');
+  if (totalLifeElement) {
+    totalLifeElement.textContent = `Total Life: ${Math.floor(totalLife)}`;
+  }
+}
+
+forceStatsUpdate() {
+  console.log('Forcing stats update with level requirements...');
+  
+  // Trigger a complete recalculation
+  setTimeout(() => {
+    this.updateTotalStats();
+    
+    // Also trigger any other stats systems
+    if (window.statsCalculator && window.statsCalculator.calculateAllStats) {
+      window.statsCalculator.calculateAllStats();
+    }
+  }, 50);
 }
 
 getAllItemBonuses() {
   const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
-  const infoContainers = ['weapon-info', 'helm-info', 'armor-info', 'off-info', 'glove-info', 'belt-info', 'boot-info', 'ringsone-info', 'ringstwo-info', 'amulet-info'];
   
-  infoContainers.forEach(containerId => {
-    const container = document.getElementById(containerId);
-    if (container && container.innerHTML) {
-      const text = container.innerHTML;
+  // NEW: Check if level requirement system exists and use its filtered stats
+  if (window.levelRequirementSystem) {
+    const validStats = window.levelRequirementSystem.getValidItemStats();
+    
+    bonuses.str = validStats.str || 0;
+    bonuses.dex = validStats.dex || 0;
+    bonuses.vit = validStats.vit || 0;
+    bonuses.enr = validStats.enr || 0;
+    
+    console.log('Using level-filtered stats:', bonuses);
+    return bonuses;
+  }
+  
+  // FALLBACK: Original method if level requirement system not available
+  const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
+  const equipmentDropdowns = [
+    'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown',
+    'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 
+    'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'
+  ];
+
+  equipmentDropdowns.forEach(dropdownId => {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown || !dropdown.value) return;
+
+    // Check if item exists in itemList
+    if (typeof itemList !== 'undefined' && itemList[dropdown.value]) {
+      const item = itemList[dropdown.value];
+      const requiredLevel = item.properties?.reqlvl || 1;
       
-      // Parse stat bonuses from item descriptions
-      const strMatch = text.match(/\+(\d+)\s+(?:to\s+)?Strength/gi);
-      const dexMatch = text.match(/\+(\d+)\s+(?:to\s+)?Dexterity/gi);
-      const vitMatch = text.match(/\+(\d+)\s+(?:to\s+)?Vitality/gi);
-      const enrMatch = text.match(/\+(\d+)\s+(?:to\s+)?Energy/gi);
-      
-      if (strMatch) strMatch.forEach(match => bonuses.str += parseInt(match.match(/\+(\d+)/)[1]));
-      if (dexMatch) dexMatch.forEach(match => bonuses.dex += parseInt(match.match(/\+(\d+)/)[1]));
-      if (vitMatch) vitMatch.forEach(match => bonuses.vit += parseInt(match.match(/\+(\d+)/)[1]));
-      if (enrMatch) enrMatch.forEach(match => bonuses.enr += parseInt(match.match(/\+(\d+)/)[1]));
+      // ONLY count stats if character level meets requirement
+      if (currentLevel >= requiredLevel) {
+        // Parse stat bonuses from item properties (more reliable than HTML parsing)
+        if (item.properties) {
+          bonuses.str += item.properties.str || 0;
+          bonuses.dex += item.properties.dex || 0;
+          bonuses.vit += item.properties.vit || 0;
+          bonuses.enr += item.properties.enr || 0;
+        }
+      }
     }
   });
   
+  console.log('Using manual level-filtered stats:', bonuses);
   return bonuses;
 }
 

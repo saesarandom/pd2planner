@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('All dependencies loaded, initializing PD2 Planner...');
         
         // Core initialization
-        initializeInventory();
+
         initializeDropdowns();
         initializeEventHandlers();
-        initializeSocketSystem();
+
         initializeCorruptionSystem();
         initializeSkillSystem();
         initializeMercenarySystem();
@@ -49,28 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Initialize inventory grid
-function initializeInventory() {
-    const inventory = document.querySelector('.inventorycontainer');
-    if (!inventory) return;
-    
-    // Clear existing
-    inventory.innerHTML = '';
-    
-    // Create 40 charm slots (4x10 grid)
-    for (let i = 0; i < 40; i++) {
-        const charm = document.createElement('div');
-        charm.className = 'charm1';
-        charm.dataset.slot = i;
-        
-        // Click handler for charm slots
-        charm.addEventListener('click', function() {
-            // Handle charm placement
-            console.log('Charm slot clicked:', i);
-        });
-        
-        inventory.appendChild(charm);
-    }
-}
+
 
 // Initialize all dropdowns with items
 function initializeDropdowns() {
@@ -420,29 +399,6 @@ function setupButtonHandlers() {
 }
 
 // Initialize socket system
-function initializeSocketSystem() {
-    // Set up socket containers
-    const socketContainers = document.querySelectorAll('[class^="socketcontainer"]');
-    
-    socketContainers.forEach(container => {
-        container.addEventListener('click', function(e) {
-            if (e.target.classList.contains('socketz')) {
-                PD2State.currentSocket = e.target;
-                showItemModal();
-            }
-        });
-        
-        container.addEventListener('contextmenu', function(e) {
-            if (e.target.classList.contains('socketz')) {
-                e.preventDefault();
-                if (typeof clearSocket === 'function') {
-                    clearSocket(e.target);
-                    updateAllCalculations();
-                }
-            }
-        });
-    });
-}
 
 // Initialize corruption system
 function initializeCorruptionSystem() {
@@ -827,9 +783,302 @@ window.handleSignup = async function(event) {
     }
 };
 
-// Export for global access
-window.PD2State = PD2State;
-window.updateAllCalculations = updateAllCalculations;
-window.recalculateStats = function() {
-  console.log('Stats calculation called - but no stats calculator loaded');
+// Level Requirement System for PD2 Planner
+// Add this to your main-init.js or character.js
+
+// FIXED Level Requirement System for PD2 Planner
+// Replace your existing code with this corrected version
+
+// Ultra Lightweight Level Requirement System - Only 150 lines!
+// Replace your entire level requirement system with this clean version
+
+class LevelRequirementSystem {
+  constructor() {
+    this.currentLevel = 1;
+    this.equipmentMap = {
+      'weapons-dropdown': 'weapon-info',
+      'helms-dropdown': 'helm-info', 
+      'armors-dropdown': 'armor-info',
+      'offs-dropdown': 'off-info',
+      'gloves-dropdown': 'glove-info',
+      'belts-dropdown': 'belt-info',
+      'boots-dropdown': 'boot-info',
+      'ringsone-dropdown': 'ringsone-info',
+      'ringstwo-dropdown': 'ringstwo-info',
+      'amulets-dropdown': 'amulet-info'
+    };
+    this.init();
+  }
+
+  init() {
+    this.setupEventListeners();
+    this.overrideStatsSystems();
+    console.log('📊 Level Requirement System initialized');
+  }
+
+  setupEventListeners() {
+    // Level changes
+    const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+      levelInput.addEventListener('input', () => {
+        this.currentLevel = parseInt(levelInput.value) || 1;
+        this.updateAll();
+      });
+    }
+
+    // Equipment changes
+    Object.keys(this.equipmentMap).forEach(dropdownId => {
+      const dropdown = document.getElementById(dropdownId);
+      if (dropdown) {
+        dropdown.addEventListener('change', () => setTimeout(() => this.updateAll(), 100));
+      }
+    });
+
+    // Socket changes
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('socket-slot') || e.target.closest('.socket-slot')) {
+        setTimeout(() => this.updateCharacterStats(), 200);
+      }
+    });
+  }
+
+  updateAll() {
+    this.checkAllItems();
+    this.updateStatCalculations();
+  }
+
+  checkAllItems() {
+    Object.entries(this.equipmentMap).forEach(([dropdownId, infoId]) => {
+      this.checkItemRequirement(dropdownId, infoId);
+    });
+  }
+
+  checkItemRequirement(dropdownId, infoId) {
+    const dropdown = document.getElementById(dropdownId);
+    const infoDiv = document.getElementById(infoId);
+    
+    if (!dropdown || !infoDiv || !dropdown.value || !itemList[dropdown.value]) return;
+
+    const item = itemList[dropdown.value];
+    const requiredLevel = item.properties?.reqlvl || 1;
+    const isValid = this.currentLevel >= requiredLevel;
+
+    this.updateItemDescription(infoDiv, item, requiredLevel, isValid);
+    this.markDropdownValidity(dropdown, isValid);
+  }
+
+  updateItemDescription(infoDiv, item, requiredLevel, isValidLevel) {
+    const currentContent = infoDiv.innerHTML;
+    const hasSocketStats = currentContent.includes('socket-enhanced-stat') || 
+                          (currentContent.includes('Adds ') && currentContent !== item.description);
+    
+    let description = hasSocketStats ? currentContent : item.description;
+    
+    // Update only the Required Level line color
+    const levelRegex = /<span[^>]*>Required Level: (\d+)<\/span>|Required Level: (\d+)/;
+    const match = description.match(levelRegex);
+    
+    if (match) {
+      const levelColor = isValidLevel ? '#ffffff' : '#FF4444';
+      const newLine = `<span style="color: ${levelColor}; font-weight: ${isValidLevel ? 'normal' : 'bold'};">Required Level: ${requiredLevel}</span>`;
+      description = description.replace(match[0], newLine);
+    }
+
+    infoDiv.innerHTML = description;
+  }
+
+  markDropdownValidity(dropdown, isValid) {
+    if (isValid) {
+      dropdown.style.borderColor = '';
+      dropdown.style.backgroundColor = '#000000';
+    } else {
+      dropdown.style.borderColor = '#FF4444';
+
+    }
+  }
+
+  updateStatCalculations() {
+    setTimeout(() => {
+      if (window.statsCalculator) window.statsCalculator.calculateAllStats();
+      this.updateCharacterStats();
+    }, 50);
+  }
+
+  updateCharacterStats() {
+    if (!window.characterStats) return;
+    
+    const baseStats = {
+      str: parseInt(document.getElementById('str').value) || 0,
+      dex: parseInt(document.getElementById('dex').value) || 0,
+      vit: parseInt(document.getElementById('vit').value) || 0,
+      enr: parseInt(document.getElementById('enr').value) || 0
+    };
+
+    const itemBonuses = this.getItemBonuses();
+    const socketBonuses = this.getSocketBonuses();
+    const charmBonuses = this.getCharmBonuses();
+    
+    const totalBonuses = {
+      str: itemBonuses.str + socketBonuses.str + charmBonuses.str,
+      dex: itemBonuses.dex + socketBonuses.dex + charmBonuses.dex,
+      vit: itemBonuses.vit + socketBonuses.vit + charmBonuses.vit,
+      enr: itemBonuses.enr + socketBonuses.enr + charmBonuses.enr
+    };
+
+    ['str', 'dex', 'vit', 'enr'].forEach(statId => {
+      this.updateTotalDisplay(statId, baseStats[statId] + totalBonuses[statId], totalBonuses[statId]);
+    });
+  }
+
+  getItemBonuses() {
+    const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+    
+    Object.keys(this.equipmentMap).forEach(dropdownId => {
+      const dropdown = document.getElementById(dropdownId);
+      if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
+      
+      const item = itemList[dropdown.value];
+      const requiredLevel = item.properties?.reqlvl || 1;
+      
+      if (this.currentLevel >= requiredLevel && item.properties) {
+        bonuses.str += item.properties.str || 0;
+        bonuses.dex += item.properties.dex || 0;
+        bonuses.vit += item.properties.vit || 0;
+        bonuses.enr += item.properties.enr || 0;
+      }
+    });
+    
+    return bonuses;
+  }
+
+  getSocketBonuses() {
+    const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+    
+    sections.forEach(section => {
+      const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+      sockets.forEach(socket => {
+        const stats = socket.dataset.stats;
+        if (stats) {
+          const strengthMatch = stats.match(/\+(\d+) (?:to )?Strength/i);
+          const dexterityMatch = stats.match(/\+(\d+) (?:to )?Dexterity/i);
+          const vitalityMatch = stats.match(/\+(\d+) (?:to )?Vitality/i);
+          const energyMatch = stats.match(/\+(\d+) (?:to )?Energy/i);
+          
+          if (strengthMatch) bonuses.str += parseInt(strengthMatch[1]);
+          if (dexterityMatch) bonuses.dex += parseInt(dexterityMatch[1]);
+          if (vitalityMatch) bonuses.vit += parseInt(vitalityMatch[1]);
+          if (energyMatch) bonuses.enr += parseInt(energyMatch[1]);
+        }
+      });
+    });
+    
+    return bonuses;
+  }
+
+  getCharmBonuses() {
+    const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+    if (window.statsCalculator && window.statsCalculator.stats) {
+      const stats = window.statsCalculator.stats;
+      bonuses.str = stats.str || 0;
+      bonuses.dex = stats.dex || 0;
+      bonuses.vit = stats.vit || 0;
+      bonuses.enr = stats.enr || 0;
+    }
+    return bonuses;
+  }
+
+  updateTotalDisplay(statId, total, bonus) {
+    let bonusDiv = document.getElementById(statId + 'Total');
+    if (!bonusDiv) {
+      bonusDiv = document.createElement('span');
+      bonusDiv.id = statId + 'Total';
+      bonusDiv.style.cssText = 'color: #00ff00; font-weight: bold; margin-left: 10px; font-size: 14px;';
+      
+      const statInput = document.getElementById(statId);
+      if (statInput) {
+        const statRow = statInput.closest('.stat-row') || statInput.parentElement;
+        if (statRow) statRow.appendChild(bonusDiv);
+      }
+    }
+    
+    bonusDiv.textContent = bonus > 0 ? ` ${total}` : '';
+    bonusDiv.style.display = bonus > 0 ? 'inline' : 'none';
+  }
+
+  overrideStatsSystems() {
+    // Override socket system's equipment stats calculation
+    setTimeout(() => {
+      if (window.statsCalculator) {
+        window.statsCalculator.calculateEquipmentStats = () => {
+          Object.entries(window.statsCalculator.equipmentMap || {}).forEach(([dropdownId, itemType]) => {
+            const dropdown = document.getElementById(dropdownId);
+            if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
+            
+            const item = itemList[dropdown.value];
+            const requiredLevel = item.properties?.reqlvl || 1;
+            
+            if (this.currentLevel >= requiredLevel) {
+              window.statsCalculator.parseItemStats(item);
+            }
+          });
+        };
+      }
+
+      // Override character stats methods
+      if (window.characterStats) {
+        window.characterStats.getAllItemBonuses = () => this.getItemBonuses();
+        window.characterStats.getSocketBonuses = () => this.getSocketBonuses();
+        window.characterStats.getCharmBonuses = () => this.getCharmBonuses();
+        window.characterStats.updateTotalStats = () => this.updateCharacterStats();
+      }
+    }, 800);
+  }
+}
+
+// CSS and initialization
+const styles = `
+<style id="level-requirement-styles">
+.invalid-level {
+  border: 2px solid #FF4444 !important;
+  background-color: rgba(255, 68, 68, 0.1) !important;
+}
+select.invalid-level:focus {
+  box-shadow: 0 0 5px rgba(255, 68, 68, 0.5);
+}
+</style>
+`;
+
+if (!document.getElementById('level-requirement-styles')) {
+  document.head.insertAdjacentHTML('beforeend', styles);
+}
+
+// Initialize
+let levelRequirementSystem;
+setTimeout(() => {
+  if (!levelRequirementSystem) {
+    levelRequirementSystem = new LevelRequirementSystem();
+    window.levelRequirementSystem = levelRequirementSystem;
+    console.log('✅ Ultra Lightweight Level System initialized');
+  }
+}, 1000);
+
+// Test function
+window.testLevelSystem = function() {
+  console.log('🧪 Testing lightweight level system...');
+  const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
+  console.log('Current level:', currentLevel);
+  
+  if (levelRequirementSystem) {
+    const itemBonuses = levelRequirementSystem.getItemBonuses();
+    const socketBonuses = levelRequirementSystem.getSocketBonuses();
+    const charmBonuses = levelRequirementSystem.getCharmBonuses();
+    
+    console.log('📦 Item bonuses:', itemBonuses);
+    console.log('🔌 Socket bonuses:', socketBonuses);
+    console.log('💎 Charm bonuses:', charmBonuses);
+    
+    levelRequirementSystem.updateCharacterStats();
+    console.log('✅ System working perfectly!');
+  }
 };

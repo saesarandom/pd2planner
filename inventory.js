@@ -115,10 +115,14 @@ createModal() {
         font-size: 14px;
         min-width: 400px;
         max-width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        display: flex;
+        flex-direction: column;
       ">
         <span class="close">&times;</span>
-        <h3 style="margin: 0 0 20px 0; color: rgb(164, 19, 19);">Create Charm, right click and drag to duplicate on charm, left click to delete</h3>
+        <h3 style="margin: 0 0 20px 0; color: rgb(164, 19, 19);">Create Charm</h3>
         
         <!-- Charm Type Selection -->
         <div id="charmTypeSelection">
@@ -131,50 +135,66 @@ createModal() {
         </div>
 
         <!-- Charm Configuration (hidden initially) -->
-        <div id="charmConfiguration" style="display: none;">
-          <div style="margin-bottom: 15px;">
-            <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Prefix:</h4>
-            <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
-              <option value="">None</option>
-            </select>
-            <div id="prefixStats" style="margin-top: 10px; color: #87CEEB;"></div>
+        <div id="charmConfiguration" style="display: none; flex: 1; display: flex; flex-direction: column;">
+          <div style="flex: 1; overflow-y: auto; padding-right: 10px;">
+            <div style="margin-bottom: 15px;">
+              <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Prefix:</h4>
+              <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+                <option value="">None</option>
+              </select>
+              <div id="prefixStats" style="margin-top: 10px; color: #87CEEB;"></div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+              <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Suffix:</h4>
+              <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+                <option value="">None</option>
+              </select>
+              <div id="suffixStats" style="margin-top: 10px; color: #87CEEB;"></div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Preview:</h4>
+              <div id="charmPreview" style="
+                background: rgba(42, 42, 78, 0.5);
+                border: 1px solid rgb(164, 19, 19);
+                border-radius: 4px;
+                padding: 10px;
+                min-height: 60px;
+                color: #FFD700;
+              ">Select charm type to begin</div>
+            </div>
           </div>
 
-          <div style="margin-bottom: 15px;">
-            <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Suffix:</h4>
-            <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
-              <option value="">None</option>
-            </select>
-            <div id="suffixStats" style="margin-top: 10px; color: #87CEEB;"></div>
-          </div>
-
-          <div style="margin-bottom: 20px;">
-            <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Preview:</h4>
-            <div id="charmPreview" style="
-              background: rgba(42, 42, 78, 0.5);
-              border: 1px solid rgb(164, 19, 19);
+          <!-- Fixed button container at bottom -->
+          <div style="
+            position: sticky;
+            bottom: 0;
+            background: rgb(5, 5, 5);
+            padding: 15px 0 0 0;
+            border-top: 1px solid rgb(164, 19, 19);
+            margin-top: 10px;
+          ">
+            <button id="createCharmBtn" style="
+              background: rgb(164, 19, 19);
+              color: white;
+              border: none;
+              padding: 12px 24px;
               border-radius: 4px;
-              padding: 10px;
-              min-height: 60px;
-              color: #FFD700;
-            ">Select charm type to begin</div>
+              cursor: pointer;
+              width: 100%;
+              font-size: 16px;
+              font-weight: bold;
+              transition: all 0.2s ease;
+            " onmouseover="this.style.background='rgb(200, 30, 30)'" 
+               onmouseout="this.style.background='rgb(164, 19, 19)'">Create Charm</button>
           </div>
-
-          <button id="createCharmBtn" style="
-            background: rgb(164, 19, 19);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            height: auto;
-            width: 60%;
-            font-size: 14px;
-          ">Create Charm</button>
         </div>
       </div>
     </div>
   `;
+
+
 
   document.body.insertAdjacentHTML('beforeend', modalHTML);
   this.setupModalEvents();
