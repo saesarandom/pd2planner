@@ -134,7 +134,7 @@ createModal() {
         <div id="charmConfiguration" style="display: none;">
           <div style="margin-bottom: 15px;">
             <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Prefix:</h4>
-            <select id="prefixSelect" style="width: 100%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+            <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
               <option value="">None</option>
             </select>
             <div id="prefixStats" style="margin-top: 10px; color: #87CEEB;"></div>
@@ -142,7 +142,7 @@ createModal() {
 
           <div style="margin-bottom: 15px;">
             <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Suffix:</h4>
-            <select id="suffixSelect" style="width: 100%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+            <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
               <option value="">None</option>
             </select>
             <div id="suffixStats" style="margin-top: 10px; color: #87CEEB;"></div>
@@ -167,7 +167,8 @@ createModal() {
             padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
-            width: 100%;
+            height: auto;
+            width: 60%;
             font-size: 14px;
           ">Create Charm</button>
         </div>
@@ -561,8 +562,15 @@ getStatForAffix(affix) {
     // LARGE CHARM Fine (different stats!)
     'Finelarge': { 
       stats: [
-        { min: 3, max: 6, text: '+{value} to Maximum Damage' },
-        { min: 15, max: 40, text: '+{value} to Attack Rating' }
+        { min: 1, max: 3, text: '+{value} to Maximum Damage' },
+        { min: 10, max: 20, text: '+{value} to Attack Rating' }
+      ]
+    },
+
+    'Sharplarge': { 
+      stats: [
+        { min: 4, max: 6, text: '+{value} to Maximum Damage' },
+        { min: 21, max: 48, text: '+{value} to Attack Rating' }
       ]
     },
     
@@ -573,6 +581,39 @@ getStatForAffix(affix) {
         { min: 49, max: 76, text: '+{value} to Attack Rating' }
       ]
     },
+
+    'Fletchersgrand': { min: 1, max: 1, text: '+{value} to Bow and Crossbow Skills (Amazon Only)' },
+    'Acrobatsgrand': { min: 1, max: 1, text: '+{value} to Passive and Magic Skills (Amazon Only)' },
+    'Harpoonistsgrand': { min: 1, max: 1, text: '+{value} to Javelin and Spear Skills (Amazon Only)' },
+    
+'Burninggrand': { min: 1, max: 1, text: '+{value} to Fire Spells (Sorceress Only)' },
+'Sparkinggrand': { min: 1, max: 1, text: '+{value} to Lightning Spells (Sorceress Only)' },
+'Chillinggrand': { min: 1, max: 1, text: '+{value} to Cold Spells (Sorceress Only)' },
+
+// NECROMANCER SKILLS (GRAND CHARMS ONLY)
+'Hexinggrand': { min: 1, max: 1, text: '+{value} to Curses (Necromancer Only)' },
+'Fungalgrand': { min: 1, max: 1, text: '+{value} to Poison and Bone Spells (Necromancer Only)' },
+'Graverobbersgrand': { min: 1, max: 1, text: '+{value} to Summoning Spells (Necromancer Only)' },
+
+// PALADIN SKILLS (GRAND CHARMS ONLY)
+'Lionbrandedgrand': { min: 1, max: 1, text: '+{value} to Combat Skills (Paladin Only)' },
+'Captainsgrand': { min: 1, max: 1, text: '+{value} to Offensive Auras (Paladin Only)' },
+'Preserversgrand': { min: 1, max: 1, text: '+{value} to Defensive Auras (Paladin Only)' },
+
+// BARBARIAN SKILLS (GRAND CHARMS ONLY)
+'Expertsgrand': { min: 1, max: 1, text: '+{value} to Combat Skills (Barbarian Only)' },
+'Fanaticgrand': { min: 1, max: 1, text: '+{value} to Combat Masteries (Barbarian Only)' },
+'Soundinggrand': { min: 1, max: 1, text: '+{value} to Warcries (Barbarian Only)' },
+
+// DRUID SKILLS (GRAND CHARMS ONLY)
+'Trainersgrand': { min: 1, max: 1, text: '+{value} to Summoning Skills (Druid Only)' },
+'Spiritualgrand': { min: 1, max: 1, text: '+{value} to Shape Shifting Skills (Druid Only)' },
+'Naturesgrand': { min: 1, max: 1, text: '+{value} to Elemental Skills (Druid Only)' },
+
+// ASSASSIN SKILLS (GRAND CHARMS ONLY)
+'Entrappinggrand': { min: 1, max: 1, text: '+{value} to Traps (Assassin Only)' },
+'Mentalistsgrand': { min: 1, max: 1, text: '+{value} to Shadow Disciplines (Assassin Only)' },
+'Shogukushasgrand': { min: 1, max: 1, text: '+{value} to Martial Arts (Assassin Only)' },
     // Attack Rating
     'Bronze': { min: 7, max: 15, text: '+{value} to Attack Rating' },
     'Bronze2': { min: 16, max: 25, text: '+{value} to Attack Rating' },
@@ -935,7 +976,7 @@ getCharmAffixes() {
     'large-charm': {
       prefixes: [
         'Stoutlarge', 'Stout2large', 'Stout3large', 'Burlylarge', 'Burly2large',
-        'Stalwartlarge', 'Redlarge', 'Jaggedlarge', 'Finelarge', 'Bronzelarge'
+        'Stalwartlarge', 'Redlarge', 'Jaggedlarge', 'Finelarge', 'Sharplarge', 'Bronzelarge'
       ],
       suffixes: [
         'Oflifelarge', 'Ofvitalarge', 'Ofstrengthlarge', 'Ofdexteritylarge',
@@ -945,7 +986,7 @@ getCharmAffixes() {
     'grand-charm': {
       prefixes: [
         'Stoutgrand', 'Stout2grand', 'Burlygrand', 'Stalwartgrand',
-        'Redgrand', 'Jaggedgrand', 'Bronzegrand', 'Sharpgrand'
+        'Redgrand', 'Jaggedgrand', 'Bronzegrand', 'Sharpgrand', 'Fletchersgrand', 'Acrobatsgrand', 'Harpoonistsgrand', 'Burninggrand', 'Sparkinggrand', 'Chillinggrand', 'Hexinggrand', 'Fungalgrand', 'Graverobbersgrand', 'Lionbrandedgrand', 'Captainsgrand', 'Preserversgrand', 'Expertsgrand', 'Fanaticgrand', 'Soundinggrand', 'Trainersgrand', 'Spiritualgrand', 'Naturesgrand', 'Entrappinggrand', 'Mentalistsgrand', 'Shogukushasgrand'
       ],
       suffixes: [
         'Oflifegrand', 'Ofvitagrand', 'Ofstrengthgrand', 'Ofdexteritygrand',

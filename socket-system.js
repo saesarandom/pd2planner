@@ -495,7 +495,8 @@ class StatsCalculator {
     };
     
     this.currentSocket = null;
-    
+    this.targetSocket = null;
+
     this.init();
   }
   
@@ -712,6 +713,15 @@ class StatsCalculator {
         this.showSocketModal();
       }
     });
+
+    // Custom jewel creation click
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.custom-jewel-item')) {
+      // currentSocket should already be set from socket click above
+      this.hideSocketModal();
+      this.showJewelModal();
+    }
+  });
 
     // Modal close
     document.addEventListener('click', (e) => {
@@ -1990,7 +2000,661 @@ extractStatFromLine(line, regex, statKey) {
   recalculate() {
     this.calculateAllStats();
   }
+
+
+createJewelModal() {
+  const existingModal = document.getElementById('jewelModal');
+  if (existingModal) existingModal.remove();
+  
+  const modalHTML = `
+    <div id="jewelModal" class="socket-modal" style="display: none;">
+      <div class="socket-modal-content" style="max-width: 600px; max-height: 90vh;">
+        <span class="socket-close">&times;</span>
+        <h3>Create Custom Jewel</h3>
+        
+        <div class="jewel-creation">
+          <!-- Jewel Color Selection -->
+          <div class="jewel-color-section" style="margin-bottom: 20px;">
+            <h4 style="color: #0f3460; margin-bottom: 10px;">Jewel Color:</h4>
+            <div class="jewel-colors" style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <div class="jewel-color-option" data-color="blue">
+                <img src="img/jewel1.png" alt="Blue Jewel" style="width: 32px; height: 32px; cursor: pointer; border: 2px solid transparent;">
+                <span>Blue</span>
+              </div>
+              <div class="jewel-color-option" data-color="red">
+                <img src="img/jewel2.png" alt="Red Jewel" style="width: 32px; height: 32px; cursor: pointer; border: 2px solid transparent;">
+                <span>Red</span>
+              </div>
+              <div class="jewel-color-option" data-color="green">
+                <img src="img/jewel3.png" alt="Green Jewel" style="width: 32px; height: 32px; cursor: pointer; border: 2px solid transparent;">
+                <span>Green</span>
+              </div>
+              <div class="jewel-color-option" data-color="yellow">
+                <img src="img/jewel4.png" alt="Yellow Jewel" style="width: 32px; height: 32px; cursor: pointer; border: 2px solid transparent;">
+                <span>Yellow</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Jewel Quality Selection -->
+          <div class="jewel-quality-section" style="margin-bottom: 20px;">
+            <h4 style="color: #0f3460; margin-bottom: 10px;">Jewel Quality:</h4>
+            <div class="jewel-quality-options">
+              <label style="display: block; margin-bottom: 5px;">
+                <input type="radio" name="jewelQuality" value="magic" checked> 
+                <span style="color: #4169E1;">Magic (1 prefix + 1 suffix)</span>
+              </label>
+              <label style="display: block; margin-bottom: 5px;">
+                <input type="radio" name="jewelQuality" value="rare"> 
+                <span style="color: #FFFF00;">Rare (up to 3 prefixes + 3 suffixes)</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Prefix Section -->
+          <div class="prefix-section" style="margin-bottom: 20px;">
+            <h4 style="color: #0f3460; margin-bottom: 10px;">Prefixes:</h4>
+            <div class="affix-controls" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: end;">
+              <div style="flex: 1;">
+                <select id="jewelPrefixSelect" style="width: 100%; padding: 5px; background: #2a2a4e; color: white; border: 1px solid #0f3460;">
+                  <option value="">Select Prefix</option>
+                </select>
+              </div>
+              <div style="width: 80px;">
+                <input type="number" id="jewelPrefixValue" style="width: 100%; padding: 5px; background: #2a2a4e; color: white; border: 1px solid #0f3460;" placeholder="Value">
+              </div>
+              <button id="addJewelPrefix" style="padding: 5px 15px; background: #0f3460; color: white; border: none; cursor: pointer;">Add</button>
+            </div>
+            <div id="selectedPrefixes" class="selected-affixes"></div>
+          </div>
+          
+          <!-- Suffix Section -->
+          <div class="suffix-section" style="margin-bottom: 20px;">
+            <h4 style="color: #0f3460; margin-bottom: 10px;">Suffixes:</h4>
+            <div class="affix-controls" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: end;">
+              <div style="flex: 1;">
+                <select id="jewelSuffixSelect" style="width: 100%; padding: 5px; background: #2a2a4e; color: white; border: 1px solid #0f3460;">
+                  <option value="">Select Suffix</option>
+                </select>
+              </div>
+              <div style="width: 80px;">
+                <input type="number" id="jewelSuffixValue" style="width: 100%; padding: 5px; background: #2a2a4e; color: white; border: 1px solid #0f3460;" placeholder="Value">
+              </div>
+              <button id="addJewelSuffix" style="padding: 5px 15px; background: #0f3460; color: white; border: none; cursor: pointer;">Add</button>
+            </div>
+            <div id="selectedSuffixes" class="selected-affixes"></div>
+          </div>
+          
+          <!-- Preview Section -->
+          <div class="jewel-preview" style="margin-bottom: 20px;">
+            <h4 style="color: #0f3460; margin-bottom: 10px;">Preview:</h4>
+            <div id="jewelPreview" style="background: #2a2a4e; border: 1px solid #0f3460; padding: 15px; border-radius: 5px; min-height: 80px; color: white;">
+              <div style="color: #4169E1; font-weight: bold;">Magic Jewel</div>
+              <div style="color: #666; font-size: 12px; margin-top: 5px;">Select color and affixes to preview</div>
+            </div>
+          </div>
+          
+          <!-- Create Button -->
+          <button id="createJewelBtn" style="width: 100%; padding: 12px; background: #0f3460; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+            Create Jewel
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  this.addJewelModalStyles();
+  this.setupJewelModalEvents();
+  this.populateJewelAffixes();
+  
+  // Initialize with blue jewel selected
+  this.selectedJewelColor = 'blue';
+  this.selectedJewelImage = 'img/jewel1.png';
+  this.selectedPrefixes = [];
+  this.selectedSuffixes = [];
 }
+
+addJewelModalStyles() {
+  if (document.getElementById('jewel-modal-styles')) return;
+  
+  const styles = `
+    <style id="jewel-modal-styles">
+      .jewel-colors {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+      
+      .jewel-color-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+      
+      .jewel-color-option:hover {
+        background: rgba(15, 52, 96, 0.3);
+      }
+      
+      .jewel-color-option.selected img {
+        border-color: #0f3460 !important;
+      }
+      
+      .jewel-color-option span {
+        color: white;
+        font-size: 12px;
+      }
+      
+      .selected-affixes {
+        max-height: 120px;
+        overflow-y: auto;
+        background: rgba(15, 52, 96, 0.2);
+        border-radius: 3px;
+        padding: 8px;
+        min-height: 40px;
+      }
+      
+      .selected-affix {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(42, 42, 78, 0.8);
+        padding: 5px 8px;
+        margin-bottom: 5px;
+        border-radius: 3px;
+        color: #87CEEB;
+        font-size: 12px;
+      }
+      
+      .remove-affix-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .remove-affix-btn:hover {
+        background: #c0392b;
+      }
+      
+      .jewel-quality-options label {
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 3px;
+        transition: background 0.3s;
+      }
+      
+      .jewel-quality-options label:hover {
+        background: rgba(15, 52, 96, 0.2);
+      }
+    </style>
+  `;
+  
+  document.head.insertAdjacentHTML('beforeend', styles);
+}
+
+setupJewelModalEvents() {
+  // Jewel modal close
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('socket-close') || e.target.id === 'jewelModal') {
+      this.hideJewelModal();
+    }
+  });
+
+  // Color selection
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.jewel-color-option')) {
+      const colorOption = e.target.closest('.jewel-color-option');
+      const color = colorOption.dataset.color;
+      const img = colorOption.querySelector('img').src;
+      
+      // Update selection
+      document.querySelectorAll('.jewel-color-option').forEach(opt => opt.classList.remove('selected'));
+      colorOption.classList.add('selected');
+      
+      this.selectedJewelColor = color;
+      this.selectedJewelImage = img;
+      this.updateJewelPreview();
+    }
+  });
+  
+  // Quality change
+  document.addEventListener('change', (e) => {
+    if (e.target.name === 'jewelQuality') {
+      this.updateJewelPreview();
+    }
+  });
+  
+  // Add prefix
+  document.addEventListener('click', (e) => {
+    if (e.target.id === 'addJewelPrefix') {
+      this.addJewelAffix('prefix');
+    }
+  });
+  
+  // Add suffix
+  document.addEventListener('click', (e) => {
+    if (e.target.id === 'addJewelSuffix') {
+      this.addJewelAffix('suffix');
+    }
+  });
+  
+  // Remove affix
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-affix-btn')) {
+      const type = e.target.dataset.type;
+      const index = parseInt(e.target.dataset.index);
+      this.removeJewelAffix(type, index);
+    }
+  });
+  
+  // Create jewel - IMPORTANT: This event listener is crucial!
+  document.addEventListener('click', (e) => {
+    if (e.target.id === 'createJewelBtn') {
+      console.log('Create jewel button clicked!'); // Debug
+      this.createCustomJewel();
+    }
+  });
+  
+  // Affix select changes - update value input ranges
+  document.addEventListener('change', (e) => {
+    if (e.target.id === 'jewelPrefixSelect') {
+      this.updateValueInput('prefix', e.target.value);
+    } else if (e.target.id === 'jewelSuffixSelect') {
+      this.updateValueInput('suffix', e.target.value);
+    }
+  });
+}
+
+populateJewelAffixes() {
+  const prefixes = {
+    'Cinnabar': { effect: '+[5-10]% Enhanced Damage', reqLevel: 1 },
+    'Rusty': { effect: '+[11-20]% Enhanced Damage', reqLevel: 9 },
+    'Realgar': { effect: '+[21-30]% Enhanced Damage', reqLevel: 37 },
+    'Ruby': { effect: '+[31-40]% Enhanced Damage', reqLevel: 58 },
+    'Stout': { effect: '+[5-8] Defense', reqLevel: 1 },
+    'Burly': { effect: '+[9-20] Defense', reqLevel: 12 },
+    'Bone': { effect: '+[21-40] Defense', reqLevel: 24 },
+    'Ivory': { effect: '+[41-64] Defense', reqLevel: 56 },
+    'Scarlet': { effect: '+[1-4] to Minimum Damage', reqLevel: 6 },
+    'Crimson': { effect: '+[5-8] to Minimum Damage', reqLevel: 30 },
+    'Cardinal': { effect: '+[10-14] to Minimum Damage', reqLevel: 30 },
+    'Carbuncle': { effect: '+[1-5] to Maximum Damage', reqLevel: 9 },
+    'Carmine': { effect: '+[6-9] to Maximum Damage', reqLevel: 27 },
+    'Vermillion': { effect: '+[11-15] to Maximum Damage', reqLevel: 50 },
+    'Nickel': { effect: '+[10-20] to Attack Rating', reqLevel: 1 },
+    'Tin': { effect: '+[21-40] to Attack Rating', reqLevel: 6 },
+    'Silver': { effect: '+[41-60] to Attack Rating', reqLevel: 18 },
+    'Argent': { effect: '+[61-100] to Attack Rating', reqLevel: 36 },
+    'Emerald': { effect: '[3-7]% Better Chance of Getting Magic Items', reqLevel: 12 },
+    'Zircon': { effect: '+[5-10] to Mana', reqLevel: 2 },
+    'Jacinth': { effect: '+[11-15] to Mana', reqLevel: 12 },
+    'Turquoise': { effect: '+[16-20] to Mana', reqLevel: 21 },
+    'Cerulean': { effect: '+[21-30] to Mana', reqLevel: 41 },
+    'Shimmering': { effect: 'All Resistances +[5-10]', reqLevel: 12 },
+    'Scintillating': { effect: 'All Resistances +[11-15]', reqLevel: 26 },
+    'Lapis': { effect: 'Cold Resist +[5-15]%', reqLevel: 1 },
+    'Sapphire': { effect: 'Cold Resist +[16-30]%', reqLevel: 14 }
+  };
+  
+  const suffixes = {
+    'Malice': { effect: 'Attacker Takes Damage of [30-40]', reqLevel: 29 },
+    'Fervor': { effect: '+[15-15]% Increased Attack Speed', reqLevel: 31 },
+    'Maiming': { effect: '[5-8]% Chance of Open Wounds', reqLevel: 24 },
+    'Slaying': { effect: '[1-3]% Deadly Strike', reqLevel: 38 },
+    'Gore': { effect: '[4-10]% Deadly Strike', reqLevel: 63 },
+    'Carnage': { effect: '[11-15]% Deadly Strike', reqLevel: 77 },
+    'Slaughter': { effect: '[16-20]% Deadly Strike', reqLevel: 85 },
+    'Frost': { effect: 'Adds [1-3] to [4-6] Cold Damage', reqLevel: 6 },
+    'Frigidity': { effect: 'Adds 1 to [3-5] Cold Damage', reqLevel: 12 },
+    'Icicle': { effect: 'Adds [2-3] to [6-10] Cold Damage', reqLevel: 29 },
+    'Glacier': { effect: 'Adds [4-5] to [11-15] Cold Damage', reqLevel: 50 },
+    'Passion': { effect: 'Adds [1-3] to [6-10] Fire Damage', reqLevel: 11 },
+    'Fire': { effect: 'Adds [4-10] to [11-30] Fire Damage', reqLevel: 28 },
+    'Burning': { effect: 'Adds [11-25] to [31-50] Fire Damage', reqLevel: 49 },
+    'Ennui': { effect: 'Adds 1-[10-20] Lightning Damage', reqLevel: 11 },
+    'Lightning': { effect: 'Adds 1-[21-60] Lightning Damage', reqLevel: 28 },
+    'Thunder': { effect: 'Adds 1-[61-100] Lightning Damage', reqLevel: 49 }
+  };
+  
+  // Populate prefix dropdown
+  const prefixSelect = document.getElementById('jewelPrefixSelect');
+  for (const [name, data] of Object.entries(prefixes)) {
+    const option = document.createElement('option');
+    option.value = data.effect;
+    option.textContent = `${name} - ${data.effect}`;
+    prefixSelect.appendChild(option);
+  }
+  
+  // Populate suffix dropdown
+  const suffixSelect = document.getElementById('jewelSuffixSelect');
+  for (const [name, data] of Object.entries(suffixes)) {
+    const option = document.createElement('option');
+    option.value = data.effect;
+    option.textContent = `${name} - ${data.effect}`;
+    suffixSelect.appendChild(option);
+  }
+}
+
+updateValueInput(type, effect) {
+  const valueInput = document.getElementById(`jewel${type.charAt(0).toUpperCase() + type.slice(1)}Value`);
+  if (!valueInput || !effect) return;
+  
+  const range = this.extractJewelRange(effect);
+  if (range) {
+    valueInput.min = range.min;
+    valueInput.max = range.max;
+    valueInput.value = range.min;
+    valueInput.style.display = 'block';
+  } else {
+    valueInput.style.display = 'none';
+  }
+}
+
+extractJewelRange(effect) {
+  const match = effect.match(/\[(\d+)-(\d+)\]/);
+  if (match) {
+    return {
+      min: parseInt(match[1]),
+      max: parseInt(match[2])
+    };
+  }
+  return null;
+}
+
+addJewelAffix(type) {
+  const select = document.getElementById(`jewel${type.charAt(0).toUpperCase() + type.slice(1)}Select`);
+  const valueInput = document.getElementById(`jewel${type.charAt(0).toUpperCase() + type.slice(1)}Value`);
+  const quality = document.querySelector('input[name="jewelQuality"]:checked').value;
+  
+  if (!select.value) return;
+  
+  const affixes = type === 'prefix' ? this.selectedPrefixes : this.selectedSuffixes;
+  const maxAffixes = quality === 'rare' ? 3 : 1;
+  const maxTotal = quality === 'rare' ? 6 : 2;
+  
+  // Check limits
+  if (affixes.length >= maxAffixes) {
+    alert(`Maximum ${maxAffixes} ${type}es for ${quality} jewels`);
+    return;
+  }
+  
+  if ((this.selectedPrefixes.length + this.selectedSuffixes.length) >= maxTotal) {
+    alert(`Maximum ${maxTotal} total affixes for ${quality} jewels`);
+    return;
+  }
+  
+  const range = this.extractJewelRange(select.value);
+  let value = null;
+  
+  if (range) {
+    value = parseInt(valueInput.value);
+    if (isNaN(value) || value < range.min || value > range.max) {
+      alert(`Value must be between ${range.min} and ${range.max}`);
+      return;
+    }
+  }
+  
+  // Create affix
+  const effectText = range ? select.value.replace(/\[\d+-\d+\]/, value) : select.value;
+  const affix = {
+    template: select.value,
+    effect: effectText,
+    value: value,
+    stat: effectText // Use effectText as stat since convertJewelEffectToStat might not cover all cases
+  };
+  
+  console.log('Adding affix:', affix); // Debug
+  
+  affixes.push(affix);
+  this.updateJewelAffixDisplay(type);
+  this.updateJewelPreview();
+  
+  // Clear inputs
+  select.value = '';
+  valueInput.value = '';
+  valueInput.style.display = 'none';
+}
+
+removeJewelAffix(type, index) {
+  const affixes = type === 'prefix' ? this.selectedPrefixes : this.selectedSuffixes;
+  affixes.splice(index, 1);
+  this.updateJewelAffixDisplay(type);
+  this.updateJewelPreview();
+}
+
+updateJewelAffixDisplay(type) {
+  const container = document.getElementById(`selected${type.charAt(0).toUpperCase() + type.slice(1)}es`);
+  const affixes = type === 'prefix' ? this.selectedPrefixes : this.selectedSuffixes;
+  
+  if (affixes.length === 0) {
+    container.innerHTML = '<div style="color: #666; font-size: 12px;">No ' + type + 'es selected</div>';
+    return;
+  }
+  
+  container.innerHTML = affixes.map((affix, index) => `
+    <div class="selected-affix">
+      <span>${affix.effect}</span>
+      <button class="remove-affix-btn" data-type="${type}" data-index="${index}">×</button>
+    </div>
+  `).join('');
+}
+
+updateJewelPreview() {
+  const preview = document.getElementById('jewelPreview');
+  const quality = document.querySelector('input[name="jewelQuality"]:checked').value;
+  const qualityColor = quality === 'rare' ? '#FFFF00' : '#4169E1';
+  const qualityName = quality === 'rare' ? 'Rare' : 'Magic';
+  
+  let html = `<div style="color: ${qualityColor}; font-weight: bold;">${qualityName} Jewel</div>`;
+  
+  // Add prefix effects
+  this.selectedPrefixes.forEach(prefix => {
+    html += `<div style="color: #87CEEB; font-size: 12px;">${prefix.effect}</div>`;
+  });
+  
+  // Add suffix effects
+  this.selectedSuffixes.forEach(suffix => {
+    html += `<div style="color: #87CEEB; font-size: 12px;">${suffix.effect}</div>`;
+  });
+  
+  if (this.selectedPrefixes.length === 0 && this.selectedSuffixes.length === 0) {
+    html += '<div style="color: #666; font-size: 12px; margin-top: 5px;">Select affixes to preview</div>';
+  }
+  
+  preview.innerHTML = html;
+}
+
+convertJewelEffectToStat(effect) {
+  // Convert jewel effects to stat format for socket system
+  if (effect.includes('Enhanced Damage')) {
+    const match = effect.match(/(\d+)% Enhanced Damage/);
+    return match ? `+${match[1]}% Enhanced Damage` : effect;
+  }
+  
+  return effect; // Return as-is for other effects
+}
+
+createCustomJewel() {
+  console.log('Creating custom jewel...'); // Debug
+  console.log('Current socket:', this.currentSocket); // Debug
+  console.log('Target socket:', this.targetSocket); // Debug
+  
+  // Use targetSocket instead of currentSocket
+  const socketToUse = this.targetSocket || this.currentSocket;
+  
+  if (!socketToUse) {
+    alert('No socket selected! Please click a socket first.');
+    return;
+  }
+  
+  const quality = document.querySelector('input[name="jewelQuality"]:checked').value;
+  console.log('Quality:', quality); // Debug
+  console.log('Prefixes:', this.selectedPrefixes); // Debug
+  console.log('Suffixes:', this.selectedSuffixes); // Debug
+  
+  if (this.selectedPrefixes.length === 0 && this.selectedSuffixes.length === 0) {
+    alert('Please add at least one affix');
+    return;
+  }
+  
+  // Combine all stats
+  const stats = [
+    ...this.selectedPrefixes.map(p => p.stat || p.effect),
+    ...this.selectedSuffixes.map(s => s.stat || s.effect)
+  ].join('\n');
+  
+  console.log('Combined stats:', stats); // Debug
+  
+  // Update socket appearance
+  socketToUse.classList.remove('empty');
+  socketToUse.classList.add('filled');
+  
+  // Create jewel image
+  const img = document.createElement('img');
+  img.src = this.selectedJewelImage || 'img/jewel1.png';
+  img.alt = `${quality} Jewel`;
+  img.style.width = '20px';
+  img.style.height = '20px';
+  
+  socketToUse.innerHTML = '';
+  socketToUse.appendChild(img);
+  
+  // Store jewel data
+  socketToUse.dataset.itemKey = 'custom-jewel';
+  socketToUse.dataset.category = 'jewels';
+  socketToUse.dataset.itemName = `${quality} Jewel`;
+  socketToUse.dataset.stats = stats;
+  
+  console.log('Socket updated with:', {
+    itemKey: socketToUse.dataset.itemKey,
+    category: socketToUse.dataset.category,
+    itemName: socketToUse.dataset.itemName,
+    stats: socketToUse.dataset.stats
+  }); // Debug
+  
+  // Update displays
+  const section = socketToUse.closest('.socket-container')?.dataset.section || 'weapon';
+  console.log('Section:', section); // Debug
+  
+  this.hideJewelModal();
+  this.updateItemDisplay(section);
+  this.calculateAllStats();
+  
+  if (window.characterStats) {
+    setTimeout(() => window.characterStats.updateTotalStats(), 100);
+  }
+  
+  // Reset selections and clear target socket
+  this.selectedPrefixes = [];
+  this.selectedSuffixes = [];
+  this.targetSocket = null;
+  
+  console.log('Jewel creation completed!'); // Debug
+}
+
+showJewelModal() {
+  // Reset selections
+  this.selectedPrefixes = [];
+  this.selectedSuffixes = [];
+  
+  // Clear displays
+  this.updateJewelAffixDisplay('prefix');
+  this.updateJewelAffixDisplay('suffix');
+  this.updateJewelPreview();
+  
+  // Reset color selection to blue
+  document.querySelectorAll('.jewel-color-option').forEach(opt => opt.classList.remove('selected'));
+  document.querySelector('.jewel-color-option[data-color="blue"]').classList.add('selected');
+  this.selectedJewelColor = 'blue';
+  this.selectedJewelImage = 'img/jewel1.png';
+  
+  // Show modal
+  const modal = document.getElementById('jewelModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+hideJewelModal() {
+  const modal = document.getElementById('jewelModal');
+  if (modal) modal.style.display = 'none';
+  this.currentSocket = null;
+  this.targetSocket = null; // Clear both references
+}
+
+// Add this to your existing populateSocketItems method:
+// In the 'jewels' case, add an option for custom jewel creation
+
+// Update your existing populateSocketItems method to include custom jewel option:
+populateSocketItems(category) {
+  const grid = document.getElementById('socketItemGrid');
+  if (!grid) return;
+  
+  grid.innerHTML = '';
+  
+  if (category === 'jewels') {
+    // Add custom jewel creation option first
+    const customJewelDiv = document.createElement('div');
+    customJewelDiv.className = 'socket-item custom-jewel-item';
+    customJewelDiv.innerHTML = `
+      <img src="img/jewel1.png" alt="Custom Jewel" onerror="this.src='img/placeholder.png'">
+      <div class="socket-item-name">Create Custom</div>
+    `;
+    // IMPORTANT: Store the current socket reference before opening jewel modal
+    customJewelDiv.addEventListener('click', () => {
+      console.log('Custom jewel clicked, current socket:', this.currentSocket); // Debug
+      if (!this.currentSocket) {
+        alert('Error: No socket selected. Please try clicking the socket again.');
+        return;
+      }
+      // Store the socket reference in a way that won't get lost
+      this.targetSocket = this.currentSocket;
+      this.hideSocketModal();
+      this.showJewelModal();
+    });
+    grid.appendChild(customJewelDiv);
+  }
+  
+  // Add existing socket items
+  const items = this.socketData[category];
+  for (const [key, item] of Object.entries(items)) {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'socket-item';
+    itemDiv.dataset.itemKey = key;
+    itemDiv.dataset.category = category;
+    
+    itemDiv.innerHTML = `
+      <img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">
+      <div class="socket-item-name">${item.name}</div>
+    `;
+    
+    grid.appendChild(itemDiv);
+  }
+}
+
+// Initialize jewel modal when stats calculator is created
+// Add this to your existing init() method:
+init() {
+  this.setupEventListeners();
+  this.initializeSocketSystem();
+  this.createJewelModal(); // Add this line
+  this.calculateAllStats();
+  console.log('📊 Clean Stats Calculator with Complete Socket System initialized');
+}
+  }
+
+
 
 // Global initialization
 let statsCalculator;
