@@ -73,7 +73,7 @@ const itemList = {
 
   Wormskull: {
     description:
-      "Wormskull<br>Bone Helm<br>Base Maximum Sockets: 2 (3 for ilvl 41+ upgraded elite versions)<br>Defense: 36<br>Required Strength: 25<br>Required Level: 21<br>+1 to Poison and Bone Skills (Necromancer Only)<br>+1 to Necromancer Skill Levels<br>+60 Poison Damage over 2 Seconds<br>5% Life Stolen per Hit<br>10 to Mana<br>Poison Resist +25%<br>",
+      "Wormskull<br>Bone Helm<br>Base Maximum Sockets: 2 (3 for ilvl 41+ upgraded elite versions)<br>Defense: 36<br>Required Strength: 25<br>Required Level: 21<br>+1 to Poison and Bone Skills (Necromancer Only)<br>+1 to Necromancer Skill Levels<br> Adds 60-60 Poison Damage over 2 Seconds<br>5% Life Stolen per Hit<br>10 to Mana<br>Poison Resist +25%<br>",
     properties: {
       defense: 36,
       reqstr: 25,
@@ -1739,7 +1739,7 @@ const itemList = {
 
   Rakescar: {
     description:
-      "Rakescar<br>War Axe<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 30 to 50, Avg 40<br> Required Strength: 67<br> Required Level: 27<br> +30% Increased Attack Speed<br> +150% Enhanced Damage<br> +100 to Attack Rating<br> +38 Poison Damage over 2 Seconds<br> Poison Resist +50%<br>",
+      "Rakescar<br>War Axe<br> Base Speed Modifier: 0<br> Base Melee Range: 2<br> One-Hand Damage: 30 to 50, Avg 40<br> Required Strength: 67<br> Required Level: 27<br> +30% Increased Attack Speed<br> +150% Enhanced Damage<br> +100 to Attack Rating<br> Adds 38-38 Poison Damage over 2 Seconds<br> Poison Resist +50%<br>",
     properties: {
       speed: 0,
       onehandmin: 30,
