@@ -209,7 +209,10 @@ body {
 
 #str, #dex, #vit, #enr, #lvlValue, #merclvlValue {
   width: 30%;
-  background-color: rgba(1, 105, 169, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
+  color:rgb(243, 241, 242) ;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
   text-align: center;
 }
 

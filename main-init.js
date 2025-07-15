@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         initializeDropdowns();
         initializeEventHandlers();
-
+        
         initializeCorruptionSystem();
         initializeSkillSystem();
         initializeMercenarySystem();
