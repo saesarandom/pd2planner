@@ -585,6 +585,7 @@ body {
 .socket-enhanced-stat {
   color: #00BFFF !important;
   font-weight: bold !important;
+  border-left: none !important;
 }
 
 

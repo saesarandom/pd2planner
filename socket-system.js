@@ -509,10 +509,46 @@ class StatsCalculator {
   init() {
     this.setupEventListeners();
     this.initializeSocketSystem();
+    this.addLevelValidationStyles();
+    this.createJewelModal();
     this.calculateAllStats();
     console.log('📊 Clean Stats Calculator with Complete Socket System initialized');
   }
   
+  // ========== LEVEL REQUIREMENT METHODS ==========
+  calculateActualRequiredLevel(section, selectedItem) {
+    if (!selectedItem || !itemList[selectedItem]) return 1;
+    
+    const baseItem = itemList[selectedItem];
+    const baseLevel = baseItem.properties?.reqlvl || 1;
+    
+    // Find all sockets for this section
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    
+    let highestLevel = baseLevel;
+    
+    // Check each socket's level requirement
+    sockets.forEach(socket => {
+      const itemKey = socket.dataset.itemKey;
+      const category = socket.dataset.category;
+      
+      if (this.socketData?.[category]?.[itemKey]?.levelReq) {
+        const socketLevel = this.socketData[category][itemKey].levelReq;
+        if (socketLevel > highestLevel) {
+          highestLevel = socketLevel;
+        }
+      }
+    });
+    
+    return highestLevel;
+  }
+
+  checkLevelRequirement(requiredLevel) {
+    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+    return currentLevel >= requiredLevel;
+  }
+
+  // ========== SOCKET SYSTEM METHODS ==========
   initializeSocketSystem() {
     this.createSocketModal();
     this.addSocketStyles();
@@ -711,6 +747,33 @@ class StatsCalculator {
     document.head.insertAdjacentHTML('beforeend', styles);
   }
   
+  addLevelValidationStyles() {
+    if (document.getElementById('level-validation-styles')) return;
+    
+    const styles = `
+      <style id="level-validation-styles">
+        .level-requirement-met {
+          color: #00ff00 !important;
+          font-weight: bold;
+        }
+        
+        .level-requirement-not-met {
+          color: #ff5555 !important;
+          font-weight: bold;
+          text-shadow: 0 0 3px rgba(255, 85, 85, 0.5);
+        }
+        
+        .item-unusable {
+          opacity: 0.6;
+          filter: grayscale(50%);
+          border: 1px solid #ff5555;
+        }
+      </style>
+    `;
+    
+    document.head.insertAdjacentHTML('beforeend', styles);
+  }
+  
   setupSocketEventListeners() {
     // Socket slot clicks
     document.addEventListener('click', (e) => {
@@ -719,15 +782,6 @@ class StatsCalculator {
         this.showSocketModal();
       }
     });
-
-    // Custom jewel creation click
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.custom-jewel-item')) {
-      // currentSocket should already be set from socket click above
-      this.hideSocketModal();
-      this.showJewelModal();
-    }
-  });
 
     // Modal close
     document.addEventListener('click', (e) => {
@@ -747,7 +801,7 @@ class StatsCalculator {
 
     // Socket item selection
     document.addEventListener('click', (e) => {
-      if (e.target.closest('.socket-item')) {
+      if (e.target.closest('.socket-item') && !e.target.closest('.custom-jewel-item')) {
         const item = e.target.closest('.socket-item');
         const itemKey = item.dataset.itemKey;
         const category = item.dataset.category;
@@ -755,7 +809,7 @@ class StatsCalculator {
       }
     });
 
-    // Add socket button clicks - using event delegation
+    // Add socket button clicks
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('add-socket-btn')) {
         const container = e.target.closest('.socket-container');
@@ -765,17 +819,16 @@ class StatsCalculator {
       }
     });
 
+    // Remove socketed items
     document.addEventListener('click', (e) => {
-      // Check if clicked element is a socketed item image
       if (e.target.tagName === 'IMG' && e.target.closest('.socket-slot.filled')) {
         const socket = e.target.closest('.socket-slot');
-      this.removeSocketedItem(socket);
-    }
-  });
-}
+        this.removeSocketedItem(socket);
+      }
+    });
+  }
 
   initializeSocketContainers() {
-    // Add socket containers to each equipment section
     const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
     
     sections.forEach(section => {
@@ -791,7 +844,6 @@ class StatsCalculator {
         const addButton = document.createElement('button');
         addButton.className = 'add-socket-btn';
         addButton.textContent = '+';
-        addButton.addEventListener('click', () => this.addSocket(section));
         
         socketContainer.appendChild(socketGrid);
         socketContainer.appendChild(addButton);
@@ -805,8 +857,28 @@ class StatsCalculator {
     if (!grid) return;
     
     grid.innerHTML = '';
-    const items = this.socketData[category];
     
+    if (category === 'jewels') {
+      // Add custom jewel creation option first
+      const customJewelDiv = document.createElement('div');
+      customJewelDiv.className = 'socket-item custom-jewel-item';
+      customJewelDiv.innerHTML = `
+        <img src="img/jewel1.png" alt="Custom Jewel" onerror="this.src='img/placeholder.png'">
+        <div class="socket-item-name">Create Custom</div>
+      `;
+      customJewelDiv.addEventListener('click', () => {
+        if (!this.currentSocket) {
+          alert('Error: No socket selected. Please try clicking the socket again.');
+          return;
+        }
+        this.targetSocket = this.currentSocket;
+        this.hideSocketModal();
+        this.showJewelModal();
+      });
+      grid.appendChild(customJewelDiv);
+    }
+    
+    const items = this.socketData[category];
     for (const [key, item] of Object.entries(items)) {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'socket-item';
@@ -834,51 +906,88 @@ class StatsCalculator {
   }
   
   socketItem(itemKey, category) {
-  if (!this.currentSocket) return;
-  
-  const item = this.socketData[category][itemKey];
-  const section = this.currentSocket.closest('.socket-container')?.dataset.section || 'weapon';
-  const stat = item.stats[section] || item.stats.weapon;
-  
-  // Update socket appearance
-  this.currentSocket.classList.remove('empty');
-  this.currentSocket.classList.add('filled');
-  this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">`;
-  
-  // Store socket data
-  this.currentSocket.dataset.itemKey = itemKey;
-  this.currentSocket.dataset.category = category;
-  this.currentSocket.dataset.itemName = item.name;
-  this.currentSocket.dataset.stats = stat;
-  
-  this.hideSocketModal();
-  this.updateItemDisplay(section);
-  
-  // Force complete recalculation with proper sequencing
-  setTimeout(() => {
-    // 1. First recalculate all socket stats
-    this.calculateAllStats();
+    if (!this.currentSocket) return;
     
-    // 2. Then validate level requirements (this will filter invalid stats)
-    if (window.levelRequirementSystem?.validateAllItems) {
-      window.levelRequirementSystem.validateAllItems();
-    }
+    const item = this.socketData[category][itemKey];
+    const section = this.currentSocket.closest('.socket-container')?.dataset.section || 'weapon';
+    const stat = item.stats[section] || item.stats.weapon;
     
-    // 3. Finally update character stats with filtered data
-    if (window.characterStats?.updateTotalStats) {
-      window.characterStats.updateTotalStats();
-    }
+    // Update socket appearance
+    this.currentSocket.classList.remove('empty');
+    this.currentSocket.classList.add('filled');
+    this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">`;
     
-    // 4. Force any other stats systems to update
-    if (window.statsCalculator?.calculateAllStats) {
-      window.statsCalculator.calculateAllStats();
-    }
+    // Store socket data INCLUDING level requirement
+    this.currentSocket.dataset.itemKey = itemKey;
+    this.currentSocket.dataset.category = category;
+    this.currentSocket.dataset.itemName = item.name;
+    this.currentSocket.dataset.stats = stat;
+    this.currentSocket.dataset.levelReq = item.levelReq || 1;
     
-    console.log('✅ Socket item complete - all systems updated');
-  }, 150);
-}
+    this.hideSocketModal();
+    
+    // 🔥 FORCE immediate display update with new level requirements
+    this.updateItemDisplay(section);
+    
+    setTimeout(() => {
+      this.calculateAllStats();
+      console.log('✅ Socket item complete - all systems updated');
+    }, 50);
+  }
 
-  
+  removeSocketedItem(socket) {
+    // Clear socket data
+    socket.classList.remove('filled');
+    socket.classList.add('empty');
+    socket.innerHTML = '';
+    
+    // Clear datasets
+    delete socket.dataset.itemKey;
+    delete socket.dataset.category;
+    delete socket.dataset.itemName;
+    delete socket.dataset.stats;
+    delete socket.dataset.levelReq;
+    
+    // Get section for updates
+    const section = socket.closest('.socket-container')?.dataset.section || 'weapon';
+    
+    // Update displays and recalculate stats
+    this.updateItemDisplay(section);
+    
+    setTimeout(() => {
+      this.calculateAllStats();
+      console.log('🗑️ Socket cleared - all systems updated');
+    }, 50);
+  }
+
+  addSocket(section) {
+    const container = document.querySelector(`.socket-container[data-section="${section}"]`);
+    if (!container) return;
+    
+    const socketGrid = container.querySelector('.socket-grid');
+    if (!socketGrid) return;
+    
+    const existingSockets = socketGrid.querySelectorAll('.socket-slot').length;
+    const maxSockets = 6;
+    
+    if (existingSockets >= maxSockets) {
+      console.log(`Max sockets reached for ${section}: ${maxSockets}`);
+      return;
+    }
+    
+    const newSocket = document.createElement('div');
+    newSocket.className = 'socket-slot empty';
+    newSocket.dataset.index = existingSockets.toString();
+    
+    socketGrid.appendChild(newSocket);
+    
+    const newSocketCount = existingSockets + 1;
+    socketGrid.className = `socket-grid sockets-${newSocketCount}`;
+    
+    console.log(`Added socket to ${section}: ${newSocketCount}/${maxSockets}`);
+  }
+
+  // ========== ITEM DISPLAY METHODS ==========
   updateItemDisplay(section) {
     const infoIdMap = {
       'weapon': 'weapon-info',
@@ -903,481 +1012,75 @@ class StatsCalculator {
     const infoDiv = document.getElementById(infoIdMap[section]);
     if (!infoDiv) return;
     
-    // Get base item description
     const dropdown = document.getElementById(dropdownIdMap[section]);
     let baseHtml = '';
     
     if (dropdown && dropdown.value && typeof itemList !== 'undefined' && itemList[dropdown.value]) {
-      baseHtml = itemList[dropdown.value].description;
+      const baseItem = itemList[dropdown.value];
+      baseHtml = baseItem.description;
       
-      // Get socket stats to check for stacking
-      const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-      const socketStats = this.getSocketStatsForSection(section);
+      // 🔥 ALWAYS calculate and enforce the highest required level
+      const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+      const meetsRequirement = this.checkLevelRequirement(actualRequiredLevel);
       
-      if (sockets.length > 0) {
-        // First, try to merge stackable stats with existing item stats
-        baseHtml = this.mergeSocketStatsWithItem(baseHtml, socketStats);
-        
-        // Then add any stackable stats that didn't find a match (new properties)
-        Object.entries(socketStats.stackableStats).forEach(([type, socketStat]) => {
-          if (!this.itemHasProperty(baseHtml, type)) {
-            // Item doesn't have this property, add it as new
-            const newStatLine = this.formatNewSocketStat(socketStat, type);
-            if (newStatLine) {
-              baseHtml += `<br><span class="socket-enhanced-stat">${newStatLine}</span>`;
-            }
-          }
-        });
-        
-        // Add pure socket-only stats (non-stackable)
-        socketStats.pureSocketStats.forEach(stat => {
-          baseHtml += `<br><span class="socket-enhanced-stat">${stat}</span>`;
-        });
+      // 🎯 Create the level requirement line with proper color
+      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
+      const levelRequirementLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
+      
+      // Update level requirement in description EVERY TIME with color
+      const levelRegex = /<span[^>]*>Required Level: \d+<\/span>|Required Level: \d+/i;
+      if (levelRegex.test(baseHtml)) {
+        baseHtml = baseHtml.replace(levelRegex, levelRequirementLine);
+      } else {
+        // Add level requirement if it doesn't exist
+        const lines = baseHtml.split('<br>');
+        lines.splice(2, 0, levelRequirementLine);
+        baseHtml = lines.join('<br>');
       }
-    }
-    
-    infoDiv.innerHTML = baseHtml;
-  }
-  
-  itemHasProperty(itemHtml, statType) {
-    const patterns = this.getStatPatterns(statType);
-    return patterns.some(pattern => pattern.regex.test(itemHtml));
-  }
-  
-  formatNewSocketStat(socketStat, type) {
-    if (socketStat.min && socketStat.max) {
-      // Damage ranges
-      return `Adds ${socketStat.min}-${socketStat.max} ${socketStat.displayName}`;
-    } else {
-      // Single values
-      switch (type) {
-        case 'fireResist':
-        case 'coldResist':
-        case 'lightResist':
-        case 'poisonResist':
-          return `${socketStat.displayName} +${socketStat.value}%`;
-        case 'allResist':
-          return `All Resistances +${socketStat.value}`;
-        case 'magicFind':
-          return `${socketStat.value}% Better Chance of Getting Magic Items`;
-        case 'life':
-          return `+${socketStat.value} to Life`;
-        case 'mana':
-          return `+${socketStat.value} to Mana`;
-        case 'manaAfterKill':
-          return `+${socketStat.value} to Mana after each Kill`;
-        case 'defense':
-          return `+${socketStat.value} Defense`;
-        case 'enhancedDamage':
-          return `+${socketStat.value}% Enhanced Damage`;
-        case 'ias':
-          return `${socketStat.value}% Increased Attack Speed`;
-        case 'fhr':
-          return `${socketStat.value}% Faster Hit Recovery`;
-        case 'strength':
-          return `+${socketStat.value} to Strength`;
-        case 'dexterity':
-          return `+${socketStat.value} to Dexterity`;
-        case 'vitality':
-          return `+${socketStat.value} to Vitality`;
-        case 'energy':
-          return `+${socketStat.value} to Energy`;
-        case 'fcr':
-          return `${socketStat.value}% Faster Cast Rate`;
-        default:
-          return `+${socketStat.value} ${socketStat.displayName}`;
+      
+      // 🔥 If player doesn't meet level requirement, gray out the entire item
+      if (!meetsRequirement) {
+        infoDiv.style.opacity = '0.6';
+        infoDiv.style.filter = 'grayscale(50%)';
+        infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+      } else {
+        infoDiv.style.opacity = '1';
+        infoDiv.style.filter = 'none';
+        infoDiv.title = '';
       }
+      
+      console.log(`📊 Updated ${section} display - required level: ${actualRequiredLevel} (${meetsRequirement ? 'MET' : 'NOT MET'})`);
     }
-  }
-  
-  getSocketStatsForSection(section) {
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-    const stackableStats = {};
-    const pureSocketStats = [];
-    
-    sockets.forEach(socket => {
-      const stats = socket.dataset.stats;
-      if (stats) {
-        const parsed = this.parseSocketStatForDisplay(stats);
-        if (parsed.stackable) {
-          if (!stackableStats[parsed.type]) {
-            stackableStats[parsed.type] = {
-              min: 0,
-              max: 0,
-              value: 0,
-              unit: parsed.unit,
-              displayName: parsed.displayName
-            };
-          }
-          stackableStats[parsed.type].min += parsed.min || 0;
-          stackableStats[parsed.type].max += parsed.max || 0;
-          stackableStats[parsed.type].value += parsed.value || 0;
-        } else {
-          pureSocketStats.push(stats);
-        }
-      }
-    });
-    
-    return { stackableStats, pureSocketStats };
-  }
-  
-  parseSocketStatForDisplay(stat) {
-    // Lightning damage
-    let match = stat.match(/\+?(\d+)-(\d+) Lightning Damage/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'lightning',
-        min: parseInt(match[1]),
-        max: parseInt(match[2]),
-        displayName: 'Lightning Damage',
-        unit: 'damage'
-      };
-    }
-    
-    // Fire damage
-    match = stat.match(/\+?(\d+)-(\d+) Fire Damage/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'fire',
-        min: parseInt(match[1]),
-        max: parseInt(match[2]),
-        displayName: 'Fire Damage',
-        unit: 'damage'
-      };
-    }
-    
-    // Cold damage
-    match = stat.match(/\+?(\d+)-(\d+) Cold Damage/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'cold',
-        min: parseInt(match[1]),
-        max: parseInt(match[2]),
-        displayName: 'Cold Damage',
-        unit: 'damage'
-      };
-    }
-    
-    // Resistances
-    match = stat.match(/Fire Resist \+(\d+)%/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'fireResist',
-        value: parseInt(match[1]),
-        displayName: 'Fire Resist',
-        unit: '%'
-      };
-    }
-    
-    match = stat.match(/Cold Resist \+(\d+)%/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'coldResist',
-        value: parseInt(match[1]),
-        displayName: 'Cold Resist',
-        unit: '%'
-      };
-    }
-    
-    match = stat.match(/Lightning Resist \+(\d+)%/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'lightResist',
-        value: parseInt(match[1]),
-        displayName: 'Lightning Resist',
-        unit: '%'
-      };
-    }
-    
-    match = stat.match(/Poison Resist \+(\d+)%/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'poisonResist',
-        value: parseInt(match[1]),
-        displayName: 'Poison Resist',
-        unit: '%'
-      };
-    }
-    
-    // All Resistances
-    match = stat.match(/All Resistances \+(\d+)%?/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'allResist',
-        value: parseInt(match[1]),
-        displayName: 'All Resistances',
-        unit: '%'
-      };
-    }
-    
-    // Magic Find
-    match = stat.match(/(\d+)%.*Better Chance.*Magic/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'magicFind',
-        value: parseInt(match[1]),
-        displayName: 'Better Chance of Getting Magic Items',
-        unit: '%'
-      };
-    }
-    
-    // Life
-    match = stat.match(/\+(\d+) to Life/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'life',
-        value: parseInt(match[1]),
-        displayName: 'to Life',
-        unit: ''
-      };
-    }
-    
-    // Mana
-    match = stat.match(/^\+(\d+) to Mana$/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'mana',
-        value: parseInt(match[1]),
-        displayName: 'to Mana',
-        unit: ''
-      };
-    }
-    
-    // Mana after each kill (Tir rune)
-    match = stat.match(/\+(\d+) to Mana after each Kill/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'manaAfterKill',
-        value: parseInt(match[1]),
-        displayName: 'to Mana after each Kill',
-        unit: ''
-      };
-    }
-    
-    // Defense
-    match = stat.match(/\+(\d+) Defense/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'defense',
-        value: parseInt(match[1]),
-        displayName: 'Defense',
-        unit: ''
-      };
-    }
-    
-    // Enhanced Damage
-    match = stat.match(/\+(\d+)% Enhanced Damage/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'enhancedDamage',
-        value: parseInt(match[1]),
-        displayName: 'Enhanced Damage',
-        unit: '%'
-      };
-    }
-    
-    // IAS
-    match = stat.match(/\+?(\d+)%.*Increased Attack Speed/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'ias',
-        value: parseInt(match[1]),
-        displayName: 'Increased Attack Speed',
-        unit: '%'
-      };
-    }
-    
-    // FHR
-    match = stat.match(/\+?(\d+)%.*Faster Hit Recovery/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'fhr',
-        value: parseInt(match[1]),
-        displayName: 'Faster Hit Recovery',
-        unit: '%'
-      };
-    }
-    
-    // FCR
-    match = stat.match(/\+?(\d+)%.*Faster Cast Rate/i);
-    if (match) {
-      return {
-        stackable: true,
-        type: 'fcr',
-        value: parseInt(match[1]),
-        displayName: 'Faster Cast Rate',
-        unit: '%'
-      };
-    }
 
-    // Attributes - more flexible matching
-match = stat.match(/\+(\d+)\s+(?:to\s+)?Strength/i);
-if (match) {
-  return { stackable: true, type: 'strength', value: parseInt(match[1]), displayName: 'to Strength', unit: '' };
-}
-
-match = stat.match(/\+(\d+)\s+(?:to\s+)?Dexterity/i);
-if (match) {
-  return { stackable: true, type: 'dexterity', value: parseInt(match[1]), displayName: 'to Dexterity', unit: '' };
-}
-
-match = stat.match(/\+(\d+)\s+(?:to\s+)?Vitality/i);
-if (match) {
-  return { stackable: true, type: 'vitality', value: parseInt(match[1]), displayName: 'to Vitality', unit: '' };
-}
-
-match = stat.match(/\+(\d+)\s+(?:to\s+)?Energy/i);
-if (match) {
-  return { stackable: true, type: 'energy', value: parseInt(match[1]), displayName: 'to Energy', unit: '' };
-}
-    
-    // Not stackable
-    return {
-      stackable: false,
-      original: stat
-    };
-  }
-  
-  mergeSocketStatsWithItem(itemHtml, socketStats) {
-    let modifiedHtml = itemHtml;
-    
-    Object.entries(socketStats.stackableStats).forEach(([type, socketStat]) => {
-      const patterns = this.getStatPatterns(type);
-      
-      patterns.forEach(pattern => {
-        const match = modifiedHtml.match(pattern.regex);
-        if (match) {
-          let newValue;
-          if (socketStat.min && socketStat.max) {
-            // Damage ranges
-            const existingMin = parseInt(match[1]);
-            const existingMax = parseInt(match[2]);
-            const newMin = existingMin + socketStat.min;
-            const newMax = existingMax + socketStat.max;
-            newValue = `${newMin}-${newMax}`;
-          } else {
-            // Single values
-            const existingValue = parseInt(match[1]);
-            const newTotal = existingValue + socketStat.value;
-            newValue = newTotal.toString();
-          }
-          
-          const replacement = pattern.replacement(newValue);
-          modifiedHtml = modifiedHtml.replace(pattern.regex, `<span class="socket-enhanced-stat">${replacement}</span>`);
+if (sockets.length > 0) {
+  // Add all socket stats as enhanced stats
+  sockets.forEach(socket => {
+    const stats = socket.dataset.stats;
+    if (stats) {
+      // Handle multiple stats (some socket items have multiple properties)
+      const statLines = stats.split(/[,\n]/).map(s => s.trim()).filter(s => s);
+      statLines.forEach(statLine => {
+        if (statLine) {
+          baseHtml += `<br><span class="socket-enhanced-stat">${statLine}</span>`;
         }
       });
+    }
+  });
+}
+
+
+    infoDiv.innerHTML = baseHtml;
+  }
+
+  // Update ALL equipment displays when level changes
+  updateAllEquipmentDisplays() {
+    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+    sections.forEach(section => {
+      this.updateItemDisplay(section);
     });
-    
-    return modifiedHtml;
   }
-  
-  getStatPatterns(type) {
-    const patterns = {
-      lightning: [{
-        regex: /Adds (\d+)-(\d+) Lightning Damage/i,
-        replacement: (value) => `Adds ${value} Lightning Damage`
-      }],
-      fire: [{
-        regex: /Adds (\d+)-(\d+) Fire Damage/i,
-        replacement: (value) => `Adds ${value} Fire Damage`
-      }],
-      cold: [{
-        regex: /Adds (\d+)-(\d+) Cold Damage/i,
-        replacement: (value) => `Adds ${value} Cold Damage`
-      }],
-      fireResist: [{
-        regex: /Fire Resist \+(\d+)%/i,
-        replacement: (value) => `Fire Resist +${value}%`
-      }],
-      coldResist: [{
-        regex: /Cold Resist \+(\d+)%/i,
-        replacement: (value) => `Cold Resist +${value}%`
-      }],
-      lightResist: [{
-        regex: /Lightning Resist \+(\d+)%/i,
-        replacement: (value) => `Lightning Resist +${value}%`
-      }],
-      poisonResist: [{
-        regex: /Poison Resist \+(\d+)%/i,
-        replacement: (value) => `Poison Resist +${value}%`
-      }],
-      allResist: [{
-        regex: /All Resistances \+(\d+)/i,
-        replacement: (value) => `All Resistances +${value}`
-      }],
-      magicFind: [{
-        regex: /(\d+)% Better Chance of Getting Magic Items/i,
-        replacement: (value) => `${value}% Better Chance of Getting Magic Items`
-      }],
-      life: [{
-        regex: /\+(\d+) to Life/i,
-        replacement: (value) => `+${value} to Life`
-      }],
-      mana: [{
-        regex: /\+(\d+) to Mana/i,
-        replacement: (value) => `+${value} to Mana`
-      }],
-      manaAfterKill: [{
-        regex: /\+(\d+) to Mana after each Kill/i,
-        replacement: (value) => `+${value} to Mana after each Kill`
-      }],
-      defense: [{
-        regex: /Defense: (\d+)/i,
-        replacement: (value) => `Defense: ${value}`
-      }],
-      enhancedDamage: [{
-        regex: /\+(\d+)% Enhanced Damage/i,
-        replacement: (value) => `+${value}% Enhanced Damage`
-      }],
-      ias: [{
-        regex: /(\d+)% Increased Attack Speed/i,
-        replacement: (value) => `${value}% Increased Attack Speed`
-      }],
-      fhr: [{
-        regex: /(\d+)% Faster Hit Recovery/i,
-        replacement: (value) => `${value}% Faster Hit Recovery`
-      }],
-      strength: [{
-        regex: /\+(\d+) to Strength/i,
-        replacement: (value) => `+${value} to Strength`
-      }],
-      dexterity: [{
-        regex: /\+(\d+) to Dexterity/i,
-        replacement: (value) => `+${value} to Dexterity`
-      }],
-      vitality: [{
-        regex: /\+(\d+) to Vitality/i,
-        replacement: (value) => `+${value} to Vitality`
-      }],
-      energy: [{
-        regex: /\+(\d+) to Energy/i,
-        replacement: (value) => `+${value} to Energy`
-      }],
-      fcr: [{
-        regex: /(\d+)% Faster Cast Rate/i,
-        replacement: (value) => `${value}% Faster Cast Rate`
-      }]
-    };
-    
-    return patterns[type] || [];
-  }
-  
+
   updateSocketsForItem(section) {
     const dropdownIdMap = {
       'weapon': 'weapons-dropdown',
@@ -1420,58 +1123,42 @@ if (match) {
       socketGrid.appendChild(socketSlot);
     }
     
-    // Update grid layout class
     socketGrid.className = `socket-grid sockets-${defaultSocketCount}`;
   }
-
-  addSocket(section) {
-    const container = document.querySelector(`.socket-container[data-section="${section}"]`);
-    if (!container) return;
-    
-    const socketGrid = container.querySelector('.socket-grid');
-    if (!socketGrid) return;
-    
-    const existingSockets = socketGrid.querySelectorAll('.socket-slot').length;
-    const maxSockets = 6; // Maximum possible sockets
-    
-    if (existingSockets >= maxSockets) {
-      console.log(`Max sockets reached for ${section}: ${maxSockets}`);
-      return;
-    }
-    
-    const newSocket = document.createElement('div');
-    newSocket.className = 'socket-slot empty';
-    newSocket.dataset.index = existingSockets.toString();
-    
-    socketGrid.appendChild(newSocket);
-    
-    // Update grid class
-    const newSocketCount = existingSockets + 1;
-    socketGrid.className = `socket-grid sockets-${newSocketCount}`;
-    
-    console.log(`Added socket to ${section}: ${newSocketCount}/${maxSockets}`);
-  }
-
-
   
+  // ========== EVENT LISTENERS ==========
   setupEventListeners() {
     // Equipment dropdown changes
     Object.keys(this.equipmentMap).forEach(dropdownId => {
       const dropdown = document.getElementById(dropdownId);
       if (dropdown) {
-        dropdown.addEventListener('change', () => this.calculateAllStats());
+        dropdown.addEventListener('change', () => {
+          const section = this.equipmentMap[dropdownId];
+          this.updateSocketsForItem(section);
+          this.calculateAllStats();
+        });
       }
     });
     
     // Character stat changes
-    ['str', 'dex', 'vit', 'enr', 'lvlValue'].forEach(statId => {
+    ['str', 'dex', 'vit', 'enr'].forEach(statId => {
       const input = document.getElementById(statId);
       if (input) {
         input.addEventListener('input', () => this.calculateAllStats());
       }
     });
     
-    // Socket changes (delegate to catch dynamic sockets)
+    // 🔥 SPECIAL handling for level changes - update ALL equipment displays
+    const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+      levelInput.addEventListener('input', () => {
+        this.calculateAllStats();
+        // Force update ALL equipment displays to show correct colors
+        setTimeout(() => this.updateAllEquipmentDisplays(), 50);
+      });
+    }
+    
+    // Socket changes
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('socket-slot')) {
         setTimeout(() => this.calculateAllStats(), 100);
@@ -1479,14 +1166,15 @@ if (match) {
     });
   }
   
+  // ========== STATS CALCULATION ==========
   calculateAllStats() {
-  this.resetStats();
-  this.calculateEquipmentStats();
-  this.calculateSocketStats();
-  this.calculateCharmStats(); // ADD THIS LINE
-  this.calculateDerivedStats();
-  this.updateDisplay();
-}
+    this.resetStats();
+    this.calculateEquipmentStats();
+    this.calculateSocketStats();
+    this.calculateCharmStats();
+    this.calculateDerivedStats();
+    this.updateDisplay();
+  }
   
   resetStats() {
     Object.keys(this.stats).forEach(key => {
@@ -1562,7 +1250,7 @@ if (match) {
       this.stats.poisonResist += value;
     }
     
-    // Combat Stats - Exact matches only
+    // Combat Stats
     this.extractStat(desc, /(\d+)% Chance of Open Wounds/i, 'openWounds');
     this.extractStat(desc, /(\d+)% Chance of Crushing Blow/i, 'crushingBlow');
     this.extractStat(desc, /(\d+)% Chance of Critical Strike/i, 'criticalHit');
@@ -1605,18 +1293,17 @@ if (match) {
   }
   
   calculateSocketStats() {
-  // Get stats from all filled sockets - BUT CHECK LEVEL REQUIREMENTS FIRST
-  const filledSockets = document.querySelectorAll('.socket-slot.filled');
-  
-  filledSockets.forEach(socket => {
-    const stats = socket.dataset.stats;
-    const itemKey = socket.dataset.itemKey;
-    const category = socket.dataset.category;
+    // Get stats from all filled sockets - CHECK LEVEL REQUIREMENTS FIRST
+    const filledSockets = document.querySelectorAll('.socket-slot.filled');
     
-    if (!stats) return;
-    
-    // CHECK LEVEL REQUIREMENTS BEFORE PROCESSING SOCKET STATS
-    if (window.levelRequirementSystem) {
+    filledSockets.forEach(socket => {
+      const stats = socket.dataset.stats;
+      const itemKey = socket.dataset.itemKey;
+      const category = socket.dataset.category;
+      
+      if (!stats) return;
+      
+      // CHECK LEVEL REQUIREMENTS BEFORE PROCESSING SOCKET STATS
       const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
       const parentSection = socket.closest('.socket-container')?.dataset.section;
       
@@ -1634,7 +1321,7 @@ if (match) {
       if (parentItem && parentItem.properties?.reqlvl) {
         if (currentLevel < parentItem.properties.reqlvl) {
           console.log(`🚫 Skipping socket stats - parent item level requirement not met: ${parentItem.properties.reqlvl} > ${currentLevel}`);
-          return; // Skip this socket entirely
+          return;
         }
       }
       
@@ -1643,68 +1330,53 @@ if (match) {
         const socketedItem = this.socketData[category][itemKey];
         if (socketedItem.levelReq && currentLevel < socketedItem.levelReq) {
           console.log(`🚫 Skipping socket stats - socketed item level requirement not met: ${socketedItem.levelReq} > ${currentLevel}`);
-          return; // Skip this socket entirely
+          return;
         }
       }
-    }
-    
-    // Only process stats if level requirements are met
-    this.parseSocketStats(stats);
-  });
-}
+      
+      // Only process stats if level requirements are met
+      this.parseSocketStats(stats);
+    });
+  }
   
   parseSocketStats(socketStats) {
-  // Lightning damage
-  let match = socketStats.match(/\+?(\d+)-(\d+) Lightning Damage/i);
-  if (match) {
-    this.stats.flatLightMin += parseInt(match[1]);
-    this.stats.flatLightMax += parseInt(match[2]);
-    console.log(`✅ Added lightning damage: ${match[1]}-${match[2]}`);
-    return;
-  }
-  
-  // Fire damage
-  match = socketStats.match(/\+?(\d+)-(\d+) Fire Damage/i);
-  if (match) {
-    this.stats.flatFireMin += parseInt(match[1]);
-    this.stats.flatFireMax += parseInt(match[2]);
-    console.log(`✅ Added fire damage: ${match[1]}-${match[2]}`);
-    return;
-  }
-  
-  // Cold damage
-  match = socketStats.match(/\+?(\d+)-(\d+) Cold Damage/i);
-  if (match) {
-    this.stats.flatColdMin += parseInt(match[1]);
-    this.stats.flatColdMax += parseInt(match[2]);
-    console.log(`✅ Added cold damage: ${match[1]}-${match[2]}`);
-    return;
-  }
-  
-  // Poison damage
-  match = socketStats.match(/\+?(\d+)-(\d+) Poison Damage/i);
-  if (match) {
-    this.stats.flatPoisonMin += parseInt(match[1]);
-    this.stats.flatPoisonMax += parseInt(match[2]);
-    console.log(`✅ Added poison damage: ${match[1]}-${match[2]}`);
-    return;
-  }
-  
-  // Enhanced damage
-  match = socketStats.match(/\+?(\d+)%.*Enhanced.*Damage/i);
-  if (match) {
-    this.stats.enhancedDamage += parseInt(match[1]);
-    console.log(`✅ Added enhanced damage: ${match[1]}%`);
-    return;
-  }
-  
-  // Attack Rating
-  match = socketStats.match(/\+(\d+).*Attack Rating/i);
-  if (match) {
-    this.stats.attackRating += parseInt(match[1]);
-    console.log(`✅ Added attack rating: ${match[1]}`);
-    return;
-  }
+    // Lightning damage
+    let match = socketStats.match(/\+?(\d+)-(\d+) Lightning Damage/i);
+    if (match) {
+      this.stats.flatLightMin += parseInt(match[1]);
+      this.stats.flatLightMax += parseInt(match[2]);
+      return;
+    }
+    
+    // Fire damage
+    match = socketStats.match(/\+?(\d+)-(\d+) Fire Damage/i);
+    if (match) {
+      this.stats.flatFireMin += parseInt(match[1]);
+      this.stats.flatFireMax += parseInt(match[2]);
+      return;
+    }
+    
+    // Cold damage
+    match = socketStats.match(/\+?(\d+)-(\d+) Cold Damage/i);
+    if (match) {
+      this.stats.flatColdMin += parseInt(match[1]);
+      this.stats.flatColdMax += parseInt(match[2]);
+      return;
+    }
+    
+    // Enhanced damage
+    match = socketStats.match(/\+?(\d+)%.*Enhanced.*Damage/i);
+    if (match) {
+      this.stats.enhancedDamage += parseInt(match[1]);
+      return;
+    }
+    
+    // Attack Rating
+    match = socketStats.match(/\+(\d+).*Attack Rating/i);
+    if (match) {
+      this.stats.attackRating += parseInt(match[1]);
+      return;
+    }
     
     // Life
     match = socketStats.match(/\+(\d+) to Life/i);
@@ -1713,8 +1385,8 @@ if (match) {
       return;
     }
     
-    // Mana (only exact matches, not "after each kill")
-    match = socketStats.match(/^\+(\d+) to Mana$/i);
+    // Mana
+    match = socketStats.match(/\+(\d+) to Mana/i);
     if (match) {
       this.stats.mana += parseInt(match[1]);
       return;
@@ -1726,8 +1398,6 @@ if (match) {
       this.stats.defense += parseInt(match[1]);
       return;
     }
-    
-  
     
     // Resistances
     match = socketStats.match(/Fire Resist \+(\d+)%/i);
@@ -1803,20 +1473,6 @@ if (match) {
       return;
     }
     
-    // Life Steal
-    match = socketStats.match(/(\d+)% Life Stolen per Hit/i);
-    if (match) {
-      this.stats.lifeSteal += parseInt(match[1]);
-      return;
-    }
-    
-    // Mana Steal
-    match = socketStats.match(/(\d+)% Mana Stolen per Hit/i);
-    if (match) {
-      this.stats.manaSteal += parseInt(match[1]);
-      return;
-    }
-    
     // IAS
     match = socketStats.match(/\+?(\d+)%.*Increased Attack Speed/i);
     if (match) {
@@ -1837,26 +1493,92 @@ if (match) {
       this.stats.fcr += parseInt(match[1]);
       return;
     }
+  }
+  
+  calculateCharmStats() {
+    const container = document.querySelector('.inventorycontainer');
+    if (!container) return;
     
-    // Crushing Blow
-    match = socketStats.match(/(\d+)%.*Chance.*Crushing Blow/i);
-    if (match) {
-      this.stats.crushingBlow += parseInt(match[1]);
-      return;
+    // Get all charm slots with data
+    const charmSlots = container.querySelectorAll('.charm1[data-charm-data]');
+    const charmOverlays = container.querySelectorAll('.charm-overlay[data-charm-data]');
+    
+    // Process regular charm slots (small charms)
+    charmSlots.forEach(slot => {
+      const charmData = slot.dataset.charmData;
+      if (charmData && charmData.trim()) {
+        this.parseCharmStats(charmData);
+      }
+    });
+    
+    // Process overlay charms (large/grand charms)
+    charmOverlays.forEach(overlay => {
+      const charmData = overlay.dataset.charmData;
+      if (charmData && charmData.trim()) {
+        this.parseCharmStats(charmData);
+      }
+    });
+  }
+
+  parseCharmStats(charmData) {
+    const lines = charmData.split('\n');
+    
+    // Skip the first line (charm name) and process stats
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      this.parseCharmStatLine(line);
     }
+  }
+
+  parseCharmStatLine(line) {
+    // Core Stats
+    this.extractStatFromLine(line, /\+(\d+) to All Skills/, 'allSkills');
+    this.extractStatFromLine(line, /\+(\d+) to Strength/, 'strength');
+    this.extractStatFromLine(line, /\+(\d+) to Dexterity/, 'dexterity');
+    this.extractStatFromLine(line, /\+(\d+) to Vitality/, 'vitality');
+    this.extractStatFromLine(line, /\+(\d+) to Energy/, 'energy');
     
-    // Open Wounds
-    match = socketStats.match(/(\d+)%.*Chance.*Open Wounds/i);
-    if (match) {
-      this.stats.openWounds += parseInt(match[1]);
-      return;
+    // Life and Mana
+    this.extractStatFromLine(line, /\+(\d+) to Life/, 'life');
+    this.extractStatFromLine(line, /\+(\d+) to Mana/, 'mana');
+    
+    // Resistances
+    this.extractStatFromLine(line, /Fire Resist \+(\d+)%/, 'fireResist');
+    this.extractStatFromLine(line, /Cold Resist \+(\d+)%/, 'coldResist');
+    this.extractStatFromLine(line, /Lightning Resist \+(\d+)%/, 'lightResist');
+    this.extractStatFromLine(line, /Poison Resist \+(\d+)%/, 'poisonResist');
+    this.extractStatFromLine(line, /All Resistances \+(\d+)/, 'allResist');
+    
+    // Speed Stats
+    this.extractStatFromLine(line, /(\d+)% Faster Cast Rate/, 'fcr');
+    this.extractStatFromLine(line, /(\d+)% Increased Attack Speed/, 'ias');
+    this.extractStatFromLine(line, /(\d+)% Faster Run\/Walk/, 'frw');
+    this.extractStatFromLine(line, /(\d+)% Faster Hit Recovery/, 'fhr');
+    
+    // Magic Find and Gold Find
+    this.extractStatFromLine(line, /(\d+)% Better Chance of Getting Magic Items/, 'magicFind');
+    this.extractStatFromLine(line, /(\d+)% Extra Gold from Monsters/, 'goldFind');
+    
+    // Handle all resistances
+    const allResMatch = line.match(/All Resistances \+(\d+)/);
+    if (allResMatch) {
+      const value = parseInt(allResMatch[1]);
+      this.stats.fireResist += value;
+      this.stats.coldResist += value;
+      this.stats.lightResist += value;
+      this.stats.poisonResist += value;
     }
-    
-    // Deadly Strike
-    match = socketStats.match(/(\d+)%.*Chance.*Deadly Strike/i);
+  }
+
+  extractStatFromLine(line, regex, statKey) {
+    const match = line.match(regex);
     if (match) {
-      this.stats.deadlyStrike += parseInt(match[1]);
-      return;
+      const value = parseInt(match[1]);
+      if (!isNaN(value)) {
+        this.stats[statKey] += value;
+      }
     }
   }
   
@@ -1874,153 +1596,12 @@ if (match) {
   }
   
   calculateCrushingBlowDamage() {
-    return this.stats.crushingBlow > 0 ? 25 : 0; // 25% of current HP
+    return this.stats.crushingBlow > 0 ? 25 : 0;
   }
   
   calculateCritMultiplier() {
     return 2.0 + (this.stats.weaponMastery * 0.05);
   }
-  
-
-calculateCharmStats() {
-  const container = document.querySelector('.inventorycontainer');
-  if (!container) return;
-  
-  // Get all charm slots with data
-  const charmSlots = container.querySelectorAll('.charm1[data-charm-data]');
-  const charmOverlays = container.querySelectorAll('.charm-overlay[data-charm-data]');
-  
-  // Process regular charm slots (small charms)
-  charmSlots.forEach(slot => {
-    const charmData = slot.dataset.charmData;
-    if (charmData && charmData.trim()) {
-      this.parseCharmStats(charmData);
-    }
-  });
-  
-  // Process overlay charms (large/grand charms)
-  charmOverlays.forEach(overlay => {
-    const charmData = overlay.dataset.charmData;
-    if (charmData && charmData.trim()) {
-      this.parseCharmStats(charmData);
-    }
-  });
-}
-
-parseCharmStats(charmData) {
-  const lines = charmData.split('\n');
-  
-  // Skip the first line (charm name) and process stats
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    
-    this.parseCharmStatLine(line);
-  }
-}
-
-parseCharmStatLine(line) {
-  // Core Stats
-  this.extractStatFromLine(line, /\+(\d+) to All Skills/, 'allSkills');
-  this.extractStatFromLine(line, /\+(\d+) to Strength/, 'str');
-  this.extractStatFromLine(line, /\+(\d+) to Dexterity/, 'dex');
-  this.extractStatFromLine(line, /\+(\d+) to Vitality/, 'vit');
-  this.extractStatFromLine(line, /\+(\d+) to Energy/, 'enr');
-  
-  // Life and Mana
-  this.extractStatFromLine(line, /\+(\d+) to Life/, 'life');
-  this.extractStatFromLine(line, /\+(\d+) to Mana/, 'mana');
-  
-  // Resistances
-  this.extractStatFromLine(line, /Fire Resist \+(\d+)%/, 'fireResist');
-  this.extractStatFromLine(line, /Cold Resist \+(\d+)%/, 'coldResist');
-  this.extractStatFromLine(line, /Lightning Resist \+(\d+)%/, 'lightResist');
-  this.extractStatFromLine(line, /Poison Resist \+(\d+)%/, 'poisonResist');
-  this.extractStatFromLine(line, /All Resistances \+(\d+)/, 'allResist');
-  
-  // Speed Stats
-  this.extractStatFromLine(line, /(\d+)% Faster Cast Rate/, 'fcr');
-  this.extractStatFromLine(line, /(\d+)% Increased Attack Speed/, 'ias');
-  this.extractStatFromLine(line, /(\d+)% Faster Run\/Walk/, 'frw');
-  this.extractStatFromLine(line, /(\d+)% Faster Hit Recovery/, 'fhr');
-  
-  // Damage
-  this.extractStatFromLine(line, /\+(\d+) to Maximum Damage/, 'maxDamage');
-  this.extractStatFromLine(line, /\+(\d+) to Minimum Damage/, 'minDamage');
-  this.extractStatFromLine(line, /\+(\d+) to Attack Rating/, 'attackRating');
-  
-  // Defensive Stats
-  this.extractStatFromLine(line, /\+(\d+) Defense/, 'defense');
-  this.extractStatFromLine(line, /(\d+)% Damage Reduced/, 'dr');
-  this.extractStatFromLine(line, /Physical Damage Reduced by (\d+)/, 'pdr');
-  this.extractStatFromLine(line, /Magic Damage Reduced by (\d+)/, 'mdr');
-  
-  // Magic Find and Gold Find
-  this.extractStatFromLine(line, /(\d+)% Better Chance of Getting Magic Items/, 'magicFind');
-  this.extractStatFromLine(line, /(\d+)% Extra Gold from Monsters/, 'goldFind');
-  
-  // Elemental Damage
-  const fireMatch = line.match(/\+(\d+) Fire Damage/);
-  if (fireMatch) {
-    this.stats.flatFireMin += parseInt(fireMatch[1]);
-    this.stats.flatFireMax += parseInt(fireMatch[1]);
-  }
-  
-  const coldMatch = line.match(/\+(\d+) Cold Damage/);
-  if (coldMatch) {
-    this.stats.flatColdMin += parseInt(coldMatch[1]);
-    this.stats.flatColdMax += parseInt(coldMatch[1]);
-  }
-  
-  const lightMatch = line.match(/\+(\d+) Lightning Damage/);
-  if (lightMatch) {
-    this.stats.flatLightMin += parseInt(lightMatch[1]);
-    this.stats.flatLightMax += parseInt(lightMatch[1]);
-  }
-  
-  const poisonMatch = line.match(/\+(\d+) Poison Damage/);
-  if (poisonMatch) {
-    this.stats.flatPoisonMin += parseInt(poisonMatch[1]);
-    this.stats.flatPoisonMax += parseInt(poisonMatch[1]);
-  }
-  
-  // Handle damage ranges like "Adds 1-3 Lightning Damage"
-  const lightRangeMatch = line.match(/Adds (\d+)-(\d+) Lightning Damage/);
-  if (lightRangeMatch) {
-    this.stats.flatLightMin += parseInt(lightRangeMatch[1]);
-    this.stats.flatLightMax += parseInt(lightRangeMatch[2]);
-  }
-  
-  const fireRangeMatch = line.match(/Adds (\d+)-(\d+) Fire Damage/);
-  if (fireRangeMatch) {
-    this.stats.flatFireMin += parseInt(fireRangeMatch[1]);
-    this.stats.flatFireMax += parseInt(fireRangeMatch[2]);
-  }
-  
-  const coldRangeMatch = line.match(/Adds (\d+)-(\d+) Cold Damage/);
-  if (coldRangeMatch) {
-    this.stats.flatColdMin += parseInt(coldRangeMatch[1]);
-    this.stats.flatColdMax += parseInt(coldRangeMatch[2]);
-  }
-  
-  const poisonRangeMatch = line.match(/Adds (\d+)-(\d+) Poison Damage/);
-  if (poisonRangeMatch) {
-    this.stats.flatPoisonMin += parseInt(poisonRangeMatch[1]);
-    this.stats.flatPoisonMax += parseInt(poisonRangeMatch[2]);
-  }
-}
-
-extractStatFromLine(line, regex, statKey) {
-  const match = line.match(regex);
-  if (match) {
-    const value = parseInt(match[1]);
-    if (!isNaN(value)) {
-      this.stats[statKey] += value;
-    }
-  }
-}
-
-
 
   updateDisplay() {
     // Core Stats
@@ -2091,703 +1672,81 @@ extractStatFromLine(line, regex, statKey) {
       }
     }
   }
+
+  // ========== JEWEL SYSTEM (SIMPLIFIED) ==========
+  createJewelModal() {
+    // Simplified jewel modal - just create basic structure
+    const existingModal = document.getElementById('jewelModal');
+    if (existingModal) existingModal.remove();
+    
+    const modalHTML = `
+      <div id="jewelModal" class="socket-modal" style="display: none;">
+        <div class="socket-modal-content">
+          <span class="socket-close">&times;</span>
+          <h3>Custom Jewel (Simplified)</h3>
+          <p>This is a placeholder for the jewel creation system.</p>
+          <button id="createSimpleJewel">Create +15% Enhanced Damage Jewel</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Simple jewel creation
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'createSimpleJewel') {
+        this.createSimpleJewel();
+      }
+    });
+  }
+
+  showJewelModal() {
+    const modal = document.getElementById('jewelModal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  hideJewelModal() {
+    const modal = document.getElementById('jewelModal');
+    if (modal) modal.style.display = 'none';
+    this.currentSocket = null;
+    this.targetSocket = null;
+  }
+
+  createSimpleJewel() {
+    const socketToUse = this.targetSocket || this.currentSocket;
+    
+    if (!socketToUse) {
+      alert('No socket selected!');
+      return;
+    }
+    
+    // Update socket appearance
+    socketToUse.classList.remove('empty');
+    socketToUse.classList.add('filled');
+    socketToUse.innerHTML = '<img src="img/jewel1.png" alt="Custom Jewel" style="width: 20px; height: 20px;">';
+    
+    // Store jewel data
+    socketToUse.dataset.itemKey = 'custom-jewel';
+    socketToUse.dataset.category = 'jewels';
+    socketToUse.dataset.itemName = 'Custom Jewel';
+    socketToUse.dataset.stats = '+15% Enhanced Damage';
+    socketToUse.dataset.levelReq = 1;
+    
+    // Update displays
+    const section = socketToUse.closest('.socket-container')?.dataset.section || 'weapon';
+    
+    this.hideJewelModal();
+    this.updateItemDisplay(section);
+    this.calculateAllStats();
+    
+    this.targetSocket = null;
+  }
   
   // Public method for external recalculation
   recalculate() {
     this.calculateAllStats();
   }
-
-
-createJewelModal() {
-  const existingModal = document.getElementById('jewelModal');
-  if (existingModal) existingModal.remove();
-  
-  const modalHTML = `
-    <div id="jewelModal" class="socket-modal" style="display: none;">
-      <div class="socket-modal-content" style="max-width: 600px; max-height: 90vh;">
-        <span class="socket-close">&times;</span>
-        <h3>Create Custom Jewel</h3>
-        
-        <div class="jewel-creation">
-          <!-- Jewel Color Selection -->
-          <div class="jewel-color-section" style="margin-bottom: 20px;">
-            <h4 style="color: #0f3460; margin-bottom: 10px;">Jewel Color:</h4>
-            <div class="jewel-colors" style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <div class="jewel-color-option" data-color="blue">
-                <img src="img/jewel1.png" alt="Blue Jewel" style="width: 32px; height: 32px; cursor: pointer; border: 2px solid transparent;">
-                <span>Blue</span>
-              </div>
-              <div class="jewel-color-option" data-color="red">
-                <img src="img/jewel2.png" alt="Red Jewel" style="width: 32px; height: 32px; cursor: pointer; border: 2px solid transparent;">
-                <span>Red</span>
-              </div>
-              <div class="jewel-color-option" data-color="green">
-                <img src="img/jewel3.png" alt="Green Jewel" style="width: 32px; height: 32px; cursor: pointer; border: 2px solid transparent;">
-                <span>Green</span>
-              </div>
-              <div class="jewel-color-option" data-color="yellow">
-                <img src="img/jewel4.png" alt="Yellow Jewel" style="width: 32px; height: 32px; cursor: pointer; border: 2px solid transparent;">
-                <span>Yellow</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Jewel Quality Selection -->
-          <div class="jewel-quality-section" style="margin-bottom: 20px;">
-            <h4 style="color: #0f3460; margin-bottom: 10px;">Jewel Quality:</h4>
-            <div class="jewel-quality-options">
-              <label style="display: block; margin-bottom: 5px;">
-                <input type="radio" name="jewelQuality" value="magic" checked> 
-                <span style="color: #4169E1;">Magic (1 prefix + 1 suffix)</span>
-              </label>
-              <label style="display: block; margin-bottom: 5px;">
-                <input type="radio" name="jewelQuality" value="rare"> 
-                <span style="color: #FFFF00;">Rare (up to 3 prefixes + 3 suffixes)</span>
-              </label>
-            </div>
-          </div>
-          
-          <!-- Prefix Section -->
-          <div class="prefix-section" style="margin-bottom: 20px;">
-            <h4 style="color: #0f3460; margin-bottom: 10px;">Prefixes:</h4>
-            <div class="affix-controls" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: end;">
-              <div style="flex: 1;">
-                <select id="jewelPrefixSelect" style="width: 100%; padding: 5px; background: #2a2a4e; color: white; border: 1px solid #0f3460;">
-                  <option value="">Select Prefix</option>
-                </select>
-              </div>
-              <div style="width: 80px;">
-                <input type="number" id="jewelPrefixValue" style="width: 100%; padding: 5px; background: #2a2a4e; color: white; border: 1px solid #0f3460;" placeholder="Value">
-              </div>
-              <button id="addJewelPrefix" style="padding: 5px 15px; background: #0f3460; color: white; border: none; cursor: pointer;">Add</button>
-            </div>
-            <div id="selectedPrefixes" class="selected-affixes"></div>
-          </div>
-          
-          <!-- Suffix Section -->
-          <div class="suffix-section" style="margin-bottom: 20px;">
-            <h4 style="color: #0f3460; margin-bottom: 10px;">Suffixes:</h4>
-            <div class="affix-controls" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: end;">
-              <div style="flex: 1;">
-                <select id="jewelSuffixSelect" style="width: 100%; padding: 5px; background: #2a2a4e; color: white; border: 1px solid #0f3460;">
-                  <option value="">Select Suffix</option>
-                </select>
-              </div>
-              <div style="width: 80px;">
-                <input type="number" id="jewelSuffixValue" style="width: 100%; padding: 5px; background: #2a2a4e; color: white; border: 1px solid #0f3460;" placeholder="Value">
-              </div>
-              <button id="addJewelSuffix" style="padding: 5px 15px; background: #0f3460; color: white; border: none; cursor: pointer;">Add</button>
-            </div>
-            <div id="selectedSuffixes" class="selected-affixes"></div>
-          </div>
-          
-          <!-- Preview Section -->
-          <div class="jewel-preview" style="margin-bottom: 20px;">
-            <h4 style="color: #0f3460; margin-bottom: 10px;">Preview:</h4>
-            <div id="jewelPreview" style="background: #2a2a4e; border: 1px solid #0f3460; padding: 15px; border-radius: 5px; min-height: 80px; color: white;">
-              <div style="color: #4169E1; font-weight: bold;">Magic Jewel</div>
-              <div style="color: #666; font-size: 12px; margin-top: 5px;">Select color and affixes to preview</div>
-            </div>
-          </div>
-          
-          <!-- Create Button -->
-          <button id="createJewelBtn" style="width: 100%; padding: 12px; background: #0f3460; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-            Create Jewel
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-  
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
-  this.addJewelModalStyles();
-  this.setupJewelModalEvents();
-  this.populateJewelAffixes();
-  
-  // Initialize with blue jewel selected
-  this.selectedJewelColor = 'blue';
-  this.selectedJewelImage = 'img/jewel1.png';
-  this.selectedPrefixes = [];
-  this.selectedSuffixes = [];
 }
-
-addJewelModalStyles() {
-  if (document.getElementById('jewel-modal-styles')) return;
-  
-  const styles = `
-    <style id="jewel-modal-styles">
-      .jewel-colors {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-      }
-      
-      .jewel-color-option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
-        cursor: pointer;
-        padding: 8px;
-        border-radius: 5px;
-        transition: background 0.3s;
-      }
-      
-      .jewel-color-option:hover {
-        background: rgba(15, 52, 96, 0.3);
-      }
-      
-      .jewel-color-option.selected img {
-        border-color: #0f3460 !important;
-      }
-      
-      .jewel-color-option span {
-        color: white;
-        font-size: 12px;
-      }
-      
-      .selected-affixes {
-        max-height: 120px;
-        overflow-y: auto;
-        background: rgba(15, 52, 96, 0.2);
-        border-radius: 3px;
-        padding: 8px;
-        min-height: 40px;
-      }
-      
-      .selected-affix {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(42, 42, 78, 0.8);
-        padding: 5px 8px;
-        margin-bottom: 5px;
-        border-radius: 3px;
-        color: #87CEEB;
-        font-size: 12px;
-      }
-      
-      .remove-affix-btn {
-        background: #e74c3c;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .remove-affix-btn:hover {
-        background: #c0392b;
-      }
-      
-      .jewel-quality-options label {
-        cursor: pointer;
-        padding: 5px;
-        border-radius: 3px;
-        transition: background 0.3s;
-      }
-      
-      .jewel-quality-options label:hover {
-        background: rgba(15, 52, 96, 0.2);
-      }
-    </style>
-  `;
-  
-  document.head.insertAdjacentHTML('beforeend', styles);
-}
-
-setupJewelModalEvents() {
-  // Jewel modal close
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('socket-close') || e.target.id === 'jewelModal') {
-      this.hideJewelModal();
-    }
-  });
-
-  // Color selection
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.jewel-color-option')) {
-      const colorOption = e.target.closest('.jewel-color-option');
-      const color = colorOption.dataset.color;
-      const img = colorOption.querySelector('img').src;
-      
-      // Update selection
-      document.querySelectorAll('.jewel-color-option').forEach(opt => opt.classList.remove('selected'));
-      colorOption.classList.add('selected');
-      
-      this.selectedJewelColor = color;
-      this.selectedJewelImage = img;
-      this.updateJewelPreview();
-    }
-  });
-  
-  // Quality change
-  document.addEventListener('change', (e) => {
-    if (e.target.name === 'jewelQuality') {
-      this.updateJewelPreview();
-    }
-  });
-  
-  // Add prefix
-  document.addEventListener('click', (e) => {
-    if (e.target.id === 'addJewelPrefix') {
-      this.addJewelAffix('prefix');
-    }
-  });
-  
-  // Add suffix
-  document.addEventListener('click', (e) => {
-    if (e.target.id === 'addJewelSuffix') {
-      this.addJewelAffix('suffix');
-    }
-  });
-  
-  // Remove affix
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove-affix-btn')) {
-      const type = e.target.dataset.type;
-      const index = parseInt(e.target.dataset.index);
-      this.removeJewelAffix(type, index);
-    }
-  });
-  
-  // Create jewel - IMPORTANT: This event listener is crucial!
-  document.addEventListener('click', (e) => {
-    if (e.target.id === 'createJewelBtn') {
-      console.log('Create jewel button clicked!'); // Debug
-      this.createCustomJewel();
-    }
-  });
-  
-  // Affix select changes - update value input ranges
-  document.addEventListener('change', (e) => {
-    if (e.target.id === 'jewelPrefixSelect') {
-      this.updateValueInput('prefix', e.target.value);
-    } else if (e.target.id === 'jewelSuffixSelect') {
-      this.updateValueInput('suffix', e.target.value);
-    }
-  });
-}
-
-populateJewelAffixes() {
-  const prefixes = {
-    'Cinnabar': { effect: '+[5-10]% Enhanced Damage', reqLevel: 1 },
-    'Rusty': { effect: '+[11-20]% Enhanced Damage', reqLevel: 9 },
-    'Realgar': { effect: '+[21-30]% Enhanced Damage', reqLevel: 37 },
-    'Ruby': { effect: '+[31-40]% Enhanced Damage', reqLevel: 58 },
-    'Stout': { effect: '+[5-8] Defense', reqLevel: 1 },
-    'Burly': { effect: '+[9-20] Defense', reqLevel: 12 },
-    'Bone': { effect: '+[21-40] Defense', reqLevel: 24 },
-    'Ivory': { effect: '+[41-64] Defense', reqLevel: 56 },
-    'Scarlet': { effect: '+[1-4] to Minimum Damage', reqLevel: 6 },
-    'Crimson': { effect: '+[5-8] to Minimum Damage', reqLevel: 30 },
-    'Cardinal': { effect: '+[10-14] to Minimum Damage', reqLevel: 30 },
-    'Carbuncle': { effect: '+[1-5] to Maximum Damage', reqLevel: 9 },
-    'Carmine': { effect: '+[6-9] to Maximum Damage', reqLevel: 27 },
-    'Vermillion': { effect: '+[11-15] to Maximum Damage', reqLevel: 50 },
-    'Nickel': { effect: '+[10-20] to Attack Rating', reqLevel: 1 },
-    'Tin': { effect: '+[21-40] to Attack Rating', reqLevel: 6 },
-    'Silver': { effect: '+[41-60] to Attack Rating', reqLevel: 18 },
-    'Argent': { effect: '+[61-100] to Attack Rating', reqLevel: 36 },
-    'Emerald': { effect: '[3-7]% Better Chance of Getting Magic Items', reqLevel: 12 },
-    'Zircon': { effect: '+[5-10] to Mana', reqLevel: 2 },
-    'Jacinth': { effect: '+[11-15] to Mana', reqLevel: 12 },
-    'Turquoise': { effect: '+[16-20] to Mana', reqLevel: 21 },
-    'Cerulean': { effect: '+[21-30] to Mana', reqLevel: 41 },
-    'Shimmering': { effect: 'All Resistances +[5-10]', reqLevel: 12 },
-    'Scintillating': { effect: 'All Resistances +[11-15]', reqLevel: 26 },
-    'Lapis': { effect: 'Cold Resist +[5-15]%', reqLevel: 1 },
-    'Sapphire': { effect: 'Cold Resist +[16-30]%', reqLevel: 14 }
-  };
-  
-  const suffixes = {
-    'Malice': { effect: 'Attacker Takes Damage of [30-40]', reqLevel: 29 },
-    'Fervor': { effect: '+[15-15]% Increased Attack Speed', reqLevel: 31 },
-    'Maiming': { effect: '[5-8]% Chance of Open Wounds', reqLevel: 24 },
-    'Slaying': { effect: '[1-3]% Deadly Strike', reqLevel: 38 },
-    'Gore': { effect: '[4-10]% Deadly Strike', reqLevel: 63 },
-    'Carnage': { effect: '[11-15]% Deadly Strike', reqLevel: 77 },
-    'Slaughter': { effect: '[16-20]% Deadly Strike', reqLevel: 85 },
-    'Frost': { effect: 'Adds [1-3] to [4-6] Cold Damage', reqLevel: 6 },
-    'Frigidity': { effect: 'Adds 1 to [3-5] Cold Damage', reqLevel: 12 },
-    'Icicle': { effect: 'Adds [2-3] to [6-10] Cold Damage', reqLevel: 29 },
-    'Glacier': { effect: 'Adds [4-5] to [11-15] Cold Damage', reqLevel: 50 },
-    'Passion': { effect: 'Adds [1-3] to [6-10] Fire Damage', reqLevel: 11 },
-    'Fire': { effect: 'Adds [4-10] to [11-30] Fire Damage', reqLevel: 28 },
-    'Burning': { effect: 'Adds [11-25] to [31-50] Fire Damage', reqLevel: 49 },
-    'Ennui': { effect: 'Adds 1-[10-20] Lightning Damage', reqLevel: 11 },
-    'Lightning': { effect: 'Adds 1-[21-60] Lightning Damage', reqLevel: 28 },
-    'Thunder': { effect: 'Adds 1-[61-100] Lightning Damage', reqLevel: 49 }
-  };
-  
-  // Populate prefix dropdown
-  const prefixSelect = document.getElementById('jewelPrefixSelect');
-  for (const [name, data] of Object.entries(prefixes)) {
-    const option = document.createElement('option');
-    option.value = data.effect;
-    option.textContent = `${name} - ${data.effect}`;
-    prefixSelect.appendChild(option);
-  }
-  
-  // Populate suffix dropdown
-  const suffixSelect = document.getElementById('jewelSuffixSelect');
-  for (const [name, data] of Object.entries(suffixes)) {
-    const option = document.createElement('option');
-    option.value = data.effect;
-    option.textContent = `${name} - ${data.effect}`;
-    suffixSelect.appendChild(option);
-  }
-}
-
-updateValueInput(type, effect) {
-  const valueInput = document.getElementById(`jewel${type.charAt(0).toUpperCase() + type.slice(1)}Value`);
-  if (!valueInput || !effect) return;
-  
-  const range = this.extractJewelRange(effect);
-  if (range) {
-    valueInput.min = range.min;
-    valueInput.max = range.max;
-    valueInput.value = range.min;
-    valueInput.style.display = 'block';
-  } else {
-    valueInput.style.display = 'none';
-  }
-}
-
-extractJewelRange(effect) {
-  const match = effect.match(/\[(\d+)-(\d+)\]/);
-  if (match) {
-    return {
-      min: parseInt(match[1]),
-      max: parseInt(match[2])
-    };
-  }
-  return null;
-}
-
-addJewelAffix(type) {
-  const select = document.getElementById(`jewel${type.charAt(0).toUpperCase() + type.slice(1)}Select`);
-  const valueInput = document.getElementById(`jewel${type.charAt(0).toUpperCase() + type.slice(1)}Value`);
-  const quality = document.querySelector('input[name="jewelQuality"]:checked').value;
-  
-  if (!select.value) return;
-  
-  const affixes = type === 'prefix' ? this.selectedPrefixes : this.selectedSuffixes;
-  const maxAffixes = quality === 'rare' ? 3 : 1;
-  const maxTotal = quality === 'rare' ? 6 : 2;
-  
-  // Check limits
-  if (affixes.length >= maxAffixes) {
-    alert(`Maximum ${maxAffixes} ${type}es for ${quality} jewels`);
-    return;
-  }
-  
-  if ((this.selectedPrefixes.length + this.selectedSuffixes.length) >= maxTotal) {
-    alert(`Maximum ${maxTotal} total affixes for ${quality} jewels`);
-    return;
-  }
-  
-  const range = this.extractJewelRange(select.value);
-  let value = null;
-  
-  if (range) {
-    value = parseInt(valueInput.value);
-    if (isNaN(value) || value < range.min || value > range.max) {
-      alert(`Value must be between ${range.min} and ${range.max}`);
-      return;
-    }
-  }
-  
-  // Create affix
-  const effectText = range ? select.value.replace(/\[\d+-\d+\]/, value) : select.value;
-  const affix = {
-    template: select.value,
-    effect: effectText,
-    value: value,
-    stat: effectText // Use effectText as stat since convertJewelEffectToStat might not cover all cases
-  };
-  
-  console.log('Adding affix:', affix); // Debug
-  
-  affixes.push(affix);
-  this.updateJewelAffixDisplay(type);
-  this.updateJewelPreview();
-  
-  // Clear inputs
-  select.value = '';
-  valueInput.value = '';
-  valueInput.style.display = 'none';
-}
-
-removeJewelAffix(type, index) {
-  const affixes = type === 'prefix' ? this.selectedPrefixes : this.selectedSuffixes;
-  affixes.splice(index, 1);
-  this.updateJewelAffixDisplay(type);
-  this.updateJewelPreview();
-}
-
-updateJewelAffixDisplay(type) {
-  const container = document.getElementById(`selected${type.charAt(0).toUpperCase() + type.slice(1)}es`);
-  const affixes = type === 'prefix' ? this.selectedPrefixes : this.selectedSuffixes;
-  
-  if (affixes.length === 0) {
-    container.innerHTML = '<div style="color: #666; font-size: 12px;">No ' + type + 'es selected</div>';
-    return;
-  }
-  
-  container.innerHTML = affixes.map((affix, index) => `
-    <div class="selected-affix">
-      <span>${affix.effect}</span>
-      <button class="remove-affix-btn" data-type="${type}" data-index="${index}">×</button>
-    </div>
-  `).join('');
-}
-
-updateJewelPreview() {
-  const preview = document.getElementById('jewelPreview');
-  const quality = document.querySelector('input[name="jewelQuality"]:checked').value;
-  const qualityColor = quality === 'rare' ? '#FFFF00' : '#4169E1';
-  const qualityName = quality === 'rare' ? 'Rare' : 'Magic';
-  
-  let html = `<div style="color: ${qualityColor}; font-weight: bold;">${qualityName} Jewel</div>`;
-  
-  // Add prefix effects
-  this.selectedPrefixes.forEach(prefix => {
-    html += `<div style="color: #87CEEB; font-size: 12px;">${prefix.effect}</div>`;
-  });
-  
-  // Add suffix effects
-  this.selectedSuffixes.forEach(suffix => {
-    html += `<div style="color: #87CEEB; font-size: 12px;">${suffix.effect}</div>`;
-  });
-  
-  if (this.selectedPrefixes.length === 0 && this.selectedSuffixes.length === 0) {
-    html += '<div style="color: #666; font-size: 12px; margin-top: 5px;">Select affixes to preview</div>';
-  }
-  
-  preview.innerHTML = html;
-}
-
-convertJewelEffectToStat(effect) {
-  // Convert jewel effects to stat format for socket system
-  if (effect.includes('Enhanced Damage')) {
-    const match = effect.match(/(\d+)% Enhanced Damage/);
-    return match ? `+${match[1]}% Enhanced Damage` : effect;
-  }
-  
-  return effect; // Return as-is for other effects
-}
-
-createCustomJewel() {
-  console.log('Creating custom jewel...'); // Debug
-  console.log('Current socket:', this.currentSocket); // Debug
-  console.log('Target socket:', this.targetSocket); // Debug
-  
-  // Use targetSocket instead of currentSocket
-  const socketToUse = this.targetSocket || this.currentSocket;
-  
-  if (!socketToUse) {
-    alert('No socket selected! Please click a socket first.');
-    return;
-  }
-  
-  const quality = document.querySelector('input[name="jewelQuality"]:checked').value;
-  console.log('Quality:', quality); // Debug
-  console.log('Prefixes:', this.selectedPrefixes); // Debug
-  console.log('Suffixes:', this.selectedSuffixes); // Debug
-  
-  if (this.selectedPrefixes.length === 0 && this.selectedSuffixes.length === 0) {
-    alert('Please add at least one affix');
-    return;
-  }
-  
-  // Combine all stats
-  const stats = [
-    ...this.selectedPrefixes.map(p => p.stat || p.effect),
-    ...this.selectedSuffixes.map(s => s.stat || s.effect)
-  ].join('\n');
-  
-  console.log('Combined stats:', stats); // Debug
-  
-  // Update socket appearance
-  socketToUse.classList.remove('empty');
-  socketToUse.classList.add('filled');
-  
-  // Create jewel image
-  const img = document.createElement('img');
-  img.src = this.selectedJewelImage || 'img/jewel1.png';
-  img.alt = `${quality} Jewel`;
-  img.style.width = '20px';
-  img.style.height = '20px';
-  
-  socketToUse.innerHTML = '';
-  socketToUse.appendChild(img);
-  
-  // Store jewel data
-  socketToUse.dataset.itemKey = 'custom-jewel';
-  socketToUse.dataset.category = 'jewels';
-  socketToUse.dataset.itemName = `${quality} Jewel`;
-  socketToUse.dataset.stats = stats;
-  
-  console.log('Socket updated with:', {
-    itemKey: socketToUse.dataset.itemKey,
-    category: socketToUse.dataset.category,
-    itemName: socketToUse.dataset.itemName,
-    stats: socketToUse.dataset.stats
-  }); // Debug
-  
-  // Update displays
-  const section = socketToUse.closest('.socket-container')?.dataset.section || 'weapon';
-  console.log('Section:', section); // Debug
-  
-  this.hideJewelModal();
-  this.updateItemDisplay(section);
-  this.calculateAllStats();
-  
-  if (window.characterStats) {
-    setTimeout(() => window.characterStats.updateTotalStats(), 100);
-  }
-  
-  // Reset selections and clear target socket
-  this.selectedPrefixes = [];
-  this.selectedSuffixes = [];
-  this.targetSocket = null;
-  
-  console.log('Jewel creation completed!'); // Debug
-}
-
-showJewelModal() {
-  // Reset selections
-  this.selectedPrefixes = [];
-  this.selectedSuffixes = [];
-  
-  // Clear displays
-  this.updateJewelAffixDisplay('prefix');
-  this.updateJewelAffixDisplay('suffix');
-  this.updateJewelPreview();
-  
-  // Reset color selection to blue
-  document.querySelectorAll('.jewel-color-option').forEach(opt => opt.classList.remove('selected'));
-  document.querySelector('.jewel-color-option[data-color="blue"]').classList.add('selected');
-  this.selectedJewelColor = 'blue';
-  this.selectedJewelImage = 'img/jewel1.png';
-  
-  // Show modal
-  const modal = document.getElementById('jewelModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-hideJewelModal() {
-  const modal = document.getElementById('jewelModal');
-  if (modal) modal.style.display = 'none';
-  this.currentSocket = null;
-  this.targetSocket = null; // Clear both references
-}
-
-// Add this to your existing populateSocketItems method:
-// In the 'jewels' case, add an option for custom jewel creation
-
-// Update your existing populateSocketItems method to include custom jewel option:
-populateSocketItems(category) {
-  const grid = document.getElementById('socketItemGrid');
-  if (!grid) return;
-  
-  grid.innerHTML = '';
-  
-  if (category === 'jewels') {
-    // Add custom jewel creation option first
-    const customJewelDiv = document.createElement('div');
-    customJewelDiv.className = 'socket-item custom-jewel-item';
-    customJewelDiv.innerHTML = `
-      <img src="img/jewel1.png" alt="Custom Jewel" onerror="this.src='img/placeholder.png'">
-      <div class="socket-item-name">Create Custom</div>
-    `;
-    // IMPORTANT: Store the current socket reference before opening jewel modal
-    customJewelDiv.addEventListener('click', () => {
-      console.log('Custom jewel clicked, current socket:', this.currentSocket); // Debug
-      if (!this.currentSocket) {
-        alert('Error: No socket selected. Please try clicking the socket again.');
-        return;
-      }
-      // Store the socket reference in a way that won't get lost
-      this.targetSocket = this.currentSocket;
-      this.hideSocketModal();
-      this.showJewelModal();
-    });
-    grid.appendChild(customJewelDiv);
-  }
-  
-  // Add existing socket items
-  const items = this.socketData[category];
-  for (const [key, item] of Object.entries(items)) {
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'socket-item';
-    itemDiv.dataset.itemKey = key;
-    itemDiv.dataset.category = category;
-    
-    itemDiv.innerHTML = `
-      <img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">
-      <div class="socket-item-name">${item.name}</div>
-    `;
-    
-    grid.appendChild(itemDiv);
-  }
-}
-
-
-removeSocketedItem(socket) {
-  // Clear socket data
-  socket.classList.remove('filled');
-  socket.classList.add('empty');
-  socket.innerHTML = '';
-  
-  // Clear datasets
-  delete socket.dataset.itemKey;
-  delete socket.dataset.category;
-  delete socket.dataset.itemName;
-  delete socket.dataset.stats;
-  
-  // Get section for updates
-  const section = socket.closest('.socket-container')?.dataset.section || 'weapon';
-  
-  // Update displays and recalculate stats
-  this.updateItemDisplay(section);
-  
-  setTimeout(() => {
-    this.calculateAllStats();
-    
-    if (window.levelRequirementSystem?.validateAllItems) {
-      window.levelRequirementSystem.validateAllItems();
-    }
-    
-    if (window.characterStats?.updateTotalStats) {
-      window.characterStats.updateTotalStats();
-    }
-    
-    if (window.statsCalculator?.calculateAllStats) {
-      window.statsCalculator.calculateAllStats();
-    }
-    
-    console.log('🗑️ Socket cleared - all systems updated');
-  }, 50);
-}
-// Initialize jewel modal when stats calculator is created
-// Add this to your existing init() method:
-init() {
-  this.setupEventListeners();
-  this.initializeSocketSystem();
-  this.createJewelModal(); // Add this line
-  this.calculateAllStats();
-  console.log('📊 Clean Stats Calculator with Complete Socket System initialized');
-}
-  }
-
-
 
 // Global initialization
 let statsCalculator;
@@ -2828,8 +1787,5 @@ window.addEventListener('load', () => {
   setTimeout(initStatsCalculator, 400);
 });
 
-console.log('Available functions:', Object.getOwnPropertyNames(window).filter(name => 
-  name.toLowerCase().includes('level') || name.toLowerCase().includes('requirement')
-));
 // Export for external use
 window.StatsCalculator = StatsCalculator;

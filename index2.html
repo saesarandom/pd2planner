@@ -969,43 +969,64 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
         // CORRECTED: This function now correctly finds the info div for each dropdown.
-        function updateItemInfo(event) {
-            const dropdown = event.target;
-            const selectedItemName = dropdown.value;
+        // Replace the updateItemInfo function in your index2.html with this version:
 
-            // A map to find the correct info div for each dropdown
-            const infoDivIdMap = {
-                'weapons-dropdown': 'weapon-info',
-                'helms-dropdown': 'helm-info',
-                'merchelms-dropdown': 'merc-helm-info',
-                'mercarmors-dropdown': 'merc-armor-info',
-                'mercweapons-dropdown': 'merc-weapon-info',
-                'armors-dropdown': 'armor-info',
-                'offs-dropdown': 'off-info',
-                'gloves-dropdown': 'glove-info',
-                'belts-dropdown': 'belt-info',
-                'boots-dropdown': 'boot-info',
-                'ringsone-dropdown': 'ringsone-info',
-                'ringstwo-dropdown': 'ringstwo-info',
-                'amulets-dropdown': 'amulet-info'
-            };
+function updateItemInfo(event) {
+    const dropdown = event.target;
+    const selectedItemName = dropdown.value;
 
-            const infoDivId = infoDivIdMap[dropdown.id];
-            if (!infoDivId) {
-                return; // Exit if the dropdown ID isn't in our map
+    // A map to find the correct info div for each dropdown
+    const infoDivIdMap = {
+        'weapons-dropdown': 'weapon-info',
+        'helms-dropdown': 'helm-info',
+        'merchelms-dropdown': 'merc-helm-info',
+        'mercarmors-dropdown': 'merc-armor-info',
+        'mercweapons-dropdown': 'merc-weapon-info',
+        'armors-dropdown': 'armor-info',
+        'offs-dropdown': 'off-info',
+        'gloves-dropdown': 'glove-info',
+        'belts-dropdown': 'belt-info',
+        'boots-dropdown': 'boot-info',
+        'ringsone-dropdown': 'ringsone-info',
+        'ringstwo-dropdown': 'ringstwo-info',
+        'amulets-dropdown': 'amulet-info'
+    };
+
+    // Map dropdown IDs to section names for socket system
+    const sectionMap = {
+        'weapons-dropdown': 'weapon',
+        'helms-dropdown': 'helm',
+        'armors-dropdown': 'armor',
+        'offs-dropdown': 'shield',
+        'gloves-dropdown': 'gloves',
+        'belts-dropdown': 'belts',
+        'boots-dropdown': 'boots'
+    };
+
+    const infoDivId = infoDivIdMap[dropdown.id];
+    if (!infoDivId) {
+        return; // Exit if the dropdown ID isn't in our map
+    }
+
+    const infoDiv = document.getElementById(infoDivId);
+    if (infoDiv) {
+        if (selectedItemName && itemList[selectedItemName]) {
+            const section = sectionMap[dropdown.id];
+            
+            // FIXED: Use socket-aware display if this item supports sockets
+            if (section && window.statsCalculator?.updateItemDisplay) {
+                // Use the socket-aware display function that preserves socket stats
+                window.statsCalculator.updateItemDisplay(section);
+            } else {
+                // Fallback to normal display for non-socket items
+                const item = itemList[selectedItemName];
+                infoDiv.innerHTML = item.description;
             }
-
-            const infoDiv = document.getElementById(infoDivId);
-            if (infoDiv) {
-                if (selectedItemName && itemList[selectedItemName]) {
-                    const item = itemList[selectedItemName];
-                    infoDiv.innerHTML = item.description; // Display the full item description
-                } else {
-                    infoDiv.innerHTML = ''; // Clear the info div if 'None' is selected
-                }
-            }
+        } else {
+            infoDiv.innerHTML = ''; // Clear the info div if 'None' is selected
         }
-
+    }
+}
         // Function to set up event handlers for all dropdowns
         function setupDropdownHandlers() {
             const dropdowns = document.querySelectorAll('.equipment-container select');
