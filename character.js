@@ -328,36 +328,51 @@ class CharacterStats {
   }
 
   updateTotalStats() {
-    const baseStats = {
-      str: parseInt(document.getElementById('str').value) || 0,
-      dex: parseInt(document.getElementById('dex').value) || 0,
-      vit: parseInt(document.getElementById('vit').value) || 0,
-      enr: parseInt(document.getElementById('enr').value) || 0
-    };
+  console.log('🔄 CHARACTER.JS: Updating total stats...');
+  
+  const baseStats = {
+    str: parseInt(document.getElementById('str').value) || 0,
+    dex: parseInt(document.getElementById('dex').value) || 0,
+    vit: parseInt(document.getElementById('vit').value) || 0,
+    enr: parseInt(document.getElementById('enr').value) || 0
+  };
 
-    // Get bonuses from items (now level-filtered)
-    const itemBonuses = this.getAllItemBonuses();
-    
-    // Get bonuses from charms via statsCalculator
-    const charmBonuses = this.getCharmBonuses();
-    
-    // Calculate total bonuses
-    const totalBonuses = {
-      str: itemBonuses.str + charmBonuses.str,
-      dex: itemBonuses.dex + charmBonuses.dex,
-      vit: itemBonuses.vit + charmBonuses.vit,
-      enr: itemBonuses.enr + charmBonuses.enr
-    };
-    
-    // Update total displays
-    this.updateTotalDisplay('str', baseStats.str + totalBonuses.str);
-    this.updateTotalDisplay('dex', baseStats.dex + totalBonuses.dex);
-    this.updateTotalDisplay('vit', baseStats.vit + totalBonuses.vit);
-    this.updateTotalDisplay('enr', baseStats.enr + totalBonuses.enr);
-    
-    // ALSO calculate life with level requirements in mind
-    this.updateLifeCalculation(itemBonuses, baseStats);
-  }
+  console.log('📊 Base stats:', baseStats);
+
+  // Get bonuses from items (now level-filtered with socket support)
+  const itemBonuses = this.getAllItemBonuses();
+  console.log('📊 Item bonuses:', itemBonuses);
+  
+  // Get bonuses from charms via statsCalculator
+  const charmBonuses = this.getCharmBonuses();
+  console.log('📊 Charm bonuses:', charmBonuses);
+  
+  // Calculate total bonuses
+  const totalBonuses = {
+    str: itemBonuses.str + charmBonuses.str,
+    dex: itemBonuses.dex + charmBonuses.dex,
+    vit: itemBonuses.vit + charmBonuses.vit,
+    enr: itemBonuses.enr + charmBonuses.enr
+  };
+  
+  console.log('📊 Total bonuses:', totalBonuses);
+  
+  // Update total displays
+  this.updateTotalDisplay('str', baseStats.str + totalBonuses.str);
+  this.updateTotalDisplay('dex', baseStats.dex + totalBonuses.dex);
+  this.updateTotalDisplay('vit', baseStats.vit + totalBonuses.vit);
+  this.updateTotalDisplay('enr', baseStats.enr + totalBonuses.enr);
+  
+  console.log('📊 Final totals displayed:', {
+    str: baseStats.str + totalBonuses.str,
+    dex: baseStats.dex + totalBonuses.dex,
+    vit: baseStats.vit + totalBonuses.vit,
+    enr: baseStats.enr + totalBonuses.enr
+  });
+  
+  // ALSO calculate life with level requirements in mind
+  this.updateLifeCalculation(itemBonuses, baseStats);
+}
 
   updateLifeCalculation(itemBonuses, baseStats) {
     const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
@@ -387,68 +402,111 @@ class CharacterStats {
   }
 
   forceStatsUpdate() {
-    console.log('Forcing stats update with level requirements...');
+  console.log('🔄 CHARACTER.JS: Forcing stats update with level requirements...');
+  
+  // Trigger a complete recalculation
+  setTimeout(() => {
+    this.updateTotalStats();
     
-    // Trigger a complete recalculation
-    setTimeout(() => {
-      this.updateTotalStats();
-      
-      // Also trigger any other stats systems
-      if (window.statsCalculator && window.statsCalculator.calculateAllStats) {
-        window.statsCalculator.calculateAllStats();
-      }
-    }, 50);
-  }
+    // Also trigger any other stats systems
+    if (window.statsCalculator && window.statsCalculator.calculateAllStats) {
+      window.statsCalculator.calculateAllStats();
+    }
+  }, 50);
+}
 
   getAllItemBonuses() {
-    const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+  const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+  
+  // Check level requirement system first
+  if (window.levelRequirementSystem) {
+    const validStats = window.levelRequirementSystem.getValidItemStats();
     
-    // NEW: Check if level requirement system exists and use its filtered stats
-    if (window.levelRequirementSystem) {
-      const validStats = window.levelRequirementSystem.getValidItemStats();
-      
-      bonuses.str = validStats.str || 0;
-      bonuses.dex = validStats.dex || 0;
-      bonuses.vit = validStats.vit || 0;
-      bonuses.enr = validStats.enr || 0;
-      
-      console.log('Using level-filtered stats:', bonuses);
-      return bonuses;
-    }
+    bonuses.str = validStats.str || 0;
+    bonuses.dex = validStats.dex || 0;
+    bonuses.vit = validStats.vit || 0;
+    bonuses.enr = validStats.enr || 0;
     
-    // FALLBACK: Original method if level requirement system not available
-    const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
-    const equipmentDropdowns = [
-      'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown',
-      'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 
-      'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'
-    ];
-
-    equipmentDropdowns.forEach(dropdownId => {
-      const dropdown = document.getElementById(dropdownId);
-      if (!dropdown || !dropdown.value) return;
-
-      // Check if item exists in itemList
-      if (typeof itemList !== 'undefined' && itemList[dropdown.value]) {
-        const item = itemList[dropdown.value];
-        const requiredLevel = item.properties?.reqlvl || 1;
-        
-        // ONLY count stats if character level meets requirement
-        if (currentLevel >= requiredLevel) {
-          // Parse stat bonuses from item properties (more reliable than HTML parsing)
-          if (item.properties) {
-            bonuses.str += item.properties.str || 0;
-            bonuses.dex += item.properties.dex || 0;
-            bonuses.vit += item.properties.vit || 0;
-            bonuses.enr += item.properties.enr || 0;
-          }
-        }
-      }
-    });
-    
-    console.log('Using manual level-filtered stats:', bonuses);
+    console.log('Using level-filtered stats:', bonuses);
     return bonuses;
   }
+  
+  // ✅ FIXED: Use actual required level calculation that includes sockets
+  const currentLevel = parseInt(document.getElementById('lvlValue').value) || 1;
+  
+  const equipmentSections = [
+    { dropdown: 'weapons-dropdown', section: 'weapon' },
+    { dropdown: 'helms-dropdown', section: 'helm' },
+    { dropdown: 'armors-dropdown', section: 'armor' },
+    { dropdown: 'offs-dropdown', section: 'shield' },
+    { dropdown: 'gloves-dropdown', section: 'gloves' },
+    { dropdown: 'belts-dropdown', section: 'belts' },
+    { dropdown: 'boots-dropdown', section: 'boots' },
+    { dropdown: 'ringsone-dropdown', section: 'ringone' },
+    { dropdown: 'ringstwo-dropdown', section: 'ringtwo' },
+    { dropdown: 'amulets-dropdown', section: 'amulet' }
+  ];
+
+  console.log('🔍 CHARACTER.JS: Calculating item bonuses with socket-aware level checking');
+  console.log(`🎯 Character level: ${currentLevel}`);
+
+  equipmentSections.forEach(({ dropdown, section }) => {
+    const dropdownElement = document.getElementById(dropdown);
+    if (!dropdownElement || !dropdownElement.value) return;
+
+    // Check if item exists in itemList
+    if (typeof itemList !== 'undefined' && itemList[dropdownElement.value]) {
+      const item = itemList[dropdownElement.value];
+      
+      // ✅ CRITICAL FIX: Use the socket-aware level calculation
+      let actualRequiredLevel;
+      
+      // Try to get the actual required level from statsCalculator first
+      if (window.statsCalculator && typeof window.statsCalculator.calculateActualRequiredLevel === 'function') {
+        actualRequiredLevel = window.statsCalculator.calculateActualRequiredLevel(section, dropdownElement.value);
+        console.log(`📊 ${section}: Using statsCalculator actual level: ${actualRequiredLevel}`);
+      } else {
+        // Fallback to global function if available
+        if (typeof getActualRequiredLevel === 'function') {
+          actualRequiredLevel = getActualRequiredLevel(section, dropdownElement.value);
+          console.log(`📊 ${section}: Using global getActualRequiredLevel: ${actualRequiredLevel}`);
+        } else {
+          // ❌ PROBLEM: This was the bug - using base level only!
+          actualRequiredLevel = item.properties?.reqlvl || 1;
+          console.log(`📊 ${section}: Fallback to base level only: ${actualRequiredLevel} (THIS IS THE BUG!)`);
+        }
+      }
+      
+      console.log(`🔍 ${section}: Item=${dropdownElement.value}, ActualReqLevel=${actualRequiredLevel}, CharLevel=${currentLevel}, CanUse=${currentLevel >= actualRequiredLevel}`);
+      
+      // ✅ ONLY count stats if character level meets the ACTUAL required level (including sockets)
+      if (currentLevel >= actualRequiredLevel) {
+        // Parse stat bonuses from item properties
+        if (item.properties) {
+          const itemStr = item.properties.str || 0;
+          const itemDex = item.properties.dex || 0;
+          const itemVit = item.properties.vit || 0;
+          const itemEnr = item.properties.enr || 0;
+          
+          bonuses.str += itemStr;
+          bonuses.dex += itemDex;
+          bonuses.vit += itemVit;
+          bonuses.enr += itemEnr;
+          
+          if (itemStr || itemDex || itemVit || itemEnr) {
+            console.log(`✅ Applied ${section} bonuses: str+${itemStr}, dex+${itemDex}, vit+${itemVit}, enr+${itemEnr}`);
+          }
+        }
+      } else {
+        console.log(`❌ BLOCKED ${section} bonuses - need level ${actualRequiredLevel}, have ${currentLevel}`);
+      }
+    }
+  });
+  
+  console.log('🔍 CHARACTER.JS: Final calculated bonuses:', bonuses);
+  return bonuses;
+}
+
 
   getCharmBonuses() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
@@ -466,19 +524,31 @@ class CharacterStats {
   }
 
   updateTotalDisplay(statId, total) {
-    let totalDiv = document.getElementById(statId + 'Total');
-    if (!totalDiv) {
-      totalDiv = document.createElement('span');
-      totalDiv.id = statId + 'Total';
-      totalDiv.style.cssText = 'color: #00ff00; font-weight: bold; margin-left: 10px;';
-      
-      const statRow = document.getElementById(statId).closest('.stat-row');
-      if (statRow) statRow.appendChild(totalDiv);
-    }
+  let totalDiv = document.getElementById(statId + 'Total');
+  if (!totalDiv) {
+    totalDiv = document.createElement('span');
+    totalDiv.id = statId + 'Total';
+    totalDiv.style.cssText = 'color: #00ff00; font-weight: bold; margin-left: 10px;';
     
-    const base = parseInt(document.getElementById(statId).value) || 0;
-    totalDiv.textContent = total > base ? ` ${total}` : '';
+    const statRow = document.getElementById(statId)?.closest('.stat-row');
+    if (statRow) statRow.appendChild(totalDiv);
   }
+  
+  const base = parseInt(document.getElementById(statId)?.value) || 0;
+  const bonus = total - base;
+  
+  if (bonus > 0) {
+    totalDiv.textContent = ` (${total})`;
+    totalDiv.style.color = '#00ff00'; // Green for positive bonus
+  } else if (bonus < 0) {
+    totalDiv.textContent = ` (${total})`;
+    totalDiv.style.color = '#ff5555'; // Red for negative (shouldn't happen but just in case)
+  } else {
+    totalDiv.textContent = ''; // No bonus, hide the display
+  }
+  
+  console.log(`📊 Updated ${statId} display: base=${base}, bonus=${bonus}, total=${total}`);
+}
 
   // Public method to get character stats
   getCharacterStats() {
@@ -564,7 +634,97 @@ function updateItemLevelDisplay(section, requiredLevel) {
     description = description.replace(levelRegex, `Required Level: ${requiredLevel}`);
     infoContainer.innerHTML = description;
   }
+  
 }
+
+
+// Test command 1: Check what's happening right now
+function testCurrentState() {
+  console.log('🧪 === CURRENT STATE TEST ===');
+  
+  const level = parseInt(document.getElementById('lvlValue').value) || 1;
+  const weapon = document.getElementById('weapons-dropdown')?.value;
+  const strDisplay = document.getElementById('strTotal')?.textContent;
+  
+  console.log(`Level: ${level}`);
+  console.log(`Weapon: ${weapon}`);
+  console.log(`Strength display: "${strDisplay}"`);
+  
+  if (weapon && itemList[weapon]) {
+    const baseLevel = itemList[weapon].properties?.reqlvl || 1;
+    console.log(`Weapon base level: ${baseLevel}`);
+    
+    const sockets = document.querySelectorAll('.socket-container[data-section="weapon"] .socket-slot.filled');
+    console.log(`Weapon sockets: ${sockets.length}`);
+    
+    sockets.forEach((socket, i) => {
+      console.log(`Socket ${i + 1}:`, {
+        itemName: socket.dataset.itemName,
+        levelReq: socket.dataset.levelReq
+      });
+    });
+  }
+}
+
+// Test command 2: Force recalculation
+function forceRecalc() {
+  console.log('🔄 === FORCING RECALCULATION ===');
+  
+  if (window.characterStats) {
+    window.characterStats.updateTotalStats();
+  }
+  
+  if (window.statsCalculator) {
+    window.statsCalculator.calculateAllStats();
+  }
+  
+  setTimeout(() => {
+    const newStrDisplay = document.getElementById('strTotal')?.textContent;
+    console.log(`Strength display after recalc: "${newStrDisplay}"`);
+  }, 200);
+}
+
+// Make test functions available globally
+window.testCurrentState = testCurrentState;
+window.forceRecalc = forceRecalc;
+window.testCharacterLevelSystem = function() {
+  if (window.characterStats && window.characterStats.testCharacterLevelSystem) {
+    window.characterStats.testCharacterLevelSystem();
+  } else {
+    console.log('❌ characterStats.testCharacterLevelSystem not available');
+  }
+  };
+
+
+function testFixedBonuses() {
+  console.log('🧪 === TESTING FIXED BONUSES ===');
+  
+  if (window.characterStats && window.characterStats.getAllItemBonuses) {
+    const bonuses = window.characterStats.getAllItemBonuses();
+    console.log('Fixed bonuses result:', bonuses);
+    
+    const level = parseInt(document.getElementById('lvlValue').value) || 1;
+    const weapon = document.getElementById('weapons-dropdown')?.value;
+    
+    if (weapon === 'The Gnasher' && level < 19 && bonuses.str > 0) {
+      console.log('❌ BUG STILL EXISTS: Getting strength bonus when we shouldn\'t!');
+    } else if (weapon === 'The Gnasher' && level < 19 && bonuses.str === 0) {
+      console.log('✅ BUG FIXED: No strength bonus at low level - CORRECT!');
+    }
+    
+    // Force update display
+    if (window.characterStats.updateTotalStats) {
+      window.characterStats.updateTotalStats();
+    }
+  }
+}
+
+window.testFixedBonuses = testFixedBonuses;
+
+
+
+
+
 
 // Global initialization
 let characterStats;
@@ -602,4 +762,5 @@ window.addEventListener('load', () => {
 // Export for external use
 window.getActualRequiredLevel = getActualRequiredLevel;
 window.validateAllItems = validateAllItems;
-window.CharacterStats = CharacteraStats;
+window.CharacterStats = CharacterStats;
+

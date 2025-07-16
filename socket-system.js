@@ -1,7 +1,7 @@
 // Clean Stats Calculator System - With Complete Socket System
 class StatsCalculator {
   constructor() {
-      this.selectedJewelColor = 'Blue';
+      this.selectedJewelColor = 'white';
   this.selectedJewelPrefix = '';
   this.selectedJewelSuffix = '';
   this.currentJewelSocket = null;
@@ -82,7 +82,10 @@ class StatsCalculator {
       'offs-dropdown': 'shield',
       'gloves-dropdown': 'gloves',
       'belts-dropdown': 'belts',
-      'boots-dropdown': 'boots'
+      'boots-dropdown': 'boots',
+      'ringsone-dropdown': 'ringone',
+      'ringstwo-dropdown': 'ringtwo',
+      'amulets-dropdown': 'amulet',
     };
     
     // Custom jewel prefixes and suffixes
@@ -136,40 +139,7 @@ class StatsCalculator {
       'Thunder': { effect: 'Adds 1-[61-100] Lightning Damage', reqLevel: 49 }
     };
     
-    this.statPatterns = {
-      fcr: /(\d+)%\s*Faster Cast Rate/i,
-      ias: /(\d+)%\s*Increased Attack Speed/i,
-      frw: /(\d+)%\s*Faster Run\/Walk/i,
-      fhr: /(\d+)%\s*Faster Hit Recovery/i,
-      dr: /(\d+)%\s*Damage Reduced/i,
-      pdr: /Physical Damage.*Reduced by (\d+)/i,
-      mdr: /Magic Damage.*Reduced by (\d+)/i,
-      plr: /Poison Length Reduced by (\d+)%/i,
-      blockChance: /(\d+)%\s*Increased Chance of Blocking/i,
-      enhancedDamage: /(\d+)%\s*Enhanced Damage/i,
-      openWounds: /(\d+)%\s*Chance of Open Wounds/i,
-      crushingBlow: /(\d+)%\s*Chance of Crushing Blow/i,
-      deadlyStrike: /(\d+)%\s*Chance of Deadly Strike/i,
-      criticalHit: /(\d+)%\s*Critical Strike/i,
-      allSkills: /\+(\d+)\s*to All Skills/i,
-      magicFind: /(\d+)%\s*Better Chance of Getting Magic Items/i,
-      goldFind: /(\d+)%\s*Extra Gold from Monsters/i,
-      lifeSteal: /(\d+)%\s*Life Stolen per Hit/i,
-      manaSteal: /(\d+)%\s*Mana Stolen per Hit/i,
-      strength: /\+(\d+)\s*to Strength/i,
-      dexterity: /\+(\d+)\s*to Dexterity/i,
-      vitality: /\+(\d+)\s*to Vitality/i,
-      energy: /\+(\d+)\s*to Energy/i,
-      life: /\+(\d+)\s*(?:to\s+)?Life/i,
-      mana: /\+(\d+)\s*(?:to\s+)?Mana/i,
-      attackRating: /\+(\d+)\s*(?:to\s+)?Attack Rating/i,
-      defense: /\+(\d+)\s*Defense/i,
-      fireResist: /Fire Resist \+(\d+)%?/i,
-      coldResist: /Cold Resist \+(\d+)%?/i,
-      lightResist: /Lightning Resist \+(\d+)%?/i,
-      poisonResist: /Poison Resist \+(\d+)%?/i
-    };
-
+    
     
     // Socket system data
     this.socketData = {
@@ -300,7 +270,7 @@ class StatsCalculator {
         'ith': { 
           name: 'Ith Rune', 
           img: 'img/ithrune.png', 
-          levelReq: 17,
+          levelReq: 15,
           stats: { 
             weapon: '+9 to Maximum Damage', 
             helm: '15% Damage Taken Gained as Mana when Hit', 
@@ -333,7 +303,7 @@ class StatsCalculator {
         'ort': { 
           name: 'Ort Rune', 
           img: 'img/ortrune.png', 
-          levelReq: 48,
+          levelReq: 21,
           stats: { 
             weapon: 'Adds 1-50 Lightning Damage', 
             helm: 'Lightning Resist +30%', 
@@ -344,7 +314,7 @@ class StatsCalculator {
         'thul': { 
           name: 'Thul Rune', 
           img: 'img/thulrune.png', 
-          levelReq: 48,
+          levelReq: 23,
           stats: { 
             weapon: 'Adds 3-14 Cold Damage', 
             helm: 'Cold Resist +30%', 
@@ -355,7 +325,7 @@ class StatsCalculator {
         'amn': { 
           name: 'Amn Rune', 
           img: 'img/amnrune.png', 
-          levelReq: 48,
+          levelReq: 25,
           stats: { 
             weapon: '7% Life Stolen per Hit', 
             helm: 'Attacker Takes Damage of 14', 
@@ -366,7 +336,7 @@ class StatsCalculator {
         'sol': { 
           name: 'Sol Rune', 
           img: 'img/solrune.png', 
-          levelReq: 48,
+          levelReq: 27,
           stats: { 
             weapon: '+9 to Minimum Damage', 
             helm: 'Physical Damage Taken Reduced by 7', 
@@ -376,7 +346,7 @@ class StatsCalculator {
         },
         'shael': { 
           name: 'Shael Rune', 
-          levelReq: 48,
+          levelReq: 29,
           img: 'img/shaelrune.png', 
           stats: { 
             weapon: '+20% Increased Attack Speed', 
@@ -388,7 +358,7 @@ class StatsCalculator {
         'dol': { 
           name: 'Dol Rune', 
           img: 'img/dolrune.png', 
-          levelReq: 48,
+          levelReq: 31,
           stats: { 
             weapon: '+20% Enhanced Damage', 
             helm: 'Replenish Life +10', 
@@ -399,7 +369,7 @@ class StatsCalculator {
         'hel': { 
           name: 'Hel Rune', 
           img: 'img/helrune.png', 
-          levelReq: 48,
+          levelReq: 1,
           stats: { 
             weapon: 'Requirements -20%', 
             helm: 'Requirements -20%', 
@@ -410,7 +380,7 @@ class StatsCalculator {
         'io': { 
           name: 'Io Rune', 
           img: 'img/iorune.png', 
-          levelReq: 48,
+          levelReq: 35,
           stats: { 
             weapon: '+10 to Vitality', 
             helm: '+10 to Vitality', 
@@ -421,7 +391,7 @@ class StatsCalculator {
         'lum': { 
           name: 'Lum Rune', 
           img: 'img/lumrune.png', 
-          levelReq: 48,
+          levelReq: 37,
           stats: { 
             weapon: '+10 to Energy', 
             helm: '+10 to Energy', 
@@ -432,7 +402,7 @@ class StatsCalculator {
         'ko': { 
           name: 'Ko Rune', 
           img: 'img/korune.png', 
-          levelReq: 48,
+          levelReq: 39,
           stats: { 
             weapon: '+10 to Dexterity', 
             helm: '+10 to Dexterity', 
@@ -443,7 +413,7 @@ class StatsCalculator {
         'fal': { 
           name: 'Fal Rune', 
           img: 'img/falrune.png', 
-          levelReq: 48,
+          levelReq: 41,
           stats: { 
             weapon: '+10 to Strength', 
             helm: '+10 to Strength', 
@@ -454,7 +424,7 @@ class StatsCalculator {
         'lem': { 
           name: 'Lem Rune', 
           img: 'img/lemrune.png', 
-          levelReq: 48,
+          levelReq: 43,
           stats: { 
             weapon: '75% Extra Gold From Monsters', 
             helm: '50% Extra Gold From Monsters', 
@@ -465,7 +435,7 @@ class StatsCalculator {
         'pul': { 
           name: 'Pul Rune', 
           img: 'img/pulrune.png', 
-          levelReq: 48,
+          levelReq: 45,
           stats: { 
             weapon: '+75% Damage to Demons, +100 to Attack Rating against Demons', 
             helm: '+30% Enhanced Defense', 
@@ -476,7 +446,7 @@ class StatsCalculator {
         'um': { 
           name: 'Um Rune', 
           img: 'img/umrune.png', 
-          levelReq: 48,
+          levelReq: 47,
           stats: { 
             weapon: '10% Chance of Open Wounds, +120 Open Wounds Damage per Second', 
             helm: 'All Resistances +15', 
@@ -487,7 +457,7 @@ class StatsCalculator {
         'mal': { 
           name: 'Mal Rune', 
           img: 'img/malrune.png', 
-          levelReq: 48,
+          levelReq: 49,
           stats: { 
             weapon: 'Prevent Monster Heal', 
             helm: 'Magic Damage Taken Reduced by 7', 
@@ -498,7 +468,7 @@ class StatsCalculator {
         'ist': { 
           name: 'Ist Rune', 
           img: 'img/istrune.png',
-          levelReq: 48, 
+          levelReq: 51, 
           stats: { 
             weapon: '30% Better Chance of Getting Magic Items', 
             helm: '30% Better Chance of Getting Magic Items', 
@@ -509,7 +479,7 @@ class StatsCalculator {
         'gul': { 
           name: 'Gul Rune', 
           img: 'img/gulrune.png', 
-          levelReq: 58,
+          levelReq: 53,
           stats: { 
             weapon: '20% Bonus to Attack Rating', 
             helm: '+4% to Maximum Poison Resist', 
@@ -520,7 +490,7 @@ class StatsCalculator {
         'vex': { 
           name: 'Vex Rune', 
           img: 'img/vexrune.png', 
-          levelReq: 58,
+          levelReq: 55,
           stats: { 
             weapon: '7% Mana Stolen per Hit', 
             helm: '+4% to Maximum Fire Resist', 
@@ -531,7 +501,7 @@ class StatsCalculator {
         'ohm': { 
           name: 'Ohm Rune', 
           img: 'img/ohmrune.png', 
-          levelReq: 58,
+          levelReq: 57,
           stats: { 
             weapon: '+45% Enhanced Damage', 
             helm: '+4% to Maximum Cold Resist', 
@@ -542,7 +512,7 @@ class StatsCalculator {
         'lo': { 
           name: 'Lo Rune', 
           img: 'img/lorune.png',
-          levelReq: 58, 
+          levelReq: 59, 
           stats: { 
             weapon: '20% Deadly Strike', 
             helm: '+4% to Maximum Lightning Resist', 
@@ -553,7 +523,7 @@ class StatsCalculator {
         'sur': { 
           name: 'Sur Rune', 
           img: 'img/surrune.png', 
-          levelReq: 48,
+          levelReq: 61,
           stats: { 
             weapon: '+4 Life after each Kill', 
             helm: 'Increase Maximum Mana 5%', 
@@ -564,7 +534,7 @@ class StatsCalculator {
         'ber': { 
           name: 'Ber Rune', 
           img: 'img/berrune.png', 
-          levelReq: 48,
+          levelReq: 63,
           stats: { 
             weapon: '20% Chance of Crushing Blow', 
             helm: 'Physical Damage Taken Reduced by 5%', 
@@ -575,7 +545,7 @@ class StatsCalculator {
         'jah': { 
           name: 'Jah Rune', 
           img: 'img/jahrune.png', 
-          levelReq: 68,
+          levelReq: 65,
           stats: { 
             weapon: 'Ignore Target\'s Defense', 
             helm: 'Increase Maximum Life 5%', 
@@ -586,7 +556,7 @@ class StatsCalculator {
         'cham': { 
           name: 'Cham Rune', 
           img: 'img/chamrune.png', 
-          levelReq: 68,
+          levelReq: 67,
           stats: { 
             weapon: 'Freezes Target +3', 
             helm: 'Cannot Be Frozen', 
@@ -625,7 +595,7 @@ class StatsCalculator {
   init() {
     this.setupEventListeners();
     this.initializeSocketSystem();
-    this.addLevelValidationStyles();
+    // this.addLevelValidationStyles();
     this.createJewelModal();
     this.calculateAllStats();
     console.log('📊 Enhanced Socket System with Custom Jewels initialized');
@@ -963,48 +933,69 @@ class StatsCalculator {
 
   
   // ========== LEVEL REQUIREMENT METHODS ==========
-  calculateActualRequiredLevel(section, selectedItem) {
-  if (!selectedItem || !itemList[selectedItem]) return 1;
+ calculateActualRequiredLevel(section, selectedItem) {
+  if (!selectedItem || !itemList[selectedItem]) {
+    console.log(`⚠️ calculateActualRequiredLevel: No item data for ${selectedItem}`);
+    return 1;
+  }
   
   const baseItem = itemList[selectedItem];
   const baseLevel = baseItem.properties?.reqlvl || 1;
   
+  console.log(`📊 === CALCULATING ACTUAL LEVEL for ${section.toUpperCase()} ===`);
+  console.log(`📊 Base item: ${selectedItem} (level ${baseLevel})`);
+  
   // Find all sockets for this section
   const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+  console.log(`📊 Found ${sockets.length} filled sockets`);
   
   let highestLevel = baseLevel;
   
   // Check each socket's level requirement
-  sockets.forEach(socket => {
+  sockets.forEach((socket, index) => {
     const itemKey = socket.dataset.itemKey;
     const category = socket.dataset.category;
+    const itemName = socket.dataset.itemName || 'Unknown';
+    const storedLevelReq = socket.dataset.levelReq;
+    
+    console.log(`📊 Socket ${index + 1}:`, {
+      itemKey,
+      category, 
+      itemName,
+      storedLevelReq
+    });
+    
+    let socketLevel = 1;
     
     // Check if it's a custom jewel
     if (itemKey === 'custom-jewel') {
-      const levelReq = parseInt(socket.dataset.levelReq) || 1;
-      if (levelReq > highestLevel) {
-        highestLevel = levelReq;
-      }
-    } else {
+      socketLevel = parseInt(storedLevelReq) || 1;
+      console.log(`📊 - Custom jewel level requirement: ${socketLevel}`);
+    } else if (category && itemKey) {
       // Regular socket item - get level from socket data
-      const socketItem = this.socketData[category]?.[itemKey];
+      const socketItem = this.socketData?.[category]?.[itemKey];
       if (socketItem?.levelReq) {
-        const socketLevel = socketItem.levelReq;
-        if (socketLevel > highestLevel) {
-          highestLevel = socketLevel;
-        }
+        socketLevel = socketItem.levelReq;
+        console.log(`📊 - Regular ${category} "${itemName}" level requirement: ${socketLevel}`);
+      } else {
+        console.warn(`📊 - Could not find level req for ${category}/${itemKey}`);
+        // Fallback to stored level req
+        socketLevel = parseInt(storedLevelReq) || 1;
       }
+    }
+    
+    if (socketLevel > highestLevel) {
+      console.log(`📊 - 🔥 NEW HIGHEST LEVEL: ${socketLevel} (was ${highestLevel}) from ${itemName}`);
+      highestLevel = socketLevel;
+    } else {
+      console.log(`📊 - Socket level ${socketLevel} <= current highest ${highestLevel}`);
     }
   });
   
-  console.log(`📊 Level calculation for ${section}: base=${baseLevel}, highest=${highestLevel}`);
+  console.log(`📊 === FINAL ACTUAL REQUIRED LEVEL: ${highestLevel} ===`);
   return highestLevel;
 }
-  checkLevelRequirement(requiredLevel) {
-    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-    return currentLevel >= requiredLevel;
-  }
-  
+
   // ========== SOCKET SYSTEM METHODS ==========
   initializeSocketSystem() {
     this.createSocketModal();
@@ -1592,7 +1583,7 @@ class StatsCalculator {
   }
   
   initializeSocketContainers() {
-    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
     
     sections.forEach(section => {
       const infoDiv = document.getElementById(`${section === 'shield' ? 'off' : section}-info`);
@@ -1668,28 +1659,119 @@ class StatsCalculator {
     this.currentSocket = null;
   }
   
-  socketItem(itemKey, category) {
-  if (!this.currentSocket) return;
+  // ========== COMPLETELY FIXED SOCKET LEVEL REQUIREMENT SYSTEM ==========
+
+// ✅ FIXED: calculateActualRequiredLevel - ensure it finds the TRUE highest level
+calculateActualRequiredLevel(section, selectedItem) {
+  if (!selectedItem || !itemList[selectedItem]) {
+    console.log(`⚠️ calculateActualRequiredLevel: No item data for ${selectedItem}`);
+    return 1;
+  }
+  
+  const baseItem = itemList[selectedItem];
+  const baseLevel = baseItem.properties?.reqlvl || 1;
+  
+  console.log(`📊 === CALCULATING ACTUAL LEVEL for ${section.toUpperCase()} ===`);
+  console.log(`📊 Base item: ${selectedItem} (level ${baseLevel})`);
+  
+  // Find all sockets for this section
+  const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+  console.log(`📊 Found ${sockets.length} filled sockets`);
+  
+  let highestLevel = baseLevel;
+  
+  // Check each socket's level requirement
+  sockets.forEach((socket, index) => {
+    const itemKey = socket.dataset.itemKey;
+    const category = socket.dataset.category;
+    const itemName = socket.dataset.itemName || 'Unknown';
+    const storedLevelReq = socket.dataset.levelReq;
+    
+    console.log(`📊 Socket ${index + 1}:`, {
+      itemKey,
+      category, 
+      itemName,
+      storedLevelReq
+    });
+    
+    let socketLevel = 1;
+    
+    // Check if it's a custom jewel
+    if (itemKey === 'custom-jewel') {
+      socketLevel = parseInt(storedLevelReq) || 1;
+      console.log(`📊 - Custom jewel level requirement: ${socketLevel}`);
+    } else if (category && itemKey) {
+      // Regular socket item - get level from socket data
+      const socketItem = this.socketData?.[category]?.[itemKey];
+      if (socketItem?.levelReq) {
+        socketLevel = socketItem.levelReq;
+        console.log(`📊 - Regular ${category} "${itemName}" level requirement: ${socketLevel}`);
+      } else {
+        console.warn(`📊 - Could not find level req for ${category}/${itemKey}`);
+        // Fallback to stored level req
+        socketLevel = parseInt(storedLevelReq) || 1;
+      }
+    }
+    
+    if (socketLevel > highestLevel) {
+      console.log(`📊 - 🔥 NEW HIGHEST LEVEL: ${socketLevel} (was ${highestLevel}) from ${itemName}`);
+      highestLevel = socketLevel;
+    } else {
+      console.log(`📊 - Socket level ${socketLevel} <= current highest ${highestLevel}`);
+    }
+  });
+  
+  console.log(`📊 === FINAL ACTUAL REQUIRED LEVEL: ${highestLevel} ===`);
+  return highestLevel;
+}
+
+// ✅ CRITICAL FIX: Ensure sockets store level requirements correctly when added
+socketItem(itemKey, category) {
+  if (!this.currentSocket) {
+    console.error('❌ No socket selected for socketing!');
+    return;
+  }
   
   const item = this.socketData[category][itemKey];
   const section = this.currentSocket.closest('.socket-container')?.dataset.section || 'weapon';
   const stat = item.stats[section] || item.stats.weapon;
+  
+  console.log(`🔧 Socketing ${item.name} into ${section}:`);
+  console.log(`- Item key: ${itemKey}`);
+  console.log(`- Category: ${category}`);
+  console.log(`- Level requirement: ${item.levelReq}`);
+  console.log(`- Stats: ${stat}`);
   
   // Update socket appearance
   this.currentSocket.classList.remove('empty');
   this.currentSocket.classList.add('filled');
   this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">`;
   
-  // Store socket data INCLUDING level requirement (FIXED)
+  // ✅ CRITICAL: Store socket data INCLUDING correct level requirement
   this.currentSocket.dataset.itemKey = itemKey;
   this.currentSocket.dataset.category = category;
   this.currentSocket.dataset.itemName = item.name;
   this.currentSocket.dataset.stats = stat;
-  this.currentSocket.dataset.levelReq = item.levelReq || 1; // Make sure levelReq is set
+  this.currentSocket.dataset.levelReq = item.levelReq || 1; // ✅ ENSURE this is stored!
+  
+  console.log(`✅ Socket data stored:`, {
+    itemKey: this.currentSocket.dataset.itemKey,
+    category: this.currentSocket.dataset.category,
+    itemName: this.currentSocket.dataset.itemName,
+    levelReq: this.currentSocket.dataset.levelReq,
+    stats: this.currentSocket.dataset.stats
+  });
   
   this.hideSocketModal();
+  
+  // ✅ CRITICAL: Update display AND recalculate stats
   this.updateItemDisplay(section);
-  this.calculateAllStats();
+  
+  // Force recalculation after a short delay to ensure DOM is updated
+  setTimeout(() => {
+    this.calculateAllStats();
+    console.log('✅ Socket operation complete - all systems updated');
+  }, 50);
 }
   
   removeSocketedItem(socket) {
@@ -1743,7 +1825,12 @@ class StatsCalculator {
       'shield': 'offs-dropdown',
       'gloves': 'gloves-dropdown',
       'belts': 'belts-dropdown',
-      'boots': 'boots-dropdown'
+      'boots': 'boots-dropdown',
+      'ringone': 'ringsone-dropdown',
+      'ringtwo': 'ringstwo-dropdown',
+      'amulet': 'amulets-dropdown'
+
+
     };
     
     const dropdownId = dropdownIdMap[section];
@@ -1781,91 +1868,182 @@ class StatsCalculator {
   }
   
   // ========== ITEM DISPLAY METHODS ==========
-  updateItemDisplay(section) {
-    const infoIdMap = {
-      'weapon': 'weapon-info',
-      'helm': 'helm-info',
-      'armor': 'armor-info',
-      'shield': 'off-info',
-      'gloves': 'glove-info',
-      'belts': 'belt-info',
-      'boots': 'boot-info'
-    };
-    
-    const dropdownIdMap = {
-      'weapon': 'weapons-dropdown',
-      'helm': 'helms-dropdown',
-      'armor': 'armors-dropdown',
-      'shield': 'offs-dropdown',
-      'gloves': 'gloves-dropdown',
-      'belts': 'belts-dropdown',
-      'boots': 'boots-dropdown'
-    };
-    
-    const infoDiv = document.getElementById(infoIdMap[section]);
-    if (!infoDiv) return;
-    
-    const dropdown = document.getElementById(dropdownIdMap[section]);
-    let baseHtml = '';
-    
-    if (dropdown && dropdown.value && typeof itemList !== 'undefined' && itemList[dropdown.value]) {
-      const baseItem = itemList[dropdown.value];
-      baseHtml = baseItem.description;
-      
-      // Calculate and enforce the highest required level
-      const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
-      const meetsRequirement = this.checkLevelRequirement(actualRequiredLevel);
-      
-      // Create the level requirement line with proper color
-      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
-      const levelRequirementLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
-      
-      // Update level requirement in description
-      const levelRegex = /<span[^>]*>Required Level: \d+<\/span>|Required Level: \d+/i;
-      if (levelRegex.test(baseHtml)) {
-        baseHtml = baseHtml.replace(levelRegex, levelRequirementLine);
-      } else {
-        // Add level requirement if it doesn't exist
-        const lines = baseHtml.split('<br>');
-        lines.splice(2, 0, levelRequirementLine);
-        baseHtml = lines.join('<br>');
-      }
-      
-      // If player doesn't meet level requirement, gray out the entire item
-      if (!meetsRequirement) {
-        infoDiv.style.opacity = '0.6';
-        infoDiv.style.filter = 'grayscale(50%)';
-        infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
-      } else {
-        infoDiv.style.opacity = '1';
-        infoDiv.style.filter = 'none';
-        infoDiv.title = '';
-      }
+  // ✅ FIXED: Keep the level-checking stats calculation, but fix the display system
+
+// This method should ONLY handle stats calculation, not display
+calculateEquipmentStats() {
+  console.log('🔧 === CALCULATING EQUIPMENT STATS ===');
+  
+  const equipmentIds = {
+    'weapon': 'weapons-dropdown',
+    'helm': 'helms-dropdown',
+    'armor': 'armors-dropdown',
+    'shield': 'offs-dropdown',
+    'gloves': 'gloves-dropdown',
+    'belts': 'belts-dropdown',
+    'boots': 'boots-dropdown',
+    'ringone': 'ringsone-dropdown',
+    'ringtwo': 'ringstwo-dropdown',
+    'amulet': 'amulets-dropdown'
+  };
+  
+  const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+  console.log(`🎯 Character level: ${currentLevel}`);
+  
+  Object.entries(equipmentIds).forEach(([section, dropdownId]) => {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
+      console.log(`⏭️ Skipping ${section} - no item selected`);
+      return;
     }
     
+    const item = itemList[dropdown.value];
+    
+    // ✅ CRITICAL: Calculate the ACTUAL required level INCLUDING all sockets
+    const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+    
+    console.log(`🔍 ${section.toUpperCase()}:`);
+    console.log(`  - Item: ${dropdown.value}`);
+    console.log(`  - Actual required level: ${actualRequiredLevel}`);
+    console.log(`  - Character level: ${currentLevel}`);
+    console.log(`  - Can use item: ${currentLevel >= actualRequiredLevel}`);
+    
+    // ✅ LEVEL CHECK: Only apply item stats if player meets the ACTUAL required level
+    if (currentLevel >= actualRequiredLevel) {
+      console.log(`  - ✅ APPLYING STATS (level requirement met)`);
+      this.parseItemStats(item, section);
+      
+      // Log what attribute bonuses were added
+      const beforeStr = this.stats.strength;
+      const beforeDex = this.stats.dexterity;
+      const beforeVit = this.stats.vitality;
+      const beforeEnr = this.stats.energy;
+      
+      if (item.properties?.str) console.log(`    + ${item.properties.str} Strength`);
+      if (item.properties?.dex) console.log(`    + ${item.properties.dex} Dexterity`);
+      if (item.properties?.vit) console.log(`    + ${item.properties.vit} Vitality`);
+      if (item.properties?.enr) console.log(`    + ${item.properties.enr} Energy`);
+      
+    } else {
+      console.log(`  - ❌ BLOCKING ALL STATS (need level ${actualRequiredLevel}, have ${currentLevel})`);
+    }
+  });
+  
+  console.log('🔧 === EQUIPMENT STATS CALCULATION COMPLETE ===');
+}
+
+// ✅ FIXED: Item display method - ALWAYS show description, just update colors and visual feedback
+updateItemDisplay(section) {
+  const infoIdMap = {
+    'weapon': 'weapon-info',
+    'helm': 'helm-info',
+    'armor': 'armor-info',
+    'shield': 'off-info',
+    'gloves': 'glove-info',
+    'belts': 'belt-info',
+    'boots': 'boot-info',
+    'ringone': 'ringsone-info',
+    'ringtwo': 'ringstwo-info',
+    'amulet': 'amulet-info'
+  };
+  
+  const dropdownIdMap = {
+    'weapon': 'weapons-dropdown',
+    'helm': 'helms-dropdown',
+    'armor': 'armors-dropdown',
+    'shield': 'offs-dropdown',
+    'gloves': 'gloves-dropdown',
+    'belts': 'belts-dropdown',
+    'boots': 'boots-dropdown',
+    'ringone': 'ringsone-dropdown',
+    'ringtwo': 'ringstwo-dropdown',
+    'amulet': 'amulets-dropdown'
+  };
+  
+  const infoDiv = document.getElementById(infoIdMap[section]);
+  if (!infoDiv) return;
+  
+  const dropdown = document.getElementById(dropdownIdMap[section]);
+  let baseHtml = '';
+  
+  // ✅ ALWAYS show the item description if an item is selected
+  if (dropdown && dropdown.value && typeof itemList !== 'undefined' && itemList[dropdown.value]) {
+    const baseItem = itemList[dropdown.value];
+    baseHtml = baseItem.description || '';
+    
+    // ✅ Calculate and show the ACTUAL required level (including sockets)
+    const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+    const meetsRequirement = currentLevel >= actualRequiredLevel;
+    
+    console.log(`🖼️ Updating display for ${section}: actual level ${actualRequiredLevel}, meets req: ${meetsRequirement}`);
+    
+    // ✅ Update the level requirement line with proper color
+    const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
+    const levelRequirementLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
+    
+    // Replace or add level requirement
+    const levelRegex = /<span[^>]*>Required Level: \d+<\/span>|Required Level: \d+/i;
+    if (levelRegex.test(baseHtml)) {
+      baseHtml = baseHtml.replace(levelRegex, levelRequirementLine);
+    } else {
+      const lines = baseHtml.split('<br>');
+      lines.splice(2, 0, levelRequirementLine);
+      baseHtml = lines.join('<br>');
+    }
+    
+    // ✅ Visual feedback for unusable items (grayed out)
+    if (!meetsRequirement) {
+      infoDiv.style.opacity = '0.6';
+      infoDiv.style.filter = 'grayscale(50%)';
+      infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+    } else {
+      infoDiv.style.opacity = '1';
+      infoDiv.style.filter = 'none';
+      infoDiv.title = '';
+    }
+    
+    // ✅ FIXED: Socket stats display - all gray when item unusable
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
     
     if (sockets.length > 0) {
-      // Add all socket stats as enhanced stats
       sockets.forEach(socket => {
         const stats = socket.dataset.stats;
+        const socketLevel = parseInt(socket.dataset.levelReq) || 1;
+        
         if (stats) {
-          // Handle multiple stats (some socket items have multiple properties)
           const statLines = stats.split(/[,\n]/).map(s => s.trim()).filter(s => s);
           statLines.forEach(statLine => {
             if (statLine) {
-              baseHtml += `<br><span class="socket-enhanced-stat">${statLine}</span>`;
+              // ✅ CRITICAL FIX: If the ITEM can't be used, ALL socket stats are gray
+              let statColor, statStyle;
+              
+              if (!meetsRequirement) {
+                // Item unusable - ALL socket stats are gray and italic
+                statColor = '#888888';
+                statStyle = 'font-style: italic; opacity: 0.7;';
+                console.log(`🔒 ${section}: Graying out socket stat "${statLine}" - item unusable (need level ${actualRequiredLevel})`);
+              } else {
+                // Item usable - socket stats colored based on individual socket requirements
+                const socketUsable = currentLevel >= socketLevel;
+                statColor = socketUsable ? '#4a90e2' : '#888888';
+                statStyle = socketUsable ? 'font-weight: bold;' : 'font-style: italic;';
+                console.log(`✅ ${section}: Socket stat "${statLine}" - ${socketUsable ? 'active' : 'inactive'}`);
+              }
+              
+              baseHtml += `<br><span style="color: ${statColor}; ${statStyle}">${statLine}</span>`;
             }
           });
         }
       });
     }
-    
-    infoDiv.innerHTML = baseHtml;
   }
   
+  // ✅ Always update the display
+  infoDiv.innerHTML = baseHtml;
+}
   updateAllEquipmentDisplays() {
-    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet' ];
     sections.forEach(section => {
       this.updateItemDisplay(section);
     });
@@ -1898,219 +2076,445 @@ class StatsCalculator {
   
   // ========== EVENT LISTENERS ==========
   setupEventListeners() {
-    // Equipment dropdown changes
-    Object.keys(this.equipmentMap).forEach(dropdownId => {
-      const dropdown = document.getElementById(dropdownId);
-      if (dropdown) {
-        dropdown.addEventListener('change', () => {
-          const section = this.equipmentMap[dropdownId];
-          this.updateSocketsForItem(section);
-          this.calculateAllStats();
-        });
-      }
-    });
-    
-    // Character stat changes
-    ['str', 'dex', 'vit', 'enr'].forEach(statId => {
-      const input = document.getElementById(statId);
-      if (input) {
-        input.addEventListener('input', () => this.calculateAllStats());
-      }
-    });
-    
-    // Level changes - update ALL equipment displays
-    const levelInput = document.getElementById('lvlValue');
-    if (levelInput) {
-      levelInput.addEventListener('input', () => {
+  // Equipment dropdown changes
+  Object.keys(this.equipmentMap).forEach(dropdownId => {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+      dropdown.addEventListener('change', () => {
+        const section = this.equipmentMap[dropdownId];
+        this.updateSocketsForItem(section);
+        
+        // ✅ Update both display and stats
+        this.updateItemDisplay(section);
         this.calculateAllStats();
-        // Force update ALL equipment displays to show correct colors
-        setTimeout(() => this.updateAllEquipmentDisplays(), 50);
       });
     }
+  });
+  
+  // Character stat changes
+  ['str', 'dex', 'vit', 'enr'].forEach(statId => {
+    const input = document.getElementById(statId);
+    if (input) {
+      input.addEventListener('input', () => {
+        this.calculateAllStats();
+      });
+    }
+  });
+  
+  // ✅ Level changes trigger complete update
+  const levelInput = document.getElementById('lvlValue');
+  if (levelInput) {
+    const handleLevelChange = () => {
+      console.log('🔄 Level changed - updating displays and stats...');
+      
+      // ✅ Update stats calculation
+      this.calculateAllStats();
+      
+      // ✅ Update ALL equipment displays
+      setTimeout(() => {
+        this.updateAllEquipmentDisplays();
+      }, 50);
+    };
     
-    // Socket changes
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('socket-slot')) {
-        this.currentSocket = e.target;
-        this.showSocketModal();
-      }
-    });
+    levelInput.addEventListener('input', handleLevelChange);
+    levelInput.addEventListener('change', handleLevelChange);
   }
+  
+  // Socket changes
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('socket-slot')) {
+      this.currentSocket = e.target;
+      this.showSocketModal();
+    }
+  });
+}
+
+// ✅ Ensure this method updates ALL equipment displays
+updateAllEquipmentDisplays() {
+  console.log('🖼️ Updating all equipment displays...');
+  const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
+  sections.forEach(section => {
+    this.updateItemDisplay(section);
+  });
+}
   
   // ========== STATS CALCULATION ==========
   calculateAllStats() {
-    // Reset all stats
-    Object.keys(this.stats).forEach(key => {
-      this.stats[key] = 0;
-    });
-    
-    // Calculate base character stats
-    this.calculateBaseStats();
-    
-    // Calculate equipment stats
-    this.calculateEquipmentStats();
-    
-    // Calculate socket stats
-    this.calculateSocketStats();
-    
-    // Update all displays
-    this.updateAllStatsDisplays();
-  }
+  console.log('🔄 Starting complete stats recalculation...');
+  const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+  console.log(`🎯 Current character level: ${currentLevel}`);
   
-  calculateBaseStats() {
-    const str = parseInt(document.getElementById('str')?.value) || 0;
-    const dex = parseInt(document.getElementById('dex')?.value) || 0;
-    const vit = parseInt(document.getElementById('vit')?.value) || 0;
-    const enr = parseInt(document.getElementById('enr')?.value) || 0;
-    
-    // Base life calculation (assuming Amazon base)
-    this.stats.life = (vit * 2) + 45;
-    
-    // Base mana calculation (assuming Amazon base)
-    this.stats.mana = (enr * 2) + 15;
-    
-    // Base defense from dexterity
-    this.stats.defense = Math.floor(dex / 4);
-  }
+  // ✅ STEP 1: COMPLETELY reset all stats to zero
+  this.resetAllStats();
   
-  calculateEquipmentStats() {
-    const equipmentIds = {
-      'weapon': 'weapons-dropdown',
-      'helm': 'helms-dropdown',
-      'armor': 'armors-dropdown',
-      'shield': 'offs-dropdown',
-      'gloves': 'gloves-dropdown',
-      'belts': 'belts-dropdown',
-      'boots': 'boots-dropdown'
-    };
-    
-    Object.entries(equipmentIds).forEach(([section, dropdownId]) => {
-      const dropdown = document.getElementById(dropdownId);
-      if (dropdown && dropdown.value && typeof itemList !== 'undefined' && itemList[dropdown.value]) {
-        const item = itemList[dropdown.value];
-        this.parseItemStats(item, section);
-      }
-    });
-  }
+  // ✅ STEP 2: Calculate base character stats (always applied)
+  this.calculateBaseStats();
   
-  calculateSocketStats() {
-  const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+  // ✅ STEP 3: Calculate equipment stats (with level checking)
+  this.calculateEquipmentStats();
+  
+  // ✅ STEP 4: Calculate socket stats (with level checking)
+  this.calculateSocketStats();
+  
+  // ✅ STEP 5: Update all displays
+  this.updateAllStatsDisplays();
+  
+  // ✅ DEBUG: Log final attribute stats
+  console.log('✅ Final attribute bonuses applied:', {
+    strength: this.stats.strength,
+    dexterity: this.stats.dexterity,
+    vitality: this.stats.vitality,
+    energy: this.stats.energy
+  });
+  
+  console.log('✅ Stats recalculation complete!');
+}
+
+// ✅ FIXED: Proper stats reset method
+resetAllStats() {
+  console.log('🧹 Resetting all stats to zero...');
+  
+  // Reset ALL stats to their default values
+  Object.keys(this.stats).forEach(key => {
+    if (key === 'cbf') {
+      this.stats[key] = false;
+    } else if (key === 'critHitMultiplier') {
+      this.stats[key] = 2.0;
+    } else {
+      this.stats[key] = 0; // ✅ This ensures everything is zeroed out
+    }
+  });
+  
+  console.log('✅ All stats reset to defaults');
+}
+
+// ✅ IMPROVED: Base stats calculation (always applied regardless of equipment)
+calculateBaseStats() {
+  const str = parseInt(document.getElementById('str')?.value) || 0;
+  const dex = parseInt(document.getElementById('dex')?.value) || 0;
+  const vit = parseInt(document.getElementById('vit')?.value) || 0;
+  const enr = parseInt(document.getElementById('enr')?.value) || 0;
+  
+  // Base life calculation (Amazon base: 2 life per vitality + 45 base)
+  this.stats.life = (vit * 2) + 45;
+  
+  // Base mana calculation (Amazon base: 2 mana per energy + 15 base)
+  this.stats.mana = (enr * 2) + 15;
+  
+  // Base defense from dexterity (1 defense per 4 dexterity)
+  this.stats.defense = Math.floor(dex / 4);
+  
+  console.log(`📊 Base stats calculated: Life=${this.stats.life}, Mana=${this.stats.mana}, Defense=${this.stats.defense}`);
+}
+
+// ✅ IMPROVED: Equipment stats with better level checking
+calculateEquipmentStats() {
+  console.log('🔧 === CALCULATING EQUIPMENT STATS ===');
+  
+  const equipmentIds = {
+    'weapon': 'weapons-dropdown',
+    'helm': 'helms-dropdown',
+    'armor': 'armors-dropdown',
+    'shield': 'offs-dropdown',
+    'gloves': 'gloves-dropdown',
+    'belts': 'belts-dropdown',
+    'boots': 'boots-dropdown',
+    'ringone': 'ringsone-dropdown',
+    'ringtwo': 'ringstwo-dropdown',
+    'amulet': 'amulets-dropdown'
+  };
+  
+  const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+  console.log(`🎯 Character level: ${currentLevel}`);
+  
+  Object.entries(equipmentIds).forEach(([section, dropdownId]) => {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
+      console.log(`⏭️ Skipping ${section} - no item selected`);
+      return;
+    }
+    
+    const item = itemList[dropdown.value];
+    
+    // ✅ CRITICAL: Calculate the ACTUAL required level INCLUDING all sockets FIRST
+    const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+    
+    console.log(`🔍 ${section.toUpperCase()}:`);
+    console.log(`  - Item: ${dropdown.value}`);
+    console.log(`  - Actual required level: ${actualRequiredLevel}`);
+    console.log(`  - Character level: ${currentLevel}`);
+    console.log(`  - Can use item: ${currentLevel >= actualRequiredLevel}`);
+    
+    // ✅ LEVEL CHECK: Only apply item stats if player meets the ACTUAL required level
+    if (currentLevel >= actualRequiredLevel) {
+      console.log(`  - ✅ APPLYING ALL STATS (level requirement met)`);
+      this.parseItemStats(item, section);
+      
+      // Log what attribute bonuses were applied
+      if (item.properties?.str) console.log(`    + ${item.properties.str} Strength from base item`);
+      if (item.properties?.dex) console.log(`    + ${item.properties.dex} Dexterity from base item`);
+      if (item.properties?.vit) console.log(`    + ${item.properties.vit} Vitality from base item`);
+      if (item.properties?.enr) console.log(`    + ${item.properties.enr} Energy from base item`);
+      
+    } else {
+      console.log(`  - ❌ BLOCKING ALL STATS (need level ${actualRequiredLevel}, have ${currentLevel})`);
+      console.log(`    - This includes the base item stats like +8 Strength from Gnasher!`);
+    }
+  });
+  
+  console.log('🔧 === EQUIPMENT STATS CALCULATION COMPLETE ===');
+}
+
+// ✅ IMPROVED: Socket stats with better level checking  
+calculateSocketStats() {
+  console.log('💎 Calculating socket stats...');
+  
+  const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
   
   sections.forEach(section => {
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
     
+    // Get the parent item for this section
+    const dropdownIdMap = {
+      'weapon': 'weapons-dropdown',
+      'helm': 'helms-dropdown', 
+      'armor': 'armors-dropdown',
+      'shield': 'offs-dropdown',
+      'gloves': 'gloves-dropdown',
+      'belts': 'belts-dropdown',
+      'boots': 'boots-dropdown',
+      'ringone': 'ringsone-dropdown',
+      'ringtwo': 'ringstwo-dropdown',
+      'amulet': 'amulets-dropdown'
+    };
+    
+    const dropdown = document.getElementById(dropdownIdMap[section]);
+    const selectedItem = dropdown?.value;
+    
+    if (!selectedItem) {
+      console.log(`⏭️ Skipping socket stats for ${section} - no parent item`);
+      return;
+    }
+    
+    // ✅ CRITICAL: Calculate the ACTUAL required level for this item (including all sockets)
+    const actualRequiredLevel = this.calculateActualRequiredLevel(section, selectedItem);
+    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+    
+    // ✅ FIXED: Only process socket stats if player meets the ACTUAL required level
+    if (currentLevel < actualRequiredLevel) {
+      console.log(`❌ BLOCKING ALL SOCKET STATS for ${section} - need level ${actualRequiredLevel}, have ${currentLevel}`);
+      console.log(`🔒 This means NO socket bonuses are applied, even if individual sockets have lower requirements`);
+      return; // Skip all sockets for this item - NONE of them work!
+    }
+    
+    console.log(`✅ Processing socket stats for ${section} - item level requirement met`);
+    
+    // If player meets the item level requirement, process each socket normally
     sockets.forEach(socket => {
       const stats = socket.dataset.stats;
-      const levelReq = parseInt(socket.dataset.levelReq) || 1;
-      const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+      const socketLevelReq = parseInt(socket.dataset.levelReq) || 1;
       
-      // FIXED: Only add socket stats if player meets level requirement
-      if (currentLevel >= levelReq && stats) {
+      if (stats && currentLevel >= socketLevelReq) {
         this.parseSocketStats(stats, section);
-        console.log(`✅ Applied socket stats from ${socket.dataset.itemName} (level ${levelReq})`);
-      } else if (stats) {
-        console.log(`❌ Blocked socket stats from ${socket.dataset.itemName} - need level ${levelReq}, have ${currentLevel}`);
+        console.log(`✅ Applied socket stats from ${socket.dataset.itemName}`);
+      } else if (currentLevel < socketLevelReq) {
+        console.log(`❌ Skipped socket ${socket.dataset.itemName} - individual socket level requirement not met`);
       }
     });
   });
 }
-  parseItemStats(item, section) {
-    if (!item.properties) return;
-    
-    // Basic Stats (existing - keep these)
-    if (item.properties.defense) {
-      this.stats.defense += item.properties.defense;
-    }
-    if (item.properties.life) {
-      this.stats.life += item.properties.life;
-    }
-    if (item.properties.mana) {
-      this.stats.mana += item.properties.mana;
-    }
-    if (item.properties.magicFind) {
-      this.stats.magicFind += item.properties.magicFind;
-    }
-    if (item.properties.attackRating) {
-      this.stats.attackRating += item.properties.attackRating;
-    }
-    
-    // Basic Resistances (existing - keep these)
-    if (item.properties.fireResist) {
-      this.stats.fireResist += item.properties.fireResist;
-    }
-    if (item.properties.coldResist) {
-      this.stats.coldResist += item.properties.coldResist;
-    }
-    if (item.properties.lightResist) {
-      this.stats.lightResist += item.properties.lightResist;
-    }
-    if (item.properties.poisonResist) {
-      this.stats.poisonResist += item.properties.poisonResist;
+
+  // ========== COMPLETELY FIXED EQUIPMENT STATS WITH LEVEL CHECKING ==========
+
+// ✅ FIXED: calculateEquipmentStats method with proper level checking
+calculateEquipmentStats() {
+  console.log('🔧 Calculating equipment stats with proper level checking...');
+  
+  const equipmentIds = {
+    'weapon': 'weapons-dropdown',
+    'helm': 'helms-dropdown',
+    'armor': 'armors-dropdown',
+    'shield': 'offs-dropdown',
+    'gloves': 'gloves-dropdown',
+    'belts': 'belts-dropdown',
+    'boots': 'boots-dropdown',
+    'ringone': 'ringsone-dropdown',
+    'ringtwo': 'ringstwo-dropdown',
+    'amulet': 'amulets-dropdown'
+  };
+  
+  Object.entries(equipmentIds).forEach(([section, dropdownId]) => {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
+      console.log(`⏭️ Skipping ${section} - no item selected`);
+      return;
     }
     
-    // 🔧 ADD MISSING STATS PARSING FROM DESCRIPTION
-    if (item.description) {
-      this.parseDescriptionStats(item.description);
+    const item = itemList[dropdown.value];
+    
+    // ✅ CRITICAL: Calculate the ACTUAL required level INCLUDING all sockets
+    const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+    
+    console.log(`🔍 ${section}: Item="${dropdown.value}", ActualReqLevel=${actualRequiredLevel}, CharLevel=${currentLevel}`);
+    
+    // ✅ LEVEL CHECK: Only apply item stats if player meets the ACTUAL required level
+    if (currentLevel >= actualRequiredLevel) {
+      this.parseItemStats(item, section);
+      console.log(`✅ Applied ${section} stats - meets level requirement`);
+    } else {
+      console.log(`❌ BLOCKED ${section} stats - need level ${actualRequiredLevel}, have ${currentLevel}`);
     }
+  });
+}
+
+// ✅ FIXED: parseItemStats method - no longer needs level checking (done in parent)
+parseItemStats(item, section) {
+  if (!item.properties) return;
+  
+  console.log(`🔧 Parsing stats for ${section}:`);
+  
+  // ✅ NOTE: This method now only runs AFTER level checking passes in calculateEquipmentStats
+  // So all stats parsed here are automatically level-gated
+  
+  // Basic Stats from properties
+  if (item.properties.defense) {
+    this.stats.defense += item.properties.defense;
+    console.log(`🛡️ +${item.properties.defense} Defense`);
   }
+  if (item.properties.life) {
+    this.stats.life += item.properties.life;
+    console.log(`❤️ +${item.properties.life} Life`);
+  }
+  if (item.properties.mana) {
+    this.stats.mana += item.properties.mana;
+    console.log(`💙 +${item.properties.mana} Mana`);
+  }
+  if (item.properties.magicfind) {
+    this.stats.magicFind += item.properties.magicfind;
+    console.log(`✨ +${item.properties.magicfind}% Magic Find`);
+  }
+  if (item.properties.toatt) {
+    this.stats.attackRating += item.properties.toatt;
+    console.log(`⚔️ +${item.properties.toatt} Attack Rating`);
+  }
+  
+  // ✅ ATTRIBUTE BONUSES from properties - now properly level-gated
+  if (item.properties.str) {
+    this.stats.strength += item.properties.str;
+    console.log(`💪 +${item.properties.str} Strength`);
+  }
+  if (item.properties.dex) {
+    this.stats.dexterity += item.properties.dex;
+    console.log(`🏹 +${item.properties.dex} Dexterity`);
+  }
+  if (item.properties.vit) {
+    this.stats.vitality += item.properties.vit;
+    console.log(`❤️ +${item.properties.vit} Vitality`);
+  }
+  if (item.properties.enr) {
+    this.stats.energy += item.properties.enr;
+    console.log(`⚡ +${item.properties.enr} Energy`);
+  }
+  
+  // Basic Resistances from properties
+  if (item.properties.firres) {
+    this.stats.fireResist += item.properties.firres;
+    console.log(`🔥 +${item.properties.firres}% Fire Resist`);
+  }
+  if (item.properties.coldres) {
+    this.stats.coldResist += item.properties.coldres;
+    console.log(`❄️ +${item.properties.coldres}% Cold Resist`);
+  }
+  if (item.properties.ligres) {
+    this.stats.lightResist += item.properties.ligres;
+    console.log(`⚡ +${item.properties.ligres}% Lightning Resist`);
+  }
+  if (item.properties.poisres) {
+    this.stats.poisonResist += item.properties.poisres;
+    console.log(`☠️ +${item.properties.poisres}% Poison Resist`);
+  }
+
+  // Lightning damage properties
+  if (item.properties.lightdmgmin) {
+    this.stats.flatLightMin += item.properties.lightdmgmin;
+    console.log(`⚡ +${item.properties.lightdmgmin} Lightning Damage Min`);
+  }
+  
+  if (item.properties.lightdmgmax) {
+    this.stats.flatLightMax += item.properties.lightdmgmax;
+    console.log(`⚡ +${item.properties.lightdmgmax} Lightning Damage Max`);
+  }
+  
+  // ✅ Parse description stats (includes MORE attribute bonuses from descriptions)
+  if (item.description) {
+    console.log(`📖 Parsing description stats for ${section}...`);
+    this.parseDescriptionStats(item.description);
+  }
+}
+
+
   
   // 🆕 NEW METHOD: Parse stats from item descriptions
   parseDescriptionStats(description) {
-    // Speed Stats
-    this.extractStatFromDescription(description, /(\d+)%\s*Faster Cast Rate/i, 'fcr');
-    this.extractStatFromDescription(description, /(\d+)%\s*Increased Attack Speed/i, 'ias');
-    this.extractStatFromDescription(description, /(\d+)%\s*Faster Run\/Walk/i, 'frw');
-    this.extractStatFromDescription(description, /(\d+)%\s*Faster Hit Recovery/i, 'fhr');
-    
-    // Defensive Stats
-    this.extractStatFromDescription(description, /(\d+)%\s*Damage Reduced/i, 'dr');
-    this.extractStatFromDescription(description, /Physical Damage.*Reduced by (\d+)/i, 'pdr');
-    this.extractStatFromDescription(description, /Magic Damage.*Reduced by (\d+)/i, 'mdr');
-    this.extractStatFromDescription(description, /Poison Length Reduced by (\d+)%/i, 'plr');
-    
-    // Enhanced Damage
-    this.extractStatFromDescription(description, /(\d+)%\s*Enhanced Damage/i, 'enhancedDamage');
-    
-    // Gold Find
-    this.extractStatFromDescription(description, /(\d+)%\s*Extra Gold from Monsters/i, 'goldFind');
-    
-    // All Skills
-    this.extractStatFromDescription(description, /\+(\d+)\s*to All Skills/i, 'allSkills');
-    
-    // Block Chance
-    this.extractStatFromDescription(description, /(\d+)%\s*Increased Chance of Blocking/i, 'blockChance');
-    
-    // Combat Stats
-    this.extractStatFromDescription(description, /(\d+)%\s*Chance of Open Wounds/i, 'openWounds');
-    this.extractStatFromDescription(description, /(\d+)%\s*Chance of Crushing Blow/i, 'crushingBlow');
-    this.extractStatFromDescription(description, /(\d+)%\s*Chance of Deadly Strike/i, 'deadlyStrike');
-    this.extractStatFromDescription(description, /(\d+)%\s*Critical Strike/i, 'criticalHit');
-    
-    // Leech
-    this.extractStatFromDescription(description, /(\d+)%\s*Life Stolen per Hit/i, 'lifeSteal');
-    this.extractStatFromDescription(description, /(\d+)%\s*Mana Stolen per Hit/i, 'manaSteal');
-    
-    // Attributes
-    this.extractStatFromDescription(description, /\+(\d+)\s*to Strength/i, 'strength');
-    this.extractStatFromDescription(description, /\+(\d+)\s*to Dexterity/i, 'dexterity');
-    this.extractStatFromDescription(description, /\+(\d+)\s*to Vitality/i, 'vitality');
-    this.extractStatFromDescription(description, /\+(\d+)\s*to Energy/i, 'energy');
-    
-    // Cannot Be Frozen
-    if (description.toLowerCase().includes('cannot be frozen')) {
-      this.stats.cbf = true;
-    }
-    
-    // All Resistances
-    const allResMatch = description.match(/All Resistances \+(\d+)/i);
-    if (allResMatch) {
-      const value = parseInt(allResMatch[1]);
-      this.stats.fireResist += value;
-      this.stats.coldResist += value;
-      this.stats.lightResist += value;
-      this.stats.poisonResist += value;
-    }
+  // ✅ NOTE: This method is only called from parseItemStats AFTER level check passes
+  // So all stats parsed here are automatically level-gated
+  
+  // Speed Stats
+  this.extractStatFromDescription(description, /(\d+)%\s*Faster Cast Rate/i, 'fcr');
+  this.extractStatFromDescription(description, /(\d+)%\s*Increased Attack Speed/i, 'ias');
+  this.extractStatFromDescription(description, /(\d+)%\s*Faster Run\/Walk/i, 'frw');
+  this.extractStatFromDescription(description, /(\d+)%\s*Faster Hit Recovery/i, 'fhr');
+  
+  // Defensive Stats
+  this.extractStatFromDescription(description, /(\d+)%\s*Damage Reduced/i, 'dr');
+  this.extractStatFromDescription(description, /Physical Damage.*Reduced by (\d+)/i, 'pdr');
+  this.extractStatFromDescription(description, /Magic Damage.*Reduced by (\d+)/i, 'mdr');
+  this.extractStatFromDescription(description, /Poison Length Reduced by (\d+)%/i, 'plr');
+  
+  // Enhanced Damage
+  this.extractStatFromDescription(description, /(\d+)%\s*Enhanced Damage/i, 'enhancedDamage');
+  
+  // Gold Find
+  this.extractStatFromDescription(description, /(\d+)%\s*Extra Gold from Monsters/i, 'goldFind');
+  
+  // All Skills
+  this.extractStatFromDescription(description, /\+(\d+)\s*to All Skills/i, 'allSkills');
+  
+  // Block Chance
+  this.extractStatFromDescription(description, /(\d+)%\s*Increased Chance of Blocking/i, 'blockChance');
+  
+  // Combat Stats
+  this.extractStatFromDescription(description, /(\d+)%\s*Chance of Open Wounds/i, 'openWounds');
+  this.extractStatFromDescription(description, /(\d+)%\s*Chance of Crushing Blow/i, 'crushingBlow');
+  this.extractStatFromDescription(description, /(\d+)%\s*Chance of Deadly Strike/i, 'deadlyStrike');
+  this.extractStatFromDescription(description, /(\d+)%\s*Critical Strike/i, 'criticalHit');
+  
+  // Leech
+  this.extractStatFromDescription(description, /(\d+)%\s*Life Stolen per Hit/i, 'lifeSteal');
+  this.extractStatFromDescription(description, /(\d+)%\s*Mana Stolen per Hit/i, 'manaSteal');
+  
+  // ✅ ATTRIBUTES FROM DESCRIPTIONS - now properly level-gated
+  this.extractStatFromDescription(description, /\+(\d+)\s*to Strength/i, 'strength');
+  this.extractStatFromDescription(description, /\+(\d+)\s*to Dexterity/i, 'dexterity');
+  this.extractStatFromDescription(description, /\+(\d+)\s*to Vitality/i, 'vitality');
+  this.extractStatFromDescription(description, /\+(\d+)\s*to Energy/i, 'energy');
+  
+  // Cannot Be Frozen
+  if (description.toLowerCase().includes('cannot be frozen')) {
+    this.stats.cbf = true;
   }
+  
+  // All Resistances
+  const allResMatch = description.match(/All Resistances \+(\d+)/i);
+  if (allResMatch) {
+    const value = parseInt(allResMatch[1]);
+    this.stats.fireResist += value;
+    this.stats.coldResist += value;
+    this.stats.lightResist += value;
+    this.stats.poisonResist += value;
+  }
+}
   
   // 🆕 HELPER METHOD: Extract stat from description
   extractStatFromDescription(description, regex, statKey) {
@@ -2495,11 +2899,14 @@ class StatsCalculator {
   this.updateContainer('flatmagicmincontainer', this.stats.flatMagicMin);
   this.updateContainer('flatmagicmaxcontainer', this.stats.flatMagicMax);
   
-  // Attribute Bonuses
+  // ✅ ATTRIBUTE BONUSES - now properly level-gated
   this.updateContainer('strengthcontainer', this.stats.strength);
   this.updateContainer('dexteritycontainer', this.stats.dexterity);
   this.updateContainer('vitalitycontainer', this.stats.vitality);
   this.updateContainer('energycontainer', this.stats.energy);
+  
+  // ✅ ALSO update the character display totals if they exist
+  this.updateCharacterAttributeTotals();
   
   // Leech Stats
   this.updateContainer('lifestealcontainer', this.stats.lifeSteal);
@@ -2530,16 +2937,45 @@ class StatsCalculator {
   
   console.log('📊 Stats display update complete!');
   
-  // Log current stats for debugging
-  console.log('Current stats:', {
-    defense: this.stats.defense,
-    magicFind: this.stats.magicFind,
-    fireResist: this.stats.fireResist,
-    attackRating: this.stats.attackRating,
-    fireDamage: `${this.stats.flatFireMin}-${this.stats.flatFireMax}`,
-    coldDamage: `${this.stats.flatColdMin}-${this.stats.flatColdMax}`,
-    lightDamage: `${this.stats.flatLightMin}-${this.stats.flatLightMax}`
+  // ✅ Log attribute bonuses for debugging
+  console.log('Attribute bonuses:', {
+    strength: this.stats.strength,
+    dexterity: this.stats.dexterity,
+    vitality: this.stats.vitality,
+    energy: this.stats.energy
   });
+}
+
+updateCharacterAttributeTotals() {
+  // Update total attribute displays if character system exists
+  if (window.characterSystem) {
+    const baseStr = parseInt(document.getElementById('str')?.value) || 0;
+    const baseDex = parseInt(document.getElementById('dex')?.value) || 0;
+    const baseVit = parseInt(document.getElementById('vit')?.value) || 0;
+    const baseEnr = parseInt(document.getElementById('enr')?.value) || 0;
+    
+    // Show totals including equipment bonuses
+    this.updateTotalDisplay('str', baseStr + this.stats.strength);
+    this.updateTotalDisplay('dex', baseDex + this.stats.dexterity);
+    this.updateTotalDisplay('vit', baseVit + this.stats.vitality);
+    this.updateTotalDisplay('enr', baseEnr + this.stats.energy);
+  }
+}
+
+// ✅ HELPER METHOD: Update total display for character attributes
+updateTotalDisplay(statId, total) {
+  let totalDiv = document.getElementById(statId + 'Total');
+  if (!totalDiv) {
+    totalDiv = document.createElement('span');
+    totalDiv.id = statId + 'Total';
+    totalDiv.style.cssText = 'color: #00ff00; font-weight: bold; margin-left: 10px;';
+    
+    const statRow = document.getElementById(statId)?.closest('.stat-row');
+    if (statRow) statRow.appendChild(totalDiv);
+  }
+  
+  const base = parseInt(document.getElementById(statId)?.value) || 0;
+  totalDiv.textContent = total > base ? ` (${total})` : '';
 }
 
 // ENHANCED: updateContainer with better error handling and visual feedback

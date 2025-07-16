@@ -507,38 +507,23 @@
 
    
 
-    <script src="items.js"></script>
-
-<!-- <script src="relativeLife.js"></script>
-<script src="corruption.js"></script> -->
-<!-- <script src="itemUpgrade.js"></script> -->
-
-
+<script src="items.js"></script>
 <script src="socket-system.js"></script>
 <script src="character.js"></script>
-<!-- 
-<script src="SkillHandler.js"></script>
-<script src="skillRestriction.js"></script>
-<script src="skillUpdates.js"></script> -->
-
-<!-- <script src="DPSSimulator.js"></script>
-<script src="login.js"></script>
-<script src="achievements.js"></script>
-<script src="mercenary.js"></script>
-<script src="craftitems.js"></script> -->
 <script src="inventory.js"></script>
 <script src="skills.js"></script>
 
-
-
 <script src="main-init.js"></script>
-<!-- <script src="stats-calculator.js"></script> -->
+
+
+
+
+
+    
+
 
     <script>
-       
-       
 
-        // Initialize inventory grid
         function createInventoryGrid() {
             const inventory = document.querySelector('.inventorycontainer');
             for (let i = 0; i < 40; i++) {
@@ -552,7 +537,7 @@
 
 const itemDropdownData = {
   helm: [
-    // Unique items
+    
     { name: "Biggin's Bonnet", quality: "unique" },
     { name: "Tarnhelm", quality: "unique" },
     { name: "Coif of Glory", quality: "unique" },
@@ -1000,7 +985,10 @@ function updateItemInfo(event) {
         'offs-dropdown': 'shield',
         'gloves-dropdown': 'gloves',
         'belts-dropdown': 'belts',
-        'boots-dropdown': 'boots'
+        'boots-dropdown': 'boots',
+        'ringsone-dropdown': 'ringone',
+        'ringstwo-dropdown': 'ringtwo',
+        'amulets-dropdown': 'amulet'
     };
 
     const infoDivId = infoDivIdMap[dropdown.id];
@@ -1387,7 +1375,7 @@ function updateItemInfo(event) {
 // window.NuclearDropdownFilter = NuclearDropdownFilter;
 
 
-
+        
 </script>
 
 </body>

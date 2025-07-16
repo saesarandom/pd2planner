@@ -5418,7 +5418,7 @@ const itemList = {
 
   "Highlord's Wrath": {
     description:
-      "Highlord's Wrath<br> Amulet<br> Required Level: 65<br> +1 to All Skills<br> +20% Increased Attack Speed<br> Adds 1-300 Lightning Damage<br> [0-24]% Deadly Strike (0.25 per Character Level)<br> Lightning Resist +40%<br> Attacker Takes Lightning Damage of 150<br>",
+      "Highlord's Wrath<br>Amulet<br> Required Level: 65<br> +1 to All Skills<br> +20% Increased Attack Speed<br> Adds 1-300 Lightning Damage<br> [0-24]% Deadly Strike (0.25 per Character Level)<br> Lightning Resist +40%<br> Attacker Takes Lightning Damage of 150<br>",
     properties: {
       reqlvl: 65,
       allsk: 1,

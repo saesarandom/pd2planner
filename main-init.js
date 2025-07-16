@@ -931,26 +931,79 @@ class LevelRequirementSystem {
   }
 
   getItemBonuses() {
-    const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+  const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
+  
+  Object.keys(this.equipmentMap).forEach(dropdownId => {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
     
-    Object.keys(this.equipmentMap).forEach(dropdownId => {
-      const dropdown = document.getElementById(dropdownId);
-      if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
-      
-      const item = itemList[dropdown.value];
-      const requiredLevel = item.properties?.reqlvl || 1;
-      
-      if (this.currentLevel >= requiredLevel && item.properties) {
-        bonuses.str += item.properties.str || 0;
-        bonuses.dex += item.properties.dex || 0;
-        bonuses.vit += item.properties.vit || 0;
-        bonuses.enr += item.properties.enr || 0;
+    const item = itemList[dropdown.value];
+    const baseRequiredLevel = item.properties?.reqlvl || 1;
+    
+    // ✅ CRITICAL FIX: Get the ACTUAL required level including sockets
+    let actualRequiredLevel = baseRequiredLevel;
+    
+    // Map dropdown ID to section name for socket checking
+    const sectionMap = {
+      'weapons-dropdown': 'weapon',
+      'helms-dropdown': 'helm',
+      'armors-dropdown': 'armor',
+      'offs-dropdown': 'shield',
+      'gloves-dropdown': 'gloves',
+      'belts-dropdown': 'belts',
+      'boots-dropdown': 'boots',
+      'ringsone-dropdown': 'ringone',
+      'ringstwo-dropdown': 'ringtwo',
+      'amulets-dropdown': 'amulet'
+    };
+    
+    const section = sectionMap[dropdownId];
+    if (section) {
+      // Check if statsCalculator can give us the actual level
+      if (window.statsCalculator && typeof window.statsCalculator.calculateActualRequiredLevel === 'function') {
+        try {
+          actualRequiredLevel = window.statsCalculator.calculateActualRequiredLevel(section, dropdown.value);
+          console.log(`📊 MAIN-INIT: ${section} actual level: ${actualRequiredLevel} (was ${baseRequiredLevel})`);
+        } catch (error) {
+          console.log(`⚠️ MAIN-INIT: Failed to get actual level for ${section}, using base level ${baseRequiredLevel}`);
+          actualRequiredLevel = baseRequiredLevel;
+        }
+      } else {
+        // Fallback: manually check sockets
+        const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+        sockets.forEach(socket => {
+          const socketLevel = parseInt(socket.dataset.levelReq) || 1;
+          if (socketLevel > actualRequiredLevel) {
+            actualRequiredLevel = socketLevel;
+          }
+        });
+        console.log(`📊 MAIN-INIT: ${section} manual socket check: ${actualRequiredLevel}`);
       }
-    });
+    }
     
-    return bonuses;
-  }
-
+    // ✅ FIXED: Only apply bonuses if character meets ACTUAL required level
+    if (this.currentLevel >= actualRequiredLevel && item.properties) {
+      const itemStr = item.properties.str || 0;
+      const itemDex = item.properties.dex || 0;
+      const itemVit = item.properties.vit || 0;
+      const itemEnr = item.properties.enr || 0;
+      
+      bonuses.str += itemStr;
+      bonuses.dex += itemDex;
+      bonuses.vit += itemVit;
+      bonuses.enr += itemEnr;
+      
+      if (itemStr || itemDex || itemVit || itemEnr) {
+        console.log(`✅ MAIN-INIT: Applied ${section} bonuses: str+${itemStr}, dex+${itemDex}, vit+${itemVit}, enr+${itemEnr}`);
+      }
+    } else {
+      console.log(`❌ MAIN-INIT: BLOCKED ${section} bonuses - need level ${actualRequiredLevel}, have ${this.currentLevel}`);
+    }
+  });
+  
+  console.log('📊 MAIN-INIT: Final item bonuses:', bonuses);
+  return bonuses;
+}
   getSocketBonuses() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
