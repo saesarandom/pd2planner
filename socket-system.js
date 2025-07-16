@@ -152,6 +152,7 @@ class StatsCalculator {
         'el': { 
           name: 'El Rune', 
           img: 'img/elrune.png', 
+          levelReq: 11, // Required level
           stats: { 
             weapon: '+50 Attack Rating, +1 Light Radius', 
             helm: '+15 Defense, +1 Light Radius', 
@@ -162,6 +163,7 @@ class StatsCalculator {
         'eld': { 
           name: 'Eld Rune', 
           img: 'img/eldrune.png', 
+          levelReq: 11, // Required level
           stats: { 
             weapon: '+75% Damage vs Undead, +50 Attack Rating vs Undead', 
             helm: '15% Slower Stamina Drain', 
@@ -172,6 +174,7 @@ class StatsCalculator {
         'tir': { 
           name: 'Tir Rune', 
           img: 'img/tirrune.png', 
+          levelReq: 13, // Required level
           stats: { 
             weapon: '+2 to Mana after each Kill', 
             helm: '+2 to Mana after each Kill', 
@@ -182,6 +185,7 @@ class StatsCalculator {
         'nef': { 
           name: 'Nef Rune', 
           img: 'img/nefrune.png', 
+          levelReq: 13, // Required level
           stats: { 
             weapon: 'Knockback', 
             helm: '+30 Defense vs. Missile', 
@@ -192,6 +196,7 @@ class StatsCalculator {
         'eth': { 
           name: 'Eth Rune', 
           img: 'img/ethrune.png', 
+          levelReq: 15, // Required level
           stats: { 
             weapon: '-25% Target Defense', 
             helm: 'Regenerate Mana 15%', 
@@ -222,6 +227,7 @@ class StatsCalculator {
         'ral': { 
           name: 'Ral Rune', 
           img: 'img/ralrune.png', 
+          levelReq: 19, // Required level
           stats: { 
             weapon: 'Adds 5-30 Fire Damage', 
             helm: 'Fire Resist +30%', 
@@ -758,8 +764,16 @@ class StatsCalculator {
         }
       }
     });
-  }
-  
+
+    document.addEventListener('click', (e) => {
+      // Check if clicked element is a socketed item image
+      if (e.target.tagName === 'IMG' && e.target.closest('.socket-slot.filled')) {
+        const socket = e.target.closest('.socket-slot');
+      this.removeSocketedItem(socket);
+    }
+  });
+}
+
   initializeSocketContainers() {
     // Add socket containers to each equipment section
     const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
@@ -820,30 +834,50 @@ class StatsCalculator {
   }
   
   socketItem(itemKey, category) {
-    if (!this.currentSocket) return;
-    
-    const item = this.socketData[category][itemKey];
-    const section = this.currentSocket.closest('.socket-container')?.dataset.section || 'weapon';
-    const stat = item.stats[section] || item.stats.weapon;
-    
-    // Update socket appearance
-    this.currentSocket.classList.remove('empty');
-    this.currentSocket.classList.add('filled');
-    this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">`;
-    
-    // Store socket data
-    this.currentSocket.dataset.itemKey = itemKey;
-    this.currentSocket.dataset.category = category;
-    this.currentSocket.dataset.itemName = item.name;
-    this.currentSocket.dataset.stats = stat;
-    
-    this.hideSocketModal();
-    this.updateItemDisplay(section);
+  if (!this.currentSocket) return;
+  
+  const item = this.socketData[category][itemKey];
+  const section = this.currentSocket.closest('.socket-container')?.dataset.section || 'weapon';
+  const stat = item.stats[section] || item.stats.weapon;
+  
+  // Update socket appearance
+  this.currentSocket.classList.remove('empty');
+  this.currentSocket.classList.add('filled');
+  this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">`;
+  
+  // Store socket data
+  this.currentSocket.dataset.itemKey = itemKey;
+  this.currentSocket.dataset.category = category;
+  this.currentSocket.dataset.itemName = item.name;
+  this.currentSocket.dataset.stats = stat;
+  
+  this.hideSocketModal();
+  this.updateItemDisplay(section);
+  
+  // Force complete recalculation with proper sequencing
+  setTimeout(() => {
+    // 1. First recalculate all socket stats
     this.calculateAllStats();
-  if (window.characterStats) {
-    setTimeout(() => window.characterStats.updateTotalStats(), 100);
-  }
+    
+    // 2. Then validate level requirements (this will filter invalid stats)
+    if (window.levelRequirementSystem?.validateAllItems) {
+      window.levelRequirementSystem.validateAllItems();
+    }
+    
+    // 3. Finally update character stats with filtered data
+    if (window.characterStats?.updateTotalStats) {
+      window.characterStats.updateTotalStats();
+    }
+    
+    // 4. Force any other stats systems to update
+    if (window.statsCalculator?.calculateAllStats) {
+      window.statsCalculator.calculateAllStats();
+    }
+    
+    console.log('✅ Socket item complete - all systems updated');
+  }, 150);
 }
+
   
   updateItemDisplay(section) {
     const infoIdMap = {
@@ -1418,6 +1452,8 @@ if (match) {
     console.log(`Added socket to ${section}: ${newSocketCount}/${maxSockets}`);
   }
 
+
+  
   setupEventListeners() {
     // Equipment dropdown changes
     Object.keys(this.equipmentMap).forEach(dropdownId => {
@@ -1569,41 +1605,106 @@ if (match) {
   }
   
   calculateSocketStats() {
-    // Get stats from all filled sockets
-    const filledSockets = document.querySelectorAll('.socket-slot.filled');
+  // Get stats from all filled sockets - BUT CHECK LEVEL REQUIREMENTS FIRST
+  const filledSockets = document.querySelectorAll('.socket-slot.filled');
+  
+  filledSockets.forEach(socket => {
+    const stats = socket.dataset.stats;
+    const itemKey = socket.dataset.itemKey;
+    const category = socket.dataset.category;
     
-    filledSockets.forEach(socket => {
-      const stats = socket.dataset.stats;
-      if (stats) {
-        this.parseSocketStats(stats);
+    if (!stats) return;
+    
+    // CHECK LEVEL REQUIREMENTS BEFORE PROCESSING SOCKET STATS
+    if (window.levelRequirementSystem) {
+      const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+      const parentSection = socket.closest('.socket-container')?.dataset.section;
+      
+      // Get the item that contains this socket
+      let parentItem = null;
+      if (parentSection) {
+        const dropdown = document.getElementById(`${parentSection}s-dropdown`) || 
+                       document.getElementById(`${parentSection}-dropdown`);
+        if (dropdown?.value && itemList[dropdown.value]) {
+          parentItem = itemList[dropdown.value];
+        }
       }
-    });
-  }
+      
+      // If parent item doesn't meet level requirements, skip this socket's stats
+      if (parentItem && parentItem.properties?.reqlvl) {
+        if (currentLevel < parentItem.properties.reqlvl) {
+          console.log(`🚫 Skipping socket stats - parent item level requirement not met: ${parentItem.properties.reqlvl} > ${currentLevel}`);
+          return; // Skip this socket entirely
+        }
+      }
+      
+      // Also check if the socketed item itself has level requirements
+      if (this.socketData?.[category]?.[itemKey]) {
+        const socketedItem = this.socketData[category][itemKey];
+        if (socketedItem.levelReq && currentLevel < socketedItem.levelReq) {
+          console.log(`🚫 Skipping socket stats - socketed item level requirement not met: ${socketedItem.levelReq} > ${currentLevel}`);
+          return; // Skip this socket entirely
+        }
+      }
+    }
+    
+    // Only process stats if level requirements are met
+    this.parseSocketStats(stats);
+  });
+}
   
   parseSocketStats(socketStats) {
-    // Lightning damage
-    let match = socketStats.match(/\+?(\d+)-(\d+) Lightning Damage/i);
-    if (match) {
-      this.stats.flatLightMin += parseInt(match[1]);
-      this.stats.flatLightMax += parseInt(match[2]);
-      return;
-    }
-    
-    // Fire damage
-    match = socketStats.match(/\+?(\d+)-(\d+) Fire Damage/i);
-    if (match) {
-      this.stats.flatFireMin += parseInt(match[1]);
-      this.stats.flatFireMax += parseInt(match[2]);
-      return;
-    }
-    
-    // Cold damage
-    match = socketStats.match(/\+?(\d+)-(\d+) Cold Damage/i);
-    if (match) {
-      this.stats.flatColdMin += parseInt(match[1]);
-      this.stats.flatColdMax += parseInt(match[2]);
-      return;
-    }
+  // Lightning damage
+  let match = socketStats.match(/\+?(\d+)-(\d+) Lightning Damage/i);
+  if (match) {
+    this.stats.flatLightMin += parseInt(match[1]);
+    this.stats.flatLightMax += parseInt(match[2]);
+    console.log(`✅ Added lightning damage: ${match[1]}-${match[2]}`);
+    return;
+  }
+  
+  // Fire damage
+  match = socketStats.match(/\+?(\d+)-(\d+) Fire Damage/i);
+  if (match) {
+    this.stats.flatFireMin += parseInt(match[1]);
+    this.stats.flatFireMax += parseInt(match[2]);
+    console.log(`✅ Added fire damage: ${match[1]}-${match[2]}`);
+    return;
+  }
+  
+  // Cold damage
+  match = socketStats.match(/\+?(\d+)-(\d+) Cold Damage/i);
+  if (match) {
+    this.stats.flatColdMin += parseInt(match[1]);
+    this.stats.flatColdMax += parseInt(match[2]);
+    console.log(`✅ Added cold damage: ${match[1]}-${match[2]}`);
+    return;
+  }
+  
+  // Poison damage
+  match = socketStats.match(/\+?(\d+)-(\d+) Poison Damage/i);
+  if (match) {
+    this.stats.flatPoisonMin += parseInt(match[1]);
+    this.stats.flatPoisonMax += parseInt(match[2]);
+    console.log(`✅ Added poison damage: ${match[1]}-${match[2]}`);
+    return;
+  }
+  
+  // Enhanced damage
+  match = socketStats.match(/\+?(\d+)%.*Enhanced.*Damage/i);
+  if (match) {
+    this.stats.enhancedDamage += parseInt(match[1]);
+    console.log(`✅ Added enhanced damage: ${match[1]}%`);
+    return;
+  }
+  
+  // Attack Rating
+  match = socketStats.match(/\+(\d+).*Attack Rating/i);
+  if (match) {
+    this.stats.attackRating += parseInt(match[1]);
+    console.log(`✅ Added attack rating: ${match[1]}`);
+    return;
+  }
     
     // Life
     match = socketStats.match(/\+(\d+) to Life/i);
@@ -1626,12 +1727,7 @@ if (match) {
       return;
     }
     
-    // Attack Rating
-    match = socketStats.match(/\+(\d+) to Attack Rating/i);
-    if (match) {
-      this.stats.attackRating += parseInt(match[1]);
-      return;
-    }
+  
     
     // Resistances
     match = socketStats.match(/Fire Resist \+(\d+)%/i);
@@ -2643,6 +2739,43 @@ populateSocketItems(category) {
   }
 }
 
+
+removeSocketedItem(socket) {
+  // Clear socket data
+  socket.classList.remove('filled');
+  socket.classList.add('empty');
+  socket.innerHTML = '';
+  
+  // Clear datasets
+  delete socket.dataset.itemKey;
+  delete socket.dataset.category;
+  delete socket.dataset.itemName;
+  delete socket.dataset.stats;
+  
+  // Get section for updates
+  const section = socket.closest('.socket-container')?.dataset.section || 'weapon';
+  
+  // Update displays and recalculate stats
+  this.updateItemDisplay(section);
+  
+  setTimeout(() => {
+    this.calculateAllStats();
+    
+    if (window.levelRequirementSystem?.validateAllItems) {
+      window.levelRequirementSystem.validateAllItems();
+    }
+    
+    if (window.characterStats?.updateTotalStats) {
+      window.characterStats.updateTotalStats();
+    }
+    
+    if (window.statsCalculator?.calculateAllStats) {
+      window.statsCalculator.calculateAllStats();
+    }
+    
+    console.log('🗑️ Socket cleared - all systems updated');
+  }, 50);
+}
 // Initialize jewel modal when stats calculator is created
 // Add this to your existing init() method:
 init() {
@@ -2695,5 +2828,8 @@ window.addEventListener('load', () => {
   setTimeout(initStatsCalculator, 400);
 });
 
+console.log('Available functions:', Object.getOwnPropertyNames(window).filter(name => 
+  name.toLowerCase().includes('level') || name.toLowerCase().includes('requirement')
+));
 // Export for external use
 window.StatsCalculator = StatsCalculator;
