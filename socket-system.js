@@ -1,6 +1,10 @@
 // Clean Stats Calculator System - With Complete Socket System
 class StatsCalculator {
   constructor() {
+      this.selectedJewelColor = 'Blue';
+  this.selectedJewelPrefix = '';
+  this.selectedJewelSuffix = '';
+  this.currentJewelSocket = null;
     this.stats = {
       // Core Stats
       allSkills: 0,
@@ -78,11 +82,94 @@ class StatsCalculator {
       'offs-dropdown': 'shield',
       'gloves-dropdown': 'gloves',
       'belts-dropdown': 'belts',
-      'boots-dropdown': 'boots',
-      'ringsone-dropdown': 'ring',
-      'ringstwo-dropdown': 'ring',
-      'amulets-dropdown': 'amulet'
+      'boots-dropdown': 'boots'
     };
+    
+    // Custom jewel prefixes and suffixes
+    this.jewelPrefixes = {
+      'Cinnabar': { effect: '+[5-10]% Enhanced Damage', reqLevel: 1 },
+      'Rusty': { effect: '+[11-20]% Enhanced Damage', reqLevel: 9 },
+      'Realgar': { effect: '+[21-30]% Enhanced Damage', reqLevel: 37 },
+      'Ruby': { effect: '+[31-40]% Enhanced Damage', reqLevel: 58 },
+      'Stout': { effect: '+[5-8] Defense', reqLevel: 1 },
+      'Burly': { effect: '+[9-20] Defense', reqLevel: 12 },
+      'Bone': { effect: '+[21-40] Defense', reqLevel: 24 },
+      'Ivory': { effect: '+[41-64] Defense', reqLevel: 56 },
+      'Scarlet': { effect: '+[1-4] to Minimum Damage', reqLevel: 6 },
+      'Crimson': { effect: '+[5-8] to Minimum Damage', reqLevel: 30 },
+      'Cardinal': { effect: '+[10-14] to Minimum Damage', reqLevel: 30 },
+      'Carbuncle': { effect: '+[1-5] to Maximum Damage', reqLevel: 9 },
+      'Carmine': { effect: '+[6-9] to Maximum Damage', reqLevel: 27 },
+      'Vermillion': { effect: '+[11-15] to Maximum Damage', reqLevel: 50 },
+      'Nickel': { effect: '+[10-20] to Attack Rating', reqLevel: 1 },
+      'Tin': { effect: '+[21-40] to Attack Rating', reqLevel: 6 },
+      'Silver': { effect: '+[41-60] to Attack Rating', reqLevel: 18 },
+      'Argent': { effect: '+[61-100] to Attack Rating', reqLevel: 36 },
+      'Emerald': { effect: '[3-7]% Better Chance of Getting Magic Items', reqLevel: 12 },
+      'Zircon': { effect: '+[5-10] to Mana', reqLevel: 2 },
+      'Jacinth': { effect: '+[11-15] to Mana', reqLevel: 12 },
+      'Turquoise': { effect: '+[16-20] to Mana', reqLevel: 21 },
+      'Cerulean': { effect: '+[21-30] to Mana', reqLevel: 41 },
+      'Shimmering': { effect: 'All Resistances +[5-10]', reqLevel: 12 },
+      'Scintillating': { effect: 'All Resistances +[11-15]', reqLevel: 26 },
+      'Lapis': { effect: 'Cold Resist +[5-15]%', reqLevel: 1 },
+      'Sapphire': { effect: 'Cold Resist +[16-30]%', reqLevel: 14 }
+    };
+    
+    this.jewelSuffixes = {
+      'Malice': { effect: 'Attacker Takes Damage of [30-40]', reqLevel: 29 },
+      'Fervor': { effect: '+[15-15]% Increased Attack Speed', reqLevel: 31 },
+      'Maiming': { effect: '[5-8]% Chance of Open Wounds', reqLevel: 24 },
+      'Slaying': { effect: '[1-3]% Deadly Strike', reqLevel: 38 },
+      'Gore': { effect: '[4-10]% Deadly Strike', reqLevel: 63 },
+      'Carnage': { effect: '[11-15]% Deadly Strike', reqLevel: 77 },
+      'Slaughter': { effect: '[16-20]% Deadly Strike', reqLevel: 85 },
+      'Frost': { effect: 'Adds [1-3] to [4-6] Cold Damage', reqLevel: 6 },
+      'Frigidity': { effect: 'Adds 1 to [3-5] Cold Damage', reqLevel: 12 },
+      'Icicle': { effect: 'Adds [2-3] to [6-10] Cold Damage', reqLevel: 29 },
+      'Glacier': { effect: 'Adds [4-5] to [11-15] Cold Damage', reqLevel: 50 },
+      'Passion': { effect: 'Adds [1-3] to [6-10] Fire Damage', reqLevel: 11 },
+      'Fire': { effect: 'Adds [4-10] to [11-30] Fire Damage', reqLevel: 28 },
+      'Burning': { effect: 'Adds [11-25] to [31-50] Fire Damage', reqLevel: 49 },
+      'Ennui': { effect: 'Adds 1-[10-20] Lightning Damage', reqLevel: 11 },
+      'Lightning': { effect: 'Adds 1-[21-60] Lightning Damage', reqLevel: 28 },
+      'Thunder': { effect: 'Adds 1-[61-100] Lightning Damage', reqLevel: 49 }
+    };
+    
+    this.statPatterns = {
+      fcr: /(\d+)%\s*Faster Cast Rate/i,
+      ias: /(\d+)%\s*Increased Attack Speed/i,
+      frw: /(\d+)%\s*Faster Run\/Walk/i,
+      fhr: /(\d+)%\s*Faster Hit Recovery/i,
+      dr: /(\d+)%\s*Damage Reduced/i,
+      pdr: /Physical Damage.*Reduced by (\d+)/i,
+      mdr: /Magic Damage.*Reduced by (\d+)/i,
+      plr: /Poison Length Reduced by (\d+)%/i,
+      blockChance: /(\d+)%\s*Increased Chance of Blocking/i,
+      enhancedDamage: /(\d+)%\s*Enhanced Damage/i,
+      openWounds: /(\d+)%\s*Chance of Open Wounds/i,
+      crushingBlow: /(\d+)%\s*Chance of Crushing Blow/i,
+      deadlyStrike: /(\d+)%\s*Chance of Deadly Strike/i,
+      criticalHit: /(\d+)%\s*Critical Strike/i,
+      allSkills: /\+(\d+)\s*to All Skills/i,
+      magicFind: /(\d+)%\s*Better Chance of Getting Magic Items/i,
+      goldFind: /(\d+)%\s*Extra Gold from Monsters/i,
+      lifeSteal: /(\d+)%\s*Life Stolen per Hit/i,
+      manaSteal: /(\d+)%\s*Mana Stolen per Hit/i,
+      strength: /\+(\d+)\s*to Strength/i,
+      dexterity: /\+(\d+)\s*to Dexterity/i,
+      vitality: /\+(\d+)\s*to Vitality/i,
+      energy: /\+(\d+)\s*to Energy/i,
+      life: /\+(\d+)\s*(?:to\s+)?Life/i,
+      mana: /\+(\d+)\s*(?:to\s+)?Mana/i,
+      attackRating: /\+(\d+)\s*(?:to\s+)?Attack Rating/i,
+      defense: /\+(\d+)\s*Defense/i,
+      fireResist: /Fire Resist \+(\d+)%?/i,
+      coldResist: /Cold Resist \+(\d+)%?/i,
+      lightResist: /Lightning Resist \+(\d+)%?/i,
+      poisonResist: /Poison Resist \+(\d+)%?/i
+    };
+
     
     // Socket system data
     this.socketData = {
@@ -90,6 +177,7 @@ class StatsCalculator {
         'perfect-topaz': { 
           name: 'Perfect Topaz', 
           img: 'img/perfecttopaz.png', 
+          levelReq: 18,
           stats: { 
             weapon: 'Adds 1-40 Lightning Damage', 
             helm: '24% Better Chance of Getting Magic Items', 
@@ -100,6 +188,7 @@ class StatsCalculator {
         'perfect-ruby': { 
           name: 'Perfect Ruby', 
           img: 'img/perfectruby.png', 
+          levelReq: 18,
           stats: { 
             weapon: '+15-20 Fire Damage', 
             helm: '+38 to Life', 
@@ -110,6 +199,7 @@ class StatsCalculator {
         'perfect-sapphire': { 
           name: 'Perfect Sapphire', 
           img: 'img/perfectsapphire.png', 
+          levelReq: 18,
           stats: { 
             weapon: '+10-14 Cold Damage', 
             helm: '+38 to Mana', 
@@ -120,6 +210,7 @@ class StatsCalculator {
         'perfect-emerald': { 
           name: 'Perfect Emerald', 
           img: 'img/perfectemerald.png', 
+          levelReq: 18,
           stats: { 
             weapon: '+100 Poison Damage over 7 Seconds', 
             helm: '+10 to Dexterity', 
@@ -130,6 +221,7 @@ class StatsCalculator {
         'perfect-amethyst': { 
           name: 'Perfect Amethyst', 
           img: 'img/perfectamethyst.png', 
+          levelReq: 18,
           stats: { 
             weapon: '+150 to Attack Rating', 
             helm: '+10 to Strength', 
@@ -140,6 +232,7 @@ class StatsCalculator {
         'perfect-diamond': { 
           name: 'Perfect Diamond', 
           img: 'img/perfectdiamond.png', 
+          levelReq: 18,
           stats: { 
             weapon: '+68% Damage to Undead', 
             helm: '+100 to Attack Rating', 
@@ -207,6 +300,7 @@ class StatsCalculator {
         'ith': { 
           name: 'Ith Rune', 
           img: 'img/ithrune.png', 
+          levelReq: 17,
           stats: { 
             weapon: '+9 to Maximum Damage', 
             helm: '15% Damage Taken Gained as Mana when Hit', 
@@ -217,6 +311,7 @@ class StatsCalculator {
         'tal': { 
           name: 'Tal Rune', 
           img: 'img/talrune.png', 
+          levelReq: 17,
           stats: { 
             weapon: '+75 Poison Damage over 5 Seconds', 
             helm: 'Poison Resist +30%', 
@@ -238,6 +333,7 @@ class StatsCalculator {
         'ort': { 
           name: 'Ort Rune', 
           img: 'img/ortrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: 'Adds 1-50 Lightning Damage', 
             helm: 'Lightning Resist +30%', 
@@ -248,6 +344,7 @@ class StatsCalculator {
         'thul': { 
           name: 'Thul Rune', 
           img: 'img/thulrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: 'Adds 3-14 Cold Damage', 
             helm: 'Cold Resist +30%', 
@@ -258,6 +355,7 @@ class StatsCalculator {
         'amn': { 
           name: 'Amn Rune', 
           img: 'img/amnrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '7% Life Stolen per Hit', 
             helm: 'Attacker Takes Damage of 14', 
@@ -268,6 +366,7 @@ class StatsCalculator {
         'sol': { 
           name: 'Sol Rune', 
           img: 'img/solrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '+9 to Minimum Damage', 
             helm: 'Physical Damage Taken Reduced by 7', 
@@ -277,6 +376,7 @@ class StatsCalculator {
         },
         'shael': { 
           name: 'Shael Rune', 
+          levelReq: 48,
           img: 'img/shaelrune.png', 
           stats: { 
             weapon: '+20% Increased Attack Speed', 
@@ -288,6 +388,7 @@ class StatsCalculator {
         'dol': { 
           name: 'Dol Rune', 
           img: 'img/dolrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '+20% Enhanced Damage', 
             helm: 'Replenish Life +10', 
@@ -298,6 +399,7 @@ class StatsCalculator {
         'hel': { 
           name: 'Hel Rune', 
           img: 'img/helrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: 'Requirements -20%', 
             helm: 'Requirements -20%', 
@@ -308,6 +410,7 @@ class StatsCalculator {
         'io': { 
           name: 'Io Rune', 
           img: 'img/iorune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '+10 to Vitality', 
             helm: '+10 to Vitality', 
@@ -318,6 +421,7 @@ class StatsCalculator {
         'lum': { 
           name: 'Lum Rune', 
           img: 'img/lumrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '+10 to Energy', 
             helm: '+10 to Energy', 
@@ -328,6 +432,7 @@ class StatsCalculator {
         'ko': { 
           name: 'Ko Rune', 
           img: 'img/korune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '+10 to Dexterity', 
             helm: '+10 to Dexterity', 
@@ -338,6 +443,7 @@ class StatsCalculator {
         'fal': { 
           name: 'Fal Rune', 
           img: 'img/falrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '+10 to Strength', 
             helm: '+10 to Strength', 
@@ -348,6 +454,7 @@ class StatsCalculator {
         'lem': { 
           name: 'Lem Rune', 
           img: 'img/lemrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '75% Extra Gold From Monsters', 
             helm: '50% Extra Gold From Monsters', 
@@ -358,6 +465,7 @@ class StatsCalculator {
         'pul': { 
           name: 'Pul Rune', 
           img: 'img/pulrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '+75% Damage to Demons, +100 to Attack Rating against Demons', 
             helm: '+30% Enhanced Defense', 
@@ -368,6 +476,7 @@ class StatsCalculator {
         'um': { 
           name: 'Um Rune', 
           img: 'img/umrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '10% Chance of Open Wounds, +120 Open Wounds Damage per Second', 
             helm: 'All Resistances +15', 
@@ -378,6 +487,7 @@ class StatsCalculator {
         'mal': { 
           name: 'Mal Rune', 
           img: 'img/malrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: 'Prevent Monster Heal', 
             helm: 'Magic Damage Taken Reduced by 7', 
@@ -387,7 +497,8 @@ class StatsCalculator {
         },
         'ist': { 
           name: 'Ist Rune', 
-          img: 'img/istrune.png', 
+          img: 'img/istrune.png',
+          levelReq: 48, 
           stats: { 
             weapon: '30% Better Chance of Getting Magic Items', 
             helm: '30% Better Chance of Getting Magic Items', 
@@ -398,6 +509,7 @@ class StatsCalculator {
         'gul': { 
           name: 'Gul Rune', 
           img: 'img/gulrune.png', 
+          levelReq: 58,
           stats: { 
             weapon: '20% Bonus to Attack Rating', 
             helm: '+4% to Maximum Poison Resist', 
@@ -408,6 +520,7 @@ class StatsCalculator {
         'vex': { 
           name: 'Vex Rune', 
           img: 'img/vexrune.png', 
+          levelReq: 58,
           stats: { 
             weapon: '7% Mana Stolen per Hit', 
             helm: '+4% to Maximum Fire Resist', 
@@ -418,6 +531,7 @@ class StatsCalculator {
         'ohm': { 
           name: 'Ohm Rune', 
           img: 'img/ohmrune.png', 
+          levelReq: 58,
           stats: { 
             weapon: '+45% Enhanced Damage', 
             helm: '+4% to Maximum Cold Resist', 
@@ -427,7 +541,8 @@ class StatsCalculator {
         },
         'lo': { 
           name: 'Lo Rune', 
-          img: 'img/lorune.png', 
+          img: 'img/lorune.png',
+          levelReq: 58, 
           stats: { 
             weapon: '20% Deadly Strike', 
             helm: '+4% to Maximum Lightning Resist', 
@@ -438,6 +553,7 @@ class StatsCalculator {
         'sur': { 
           name: 'Sur Rune', 
           img: 'img/surrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '+4 Life after each Kill', 
             helm: 'Increase Maximum Mana 5%', 
@@ -448,6 +564,7 @@ class StatsCalculator {
         'ber': { 
           name: 'Ber Rune', 
           img: 'img/berrune.png', 
+          levelReq: 48,
           stats: { 
             weapon: '20% Chance of Crushing Blow', 
             helm: 'Physical Damage Taken Reduced by 5%', 
@@ -458,6 +575,7 @@ class StatsCalculator {
         'jah': { 
           name: 'Jah Rune', 
           img: 'img/jahrune.png', 
+          levelReq: 68,
           stats: { 
             weapon: 'Ignore Target\'s Defense', 
             helm: 'Increase Maximum Life 5%', 
@@ -468,6 +586,7 @@ class StatsCalculator {
         'cham': { 
           name: 'Cham Rune', 
           img: 'img/chamrune.png', 
+          levelReq: 68,
           stats: { 
             weapon: 'Freezes Target +3', 
             helm: 'Cannot Be Frozen', 
@@ -478,6 +597,7 @@ class StatsCalculator {
         'zod': { 
           name: 'Zod Rune', 
           img: 'img/zodrune.png', 
+          levelReq: 69,
           stats: { 
             weapon: 'Indestructible', 
             helm: 'Indestructible', 
@@ -487,22 +607,18 @@ class StatsCalculator {
         }
       },
       jewels: {
-        'rare-jewel': { 
-          name: 'Rare Jewel', 
-          img: 'img/jewel1.png', 
-          stats: { 
-            weapon: '+15% Enhanced Damage', 
-            helm: '+15% Enhanced Damage', 
-            armor: '+15% Enhanced Damage', 
-            shield: '+15% Enhanced Damage' 
-          }
-        }
+        'rare-jewel': { name: 'Rare Jewel', img: 'img/jewel1.png', levelReq: 1, stats: { weapon: '+15% Enhanced Damage', helm: '+15% Enhanced Damage', armor: '+15% Enhanced Damage', shield: '+15% Enhanced Damage' }, levelReq: 1 }
       }
     };
     
     this.currentSocket = null;
     this.targetSocket = null;
-
+    this.selectedJewelColor = 'white';
+    this.selectedJewelPrefix = null;
+    this.selectedJewelSuffix = null;
+    this.selectedJewelPrefixValue = null;
+    this.selectedJewelSuffixValue = null;
+    
     this.init();
   }
   
@@ -512,52 +628,614 @@ class StatsCalculator {
     this.addLevelValidationStyles();
     this.createJewelModal();
     this.calculateAllStats();
-    console.log('📊 Clean Stats Calculator with Complete Socket System initialized');
+    console.log('📊 Enhanced Socket System with Custom Jewels initialized');
   }
+  
+  // ========== JEWEL CREATION SYSTEM ==========
+  createJewelModal() {
+    const existingModal = document.getElementById('jewelModal');
+    if (existingModal) existingModal.remove();
+    
+    const modalHTML = `
+      <div id="jewelModal" class="socket-modal" style="display: none;">
+        <div class="socket-modal-content">
+          <span class="socket-close">&times;</span>
+          <h3>Create Custom Jewel</h3>
+          
+          <div class="jewel-creation-section">
+            <h4>1. Choose Jewel Color</h4>
+            <div class="jewel-color-selection">
+              <div class="color-option selected" data-color="white" style="background: white; color: black;">White</div>
+              <div class="color-option" data-color="blue" style="background: #4169E1; color: white;">Blue</div>
+              <div class="color-option" data-color="yellow" style="background: #FFD700; color: black;">Yellow</div>
+              <div class="color-option" data-color="green" style="background: #32CD32; color: black;">Green</div>
+              <div class="color-option" data-color="orange" style="background: #FFA500; color: black;">Orange</div>
+              <div class="color-option" data-color="red" style="background: #FF4500; color: white;">Red</div>
+            </div>
+            
+            <h4>2. Choose Prefix (Optional)</h4>
+            <select id="jewelPrefixSelect">
+              <option value="">No Prefix</option>
+              ${Object.entries(this.jewelPrefixes).map(([key, data]) => 
+                `<option value="${key}">${key} - ${data.effect} (Level ${data.reqLevel})</option>`
+              ).join('')}
+            </select>
+            <div id="prefixValueContainer" style="display: none;">
+              <label for="prefixValue">Value:</label>
+              <input type="range" id="prefixValue" min="1" max="10" value="5">
+              <span id="prefixValueDisplay">5</span>
+            </div>
+            
+            <h4>3. Choose Suffix (Optional)</h4>
+            <select id="jewelSuffixSelect">
+              <option value="">No Suffix</option>
+              ${Object.entries(this.jewelSuffixes).map(([key, data]) => 
+                `<option value="${key}">${key} - ${data.effect} (Level ${data.reqLevel})</option>`
+              ).join('')}
+            </select>
+            <div id="suffixValueContainer" style="display: none;">
+              <label for="suffixValue">Value:</label>
+              <input type="range" id="suffixValue" min="1" max="10" value="5">
+              <span id="suffixValueDisplay">5</span>
+            </div>
+            
+            <div class="jewel-preview">
+              <h4>Preview:</h4>
+              <div id="jewelPreview">
+                <div class="jewel-name" style="color: white;">White Jewel</div>
+                <div class="jewel-stats">
+                  <div id="jewelPrefixStat" style="display: none;"></div>
+                  <div id="jewelSuffixStat" style="display: none;"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="jewel-actions">
+              <button id="createJewelBtn">Create Jewel</button>
+              <button id="cancelJewelBtn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    this.setupJewelModalEvents();
+  }
+  
+  setupJewelModalEvents() {
+    // Color selection
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('color-option')) {
+        document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+        e.target.classList.add('selected');
+        this.selectedJewelColor = e.target.dataset.color;
+        this.updateJewelPreview();
+      }
+    });
+    
+    // Prefix selection
+    document.addEventListener('change', (e) => {
+      if (e.target.id === 'jewelPrefixSelect') {
+        this.selectedJewelPrefix = e.target.value || null;
+        this.updatePrefixValueInput();
+        this.updateJewelPreview();
+      }
+    });
+    
+    // Suffix selection
+    document.addEventListener('change', (e) => {
+      if (e.target.id === 'jewelSuffixSelect') {
+        this.selectedJewelSuffix = e.target.value || null;
+        this.updateSuffixValueInput();
+        this.updateJewelPreview();
+      }
+    });
+    
+    // Value sliders
+    document.addEventListener('input', (e) => {
+      if (e.target.id === 'prefixValue') {
+        this.selectedJewelPrefixValue = e.target.value;
+        document.getElementById('prefixValueDisplay').textContent = e.target.value;
+        this.updateJewelPreview();
+      } else if (e.target.id === 'suffixValue') {
+        this.selectedJewelSuffixValue = e.target.value;
+        document.getElementById('suffixValueDisplay').textContent = e.target.value;
+        this.updateJewelPreview();
+      }
+    });
+    
+    // Create jewel button
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'createJewelBtn') {
+        this.createCustomJewel();
+      } else if (e.target.id === 'cancelJewelBtn') {
+        this.hideJewelModal();
+      }
+    });
+  }
+  
+  updatePrefixValueInput() {
+    const container = document.getElementById('prefixValueContainer');
+    const valueInput = document.getElementById('prefixValue');
+    const valueDisplay = document.getElementById('prefixValueDisplay');
+    
+    if (this.selectedJewelPrefix) {
+      const prefixData = this.jewelPrefixes[this.selectedJewelPrefix];
+      const range = this.extractValueRange(prefixData.effect);
+      
+      container.style.display = 'block';
+      valueInput.min = range.min;
+      valueInput.max = range.max;
+      valueInput.value = range.min;
+      valueDisplay.textContent = range.min;
+      this.selectedJewelPrefixValue = range.min;
+    } else {
+      container.style.display = 'none';
+      this.selectedJewelPrefixValue = null;
+    }
+  }
+  
+  updateSuffixValueInput() {
+    const container = document.getElementById('suffixValueContainer');
+    const valueInput = document.getElementById('suffixValue');
+    const valueDisplay = document.getElementById('suffixValueDisplay');
+    
+    if (this.selectedJewelSuffix) {
+      const suffixData = this.jewelSuffixes[this.selectedJewelSuffix];
+      const range = this.extractValueRange(suffixData.effect);
+      
+      container.style.display = 'block';
+      valueInput.min = range.min;
+      valueInput.max = range.max;
+      valueInput.value = range.min;
+      valueDisplay.textContent = range.min;
+      this.selectedJewelSuffixValue = range.min;
+    } else {
+      container.style.display = 'none';
+      this.selectedJewelSuffixValue = null;
+    }
+  }
+  
+  extractValueRange(effect) {
+    const match = effect.match(/\[(\d+)-(\d+)\]/);
+    if (match) {
+      return {
+        min: parseInt(match[1]),
+        max: parseInt(match[2])
+      };
+    }
+    return { min: 1, max: 10 };
+  }
+  
+  updateJewelPreview() {
+    const preview = document.getElementById('jewelPreview');
+    const jewelName = document.querySelector('.jewel-name');
+    const prefixStat = document.getElementById('jewelPrefixStat');
+    const suffixStat = document.getElementById('jewelSuffixStat');
+    
+    // Update jewel name color
+    const colorMap = {
+      'white': '#FFFFFF',
+      'blue': '#4169E1',
+      'yellow': '#FFD700',
+      'green': '#32CD32',
+      'orange': '#FFA500',
+      'red': '#FF4500'
+    };
+    
+    let jewelDisplayName = this.selectedJewelColor.charAt(0).toUpperCase() + this.selectedJewelColor.slice(1);
+    if (this.selectedJewelPrefix) {
+      jewelDisplayName = `${this.selectedJewelPrefix} ${jewelDisplayName}`;
+    }
+    if (this.selectedJewelSuffix) {
+      jewelDisplayName = `${jewelDisplayName} of ${this.selectedJewelSuffix}`;
+    }
+    jewelDisplayName += ' Jewel';
+    
+    jewelName.textContent = jewelDisplayName;
+    jewelName.style.color = colorMap[this.selectedJewelColor];
+    
+    // Update prefix stat
+    if (this.selectedJewelPrefix && this.selectedJewelPrefixValue) {
+      const prefixData = this.jewelPrefixes[this.selectedJewelPrefix];
+      const stat = prefixData.effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefixValue);
+      prefixStat.textContent = stat;
+      prefixStat.style.display = 'block';
+    } else {
+      prefixStat.style.display = 'none';
+    }
+    
+    // Update suffix stat
+    if (this.selectedJewelSuffix && this.selectedJewelSuffixValue) {
+      const suffixData = this.jewelSuffixes[this.selectedJewelSuffix];
+      const stat = suffixData.effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffixValue);
+      suffixStat.textContent = stat;
+      suffixStat.style.display = 'block';
+    } else {
+      suffixStat.style.display = 'none';
+    }
+  }
+  
+  createCustomJewel() {
+    const socketToUse = this.targetSocket || this.currentSocket;
+    
+    if (!socketToUse) {
+      alert('No socket selected! Please try clicking the socket again.');
+      return;
+    }
+    
+    // Calculate required level (highest of prefix/suffix)
+    let requiredLevel = 1;
+    if (this.selectedJewelPrefix) {
+      requiredLevel = Math.max(requiredLevel, this.jewelPrefixes[this.selectedJewelPrefix].reqLevel);
+    }
+    if (this.selectedJewelSuffix) {
+      requiredLevel = Math.max(requiredLevel, this.jewelSuffixes[this.selectedJewelSuffix].reqLevel);
+    }
+    
+    // Create jewel stats array
+    const stats = [];
+    if (this.selectedJewelPrefix && this.selectedJewelPrefixValue) {
+      const prefixData = this.jewelPrefixes[this.selectedJewelPrefix];
+      const stat = prefixData.effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefixValue);
+      stats.push(stat);
+    }
+    if (this.selectedJewelSuffix && this.selectedJewelSuffixValue) {
+      const suffixData = this.jewelSuffixes[this.selectedJewelSuffix];
+      const stat = suffixData.effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffixValue);
+      stats.push(stat);
+    }
+    
+    // Create jewel name
+    let jewelName = this.selectedJewelColor.charAt(0).toUpperCase() + this.selectedJewelColor.slice(1);
+    if (this.selectedJewelPrefix) {
+      jewelName = `${this.selectedJewelPrefix} ${jewelName}`;
+    }
+    if (this.selectedJewelSuffix) {
+      jewelName = `${jewelName} of ${this.selectedJewelSuffix}`;
+    }
+    jewelName += ' Jewel';
+    
+    // Choose jewel image based on color
+    const jewelImages = {
+      'white': 'img/jewel1.png',
+      'blue': 'img/jewel2.png',
+      'yellow': 'img/jewel3.png',
+      'green': 'img/jewel4.png',
+      'orange': 'img/jewel5.png',
+      'red': 'img/jewel6.png'
+    };
+    
+    const jewelImage = jewelImages[this.selectedJewelColor] || 'img/jewel1.png';
+    
+    // Update socket appearance
+    socketToUse.classList.remove('empty');
+    socketToUse.classList.add('filled');
+    socketToUse.innerHTML = `<img src="${jewelImage}" alt="${jewelName}" style="width: 20px; height: 20px;">`;
+    
+    // Store jewel data
+    socketToUse.dataset.itemKey = 'custom-jewel';
+    socketToUse.dataset.category = 'jewels';
+    socketToUse.dataset.itemName = jewelName;
+    socketToUse.dataset.stats = stats.join(', ');
+    socketToUse.dataset.levelReq = requiredLevel;
+    
+    // Update displays
+    const section = socketToUse.closest('.socket-container')?.dataset.section || 'weapon';
+    
+    this.hideJewelModal();
+    this.updateItemDisplay(section);
+    this.calculateAllStats();
+    
+    // Reset selections
+    this.selectedJewelColor = 'white';
+    this.selectedJewelPrefix = null;
+    this.selectedJewelSuffix = null;
+    this.selectedJewelPrefixValue = null;
+    this.selectedJewelSuffixValue = null;
+    this.targetSocket = null;
+  }
+  
+  showJewelModal() {
+    const modal = document.getElementById('jewelModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      // Reset to defaults
+      this.selectedJewelColor = 'white';
+      this.selectedJewelPrefix = null;
+      this.selectedJewelSuffix = null;
+      this.selectedJewelPrefixValue = null;
+      this.selectedJewelSuffixValue = null;
+      
+      // Reset UI
+      document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+      document.querySelector('.color-option[data-color="white"]').classList.add('selected');
+      document.getElementById('jewelPrefixSelect').value = '';
+      document.getElementById('jewelSuffixSelect').value = '';
+      document.getElementById('prefixValueContainer').style.display = 'none';
+      document.getElementById('suffixValueContainer').style.display = 'none';
+      
+      this.updateJewelPreview();
+    }
+  }
+  
+
   
   // ========== LEVEL REQUIREMENT METHODS ==========
   calculateActualRequiredLevel(section, selectedItem) {
-    if (!selectedItem || !itemList[selectedItem]) return 1;
+  if (!selectedItem || !itemList[selectedItem]) return 1;
+  
+  const baseItem = itemList[selectedItem];
+  const baseLevel = baseItem.properties?.reqlvl || 1;
+  
+  // Find all sockets for this section
+  const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+  
+  let highestLevel = baseLevel;
+  
+  // Check each socket's level requirement
+  sockets.forEach(socket => {
+    const itemKey = socket.dataset.itemKey;
+    const category = socket.dataset.category;
     
-    const baseItem = itemList[selectedItem];
-    const baseLevel = baseItem.properties?.reqlvl || 1;
-    
-    // Find all sockets for this section
-    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-    
-    let highestLevel = baseLevel;
-    
-    // Check each socket's level requirement
-    sockets.forEach(socket => {
-      const itemKey = socket.dataset.itemKey;
-      const category = socket.dataset.category;
-      
-      if (this.socketData?.[category]?.[itemKey]?.levelReq) {
-        const socketLevel = this.socketData[category][itemKey].levelReq;
+    // Check if it's a custom jewel
+    if (itemKey === 'custom-jewel') {
+      const levelReq = parseInt(socket.dataset.levelReq) || 1;
+      if (levelReq > highestLevel) {
+        highestLevel = levelReq;
+      }
+    } else {
+      // Regular socket item - get level from socket data
+      const socketItem = this.socketData[category]?.[itemKey];
+      if (socketItem?.levelReq) {
+        const socketLevel = socketItem.levelReq;
         if (socketLevel > highestLevel) {
           highestLevel = socketLevel;
         }
       }
-    });
-    
-    return highestLevel;
-  }
-
+    }
+  });
+  
+  console.log(`📊 Level calculation for ${section}: base=${baseLevel}, highest=${highestLevel}`);
+  return highestLevel;
+}
   checkLevelRequirement(requiredLevel) {
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
     return currentLevel >= requiredLevel;
   }
-
+  
   // ========== SOCKET SYSTEM METHODS ==========
   initializeSocketSystem() {
     this.createSocketModal();
     this.addSocketStyles();
     this.setupSocketEventListeners();
     this.initializeSocketContainers();
+  }init() {
+    this.setupEventListeners();
+    this.initializeSocketSystem();
+    this.addLevelValidationStyles();
+    this.createJewelModal();
+    this.calculateAllStats();
+    console.log('📊 Enhanced Socket System with Custom Jewels initialized');
   }
   
-  createSocketModal() {
-    // Remove existing modal
+ 
+  
+  updatePrefixValueInput() {
+    const container = document.getElementById('prefixValueContainer');
+    const valueInput = document.getElementById('prefixValue');
+    const valueDisplay = document.getElementById('prefixValueDisplay');
+    
+    if (this.selectedJewelPrefix) {
+      const prefixData = this.jewelPrefixes[this.selectedJewelPrefix];
+      const range = this.extractValueRange(prefixData.effect);
+      
+      container.style.display = 'block';
+      valueInput.min = range.min;
+      valueInput.max = range.max;
+      valueInput.value = range.min;
+      valueDisplay.textContent = range.min;
+      this.selectedJewelPrefixValue = range.min;
+    } else {
+      container.style.display = 'none';
+      this.selectedJewelPrefixValue = null;
+    }
+  }
+  
+  updateSuffixValueInput() {
+    const container = document.getElementById('suffixValueContainer');
+    const valueInput = document.getElementById('suffixValue');
+    const valueDisplay = document.getElementById('suffixValueDisplay');
+    
+    if (this.selectedJewelSuffix) {
+      const suffixData = this.jewelSuffixes[this.selectedJewelSuffix];
+      const range = this.extractValueRange(suffixData.effect);
+      
+      container.style.display = 'block';
+      valueInput.min = range.min;
+      valueInput.max = range.max;
+      valueInput.value = range.min;
+      valueDisplay.textContent = range.min;
+      this.selectedJewelSuffixValue = range.min;
+    } else {
+      container.style.display = 'none';
+      this.selectedJewelSuffixValue = null;
+    }
+  }
+  
+  extractValueRange(effect) {
+    const match = effect.match(/\[(\d+)-(\d+)\]/);
+    if (match) {
+      return {
+        min: parseInt(match[1]),
+        max: parseInt(match[2])
+      };
+    }
+    return { min: 1, max: 10 };
+  }
+  
+  updateJewelPreview() {
+    const preview = document.getElementById('jewelPreview');
+    const jewelName = document.querySelector('.jewel-name');
+    const prefixStat = document.getElementById('jewelPrefixStat');
+    const suffixStat = document.getElementById('jewelSuffixStat');
+    
+    // Update jewel name color
+    const colorMap = {
+      'white': '#FFFFFF',
+      'blue': '#4169E1',
+      'yellow': '#FFD700',
+      'green': '#32CD32',
+      'orange': '#FFA500',
+      'red': '#FF4500'
+    };
+    
+    let jewelDisplayName = this.selectedJewelColor.charAt(0).toUpperCase() + this.selectedJewelColor.slice(1);
+    if (this.selectedJewelPrefix) {
+      jewelDisplayName = `${this.selectedJewelPrefix} ${jewelDisplayName}`;
+    }
+    if (this.selectedJewelSuffix) {
+      jewelDisplayName = `${jewelDisplayName} of ${this.selectedJewelSuffix}`;
+    }
+    jewelDisplayName += ' Jewel';
+    
+    jewelName.textContent = jewelDisplayName;
+    jewelName.style.color = colorMap[this.selectedJewelColor];
+    
+    // Update prefix stat
+    if (this.selectedJewelPrefix && this.selectedJewelPrefixValue) {
+      const prefixData = this.jewelPrefixes[this.selectedJewelPrefix];
+      const stat = prefixData.effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefixValue);
+      prefixStat.textContent = stat;
+      prefixStat.style.display = 'block';
+    } else {
+      prefixStat.style.display = 'none';
+    }
+    
+    // Update suffix stat
+    if (this.selectedJewelSuffix && this.selectedJewelSuffixValue) {
+      const suffixData = this.jewelSuffixes[this.selectedJewelSuffix];
+      const stat = suffixData.effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffixValue);
+      suffixStat.textContent = stat;
+      suffixStat.style.display = 'block';
+    } else {
+      suffixStat.style.display = 'none';
+    }
+  }
+  
+  createCustomJewel() {
+    const socketToUse = this.targetSocket || this.currentSocket;
+    
+    if (!socketToUse) {
+      alert('No socket selected! Please try clicking the socket again.');
+      return;
+    }
+    
+    // Calculate required level (highest of prefix/suffix)
+    let requiredLevel = 1;
+    if (this.selectedJewelPrefix) {
+      requiredLevel = Math.max(requiredLevel, this.jewelPrefixes[this.selectedJewelPrefix].reqLevel);
+    }
+    if (this.selectedJewelSuffix) {
+      requiredLevel = Math.max(requiredLevel, this.jewelSuffixes[this.selectedJewelSuffix].reqLevel);
+    }
+    
+    // Create jewel stats array
+    const stats = [];
+    if (this.selectedJewelPrefix && this.selectedJewelPrefixValue) {
+      const prefixData = this.jewelPrefixes[this.selectedJewelPrefix];
+      const stat = prefixData.effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefixValue);
+      stats.push(stat);
+    }
+    if (this.selectedJewelSuffix && this.selectedJewelSuffixValue) {
+      const suffixData = this.jewelSuffixes[this.selectedJewelSuffix];
+      const stat = suffixData.effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffixValue);
+      stats.push(stat);
+    }
+    
+    // Create jewel name
+    let jewelName = this.selectedJewelColor.charAt(0).toUpperCase() + this.selectedJewelColor.slice(1);
+    if (this.selectedJewelPrefix) {
+      jewelName = `${this.selectedJewelPrefix} ${jewelName}`;
+    }
+    if (this.selectedJewelSuffix) {
+      jewelName = `${jewelName} of ${this.selectedJewelSuffix}`;
+    }
+    jewelName += ' Jewel';
+    
+    // Choose jewel image based on color
+    const jewelImages = {
+      'white': 'img/jewel1.png',
+      'blue': 'img/jewel2.png',
+      'yellow': 'img/jewel3.png',
+      'green': 'img/jewel4.png',
+      'orange': 'img/jewel5.png',
+      'red': 'img/jewel6.png'
+    };
+    
+    const jewelImage = jewelImages[this.selectedJewelColor] || 'img/jewel1.png';
+    
+    // Update socket appearance
+    socketToUse.classList.remove('empty');
+    socketToUse.classList.add('filled');
+    socketToUse.innerHTML = `<img src="${jewelImage}" alt="${jewelName}" style="width: 20px; height: 20px;">`;
+    
+    // Store jewel data
+    socketToUse.dataset.itemKey = 'custom-jewel';
+    socketToUse.dataset.category = 'jewels';
+    socketToUse.dataset.itemName = jewelName;
+    socketToUse.dataset.stats = stats.join(', ');
+    socketToUse.dataset.levelReq = requiredLevel;
+    
+    // Update displays
+    const section = socketToUse.closest('.socket-container')?.dataset.section || 'weapon';
+    
+    this.hideJewelModal();
+    this.updateItemDisplay(section);
+    this.calculateAllStats();
+    
+    // Reset selections
+    this.selectedJewelColor = 'white';
+    this.selectedJewelPrefix = null;
+    this.selectedJewelSuffix = null;
+    this.selectedJewelPrefixValue = null;
+    this.selectedJewelSuffixValue = null;
+    this.targetSocket = null;
+  }
+  
+  showJewelModal() {
+    const modal = document.getElementById('jewelModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      // Reset to defaults
+      this.selectedJewelColor = 'white';
+      this.selectedJewelPrefix = null;
+      this.selectedJewelSuffix = null;
+      this.selectedJewelPrefixValue = null;
+      this.selectedJewelSuffixValue = null;
+      
+      // Reset UI
+      document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+      document.querySelector('.color-option[data-color="white"]').classList.add('selected');
+      document.getElementById('jewelPrefixSelect').value = '';
+      document.getElementById('jewelSuffixSelect').value = '';
+      document.getElementById('prefixValueContainer').style.display = 'none';
+      document.getElementById('suffixValueContainer').style.display = 'none';
+      
+      this.updateJewelPreview();
+    }
+  }
+  
+  hideJewelModal() {
+    const modal = document.getElementById('jewelModal');
+    if (modal) modal.style.display = 'none';
+    this.currentSocket = null;
+    this.targetSocket = null;
+  }
+  
+
+ createSocketModal() {
     const existing = document.getElementById('socketModal');
     if (existing) existing.remove();
     
@@ -599,22 +1277,14 @@ class StatsCalculator {
         }
         
         .socket-modal-content {
-          background: linear-gradient(135deg, #1a1a2e, #16213e);
-          border: 2px solid #0f3460;
-          border-radius: 10px;
+          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
           padding: 20px;
+          border-radius: 10px;
+          border: 2px solid #0f3460;
           max-width: 600px;
           max-height: 80vh;
           overflow-y: auto;
-        }
-        
-        .socket-close {
-          position: absolute;
-          top: 10px;
-          right: 15px;
-          font-size: 28px;
-          color: #aaa;
-          cursor: pointer;
+          color: white;
         }
         
         .socket-categories {
@@ -625,21 +1295,27 @@ class StatsCalculator {
         
         .socket-category-tab {
           padding: 8px 16px;
-          background: #2a2a4e;
-          border: 1px solid #0f3460;
-          color: #fff;
+          background: rgba(255,255,255,0.1);
+          border: 1px solid rgba(255,255,255,0.3);
+          color: white;
           cursor: pointer;
-          border-radius: 5px;
+          border-radius: 4px;
+          transition: all 0.2s;
+        }
+        
+        .socket-category-tab:hover {
+          background: rgba(255,255,255,0.2);
         }
         
         .socket-category-tab.active {
           background: #0f3460;
+          border-color: #4a90e2;
         }
         
         .socket-item-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-          gap: 10px;
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          gap: 15px;
           max-height: 400px;
           overflow-y: auto;
         }
@@ -649,15 +1325,15 @@ class StatsCalculator {
           flex-direction: column;
           align-items: center;
           padding: 10px;
-          background: #2a2a4e;
-          border: 1px solid #0f3460;
-          border-radius: 5px;
+          background: rgba(255,255,255,0.1);
+          border: 1px solid rgba(255,255,255,0.3);
+          border-radius: 8px;
           cursor: pointer;
-          transition: all 0.3s;
+          transition: all 0.2s;
         }
         
         .socket-item:hover {
-          background: #3a3a6e;
+          background: rgba(255,255,255,0.2);
           transform: translateY(-2px);
         }
         
@@ -668,105 +1344,190 @@ class StatsCalculator {
         }
         
         .socket-item-name {
-          font-size: 10px;
+          font-size: 12px;
           text-align: center;
-          color: #fff;
+          color: white;
+        }
+        
+        .custom-jewel-item {
+          border: 2px solid #FFD700;
+          background: rgba(255, 215, 0, 0.1);
         }
         
         .socket-container {
-          margin-top: 10px;
-          display: flex;
-          align-items: center;
-          gap: 5px;
+          margin: 10px 0;
         }
         
         .socket-grid {
           display: flex;
-          gap: 3px;
+          gap: 5px;
+          margin-bottom: 10px;
         }
         
         .socket-slot {
-          width: 25px;
-          height: 25px;
-          border: 1px solid #555;
-          background: #222;
+          width: 30px;
+          height: 30px;
+          border: 2px solid #666;
+          border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          border-radius: 3px;
           transition: all 0.2s;
         }
         
-        .socket-slot:hover {
-          border-color: #888;
+        .socket-slot.empty {
           background: #333;
+          border-color: #666;
         }
         
         .socket-slot.filled {
-          background: #444;
-          border-color: #777;
+          background: #555;
+          border-color: #999;
         }
         
-        .socket-slot.filled img {
+        .socket-slot:hover {
+          border-color: #4a90e2;
+        }
+        
+        .socket-slot img {
           width: 20px;
           height: 20px;
         }
         
-        .socket-slot.empty::after {
-          content: '+';
-          color: #666;
-          font-size: 14px;
-        }
-        
         .add-socket-btn {
-          background: #0f3460;
-          border: 1px solid #1a5490;
-          color: #fff;
-          padding: 4px 8px;
-          border-radius: 3px;
+          background: #28a745;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          border-radius: 4px;
           cursor: pointer;
           font-size: 12px;
         }
         
         .add-socket-btn:hover {
-          background: #1a5490;
+          background: #218838;
+        }
+        
+        .socket-close {
+          position: absolute;
+          top: 10px;
+          right: 15px;
+          font-size: 24px;
+          cursor: pointer;
+          color: #aaa;
+        }
+        
+        .socket-close:hover {
+          color: white;
         }
         
         .socket-enhanced-stat {
-          color: #00BFFF !important;
-          font-weight: bold !important;
-          text-shadow: 0 0 3px rgba(0, 191, 255, 0.3);
-          border-left: 2px solid #00BFFF;
-          padding-left: 4px;
-          margin-left: 2px;
-        }
-      </style>
-    `;
-    
-    document.head.insertAdjacentHTML('beforeend', styles);
-  }
-  
-  addLevelValidationStyles() {
-    if (document.getElementById('level-validation-styles')) return;
-    
-    const styles = `
-      <style id="level-validation-styles">
-        .level-requirement-met {
-          color: #00ff00 !important;
+          color: #4a90e2;
           font-weight: bold;
         }
         
-        .level-requirement-not-met {
-          color: #ff5555 !important;
-          font-weight: bold;
-          text-shadow: 0 0 3px rgba(255, 85, 85, 0.5);
+        .jewel-creation-section h4 {
+          color: #FFD700;
+          margin: 15px 0 10px 0;
         }
         
-        .item-unusable {
-          opacity: 0.6;
-          filter: grayscale(50%);
-          border: 1px solid #ff5555;
+        .jewel-color-selection {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 15px;
+        }
+        
+        .color-option {
+          padding: 8px 12px;
+          border: 2px solid transparent;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .color-option.selected {
+          border-color: #FFD700;
+          box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .jewel-creation-section select {
+          width: 100%;
+          padding: 8px;
+          background: rgba(0,0,0,0.7);
+          color: white;
+          border: 1px solid #666;
+          border-radius: 4px;
+          margin-bottom: 10px;
+        }
+        
+        .jewel-preview {
+          background: rgba(0,0,0,0.3);
+          padding: 15px;
+          border-radius: 8px;
+          margin: 15px 0;
+          border: 1px solid #666;
+        }
+        
+        .jewel-name {
+          font-weight: bold;
+          font-size: 16px;
+          margin-bottom: 10px;
+        }
+        
+        .jewel-stats div {
+          margin: 5px 0;
+          color: #4a90e2;
+        }
+        
+        .jewel-actions {
+          display: flex;
+          gap: 10px;
+          justify-content: flex-end;
+        }
+        
+        .jewel-actions button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: bold;
+        }
+        
+        #createJewelBtn {
+          background: #28a745;
+          color: white;
+        }
+        
+        #createJewelBtn:hover {
+          background: #218838;
+        }
+        
+        #cancelJewelBtn {
+          background: #6c757d;
+          color: white;
+        }
+        
+        #cancelJewelBtn:hover {
+          background: #5a6268;
+        }
+        
+        #prefixValueContainer, #suffixValueContainer {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 15px;
+        }
+        
+        #prefixValueContainer input, #suffixValueContainer input {
+          flex: 1;
+        }
+        
+        #prefixValueDisplay, #suffixValueDisplay {
+          min-width: 30px;
+          text-align: center;
+          font-weight: bold;
+          color: #FFD700;
         }
       </style>
     `;
@@ -782,14 +1543,16 @@ class StatsCalculator {
         this.showSocketModal();
       }
     });
-
+    
     // Modal close
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('socket-close') || e.target.id === 'socketModal') {
         this.hideSocketModal();
+      } else if (e.target.classList.contains('socket-close') || e.target.id === 'jewelModal') {
+        this.hideJewelModal();
       }
     });
-
+    
     // Tab switching
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('socket-category-tab')) {
@@ -798,7 +1561,7 @@ class StatsCalculator {
         this.populateSocketItems(e.target.dataset.category);
       }
     });
-
+    
     // Socket item selection
     document.addEventListener('click', (e) => {
       if (e.target.closest('.socket-item') && !e.target.closest('.custom-jewel-item')) {
@@ -808,7 +1571,7 @@ class StatsCalculator {
         this.socketItem(itemKey, category);
       }
     });
-
+    
     // Add socket button clicks
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('add-socket-btn')) {
@@ -818,7 +1581,7 @@ class StatsCalculator {
         }
       }
     });
-
+    
     // Remove socketed items
     document.addEventListener('click', (e) => {
       if (e.target.tagName === 'IMG' && e.target.closest('.socket-slot.filled')) {
@@ -827,7 +1590,7 @@ class StatsCalculator {
       }
     });
   }
-
+  
   initializeSocketContainers() {
     const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
     
@@ -898,7 +1661,7 @@ class StatsCalculator {
     const modal = document.getElementById('socketModal');
     if (modal) modal.style.display = 'flex';
   }
-
+  
   hideSocketModal() {
     const modal = document.getElementById('socketModal');
     if (modal) modal.style.display = 'none';
@@ -906,72 +1669,57 @@ class StatsCalculator {
   }
   
   socketItem(itemKey, category) {
-    if (!this.currentSocket) return;
-    
-    const item = this.socketData[category][itemKey];
-    const section = this.currentSocket.closest('.socket-container')?.dataset.section || 'weapon';
-    const stat = item.stats[section] || item.stats.weapon;
-    
-    // Update socket appearance
-    this.currentSocket.classList.remove('empty');
-    this.currentSocket.classList.add('filled');
-    this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">`;
-    
-    // Store socket data INCLUDING level requirement
-    this.currentSocket.dataset.itemKey = itemKey;
-    this.currentSocket.dataset.category = category;
-    this.currentSocket.dataset.itemName = item.name;
-    this.currentSocket.dataset.stats = stat;
-    this.currentSocket.dataset.levelReq = item.levelReq || 1;
-    
-    this.hideSocketModal();
-    
-    // 🔥 FORCE immediate display update with new level requirements
-    this.updateItemDisplay(section);
-    
-    setTimeout(() => {
-      this.calculateAllStats();
-      console.log('✅ Socket item complete - all systems updated');
-    }, 50);
-  }
-
+  if (!this.currentSocket) return;
+  
+  const item = this.socketData[category][itemKey];
+  const section = this.currentSocket.closest('.socket-container')?.dataset.section || 'weapon';
+  const stat = item.stats[section] || item.stats.weapon;
+  
+  // Update socket appearance
+  this.currentSocket.classList.remove('empty');
+  this.currentSocket.classList.add('filled');
+  this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.src='img/placeholder.png'">`;
+  
+  // Store socket data INCLUDING level requirement (FIXED)
+  this.currentSocket.dataset.itemKey = itemKey;
+  this.currentSocket.dataset.category = category;
+  this.currentSocket.dataset.itemName = item.name;
+  this.currentSocket.dataset.stats = stat;
+  this.currentSocket.dataset.levelReq = item.levelReq || 1; // Make sure levelReq is set
+  
+  this.hideSocketModal();
+  this.updateItemDisplay(section);
+  this.calculateAllStats();
+}
+  
   removeSocketedItem(socket) {
-    // Clear socket data
     socket.classList.remove('filled');
     socket.classList.add('empty');
     socket.innerHTML = '';
     
-    // Clear datasets
+    // Clear socket data
     delete socket.dataset.itemKey;
     delete socket.dataset.category;
     delete socket.dataset.itemName;
     delete socket.dataset.stats;
     delete socket.dataset.levelReq;
     
-    // Get section for updates
     const section = socket.closest('.socket-container')?.dataset.section || 'weapon';
-    
-    // Update displays and recalculate stats
     this.updateItemDisplay(section);
-    
-    setTimeout(() => {
-      this.calculateAllStats();
-      console.log('🗑️ Socket cleared - all systems updated');
-    }, 50);
+    this.calculateAllStats();
   }
-
+  
   addSocket(section) {
     const container = document.querySelector(`.socket-container[data-section="${section}"]`);
-    if (!container) return;
+    const socketGrid = container?.querySelector('.socket-grid');
     
-    const socketGrid = container.querySelector('.socket-grid');
-    if (!socketGrid) return;
+    if (!container || !socketGrid) return;
     
-    const existingSockets = socketGrid.querySelectorAll('.socket-slot').length;
+    const existingSockets = socketGrid.children.length;
     const maxSockets = 6;
     
     if (existingSockets >= maxSockets) {
-      console.log(`Max sockets reached for ${section}: ${maxSockets}`);
+      alert(`Maximum ${maxSockets} sockets allowed`);
       return;
     }
     
@@ -986,101 +1734,7 @@ class StatsCalculator {
     
     console.log(`Added socket to ${section}: ${newSocketCount}/${maxSockets}`);
   }
-
-  // ========== ITEM DISPLAY METHODS ==========
-  updateItemDisplay(section) {
-    const infoIdMap = {
-      'weapon': 'weapon-info',
-      'helm': 'helm-info', 
-      'armor': 'armor-info',
-      'shield': 'off-info',
-      'gloves': 'glove-info',
-      'belts': 'belt-info',
-      'boots': 'boot-info'
-    };
-    
-    const dropdownIdMap = {
-      'weapon': 'weapons-dropdown',
-      'helm': 'helms-dropdown',
-      'armor': 'armors-dropdown', 
-      'shield': 'offs-dropdown',
-      'gloves': 'gloves-dropdown',
-      'belts': 'belts-dropdown',
-      'boots': 'boots-dropdown'
-    };
-    
-    const infoDiv = document.getElementById(infoIdMap[section]);
-    if (!infoDiv) return;
-    
-    const dropdown = document.getElementById(dropdownIdMap[section]);
-    let baseHtml = '';
-    
-    if (dropdown && dropdown.value && typeof itemList !== 'undefined' && itemList[dropdown.value]) {
-      const baseItem = itemList[dropdown.value];
-      baseHtml = baseItem.description;
-      
-      // 🔥 ALWAYS calculate and enforce the highest required level
-      const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
-      const meetsRequirement = this.checkLevelRequirement(actualRequiredLevel);
-      
-      // 🎯 Create the level requirement line with proper color
-      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
-      const levelRequirementLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
-      
-      // Update level requirement in description EVERY TIME with color
-      const levelRegex = /<span[^>]*>Required Level: \d+<\/span>|Required Level: \d+/i;
-      if (levelRegex.test(baseHtml)) {
-        baseHtml = baseHtml.replace(levelRegex, levelRequirementLine);
-      } else {
-        // Add level requirement if it doesn't exist
-        const lines = baseHtml.split('<br>');
-        lines.splice(2, 0, levelRequirementLine);
-        baseHtml = lines.join('<br>');
-      }
-      
-      // 🔥 If player doesn't meet level requirement, gray out the entire item
-      if (!meetsRequirement) {
-        infoDiv.style.opacity = '0.6';
-        infoDiv.style.filter = 'grayscale(50%)';
-        infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
-      } else {
-        infoDiv.style.opacity = '1';
-        infoDiv.style.filter = 'none';
-        infoDiv.title = '';
-      }
-      
-      console.log(`📊 Updated ${section} display - required level: ${actualRequiredLevel} (${meetsRequirement ? 'MET' : 'NOT MET'})`);
-    }
-    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-
-if (sockets.length > 0) {
-  // Add all socket stats as enhanced stats
-  sockets.forEach(socket => {
-    const stats = socket.dataset.stats;
-    if (stats) {
-      // Handle multiple stats (some socket items have multiple properties)
-      const statLines = stats.split(/[,\n]/).map(s => s.trim()).filter(s => s);
-      statLines.forEach(statLine => {
-        if (statLine) {
-          baseHtml += `<br><span class="socket-enhanced-stat">${statLine}</span>`;
-        }
-      });
-    }
-  });
-}
-
-
-    infoDiv.innerHTML = baseHtml;
-  }
-
-  // Update ALL equipment displays when level changes
-  updateAllEquipmentDisplays() {
-    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
-    sections.forEach(section => {
-      this.updateItemDisplay(section);
-    });
-  }
-
+  
   updateSocketsForItem(section) {
     const dropdownIdMap = {
       'weapon': 'weapons-dropdown',
@@ -1126,6 +1780,122 @@ if (sockets.length > 0) {
     socketGrid.className = `socket-grid sockets-${defaultSocketCount}`;
   }
   
+  // ========== ITEM DISPLAY METHODS ==========
+  updateItemDisplay(section) {
+    const infoIdMap = {
+      'weapon': 'weapon-info',
+      'helm': 'helm-info',
+      'armor': 'armor-info',
+      'shield': 'off-info',
+      'gloves': 'glove-info',
+      'belts': 'belt-info',
+      'boots': 'boot-info'
+    };
+    
+    const dropdownIdMap = {
+      'weapon': 'weapons-dropdown',
+      'helm': 'helms-dropdown',
+      'armor': 'armors-dropdown',
+      'shield': 'offs-dropdown',
+      'gloves': 'gloves-dropdown',
+      'belts': 'belts-dropdown',
+      'boots': 'boots-dropdown'
+    };
+    
+    const infoDiv = document.getElementById(infoIdMap[section]);
+    if (!infoDiv) return;
+    
+    const dropdown = document.getElementById(dropdownIdMap[section]);
+    let baseHtml = '';
+    
+    if (dropdown && dropdown.value && typeof itemList !== 'undefined' && itemList[dropdown.value]) {
+      const baseItem = itemList[dropdown.value];
+      baseHtml = baseItem.description;
+      
+      // Calculate and enforce the highest required level
+      const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+      const meetsRequirement = this.checkLevelRequirement(actualRequiredLevel);
+      
+      // Create the level requirement line with proper color
+      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
+      const levelRequirementLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
+      
+      // Update level requirement in description
+      const levelRegex = /<span[^>]*>Required Level: \d+<\/span>|Required Level: \d+/i;
+      if (levelRegex.test(baseHtml)) {
+        baseHtml = baseHtml.replace(levelRegex, levelRequirementLine);
+      } else {
+        // Add level requirement if it doesn't exist
+        const lines = baseHtml.split('<br>');
+        lines.splice(2, 0, levelRequirementLine);
+        baseHtml = lines.join('<br>');
+      }
+      
+      // If player doesn't meet level requirement, gray out the entire item
+      if (!meetsRequirement) {
+        infoDiv.style.opacity = '0.6';
+        infoDiv.style.filter = 'grayscale(50%)';
+        infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+      } else {
+        infoDiv.style.opacity = '1';
+        infoDiv.style.filter = 'none';
+        infoDiv.title = '';
+      }
+    }
+    
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    
+    if (sockets.length > 0) {
+      // Add all socket stats as enhanced stats
+      sockets.forEach(socket => {
+        const stats = socket.dataset.stats;
+        if (stats) {
+          // Handle multiple stats (some socket items have multiple properties)
+          const statLines = stats.split(/[,\n]/).map(s => s.trim()).filter(s => s);
+          statLines.forEach(statLine => {
+            if (statLine) {
+              baseHtml += `<br><span class="socket-enhanced-stat">${statLine}</span>`;
+            }
+          });
+        }
+      });
+    }
+    
+    infoDiv.innerHTML = baseHtml;
+  }
+  
+  updateAllEquipmentDisplays() {
+    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+    sections.forEach(section => {
+      this.updateItemDisplay(section);
+    });
+  }
+
+ addLevelValidationStyles() {
+    if (document.getElementById('level-validation-styles')) return;
+    
+    const styles = `
+      <style id="level-validation-styles">
+        .level-requirement-met {
+          color: #00ff00 !important;
+          font-weight: bold;
+        }
+        
+        .level-requirement-not-met {
+          color: #ff5555 !important;
+          font-weight: bold;
+        }
+        
+        .item-unusable {
+          opacity: 0.6;
+          filter: grayscale(50%);
+        }
+      </style>
+    `;
+    
+    document.head.insertAdjacentHTML('beforeend', styles);
+  }
+  
   // ========== EVENT LISTENERS ==========
   setupEventListeners() {
     // Equipment dropdown changes
@@ -1148,7 +1918,7 @@ if (sockets.length > 0) {
       }
     });
     
-    // 🔥 SPECIAL handling for level changes - update ALL equipment displays
+    // Level changes - update ALL equipment displays
     const levelInput = document.getElementById('lvlValue');
     if (levelInput) {
       levelInput.addEventListener('input', () => {
@@ -1161,408 +1931,178 @@ if (sockets.length > 0) {
     // Socket changes
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('socket-slot')) {
-        setTimeout(() => this.calculateAllStats(), 100);
+        this.currentSocket = e.target;
+        this.showSocketModal();
       }
     });
   }
   
   // ========== STATS CALCULATION ==========
   calculateAllStats() {
-    this.resetStats();
+    // Reset all stats
+    Object.keys(this.stats).forEach(key => {
+      this.stats[key] = 0;
+    });
+    
+    // Calculate base character stats
+    this.calculateBaseStats();
+    
+    // Calculate equipment stats
     this.calculateEquipmentStats();
+    
+    // Calculate socket stats
     this.calculateSocketStats();
-    this.calculateCharmStats();
-    this.calculateDerivedStats();
-    this.updateDisplay();
+    
+    // Update all displays
+    this.updateAllStatsDisplays();
   }
   
-  resetStats() {
-    Object.keys(this.stats).forEach(key => {
-      if (key === 'cbf') {
-        this.stats[key] = false;
-      } else if (key === 'critHitMultiplier') {
-        this.stats[key] = 2.0;
-      } else {
-        this.stats[key] = 0;
-      }
-    });
+  calculateBaseStats() {
+    const str = parseInt(document.getElementById('str')?.value) || 0;
+    const dex = parseInt(document.getElementById('dex')?.value) || 0;
+    const vit = parseInt(document.getElementById('vit')?.value) || 0;
+    const enr = parseInt(document.getElementById('enr')?.value) || 0;
+    
+    // Base life calculation (assuming Amazon base)
+    this.stats.life = (vit * 2) + 45;
+    
+    // Base mana calculation (assuming Amazon base)
+    this.stats.mana = (enr * 2) + 15;
+    
+    // Base defense from dexterity
+    this.stats.defense = Math.floor(dex / 4);
   }
   
   calculateEquipmentStats() {
-    Object.entries(this.equipmentMap).forEach(([dropdownId, itemType]) => {
+    const equipmentIds = {
+      'weapon': 'weapons-dropdown',
+      'helm': 'helms-dropdown',
+      'armor': 'armors-dropdown',
+      'shield': 'offs-dropdown',
+      'gloves': 'gloves-dropdown',
+      'belts': 'belts-dropdown',
+      'boots': 'boots-dropdown'
+    };
+    
+    Object.entries(equipmentIds).forEach(([section, dropdownId]) => {
       const dropdown = document.getElementById(dropdownId);
-      if (!dropdown || !dropdown.value) return;
-      
-      const itemName = dropdown.value;
-      if (typeof itemList === 'undefined' || !itemList[itemName]) return;
-      
-      const item = itemList[itemName];
-      this.parseItemStats(item);
+      if (dropdown && dropdown.value && typeof itemList !== 'undefined' && itemList[dropdown.value]) {
+        const item = itemList[dropdown.value];
+        this.parseItemStats(item, section);
+      }
     });
-  }
-  
-  parseItemStats(item) {
-    if (!item.description) return;
-    
-    const desc = item.description;
-    
-    // Get Defense directly from properties
-    if (item.properties && item.properties.defense) {
-      this.stats.defense += item.properties.defense;
-    }
-    
-    // Core Stats
-    this.extractStat(desc, /\+(\d+) to All Skills/, 'allSkills');
-    
-    // Get Magic Find and Gold Find directly from properties first
-    if (item.properties && item.properties.magicfind) {
-      this.stats.magicFind += item.properties.magicfind;
-    }
-    if (item.properties && item.properties.goldfind) {
-      this.stats.goldFind += item.properties.goldfind;
-    }
-    
-    // Speed Stats
-    this.extractStat(desc, /(\d+)%.*Faster Cast Rate/i, 'fcr');
-    this.extractStat(desc, /(\d+)%.*Increased Attack Speed/i, 'ias');
-    this.extractStat(desc, /(\d+)%.*Faster Run.*Walk/i, 'frw');
-    this.extractStat(desc, /(\d+)%.*Faster Hit Recovery/i, 'fhr');
-    
-    // Defensive Stats
-    this.extractStat(desc, /(\d+)%.*Damage Reduced/i, 'dr');
-    this.extractStat(desc, /Physical Damage.*Reduced by (\d+)/i, 'pdr');
-    this.extractStat(desc, /Magic Damage.*Reduced by (\d+)/i, 'mdr');
-    this.extractStat(desc, /Poison Length Reduced by (\d+)%/i, 'plr');
-    
-    // Resistances
-    this.extractStat(desc, /Fire Resist \+(\d+)%/i, 'fireResist');
-    this.extractStat(desc, /Cold Resist \+(\d+)%/i, 'coldResist');
-    this.extractStat(desc, /Lightning Resist \+(\d+)%/i, 'lightResist');
-    this.extractStat(desc, /Poison Resist \+(\d+)%/i, 'poisonResist');
-    
-    // All Resistances
-    const allResMatch = desc.match(/All Resistances \+(\d+)/i);
-    if (allResMatch) {
-      const value = parseInt(allResMatch[1]);
-      this.stats.fireResist += value;
-      this.stats.coldResist += value;
-      this.stats.lightResist += value;
-      this.stats.poisonResist += value;
-    }
-    
-    // Combat Stats
-    this.extractStat(desc, /(\d+)% Chance of Open Wounds/i, 'openWounds');
-    this.extractStat(desc, /(\d+)% Chance of Crushing Blow/i, 'crushingBlow');
-    this.extractStat(desc, /(\d+)% Chance of Critical Strike/i, 'criticalHit');
-    this.extractStat(desc, /(\d+)% Chance of Deadly Strike/i, 'deadlyStrike');
-    
-    // Pierce stats
-    this.extractStat(desc, /-(\d+)%.*Enemy.*Physical/i, 'piercePhys');
-    this.extractStat(desc, /-(\d+)%.*Enemy.*Fire/i, 'pierceFire');
-    this.extractStat(desc, /-(\d+)%.*Enemy.*Cold/i, 'pierceCold');
-    this.extractStat(desc, /-(\d+)%.*Enemy.*Lightning/i, 'pierceLight');
-    this.extractStat(desc, /-(\d+)%.*Enemy.*Poison/i, 'piercePoison');
-    this.extractStat(desc, /-(\d+)%.*Enemy.*Magic/i, 'pierceMagic');
-    
-    // Added damage ranges
-    this.extractDamageRange(desc, /Adds (\d+)-(\d+) Fire Damage/i, 'flatFire');
-    this.extractDamageRange(desc, /Adds (\d+)-(\d+) Cold Damage/i, 'flatCold');
-    this.extractDamageRange(desc, /Adds (\d+)-(\d+) Lightning Damage/i, 'flatLight');
-    this.extractDamageRange(desc, /Adds (\d+)-(\d+) Poison Damage/i, 'flatPoison');
-    this.extractDamageRange(desc, /Adds (\d+)-(\d+) Magic Damage/i, 'flatMagic');
-    
-    // Cannot Be Frozen
-    if (desc.toLowerCase().includes('cannot be frozen')) {
-      this.stats.cbf = true;
-    }
-  }
-  
-  extractStat(description, regex, statName) {
-    const match = description.match(regex);
-    if (match && this.stats.hasOwnProperty(statName)) {
-      this.stats[statName] += parseInt(match[1]);
-    }
-  }
-  
-  extractDamageRange(description, regex, baseName) {
-    const match = description.match(regex);
-    if (match) {
-      this.stats[baseName + 'Min'] += parseInt(match[1]);
-      this.stats[baseName + 'Max'] += parseInt(match[2]);
-    }
   }
   
   calculateSocketStats() {
-    // Get stats from all filled sockets - CHECK LEVEL REQUIREMENTS FIRST
-    const filledSockets = document.querySelectorAll('.socket-slot.filled');
+  const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+  
+  sections.forEach(section => {
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
     
-    filledSockets.forEach(socket => {
+    sockets.forEach(socket => {
       const stats = socket.dataset.stats;
-      const itemKey = socket.dataset.itemKey;
-      const category = socket.dataset.category;
-      
-      if (!stats) return;
-      
-      // CHECK LEVEL REQUIREMENTS BEFORE PROCESSING SOCKET STATS
+      const levelReq = parseInt(socket.dataset.levelReq) || 1;
       const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-      const parentSection = socket.closest('.socket-container')?.dataset.section;
       
-      // Get the item that contains this socket
-      let parentItem = null;
-      if (parentSection) {
-        const dropdown = document.getElementById(`${parentSection}s-dropdown`) || 
-                       document.getElementById(`${parentSection}-dropdown`);
-        if (dropdown?.value && itemList[dropdown.value]) {
-          parentItem = itemList[dropdown.value];
-        }
+      // FIXED: Only add socket stats if player meets level requirement
+      if (currentLevel >= levelReq && stats) {
+        this.parseSocketStats(stats, section);
+        console.log(`✅ Applied socket stats from ${socket.dataset.itemName} (level ${levelReq})`);
+      } else if (stats) {
+        console.log(`❌ Blocked socket stats from ${socket.dataset.itemName} - need level ${levelReq}, have ${currentLevel}`);
       }
-      
-      // If parent item doesn't meet level requirements, skip this socket's stats
-      if (parentItem && parentItem.properties?.reqlvl) {
-        if (currentLevel < parentItem.properties.reqlvl) {
-          console.log(`🚫 Skipping socket stats - parent item level requirement not met: ${parentItem.properties.reqlvl} > ${currentLevel}`);
-          return;
-        }
-      }
-      
-      // Also check if the socketed item itself has level requirements
-      if (this.socketData?.[category]?.[itemKey]) {
-        const socketedItem = this.socketData[category][itemKey];
-        if (socketedItem.levelReq && currentLevel < socketedItem.levelReq) {
-          console.log(`🚫 Skipping socket stats - socketed item level requirement not met: ${socketedItem.levelReq} > ${currentLevel}`);
-          return;
-        }
-      }
-      
-      // Only process stats if level requirements are met
-      this.parseSocketStats(stats);
     });
+  });
+}
+  parseItemStats(item, section) {
+    if (!item.properties) return;
+    
+    // Basic Stats (existing - keep these)
+    if (item.properties.defense) {
+      this.stats.defense += item.properties.defense;
+    }
+    if (item.properties.life) {
+      this.stats.life += item.properties.life;
+    }
+    if (item.properties.mana) {
+      this.stats.mana += item.properties.mana;
+    }
+    if (item.properties.magicFind) {
+      this.stats.magicFind += item.properties.magicFind;
+    }
+    if (item.properties.attackRating) {
+      this.stats.attackRating += item.properties.attackRating;
+    }
+    
+    // Basic Resistances (existing - keep these)
+    if (item.properties.fireResist) {
+      this.stats.fireResist += item.properties.fireResist;
+    }
+    if (item.properties.coldResist) {
+      this.stats.coldResist += item.properties.coldResist;
+    }
+    if (item.properties.lightResist) {
+      this.stats.lightResist += item.properties.lightResist;
+    }
+    if (item.properties.poisonResist) {
+      this.stats.poisonResist += item.properties.poisonResist;
+    }
+    
+    // 🔧 ADD MISSING STATS PARSING FROM DESCRIPTION
+    if (item.description) {
+      this.parseDescriptionStats(item.description);
+    }
   }
   
-  parseSocketStats(socketStats) {
-    // Lightning damage
-    let match = socketStats.match(/\+?(\d+)-(\d+) Lightning Damage/i);
-    if (match) {
-      this.stats.flatLightMin += parseInt(match[1]);
-      this.stats.flatLightMax += parseInt(match[2]);
-      return;
-    }
+  // 🆕 NEW METHOD: Parse stats from item descriptions
+  parseDescriptionStats(description) {
+    // Speed Stats
+    this.extractStatFromDescription(description, /(\d+)%\s*Faster Cast Rate/i, 'fcr');
+    this.extractStatFromDescription(description, /(\d+)%\s*Increased Attack Speed/i, 'ias');
+    this.extractStatFromDescription(description, /(\d+)%\s*Faster Run\/Walk/i, 'frw');
+    this.extractStatFromDescription(description, /(\d+)%\s*Faster Hit Recovery/i, 'fhr');
     
-    // Fire damage
-    match = socketStats.match(/\+?(\d+)-(\d+) Fire Damage/i);
-    if (match) {
-      this.stats.flatFireMin += parseInt(match[1]);
-      this.stats.flatFireMax += parseInt(match[2]);
-      return;
-    }
+    // Defensive Stats
+    this.extractStatFromDescription(description, /(\d+)%\s*Damage Reduced/i, 'dr');
+    this.extractStatFromDescription(description, /Physical Damage.*Reduced by (\d+)/i, 'pdr');
+    this.extractStatFromDescription(description, /Magic Damage.*Reduced by (\d+)/i, 'mdr');
+    this.extractStatFromDescription(description, /Poison Length Reduced by (\d+)%/i, 'plr');
     
-    // Cold damage
-    match = socketStats.match(/\+?(\d+)-(\d+) Cold Damage/i);
-    if (match) {
-      this.stats.flatColdMin += parseInt(match[1]);
-      this.stats.flatColdMax += parseInt(match[2]);
-      return;
-    }
-    
-    // Enhanced damage
-    match = socketStats.match(/\+?(\d+)%.*Enhanced.*Damage/i);
-    if (match) {
-      this.stats.enhancedDamage += parseInt(match[1]);
-      return;
-    }
-    
-    // Attack Rating
-    match = socketStats.match(/\+(\d+).*Attack Rating/i);
-    if (match) {
-      this.stats.attackRating += parseInt(match[1]);
-      return;
-    }
-    
-    // Life
-    match = socketStats.match(/\+(\d+) to Life/i);
-    if (match) {
-      this.stats.life += parseInt(match[1]);
-      return;
-    }
-    
-    // Mana
-    match = socketStats.match(/\+(\d+) to Mana/i);
-    if (match) {
-      this.stats.mana += parseInt(match[1]);
-      return;
-    }
-    
-    // Defense
-    match = socketStats.match(/\+(\d+) Defense/i);
-    if (match) {
-      this.stats.defense += parseInt(match[1]);
-      return;
-    }
-    
-    // Resistances
-    match = socketStats.match(/Fire Resist \+(\d+)%/i);
-    if (match) {
-      this.stats.fireResist += parseInt(match[1]);
-      return;
-    }
-    
-    match = socketStats.match(/Cold Resist \+(\d+)%/i);
-    if (match) {
-      this.stats.coldResist += parseInt(match[1]);
-      return;
-    }
-    
-    match = socketStats.match(/Lightning Resist \+(\d+)%/i);
-    if (match) {
-      this.stats.lightResist += parseInt(match[1]);
-      return;
-    }
-    
-    match = socketStats.match(/Poison Resist \+(\d+)%/i);
-    if (match) {
-      this.stats.poisonResist += parseInt(match[1]);
-      return;
-    }
-    
-    match = socketStats.match(/All Resistances \+(\d+)%?/i);
-    if (match) {
-      const value = parseInt(match[1]);
-      this.stats.fireResist += value;
-      this.stats.coldResist += value;
-      this.stats.lightResist += value;
-      this.stats.poisonResist += value;
-      return;
-    }
-    
-    // Attributes
-    match = socketStats.match(/\+(\d+) to Strength/i);
-    if (match) {
-      this.stats.strength += parseInt(match[1]);
-      return;
-    }
-    
-    match = socketStats.match(/\+(\d+) to Dexterity/i);
-    if (match) {
-      this.stats.dexterity += parseInt(match[1]);
-      return;
-    }
-    
-    match = socketStats.match(/\+(\d+) to Vitality/i);
-    if (match) {
-      this.stats.vitality += parseInt(match[1]);
-      return;
-    }
-    
-    match = socketStats.match(/\+(\d+) to Energy/i);
-    if (match) {
-      this.stats.energy += parseInt(match[1]);
-      return;
-    }
-    
-    // Magic Find
-    match = socketStats.match(/(\d+)%.*Better Chance.*Magic/i);
-    if (match) {
-      this.stats.magicFind += parseInt(match[1]);
-      return;
-    }
+    // Enhanced Damage
+    this.extractStatFromDescription(description, /(\d+)%\s*Enhanced Damage/i, 'enhancedDamage');
     
     // Gold Find
-    match = socketStats.match(/(\d+)%.*Extra Gold/i);
-    if (match) {
-      this.stats.goldFind += parseInt(match[1]);
-      return;
+    this.extractStatFromDescription(description, /(\d+)%\s*Extra Gold from Monsters/i, 'goldFind');
+    
+    // All Skills
+    this.extractStatFromDescription(description, /\+(\d+)\s*to All Skills/i, 'allSkills');
+    
+    // Block Chance
+    this.extractStatFromDescription(description, /(\d+)%\s*Increased Chance of Blocking/i, 'blockChance');
+    
+    // Combat Stats
+    this.extractStatFromDescription(description, /(\d+)%\s*Chance of Open Wounds/i, 'openWounds');
+    this.extractStatFromDescription(description, /(\d+)%\s*Chance of Crushing Blow/i, 'crushingBlow');
+    this.extractStatFromDescription(description, /(\d+)%\s*Chance of Deadly Strike/i, 'deadlyStrike');
+    this.extractStatFromDescription(description, /(\d+)%\s*Critical Strike/i, 'criticalHit');
+    
+    // Leech
+    this.extractStatFromDescription(description, /(\d+)%\s*Life Stolen per Hit/i, 'lifeSteal');
+    this.extractStatFromDescription(description, /(\d+)%\s*Mana Stolen per Hit/i, 'manaSteal');
+    
+    // Attributes
+    this.extractStatFromDescription(description, /\+(\d+)\s*to Strength/i, 'strength');
+    this.extractStatFromDescription(description, /\+(\d+)\s*to Dexterity/i, 'dexterity');
+    this.extractStatFromDescription(description, /\+(\d+)\s*to Vitality/i, 'vitality');
+    this.extractStatFromDescription(description, /\+(\d+)\s*to Energy/i, 'energy');
+    
+    // Cannot Be Frozen
+    if (description.toLowerCase().includes('cannot be frozen')) {
+      this.stats.cbf = true;
     }
     
-    // IAS
-    match = socketStats.match(/\+?(\d+)%.*Increased Attack Speed/i);
-    if (match) {
-      this.stats.ias += parseInt(match[1]);
-      return;
-    }
-    
-    // FHR
-    match = socketStats.match(/\+?(\d+)%.*Faster Hit Recovery/i);
-    if (match) {
-      this.stats.fhr += parseInt(match[1]);
-      return;
-    }
-    
-    // FCR
-    match = socketStats.match(/\+?(\d+)%.*Faster Cast Rate/i);
-    if (match) {
-      this.stats.fcr += parseInt(match[1]);
-      return;
-    }
-  }
-  
-  calculateCharmStats() {
-    const container = document.querySelector('.inventorycontainer');
-    if (!container) return;
-    
-    // Get all charm slots with data
-    const charmSlots = container.querySelectorAll('.charm1[data-charm-data]');
-    const charmOverlays = container.querySelectorAll('.charm-overlay[data-charm-data]');
-    
-    // Process regular charm slots (small charms)
-    charmSlots.forEach(slot => {
-      const charmData = slot.dataset.charmData;
-      if (charmData && charmData.trim()) {
-        this.parseCharmStats(charmData);
-      }
-    });
-    
-    // Process overlay charms (large/grand charms)
-    charmOverlays.forEach(overlay => {
-      const charmData = overlay.dataset.charmData;
-      if (charmData && charmData.trim()) {
-        this.parseCharmStats(charmData);
-      }
-    });
-  }
-
-  parseCharmStats(charmData) {
-    const lines = charmData.split('\n');
-    
-    // Skip the first line (charm name) and process stats
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      
-      this.parseCharmStatLine(line);
-    }
-  }
-
-  parseCharmStatLine(line) {
-    // Core Stats
-    this.extractStatFromLine(line, /\+(\d+) to All Skills/, 'allSkills');
-    this.extractStatFromLine(line, /\+(\d+) to Strength/, 'strength');
-    this.extractStatFromLine(line, /\+(\d+) to Dexterity/, 'dexterity');
-    this.extractStatFromLine(line, /\+(\d+) to Vitality/, 'vitality');
-    this.extractStatFromLine(line, /\+(\d+) to Energy/, 'energy');
-    
-    // Life and Mana
-    this.extractStatFromLine(line, /\+(\d+) to Life/, 'life');
-    this.extractStatFromLine(line, /\+(\d+) to Mana/, 'mana');
-    
-    // Resistances
-    this.extractStatFromLine(line, /Fire Resist \+(\d+)%/, 'fireResist');
-    this.extractStatFromLine(line, /Cold Resist \+(\d+)%/, 'coldResist');
-    this.extractStatFromLine(line, /Lightning Resist \+(\d+)%/, 'lightResist');
-    this.extractStatFromLine(line, /Poison Resist \+(\d+)%/, 'poisonResist');
-    this.extractStatFromLine(line, /All Resistances \+(\d+)/, 'allResist');
-    
-    // Speed Stats
-    this.extractStatFromLine(line, /(\d+)% Faster Cast Rate/, 'fcr');
-    this.extractStatFromLine(line, /(\d+)% Increased Attack Speed/, 'ias');
-    this.extractStatFromLine(line, /(\d+)% Faster Run\/Walk/, 'frw');
-    this.extractStatFromLine(line, /(\d+)% Faster Hit Recovery/, 'fhr');
-    
-    // Magic Find and Gold Find
-    this.extractStatFromLine(line, /(\d+)% Better Chance of Getting Magic Items/, 'magicFind');
-    this.extractStatFromLine(line, /(\d+)% Extra Gold from Monsters/, 'goldFind');
-    
-    // Handle all resistances
-    const allResMatch = line.match(/All Resistances \+(\d+)/);
+    // All Resistances
+    const allResMatch = description.match(/All Resistances \+(\d+)/i);
     if (allResMatch) {
       const value = parseInt(allResMatch[1]);
       this.stats.fireResist += value;
@@ -1571,176 +2111,472 @@ if (sockets.length > 0) {
       this.stats.poisonResist += value;
     }
   }
-
-  extractStatFromLine(line, regex, statKey) {
-    const match = line.match(regex);
+  
+  // 🆕 HELPER METHOD: Extract stat from description
+  extractStatFromDescription(description, regex, statKey) {
+    const match = description.match(regex);
     if (match) {
       const value = parseInt(match[1]);
       if (!isNaN(value)) {
         this.stats[statKey] += value;
+        console.log(`📊 Found ${statKey}: +${value} from equipment`);
       }
     }
   }
   
-  calculateDerivedStats() {
-    // Calculate derived stats
-    this.stats.openWoundsDmg = this.calculateOpenWoundsDamage();
-    this.stats.crushingBlowDmg = this.calculateCrushingBlowDamage();
-    this.stats.critHitMultiplier = this.calculateCritMultiplier();
-  }
+  parseSocketStats(statsString, section) {
+  const statLines = statsString.split(/[,\n]/).map(s => s.trim()).filter(s => s);
   
-  calculateOpenWoundsDamage() {
-    const levelInput = document.getElementById('lvlValue');
-    const level = levelInput ? parseInt(levelInput.value) || 1 : 1;
-    return Math.floor(this.stats.openWounds * level * 0.8);
-  }
-  
-  calculateCrushingBlowDamage() {
-    return this.stats.crushingBlow > 0 ? 25 : 0;
-  }
-  
-  calculateCritMultiplier() {
-    return 2.0 + (this.stats.weaponMastery * 0.05);
-  }
-
-  updateDisplay() {
-    // Core Stats
-    this.updateContainer('allskillscontainer', this.stats.allSkills);
-    this.updateContainer('magicfindcontainer', this.stats.magicFind);
-    this.updateContainer('goldfindcontainer', this.stats.goldFind);
+  statLines.forEach(statLine => {
+    console.log(`🔍 Parsing: "${statLine}"`);
     
-    // Defensive Stats
-    this.updateContainer('defensecontainer', this.stats.defense);
-    this.updateContainer('realblockcontainer', this.stats.blockChance);
-    this.updateContainer('drcontainer', this.stats.dr);
-    this.updateContainer('pdrcontainer', this.stats.pdr);
-    this.updateContainer('mdrcontainer', this.stats.mdr);
-    this.updateContainer('plrcontainer', this.stats.plr);
-    this.updateContainer('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');
+    // Enhanced Damage (multiple formats)
+    if (statLine.includes('Enhanced Damage') || (statLine.includes('%') && statLine.includes('Damage'))) {
+      const match = statLine.match(/(\d+)%?\s*Enhanced Damage|(\d+)%\s*Damage/);
+      if (match) {
+        const value = parseInt(match[1] || match[2]);
+        this.stats.enhancedDamage += value;
+        console.log(`💪 +${value}% Enhanced Damage (total: ${this.stats.enhancedDamage}%)`);
+      }
+    }
     
-    // Speed Stats
-    this.updateContainer('iascontainer', this.stats.ias);
-    this.updateContainer('fcrcontainer', this.stats.fcr);
-    this.updateContainer('frwcontainer', this.stats.frw);
-    this.updateContainer('fhrcontainer', this.stats.fhr);
+    // Life (multiple formats)
+    if (statLine.includes('to Life') || (statLine.includes('Life') && statLine.includes('+'))) {
+      const match = statLine.match(/\+(\d+)\s*(?:to\s+)?Life/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.life += value;
+        console.log(`❤️ +${value} Life (total: ${this.stats.life})`);
+      }
+    }
     
-    // Resistances
-    this.updateContainer('fireresistcontainer', this.stats.fireResist);
-    this.updateContainer('coldresistcontainer', this.stats.coldResist);
-    this.updateContainer('lightresistcontainer', this.stats.lightResist);
-    this.updateContainer('poisonresistcontainer', this.stats.poisonResist);
-    this.updateContainer('curseresistcontainer', this.stats.curseResist);
+    // Mana (multiple formats) 
+    if (statLine.includes('to Mana') || (statLine.includes('Mana') && statLine.includes('+'))) {
+      const match = statLine.match(/\+(\d+)\s*(?:to\s+)?Mana/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.mana += value;
+        console.log(`💙 +${value} Mana (total: ${this.stats.mana})`);
+      }
+    }
     
-    // Combat Stats
-    this.updateContainer('owcontainer', this.stats.openWounds);
-    this.updateContainer('owdmgcontainer', this.stats.openWoundsDmg);
-    this.updateContainer('cbcontainer', this.stats.crushingBlow);
-    this.updateContainer('cbdmgcontainer', this.stats.crushingBlowDmg);
-    this.updateContainer('criticalhitcontainer', this.stats.criticalHit);
-    this.updateContainer('deadlystrikecontainer', this.stats.deadlyStrike);
-    this.updateContainer('weaponmasterycontainer', this.stats.weaponMastery);
-    this.updateContainer('crithitmultipliercontainer', this.stats.critHitMultiplier.toFixed(1));
+    // Defense (be more specific to avoid conflicts)
+    if (statLine.includes('Defense') && !statLine.includes('Enhanced Defense') && !statLine.includes('vs.') && !statLine.includes('Target')) {
+      const match = statLine.match(/\+(\d+)\s*Defense/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.defense += value;
+        console.log(`🛡️ +${value} Defense (total: ${this.stats.defense})`);
+      }
+    }
     
-    // Pierce Stats
-    this.updateContainer('piercephyscontainer', this.stats.piercePhys);
-    this.updateContainer('piercefirecontainer', this.stats.pierceFire);
-    this.updateContainer('piercecoldcontainer', this.stats.pierceCold);
-    this.updateContainer('piercelightcontainer', this.stats.pierceLight);
-    this.updateContainer('piercepoisoncontainer', this.stats.piercePoison);
-    this.updateContainer('piercemagiccontainer', this.stats.pierceMagic);
+    // Magic Find - FIXED multiple formats
+    if (statLine.includes('Better Chance of Getting Magic Items') || statLine.includes('Magic Items')) {
+      const match = statLine.match(/(\d+)%?\s*Better Chance of Getting Magic Items/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.magicFind += value;
+        console.log(`✨ +${value}% Magic Find (total: ${this.stats.magicFind}%)`);
+      }
+    }
     
-    // Added Damage
-    this.updateContainer('flatfiremincontainer', this.stats.flatFireMin);
-    this.updateContainer('flatfiremaxcontainer', this.stats.flatFireMax);
-    this.updateContainer('flatcoldmincontainer', this.stats.flatColdMin);
-    this.updateContainer('flatcoldmaxcontainer', this.stats.flatColdMax);
-    this.updateContainer('flatlightmincontainer', this.stats.flatLightMin);
-    this.updateContainer('flatlightmaxcontainer', this.stats.flatLightMax);
-    this.updateContainer('flatpoisonmincontainer', this.stats.flatPoisonMin);
-    this.updateContainer('flatpoisonmaxcontainer', this.stats.flatPoisonMax);
-    this.updateContainer('flatmagicmincontainer', this.stats.flatMagicMin);
-    this.updateContainer('flatmagicmaxcontainer', this.stats.flatMagicMax);
-  }
-  
-  updateContainer(containerId, value) {
-    const container = document.getElementById(containerId);
-    if (container) {
-      if (typeof value === 'string') {
-        container.textContent = value;
+    // Attack Rating - FIXED
+    if (statLine.includes('Attack Rating') && statLine.includes('+')) {
+      const match = statLine.match(/\+(\d+)\s*(?:to\s+)?Attack Rating/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.attackRating += value;
+        console.log(`⚔️ +${value} Attack Rating (total: ${this.stats.attackRating})`);
+      }
+    }
+    
+    // RESISTANCES - FIXED parsing
+    if (statLine.includes('Fire Resist')) {
+      const match = statLine.match(/Fire Resist \+(\d+)%?/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.fireResist += value;
+        console.log(`🔥 +${value}% Fire Resist (total: ${this.stats.fireResist}%)`);
+      }
+    }
+    
+    if (statLine.includes('Cold Resist')) {
+      const match = statLine.match(/Cold Resist \+(\d+)%?/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.coldResist += value;
+        console.log(`❄️ +${value}% Cold Resist (total: ${this.stats.coldResist}%)`);
+      }
+    }
+    
+    if (statLine.includes('Lightning Resist')) {
+      const match = statLine.match(/Lightning Resist \+(\d+)%?/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.lightResist += value;
+        console.log(`⚡ +${value}% Lightning Resist (total: ${this.stats.lightResist}%)`);
+      }
+    }
+    
+    if (statLine.includes('Poison Resist')) {
+      const match = statLine.match(/Poison Resist \+(\d+)%?/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.poisonResist += value;
+        console.log(`☠️ +${value}% Poison Resist (total: ${this.stats.poisonResist}%)`);
+      }
+    }
+    
+    // All Resistances - FIXED
+    if (statLine.includes('All Resistances')) {
+      const match = statLine.match(/All Resistances \+(\d+)%?/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.fireResist += value;
+        this.stats.coldResist += value;
+        this.stats.lightResist += value;
+        this.stats.poisonResist += value;
+        console.log(`🌈 +${value}% All Resistances`);
+      }
+    }
+    
+    // ELEMENTAL DAMAGE - FIXED multiple formats
+    if (statLine.includes('Fire Damage')) {
+      let match = statLine.match(/Adds (\d+)-(\d+) Fire Damage/i);
+      if (match) {
+        const min = parseInt(match[1]);
+        const max = parseInt(match[2]);
+        this.stats.flatFireMin += min;
+        this.stats.flatFireMax += max;
+        console.log(`🔥 +${min}-${max} Fire Damage`);
       } else {
-        container.textContent = Math.round(value).toString();
+        // Try alternative format: "+X-Y Fire Damage"
+        match = statLine.match(/\+(\d+)-(\d+) Fire Damage/i);
+        if (match) {
+          const min = parseInt(match[1]);
+          const max = parseInt(match[2]);
+          this.stats.flatFireMin += min;
+          this.stats.flatFireMax += max;
+          console.log(`🔥 +${min}-${max} Fire Damage`);
+        }
       }
     }
-  }
-
-  // ========== JEWEL SYSTEM (SIMPLIFIED) ==========
-  createJewelModal() {
-    // Simplified jewel modal - just create basic structure
-    const existingModal = document.getElementById('jewelModal');
-    if (existingModal) existingModal.remove();
     
-    const modalHTML = `
-      <div id="jewelModal" class="socket-modal" style="display: none;">
-        <div class="socket-modal-content">
-          <span class="socket-close">&times;</span>
-          <h3>Custom Jewel (Simplified)</h3>
-          <p>This is a placeholder for the jewel creation system.</p>
-          <button id="createSimpleJewel">Create +15% Enhanced Damage Jewel</button>
-        </div>
-      </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
-    // Simple jewel creation
-    document.addEventListener('click', (e) => {
-      if (e.target.id === 'createSimpleJewel') {
-        this.createSimpleJewel();
+    if (statLine.includes('Cold Damage')) {
+      let match = statLine.match(/Adds (\d+)-(\d+) Cold Damage/i);
+      if (match) {
+        const min = parseInt(match[1]);
+        const max = parseInt(match[2]);
+        this.stats.flatColdMin += min;
+        this.stats.flatColdMax += max;
+        console.log(`❄️ +${min}-${max} Cold Damage`);
+      } else {
+        match = statLine.match(/\+(\d+)-(\d+) Cold Damage/i);
+        if (match) {
+          const min = parseInt(match[1]);
+          const max = parseInt(match[2]);
+          this.stats.flatColdMin += min;
+          this.stats.flatColdMax += max;
+          console.log(`❄️ +${min}-${max} Cold Damage`);
+        }
       }
-    });
-  }
-
-  showJewelModal() {
-    const modal = document.getElementById('jewelModal');
-    if (modal) modal.style.display = 'flex';
-  }
-
-  hideJewelModal() {
-    const modal = document.getElementById('jewelModal');
-    if (modal) modal.style.display = 'none';
-    this.currentSocket = null;
-    this.targetSocket = null;
-  }
-
-  createSimpleJewel() {
-    const socketToUse = this.targetSocket || this.currentSocket;
-    
-    if (!socketToUse) {
-      alert('No socket selected!');
-      return;
     }
     
-    // Update socket appearance
-    socketToUse.classList.remove('empty');
-    socketToUse.classList.add('filled');
-    socketToUse.innerHTML = '<img src="img/jewel1.png" alt="Custom Jewel" style="width: 20px; height: 20px;">';
+    if (statLine.includes('Lightning Damage')) {
+      // Special case: "Adds 1-X Lightning Damage"
+      let match = statLine.match(/Adds 1-(\d+) Lightning Damage/i);
+      if (match) {
+        this.stats.flatLightMin += 1;
+        this.stats.flatLightMax += parseInt(match[1]);
+        console.log(`⚡ +1-${match[1]} Lightning Damage`);
+      } else {
+        // Regular format: "Adds X-Y Lightning Damage"
+        match = statLine.match(/Adds (\d+)-(\d+) Lightning Damage/i);
+        if (match) {
+          const min = parseInt(match[1]);
+          const max = parseInt(match[2]);
+          this.stats.flatLightMin += min;
+          this.stats.flatLightMax += max;
+          console.log(`⚡ +${min}-${max} Lightning Damage`);
+        } else {
+          // Alternative: "+X-Y Lightning Damage"
+          match = statLine.match(/\+(\d+)-(\d+) Lightning Damage/i);
+          if (match) {
+            const min = parseInt(match[1]);
+            const max = parseInt(match[2]);
+            this.stats.flatLightMin += min;
+            this.stats.flatLightMax += max;
+            console.log(`⚡ +${min}-${max} Lightning Damage`);
+          }
+        }
+      }
+    }
     
-    // Store jewel data
-    socketToUse.dataset.itemKey = 'custom-jewel';
-    socketToUse.dataset.category = 'jewels';
-    socketToUse.dataset.itemName = 'Custom Jewel';
-    socketToUse.dataset.stats = '+15% Enhanced Damage';
-    socketToUse.dataset.levelReq = 1;
+    // Min/Max Damage
+    if (statLine.includes('to Minimum Damage')) {
+      const match = statLine.match(/\+(\d+)\s*to Minimum Damage/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.flatFireMin += value; // Adding to physical/fire
+        console.log(`⚔️ +${value} to Minimum Damage`);
+      }
+    }
     
-    // Update displays
-    const section = socketToUse.closest('.socket-container')?.dataset.section || 'weapon';
+    if (statLine.includes('to Maximum Damage')) {
+      const match = statLine.match(/\+(\d+)\s*to Maximum Damage/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.flatFireMax += value; // Adding to physical/fire
+        console.log(`⚔️ +${value} to Maximum Damage`);
+      }
+    }
     
-    this.hideJewelModal();
-    this.updateItemDisplay(section);
-    this.calculateAllStats();
+    // ATTRIBUTES - FIXED
+    if (statLine.includes('to Strength')) {
+      const match = statLine.match(/\+(\d+)\s*to Strength/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.strength += value;
+        console.log(`💪 +${value} Strength`);
+      }
+    }
     
-    this.targetSocket = null;
+    if (statLine.includes('to Dexterity')) {
+      const match = statLine.match(/\+(\d+)\s*to Dexterity/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.dexterity += value;
+        console.log(`🏹 +${value} Dexterity`);
+      }
+    }
+    
+    if (statLine.includes('to Vitality')) {
+      const match = statLine.match(/\+(\d+)\s*to Vitality/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.vitality += value;
+        console.log(`❤️ +${value} Vitality`);
+      }
+    }
+    
+    if (statLine.includes('to Energy')) {
+      const match = statLine.match(/\+(\d+)\s*to Energy/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.energy += value;
+        console.log(`⚡ +${value} Energy`);
+      }
+    }
+    
+    // LEECH STATS - FIXED
+    if (statLine.includes('Life Stolen per Hit')) {
+      const match = statLine.match(/(\d+)%\s*Life Stolen per Hit/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.lifeSteal += value;
+        console.log(`🩸 +${value}% Life Steal`);
+      }
+    }
+    
+    if (statLine.includes('Mana Stolen per Hit')) {
+      const match = statLine.match(/(\d+)%\s*Mana Stolen per Hit/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.manaSteal += value;
+        console.log(`💙 +${value}% Mana Steal`);
+      }
+    }
+    
+    // COMBAT STATS - FIXED
+    if (statLine.includes('Increased Attack Speed')) {
+      const match = statLine.match(/\+?(\d+)%\s*Increased Attack Speed/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.ias += value;
+        console.log(`⚡ +${value}% IAS`);
+      }
+    }
+    
+    if (statLine.includes('Deadly Strike')) {
+      const match = statLine.match(/(\d+)%\s*Deadly Strike/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.deadlyStrike += value;
+        console.log(`💀 +${value}% Deadly Strike`);
+      }
+    }
+    
+    if (statLine.includes('Chance of Open Wounds')) {
+      const match = statLine.match(/(\d+)%\s*Chance of Open Wounds/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.openWounds += value;
+        console.log(`🩸 +${value}% Open Wounds`);
+      }
+    }
+    
+    if (statLine.includes('Chance of Crushing Blow')) {
+      const match = statLine.match(/(\d+)%\s*Chance of Crushing Blow/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.crushingBlow += value;
+        console.log(`💥 +${value}% Crushing Blow`);
+      }
+    }
+    
+    // GOLD FIND - FIXED
+    if (statLine.includes('Extra Gold From Monsters')) {
+      const match = statLine.match(/(\d+)%\s*Extra Gold From Monsters/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.goldFind += value;
+        console.log(`💰 +${value}% Gold Find`);
+      }
+    }
+    
+    // Block Chance - FIXED
+    if (statLine.includes('Increased Chance of Blocking')) {
+      const match = statLine.match(/(\d+)%\s*Increased Chance of Blocking/i);
+      if (match) {
+        const value = parseInt(match[1]);
+        this.stats.blockChance += value;
+        console.log(`🛡️ +${value}% Block Chance`);
+      }
+    }
+    
+    // Cannot Be Frozen
+    if (statLine.includes('Cannot Be Frozen')) {
+      this.stats.cbf = true;
+      console.log(`❄️ Cannot Be Frozen`);
+    }
+  });
+}
+  
+  updateAllStatsDisplays() {
+  console.log('📊 Updating all stats displays...');
+  
+  // Core Stats
+  this.updateContainer('lifecontainer', this.stats.life);
+  this.updateContainer('manacontainer', this.stats.mana);
+  this.updateContainer('defensecontainer', this.stats.defense);
+  this.updateContainer('attackratingcontainer', this.stats.attackRating);
+  
+  // Magic Find & Gold Find
+  this.updateContainer('magicfindcontainer', this.stats.magicFind);
+  this.updateContainer('goldfindcontainer', this.stats.goldFind);
+  
+  // Enhanced Damage
+  this.updateContainer('enhanceddamagecontainer', this.stats.enhancedDamage);
+  
+  // Resistances
+  this.updateContainer('fireresistcontainer', this.stats.fireResist);
+  this.updateContainer('coldresistcontainer', this.stats.coldResist);
+  this.updateContainer('lightresistcontainer', this.stats.lightResist);
+  this.updateContainer('poisonresistcontainer', this.stats.poisonResist);
+  this.updateContainer('curseresistcontainer', this.stats.curseResist);
+  
+  // Pierce Resistances (if containers exist)
+  this.updateContainer('piercefirecontainer', this.stats.pierceFire);
+  this.updateContainer('piercecoldcontainer', this.stats.pierceCold);
+  this.updateContainer('piercelightcontainer', this.stats.pierceLight);
+  this.updateContainer('piercepoisoncontainer', this.stats.piercePoison);
+  this.updateContainer('piercemagiccontainer', this.stats.pierceMagic);
+  this.updateContainer('piercephyscontainer', this.stats.piercePhys);
+  
+  // Added Elemental Damage
+  this.updateContainer('flatfiremincontainer', this.stats.flatFireMin);
+  this.updateContainer('flatfiremaxcontainer', this.stats.flatFireMax);
+  this.updateContainer('flatcoldmincontainer', this.stats.flatColdMin);
+  this.updateContainer('flatcoldmaxcontainer', this.stats.flatColdMax);
+  this.updateContainer('flatlightmincontainer', this.stats.flatLightMin);
+  this.updateContainer('flatlightmaxcontainer', this.stats.flatLightMax);
+  this.updateContainer('flatpoisonmincontainer', this.stats.flatPoisonMin);
+  this.updateContainer('flatpoisonmaxcontainer', this.stats.flatPoisonMax);
+  this.updateContainer('flatmagicmincontainer', this.stats.flatMagicMin);
+  this.updateContainer('flatmagicmaxcontainer', this.stats.flatMagicMax);
+  
+  // Attribute Bonuses
+  this.updateContainer('strengthcontainer', this.stats.strength);
+  this.updateContainer('dexteritycontainer', this.stats.dexterity);
+  this.updateContainer('vitalitycontainer', this.stats.vitality);
+  this.updateContainer('energycontainer', this.stats.energy);
+  
+  // Leech Stats
+  this.updateContainer('lifestealcontainer', this.stats.lifeSteal);
+  this.updateContainer('manastealcontainer', this.stats.manaSteal);
+  
+  // Speed Stats
+  this.updateContainer('iascontainer', this.stats.ias);
+  this.updateContainer('fcrcontainer', this.stats.fcr);
+  this.updateContainer('frwcontainer', this.stats.frw);
+  this.updateContainer('fhrcontainer', this.stats.fhr);
+  
+  // Combat Stats
+  this.updateContainer('deadlystrikecontainer', this.stats.deadlyStrike);
+  this.updateContainer('openwoundscontainer', this.stats.openWounds);
+  this.updateContainer('crushingblowcontainer', this.stats.crushingBlow);
+  this.updateContainer('criticalhitcontainer', this.stats.criticalHit);
+  
+  // Defensive Stats
+  this.updateContainer('blockchancecontainer', this.stats.blockChance);
+  this.updateContainer('drcontainer', this.stats.dr);
+  this.updateContainer('pdrcontainer', this.stats.pdr);
+  this.updateContainer('mdrcontainer', this.stats.mdr);
+  this.updateContainer('plrcontainer', this.stats.plr);
+  
+  // Special Stats
+  this.updateContainer('allskillscontainer', this.stats.allSkills);
+  this.updateContainer('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');
+  
+  console.log('📊 Stats display update complete!');
+  
+  // Log current stats for debugging
+  console.log('Current stats:', {
+    defense: this.stats.defense,
+    magicFind: this.stats.magicFind,
+    fireResist: this.stats.fireResist,
+    attackRating: this.stats.attackRating,
+    fireDamage: `${this.stats.flatFireMin}-${this.stats.flatFireMax}`,
+    coldDamage: `${this.stats.flatColdMin}-${this.stats.flatColdMax}`,
+    lightDamage: `${this.stats.flatLightMin}-${this.stats.flatLightMax}`
+  });
+}
+
+// ENHANCED: updateContainer with better error handling and visual feedback
+updateContainer(containerId, value) {
+  const container = document.getElementById(containerId);
+  if (container) {
+    if (typeof value === 'boolean') {
+      container.textContent = value ? 'Yes' : 'No';
+      container.style.color = value ? '#00ff00' : '#ffffff';
+    } else if (typeof value === 'string') {
+      container.textContent = value;
+    } else {
+      container.textContent = Math.round(value).toString();
+      
+      // Add visual feedback for positive values
+      if (value > 0) {
+        container.style.color = '#4a90e2';
+        container.style.fontWeight = 'bold';
+      } else {
+        container.style.color = '';
+        container.style.fontWeight = '';
+      }
+    }
+  } else {
+    // Only warn about containers we expect to exist
+    const expectedContainers = [
+      'lifecontainer', 'manacontainer', 'defensecontainer', 'magicfindcontainer',
+      'fireresistcontainer', 'coldresistcontainer', 'lightresistcontainer', 'poisonresistcontainer',
+      'flatfiremincontainer', 'flatfiremaxcontainer', 'flatcoldmincontainer', 'flatcoldmaxcontainer',
+      'flatlightmincontainer', 'flatlightmaxcontainer', 'attackratingcontainer', 'enhanceddamagecontainer'
+    ];
+    
+    if (expectedContainers.includes(containerId)) {
+      console.warn(`⚠️ Container '${containerId}' not found in DOM`);
+    }
   }
+}
   
   // Public method for external recalculation
   recalculate() {
@@ -1789,3 +2625,4 @@ window.addEventListener('load', () => {
 
 // Export for external use
 window.StatsCalculator = StatsCalculator;
+    
