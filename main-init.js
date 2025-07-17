@@ -1006,26 +1006,31 @@ class LevelRequirementSystem {
 }
   getSocketBonuses() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
-    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+    // const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
     
-    sections.forEach(section => {
-      const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-      sockets.forEach(socket => {
-        const stats = socket.dataset.stats;
-        if (stats) {
-          const strengthMatch = stats.match(/\+(\d+) (?:to )?Strength/i);
-          const dexterityMatch = stats.match(/\+(\d+) (?:to )?Dexterity/i);
-          const vitalityMatch = stats.match(/\+(\d+) (?:to )?Vitality/i);
-          const energyMatch = stats.match(/\+(\d+) (?:to )?Energy/i);
+    // sections.forEach(section => {
+    //   const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    //   sockets.forEach(socket => {
+    //     const stats = socket.dataset.stats;
+    //     if (stats) {
+    //       const strengthMatch = stats.match(/\+(\d+) (?:to )?Strength/i);
+    //       const dexterityMatch = stats.match(/\+(\d+) (?:to )?Dexterity/i);
+    //       const vitalityMatch = stats.match(/\+(\d+) (?:to )?Vitality/i);
+    //       const energyMatch = stats.match(/\+(\d+) (?:to )?Energy/i);
           
-          if (strengthMatch) bonuses.str += parseInt(strengthMatch[1]);
-          if (dexterityMatch) bonuses.dex += parseInt(dexterityMatch[1]);
-          if (vitalityMatch) bonuses.vit += parseInt(vitalityMatch[1]);
-          if (energyMatch) bonuses.enr += parseInt(energyMatch[1]);
-        }
-      });
-    });
-    
+    //       if (strengthMatch) bonuses.str += parseInt(strengthMatch[1]);
+    //       if (dexterityMatch) bonuses.dex += parseInt(dexterityMatch[1]);
+    //       if (vitalityMatch) bonuses.vit += parseInt(vitalityMatch[1]);
+    //       if (energyMatch) bonuses.enr += parseInt(energyMatch[1]);
+    //     }
+    //   });
+    // });
+    if (window.statsCalculator && window.statsCalculator.stats) {
+    bonuses.str = window.statsCalculator.stats.strength || 0;
+    bonuses.dex = window.statsCalculator.stats.dexterity || 0;
+    bonuses.vit = window.statsCalculator.stats.vitality || 0;
+    bonuses.enr = window.statsCalculator.stats.energy || 0;
+  }
     return bonuses;
   }
 

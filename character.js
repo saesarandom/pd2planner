@@ -17,7 +17,7 @@ class CharacterStats {
   }
   
   init() {
-    this.setupEventListeners();
+    // this.setupEventListeners();
     this.setInitialStats();
     console.log('📊 Character Stats System initialized');
   }
@@ -420,6 +420,8 @@ class CharacterStats {
   
   // Check level requirement system first
   if (window.levelRequirementSystem) {
+    console.log('🔥 CHARACTER.JS getAllItemBonuses() called');
+  console.trace(); // See who's calling this
     const validStats = window.levelRequirementSystem.getValidItemStats();
     
     bonuses.str = validStats.str || 0;

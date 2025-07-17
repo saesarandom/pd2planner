@@ -580,7 +580,7 @@ class StatsCalculator {
         'rare-jewel': { name: 'Rare Jewel', img: 'img/jewel1.png', levelReq: 1, stats: { weapon: '+15% Enhanced Damage', helm: '+15% Enhanced Damage', armor: '+15% Enhanced Damage', shield: '+15% Enhanced Damage' }, levelReq: 1 }
       }
     };
-    
+     this.isInitializing = true; 
     this.currentSocket = null;
     this.targetSocket = null;
     this.selectedJewelColor = 'white';
@@ -589,16 +589,22 @@ class StatsCalculator {
     this.selectedJewelPrefixValue = null;
     this.selectedJewelSuffixValue = null;
     
-    this.init();
-  }
+
+  this.init();
+  
+  // Add this at the end:
+  setTimeout(() => {
+    this.isInitializing = false;
+    console.log('✅ Initialization complete');
+  }, 100);
+}
   
   init() {
     this.setupEventListeners();
     this.initializeSocketSystem();
-    // this.addLevelValidationStyles();
     this.createJewelModal();
-    this.calculateAllStats();
-    console.log('📊 Enhanced Socket System with Custom Jewels initialized');
+
+
   }
   
   // ========== JEWEL CREATION SYSTEM ==========
@@ -1002,15 +1008,7 @@ class StatsCalculator {
     this.addSocketStyles();
     this.setupSocketEventListeners();
     this.initializeSocketContainers();
-  }init() {
-    this.setupEventListeners();
-    this.initializeSocketSystem();
-    this.addLevelValidationStyles();
-    this.createJewelModal();
-    this.calculateAllStats();
-    console.log('📊 Enhanced Socket System with Custom Jewels initialized');
   }
-  
  
   
   updatePrefixValueInput() {
@@ -2549,27 +2547,31 @@ updateAllEquipmentDisplays() {
 }
   
   // ========== STATS CALCULATION ==========
-  calculateAllStats() {
-  console.log('🔄 Starting complete stats recalculation...');
+  calculateAllStats() { 
+     if (this.isInitializing) {
+    console.log('🚫 Skipping calculation during initialization...');
+    return;
+  }
+   console.trace();
   const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-  console.log(`🎯 Current character level: ${currentLevel}`);
+ 
   
-  // ✅ STEP 1: COMPLETELY reset all stats to zero
+
   this.resetAllStats();
   
-  // ✅ STEP 2: Calculate base character stats (always applied)
+
   this.calculateBaseStats();
   
-  // ✅ STEP 3: Calculate equipment stats (with level checking)
+
   this.calculateEquipmentStats();
   
-  // ✅ STEP 4: Calculate socket stats (with level checking)
+ 
   this.calculateSocketStats();
   
-  // ✅ STEP 5: Update all displays
+
   this.updateAllStatsDisplays();
   
-  // ✅ DEBUG: Log final attribute stats
+ 
   console.log('✅ Final attribute bonuses applied:', {
     strength: this.stats.strength,
     dexterity: this.stats.dexterity,
@@ -2580,10 +2582,10 @@ updateAllEquipmentDisplays() {
   console.log('✅ Stats recalculation complete!');
 }
 
-// ✅ FIXED: Proper stats reset method
+
 resetAllStats() {
   console.log('🧹 Resetting all stats to zero...');
-  
+   console.log('🧹 BEFORE RESET - strength:', this.stats.strength, 'dexterity:', this.stats.dexterity);
   // Reset ALL stats to their default values
   Object.keys(this.stats).forEach(key => {
     if (key === 'cbf') {
@@ -2595,7 +2597,13 @@ resetAllStats() {
     }
   });
   
+const allSockets = document.querySelectorAll('.socket-slot.filled');
+allSockets.forEach(socket => {
+  delete socket.dataset.alreadyProcessed;
+});
+
   console.log('✅ All stats reset to defaults');
+   console.log('🧹 AFTER RESET - strength:', this.stats.strength, 'dexterity:', this.stats.dexterity);
 }
 
 // ✅ IMPROVED: Base stats calculation (always applied regardless of equipment)
@@ -2724,6 +2732,13 @@ calculateSocketStats() {
       const stats = socket.dataset.stats;
       const socketLevelReq = parseInt(socket.dataset.levelReq) || 1;
       
+  if (socket.dataset.alreadyProcessed === 'true') {
+        console.log(`🚫 Socket ${index} already processed, skipping...`);
+        return; // Skip this socket
+      }
+      
+
+
       if (stats && currentLevel >= socketLevelReq) {
         this.parseSocketStats(stats, section);
         console.log(`✅ Applied socket stats from ${socket.dataset.itemName}`);
@@ -2904,12 +2919,7 @@ parseItemStats(item, section) {
   this.extractStatFromDescription(description, /(\d+)%\s*Life Stolen per Hit/i, 'lifeSteal');
   this.extractStatFromDescription(description, /(\d+)%\s*Mana Stolen per Hit/i, 'manaSteal');
   
-  // ✅ ATTRIBUTES FROM DESCRIPTIONS - now properly level-gated
-  this.extractStatFromDescription(description, /\+(\d+)\s*to Strength/i, 'strength');
-  this.extractStatFromDescription(description, /\+(\d+)\s*to Dexterity/i, 'dexterity');
-  this.extractStatFromDescription(description, /\+(\d+)\s*to Vitality/i, 'vitality');
-  this.extractStatFromDescription(description, /\+(\d+)\s*to Energy/i, 'energy');
-  
+
   // Cannot Be Frozen
   if (description.toLowerCase().includes('cannot be frozen')) {
     this.stats.cbf = true;
@@ -2939,10 +2949,20 @@ parseItemStats(item, section) {
   }
   
   parseSocketStats(statsString, section) {
+     console.log('💎 === PARSING SOCKET STATS ===');
+  console.log('💎 Section:', section);
+  console.log('💎 Stats string:', statsString);
+  console.log('💎 BEFORE parsing - strength:', this.stats.strength, 'dexterity:', this.stats.dexterity);
+  
+
+
   const statLines = statsString.split(/[,\n]/).map(s => s.trim()).filter(s => s);
   
   statLines.forEach(statLine => {
-    console.log(`🔍 Parsing: "${statLine}"`);
+    if (statLine.includes('Requirements') || statLine.includes('vs.')) {
+  console.log(`🚫 Skipping non-trackable stat: "${statLine}"`);
+  return; 
+}
     
     // Enhanced Damage (multiple formats)
     if (statLine.includes('Enhanced Damage') || (statLine.includes('%') && statLine.includes('Damage'))) {
