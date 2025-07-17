@@ -3829,6 +3829,8 @@ const itemList = {
       smitedmgmin: 1,
       smitedmgmax: 3,
       defense: 39,
+      reqstr: 12,
+      reqlvl: 2,
       block1: 40,
       fbr: 40,
       block: 20,

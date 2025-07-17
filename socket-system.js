@@ -1933,114 +1933,524 @@ calculateEquipmentStats() {
 }
 
 // ✅ FIXED: Item display method - ALWAYS show description, just update colors and visual feedback
+// Smart Socket Property Stacking System
+// Replaces updateItemDisplay method in your socket-system.js
+
+// ULTRA QUICK FIX - Replace ONLY the updateItemDisplay method
+// This preserves stacking while keeping the level requirement fix
+
 updateItemDisplay(section) {
-  const infoIdMap = {
-    'weapon': 'weapon-info',
-    'helm': 'helm-info',
-    'armor': 'armor-info',
-    'shield': 'off-info',
-    'gloves': 'glove-info',
-    'belts': 'belt-info',
-    'boots': 'boot-info',
-    'ringone': 'ringsone-info',
-    'ringtwo': 'ringstwo-info',
-    'amulet': 'amulet-info'
-  };
+  console.log(`🎨 Updating item display for ${section}...`);
   
-  const dropdownIdMap = {
-    'weapon': 'weapons-dropdown',
-    'helm': 'helms-dropdown',
-    'armor': 'armors-dropdown',
-    'shield': 'offs-dropdown',
-    'gloves': 'gloves-dropdown',
-    'belts': 'belts-dropdown',
-    'boots': 'boots-dropdown',
-    'ringone': 'ringsone-dropdown',
-    'ringtwo': 'ringstwo-dropdown',
-    'amulet': 'amulets-dropdown'
-  };
+  // ✅ FIXED: Use the new getSectionInfoId method
+  const infoId = this.getSectionInfoId(section);
+  const infoDiv = document.getElementById(infoId);
+  if (!infoDiv) {
+    console.warn(`❌ Info div '${infoId}' not found for section '${section}'`);
+    return;
+  }
   
-  const infoDiv = document.getElementById(infoIdMap[section]);
-  if (!infoDiv) return;
+  const dropdownId = this.getSectionDropdownId(section);
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
+    infoDiv.innerHTML = '';
+    return;
+  }
   
-  const dropdown = document.getElementById(dropdownIdMap[section]);
-  let baseHtml = '';
+  const item = itemList[dropdown.value];
+  const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
   
-  // ✅ ALWAYS show the item description if an item is selected
-  if (dropdown && dropdown.value && typeof itemList !== 'undefined' && itemList[dropdown.value]) {
-    const baseItem = itemList[dropdown.value];
-    baseHtml = baseItem.description || '';
+  // ✅ CRITICAL: Calculate actual required level INCLUDING sockets
+  const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+  const meetsRequirement = currentLevel >= actualRequiredLevel;
+  
+  console.log(`🔍 ${section}: Level ${currentLevel}/${actualRequiredLevel} - ${meetsRequirement ? 'USABLE' : 'BLOCKED'}`);
+  
+  // ✅ RESTORE STACKING: Use the existing stacking system
+  let baseDescription = item.description || '';
+  
+  // Parse base item stats into a map
+  const baseStats = this.parseStatsToMap(baseDescription);
+  
+  // Get socket stats and merge them with base stats
+  const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+  const socketItems = [];
+  
+  sockets.forEach(socket => {
+    const stats = socket.dataset.stats;
+    const itemName = socket.dataset.itemName;
+    const levelReq = parseInt(socket.dataset.levelReq) || 1;
     
-    // ✅ Calculate and show the ACTUAL required level (including sockets)
-    const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
-    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-    const meetsRequirement = currentLevel >= actualRequiredLevel;
+    if (stats && itemName) {
+      socketItems.push({ 
+        name: itemName, 
+        stats, 
+        levelReq, 
+        usable: currentLevel >= levelReq && meetsRequirement  // ✅ Socket unusable if item unusable
+      });
+      
+      // Only merge stats if both item and socket are usable
+      if (meetsRequirement && currentLevel >= levelReq) {
+        const parsedSocketStats = this.parseStatsToMap(stats);
+        this.mergeStatsMaps(baseStats, parsedSocketStats);
+      }
+    }
+  });
+  
+  // Generate the final description with stacked properties
+  let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
+  
+  // ✅ CLEAN FIX: Update the existing "Required Level" line in place (don't add new one)
+  const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
+  const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
+  
+  // Replace the existing "Required Level" with updated value and color
+  const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
+  if (levelPattern.test(finalDescription)) {
+    finalDescription = finalDescription.replace(levelPattern, newLevelLine);
+  } else {
+    // If no "Required Level" found in description, don't add one
+    console.log(`No "Required Level" found in ${section} description - keeping original`);
+  }
+  
+  // ✅ Visual feedback for unusable items (grayed out)
+  if (!meetsRequirement) {
+    infoDiv.style.opacity = '0.6';
+    infoDiv.style.filter = 'grayscale(50%)';
+    infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+  } else {
+    infoDiv.style.opacity = '1';
+    infoDiv.style.filter = 'none';
+    infoDiv.title = '';
+  }
+  
+  // ✅ Update display keeping original "Required Level" position
+  infoDiv.innerHTML = finalDescription;
+}
+// Parse stats text into a map for easy merging
+parseStatsToMap(statsText) {
+  const statsMap = new Map();
+  const lines = statsText.split('<br>').filter(line => line.trim());
+  
+  lines.forEach(line => {
+    const cleanLine = line.replace(/<[^>]*>/g, '').trim();
+    if (!cleanLine) return;
     
-    console.log(`🖼️ Updating display for ${section}: actual level ${actualRequiredLevel}, meets req: ${meetsRequirement}`);
-    
-    // ✅ Update the level requirement line with proper color
-    const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
-    const levelRequirementLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
-    
-    // Replace or add level requirement
-    const levelRegex = /<span[^>]*>Required Level: \d+<\/span>|Required Level: \d+/i;
-    if (levelRegex.test(baseHtml)) {
-      baseHtml = baseHtml.replace(levelRegex, levelRequirementLine);
-    } else {
-      const lines = baseHtml.split('<br>');
-      lines.splice(2, 0, levelRequirementLine);
-      baseHtml = lines.join('<br>');
+    // Lightning Damage
+    const lightningMatch = cleanLine.match(/(?:Adds\s+)?(\d+)(?:-(\d+))?\s+Lightning\s+Damage/i);
+    if (lightningMatch) {
+      const min = parseInt(lightningMatch[1]);
+      const max = parseInt(lightningMatch[2] || lightningMatch[1]);
+      this.addToStatsMap(statsMap, 'lightning_damage', { min, max });
+      return;
     }
     
-    // ✅ Visual feedback for unusable items (grayed out)
-    if (!meetsRequirement) {
-      infoDiv.style.opacity = '0.6';
-      infoDiv.style.filter = 'grayscale(50%)';
-      infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
-    } else {
-      infoDiv.style.opacity = '1';
-      infoDiv.style.filter = 'none';
-      infoDiv.title = '';
+    // Fire Damage
+    const fireMatch = cleanLine.match(/(?:Adds\s+)?(\d+)(?:-(\d+))?\s+Fire\s+Damage/i);
+    if (fireMatch) {
+      const min = parseInt(fireMatch[1]);
+      const max = parseInt(fireMatch[2] || fireMatch[1]);
+      this.addToStatsMap(statsMap, 'fire_damage', { min, max });
+      return;
     }
     
-    // ✅ FIXED: Socket stats display - all gray when item unusable
-    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    // Cold Damage
+    const coldMatch = cleanLine.match(/(?:Adds\s+)?(\d+)(?:-(\d+))?\s+Cold\s+Damage/i);
+    if (coldMatch) {
+      const min = parseInt(coldMatch[1]);
+      const max = parseInt(coldMatch[2] || coldMatch[1]);
+      this.addToStatsMap(statsMap, 'cold_damage', { min, max });
+      return;
+    }
     
-    if (sockets.length > 0) {
-      sockets.forEach(socket => {
-        const stats = socket.dataset.stats;
-        const socketLevel = parseInt(socket.dataset.levelReq) || 1;
-        
-        if (stats) {
-          const statLines = stats.split(/[,\n]/).map(s => s.trim()).filter(s => s);
-          statLines.forEach(statLine => {
-            if (statLine) {
-              // ✅ CRITICAL FIX: If the ITEM can't be used, ALL socket stats are gray
-              let statColor, statStyle;
-              
-              if (!meetsRequirement) {
-                // Item unusable - ALL socket stats are gray and italic
-                statColor = '#888888';
-                statStyle = 'font-style: italic; opacity: 0.7;';
-                console.log(`🔒 ${section}: Graying out socket stat "${statLine}" - item unusable (need level ${actualRequiredLevel})`);
-              } else {
-                // Item usable - socket stats colored based on individual socket requirements
-                const socketUsable = currentLevel >= socketLevel;
-                statColor = socketUsable ? '#4a90e2' : '#888888';
-                statStyle = socketUsable ? 'font-weight: bold;' : 'font-style: italic;';
-                console.log(`✅ ${section}: Socket stat "${statLine}" - ${socketUsable ? 'active' : 'inactive'}`);
-              }
-              
-              baseHtml += `<br><span style="color: ${statColor}; ${statStyle}">${statLine}</span>`;
-            }
-          });
+    // Poison Damage
+    const poisonMatch = cleanLine.match(/(?:\+)?(\d+)\s+Poison\s+Damage/i);
+    if (poisonMatch) {
+      const value = parseInt(poisonMatch[1]);
+      this.addToStatsMap(statsMap, 'poison_damage', { value });
+      return;
+    }
+    
+    // Life
+    const lifeMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Life/i);
+    if (lifeMatch) {
+      const value = parseInt(lifeMatch[1]);
+      this.addToStatsMap(statsMap, 'life', { value });
+      return;
+    }
+    
+    // Mana
+    const manaMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Mana/i);
+    if (manaMatch) {
+      const value = parseInt(manaMatch[1]);
+      this.addToStatsMap(statsMap, 'mana', { value });
+      return;
+    }
+    
+    // Defense
+    const defenseMatch = cleanLine.match(/(?:\+)?(\d+)\s+Defense/i);
+    if (defenseMatch && !cleanLine.includes('Enhanced') && !cleanLine.includes('vs.')) {
+      const value = parseInt(defenseMatch[1]);
+      this.addToStatsMap(statsMap, 'defense', { value });
+      return;
+    }
+    
+    // Attack Rating
+    const arMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Attack\s+Rating/i);
+    if (arMatch) {
+      const value = parseInt(arMatch[1]);
+      this.addToStatsMap(statsMap, 'attack_rating', { value });
+      return;
+    }
+    
+    // Magic Find
+    const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
+    if (mfMatch) {
+      const value = parseInt(mfMatch[1]);
+      this.addToStatsMap(statsMap, 'magic_find', { value });
+      return;
+    }
+    
+    // All Resistances
+    const allResMatch = cleanLine.match(/All\s+Resistances?\s+(?:\+)?(\d+)%?/i);
+    if (allResMatch) {
+      const value = parseInt(allResMatch[1]);
+      this.addToStatsMap(statsMap, 'all_resistances', { value });
+      return;
+    }
+    
+    // Individual Resistances
+    const resMatch = cleanLine.match(/(Fire|Cold|Lightning|Poison)\s+Resist\s+(?:\+)?(\d+)%?/i);
+    if (resMatch) {
+      const type = resMatch[1].toLowerCase();
+      const value = parseInt(resMatch[2]);
+      this.addToStatsMap(statsMap, `${type}_resist`, { value });
+      return;
+    }
+    
+    // Attributes (Strength, Dexterity, etc.)
+    const attrMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+(Strength|Dexterity|Vitality|Energy)/i);
+    if (attrMatch) {
+      const value = parseInt(attrMatch[1]);
+      const attr = attrMatch[2].toLowerCase();
+      this.addToStatsMap(statsMap, attr, { value });
+      return;
+    }
+    
+    // Store other stats as-is
+    statsMap.set(`other_${Date.now()}_${Math.random()}`, { text: cleanLine, stackable: false });
+  });
+  
+  return statsMap;
+}
+
+// Helper to add stats to map with proper stacking
+addToStatsMap(statsMap, key, data) {
+  if (statsMap.has(key)) {
+    const existing = statsMap.get(key);
+    if (data.min !== undefined && data.max !== undefined) {
+      // Damage ranges
+      existing.min = (existing.min || 0) + data.min;
+      existing.max = (existing.max || 0) + data.max;
+      existing.stacked = true;
+    } else if (data.value !== undefined) {
+      // Single values
+      existing.value = (existing.value || 0) + data.value;
+      existing.stacked = true;
+    }
+  } else {
+    statsMap.set(key, { ...data, stacked: false });
+  }
+}
+
+// Merge socket stats into base stats
+mergeStatsMaps(baseStats, socketStats) {
+  socketStats.forEach((socketData, key) => {
+    if (baseStats.has(key)) {
+      const baseData = baseStats.get(key);
+      if (socketData.min !== undefined && socketData.max !== undefined) {
+        // Damage ranges
+        baseData.min = (baseData.min || 0) + socketData.min;
+        baseData.max = (baseData.max || 0) + socketData.max;
+        baseData.stacked = true;
+      } else if (socketData.value !== undefined) {
+        // Single values
+        baseData.value = (baseData.value || 0) + socketData.value;
+        baseData.stacked = true;
+      }
+    } else {
+      // New stat from sockets
+      baseStats.set(key, { ...socketData, fromSocket: true });
+    }
+  });
+}
+
+// Generate final description with stacked properties
+generateStackedDescription(originalDescription, mergedStats, socketItems) {
+  let finalDescription = originalDescription;
+  
+  // Replace stacked stats in the original description
+  mergedStats.forEach((data, key) => {
+    if (data.stacked || data.fromSocket) {
+      const replacement = this.formatStackedStat(key, data);
+      if (replacement) {
+        // Find and replace the original stat line
+        const pattern = this.getStatPattern(key);
+        if (pattern && !data.fromSocket) {
+          finalDescription = finalDescription.replace(pattern, replacement);
+        } else if (data.fromSocket) {
+          // Add new socket-only stats at the end
+          finalDescription += `<br>${replacement}`;
+        }
+      }
+    }
+  });
+  
+  // Add non-stackable socket effects
+  const nonStackableEffects = [];
+  socketItems.forEach(socketItem => {
+    if (socketItem.usable) {
+      // Extract non-stackable effects like "Knockback", "Requirements -20%", etc.
+      const effects = this.extractNonStackableEffects(socketItem.stats);
+      effects.forEach(effect => {
+        if (!nonStackableEffects.includes(effect)) {
+          nonStackableEffects.push(effect);
         }
       });
     }
-  }
+  });
   
-  // ✅ Always update the display
-  infoDiv.innerHTML = baseHtml;
+  // Add non-stackable effects
+  nonStackableEffects.forEach(effect => {
+    finalDescription += `<br><span style="color: #4a90e2; font-weight: bold;">${effect}</span>`;
+  });
+  
+  // Add unusable socket items in gray
+  const unusableEffects = socketItems.filter(item => !item.usable);
+  unusableEffects.forEach(item => {
+    finalDescription += `<br><span style="color: #888; font-style: italic;">${item.name}: ${item.stats} (Level ${item.levelReq} Required)</span>`;
+  });
+  
+  return finalDescription;
+}
+
+// Format a stacked stat for display
+formatStackedStat(key, data) {
+  const color = data.stacked || data.fromSocket ? '#4a90e2' : 'inherit';
+  const style = `color: ${color}; font-weight: bold;`;
+  
+  switch (key) {
+    case 'lightning_damage':
+      return `<span style="${style}">Adds ${data.min}-${data.max} Lightning Damage</span>`;
+    case 'fire_damage':
+      return `<span style="${style}">Adds ${data.min}-${data.max} Fire Damage</span>`;
+    case 'cold_damage':
+      return `<span style="${style}">Adds ${data.min}-${data.max} Cold Damage</span>`;
+    case 'poison_damage':
+      return `<span style="${style}">+${data.value} Poison Damage</span>`;
+    case 'life':
+      return `<span style="${style}">+${data.value} to Life</span>`;
+    case 'mana':
+      return `<span style="${style}">+${data.value} to Mana</span>`;
+    case 'defense':
+      return `<span style="${style}">+${data.value} Defense</span>`;
+    case 'attack_rating':
+      return `<span style="${style}">+${data.value} to Attack Rating</span>`;
+    case 'magic_find':
+      return `<span style="${style}">${data.value}% Better Chance of Getting Magic Items</span>`;
+    case 'all_resistances':
+      return `<span style="${style}">All Resistances +${data.value}</span>`;
+    case 'fire_resist':
+      return `<span style="${style}">Fire Resist +${data.value}%</span>`;
+    case 'cold_resist':
+      return `<span style="${style}">Cold Resist +${data.value}%</span>`;
+    case 'lightning_resist':
+      return `<span style="${style}">Lightning Resist +${data.value}%</span>`;
+    case 'poison_resist':
+      return `<span style="${style}">Poison Resist +${data.value}%</span>`;
+    case 'strength':
+      return `<span style="${style}">+${data.value} to Strength</span>`;
+    case 'dexterity':
+      return `<span style="${style}">+${data.value} to Dexterity</span>`;
+    case 'vitality':
+      return `<span style="${style}">+${data.value} to Vitality</span>`;
+    case 'energy':
+      return `<span style="${style}">+${data.value} to Energy</span>`;
+    default:
+      if (data.text) {
+        return `<span style="${style}">${data.text}</span>`;
+      }
+      return null;
+  }
+}
+
+// Get regex pattern for finding stats in description
+getStatPattern(key) {
+  switch (key) {
+    case 'lightning_damage':
+      return /(?:Adds\s+)?\d+(?:-\d+)?\s+Lightning\s+Damage/i;
+    case 'fire_damage':
+      return /(?:Adds\s+)?\d+(?:-\d+)?\s+Fire\s+Damage/i;
+    case 'cold_damage':
+      return /(?:Adds\s+)?\d+(?:-\d+)?\s+Cold\s+Damage/i;
+    case 'poison_damage':
+      return /(?:\+)?\d+\s+Poison\s+Damage/i;
+    case 'life':
+      return /(?:\+)?\d+\s+(?:to\s+)?Life/i;
+    case 'mana':
+      return /(?:\+)?\d+\s+(?:to\s+)?Mana/i;
+    case 'defense':
+      return /(?:\+)?\d+\s+Defense(?!\s+vs\.)/i;
+    case 'attack_rating':
+      return /(?:\+)?\d+\s+(?:to\s+)?Attack\s+Rating/i;
+    case 'magic_find':
+      return /\d+%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i;
+    case 'all_resistances':
+      return /All\s+Resistances?\s+(?:\+)?\d+%?/i;
+    case 'fire_resist':
+      return /Fire\s+Resist\s+(?:\+)?\d+%?/i;
+    case 'cold_resist':
+      return /Cold\s+Resist\s+(?:\+)?\d+%?/i;
+    case 'lightning_resist':
+      return /Lightning\s+Resist\s+(?:\+)?\d+%?/i;
+    case 'poison_resist':
+      return /Poison\s+Resist\s+(?:\+)?\d+%?/i;
+    case 'strength':
+      return /(?:\+)?\d+\s+to\s+Strength/i;
+    case 'dexterity':
+      return /(?:\+)?\d+\s+to\s+Dexterity/i;
+    case 'vitality':
+      return /(?:\+)?\d+\s+to\s+Vitality/i;
+    case 'energy':
+      return /(?:\+)?\d+\s+to\s+Energy/i;
+    default:
+      return null;
+  }
+}
+
+// Extract effects that don't stack (like Knockback, requirements reduction, etc.)
+extractNonStackableEffects(statsText) {
+  const effects = [];
+  const lines = statsText.split(',').map(line => line.trim());
+  
+  const nonStackablePatterns = [
+    /Knockback/i,
+    /Requirements?\s+[-+]?\d+%?/i,
+    /Prevent\s+Monster\s+Heal/i,
+    /Regenerate\s+Mana\s+\d+%?/i,
+    /\d+%\s+Chance\s+of/i,
+    /\d+%\s+Life\s+Stolen/i,
+    /\d+%\s+Mana\s+Stolen/i,
+    /\d+%\s+Enhanced\s+Damage/i,
+    /\d+%\s+Increased\s+Attack\s+Speed/i,
+    /\d+%\s+Faster\s+Hit\s+Recovery/i,
+    /\d+%\s+Faster\s+Block\s+Rate/i,
+    /Attacker\s+Takes\s+Damage/i,
+    /Physical\s+Damage\s+Taken\s+Reduced/i,
+    /Magic\s+Damage\s+Taken\s+Reduced/i,
+    /Target\s+Defense/i,
+    /Light\s+Radius/i,
+    /Replenish\s+Life/i,
+    /Damage\s+(?:vs\.?|to)\s+/i
+  ];
+  
+  lines.forEach(line => {
+    const cleanLine = line.replace(/<[^>]*>/g, '').trim();
+    
+    // Skip if it matches any stackable pattern we already handle
+    const stackablePatterns = [
+      /(?:Adds\s+)?\d+(?:-\d+)?\s+(?:Lightning|Fire|Cold)\s+Damage/i,
+      /(?:\+)?\d+\s+Poison\s+Damage/i,
+      /(?:\+)?\d+\s+(?:to\s+)?(?:Life|Mana|Defense|Attack\s+Rating)/i,
+      /\d+%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i,
+      /(?:All\s+Resistances?|Fire|Cold|Lightning|Poison)\s+Resist/i,
+      /(?:\+)?\d+\s+to\s+(?:Strength|Dexterity|Vitality|Energy)/i
+    ];
+    
+    const isStackable = stackablePatterns.some(pattern => pattern.test(cleanLine));
+    if (isStackable) return;
+    
+    // Check if it's a non-stackable effect
+    const isNonStackable = nonStackablePatterns.some(pattern => pattern.test(cleanLine));
+    if (isNonStackable && cleanLine) {
+      effects.push(cleanLine);
+    }
+  });
+  
+  return effects;
+}
+
+// Helper to get section dropdown ID (existing method from your code)
+getSectionDropdownId(section) {
+  const mapping = {
+    'weapon': 'weapons-dropdown',
+    'helm': 'helms-dropdown', 
+    'armor': 'armors-dropdown',
+    'shield': 'offs-dropdown',        // ✅ FIXED: was missing proper mapping
+    'gloves': 'gloves-dropdown',      // ✅ FIXED: was missing proper mapping  
+    'belts': 'belts-dropdown',        // ✅ FIXED: was missing proper mapping
+    'boots': 'boots-dropdown',        // ✅ FIXED: was missing proper mapping
+    'ringone': 'ringsone-dropdown',   // ✅ FIXED: was missing proper mapping
+    'ringtwo': 'ringstwo-dropdown',   // ✅ FIXED: was missing proper mapping
+    'amulet': 'amulets-dropdown'
+  };
+  return mapping[section] || '';
+}
+
+// ALSO add this method right after getSectionDropdownId to fix the info div mapping:
+
+getSectionInfoId(section) {
+  const mapping = {
+    'weapon': 'weapon-info',
+    'helm': 'helm-info',
+    'armor': 'armor-info', 
+    'shield': 'off-info',           // ✅ Note: shield uses 'off-info' not 'shield-info'
+    'gloves': 'glove-info',         // ✅ Note: gloves uses 'glove-info' not 'gloves-info'
+    'belts': 'belt-info',           // ✅ Note: belts uses 'belt-info' not 'belts-info'
+    'boots': 'boot-info',           // ✅ Note: boots uses 'boot-info' not 'boots-info'
+    'ringone': 'ringsone-info',     // ✅ Should work as-is
+    'ringtwo': 'ringstwo-info',     // ✅ Should work as-is
+    'amulet': 'amulet-info'
+  };
+  return mapping[section] || '';
+}
+
+// Enhanced styling for stacked properties
+addStackingStyles() {
+  const styles = `
+    <style id="socket-stacking-styles">
+      .stacked-stat {
+        color: #4a90e2 !important;
+        font-weight: bold !important;
+      }
+      
+      .socket-stat {
+        color: #4a90e2 !important;
+        font-weight: bold !important;
+      }
+      
+      .unusable-socket-stat {
+        color: #888 !important;
+        font-style: italic !important;
+      }
+      
+      .item-unusable {
+        opacity: 0.6;
+        filter: grayscale(50%);
+      }
+      
+      .level-requirement-warning {
+        color: #ff6b6b !important;
+        font-weight: bold !important;
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+    </style>
+  `;
+  
+  if (!document.getElementById('socket-stacking-styles')) {
+    document.head.insertAdjacentHTML('beforeend', styles);
+  }
 }
   updateAllEquipmentDisplays() {
     const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet' ];
