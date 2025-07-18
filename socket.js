@@ -91,161 +91,579 @@ class UnifiedSocketSystem {
     this.socketData = {
       gems: {
         'chipped-topaz': { 
-          name: 'Chipped Topaz', img: 'img/chippedtopaz.png', levelReq: 1,
-          stats: { weapon: 'Adds 1-8 Lightning Damage', helm: '9% Better Chance of Getting Magic Items', 
-                  armor: '9% Better Chance of Getting Magic Items', shield: 'Lightning Resist +40%' }
+          name: 'Chipped Topaz', 
+          img: 'img/chippedtopaz.png', 
+          levelReq: 1,
+          stats: { 
+            weapon: 'Adds 1-8 Lightning Damage', 
+            helm: '9% Better Chance of Getting Magic Items', 
+            armor: '9% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
         },
         'flawed-topaz': { 
-          name: 'Flawed Topaz', img: 'img/flawedtopaz.png', levelReq: 5,
-          stats: { weapon: 'Adds 1-14 Lightning Damage', helm: '13% Better Chance of Getting Magic Items', 
-                  armor: '13% Better Chance of Getting Magic Items', shield: 'Lightning Resist +40%' }
+          name: 'Flawed Topaz', 
+          img: 'img/flawedtopaz.png', 
+          levelReq: 5,
+          stats: { 
+            weapon: 'Adds 1-14 Lightning Damage', 
+            helm: '13% Better Chance of Getting Magic Items', 
+            armor: '13% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
         },
         'topaz': { 
-          name: 'Topaz', img: 'img/topaz.png', levelReq: 12,
-          stats: { weapon: 'Adds 1-22 Lightning Damage', helm: '16% Better Chance of Getting Magic Items', 
-                  armor: '16% Better Chance of Getting Magic Items', shield: 'Lightning Resist +40%' }
+          name: 'Topaz', 
+          img: 'img/topaz.png', 
+          levelReq: 12,
+          stats: { 
+            weapon: 'Adds 1-22 Lightning Damage', 
+            helm: '16% Better Chance of Getting Magic Items', 
+            armor: '16% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
         },
         'flawless-topaz': { 
-          name: 'Flawless Topaz', img: 'img/flawlesstopaz.png', levelReq: 18,
-          stats: { weapon: 'Adds 1-30 Lightning Damage', helm: '20% Better Chance of Getting Magic Items', 
-                  armor: '20% Better Chance of Getting Magic Items', shield: 'Lightning Resist +40%' }
+          name: 'Flawless Topaz', 
+          img: 'img/flawlesstopaz.png', 
+          levelReq: 15,
+          stats: { 
+            weapon: 'Adds 1-30 Lightning Damage', 
+            helm: '20% Better Chance of Getting Magic Items', 
+            armor: '20% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
         },
         'perfect-topaz': { 
-          name: 'Perfect Topaz', img: 'img/perfecttopaz.png', levelReq: 25,
-          stats: { weapon: 'Adds 1-40 Lightning Damage', helm: '24% Better Chance of Getting Magic Items', 
-                  armor: '24% Better Chance of Getting Magic Items', shield: 'Lightning Resist +40%' }
-        },
-        'chipped-diamond': { 
-          name: 'Chipped Diamond', img: 'img/chippeddiamond.png', levelReq: 1,
-          stats: { weapon: '+28 to Attack Rating', helm: 'Attacker Takes Damage of 4', 
-                  armor: 'Attacker Takes Damage of 4', shield: 'All Resistances +6' }
-        },
-        'flawed-diamond': { 
-          name: 'Flawed Diamond', img: 'img/flaweddiamond.png', levelReq: 5,
-          stats: { weapon: '+58 to Attack Rating', helm: 'Attacker Takes Damage of 8', 
-                  armor: 'Attacker Takes Damage of 8', shield: 'All Resistances +9' }
-        },
-        'diamond': { 
-          name: 'Diamond', img: 'img/diamond.png', levelReq: 12,
-          stats: { weapon: '+88 to Attack Rating', helm: 'Attacker Takes Damage of 16', 
-                  armor: 'Attacker Takes Damage of 16', shield: 'All Resistances +11' }
+          name: 'Perfect Topaz', 
+          img: 'img/perfecttopaz2.png', 
+          levelReq: 18,
+          stats: { 
+            weapon: 'Adds 1-40 Lightning Damage', 
+            helm: '24% Better Chance of Getting Magic Items', 
+            armor: '24% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
         },
         'chipped-ruby': { 
-          name: 'Chipped Ruby', img: 'img/chippedruby.png', levelReq: 1,
-          stats: { weapon: 'Adds 3-7 Fire Damage', helm: 'Fire Resist +12%', 
-                  armor: 'Fire Resist +12%', shield: 'Fire Resist +12%' }
+          name: 'Chipped Ruby', 
+          img: 'img/chippedruby.png', 
+          levelReq: 1,
+          stats: { 
+            weapon: 'Adds 3-4 Fire Damage', 
+            helm: '+10 to Life', 
+            armor: '+10 to Life', 
+            shield: 'Fire Resist +12%' 
+          }
         },
         'flawed-ruby': { 
-          name: 'Flawed Ruby', img: 'img/flawedruby.png', levelReq: 5,
-          stats: { weapon: 'Adds 5-11 Fire Damage', helm: 'Fire Resist +16%', 
-                  armor: 'Fire Resist +16%', shield: 'Fire Resist +16%' }
+          name: 'Flawed ruby', 
+          img: 'img/flawedruby.png', 
+          levelReq: 5,
+          stats: { 
+            weapon: 'Adds 5-8 Fire Damage', 
+            helm: '+17 to Life', 
+            armor: '+17 to Life', 
+            shield: 'Fire Resist +16%' 
+          }
         },
         'ruby': { 
-          name: 'Ruby', img: 'img/ruby.png', levelReq: 12,
-          stats: { weapon: 'Adds 8-16 Fire Damage', helm: 'Fire Resist +19%', 
-                  armor: 'Fire Resist +19%', shield: 'Fire Resist +19%' }
+          name: 'ruby', 
+          img: 'img/Ruby.png', 
+          levelReq: 12,
+          stats: { 
+            weapon: 'Adds 8-12 Fire Damage', 
+            helm: '+24 to Life', 
+            armor: '+24 to Life', 
+            shield: 'Fire Resist +22%' 
+          }
+        },
+        'flawless-ruby': { 
+          name: 'Flawless Ruby', 
+          img: 'img/flawlessruby.png', 
+          levelReq: 15,
+          stats: { 
+            weapon: 'Adds 10-16 Fire Damage', 
+            helm: '+31 to Life', 
+            armor: '+31 to Life', 
+            shield: 'Fire Resist +28%' 
+          }
+        },
+        'perfect-ruby': { 
+          name: 'Perfect Ruby', 
+          img: 'img/perfectruby2.png', 
+          levelReq: 18,
+          stats: { 
+            weapon: 'Adds 15-20 Fire Damage', 
+            helm: '+38 to Life', 
+            armor: '+38 to Life', 
+            shield: 'Fire Resist +40%' 
+          }
+        },
+        'chipped-sapphire': { 
+          name: 'Chipped Sapphire', 
+          img: 'img/chippedsapphire.png', 
+          levelReq: 1,
+          stats: { 
+            weapon: 'Adds 1-3 Cold Damage', 
+            helm: '+10 to Mana', 
+            armor: '+10 to Mana', 
+            shield: 'Cold Resist +12%' 
+          }
+        },
+        'flawed-sapphire': { 
+          name: 'Flawed Sapphire', 
+          img: 'img/flawedsapphire.png', 
+          levelReq: 5,
+          stats: { 
+            weapon: 'Adds 3-5 Cold Damage', 
+            helm: '+17 to Mana', 
+            armor: '+17 to Mana', 
+            shield: 'Cold Resist +16%' 
+          }
+        },
+        'sapphire': { 
+          name: 'Sapphire', 
+          img: 'img/sapphire.png', 
+          levelReq: 12,
+          stats: { 
+            weapon: 'Adds 4-7 Cold Damage', 
+            helm: '+24 to Mana', 
+            armor: '+24 to Mana', 
+            shield: 'Cold Resist +22%' 
+          }
+        },
+        'flawless-sapphire': { 
+          name: 'Flawless Sapphire', 
+          img: 'img/flawlesssapphire.png', 
+          levelReq: 15,
+          stats: { 
+            weapon: 'Adds 6-10 Cold Damage', 
+            helm: '+31 to Mana', 
+            armor: '+31 to Mana', 
+            shield: 'Cold Resist +28%' 
+          }
+        },
+        'perfect-sapphire': { 
+          name: 'Perfect Sapphire', 
+          img: 'img/perfectsapphire2.png', 
+          levelReq: 18,
+          stats: { 
+            weapon: '+10-14 Cold Damage', 
+            helm: '+38 to Mana', 
+            armor: '+38 to Mana', 
+            shield: 'Cold Resist +40%' 
+          }
+        },
+        'perfect-emerald': { 
+          name: 'Perfect Emerald', 
+          img: 'img/perfectemerald.png', 
+          levelReq: 18,
+          stats: { 
+            weapon: 'Adds 100-100 Poison Damage over 7 Seconds', 
+            helm: '+10 to Dexterity', 
+            armor: '+10 to Dexterity', 
+            shield: 'Poison Resist +40%' 
+          }
+        },
+        'perfect-amethyst': { 
+          name: 'Perfect Amethyst', 
+          img: 'img/perfectamethyst.png', 
+          levelReq: 18,
+          stats: { 
+            weapon: '+150 to Attack Rating', 
+            helm: '+10 to Strength', 
+            armor: '+10 to Strength', 
+            shield: '+30 Defense' 
+          }
+        },
+        'perfect-diamond': { 
+          name: 'Perfect Diamond', 
+          img: 'img/perfectdiamond.png', 
+          levelReq: 18,
+          stats: { 
+            weapon: '+68% Damage to Undead', 
+            helm: '+100 to Attack Rating', 
+            armor: '+100 to Attack Rating', 
+            shield: 'All Resistances +19%' 
+          }
+        },
+        'perfect-skull': { 
+          name: 'Perfect Skull', 
+          img: 'img/perfectskull2.png', 
+          levelReq: 18,
+          stats: { 
+            weapon: '4% Life Stolen per Hit, 3% Mana Stolen per Hit', 
+            helm: 'Regenerate Mana 19%, Replenish Life +5', 
+            armor: 'Regenerate Mana 19%, Replenish Life +5', 
+            shield: 'Attacker Takes Damage of 20' 
+          }
         }
       },
       runes: {
-        'el': { name: 'El Rune', img: 'img/elrune.png', levelReq: 11, 
-          stats: { weapon: '+50 to Attack Rating, +1 Light Radius', armor: '+15 Defense, +1 Light Radius', 
-                  helm: '+15 Defense, +1 Light Radius', shield: '+15 Defense, +1 Light Radius' }},
-        'eld': { name: 'Eld Rune', img: 'img/eldrune.png', levelReq: 11, 
-          stats: { weapon: '+75% Damage to Undead, +50 Attack Rating Against Undead', armor: '15% Slower Stamina Drain', 
-                  helm: '15% Slower Stamina Drain', shield: '7% Increased Chance of Blocking' }},
-        'tir': { name: 'Tir Rune', img: 'img/tirrune.png', levelReq: 13, 
-          stats: { weapon: '+2 to Mana After Each Kill', armor: '+2 to Mana After Each Kill', 
-                  helm: '+2 to Mana After Each Kill', shield: '+2 to Mana After Each Kill' }},
-        'nef': { name: 'Nef Rune', img: 'img/nefrune.png', levelReq: 13, 
-          stats: { weapon: 'Knockback', armor: '+30 Defense vs. Missile', 
-                  helm: '+30 Defense vs. Missile', shield: '+30 Defense vs. Missile' }},
-        'eth': { name: 'Eth Rune', img: 'img/ethrune.png', levelReq: 15, 
-          stats: { weapon: '-25% Target Defense', armor: '20% Faster Mana Regeneration', 
-                  helm: '20% Faster Mana Regeneration', shield: '20% Faster Mana Regeneration' }},
-        'ith': { name: 'Ith Rune', img: 'img/ithrune.png', levelReq: 15, 
-          stats: { weapon: '+9 to Maximum Damage', armor: '15% Damage Taken Goes To Mana', 
-                  helm: '15% Damage Taken Goes To Mana', shield: '15% Damage Taken Goes To Mana' }},
-        'tal': { name: 'Tal Rune', img: 'img/talrune.png', levelReq: 17, 
-          stats: { weapon: '+75 Poison Damage Over 5 Seconds', armor: 'Poison Resist +30%', 
-                  helm: 'Poison Resist +30%', shield: 'Poison Resist +35%' }},
-        'ral': { name: 'Ral Rune', img: 'img/ralrune.png', levelReq: 19, 
-          stats: { weapon: 'Adds 5-30 Fire Damage', armor: 'Fire Resist +30%', 
-                  helm: 'Fire Resist +30%', shield: 'Fire Resist +35%' }},
-        'ort': { name: 'Ort Rune', img: 'img/ortrune.png', levelReq: 21, 
-          stats: { weapon: 'Adds 1-50 Lightning Damage', armor: 'Lightning Resist +30%', 
-                  helm: 'Lightning Resist +30%', shield: 'Lightning Resist +35%' }},
-        'thul': { name: 'Thul Rune', img: 'img/thulrune.png', levelReq: 23, 
-          stats: { weapon: 'Adds 3-14 Cold Damage', armor: 'Cold Resist +30%', 
-                  helm: 'Cold Resist +30%', shield: 'Cold Resist +35%' }},
-        'amn': { name: 'Amn Rune', img: 'img/amnrune.png', levelReq: 25, 
-          stats: { weapon: '7% Life Stolen per Hit', armor: 'Attacker Takes Damage of 14', 
-                  helm: 'Attacker Takes Damage of 14', shield: 'Attacker Takes Damage of 14' }},
-        'sol': { name: 'Sol Rune', img: 'img/solrune.png', levelReq: 27, 
-          stats: { weapon: '+9 to Minimum Damage', armor: 'Damage Reduced by 7', 
-                  helm: 'Damage Reduced by 7', shield: 'Damage Reduced by 7' }},
-        'shael': { name: 'Shael Rune', img: 'img/shaelrune.png', levelReq: 29, 
-          stats: { weapon: '20% Increased Attack Speed', armor: '+20% Faster Hit Recovery', 
-                  helm: '+20% Faster Hit Recovery', shield: '+20% Faster Block Rate' }},
-        'dol': { name: 'Dol Rune', img: 'img/dolrune.png', levelReq: 31, 
-          stats: { weapon: 'Hit Causes Monster to Flee 25%', armor: 'Replenish Life +7', 
-                  helm: 'Replenish Life +7', shield: 'Replenish Life +7' }},
-        'hel': { name: 'Hel Rune', img: 'img/helrune.png', levelReq: 33, 
-          stats: { weapon: 'Requirements -20%', armor: 'Requirements -15%', 
-                  helm: 'Requirements -15%', shield: 'Requirements -15%' }},
-        'io': { name: 'Io Rune', img: 'img/iorune.png', levelReq: 35, 
-          stats: { weapon: '+10 to Vitality', armor: '+10 to Vitality', 
-                  helm: '+10 to Vitality', shield: '+10 to Vitality' }},
-        'lum': { name: 'Lum Rune', img: 'img/lumrune.png', levelReq: 37, 
-          stats: { weapon: '+10 to Energy', armor: '+10 to Energy', 
-                  helm: '+10 to Energy', shield: '+10 to Energy' }},
-        'ko': { name: 'Ko Rune', img: 'img/korune.png', levelReq: 39, 
-          stats: { weapon: '+10 to Dexterity', armor: '+10 to Dexterity', 
-                  helm: '+10 to Dexterity', shield: '+10 to Dexterity' }},
-        'fal': { name: 'Fal Rune', img: 'img/falrune.png', levelReq: 41, 
-          stats: { weapon: '+10 to Strength', armor: '+10 to Strength', 
-                  helm: '+10 to Strength', shield: '+10 to Strength' }},
-        'lem': { name: 'Lem Rune', img: 'img/lemrune.png', levelReq: 43, 
-          stats: { weapon: '75% Extra Gold from Monsters', armor: '50% Extra Gold from Monsters', 
-                  helm: '50% Extra Gold from Monsters', shield: '50% Extra Gold from Monsters' }},
-        'pul': { name: 'Pul Rune', img: 'img/pulrune.png', levelReq: 45, 
-          stats: { weapon: '+350% Damage to Demons, +100 to Attack Rating against Demons', armor: '+30% Enhanced Defense', 
-                  helm: '+30% Enhanced Defense', shield: '+30% Enhanced Defense' }},
-        'um': { name: 'Um Rune', img: 'img/umrune.png', levelReq: 47, 
-          stats: { weapon: '25% Chance of Open Wounds', armor: 'All Resistances +15', 
-                  helm: 'All Resistances +15', shield: 'All Resistances +22' }},
-        'mal': { name: 'Mal Rune', img: 'img/malrune.png', levelReq: 49, 
-          stats: { weapon: 'Prevent Monster Heal', armor: 'Magic Damage Reduced by 7', 
-                  helm: 'Magic Damage Reduced by 7', shield: 'Magic Damage Reduced by 7' }},
-        'ist': { name: 'Ist Rune', img: 'img/istrune.png', levelReq: 51, 
-          stats: { weapon: '30% Better Chance of Getting Magic Items', armor: '25% Better Chance of Getting Magic Items', 
-                  helm: '25% Better Chance of Getting Magic Items', shield: '25% Better Chance of Getting Magic Items' }},
-        'gul': { name: 'Gul Rune', img: 'img/gulrune.png', levelReq: 53, 
-          stats: { weapon: '20% Bonus to Attack Rating', armor: '5% to Maximum Poison Resist', 
-                  helm: '5% to Maximum Poison Resist', shield: '5% to Maximum Poison Resist' }},
-        'vex': { name: 'Vex Rune', img: 'img/vexrune.png', levelReq: 55, 
-          stats: { weapon: '7% Mana Stolen per Hit', armor: '5% to Maximum Fire Resist', 
-                  helm: '5% to Maximum Fire Resist', shield: '5% to Maximum Fire Resist' }},
-        'ohm': { name: 'Ohm Rune', img: 'img/ohmrune.png', levelReq: 57, 
-          stats: { weapon: '+50% Enhanced Damage', armor: '5% to Maximum Cold Resist', 
-                  helm: '5% to Maximum Cold Resist', shield: '5% to Maximum Cold Resist' }},
-        'lo': { name: 'Lo Rune', img: 'img/lorune.png', levelReq: 59, 
-          stats: { weapon: '20% Deadly Strike', armor: '5% to Maximum Lightning Resist', 
-                  helm: '5% to Maximum Lightning Resist', shield: '5% to Maximum Lightning Resist' }},
-        'sur': { name: 'Sur Rune', img: 'img/surrune.png', levelReq: 61, 
-          stats: { weapon: 'Hit Blinds Target', armor: 'Maximum Mana 5%', 
-                  helm: '+50 to Mana', shield: '+50 to Mana' }},
-        'ber': { name: 'Ber Rune', img: 'img/berrune.png', levelReq: 63, 
-          stats: { weapon: '20% Chance of Crushing Blow', armor: 'Damage Reduced by 8%', 
-                  helm: 'Damage Reduced by 8%', shield: 'Damage Reduced by 8%' }},
-        'jah': { name: 'Jah Rune', img: 'img/jahrune.png', levelReq: 65, 
-          stats: { weapon: 'Ignore Target\'s Defense', helm: 'Increase Maximum Life 5%', 
-                  armor: 'Increase Maximum Life 5%', shield: '+75 to Life' }},
-        'cham': { name: 'Cham Rune', img: 'img/chamrune.png', levelReq: 67, 
-          stats: { weapon: 'Freezes Target +3', helm: 'Cannot Be Frozen', 
-                  armor: 'Cannot Be Frozen', shield: 'Cannot Be Frozen' }},
-        'zod': { name: 'Zod Rune', img: 'img/zodrune.png', levelReq: 69, 
-          stats: { weapon: 'Indestructible', helm: 'Indestructible', 
-                  armor: 'Indestructible', shield: 'Indestructible' }}
+        'el': { 
+          name: 'El Rune', 
+          img: 'img/elrune.png', 
+          levelReq: 11, // Required level
+          stats: { 
+            weapon: '+50 Attack Rating, +1 Light Radius', 
+            helm: '+15 Defense, +1 Light Radius', 
+            armor: '+15 Defense, +1 Light Radius', 
+            shield: '+15 Defense, +1 Light Radius' 
+          }
+        },
+        'eld': { 
+          name: 'Eld Rune', 
+          img: 'img/eldrune.png', 
+          levelReq: 11, // Required level
+          stats: { 
+            weapon: '+75% Damage vs Undead, +50 Attack Rating vs Undead', 
+            helm: '15% Slower Stamina Drain', 
+            armor: '15% Slower Stamina Drain', 
+            shield: '7% Increased Chance of Blocking' 
+          }
+        },
+        'tir': { 
+          name: 'Tir Rune', 
+          img: 'img/tirrune.png', 
+          levelReq: 13, // Required level
+          stats: { 
+            weapon: '+2 to Mana after each Kill', 
+            helm: '+2 to Mana after each Kill', 
+            armor: '+2 to Mana after each Kill', 
+            shield: '+2 to Mana after each Kill' 
+          }
+        },
+        'nef': { 
+          name: 'Nef Rune', 
+          img: 'img/nefrune.png', 
+          levelReq: 13, // Required level
+          stats: { 
+            weapon: 'Knockback', 
+            helm: '+30 Defense vs. Missile', 
+            armor: '+30 Defense vs. Missile', 
+            shield: '+30 Defense vs. Missile' 
+          }
+        },
+        'eth': { 
+          name: 'Eth Rune', 
+          img: 'img/ethrune.png', 
+          levelReq: 15, // Required level
+          stats: { 
+            weapon: '-25% Target Defense', 
+            helm: 'Regenerate Mana 15%', 
+            armor: 'Regenerate Mana 15%', 
+            shield: 'Regenerate Mana 15%' 
+          }
+        },
+        'ith': { 
+          name: 'Ith Rune', 
+          img: 'img/ithrune.png', 
+          levelReq: 15,
+          stats: { 
+            weapon: '+9 to Maximum Damage', 
+            helm: '15% Damage Taken Gained as Mana when Hit', 
+            armor: '15% Damage Taken Gained as Mana when Hit', 
+            shield: '15% Damage Taken Gained as Mana when Hit' 
+          }
+        },
+        'tal': { 
+          name: 'Tal Rune', 
+          img: 'img/talrune.png', 
+          levelReq: 17,
+          stats: { 
+            weapon: '+75 Poison Damage over 5 Seconds', 
+            helm: 'Poison Resist +30%', 
+            armor: 'Poison Resist +30%', 
+            shield: 'Poison Resist +35%' 
+          }
+        },
+        'ral': { 
+          name: 'Ral Rune', 
+          img: 'img/ralrune.png', 
+          levelReq: 19, // Required level
+          stats: { 
+            weapon: 'Adds 5-30 Fire Damage', 
+            helm: 'Fire Resist +30%', 
+            armor: 'Fire Resist +30%', 
+            shield: 'Fire Resist +35%' 
+          }
+        },
+        'ort': { 
+          name: 'Ort Rune', 
+          img: 'img/ortrune.png', 
+          levelReq: 21,
+          stats: { 
+            weapon: 'Adds 1-50 Lightning Damage', 
+            helm: 'Lightning Resist +30%', 
+            armor: 'Lightning Resist +30%', 
+            shield: 'Lightning Resist +35%' 
+          }
+        },
+        'thul': { 
+          name: 'Thul Rune', 
+          img: 'img/thulrune.png', 
+          levelReq: 23,
+          stats: { 
+            weapon: 'Adds 3-14 Cold Damage', 
+            helm: 'Cold Resist +30%', 
+            armor: 'Cold Resist +30%', 
+            shield: 'Cold Resist +35%' 
+          }
+        },
+        'amn': { 
+          name: 'Amn Rune', 
+          img: 'img/amnrune.png', 
+          levelReq: 25,
+          stats: { 
+            weapon: '7% Life Stolen per Hit', 
+            helm: 'Attacker Takes Damage of 14', 
+            armor: 'Attacker Takes Damage of 14', 
+            shield: 'Attacker Takes Damage of 14' 
+          }
+        },
+        'sol': { 
+          name: 'Sol Rune', 
+          img: 'img/solrune.png', 
+          levelReq: 27,
+          stats: { 
+            weapon: '+9 to Minimum Damage', 
+            helm: 'Physical Damage Taken Reduced by 7', 
+            armor: 'Physical Damage Taken Reduced by 7', 
+            shield: 'Physical Damage Taken Reduced by 7' 
+          }
+        },
+        'shael': { 
+          name: 'Shael Rune', 
+          levelReq: 29,
+          img: 'img/shaelrune.png', 
+          stats: { 
+            weapon: '+20% Increased Attack Speed', 
+            helm: '+20% Faster Hit Recovery', 
+            armor: '+20% Faster Hit Recovery', 
+            shield: '+20% Faster Block Rate' 
+          }
+        },
+        'dol': { 
+          name: 'Dol Rune', 
+          img: 'img/dolrune.png', 
+          levelReq: 31,
+          stats: { 
+            weapon: '+20% Enhanced Damage', 
+            helm: 'Replenish Life +10', 
+            armor: 'Replenish Life +10', 
+            shield: 'Replenish Life +10' 
+          }
+        },
+        'hel': { 
+          name: 'Hel Rune', 
+          img: 'img/helrune.png', 
+          levelReq: 1,
+          stats: { 
+            weapon: 'Requirements -20%', 
+            helm: 'Requirements -20%', 
+            armor: 'Requirements -20%', 
+            shield: 'Requirements -20%' 
+          }
+        },
+        'io': { 
+          name: 'Io Rune', 
+          img: 'img/iorune.png', 
+          levelReq: 35,
+          stats: { 
+            weapon: '+10 to Vitality', 
+            helm: '+10 to Vitality', 
+            armor: '+10 to Vitality', 
+            shield: '+10 to Vitality' 
+          }
+        },
+        'lum': { 
+          name: 'Lum Rune', 
+          img: 'img/lumrune.png', 
+          levelReq: 37,
+          stats: { 
+            weapon: '+10 to Energy', 
+            helm: '+10 to Energy', 
+            armor: '+10 to Energy', 
+            shield: '+10 to Energy' 
+          }
+        },
+        'ko': { 
+          name: 'Ko Rune', 
+          img: 'img/korune.png', 
+          levelReq: 39,
+          stats: { 
+            weapon: '+10 to Dexterity', 
+            helm: '+10 to Dexterity', 
+            armor: '+10 to Dexterity', 
+            shield: '+10 to Dexterity' 
+          }
+        },
+        'fal': { 
+          name: 'Fal Rune', 
+          img: 'img/falrune.png', 
+          levelReq: 41,
+          stats: { 
+            weapon: '+10 to Strength', 
+            helm: '+10 to Strength', 
+            armor: '+10 to Strength', 
+            shield: '+10 to Strength' 
+          }
+        },
+        'lem': { 
+          name: 'Lem Rune', 
+          img: 'img/lemrune.png', 
+          levelReq: 43,
+          stats: { 
+            weapon: '75% Extra Gold From Monsters', 
+            helm: '50% Extra Gold From Monsters', 
+            armor: '50% Extra Gold From Monsters', 
+            shield: '50% Extra Gold From Monsters' 
+          }
+        },
+        'pul': { 
+          name: 'Pul Rune', 
+          img: 'img/pulrune.png', 
+          levelReq: 45,
+          stats: { 
+            weapon: '+75% Damage to Demons, +100 to Attack Rating against Demons', 
+            helm: '+30% Enhanced Defense', 
+            armor: '+30% Enhanced Defense', 
+            shield: '+30% Enhanced Defense' 
+          }
+        },
+        'um': { 
+          name: 'Um Rune', 
+          img: 'img/umrune.png', 
+          levelReq: 47,
+          stats: { 
+            weapon: '10% Chance of Open Wounds, +120 Open Wounds Damage per Second', 
+            helm: 'All Resistances +15', 
+            armor: 'All Resistances +15', 
+            shield: 'All Resistances +22' 
+          }
+        },
+        'mal': { 
+          name: 'Mal Rune', 
+          img: 'img/malrune.png', 
+          levelReq: 49,
+          stats: { 
+            weapon: 'Prevent Monster Heal', 
+            helm: 'Magic Damage Taken Reduced by 7', 
+            armor: 'Magic Damage Taken Reduced by 7', 
+            shield: 'Magic Damage Taken Reduced by 7' 
+          }
+        },
+        'ist': { 
+          name: 'Ist Rune', 
+          img: 'img/istrune.png',
+          levelReq: 51, 
+          stats: { 
+            weapon: '30% Better Chance of Getting Magic Items', 
+            helm: '30% Better Chance of Getting Magic Items', 
+            armor: '30% Better Chance of Getting Magic Items', 
+            shield: '30% Better Chance of Getting Magic Items' 
+          }
+        },
+        'gul': { 
+          name: 'Gul Rune', 
+          img: 'img/gulrune.png', 
+          levelReq: 53,
+          stats: { 
+            weapon: '20% Bonus to Attack Rating', 
+            helm: '+4% to Maximum Poison Resist', 
+            armor: '+4% to Maximum Poison Resist', 
+            shield: '+4% to Maximum Poison Resist' 
+          }
+        },
+        'vex': { 
+          name: 'Vex Rune', 
+          img: 'img/vexrune.png', 
+          levelReq: 55,
+          stats: { 
+            weapon: '7% Mana Stolen per Hit', 
+            helm: '+4% to Maximum Fire Resist', 
+            armor: '+4% to Maximum Fire Resist', 
+            shield: '+4% to Maximum Fire Resist' 
+          }
+        },
+        'ohm': { 
+          name: 'Ohm Rune', 
+          img: 'img/ohmrune.png', 
+          levelReq: 57,
+          stats: { 
+            weapon: '+45% Enhanced Damage', 
+            helm: '+4% to Maximum Cold Resist', 
+            armor: '+4% to Maximum Cold Resist', 
+            shield: '+4% to Maximum Cold Resist' 
+          }
+        },
+        'lo': { 
+          name: 'Lo Rune', 
+          img: 'img/lorune.png',
+          levelReq: 59, 
+          stats: { 
+            weapon: '20% Deadly Strike', 
+            helm: '+4% to Maximum Lightning Resist', 
+            armor: '+4% to Maximum Lightning Resist', 
+            shield: '+4% to Maximum Lightning Resist' 
+          }
+        },
+        'sur': { 
+          name: 'Sur Rune', 
+          img: 'img/surrune.png', 
+          levelReq: 61,
+          stats: { 
+            weapon: '+4 Life after each Kill', 
+            helm: 'Increase Maximum Mana 5%', 
+            armor: 'Increase Maximum Mana 5%', 
+            shield: '50 to Mana' 
+          }
+        },
+        'ber': { 
+          name: 'Ber Rune', 
+          img: 'img/berrune.png', 
+          levelReq: 63,
+          stats: { 
+            weapon: '20% Chance of Crushing Blow', 
+            helm: 'Physical Damage Taken Reduced by 5%', 
+            armor: 'Physical Damage Taken Reduced by 5%', 
+            shield: 'Physical Damage Taken Reduced by 5%' 
+          }
+        },
+        'jah': { 
+          name: 'Jah Rune', 
+          img: 'img/jahrune.png', 
+          levelReq: 65,
+          stats: { 
+            weapon: 'Ignore Target\'s Defense', 
+            helm: 'Increase Maximum Life 5%', 
+            armor: 'Increase Maximum Life 5%', 
+            shield: '+75 to Life' 
+          }
+        },
+        'cham': { 
+          name: 'Cham Rune', 
+          img: 'img/chamrune.png', 
+          levelReq: 67,
+          stats: { 
+            weapon: 'Freezes Target +3', 
+            helm: 'Cannot Be Frozen', 
+            armor: 'Cannot Be Frozen', 
+            shield: 'Cannot Be Frozen' 
+          }
+        },
+        'zod': { 
+          name: 'Zod Rune', 
+          img: 'img/zodrune.png', 
+          levelReq: 69,
+          stats: { 
+            weapon: 'Indestructible', 
+            helm: 'Indestructible', 
+            armor: 'Indestructible', 
+            shield: 'Indestructible' 
+          }
+        }
       },
       jewels: {
         'rare-jewel': { 
@@ -364,11 +782,16 @@ class UnifiedSocketSystem {
     });
     
     // Socket clicks (delegated)
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('socket-slot')) {
-        this.handleSocketClick(e);
-      }
-    });
+     // Socket slot clicks - THE KEY FEATURE YOU WANTED
+  document.addEventListener('click', (e) => {
+  // Check if we clicked a socket slot OR anything inside it (like the img)
+  const socketSlot = e.target.closest('.socket-slot');
+  
+  if (socketSlot) {
+    this.currentSocket = socketSlot; // Always get the socket container
+    this.showSocketModal();          // Open modal to change/add item
+  }
+});
     
     // Stat changes
     ['str', 'dex', 'vit', 'enr'].forEach(stat => {
@@ -443,32 +866,37 @@ class UnifiedSocketSystem {
   }
 
   fillSocket(itemKey, category) {
-    if (!this.currentSocket) return;
-    
-    const item = this.socketData[category]?.[itemKey];
-    if (!item) return;
-    
-    this.currentSocket.className = 'socket-slot filled';
-    this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
-    
-    this.currentSocket.dataset.itemKey = itemKey;
-    this.currentSocket.dataset.category = category;
-    this.currentSocket.dataset.itemName = item.name;
-    this.currentSocket.dataset.levelReq = item.levelReq || 1;
-    
-    // Get stats for section
-    const section = this.currentSocket.closest('.socket-container')?.dataset.section;
-    const stats = typeof item.stats === 'object' ? item.stats[section] : item.stats;
-    
-    if (stats) {
-      this.currentSocket.dataset.stats = stats;
-    }
-    
-    this.hideSocketModal();
-    this.currentSocket = null;
-    this.updateAll();
+  if (!this.currentSocket) return;
+  
+  const item = this.socketData[category]?.[itemKey];
+  if (!item) return;
+  
+  // Clear old data first (in case it was filled)
+  ['itemKey', 'category', 'itemName', 'stats', 'levelReq'].forEach(attr => {
+    delete this.currentSocket.dataset[attr];
+  });
+  
+  // Fill with new item (replaces old one)
+  this.currentSocket.className = 'socket-slot filled';
+  this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
+  
+  // Store new socket data
+  this.currentSocket.dataset.itemKey = itemKey;
+  this.currentSocket.dataset.category = category;
+  this.currentSocket.dataset.itemName = item.name;
+  this.currentSocket.dataset.levelReq = item.levelReq || 1;
+  
+  const section = this.currentSocket.closest('.socket-container')?.dataset.section;
+  const stats = typeof item.stats === 'object' ? item.stats[section] : item.stats;
+  
+  if (stats) {
+    this.currentSocket.dataset.stats = stats;
   }
-
+  
+  this.hideSocketModal();
+  this.currentSocket = null;
+  this.updateAll();
+}
   // === MODAL CREATION ===
   createSocketModal() {
     if (document.getElementById('socketModal')) return;
@@ -961,7 +1389,7 @@ generateStackedDescription(originalDescription, mergedStats, socketItems) {
           finalDescription = finalDescription.replace(pattern, replacement);
         } else if (data.fromSocket) {
           // Add new socket-only stats in blue
-          finalDescription += `<br>${replacement}`;
+          finalDescription += `${replacement}<br>`;
         }
       }
     }
@@ -1041,7 +1469,9 @@ addStackingStyles() {
     // Calculate socket stats
     this.calculateSocketStats();
     
-
+if (window.characterStatManager) {
+  window.characterStatManager.updateAllStatDisplays();
+}
   }
 
   calculateEquipmentStats(dropdownId, section) {
@@ -1676,6 +2106,10 @@ getStatPattern(key) {
     return mapping[section] || `${section}s-dropdown`;
   }
 
+
+
+
+
   // === STYLES ===
   addStyles() {
     if (document.getElementById('unified-socket-styles')) return;
@@ -1697,15 +2131,53 @@ getStatPattern(key) {
         gap: 5px;
         margin-bottom: 10px;
         justify-content: center;
+        align-items: center;
       }
       
       .socket-grid.sockets-0 { display: none; }
-      .socket-grid.sockets-1 { grid-template-columns: repeat(1, 30px); }
-      .socket-grid.sockets-2 { grid-template-columns: repeat(2, 30px); }
-      .socket-grid.sockets-3 { grid-template-columns: repeat(3, 30px); }
-      .socket-grid.sockets-4 { grid-template-columns: repeat(2, 30px); }
-      .socket-grid.sockets-5 { grid-template-columns: repeat(3, 30px); }
-      .socket-grid.sockets-6 { grid-template-columns: repeat(3, 30px); }
+      
+      /* 1 socket - center */
+      .socket-grid.sockets-1 { 
+        grid-template-columns: 30px;
+      }
+      
+      /* 2 sockets - vertical line */
+      .socket-grid.sockets-2 { 
+        grid-template-columns: 30px;
+        grid-template-rows: repeat(2, 30px);
+      }
+      
+      /* 3 sockets - triangle: 2 top, 1 bottom center */
+      .socket-grid.sockets-3 { 
+        grid-template-columns: repeat(3, 30px);
+        grid-template-rows: repeat(2, 30px);
+      }
+      .socket-grid.sockets-3 .socket-slot:nth-child(1) { grid-column: 1; grid-row: 1; }
+      .socket-grid.sockets-3 .socket-slot:nth-child(2) { grid-column: 3; grid-row: 1; }
+      .socket-grid.sockets-3 .socket-slot:nth-child(3) { grid-column: 2; grid-row: 2; }
+      
+      /* 4 sockets - 2x2 square */
+      .socket-grid.sockets-4 { 
+        grid-template-columns: repeat(2, 30px);
+        grid-template-rows: repeat(2, 30px);
+      }
+      
+      /* 5 sockets - cross pattern */
+      .socket-grid.sockets-5 { 
+        grid-template-columns: repeat(3, 30px);
+        grid-template-rows: repeat(3, 30px);
+      }
+      .socket-grid.sockets-5 .socket-slot:nth-child(1) { grid-column: 2; grid-row: 1; }
+      .socket-grid.sockets-5 .socket-slot:nth-child(2) { grid-column: 1; grid-row: 2; }
+      .socket-grid.sockets-5 .socket-slot:nth-child(3) { grid-column: 2; grid-row: 2; }
+      .socket-grid.sockets-5 .socket-slot:nth-child(4) { grid-column: 3; grid-row: 2; }
+      .socket-grid.sockets-5 .socket-slot:nth-child(5) { grid-column: 2; grid-row: 3; }
+      
+      /* 6 sockets - 2 columns x 3 rows */
+      .socket-grid.sockets-6 { 
+        grid-template-columns: repeat(2, 30px);
+        grid-template-rows: repeat(3, 30px);
+      }
       
       .socket-slot {
         width: 30px;
@@ -1731,8 +2203,8 @@ getStatPattern(key) {
       }
       
       .socket-slot img {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
         object-fit: contain;
       }
       
@@ -1939,6 +2411,11 @@ getStatPattern(key) {
 
   }
 }
+
+
+
+
+
 
 // === AUTO-INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', function() {
