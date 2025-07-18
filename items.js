@@ -976,7 +976,7 @@ const itemList = {
 
   Greyform: {
     description:
-      "Greyform<br>Quilted Armor<br>Base Maximum Sockets: 2 (3)<br>Defense: 31<br>Required Strength: 12<br>Required Level: 7<br>5% Life Stolen per Hit<br>20 Defense<br>+10 to Dexterity<br>Cold Resist +20%<br>Fire Resist +20%<br>Magic Damage Taken Reduced by 3<br>",
+      "Greyform<br>Quilted Armor<br>Base Maximum Sockets: 2 (3)<br>Defense: 31<br>Required Strength: 12<br>Required Level: 7<br>5% Life Stolen per Hit<br>+20 Defense<br>+10 to Dexterity<br>Cold Resist +20%<br>Fire Resist +20%<br>Magic Damage Taken Reduced by 3<br>",
     properties: {
       defense: 31,
       reqstr: 12,
