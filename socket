@@ -1,0 +1,1340 @@
+// Unified Socket System - Combines all functionality from socket-system.js, character.js, and main-init.js
+class UnifiedSocketSystem {
+  constructor() {
+    // Core state
+    this.isInitializing = true;
+    this.currentLevel = 1;
+    this.currentSocket = null;
+    this.targetSocket = null;
+    
+    // Character stats
+    this.classStats = {
+      'Amazon': { str: 20, dex: 25, vit: 20, enr: 15 },
+      'Necromancer': { str: 15, dex: 25, vit: 15, enr: 25 },
+      'Barbarian': { str: 30, dex: 20, vit: 25, enr: 10 },
+      'Sorceress': { str: 10, dex: 25, vit: 10, enr: 35 },
+      'Paladin': { str: 25, dex: 20, vit: 25, enr: 15 },
+      'Assassin': { str: 20, dex: 20, vit: 20, enr: 25 },
+      'Druid': { str: 15, dex: 20, vit: 25, enr: 20 }
+    };
+    
+    // Equipment mapping
+    this.equipmentMap = {
+      'weapons-dropdown': { info: 'weapon-info', section: 'weapon' },
+      'helms-dropdown': { info: 'helm-info', section: 'helm' },
+      'armors-dropdown': { info: 'armor-info', section: 'armor' },
+      'offs-dropdown': { info: 'off-info', section: 'shield' },
+      'gloves-dropdown': { info: 'glove-info', section: 'gloves' },
+      'belts-dropdown': { info: 'belt-info', section: 'belts' },
+      'boots-dropdown': { info: 'boot-info', section: 'boots' },
+      'ringsone-dropdown': { info: 'ringsone-info', section: 'ringone' },
+      'ringstwo-dropdown': { info: 'ringstwo-info', section: 'ringtwo' },
+      'amulets-dropdown': { info: 'amulet-info', section: 'amulet' }
+    };
+    
+    // Stats tracking
+    this.stats = {
+      // Attributes
+      strength: 0,
+      dexterity: 0,
+      vitality: 0,
+      energy: 0,
+      
+      // Core stats
+      allSkills: 0,
+      magicFind: 0,
+      goldFind: 0,
+      defense: 0,
+      blockChance: 0,
+      dr: 0,
+      pdr: 0,
+      mdr: 0,
+      cbf: false,
+      
+      // Speed stats
+      ias: 0,
+      fcr: 0,
+      frw: 0,
+      fhr: 0,
+      
+      // Resistances
+      fireResist: 0,
+      coldResist: 0,
+      lightResist: 0,
+      poisonResist: 0,
+      curseResist: 0,
+      allResistances: 0,
+      
+      // Combat stats
+      openWounds: 0,
+      crushingBlow: 0,
+      deadlyStrike: 0,
+      life: 0,
+      mana: 0,
+      attackRating: 0,
+      lifeSteal: 0,
+      manaSteal: 0
+    };
+    
+    // Jewel system
+    this.selectedJewelColor = 'white';
+    this.selectedJewelPrefix = null;
+    this.selectedJewelSuffix = null;
+    this.selectedJewelPrefixValue = null;
+    this.selectedJewelSuffixValue = null;
+    
+    // Socket data (runes and jewels)
+    this.initializeSocketData();
+    this.initializeJewelData();
+    
+    // Initialize after DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.init());
+    } else {
+      this.init();
+    }
+  }
+  
+  init() {
+    console.log('⚡ Initializing Unified Socket System...');
+    
+    // Setup UI components
+    this.createSocketModal();
+    this.createJewelModal();
+    this.addStyles();
+    
+    // Initialize socket containers
+    this.initializeSocketContainers();
+    
+    // Setup event listeners
+    this.setupEventListeners();
+    
+    // Initial calculations
+    setTimeout(() => {
+      this.isInitializing = false;
+      this.updateAll();
+      console.log('✅ Unified Socket System Ready!');
+    }, 100);
+  }
+  
+  // === CHARACTER METHODS ===
+  handleClassChange() {
+    const classSelect = document.getElementById('selectClass');
+    if (!classSelect) return;
+    
+    const selectedClass = classSelect.value;
+    const baseStats = this.classStats[selectedClass];
+    
+    if (baseStats) {
+      document.getElementById('str').value = baseStats.str;
+      document.getElementById('dex').value = baseStats.dex;
+      document.getElementById('vit').value = baseStats.vit;
+      document.getElementById('enr').value = baseStats.enr;
+      
+      this.updateAll();
+    }
+  }
+  
+  handleLevelChange() {
+    const levelInput = document.getElementById('lvlValue');
+    if (!levelInput) return;
+    
+    let level = parseInt(levelInput.value) || 1;
+    level = Math.max(1, Math.min(99, level));
+    
+    if (level !== parseInt(levelInput.value)) {
+      levelInput.value = level;
+    }
+    
+    this.currentLevel = level;
+    this.updateAll();
+  }
+  
+  // === LEVEL REQUIREMENT METHODS ===
+  calculateActualRequiredLevel(section, itemKey) {
+    const item = itemList[itemKey];
+    if (!item) return 1;
+    
+    let highestLevel = item.properties?.reqlvl || 1;
+    
+    // Check sockets for this section
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    
+    sockets.forEach(socket => {
+      const socketLevel = parseInt(socket.dataset.levelReq) || 1;
+      if (socketLevel > highestLevel) {
+        highestLevel = socketLevel;
+      }
+    });
+    
+    return highestLevel;
+  }
+  
+  checkItemRequirement(dropdown, section) {
+    if (!dropdown.value || !itemList[dropdown.value]) return true;
+    
+    const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+    const meetsReq = this.currentLevel >= actualLevel;
+    
+    // Update dropdown appearance
+    dropdown.style.color = meetsReq ? '#00ff00' : '#ff5555';
+    
+    return meetsReq;
+  }
+  
+  // === STATS CALCULATION ===
+  updateAll() {
+    if (this.isInitializing) return;
+    
+    console.log('🔄 Updating all systems...');
+    this.calculateAllStats();
+    this.updateAllDisplays();
+  }
+  
+  calculateAllStats() {
+    // Reset stats
+    Object.keys(this.stats).forEach(key => {
+      this.stats[key] = typeof this.stats[key] === 'boolean' ? false : 0;
+    });
+    
+    // Calculate from equipment
+    this.calculateEquipmentStats();
+    
+    // Calculate from sockets
+    this.calculateSocketStats();
+    
+    // Update displays
+    this.updateStatsDisplay();
+    this.updateAttributeTotals();
+  }
+  
+  calculateEquipmentStats() {
+    Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
+      const dropdown = document.getElementById(dropdownId);
+      if (!dropdown?.value || !itemList[dropdown.value]) return;
+      
+      const item = itemList[dropdown.value];
+      const meetsReq = this.checkItemRequirement(dropdown, config.section);
+      
+      if (meetsReq && item.properties) {
+        this.stats.strength += item.properties.str || 0;
+        this.stats.dexterity += item.properties.dex || 0;
+        this.stats.vitality += item.properties.vit || 0;
+        this.stats.energy += item.properties.enr || 0;
+      }
+    });
+  }
+  
+  calculateSocketStats() {
+    document.querySelectorAll('.socket-slot.filled').forEach(socket => {
+      const stats = socket.dataset.stats;
+      if (!stats) return;
+      
+      this.parseSocketStats(stats);
+    });
+  }
+  
+  parseSocketStats(statsText) {
+    // Attributes
+    const attrMatch = statsText.match(/\+(\d+)\s+(?:to\s+)?(Strength|Dexterity|Vitality|Energy)/gi);
+    if (attrMatch) {
+      attrMatch.forEach(match => {
+        const [, value, attr] = match.match(/\+(\d+)\s+(?:to\s+)?(Strength|Dexterity|Vitality|Energy)/i);
+        const statKey = attr.toLowerCase();
+        this.stats[statKey] += parseInt(value);
+      });
+    }
+    
+    // All Skills
+    const skillMatch = statsText.match(/\+(\d+)\s+(?:to\s+)?All Skills/i);
+    if (skillMatch) {
+      this.stats.allSkills += parseInt(skillMatch[1]);
+    }
+    
+    // Magic Find
+    const mfMatch = statsText.match(/(\d+)%\s+Better Chance of Getting Magic Items/i);
+    if (mfMatch) {
+      this.stats.magicFind += parseInt(mfMatch[1]);
+    }
+    
+    // Resistances
+    const allResMatch = statsText.match(/All Resistances\s+\+(\d+)/i);
+    if (allResMatch) {
+      const value = parseInt(allResMatch[1]);
+      this.stats.fireResist += value;
+      this.stats.coldResist += value;
+      this.stats.lightResist += value;
+      this.stats.poisonResist += value;
+    }
+    
+    // Individual resistances
+    const resTypes = ['Fire', 'Cold', 'Lightning', 'Poison'];
+    resTypes.forEach(type => {
+      const resMatch = statsText.match(new RegExp(`${type}\\s+Resist\\s+\\+(\\d+)%?`, 'i'));
+      if (resMatch) {
+        const key = type.toLowerCase() + 'Resist';
+        this.stats[key === 'lightningResist' ? 'lightResist' : key] += parseInt(resMatch[1]);
+      }
+    });
+    
+    // Life/Mana
+    const lifeMatch = statsText.match(/\+(\d+)\s+to\s+Life/i);
+    if (lifeMatch) {
+      this.stats.life += parseInt(lifeMatch[1]);
+    }
+    
+    const manaMatch = statsText.match(/\+(\d+)\s+to\s+Mana/i);
+    if (manaMatch) {
+      this.stats.mana += parseInt(manaMatch[1]);
+    }
+    
+    // Attack Rating
+    const arMatch = statsText.match(/\+(\d+)\s+(?:to\s+)?Attack Rating/i);
+    if (arMatch) {
+      this.stats.attackRating += parseInt(arMatch[1]);
+    }
+    
+    // Speed stats
+    const iasMatch = statsText.match(/(\d+)%\s+Increased Attack Speed/i);
+    if (iasMatch) {
+      this.stats.ias += parseInt(iasMatch[1]);
+    }
+    
+    const fcrMatch = statsText.match(/(\d+)%\s+Faster Cast Rate/i);
+    if (fcrMatch) {
+      this.stats.fcr += parseInt(fcrMatch[1]);
+    }
+    
+    // Combat stats
+    const dsMatch = statsText.match(/(\d+)%\s+Deadly Strike/i);
+    if (dsMatch) {
+      this.stats.deadlyStrike += parseInt(dsMatch[1]);
+    }
+    
+    const cbMatch = statsText.match(/(\d+)%\s+Chance of Crushing Blow/i);
+    if (cbMatch) {
+      this.stats.crushingBlow += parseInt(cbMatch[1]);
+    }
+    
+    const owMatch = statsText.match(/(\d+)%\s+Chance of Open Wounds/i);
+    if (owMatch) {
+      this.stats.openWounds += parseInt(owMatch[1]);
+    }
+  }
+  
+  // === DISPLAY METHODS ===
+  updateAllDisplays() {
+    Object.values(this.equipmentMap).forEach(config => {
+      this.updateItemDisplay(config.section);
+    });
+  }
+  
+  updateItemDisplay(section) {
+    const config = Object.values(this.equipmentMap).find(c => c.section === section);
+    if (!config) return;
+    
+    const infoDiv = document.getElementById(config.info);
+    const dropdown = document.querySelector(`[id$="-dropdown"][value]`);
+    
+    if (!infoDiv || !dropdown?.value || !itemList[dropdown.value]) return;
+    
+    const item = itemList[dropdown.value];
+    const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+    const meetsReq = this.currentLevel >= actualLevel;
+    
+    let description = item.description || '';
+    
+    // Get socket enhancements
+    const socketEnhancements = this.getSocketEnhancements(section);
+    if (socketEnhancements.length > 0) {
+      description += '<br><span class="socket-enhanced-stat">Socketed: ' + 
+                    socketEnhancements.join(', ') + '</span>';
+    }
+    
+    // Add level requirement
+    if (actualLevel > 1) {
+      const levelColor = meetsReq ? '#00ff00' : '#ff5555';
+      description += `<br><span style="color: ${levelColor}">Required Level: ${actualLevel}</span>`;
+    }
+    
+    infoDiv.innerHTML = description;
+    infoDiv.style.opacity = meetsReq ? '1' : '0.6';
+  }
+  
+  getSocketEnhancements(section) {
+    const enhancements = [];
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    
+    sockets.forEach(socket => {
+      if (socket.dataset.stats) {
+        enhancements.push(socket.dataset.stats);
+      }
+    });
+    
+    return enhancements;
+  }
+  
+  updateStatsDisplay() {
+    // Update calculator displays
+    this.updateContainer('allSkillsValue', this.stats.allSkills);
+    this.updateContainer('magicFindValue', this.stats.magicFind + '%');
+    this.updateContainer('goldFindValue', this.stats.goldFind + '%');
+    
+    // Resistances
+    this.updateContainer('fireResistValue', this.stats.fireResist + '%');
+    this.updateContainer('coldResistValue', this.stats.coldResist + '%');
+    this.updateContainer('lightningResistValue', this.stats.lightResist + '%');
+    this.updateContainer('poisonResistValue', this.stats.poisonResist + '%');
+    
+    // Speed stats
+    this.updateContainer('iasValue', this.stats.ias + '%');
+    this.updateContainer('fcrValue', this.stats.fcr + '%');
+    this.updateContainer('frwValue', this.stats.frw + '%');
+    this.updateContainer('fhrValue', this.stats.fhr + '%');
+    
+    // Combat stats
+    this.updateContainer('deadlyStrikeValue', this.stats.deadlyStrike + '%');
+    this.updateContainer('crushingBlowValue', this.stats.crushingBlow + '%');
+    this.updateContainer('openWoundsValue', this.stats.openWounds + '%');
+    
+    // Other stats
+    this.updateContainer('defenseValue', this.stats.defense);
+    this.updateContainer('damageReductionValue', this.stats.dr + '%');
+    this.updateContainer('physicalDamageReductionValue', this.stats.pdr);
+    this.updateContainer('magicDamageReductionValue', this.stats.mdr);
+    this.updateContainer('cbfValue', this.stats.cbf);
+  }
+  
+  updateAttributeTotals() {
+    ['str', 'dex', 'vit', 'enr'].forEach(stat => {
+      const base = parseInt(document.getElementById(stat)?.value) || 0;
+      const bonus = this.stats[stat === 'enr' ? 'energy' : stat + 'ength'] || 
+                    this.stats[stat === 'str' ? 'strength' : stat + 'erity'] ||
+                    this.stats[stat + 'ality'] || 0;
+      
+      const total = base + bonus;
+      
+      let totalSpan = document.getElementById(stat + 'Total');
+      if (!totalSpan && bonus > 0) {
+        totalSpan = document.createElement('span');
+        totalSpan.id = stat + 'Total';
+        totalSpan.style.cssText = 'color: #00ff00; margin-left: 10px;';
+        
+        const input = document.getElementById(stat);
+        if (input?.parentElement) {
+          input.parentElement.appendChild(totalSpan);
+        }
+      }
+      
+      if (totalSpan) {
+        totalSpan.textContent = bonus > 0 ? `(${total})` : '';
+      }
+    });
+  }
+  
+  updateContainer(id, value) {
+    const container = document.getElementById(id);
+    if (container) {
+      if (typeof value === 'boolean') {
+        container.textContent = value ? 'Yes' : 'No';
+        container.style.color = value ? '#00ff00' : '#ff5555';
+      } else {
+        container.textContent = value;
+      }
+    }
+  }
+  
+  // === SOCKET SYSTEM METHODS ===
+  initializeSocketContainers() {
+    Object.values(this.equipmentMap).forEach(config => {
+      const infoDiv = document.getElementById(config.info);
+      if (!infoDiv || infoDiv.parentElement.querySelector('.socket-container')) return;
+      
+      const container = document.createElement('div');
+      container.className = 'socket-container';
+      container.dataset.section = config.section;
+      
+      const grid = document.createElement('div');
+      grid.className = 'socket-grid sockets-0';
+      
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-socket-btn';
+      addBtn.textContent = '+';
+      addBtn.onclick = () => this.addSocket(config.section);
+      
+      container.appendChild(grid);
+      container.appendChild(addBtn);
+      infoDiv.parentElement.appendChild(container);
+    });
+  }
+  
+  addSocket(section) {
+    const grid = document.querySelector(`.socket-container[data-section="${section}"] .socket-grid`);
+    if (!grid) return;
+    
+    const count = grid.children.length;
+    if (count >= 6) {
+      alert('Maximum 6 sockets allowed');
+      return;
+    }
+    
+    const socket = document.createElement('div');
+    socket.className = 'socket-slot empty';
+    socket.dataset.index = count;
+    socket.onclick = (e) => this.handleSocketClick(e);
+    
+    grid.appendChild(socket);
+    grid.className = `socket-grid sockets-${count + 1}`;
+    
+    this.updateAll();
+  }
+  
+  handleSocketClick(e) {
+    const socket = e.target.closest('.socket-slot');
+    if (!socket) return;
+    
+    if (socket.classList.contains('filled')) {
+      if (confirm('Remove this socket item?')) {
+        this.clearSocket(socket);
+      }
+    } else {
+      this.currentSocket = socket;
+      this.showSocketModal();
+    }
+  }
+  
+  clearSocket(socket) {
+    socket.className = 'socket-slot empty';
+    socket.innerHTML = '';
+    
+    ['itemKey', 'category', 'itemName', 'stats', 'levelReq'].forEach(attr => {
+      delete socket.dataset[attr];
+    });
+    
+    this.updateAll();
+  }
+  
+  fillSocket(itemKey, category) {
+    if (!this.currentSocket) return;
+    
+    const item = this.socketData[category]?.[itemKey];
+    if (!item) return;
+    
+    this.currentSocket.className = 'socket-slot filled';
+    this.currentSocket.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
+    
+    this.currentSocket.dataset.itemKey = itemKey;
+    this.currentSocket.dataset.category = category;
+    this.currentSocket.dataset.itemName = item.name;
+    this.currentSocket.dataset.levelReq = item.levelReq || 1;
+    
+    // Get stats for section
+    const section = this.currentSocket.closest('.socket-container')?.dataset.section;
+    const stats = typeof item.stats === 'object' ? item.stats[section] : item.stats;
+    
+    if (stats) {
+      this.currentSocket.dataset.stats = stats;
+    }
+    
+    this.hideSocketModal();
+    this.currentSocket = null;
+    this.updateAll();
+  }
+  
+  // === UI CREATION METHODS ===
+  createSocketModal() {
+    if (document.getElementById('socketModal')) return;
+    
+    const modal = document.createElement('div');
+    modal.id = 'socketModal';
+    modal.className = 'socket-modal';
+    modal.innerHTML = `
+      <div class="socket-modal-content">
+        <span class="socket-close">&times;</span>
+        <h3>Select Socket Item</h3>
+        <div class="socket-tabs">
+          <button class="socket-tab active" data-category="runes">Runes</button>
+          <button class="socket-tab" data-category="jewels">Jewels</button>
+        </div>
+        <div id="socketItemGrid" class="socket-item-grid"></div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Event handlers
+    modal.querySelector('.socket-close').onclick = () => this.hideSocketModal();
+    modal.onclick = (e) => {
+      if (e.target === modal) this.hideSocketModal();
+    };
+    
+    modal.querySelectorAll('.socket-tab').forEach(tab => {
+      tab.onclick = () => this.switchSocketTab(tab.dataset.category);
+    });
+  }
+  
+  createJewelModal() {
+    if (document.getElementById('jewelModal')) return;
+    
+    const modal = document.createElement('div');
+    modal.id = 'jewelModal';
+    modal.className = 'socket-modal';
+    modal.innerHTML = `
+      <div class="socket-modal-content">
+        <span class="socket-close">&times;</span>
+        <h3>Create Custom Jewel</h3>
+        
+        <div class="jewel-creation-section">
+          <h4>1. Select Color</h4>
+          <div class="jewel-color-grid">
+            ${['white', 'blue', 'yellow', 'green', 'orange', 'red'].map(color => `
+              <div class="color-option ${color === 'white' ? 'selected' : ''}" 
+                   data-color="${color}" 
+                   style="background-color: ${color};">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        
+        <div class="jewel-creation-section">
+          <h4>2. Select Prefix (Optional)</h4>
+          <select id="jewelPrefixSelect">
+            <option value="">None</option>
+          </select>
+          <div id="prefixValueContainer" style="display: none;">
+            <input type="range" id="prefixValue" min="1" max="1" value="1">
+            <span id="prefixValueDisplay">1</span>
+          </div>
+        </div>
+        
+        <div class="jewel-creation-section">
+          <h4>3. Select Suffix (Optional)</h4>
+          <select id="jewelSuffixSelect">
+            <option value="">None</option>
+          </select>
+          <div id="suffixValueContainer" style="display: none;">
+            <input type="range" id="suffixValue" min="1" max="1" value="1">
+            <span id="suffixValueDisplay">1</span>
+          </div>
+        </div>
+        
+        <div class="jewel-preview">
+          <h4>Preview</h4>
+          <div id="jewelPreviewContent">White Jewel</div>
+        </div>
+        
+        <button id="createJewelBtn" class="create-jewel-btn">Create Jewel</button>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Populate selects
+    this.populateJewelSelects();
+    
+    // Event handlers
+    modal.querySelector('.socket-close').onclick = () => this.hideJewelModal();
+    modal.onclick = (e) => {
+      if (e.target === modal) this.hideJewelModal();
+    };
+    
+    modal.querySelectorAll('.color-option').forEach(opt => {
+      opt.onclick = () => this.selectJewelColor(opt.dataset.color);
+    });
+    
+    document.getElementById('jewelPrefixSelect').onchange = (e) => this.selectJewelPrefix(e.target.value);
+    document.getElementById('jewelSuffixSelect').onchange = (e) => this.selectJewelSuffix(e.target.value);
+    document.getElementById('createJewelBtn').onclick = () => this.createCustomJewel();
+  }
+  
+  showSocketModal() {
+    const modal = document.getElementById('socketModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      this.switchSocketTab('runes');
+    }
+  }
+  
+  hideSocketModal() {
+    const modal = document.getElementById('socketModal');
+    if (modal) modal.style.display = 'none';
+    this.currentSocket = null;
+  }
+  
+  showJewelModal() {
+    const modal = document.getElementById('jewelModal');
+    if (modal) modal.style.display = 'flex';
+  }
+  
+  hideJewelModal() {
+    const modal = document.getElementById('jewelModal');
+    if (modal) modal.style.display = 'none';
+    this.targetSocket = null;
+  }
+  
+  switchSocketTab(category) {
+    document.querySelectorAll('.socket-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.category === category);
+    });
+    
+    this.populateSocketGrid(category);
+  }
+  
+  populateSocketGrid(category) {
+    const grid = document.getElementById('socketItemGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    if (category === 'jewels') {
+      // Custom jewel option
+      const customDiv = document.createElement('div');
+      customDiv.className = 'socket-item custom-jewel-item';
+      customDiv.innerHTML = `
+        <img src="img/jewel1.png" alt="Custom Jewel">
+        <div class="socket-item-name">Create Custom</div>
+      `;
+      customDiv.onclick = () => {
+        this.targetSocket = this.currentSocket;
+        this.hideSocketModal();
+        this.showJewelModal();
+      };
+      grid.appendChild(customDiv);
+    }
+    
+    // Regular items
+    const items = this.socketData[category] || {};
+    Object.entries(items).forEach(([key, item]) => {
+      const div = document.createElement('div');
+      div.className = 'socket-item';
+      div.innerHTML = `
+        <img src="${item.img}" alt="${item.name}">
+        <div class="socket-item-name">${item.name}</div>
+      `;
+      div.onclick = () => this.fillSocket(key, category);
+      grid.appendChild(div);
+    });
+  }
+  
+  // === JEWEL SYSTEM METHODS ===
+  selectJewelColor(color) {
+    this.selectedJewelColor = color;
+    
+    document.querySelectorAll('.color-option').forEach(opt => {
+      opt.classList.toggle('selected', opt.dataset.color === color);
+    });
+    
+    this.updateJewelPreview();
+  }
+  
+  selectJewelPrefix(prefix) {
+    this.selectedJewelPrefix = prefix;
+    
+    const container = document.getElementById('prefixValueContainer');
+    const input = document.getElementById('prefixValue');
+    const display = document.getElementById('prefixValueDisplay');
+    
+    if (prefix && this.jewelPrefixes[prefix]) {
+      const data = this.jewelPrefixes[prefix];
+      const range = this.extractValueRange(data.effect);
+      
+      container.style.display = 'block';
+      input.min = range.min;
+      input.max = range.max;
+      input.value = range.min;
+      display.textContent = range.min;
+      
+      input.oninput = () => {
+        this.selectedJewelPrefixValue = input.value;
+        display.textContent = input.value;
+        this.updateJewelPreview();
+      };
+      
+      this.selectedJewelPrefixValue = range.min;
+    } else {
+      container.style.display = 'none';
+      this.selectedJewelPrefixValue = null;
+    }
+    
+    this.updateJewelPreview();
+  }
+  
+  selectJewelSuffix(suffix) {
+    this.selectedJewelSuffix = suffix;
+    
+    const container = document.getElementById('suffixValueContainer');
+    const input = document.getElementById('suffixValue');
+    const display = document.getElementById('suffixValueDisplay');
+    
+    if (suffix && this.jewelSuffixes[suffix]) {
+      const data = this.jewelSuffixes[suffix];
+      const range = this.extractValueRange(data.effect);
+      
+      container.style.display = 'block';
+      input.min = range.min;
+      input.max = range.max;
+      input.value = range.min;
+      display.textContent = range.min;
+      
+      input.oninput = () => {
+        this.selectedJewelSuffixValue = input.value;
+        display.textContent = input.value;
+        this.updateJewelPreview();
+      };
+      
+      this.selectedJewelSuffixValue = range.min;
+    } else {
+      container.style.display = 'none';
+      this.selectedJewelSuffixValue = null;
+    }
+    
+    this.updateJewelPreview();
+  }
+  
+  extractValueRange(effect) {
+    const match = effect.match(/\[(\d+)-(\d+)\]/);
+    if (match) {
+      return { min: parseInt(match[1]), max: parseInt(match[2]) };
+    }
+    return { min: 1, max: 1 };
+  }
+  
+  updateJewelPreview() {
+    const preview = document.getElementById('jewelPreviewContent');
+    if (!preview) return;
+    
+    let name = this.selectedJewelColor.charAt(0).toUpperCase() + this.selectedJewelColor.slice(1);
+    const stats = [];
+    
+    if (this.selectedJewelPrefix && this.selectedJewelPrefixValue) {
+      name = `${this.selectedJewelPrefix} ${name}`;
+      const effect = this.jewelPrefixes[this.selectedJewelPrefix].effect;
+      stats.push(effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefixValue));
+    }
+    
+    if (this.selectedJewelSuffix && this.selectedJewelSuffixValue) {
+      name += ` of ${this.selectedJewelSuffix}`;
+      const effect = this.jewelSuffixes[this.selectedJewelSuffix].effect;
+      stats.push(effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffixValue));
+    }
+    
+    name += ' Jewel';
+    
+    preview.innerHTML = `
+      <div>${name}</div>
+      ${stats.map(s => `<div style="color: #4169e1; font-size: 12px;">${s}</div>`).join('')}
+    `;
+  }
+  
+  populateJewelSelects() {
+    const prefixSelect = document.getElementById('jewelPrefixSelect');
+    const suffixSelect = document.getElementById('jewelSuffixSelect');
+    
+    if (prefixSelect) {
+      Object.entries(this.jewelPrefixes).forEach(([key, data]) => {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = `${key} (${data.effect})`;
+        prefixSelect.appendChild(option);
+      });
+    }
+    
+    if (suffixSelect) {
+      Object.entries(this.jewelSuffixes).forEach(([key, data]) => {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = `${key} (${data.effect})`;
+        suffixSelect.appendChild(option);
+      });
+    }
+  }
+  
+  createCustomJewel() {
+    if (!this.targetSocket) {
+      this.targetSocket = this.currentSocket;
+    }
+    
+    if (!this.targetSocket) {
+      alert('No socket selected');
+      return;
+    }
+    
+    // Calculate level requirement
+    let reqLevel = 1;
+    if (this.selectedJewelPrefix) {
+      reqLevel = Math.max(reqLevel, this.jewelPrefixes[this.selectedJewelPrefix].reqLevel);
+    }
+    if (this.selectedJewelSuffix) {
+      reqLevel = Math.max(reqLevel, this.jewelSuffixes[this.selectedJewelSuffix].reqLevel);
+    }
+    
+    // Build stats
+    const stats = [];
+    if (this.selectedJewelPrefix && this.selectedJewelPrefixValue) {
+      const effect = this.jewelPrefixes[this.selectedJewelPrefix].effect;
+      stats.push(effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefixValue));
+    }
+    if (this.selectedJewelSuffix && this.selectedJewelSuffixValue) {
+      const effect = this.jewelSuffixes[this.selectedJewelSuffix].effect;
+      stats.push(effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffixValue));
+    }
+    
+    // Build name
+    let name = this.selectedJewelColor.charAt(0).toUpperCase() + this.selectedJewelColor.slice(1);
+    if (this.selectedJewelPrefix) name = `${this.selectedJewelPrefix} ${name}`;
+    if (this.selectedJewelSuffix) name += ` of ${this.selectedJewelSuffix}`;
+    name += ' Jewel';
+    
+    // Jewel images
+    const images = {
+      'white': 'img/jewel1.png',
+      'blue': 'img/jewel2.png',
+      'yellow': 'img/jewel3.png',
+      'green': 'img/jewel4.png',
+      'orange': 'img/jewel5.png',
+      'red': 'img/jewel6.png'
+    };
+    
+    // Fill socket
+    this.targetSocket.className = 'socket-slot filled';
+    this.targetSocket.innerHTML = `<img src="${images[this.selectedJewelColor]}" alt="${name}">`;
+    
+    this.targetSocket.dataset.itemKey = 'custom-jewel';
+    this.targetSocket.dataset.category = 'jewels';
+    this.targetSocket.dataset.itemName = name;
+    this.targetSocket.dataset.stats = stats.join(', ');
+    this.targetSocket.dataset.levelReq = reqLevel;
+    
+    // Reset and update
+    this.hideJewelModal();
+    this.selectedJewelColor = 'white';
+    this.selectedJewelPrefix = null;
+    this.selectedJewelSuffix = null;
+    this.selectedJewelPrefixValue = null;
+    this.selectedJewelSuffixValue = null;
+    this.targetSocket = null;
+    
+    this.updateAll();
+  }
+  
+  // === EVENT LISTENERS ===
+  setupEventListeners() {
+    // Class change
+    const classSelect = document.getElementById('selectClass');
+    if (classSelect) {
+      classSelect.addEventListener('change', () => this.handleClassChange());
+    }
+    
+    // Level change
+    const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+      levelInput.addEventListener('input', () => this.handleLevelChange());
+      levelInput.addEventListener('change', () => this.handleLevelChange());
+    }
+    
+    // Stat changes
+    ['str', 'dex', 'vit', 'enr'].forEach(stat => {
+      const input = document.getElementById(stat);
+      if (input) {
+        input.addEventListener('input', () => this.updateAll());
+      }
+    });
+    
+    // Equipment changes
+    Object.keys(this.equipmentMap).forEach(dropdownId => {
+      const dropdown = document.getElementById(dropdownId);
+      if (dropdown) {
+        dropdown.addEventListener('change', () => {
+          setTimeout(() => this.updateAll(), 50);
+        });
+      }
+    });
+    
+    // Socket clicks (delegated)
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.socket-slot')) {
+        this.handleSocketClick(e);
+      }
+    });
+  }
+  
+  // === SOCKET DATA ===
+  initializeSocketData() {
+    this.socketData = {
+      runes: {
+        'el': { name: 'El Rune', img: 'img/elrune.png', levelReq: 11, stats: { weapon: '+50 to Attack Rating, +1 Light Radius', armor: '+15 Defense, +1 Light Radius', helm: '+15 Defense, +1 Light Radius', shield: '+15 Defense, +1 Light Radius' }},
+        'eld': { name: 'Eld Rune', img: 'img/eldrune.png', levelReq: 11, stats: { weapon: '+75% Damage to Undead, +50 Attack Rating Against Undead', armor: '15% Slower Stamina Drain', helm: '15% Slower Stamina Drain', shield: '7% Increased Chance of Blocking' }},
+        'tir': { name: 'Tir Rune', img: 'img/tirrune.png', levelReq: 13, stats: { weapon: '+2 to Mana After Each Kill', armor: '+2 to Mana After Each Kill', helm: '+2 to Mana After Each Kill', shield: '+2 to Mana After Each Kill' }},
+        'nef': { name: 'Nef Rune', img: 'img/nefrune.png', levelReq: 13, stats: { weapon: 'Knockback', armor: '+30 Defense vs. Missile', helm: '+30 Defense vs. Missile', shield: '+30 Defense vs. Missile' }},
+        'eth': { name: 'Eth Rune', img: 'img/ethrune.png', levelReq: 15, stats: { weapon: '-25% to Target Defense', armor: 'Regenerate Mana 15%', helm: 'Regenerate Mana 15%', shield: 'Regenerate Mana 15%' }},
+        'ith': { name: 'Ith Rune', img: 'img/ithrune.png', levelReq: 15, stats: { weapon: '+9 to Maximum Damage', armor: '15% Damage Taken Goes to Mana', helm: '15% Damage Taken Goes to Mana', shield: '15% Damage Taken Goes to Mana' }},
+        'tal': { name: 'Tal Rune', img: 'img/talrune.png', levelReq: 17, stats: { weapon: '+75 Poison Damage Over 5 Seconds', armor: 'Poison Resist +30%', helm: 'Poison Resist +30%', shield: 'Poison Resist +35%' }},
+        'ral': { name: 'Ral Rune', img: 'img/ralrune.png', levelReq: 19, stats: { weapon: 'Adds 5-30 Fire Damage', armor: 'Fire Resist +30%', helm: 'Fire Resist +30%', shield: 'Fire Resist +35%' }},
+        'ort': { name: 'Ort Rune', img: 'img/ortrune.png', levelReq: 21, stats: { weapon: 'Adds 1-50 Lightning Damage', armor: 'Lightning Resist +30%', helm: 'Lightning Resist +30%', shield: 'Lightning Resist +35%' }},
+        'thul': { name: 'Thul Rune', img: 'img/thulrune.png', levelReq: 23, stats: { weapon: 'Adds 3-14 Cold Damage', armor: 'Cold Resist +30%', helm: 'Cold Resist +30%', shield: 'Cold Resist +35%' }},
+        'amn': { name: 'Amn Rune', img: 'img/amnrune.png', levelReq: 25, stats: { weapon: '7% Life Stolen per Hit', armor: 'Attacker Takes Damage of 14', helm: 'Attacker Takes Damage of 14', shield: 'Attacker Takes Damage of 14' }},
+        'sol': { name: 'Sol Rune', img: 'img/solrune.png', levelReq: 27, stats: { weapon: '+9 to Minimum Damage', armor: 'Damage Reduced by 7', helm: 'Damage Reduced by 7', shield: 'Damage Reduced by 7' }},
+        'shael': { name: 'Shael Rune', img: 'img/shaelrune.png', levelReq: 29, stats: { weapon: '20% Increased Attack Speed', armor: '20% Faster Hit Recovery', helm: '20% Faster Hit Recovery', shield: '20% Faster Block Rate' }},
+        'dol': { name: 'Dol Rune', img: 'img/dolrune.png', levelReq: 31, stats: { weapon: 'Hit Causes Monster to Flee 25%', armor: 'Replenish Life +7', helm: 'Replenish Life +7', shield: 'Replenish Life +7' }},
+        'hel': { name: 'Hel Rune', img: 'img/helrune.png', levelReq: 33, stats: { weapon: 'Requirements -20%', armor: 'Requirements -15%', helm: 'Requirements -15%', shield: 'Requirements -15%' }},
+        'io': { name: 'Io Rune', img: 'img/iorune.png', levelReq: 35, stats: { weapon: '+10 to Vitality', armor: '+10 to Vitality', helm: '+10 to Vitality', shield: '+10 to Vitality' }},
+        'lum': { name: 'Lum Rune', img: 'img/lumrune.png', levelReq: 37, stats: { weapon: '+10 to Energy', armor: '+10 to Energy', helm: '+10 to Energy', shield: '+10 to Energy' }},
+        'ko': { name: 'Ko Rune', img: 'img/korune.png', levelReq: 39, stats: { weapon: '+10 to Dexterity', armor: '+10 to Dexterity', helm: '+10 to Dexterity', shield: '+10 to Dexterity' }},
+        'fal': { name: 'Fal Rune', img: 'img/falrune.png', levelReq: 41, stats: { weapon: '+10 to Strength', armor: '+10 to Strength', helm: '+10 to Strength', shield: '+10 to Strength' }},
+        'lem': { name: 'Lem Rune', img: 'img/lemrune.png', levelReq: 43, stats: { weapon: '75% Extra Gold from Monsters', armor: '50% Extra Gold from Monsters', helm: '50% Extra Gold from Monsters', shield: '50% Extra Gold from Monsters' }},
+        'pul': { name: 'Pul Rune', img: 'img/pulrune.png', levelReq: 45, stats: { weapon: '+75% Damage to Demons, +100 Attack Rating Against Demons', armor: '+30% Enhanced Defense', helm: '+30% Enhanced Defense', shield: '+30% Enhanced Defense' }},
+        'um': { name: 'Um Rune', img: 'img/umrune.png', levelReq: 47, stats: { weapon: '25% Chance of Open Wounds', armor: 'All Resistances +15', helm: 'All Resistances +15', shield: 'All Resistances +22' }},
+        'mal': { name: 'Mal Rune', img: 'img/malrune.png', levelReq: 49, stats: { weapon: 'Prevent Monster Heal', armor: 'Magic Damage Reduced by 7', helm: 'Magic Damage Reduced by 7', shield: 'Magic Damage Reduced by 7' }},
+        'ist': { name: 'Ist Rune', img: 'img/istrune.png', levelReq: 51, stats: { weapon: '30% Better Chance of Getting Magic Items', armor: '25% Better Chance of Getting Magic Items', helm: '25% Better Chance of Getting Magic Items', shield: '25% Better Chance of Getting Magic Items' }},
+        'gul': { name: 'Gul Rune', img: 'img/gulrune.png', levelReq: 53, stats: { weapon: '20% Bonus to Attack Rating', armor: '5% to Maximum Poison Resist', helm: '5% to Maximum Poison Resist', shield: '5% to Maximum Poison Resist' }},
+        'vex': { name: 'Vex Rune', img: 'img/vexrune.png', levelReq: 55, stats: { weapon: '7% Mana Stolen per Hit', armor: '5% to Maximum Fire Resist', helm: '5% to Maximum Fire Resist', shield: '5% to Maximum Fire Resist' }},
+        'ohm': { name: 'Ohm Rune', img: 'img/ohmrune.png', levelReq: 57, stats: { weapon: '+50% Enhanced Damage', armor: '5% to Maximum Cold Resist', helm: '5% to Maximum Cold Resist', shield: '5% to Maximum Cold Resist' }},
+        'lo': { name: 'Lo Rune', img: 'img/lorune.png', levelReq: 59, stats: { weapon: '20% Deadly Strike', armor: '5% to Maximum Lightning Resist', helm: '5% to Maximum Lightning Resist', shield: '5% to Maximum Lightning Resist' }},
+        'sur': { name: 'Sur Rune', img: 'img/surrune.png', levelReq: 61, stats: { weapon: 'Hit Blinds Target', armor: 'Maximum Mana 5%', helm: '50 to Mana', shield: '+50 to Mana' }},
+        'ber': { name: 'Ber Rune', img: 'img/berrune.png', levelReq: 63, stats: { weapon: '20% Chance of Crushing Blow', armor: 'Damage Reduced by 8%', helm: 'Damage Reduced by 8%', shield: 'Damage Reduced by 8%' }},
+        'jah': { name: 'Jah Rune', img: 'img/jahrune.png', levelReq: 65, stats: { weapon: 'Ignore Target\'s Defense', helm: 'Increase Maximum Life 5%', armor: 'Increase Maximum Life 5%', shield: '+75 to Life' }},
+        'cham': { name: 'Cham Rune', img: 'img/chamrune.png', levelReq: 67, stats: { weapon: 'Freezes Target +3', helm: 'Cannot Be Frozen', armor: 'Cannot Be Frozen', shield: 'Cannot Be Frozen' }},
+        'zod': { name: 'Zod Rune', img: 'img/zodrune.png', levelReq: 69, stats: { weapon: 'Indestructible', helm: 'Indestructible', armor: 'Indestructible', shield: 'Indestructible' }}
+      },
+      jewels: {
+        'rare-jewel': { name: 'Rare Jewel', img: 'img/jewel1.png', levelReq: 1, stats: '+15% Enhanced Damage' }
+      }
+    };
+  }
+  
+  initializeJewelData() {
+    this.jewelPrefixes = {
+      'Ruby': { effect: '+[10-30] to Attack Rating', reqLevel: 1 },
+      'Garnet': { effect: '+[31-60] to Attack Rating', reqLevel: 16 },
+      'Scarlet': { effect: '+[61-100] to Attack Rating', reqLevel: 31 },
+      'Crimson': { effect: '+[101-150] to Attack Rating', reqLevel: 66 },
+      'Bloody': { effect: '+[1-5] to Light Radius', reqLevel: 12 },
+      'Red': { effect: 'Fire Resist +[5-15]%', reqLevel: 1 },
+      'Vermillion': { effect: 'Fire Resist +[16-30]%', reqLevel: 14 },
+      'Tangerine': { effect: 'Lightning Resist +[5-15]%', reqLevel: 1 },
+      'Ocher': { effect: 'Lightning Resist +[16-30]%', reqLevel: 14 },
+      'Coral': { effect: 'Poison Resist +[5-15]%', reqLevel: 1 },
+      'Beryl': { effect: 'Poison Resist +[16-30]%', reqLevel: 14 },
+      'Viridian': { effect: 'Damage Reduced by [1-2]', reqLevel: 10 },
+      'Jade': { effect: 'Damage Reduced by [3-4]', reqLevel: 29 },
+      'Azure': { effect: '+[1-4] to Strength', reqLevel: 3 },
+      'Lapis Lazuli': { effect: '+[5-10] to Strength', reqLevel: 26 },
+      'Cobalt': { effect: '+[1-4] to Dexterity', reqLevel: 3 },
+      'Saphire': { effect: '+[5-10] to Dexterity', reqLevel: 26 },
+      'Banded': { effect: 'All Resistances +[5-10]', reqLevel: 12 }
+    };
+    
+    this.jewelSuffixes = {
+      'Malice': { effect: 'Attacker Takes Damage of [30-40]', reqLevel: 29 },
+      'Fervor': { effect: '+[15-15]% Increased Attack Speed', reqLevel: 31 },
+      'Passion': { effect: 'Adds [1-3] to [6-10] Fire Damage', reqLevel: 11 },
+      'Ennui': { effect: 'Adds 1-[10-20] Lightning Damage', reqLevel: 11 },
+      'Nature': { effect: 'Adds [1-2] to [4-8] Poison Damage', reqLevel: 8 },
+      'Winter': { effect: 'Adds [1-2] to [3-5] Cold Damage', reqLevel: 6 },
+      'Frigidity': { effect: 'Adds 1 to [3-5] Cold Damage', reqLevel: 12 },
+      'Death': { effect: '+[4-6]% Life Stolen per Hit', reqLevel: 38 },
+      'Life': { effect: '+[1-5] to Life', reqLevel: 1 },
+      'Sustenance': { effect: '+[6-10] to Life', reqLevel: 12 },
+      'Vita': { effect: '+[11-15] to Life', reqLevel: 20 },
+      'Fortitude': { effect: '+[16-20] to Life', reqLevel: 36 },
+      'Zeal': { effect: '+[21-30] to Life', reqLevel: 53 },
+      'Sorcery': { effect: '+[1-5] to Mana', reqLevel: 1 },
+      'Wizardry': { effect: '+[6-10] to Mana', reqLevel: 8 },
+      'Enlightenment': { effect: '+[11-15] to Mana', reqLevel: 17 },
+      'Knowledge': { effect: '+[16-20] to Mana', reqLevel: 29 },
+      'Bliss': { effect: '+[21-30] to Mana', reqLevel: 47 }
+    };
+  }
+  
+  // === STYLES ===
+  addStyles() {
+    if (document.getElementById('socket-styles')) return;
+    
+    const styles = document.createElement('style');
+    styles.id = 'socket-styles';
+    styles.textContent = `
+      /* Socket System Styles */
+      .socket-container {
+        margin-top: 10px;
+        padding: 10px;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid #333;
+        border-radius: 4px;
+      }
+      
+      .socket-grid {
+        display: grid;
+        gap: 5px;
+        margin-bottom: 10px;
+      }
+      
+      .socket-grid.sockets-1 { grid-template-columns: repeat(1, 30px); }
+      .socket-grid.sockets-2 { grid-template-columns: repeat(2, 30px); }
+      .socket-grid.sockets-3 { grid-template-columns: repeat(3, 30px); }
+      .socket-grid.sockets-4 { grid-template-columns: repeat(2, 30px); }
+      .socket-grid.sockets-5 { grid-template-columns: repeat(3, 30px); }
+      .socket-grid.sockets-6 { grid-template-columns: repeat(3, 30px); }
+      
+      .socket-slot {
+        width: 30px;
+        height: 30px;
+        border: 2px solid #666;
+        border-radius: 50%;
+        background: #000;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      
+      .socket-slot.empty:hover {
+        border-color: #999;
+        background: #111;
+      }
+      
+      .socket-slot.filled {
+        border-color: #00ff00;
+        background: #001100;
+      }
+      
+      .socket-slot img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+      }
+      
+      .add-socket-btn {
+        padding: 5px 15px;
+        background: #333;
+        color: #fff;
+        border: 1px solid #666;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      
+      .add-socket-btn:hover {
+        background: #444;
+        border-color: #888;
+      }
+      
+      /* Socket Modal */
+      .socket-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .socket-modal-content {
+        background: #1a1a1a;
+        border: 2px solid #444;
+        border-radius: 8px;
+        padding: 20px;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+      }
+      
+      .socket-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 28px;
+        color: #aaa;
+        cursor: pointer;
+      }
+      
+      .socket-close:hover {
+        color: #fff;
+      }
+      
+      .socket-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      
+      .socket-tab {
+        padding: 8px 20px;
+        background: #333;
+        color: #999;
+        border: 1px solid #555;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      .socket-tab.active {
+        background: #444;
+        color: #fff;
+        border-color: #666;
+      }
+      
+      .socket-item-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 10px;
+      }
+      
+      .socket-item {
+        background: #222;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      
+      .socket-item:hover {
+        background: #333;
+        border-color: #666;
+        transform: translateY(-2px);
+      }
+      
+      .socket-item img {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 5px;
+      }
+      
+      .socket-item-name {
+        font-size: 11px;
+        color: #ccc;
+      }
+      
+      .custom-jewel-item {
+        background: #2a2a2a;
+        border-color: #FFD700;
+      }
+      
+      /* Jewel Creation */
+      .jewel-creation-section {
+        margin-bottom: 20px;
+      }
+      
+      .jewel-color-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 40px);
+        gap: 10px;
+      }
+      
+      .color-option {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #444;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      
+      .color-option.selected {
+        border-color: #FFD700;
+        box-shadow: 0 0 10px rgba(255,215,0,0.5);
+      }
+      
+      .jewel-preview {
+        background: #222;
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 20px 0;
+        text-align: center;
+      }
+      
+      .create-jewel-btn {
+        width: 100%;
+        padding: 10px;
+        background: #2a5a2a;
+        color: #fff;
+        border: 1px solid #3a7a3a;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      
+      .create-jewel-btn:hover {
+        background: #3a6a3a;
+      }
+      
+      /* Socket enhanced stats */
+      .socket-enhanced-stat {
+        color: #4169e1;
+        font-weight: bold;
+      }
+      
+      /* Level requirement colors */
+      .level-requirement-met {
+        color: #00ff00 !important;
+      }
+      
+      .level-requirement-not-met {
+        color: #ff5555 !important;
+      }
+    `;
+    
+    document.head.appendChild(styles);
+  }
+
+
+ setupEventListeners() {
+    document.getElementById('selectClass')?.addEventListener('change', () => this.handleClassChange());
+
+    const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+      levelInput.addEventListener('input', () => this.handleLevelChange());
+      levelInput.addEventListener('change', () => this.handleLevelChange());
+    }
+
+    ['str', 'dex', 'vit', 'enr'].forEach(stat => {
+      document.getElementById(stat)?.addEventListener('input', () => this.updateAll());
+    });
+
+ // Socket slot clicks
+  document.addEventListener('click', (e) => {
+    // This 'if' statement checks if you clicked a socket
+    if (e.target.classList.contains('socket-slot')) {
+      this.currentSocket = e.target; // It identifies which socket was clicked
+      this.showSocketModal();         // It calls the function to open the modal
+    }
+  });
+
+
+
+    Object.keys(this.equipmentMap).forEach(dropdownId => {
+      document.getElementById(dropdownId)?.addEventListener('change', () => {
+        setTimeout(() => this.updateAll(), 50);
+      });
+    });
+  
+  
+// <--- THIS IS THE CORRECT END OF THE CLASS DEFINITION
+
+// ======================================
+// === GLOBAL INITIALIZATION ===
+// ======================================
+let unifiedSystem;
+
+function initUnifiedSystem() {
+  if (unifiedSystem) return;
+  unifiedSystem = new UnifiedSocketSystem();
+  
+  // Make the new system globally accessible for other scripts
+  window.unifiedSystem = unifiedSystem; 
+  window.statsCalculator = unifiedSystem; // Alias for backward compatibility
+  window.characterSystem = unifiedSystem; // Alias for backward compatibility
+}
+
+// Initialize when the DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initUnifiedSystem);
+} else {
+    initUnifiedSystem();
+}}}

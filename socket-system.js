@@ -144,9 +144,53 @@ class StatsCalculator {
     // Socket system data
     this.socketData = {
       gems: {
+        'chipped-topaz': { 
+          name: 'Chipped Topaz', 
+          img: 'img/chippedtopaz.png', 
+          levelReq: 1,
+          stats: { 
+            weapon: 'Adds 1-8 Lightning Damage', 
+            helm: '9% Better Chance of Getting Magic Items', 
+            armor: '9% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
+        },
+        'flawed-topaz': { 
+          name: 'Flawed Topaz', 
+          img: 'img/flawedtopaz.png', 
+          levelReq: 5,
+          stats: { 
+            weapon: 'Adds 1-14 Lightning Damage', 
+            helm: '13% Better Chance of Getting Magic Items', 
+            armor: '13% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
+        },
+        'topaz': { 
+          name: 'Topaz', 
+          img: 'img/topaz.png', 
+          levelReq: 12,
+          stats: { 
+            weapon: 'Adds 1-22 Lightning Damage', 
+            helm: '16% Better Chance of Getting Magic Items', 
+            armor: '16% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
+        },
+        'flawless-topaz': { 
+          name: 'Flawless Topaz', 
+          img: 'img/flawlesstopaz.png', 
+          levelReq: 15,
+          stats: { 
+            weapon: 'Adds 1-30 Lightning Damage', 
+            helm: '20% Better Chance of Getting Magic Items', 
+            armor: '20% Better Chance of Getting Magic Items', 
+            shield: 'Lightning Resist +40%' 
+          }
+        },
         'perfect-topaz': { 
           name: 'Perfect Topaz', 
-          img: 'img/perfecttopaz.png', 
+          img: 'img/perfecttopaz2.png', 
           levelReq: 18,
           stats: { 
             weapon: 'Adds 1-40 Lightning Damage', 
@@ -155,20 +199,108 @@ class StatsCalculator {
             shield: 'Lightning Resist +40%' 
           }
         },
+        'chipped-ruby': { 
+          name: 'Chipped Ruby', 
+          img: 'img/chippedruby.png', 
+          levelReq: 1,
+          stats: { 
+            weapon: 'Adds 3-4 Fire Damage', 
+            helm: '+10 to Life', 
+            armor: '+10 to Life', 
+            shield: 'Fire Resist +12%' 
+          }
+        },
+        'flawed-ruby': { 
+          name: 'Flawed ruby', 
+          img: 'img/flawedruby.png', 
+          levelReq: 5,
+          stats: { 
+            weapon: 'Adds 5-8 Fire Damage', 
+            helm: '+17 to Life', 
+            armor: '+17 to Life', 
+            shield: 'Fire Resist +16%' 
+          }
+        },
+        'ruby': { 
+          name: 'ruby', 
+          img: 'img/Ruby.png', 
+          levelReq: 12,
+          stats: { 
+            weapon: 'Adds 8-12 Fire Damage', 
+            helm: '+24 to Life', 
+            armor: '+24 to Life', 
+            shield: 'Fire Resist +22%' 
+          }
+        },
+        'flawless-ruby': { 
+          name: 'Flawless Ruby', 
+          img: 'img/flawlessruby.png', 
+          levelReq: 15,
+          stats: { 
+            weapon: 'Adds 10-16 Fire Damage', 
+            helm: '+31 to Life', 
+            armor: '+31 to Life', 
+            shield: 'Fire Resist +28%' 
+          }
+        },
         'perfect-ruby': { 
           name: 'Perfect Ruby', 
-          img: 'img/perfectruby.png', 
+          img: 'img/perfectruby2.png', 
           levelReq: 18,
           stats: { 
-            weapon: '+15-20 Fire Damage', 
+            weapon: 'Adds 15-20 Fire Damage', 
             helm: '+38 to Life', 
             armor: '+38 to Life', 
             shield: 'Fire Resist +40%' 
           }
         },
+        'chipped-sapphire': { 
+          name: 'Chipped Sapphire', 
+          img: 'img/chippedsapphire.png', 
+          levelReq: 1,
+          stats: { 
+            weapon: 'Adds 1-3 Cold Damage', 
+            helm: '+10 to Mana', 
+            armor: '+10 to Mana', 
+            shield: 'Cold Resist +12%' 
+          }
+        },
+        'flawed-sapphire': { 
+          name: 'Flawed Sapphire', 
+          img: 'img/flawedsapphire.png', 
+          levelReq: 5,
+          stats: { 
+            weapon: 'Adds 3-5 Cold Damage', 
+            helm: '+17 to Mana', 
+            armor: '+17 to Mana', 
+            shield: 'Cold Resist +16%' 
+          }
+        },
+        'sapphire': { 
+          name: 'Sapphire', 
+          img: 'img/sapphire.png', 
+          levelReq: 12,
+          stats: { 
+            weapon: 'Adds 4-7 Cold Damage', 
+            helm: '+24 to Mana', 
+            armor: '+24 to Mana', 
+            shield: 'Cold Resist +22%' 
+          }
+        },
+        'flawless-sapphire': { 
+          name: 'Flawless Sapphire', 
+          img: 'img/flawlesssapphire.png', 
+          levelReq: 15,
+          stats: { 
+            weapon: 'Adds 6-10 Cold Damage', 
+            helm: '+31 to Mana', 
+            armor: '+31 to Mana', 
+            shield: 'Cold Resist +28%' 
+          }
+        },
         'perfect-sapphire': { 
           name: 'Perfect Sapphire', 
-          img: 'img/perfectsapphire.png', 
+          img: 'img/perfectsapphire2.png', 
           levelReq: 18,
           stats: { 
             weapon: '+10-14 Cold Damage', 
@@ -182,7 +314,7 @@ class StatsCalculator {
           img: 'img/perfectemerald.png', 
           levelReq: 18,
           stats: { 
-            weapon: '+100 Poison Damage over 7 Seconds', 
+            weapon: 'Adds 100-100 Poison Damage over 7 Seconds', 
             helm: '+10 to Dexterity', 
             armor: '+10 to Dexterity', 
             shield: 'Poison Resist +40%' 
@@ -208,6 +340,17 @@ class StatsCalculator {
             helm: '+100 to Attack Rating', 
             armor: '+100 to Attack Rating', 
             shield: 'All Resistances +19%' 
+          }
+        },
+        'perfect-skull': { 
+          name: 'Perfect Skull', 
+          img: 'img/perfectskull2.png', 
+          levelReq: 18,
+          stats: { 
+            weapon: '4% Life Stolen per Hit, 3% Mana Stolen per Hit', 
+            helm: 'Regenerate Mana 19%, Replenish Life +5', 
+            armor: 'Regenerate Mana 19%, Replenish Life +5', 
+            shield: 'Attacker Takes Damage of 20' 
           }
         }
       },
@@ -1314,7 +1457,7 @@ class StatsCalculator {
           flex-direction: column;
           align-items: center;
           padding: 10px;
-          background: rgba(255,255,255,0.1);
+          background: rgba(14, 11, 11, 0.86);
           border: 1px solid rgba(255,255,255,0.3);
           border-radius: 8px;
           cursor: pointer;
@@ -1349,7 +1492,7 @@ class StatsCalculator {
         
         .socket-grid {
           display: flex;
-          gap: 5px;
+          gap: 3px;
           margin-bottom: 10px;
         }
         
@@ -1371,7 +1514,7 @@ class StatsCalculator {
         }
         
         .socket-slot.filled {
-          background: #555;
+          background: #000000;
           border-color: #999;
         }
         
@@ -1380,8 +1523,8 @@ class StatsCalculator {
         }
         
         .socket-slot img {
-          width: 20px;
-          height: 20px;
+          width: 30px;
+          height: 30px;
         }
         
         .add-socket-btn {
@@ -2062,10 +2205,11 @@ parseStatsToMap(statsText) {
     }
     
     // Poison Damage
-    const poisonMatch = cleanLine.match(/(?:\+)?(\d+)\s+Poison\s+Damage/i);
+    const poisonMatch = cleanLine.match(/(?:Adds\s+)?(\d+)(?:-(\d+))?\s+Poison\s+Damage/i);
     if (poisonMatch) {
-      const value = parseInt(poisonMatch[1]);
-      this.addToStatsMap(statsMap, 'poison_damage', { value });
+      const min = parseInt(poisonMatch[1]);
+      const max = parseInt(poisonMatch[2] || poisonMatch[1]);
+      this.addToStatsMap(statsMap, 'poison_damage', { min, max });
       return;
     }
     
@@ -2245,7 +2389,7 @@ formatStackedStat(key, data) {
     case 'cold_damage':
       return `<span style="${style}">Adds ${data.min}-${data.max} Cold Damage</span>`;
     case 'poison_damage':
-      return `<span style="${style}">+${data.value} Poison Damage</span>`;
+      return `<span style="${style}">Adds ${data.min}-${data.max} Poison Damage over X Seconds</span>`;
     case 'life':
       return `<span style="${style}">+${data.value} to Life</span>`;
     case 'mana':
@@ -2292,7 +2436,7 @@ getStatPattern(key) {
     case 'cold_damage':
       return /(?:Adds\s+)?\d+(?:-\d+)?\s+Cold\s+Damage/i;
     case 'poison_damage':
-      return /(?:\+)?\d+\s+Poison\s+Damage/i;
+      return /(?:Adds\s+)?\d+(?:-\d+)?\s+Poison\s+Damage/i;
     case 'life':
       return /(?:\+)?\d+\s+(?:to\s+)?Life/i;
     case 'mana':
@@ -2357,8 +2501,8 @@ extractNonStackableEffects(statsText) {
     
     // Skip if it matches any stackable pattern we already handle
     const stackablePatterns = [
-      /(?:Adds\s+)?\d+(?:-\d+)?\s+(?:Lightning|Fire|Cold)\s+Damage/i,
-      /(?:\+)?\d+\s+Poison\s+Damage/i,
+      /(?:Adds\s+)?\d+(?:-\d+)?\s+(?:Lightning|Fire|Cold|Poison)\s+Damage/i,
+      // /(?:\+)?\d+\s+Poison\s+Damage/i,
       /(?:\+)?\d+\s+(?:to\s+)?(?:Life|Mana|Defense|Attack\s+Rating)/i,
       /\d+%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i,
       /(?:All\s+Resistances?|Fire|Cold|Lightning|Poison)\s+Resist/i,

@@ -1,752 +1,355 @@
-// 🚀 ULTIMATE SOCKET FIX - Complete standalone solution
-// Fixes duplication + Smart stacking + Persistent socket visibility + Works with all runes/gems
-// Just include this ONE file and everything works perfectly!
+// 🎯 FIX INITIAL DOUBLING + MISSING STATS
+// ✅ Fix base stats being doubled on page load
+// ✅ Ensure all stats show in right-side calculator
+// ✅ Proper initialization without conflicts
 
 (function() {
   'use strict';
   
-  console.log('🚀 Loading ULTIMATE Socket Fix...');
+  console.log('🎯 Loading Initial Doubling + Missing Stats Fix...');
   
-  // Global state management
-  window.ULTIMATE_SOCKET_FIX = {
-    active: false,
-    processedSockets: new Set(),
-    isCalculating: false
-  };
-  
-  function initUltimateSocketFix() {
-    if (window.statsCalculator) {
-      applyUltimatePatches();
-    } else {
-      console.log('⏳ Waiting for statsCalculator...');
-      setTimeout(initUltimateSocketFix, 500);
-    }
-  }
-  
-  function applyUltimatePatches() {
-    if (window.ULTIMATE_SOCKET_FIX.active) {
-      console.log('✅ Ultimate socket fix already active');
+  function applyInitialFix() {
+    if (!window.statsCalculator) {
+      setTimeout(applyInitialFix, 200);
       return;
     }
     
     const sc = window.statsCalculator;
-    console.log('🔧 Applying ultimate socket patches...');
+    console.log('🔧 Fixing initial doubling and missing stats...');
     
-    // 🚀 PATCH 1: Complete updateItemDisplay replacement
-    if (sc.updateItemDisplay) {
-      sc._ultimateOriginalUpdateItemDisplay = sc.updateItemDisplay;
-      
-      sc.updateItemDisplay = function(section) {
-        console.log(`🎨 Ultimate display update for ${section}...`);
+    // 🎯 FIX 1: Override resetAllStats to ensure clean start
+    if (sc.resetAllStats) {
+      sc.resetAllStats = function() {
+        console.log('🧹 FIXED: resetAllStats - ensuring clean zero start...');
         
-        const infoId = this.getSectionInfoId(section);
-        const infoDiv = document.getElementById(infoId);
-        if (!infoDiv) return;
+        // Reset ALL stats to exactly zero or false
+        this.stats = {
+          strength: 0, dexterity: 0, vitality: 0, energy: 0,
+          life: 0, mana: 0, defense: 0, attackRating: 0, enhancedDamage: 0,
+          magicFind: 0, goldFind: 0, ias: 0, fcr: 0, frw: 0, fhr: 0,
+          fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0,
+          flatFireMin: 0, flatFireMax: 0, flatColdMin: 0, flatColdMax: 0,
+          flatLightMin: 0, flatLightMax: 0, flatPoisonMin: 0, flatPoisonMax: 0,
+          flatMagicMin: 0, flatMagicMax: 0,
+          crushingBlow: 0, deadlyStrike: 0, openWounds: 0, criticalHit: 0,
+          lifeSteal: 0, manaSteal: 0, allSkills: 0, blockChance: 0,
+          dr: 0, pdr: 0, mdr: 0, plr: 0, cbf: false, critHitMultiplier: 2.0
+        };
         
-        const dropdownId = this.getSectionDropdownId(section);
-        const dropdown = document.getElementById(dropdownId);
-        if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
-          infoDiv.innerHTML = '';
-          return;
-        }
-        
-        const item = itemList[dropdown.value];
-        const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-        const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
-        const meetsRequirement = currentLevel >= actualRequiredLevel;
-        
-        // ✅ ULTIMATE DISPLAY: Always show sockets, smart stacking, persistent visibility
-        const ultimateDescription = this.createUltimateDescription(
-          item.description || '', 
-          section, 
-          currentLevel, 
-          meetsRequirement, 
-          actualRequiredLevel
-        );
-        
-        // Visual feedback
-        if (!meetsRequirement) {
-          infoDiv.style.opacity = '0.6';
-          infoDiv.style.filter = 'grayscale(50%)';
-          infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
-        } else {
-          infoDiv.style.opacity = '1';
-          infoDiv.style.filter = 'none';
-          infoDiv.title = '';
-        }
-        
-        infoDiv.innerHTML = ultimateDescription;
-        console.log(`✅ Ultimate display complete for ${section}`);
+        console.log('🧹 FIXED: All stats reset to zero - no doubling possible');
       };
     }
     
-    // 🧠 ULTIMATE DESCRIPTION CREATOR
-    sc.createUltimateDescription = function(baseDescription, section, currentLevel, meetsRequirement, actualRequiredLevel) {
-      // Parse base item stats
-      const baseStats = this.parseUltimateStats(baseDescription);
-      
-      // Get ALL socket information (always visible!)
-      const socketInfo = this.getUltimateSocketInfo(section, currentLevel, meetsRequirement);
-      
-      // Merge stats intelligently
-      const mergedStats = this.mergeUltimateStats(baseStats, socketInfo.usableStats);
-      
-      // Build final description
-      let finalDescription = this.buildUltimateDescription(baseDescription, mergedStats);
-      
-      // Update Required Level
-      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
-      const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
-      const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
-      
-      if (levelPattern.test(finalDescription)) {
-        finalDescription = finalDescription.replace(levelPattern, newLevelLine);
+    // 🎯 FIX 2: Enhanced calculateAllStats with complete stat handling
+    sc.calculateAllStats = function() {
+      if (this._isCalculating) {
+        console.log('🚫 Already calculating, skipping...');
+        return;
       }
       
-      // ✅ ALWAYS ADD SOCKET SECTION (persistent visibility!)
-      if (socketInfo.allSockets.length > 0) {
-        finalDescription += '<br><br><span style="color: #ffd700; font-weight: bold;">⚡ Socketed Items:</span>';
+      this._isCalculating = true;
+      console.log('🔄 FIXED: Starting complete calculation cycle...');
+      
+      try {
+        // Step 1: Complete reset
+        this.resetAllStats();
         
-        socketInfo.allSockets.forEach(socket => {
-          const color = socket.usable ? '#4a90e2' : '#888';
-          const style = socket.usable ? 'font-weight: bold;' : 'font-style: italic;';
-          const levelInfo = socket.usable ? '' : ` (Requires Level ${socket.levelReq})`;
+        // Step 2: Set ONLY base character stats from input fields
+        const baseStr = parseInt(document.getElementById('str')?.value) || 0;
+        const baseDex = parseInt(document.getElementById('dex')?.value) || 0;
+        const baseVit = parseInt(document.getElementById('vit')?.value) || 0;
+        const baseEnr = parseInt(document.getElementById('enr')?.value) || 0;
+        
+        this.stats.strength = baseStr;
+        this.stats.dexterity = baseDex;
+        this.stats.vitality = baseVit;
+        this.stats.energy = baseEnr;
+        
+        console.log(`📊 FIXED: PURE base stats - STR:${baseStr}, DEX:${baseDex}, VIT:${baseVit}, ENR:${baseEnr}`);
+        
+        // Step 3: Add ALL item stats from character.js
+        if (window.characterStats && window.characterStats.calculateAllItemStats) {
+          const itemStats = window.characterStats.calculateAllItemStats();
           
-          finalDescription += `<br><span style="color: ${color}; ${style}">${socket.stats} (${socket.name}${levelInfo})</span>`;
+          // Add item attributes
+          this.stats.strength += itemStats.strength || 0;
+          this.stats.dexterity += itemStats.dexterity || 0;
+          this.stats.vitality += itemStats.vitality || 0;
+          this.stats.energy += itemStats.energy || 0;
+          
+          // Add ALL other item stats (this was missing!)
+          this.stats.life += itemStats.life || 0;
+          this.stats.mana += itemStats.mana || 0;
+          this.stats.defense += itemStats.defense || 0;
+          this.stats.attackRating += itemStats.attackRating || 0;
+          this.stats.enhancedDamage += itemStats.enhancedDamage || 0;
+          this.stats.magicFind += itemStats.magicFind || 0;
+          this.stats.goldFind += itemStats.goldFind || 0;
+          
+          // 🎯 CRITICAL: Add speed stats (these were missing!)
+          this.stats.ias += itemStats.ias || 0;
+          this.stats.fcr += itemStats.fcr || 0;
+          this.stats.frw += itemStats.frw || 0;
+          this.stats.fhr += itemStats.fhr || 0;
+          
+          // Add resistances
+          this.stats.fireResist += itemStats.fireResist || 0;
+          this.stats.coldResist += itemStats.coldResist || 0;
+          this.stats.lightResist += itemStats.lightResist || 0;
+          this.stats.poisonResist += itemStats.poisonResist || 0;
+          
+          // Add elemental damage
+          this.stats.flatFireMin += itemStats.flatFireMin || 0;
+          this.stats.flatFireMax += itemStats.flatFireMax || 0;
+          this.stats.flatColdMin += itemStats.flatColdMin || 0;
+          this.stats.flatColdMax += itemStats.flatColdMax || 0;
+          this.stats.flatLightMin += itemStats.flatLightMin || 0;
+          this.stats.flatLightMax += itemStats.flatLightMax || 0;
+          
+          // Add combat stats
+          this.stats.crushingBlow += itemStats.crushingBlow || 0;
+          this.stats.deadlyStrike += itemStats.deadlyStrike || 0;
+          this.stats.openWounds += itemStats.openWounds || 0;
+          this.stats.lifeSteal += itemStats.lifeSteal || 0;
+          this.stats.manaSteal += itemStats.manaSteal || 0;
+          
+          // Add other stats
+          this.stats.allSkills += itemStats.allSkills || 0;
+          this.stats.blockChance += itemStats.blockChance || 0;
+          this.stats.dr += itemStats.dr || 0;
+          this.stats.pdr += itemStats.pdr || 0;
+          this.stats.mdr += itemStats.mdr || 0;
+          
+          if (itemStats.cbf) this.stats.cbf = true;
+          
+          console.log(`📦 FIXED: ALL item stats added - STR:${this.stats.strength}, IAS:${this.stats.ias}%, FRW:${this.stats.frw}%`);
+        }
+        
+        // Step 4: Calculate life/mana/defense from total attributes
+        const classSelect = document.getElementById('selectClass')?.value || 'Amazon';
+        const classMultipliers = {
+          'Amazon': { life: 2, mana: 1.5 },
+          'Barbarian': { life: 4, mana: 1 },
+          'Necromancer': { life: 1.5, mana: 2 },
+          'Paladin': { life: 3, mana: 1.5 },
+          'Sorceress': { life: 1, mana: 2 },
+          'Druid': { life: 2, mana: 2 },
+          'Assassin': { life: 2, mana: 1.75 }
+        };
+        
+        const multiplier = classMultipliers[classSelect] || classMultipliers['Amazon'];
+        
+        // Calculate derived stats from total attributes
+        const derivedLife = Math.floor(this.stats.vitality * multiplier.life) + 45;
+        const derivedMana = Math.floor(this.stats.energy * multiplier.mana) + 15;
+        const derivedDefense = Math.floor(this.stats.dexterity / 4);
+        
+        // Set life/mana/defense (base calculation + item bonuses)
+        this.stats.life = derivedLife + (this.stats.life || 0);
+        this.stats.mana = derivedMana + (this.stats.mana || 0);
+        this.stats.defense = derivedDefense + (this.stats.defense || 0);
+        
+        console.log(`📊 FIXED: Derived stats - Life:${this.stats.life}, Mana:${this.stats.mana}, Defense:${this.stats.defense}`);
+        
+        // Step 5: Add socket bonuses
+        const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+        const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
+        
+        sections.forEach(section => {
+          const container = document.querySelector(`.socket-container[data-section="${section}"]`);
+          const sockets = container?.querySelectorAll('.socket-slot.filled') || [];
+          
+          sockets.forEach(socket => {
+            const stats = socket.dataset.stats;
+            const socketLevelReq = parseInt(socket.dataset.levelReq) || 1;
+            
+            if (stats && currentLevel >= socketLevelReq) {
+              const cleanStats = stats.replace(/<[^>]*>/g, '').trim();
+              
+              // Parse ALL socket stats
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*(?:to\s+)?Strength/i, 'strength');
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*(?:to\s+)?Dexterity/i, 'dexterity');
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*(?:to\s+)?Vitality/i, 'vitality');
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*(?:to\s+)?Energy/i, 'energy');
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*(?:to\s+)?Life/i, 'life');
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*(?:to\s+)?Mana/i, 'mana');
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*Defense/i, 'defense');
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*(?:to\s+)?Attack Rating/i, 'attackRating');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Enhanced Damage/i, 'enhancedDamage');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Better Chance of Getting Magic Items/i, 'magicFind');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Extra Gold from Monsters/i, 'goldFind');
+              
+              // 🎯 CRITICAL: Socket speed stats (these were working in sockets!)
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Increased Attack Speed/i, 'ias');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Faster Cast Rate/i, 'fcr');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Faster Run\/Walk/i, 'frw');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Faster Hit Recovery/i, 'fhr');
+              
+              // Socket resistances
+              this.addSocketStatSafe(cleanStats, /Fire Resist \+(\d+)%?/i, 'fireResist');
+              this.addSocketStatSafe(cleanStats, /Cold Resist \+(\d+)%?/i, 'coldResist');
+              this.addSocketStatSafe(cleanStats, /Lightning Resist \+(\d+)%?/i, 'lightResist');
+              this.addSocketStatSafe(cleanStats, /Poison Resist \+(\d+)%?/i, 'poisonResist');
+              
+              // All Resistances
+              const allResMatch = cleanStats.match(/All Resistances \+(\d+)%?/i);
+              if (allResMatch) {
+                const value = parseInt(allResMatch[1]);
+                this.stats.fireResist += value;
+                this.stats.coldResist += value;
+                this.stats.lightResist += value;
+                this.stats.poisonResist += value;
+              }
+              
+              // Socket combat stats
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Chance of Crushing Blow/i, 'crushingBlow');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Chance of Deadly Strike/i, 'deadlyStrike');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Chance of Open Wounds/i, 'openWounds');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Life Stolen per Hit/i, 'lifeSteal');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Mana Stolen per Hit/i, 'manaSteal');
+              this.addSocketStatSafe(cleanStats, /\+(\d+)\s*to All Skills/i, 'allSkills');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Increased Chance of Blocking/i, 'blockChance');
+              this.addSocketStatSafe(cleanStats, /(\d+)%\s*Damage Reduced/i, 'dr');
+              this.addSocketStatSafe(cleanStats, /Physical Damage.*Reduced by (\d+)/i, 'pdr');
+              this.addSocketStatSafe(cleanStats, /Magic Damage.*Reduced by (\d+)/i, 'mdr');
+              
+              // Socket elemental damage
+              this.addSocketElementalDamageSafe(cleanStats, 'Fire', 'flatFireMin', 'flatFireMax');
+              this.addSocketElementalDamageSafe(cleanStats, 'Cold', 'flatColdMin', 'flatColdMax');
+              this.addSocketElementalDamageSafe(cleanStats, 'Lightning', 'flatLightMin', 'flatLightMax');
+            }
+          });
         });
         
-        // Add summary if multiple of same type
-        if (socketInfo.summary.length > 0) {
-          finalDescription += '<br><br><span style="color: #ffff00; font-size: 11px;">Summary: ' + socketInfo.summary.join(', ') + '</span>';
-        }
+        console.log(`💎 FIXED: Socket stats added - Final STR:${this.stats.strength}, IAS:${this.stats.ias}%, FRW:${this.stats.frw}%`);
+        
+        // Step 6: Force update ALL displays
+        this.updateAllStatsDisplays();
+        
+        console.log('✅ FIXED: Complete calculation with ALL stats displayed');
+        
+      } catch (error) {
+        console.error('❌ FIXED: Calculation error:', error);
+      } finally {
+        this._isCalculating = false;
       }
-      
-      return finalDescription;
     };
     
-    // 📊 ULTIMATE STAT PARSER
-    sc.parseUltimateStats = function(description) {
-      const stats = new Map();
-      const lines = description.split('<br>').filter(line => line.trim());
-      
-      lines.forEach((line, index) => {
-        const cleanLine = line.replace(/<[^>]*>/g, '').trim();
-        if (!cleanLine) return;
-        
-        // ✅ COMPREHENSIVE STAT PATTERNS
+    // 🎯 FIX 3: Ensure safe helper methods exist
+    if (!sc.addSocketStatSafe) {
+      sc.addSocketStatSafe = function(line, regex, statKey) {
+        const match = line.match(regex);
+        if (match) {
+          const value = parseInt(match[1]);
+          this.stats[statKey] = (this.stats[statKey] || 0) + value;
+        }
+      };
+    }
+    
+    if (!sc.addSocketElementalDamageSafe) {
+      sc.addSocketElementalDamageSafe = function(line, element, minStat, maxStat) {
         const patterns = [
-          { key: 'enhanced_damage', regex: /(\d+)%\s*Enhanced Damage/i },
-          { key: 'min_damage', regex: /\+(\d+)\s*(?:to\s+)?(?:Minimum\s+)?Damage/i, exclude: 'Maximum' },
-          { key: 'max_damage', regex: /\+(\d+)\s*(?:to\s+)?Maximum\s+Damage/i },
-          { key: 'ias', regex: /(\d+)%\s*Increased Attack Speed/i },
-          { key: 'fcr', regex: /(\d+)%\s*Faster Cast Rate/i },
-          { key: 'frw', regex: /(\d+)%\s*Faster Run\/Walk/i },
-          { key: 'fhr', regex: /(\d+)%\s*Faster Hit Recovery/i },
-          { key: 'fbr', regex: /(\d+)%\s*Faster Block Rate/i },
-          { key: 'life', regex: /\+(\d+)\s*(?:to\s+)?Life/i, exclude: ['per', 'Maximum', 'after'] },
-          { key: 'mana', regex: /\+(\d+)\s*(?:to\s+)?Mana/i, exclude: ['per', 'Maximum', 'after'] },
-          { key: 'max_life_percent', regex: /Increase Maximum Life (\d+)%/i },
-          { key: 'max_mana_percent', regex: /Increase Maximum Mana (\d+)%/i },
-          { key: 'life_after_kill', regex: /\+(\d+)\s*Life after each Kill/i },
-          { key: 'mana_after_kill', regex: /\+(\d+)\s*(?:to\s+)?Mana after each Kill/i },
-          { key: 'strength', regex: /\+(\d+)\s*(?:to\s+)?Strength/i },
-          { key: 'dexterity', regex: /\+(\d+)\s*(?:to\s+)?Dexterity/i },
-          { key: 'vitality', regex: /\+(\d+)\s*(?:to\s+)?Vitality/i },
-          { key: 'energy', regex: /\+(\d+)\s*(?:to\s+)?Energy/i },
-          { key: 'defense', regex: /\+(\d+)\s*Defense/i, exclude: ['Enhanced', 'vs'] },
-          { key: 'enhanced_defense', regex: /(\d+)%\s*Enhanced Defense/i },
-          { key: 'all_resist', regex: /All Resistances \+(\d+)/i },
-          { key: 'fire_resist', regex: /Fire Resist \+(\d+)%?/i },
-          { key: 'cold_resist', regex: /Cold Resist \+(\d+)%?/i },
-          { key: 'lightning_resist', regex: /Lightning Resist \+(\d+)%?/i },
-          { key: 'poison_resist', regex: /Poison Resist \+(\d+)%?/i },
-          { key: 'attack_rating', regex: /\+(\d+)\s*(?:to\s+)?Attack Rating/i, exclude: 'Bonus' },
-          { key: 'bonus_attack_rating', regex: /(\d+)%\s*Bonus to Attack Rating/i },
-          { key: 'life_steal', regex: /(\d+)%\s*Life Stolen per Hit/i },
-          { key: 'mana_steal', regex: /(\d+)%\s*Mana Stolen per Hit/i },
-          { key: 'magic_find', regex: /(\d+)%\s*Better Chance of Getting Magic Items/i },
-          { key: 'extra_gold', regex: /(\d+)%\s*Extra Gold/i },
-          { key: 'deadly_strike', regex: /(\d+)%\s*Deadly Strike/i },
-          { key: 'crushing_blow', regex: /(\d+)%\s*Chance of Crushing Blow/i },
-          { key: 'open_wounds', regex: /(\d+)%\s*Chance of Open Wounds/i },
-          { key: 'damage_reduction', regex: /Damage Reduced by (\d+)/i },
-          { key: 'physical_damage_reduction', regex: /Physical Damage.*Reduced by (\d+)%?/i },
-          { key: 'magic_damage_reduction', regex: /Magic Damage.*Reduced by (\d+)/i },
-          { key: 'all_skills', regex: /\+(\d+)\s*(?:to\s+)?All Skills/i },
-          { key: 'regenerate_mana', regex: /Regenerate Mana (\d+)%/i },
-          { key: 'replenish_life', regex: /Replenish Life \+(\d+)/i }
+          new RegExp(`Adds (\\d+)-(\\d+) ${element} Damage`, 'i'),
+          new RegExp(`\\+(\\d+)-(\\d+) ${element} Damage`, 'i'),
+          new RegExp(`(\\d+)-(\\d+) ${element} Damage`, 'i')
         ];
         
-        // Special handling for elemental damages
-        const fireDmgMatch = cleanLine.match(/Adds (\d+)-(\d+) Fire Damage/i);
-        if (fireDmgMatch) {
-          stats.set('fire_damage', { 
-            value: `${fireDmgMatch[1]}-${fireDmgMatch[2]}`, 
-            originalLine: line, index, pattern: 'fire_damage',
-            min: parseInt(fireDmgMatch[1]), max: parseInt(fireDmgMatch[2])
-          });
-          return;
-        }
-        
-        const coldDmgMatch = cleanLine.match(/Adds (\d+)-(\d+) Cold Damage/i);
-        if (coldDmgMatch) {
-          stats.set('cold_damage', { 
-            value: `${coldDmgMatch[1]}-${coldDmgMatch[2]}`, 
-            originalLine: line, index, pattern: 'cold_damage',
-            min: parseInt(coldDmgMatch[1]), max: parseInt(coldDmgMatch[2])
-          });
-          return;
-        }
-        
-        const lightDmgMatch = cleanLine.match(/Adds (\d+)-(\d+) Lightning Damage/i);
-        if (lightDmgMatch) {
-          stats.set('lightning_damage', { 
-            value: `${lightDmgMatch[1]}-${lightDmgMatch[2]}`, 
-            originalLine: line, index, pattern: 'lightning_damage',
-            min: parseInt(lightDmgMatch[1]), max: parseInt(lightDmgMatch[2])
-          });
-          return;
-        }
-        
-        const poisonDmgMatch = cleanLine.match(/\+(\d+)\s*Poison Damage over (\d+) Seconds/i);
-        if (poisonDmgMatch) {
-          stats.set('poison_damage', { 
-            value: `${poisonDmgMatch[1]} over ${poisonDmgMatch[2]}s`, 
-            originalLine: line, index, pattern: 'poison_damage',
-            damage: parseInt(poisonDmgMatch[1]), duration: parseInt(poisonDmgMatch[2])
-          });
-          return;
-        }
-        
-        // Check regular patterns
         for (const pattern of patterns) {
-          const match = cleanLine.match(pattern.regex);
-          if (match && (!pattern.exclude || !this.lineContainsExclude(cleanLine, pattern.exclude))) {
-            stats.set(pattern.key, { 
-              value: parseInt(match[1]), 
-              originalLine: line, 
-              index, 
-              pattern: pattern.key 
-            });
+          const match = line.match(pattern);
+          if (match) {
+            const min = parseInt(match[1]);
+            const max = parseInt(match[2]);
+            this.stats[minStat] = (this.stats[minStat] || 0) + min;
+            this.stats[maxStat] = (this.stats[maxStat] || 0) + max;
             return;
           }
         }
-        
-        // Store non-matching lines
-        stats.set(`other_${index}`, {
-          value: null,
-          originalLine: line,
-          index: index,
-          pattern: 'other'
-        });
-      });
-      
-      return stats;
-    };
+      };
+    }
     
-    // Helper for exclude checking
-    sc.lineContainsExclude = function(line, exclude) {
-      if (typeof exclude === 'string') {
-        return line.includes(exclude);
-      }
-      if (Array.isArray(exclude)) {
-        return exclude.some(term => line.includes(term));
-      }
-      return false;
-    };
-    
-    // 💎 ULTIMATE SOCKET INFO GATHERER
-    sc.getUltimateSocketInfo = function(section, currentLevel, meetsRequirement) {
-      const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-      const allSockets = [];
-      const usableStats = new Map();
-      const statCounts = new Map();
-      
-      sockets.forEach(socket => {
-        const stats = socket.dataset.stats;
-        const itemName = socket.dataset.itemName;
-        const levelReq = parseInt(socket.dataset.levelReq) || 1;
+    // 🎯 FIX 4: Prevent any other systems from interfering on load
+    if (window.characterStats) {
+      // Ensure character.js doesn't trigger extra calculations
+      if (window.characterStats.updateTotalStats) {
+        window.characterStats._safeUpdateTotalStats = window.characterStats.updateTotalStats;
         
-        if (stats && itemName) {
-          const socketUsable = currentLevel >= levelReq && meetsRequirement;
-          
-          allSockets.push({
-            stats,
-            name: itemName,
-            levelReq,
-            usable: socketUsable
-          });
-          
-          if (socketUsable) {
-            this.addUltimateSocketStat(usableStats, stats, itemName);
-            
-            // Track for summary
-            const statKey = this.getStatKeyFromString(stats);
-            if (statKey) {
-              statCounts.set(statKey, (statCounts.get(statKey) || 0) + 1);
+        window.characterStats.updateTotalStats = function() {
+          console.log('🔄 CHARACTER.JS: updateTotalStats redirected to manual trigger');
+          // Don't auto-calculate, just trigger manual recalculation
+          setTimeout(() => {
+            if (window.manualRecalculate) {
+              window.manualRecalculate();
             }
-          }
-        }
-      });
-      
-      // Generate summary
-      const summary = [];
-      statCounts.forEach((count, statKey) => {
-        if (count > 1) {
-          summary.push(`${count}x ${statKey}`);
-        }
-      });
-      
-      return { allSockets, usableStats, summary };
-    };
-    
-    // Extract stat key for summary
-    sc.getStatKeyFromString = function(statString) {
-      const clean = statString.replace(/<[^>]*>/g, '').trim();
-      if (clean.includes('Increased Attack Speed')) return 'IAS';
-      if (clean.includes('Enhanced Damage')) return 'ED%';
-      if (clean.includes('to Strength')) return 'STR';
-      if (clean.includes('to Dexterity')) return 'DEX';
-      if (clean.includes('to Life')) return 'Life';
-      if (clean.includes('to Mana')) return 'Mana';
-      if (clean.includes('Resist')) return 'Resist';
-      if (clean.includes('Attack Rating')) return 'AR';
-      if (clean.includes('Defense')) return 'Def';
-      return null;
-    };
-    
-    // 🔄 ULTIMATE SOCKET STAT ADDER
-    sc.addUltimateSocketStat = function(socketStats, statString, itemName) {
-      const cleanStat = statString.replace(/<[^>]*>/g, '').trim();
-      
-      const addStat = (key, value) => {
-        const current = socketStats.get(key) || { value: 0, sources: [] };
-        current.value += value;
-        current.sources.push(itemName);
-        socketStats.set(key, current);
-      };
-      
-      const addRangeStat = (key, min, max) => {
-        const current = socketStats.get(key) || { min: 0, max: 0, sources: [] };
-        current.min += min;
-        current.max += max;
-        current.value = `${current.min}-${current.max}`;
-        current.sources.push(itemName);
-        socketStats.set(key, current);
-      };
-      
-      // Match all possible stat patterns
-      const statPatterns = [
-        { key: 'enhanced_damage', regex: /(\d+)%\s*Enhanced Damage/i, fn: addStat },
-        { key: 'ias', regex: /(\d+)%\s*Increased Attack Speed/i, fn: addStat },
-        { key: 'fcr', regex: /(\d+)%\s*Faster Cast Rate/i, fn: addStat },
-        { key: 'frw', regex: /(\d+)%\s*Faster Run\/Walk/i, fn: addStat },
-        { key: 'fhr', regex: /(\d+)%\s*Faster Hit Recovery/i, fn: addStat },
-        { key: 'fbr', regex: /(\d+)%\s*Faster Block Rate/i, fn: addStat },
-        { key: 'life', regex: /\+(\d+)\s*(?:to\s+)?Life/i, fn: addStat, exclude: 'per' },
-        { key: 'mana', regex: /\+(\d+)\s*(?:to\s+)?Mana/i, fn: addStat, exclude: 'per' },
-        { key: 'strength', regex: /\+(\d+)\s*(?:to\s+)?Strength/i, fn: addStat },
-        { key: 'dexterity', regex: /\+(\d+)\s*(?:to\s+)?Dexterity/i, fn: addStat },
-        { key: 'vitality', regex: /\+(\d+)\s*(?:to\s+)?Vitality/i, fn: addStat },
-        { key: 'energy', regex: /\+(\d+)\s*(?:to\s+)?Energy/i, fn: addStat },
-        { key: 'defense', regex: /\+(\d+)\s*Defense/i, fn: addStat, exclude: 'Enhanced' },
-        { key: 'enhanced_defense', regex: /(\d+)%\s*Enhanced Defense/i, fn: addStat },
-        { key: 'all_resist', regex: /All Resistances \+(\d+)/i, fn: addStat },
-        { key: 'fire_resist', regex: /Fire Resist \+(\d+)%?/i, fn: addStat },
-        { key: 'cold_resist', regex: /Cold Resist \+(\d+)%?/i, fn: addStat },
-        { key: 'lightning_resist', regex: /Lightning Resist \+(\d+)%?/i, fn: addStat },
-        { key: 'poison_resist', regex: /Poison Resist \+(\d+)%?/i, fn: addStat },
-        { key: 'attack_rating', regex: /\+(\d+)\s*(?:to\s+)?Attack Rating/i, fn: addStat },
-        { key: 'life_steal', regex: /(\d+)%\s*Life Stolen per Hit/i, fn: addStat },
-        { key: 'mana_steal', regex: /(\d+)%\s*Mana Stolen per Hit/i, fn: addStat },
-        { key: 'magic_find', regex: /(\d+)%\s*Better Chance of Getting Magic Items/i, fn: addStat },
-        { key: 'deadly_strike', regex: /(\d+)%\s*Deadly Strike/i, fn: addStat },
-        { key: 'crushing_blow', regex: /(\d+)%\s*Chance of Crushing Blow/i, fn: addStat },
-        { key: 'open_wounds', regex: /(\d+)%\s*Chance of Open Wounds/i, fn: addStat }
-      ];
-      
-      // Check range stats first
-      const fireDmgMatch = cleanStat.match(/Adds (\d+)-(\d+) Fire Damage/i);
-      if (fireDmgMatch) {
-        addRangeStat('fire_damage', parseInt(fireDmgMatch[1]), parseInt(fireDmgMatch[2]));
-        return;
+          }, 100);
+        };
       }
-      
-      const coldDmgMatch = cleanStat.match(/Adds (\d+)-(\d+) Cold Damage/i);
-      if (coldDmgMatch) {
-        addRangeStat('cold_damage', parseInt(coldDmgMatch[1]), parseInt(coldDmgMatch[2]));
-        return;
-      }
-      
-      const lightDmgMatch = cleanStat.match(/Adds (\d+)-(\d+) Lightning Damage/i);
-      if (lightDmgMatch) {
-        addRangeStat('lightning_damage', parseInt(lightDmgMatch[1]), parseInt(lightDmgMatch[2]));
-        return;
-      }
-      
-      // Check regular patterns
-      for (const pattern of statPatterns) {
-        const match = cleanStat.match(pattern.regex);
-        if (match && (!pattern.exclude || !cleanStat.includes(pattern.exclude))) {
-          pattern.fn(pattern.key, parseInt(match[1]));
-          return;
-        }
-      }
-      
-      // Store unique stats
-      socketStats.set(`unique_${statString}`, {
-        value: null,
-        sources: [itemName],
-        originalStat: statString
-      });
-    };
-    
-    // 🔗 ULTIMATE STATS MERGER
-    sc.mergeUltimateStats = function(baseStats, socketStats) {
-      const merged = new Map(baseStats);
-      
-      socketStats.forEach((socketStat, key) => {
-        if (merged.has(key)) {
-          // Merge with existing stat
-          const baseStat = merged.get(key);
-          
-          if (key.includes('damage') && baseStat.min !== undefined) {
-            // Handle range stats
-            baseStat.min += socketStat.min || 0;
-            baseStat.max += socketStat.max || 0;
-            baseStat.value = `${baseStat.min}-${baseStat.max}`;
-          } else {
-            // Handle regular stats
-            baseStat.value += socketStat.value;
-          }
-          
-          baseStat.socketSources = socketStat.sources;
-          console.log(`🔗 Merged ${key}: ${baseStat.value} (${socketStat.sources.length} sockets)`);
-        } else if (key.startsWith('unique_')) {
-          // Add unique socket stat
-          merged.set(key, socketStat);
-        } else {
-          // Add new stat from sockets
-          merged.set(key, {
-            value: socketStat.value,
-            originalLine: this.formatUltimateStat(key, socketStat.value),
-            index: 999,
-            pattern: key,
-            socketSources: socketStat.sources,
-            isSocketOnly: true
-          });
-        }
-      });
-      
-      return merged;
-    };
-    
-    // 🎨 ULTIMATE STAT FORMATTER
-    sc.formatUltimateStat = function(pattern, value) {
-      const formatMap = {
-        'enhanced_damage': `<span style="color: #4a90e2; font-weight: bold;">+${value}% Enhanced Damage</span>`,
-        'min_damage': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Minimum Damage</span>`,
-        'max_damage': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Maximum Damage</span>`,
-        'ias': `<span style="color: #4a90e2; font-weight: bold;">+${value}% Increased Attack Speed</span>`,
-        'fcr': `<span style="color: #4a90e2; font-weight: bold;">+${value}% Faster Cast Rate</span>`,
-        'frw': `<span style="color: #4a90e2; font-weight: bold;">+${value}% Faster Run/Walk</span>`,
-        'fhr': `<span style="color: #4a90e2; font-weight: bold;">+${value}% Faster Hit Recovery</span>`,
-        'fbr': `<span style="color: #4a90e2; font-weight: bold;">+${value}% Faster Block Rate</span>`,
-        'life': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Life</span>`,
-        'mana': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Mana</span>`,
-        'strength': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Strength</span>`,
-        'dexterity': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Dexterity</span>`,
-        'vitality': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Vitality</span>`,
-        'energy': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Energy</span>`,
-        'defense': `<span style="color: #4a90e2; font-weight: bold;">+${value} Defense</span>`,
-        'enhanced_defense': `<span style="color: #4a90e2; font-weight: bold;">+${value}% Enhanced Defense</span>`,
-        'all_resist': `<span style="color: #4a90e2; font-weight: bold;">All Resistances +${value}</span>`,
-        'fire_resist': `<span style="color: #4a90e2; font-weight: bold;">Fire Resist +${value}%</span>`,
-        'cold_resist': `<span style="color: #4a90e2; font-weight: bold;">Cold Resist +${value}%</span>`,
-        'lightning_resist': `<span style="color: #4a90e2; font-weight: bold;">Lightning Resist +${value}%</span>`,
-        'poison_resist': `<span style="color: #4a90e2; font-weight: bold;">Poison Resist +${value}%</span>`,
-        'attack_rating': `<span style="color: #4a90e2; font-weight: bold;">+${value} to Attack Rating</span>`,
-        'life_steal': `<span style="color: #4a90e2; font-weight: bold;">${value}% Life Stolen per Hit</span>`,
-        'mana_steal': `<span style="color: #4a90e2; font-weight: bold;">${value}% Mana Stolen per Hit</span>`,
-        'magic_find': `<span style="color: #4a90e2; font-weight: bold;">${value}% Better Chance of Getting Magic Items</span>`,
-        'fire_damage': `<span style="color: #4a90e2; font-weight: bold;">Adds ${value} Fire Damage</span>`,
-        'cold_damage': `<span style="color: #4a90e2; font-weight: bold;">Adds ${value} Cold Damage</span>`,
-        'lightning_damage': `<span style="color: #4a90e2; font-weight: bold;">Adds ${value} Lightning Damage</span>`,
-        'deadly_strike': `<span style="color: #4a90e2; font-weight: bold;">${value}% Deadly Strike</span>`,
-        'crushing_blow': `<span style="color: #4a90e2; font-weight: bold;">${value}% Chance of Crushing Blow</span>`,
-        'open_wounds': `<span style="color: #4a90e2; font-weight: bold;">${value}% Chance of Open Wounds</span>`
-      };
-      
-      return formatMap[pattern] || `<span style="color: #4a90e2; font-weight: bold;">+${value} ${pattern.replace(/_/g, ' ')}</span>`;
-    };
-    
-    // 🏗️ ULTIMATE DESCRIPTION BUILDER
-    sc.buildUltimateDescription = function(originalDescription, mergedStats) {
-      const newLines = [];
-      const processedIndices = new Set();
-      
-      // Sort by original index to maintain order
-      const sortedStats = Array.from(mergedStats.entries())
-        .sort((a, b) => (a[1].index || 999) - (b[1].index || 999));
-      
-      sortedStats.forEach(([key, stat]) => {
-        if (stat.pattern === 'other') {
-          newLines.push(stat.originalLine);
-        } else if (stat.value !== null) {
-          if (stat.socketSources && stat.socketSources.length > 0) {
-            // Enhanced stat with socket merging
-            newLines.push(this.formatUltimateStat(stat.pattern, stat.value));
-          } else {
-            // Original base stat
-            newLines.push(stat.originalLine);
-          }
-        } else if (key.startsWith('unique_')) {
-          // Unique socket stats that don't merge
-          newLines.push(`<span style="color: #4a90e2; font-weight: bold;">${stat.originalStat}</span>`);
-        }
-      });
-      
-      return newLines.join('<br>');
-    };
-    
-    // 🚀 PATCH 2: Anti-duplication for calculations
-    if (sc.calculateSocketStats) {
-      sc._ultimateOriginalCalculateSocketStats = sc.calculateSocketStats;
-      
-      sc.calculateSocketStats = function() {
-        if (window.ULTIMATE_SOCKET_FIX.isCalculating) {
-          console.log('🚫 BLOCKING duplicate socket calculation');
-          return;
-        }
-        
-        window.ULTIMATE_SOCKET_FIX.isCalculating = true;
-        window.ULTIMATE_SOCKET_FIX.processedSockets.clear();
-        
-        console.log('⚡ Ultimate socket stats calculation');
-        const result = sc._ultimateOriginalCalculateSocketStats.call(this);
-        
-        window.ULTIMATE_SOCKET_FIX.isCalculating = false;
-        return result;
-      };
     }
     
-    // 🚀 PATCH 3: Anti-duplication for stat parsing
-    if (sc.parseSocketStats) {
-      sc._ultimateOriginalParseSocketStats = sc.parseSocketStats;
-      
-      sc.parseSocketStats = function(statLine, itemType, itemKey) {
-        const socketId = `${itemType || 'unk'}-${itemKey || 'unk'}-${statLine}`;
-        
-        if (window.ULTIMATE_SOCKET_FIX.processedSockets.has(socketId)) {
-          console.log(`🚫 DUPLICATE BLOCKED: ${socketId}`);
-          return;
-        }
-        
-        window.ULTIMATE_SOCKET_FIX.processedSockets.add(socketId);
-        return sc._ultimateOriginalParseSocketStats.call(this, statLine, itemType, itemKey);
-      };
-    }
-    
-    // 🚀 PATCH 4: Auto-refresh displays on any change
-    const autoRefreshEvents = ['change', 'input'];
-    
-    // Level changes
-    const levelInput = document.getElementById('lvlValue');
-    if (levelInput) {
-      autoRefreshEvents.forEach(event => {
-        levelInput.addEventListener(event, () => {
-          setTimeout(() => this.ultimateRefreshAllDisplays(), 100);
-        });
-      });
-    }
-    
-    // Dropdown changes
-    const dropdownIds = [
-      'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown',
-      'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 
-      'ringsone-dropdown', 'ringstwo-dropdown', 'amulets-dropdown'
-    ];
-    
-    dropdownIds.forEach(id => {
-      const dropdown = document.getElementById(id);
-      if (dropdown) {
-        autoRefreshEvents.forEach(event => {
-          dropdown.addEventListener(event, () => {
-            setTimeout(() => this.ultimateRefreshAllDisplays(), 100);
-          });
-        });
-      }
-    });
-    
-    // Socket changes
-    document.addEventListener('click', (e) => {
-      if (e.target.closest('.socket-slot') || e.target.classList.contains('socket-item')) {
-        setTimeout(() => this.ultimateRefreshAllDisplays(), 200);
-      }
-    });
-    
-    // 🔄 ULTIMATE REFRESH METHOD
-    sc.ultimateRefreshAllDisplays = function() {
-      console.log('🔄 Ultimate refresh of all displays...');
-      
-      const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
-      sections.forEach(section => {
-        this.updateItemDisplay(section);
-      });
-      
-      // Also refresh stats calculation
-      if (!window.ULTIMATE_SOCKET_FIX.isCalculating) {
-        this.calculateAllStats();
+    // 🎯 MANUAL TRIGGER (no auto-refresh to prevent loops)
+    window.manualRecalculate = function() {
+      console.log('🔄 Manual recalculation triggered...');
+      if (window.statsCalculator && !window.statsCalculator._isCalculating) {
+        window.statsCalculator.calculateAllStats();
       }
     };
     
-    window.ULTIMATE_SOCKET_FIX.active = true;
-    console.log('✅ Ultimate socket fix applied successfully!');
+    console.log('🚀 Initial doubling + missing stats fix applied!');
+    console.log('✅ Base stats should not be doubled on load');
+    console.log('✅ All stats should show in calculator (IAS, FRW, Defense, etc.)');
+    
+    // 🎯 SAFE INITIAL CALCULATION (after short delay)
+    setTimeout(() => {
+      console.log('🔄 Initial calculation starting...');
+      sc.calculateAllStats();
+    }, 200);
   }
   
-  // 🧪 ULTIMATE TEST FUNCTION
-  window.testUltimateSocketFix = function() {
-    console.log('🧪 Testing Ultimate Socket Fix...');
+  // 🧪 Enhanced testing
+  window.testFixedSystem = function() {
+    console.log('🧪 Testing fixed system...');
     
-    if (window.ULTIMATE_SOCKET_FIX.active) {
-      console.log('✅ Ultimate socket fix is ACTIVE');
-    } else {
-      console.log('❌ Ultimate socket fix NOT active');
+    if (!window.statsCalculator) {
+      console.log('❌ No statsCalculator found');
+      return;
     }
     
-    const sockets = document.querySelectorAll('.socket-slot.filled');
-    console.log(`Found ${sockets.length} filled sockets:`);
+    const baseStr = parseInt(document.getElementById('str')?.value) || 0;
+    const stats = window.statsCalculator.stats;
     
-    const statSummary = {};
+    console.log('\n📊 FIXED SYSTEM RESULTS:');
+    console.log(`  Base STR input: ${baseStr}`);
+    console.log(`  Final STR total: ${stats.strength || 0} (should be close to base, not doubled)`);
+    console.log(`  Magic Find: ${stats.magicFind || 0}%`);
+    console.log(`  IAS: ${stats.ias || 0}% (should show if items have IAS)`);
+    console.log(`  FRW: ${stats.frw || 0}% (should show if items have FRW)`);
+    console.log(`  Defense: ${stats.defense || 0} (should show item defense)`);
+    console.log(`  Life: ${stats.life || 0}`);
+    console.log(`  Fire Resist: ${stats.fireResist || 0}%`);
     
-    sockets.forEach((socket, i) => {
-      const section = socket.closest('.socket-container')?.dataset.section;
-      const itemName = socket.dataset.itemName;
-      const stats = socket.dataset.stats;
-      
-      console.log(`${i+1}. ${section} - ${itemName}: ${stats}`);
-      
-      // Count stats for summary
-      if (stats) {
-        const clean = stats.replace(/<[^>]*>/g, '').trim();
-        if (clean.includes('Increased Attack Speed')) statSummary.IAS = (statSummary.IAS || 0) + 1;
-        if (clean.includes('Enhanced Damage')) statSummary.ED = (statSummary.ED || 0) + 1;
-        if (clean.includes('to Strength')) statSummary.STR = (statSummary.STR || 0) + 1;
-        if (clean.includes('to Life')) statSummary.Life = (statSummary.Life || 0) + 1;
-        if (clean.includes('Resist')) statSummary.Resist = (statSummary.Resist || 0) + 1;
-      }
-    });
+    console.log('\n🔍 DOUBLING CHECK:');
+    const expectedMinStr = baseStr;
+    const expectedMaxStr = baseStr + 50; // allowing for reasonable item/socket bonuses
+    console.log(`  STR should be between ${expectedMinStr} and ${expectedMaxStr}`);
+    console.log(`  ${(stats.strength >= expectedMinStr && stats.strength <= expectedMaxStr) ? '✅ REASONABLE' : '❌ STILL WRONG'}`);
     
-    console.log('📊 Socket stat summary:', statSummary);
-    
-    // Force refresh
-    if (window.statsCalculator && window.statsCalculator.ultimateRefreshAllDisplays) {
-      window.statsCalculator.ultimateRefreshAllDisplays();
+    console.log('\n📦 ITEM STATS CHECK:');
+    if (window.characterStats && window.characterStats.calculateAllItemStats) {
+      const itemStats = window.characterStats.calculateAllItemStats();
+      console.log(`  Item IAS: ${itemStats.ias || 0}%`);
+      console.log(`  Item FRW: ${itemStats.frw || 0}%`);
+      console.log(`  Item Defense: ${itemStats.defense || 0}`);
     }
-    
-    console.log('🎯 Ultimate Socket Fix Features:');
-    console.log('✅ No duplication - each socket counted exactly once');
-    console.log('✅ Smart stacking - stats merge into existing lines');
-    console.log('✅ Persistent visibility - sockets always visible');
-    console.log('✅ All stats supported - works with every rune/gem');
-    console.log('✅ Auto-refresh - updates on any change');
-    console.log('✅ Level-aware - respects level requirements');
-    
-    console.log('💡 Change items, levels, or sockets - everything updates automatically!');
   };
   
-  // 🚨 EMERGENCY RESET
-  window.resetUltimateSocketFix = function() {
-    console.log('🚨 EMERGENCY RESET of Ultimate Socket Fix');
-    
-    window.ULTIMATE_SOCKET_FIX.isCalculating = false;
-    window.ULTIMATE_SOCKET_FIX.processedSockets.clear();
-    
-    // Clear any socket processing flags
-    document.querySelectorAll('.socket-slot.filled').forEach(socket => {
-      delete socket.dataset.alreadyProcessed;
-    });
-    
-    // Force complete refresh
-    setTimeout(() => {
-      if (window.statsCalculator) {
-        if (window.statsCalculator.ultimateRefreshAllDisplays) {
-          window.statsCalculator.ultimateRefreshAllDisplays();
-        } else if (window.statsCalculator.calculateAllStats) {
-          window.statsCalculator.calculateAllStats();
-        }
-      }
-    }, 100);
-    
-    console.log('✅ Emergency reset complete');
-  };
-  
-  // 🎯 DEBUG FUNCTION
-  window.debugUltimateSocketFix = function() {
-    console.log('🐛 === ULTIMATE SOCKET FIX DEBUG ===');
-    console.log('Active:', window.ULTIMATE_SOCKET_FIX.active);
-    console.log('Is calculating:', window.ULTIMATE_SOCKET_FIX.isCalculating);
-    console.log('Processed sockets:', Array.from(window.ULTIMATE_SOCKET_FIX.processedSockets));
-    
-    console.log('\nAvailable systems:');
-    console.log('- statsCalculator:', !!window.statsCalculator);
-    console.log('- characterStats:', !!window.characterStats);
-    
-    if (window.statsCalculator) {
-      console.log('\nstatsCalculator methods:');
-      console.log('- ultimateRefreshAllDisplays:', !!window.statsCalculator.ultimateRefreshAllDisplays);
-      console.log('- createUltimateDescription:', !!window.statsCalculator.createUltimateDescription);
-      console.log('- parseUltimateStats:', !!window.statsCalculator.parseUltimateStats);
-    }
-    
-    console.log('\nAll filled sockets:');
-    const allSockets = document.querySelectorAll('.socket-slot.filled');
-    allSockets.forEach((socket, i) => {
-      const section = socket.closest('.socket-container')?.dataset.section;
-      const itemKey = socket.dataset.itemKey;
-      const itemName = socket.dataset.itemName;
-      const stats = socket.dataset.stats;
-      const levelReq = socket.dataset.levelReq;
-      
-      console.log(`${i+1}. ${section} - ${itemName} (${itemKey})`);
-      console.log(`   Level req: ${levelReq}`);
-      console.log(`   Stats: "${stats}"`);
-    });
-  };
-  
-  // Auto-initialize
+  // Initialize
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(initUltimateSocketFix, 800);
-    });
+    document.addEventListener('DOMContentLoaded', () => setTimeout(applyInitialFix, 2000));
   } else {
-    setTimeout(initUltimateSocketFix, 800);
+    setTimeout(applyInitialFix, 2000);
   }
   
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      initUltimateSocketFix();
-      // Auto-test after loading
-      setTimeout(() => {
-        if (window.testUltimateSocketFix) {
-          console.log('🚀 Running auto-test...');
-          window.testUltimateSocketFix();
-        }
-      }, 1000);
-    }, 1500);
-  });
+  setTimeout(applyInitialFix, 2600);
   
-  console.log('🚀 ULTIMATE Socket Fix loaded!');
-  console.log('💡 Available commands:');
-  console.log('  - testUltimateSocketFix() - Test all functionality');
-  console.log('  - debugUltimateSocketFix() - Debug current state');
-  console.log('  - resetUltimateSocketFix() - Emergency reset');
-  console.log('');
-  console.log('🎯 Features:');
-  console.log('✅ Fixes ALL duplication issues');
-  console.log('✅ Smart stacking for ALL runes/gems');
-  console.log('✅ Persistent socket visibility');
-  console.log('✅ Auto-refresh on ANY change');
-  console.log('✅ Works standalone - just include this file!');
+  console.log('🎯 Initial Doubling + Missing Stats Fix loaded! Test with testFixedSystem()');
   
 })();
