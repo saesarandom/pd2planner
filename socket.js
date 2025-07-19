@@ -1298,7 +1298,7 @@ class UnifiedSocketSystem {
   // Replace your existing updateItemDisplay method with this enhanced version
 
 updateItemDisplay(section) {
-  console.log(`🎨 Updating item display for ${section}...`);
+  
   
   const infoId = this.getSectionInfoId(section);
   const infoDiv = document.getElementById(infoId);
@@ -2059,8 +2059,8 @@ getStatPattern(key) {
     this.updateElement('magicfindcontainer', this.stats.magicFind);
     this.updateElement('goldfindcontainer', this.stats.goldFind);
     this.updateElement('defensecontainer', this.stats.defense);
-    this.updateElement('lifecontainer', this.stats.life);
-    this.updateElement('manacontainer', this.stats.mana);
+    // this.updateElement('lifecontainer', this.stats.life);
+    // this.updateElement('manacontainer', this.stats.mana);
     
     // Boolean stats
     this.updateElement('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');

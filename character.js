@@ -1,4 +1,4 @@
-// ===== CHARACTER.JS - LIGHTWEIGHT VERSION =====
+// ===== CHARACTER.JS - CLEAN VERSION =====
 // Handles stat bonuses from items/sockets and stat point management
 
 class CharacterManager {
@@ -17,40 +17,64 @@ class CharacterManager {
       'Sorceress': { str: 10, dex: 25, vit: 10, enr: 35 }
     };
     
+    this.classBaseLifeMana = {
+      'Amazon': { life: 50, mana: 15 },
+      'Assassin': { life: 81, mana: 25 },
+      'Barbarian': { life: 92, mana: 10 },
+      'Druid': { life: 84, mana: 20 },
+      'Necromancer': { life: 75, mana: 25 },
+      'Paladin': { life: 89, mana: 15 },
+      'Sorceress': { life: 56, mana: 35 }
+    };
+
     this.init();
   }
 
   init() {
     this.setupEventListeners();
     this.setupSocketListeners();
+
+    const classSelect = document.getElementById('selectClass');
+    if (classSelect && classSelect.value) {
+      this.currentClass = classSelect.value;
+    }
+    
+    // Immediate calculation - no delays
     this.updateTotalStats();
     this.updateStatPointsDisplay();
+    this.calculateLifeAndMana();
   }
 
   setupEventListeners() {
-    // Level change listener
-    const levelInput = document.getElementById('lvlValue');
-    if (levelInput) {
-      levelInput.addEventListener('input', () => {
-        this.currentLevel = parseInt(levelInput.value) || 1;
-        this.updateTotalStats();
-        this.updateStatPointsDisplay();
-      });
+    // Level input
+    const lvlInput = document.getElementById('lvlValue');
+    if (lvlInput) {
+      lvlInput.addEventListener('input', () => this.handleLevelChange());
+      lvlInput.addEventListener('blur', () => this.validateLevel());
     }
-
-    // Stat input listeners
-    ['str', 'dex', 'vit', 'enr'].forEach(stat => {
-      const input = document.getElementById(stat);
+    
+    // Class change
+    const classSelect = document.getElementById('selectClass');
+    if (classSelect) {
+      classSelect.addEventListener('change', () => this.handleClassChange());
+    }
+    
+    // Stat inputs with real-time life/mana updates
+    ['str', 'dex', 'vit', 'enr'].forEach(statId => {
+      const input = document.getElementById(statId);
       if (input) {
         input.addEventListener('input', () => {
-          this.validateStatInput(stat);
+          this.handleStatChange(statId);
+        });
+        
+        input.addEventListener('blur', () => {
+          this.validateStats();
           this.updateTotalStats();
-          this.updateStatPointsDisplay();
         });
       }
     });
 
-    // Equipment change listeners
+    // Equipment changes
     const dropdowns = [
       'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown',
       'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
@@ -61,21 +85,19 @@ class CharacterManager {
       const dropdown = document.getElementById(id);
       if (dropdown) {
         dropdown.addEventListener('change', () => {
-          setTimeout(() => this.updateTotalStats(), 100);
+          this.updateTotalStats();
         });
       }
     });
   }
 
   setupSocketListeners() {
-    console.log('🔌 Setting up socket event listeners...');
+
     
-    // Watch for changes in socket containers using MutationObserver
     const observer = new MutationObserver((mutations) => {
       let shouldRecalculate = false;
       
       mutations.forEach((mutation) => {
-        // Check for class changes (filled/empty) or attribute changes
         if (mutation.type === 'attributes') {
           const target = mutation.target;
           if (target.classList?.contains('socket-slot') && 
@@ -83,30 +105,24 @@ class CharacterManager {
                mutation.attributeName === 'data-stats' || 
                mutation.attributeName === 'data-level-req')) {
             shouldRecalculate = true;
-            console.log('🔌 Socket attribute changed:', mutation.attributeName, target);
           }
         }
         
-        // Check for child changes (socket being filled/removed)
         if (mutation.type === 'childList') {
           const target = mutation.target;
           if (target.classList?.contains('socket-slot') || 
               target.closest?.('.socket-container')) {
             shouldRecalculate = true;
-            console.log('🔌 Socket child changed:', target);
           }
         }
       });
       
       if (shouldRecalculate) {
-        console.log('🔄 Socket change detected, forcing stats recalculation...');
-        setTimeout(() => {
-          this.updateTotalStats();
-        }, 100);
+
+        this.updateTotalStats();
       }
     });
 
-    // Observe all socket containers
     const socketContainers = document.querySelectorAll('.socket-container');
     socketContainers.forEach(container => {
       observer.observe(container, {
@@ -117,7 +133,6 @@ class CharacterManager {
       });
     });
 
-    // Also observe the entire document for dynamic socket creation
     observer.observe(document.body, {
       childList: true,
       subtree: true,
@@ -125,44 +140,147 @@ class CharacterManager {
       attributeFilter: ['class']
     });
 
-    // Backup: periodic check every 2 seconds
-    setInterval(() => {
-      this.updateTotalStats();
-    }, 2000);
-    
-    console.log('✅ Socket observers setup complete');
+
   }
 
-  validateStatInput(statType) {
-    const input = document.getElementById(statType);
-    if (!input) return;
+  calculateLifeAndMana() {
+  const level = this.currentLevel;
+  const charClass = this.currentClass;
+  const baseStats = this.classStats[this.currentClass];
+  const totalVit = parseInt(document.getElementById('vit')?.value) || baseStats.vit;
+  const totalEnr = parseInt(document.getElementById('enr')?.value) || baseStats.enr;
+  
+  
+  
+  // Get bonuses from items/sockets/charms (but NOT the socket life/mana)
+  const itemBonuses = this.getAllItemBonuses();
+  const socketBonuses = this.getSocketBonuses();
+  const charmBonuses = this.getCharmBonuses();
+  
+  // Calculate final stats including bonuses
+  const finalVit = totalVit + itemBonuses.vit + socketBonuses.vit + charmBonuses.vit;
+  const finalEnr = totalEnr + itemBonuses.enr + socketBonuses.enr + charmBonuses.enr;
+  
+  // Get base values for this class
+  const baseLife = this.classBaseLifeMana[charClass].life;
+  const baseMana = this.classBaseLifeMana[charClass].mana;
+  const startingVit = this.classStats[charClass].vit;
+  const startingEnr = this.classStats[charClass].enr;
+  
+  // Calculate base life/mana from character level and stats
+  let calculatedLife = baseLife;
+  calculatedLife += (level - 1) * 2; // 2 life per level
+  calculatedLife += (finalVit - startingVit) * 3; // 3 life per vitality point
+  
+  let calculatedMana = baseMana;
+  calculatedMana += (level - 1) * 1.5; // 1.5 mana per level  
+  calculatedMana += (finalEnr - startingEnr) * 2; // 2 mana per energy point
+  
+  // NOW add the direct life/mana bonuses from items/sockets
+  let itemLifeBonus = 0;
+  let itemManaBonus = 0;
+  
+  const directLifeMana = this.getDirectLifeManaFromItems();
+itemLifeBonus = directLifeMana.life;
+itemManaBonus = directLifeMana.mana;
+  
+  // Final totals
+  const totalLife = Math.floor(calculatedLife + itemLifeBonus);
+  const totalMana = Math.floor(calculatedMana + itemManaBonus);
 
-    const currentValue = parseInt(input.value) || 0;
-    const baseStats = this.classStats[this.currentClass];
-    const minValue = baseStats[statType];
+   if (window.statsCalculator && window.statsCalculator.stats) {
+    // Store current values
+    const currentSocketLife = window.statsCalculator.stats.life || 0;
     
-    // Check minimum value
-    if (currentValue < minValue) {
-      input.value = minValue;
-      return;
+    // Force socket system to recalculate
+    if (window.statsCalculator.resetAllStats) {
+      window.statsCalculator.resetAllStats();
     }
-
-    // Check if total stat points exceed available
-    const availablePoints = this.getAvailableStatPoints();
-    const usedPoints = this.getUsedStatPoints();
+    if (window.statsCalculator.updateAll) {
+      window.statsCalculator.updateAll();
+    }
     
-    if (usedPoints > availablePoints) {
-      // Reduce this stat to fit within limits
-      const excess = usedPoints - availablePoints;
-      const newValue = Math.max(minValue, currentValue - excess);
-      input.value = newValue;
+    // Now get the fresh values
+    itemLifeBonus = window.statsCalculator.stats.life || 0;
+    itemManaBonus = window.statsCalculator.stats.mana || 0;
+    
+
+  }
+  
+
+  
+  // Update the displays
+  this.updateElement('lifecontainer', totalLife);
+  this.updateElement('manacontainer', totalMana);
+  
+  return { life: totalLife, mana: totalMana };
+}
+
+getDirectLifeManaFromItems() {
+  const bonuses = { life: 0, mana: 0 };
+  const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+
+  // Get life/mana from base items
+  const equipmentSections = [
+    { dropdown: 'weapons-dropdown', section: 'weapon' },
+    { dropdown: 'helms-dropdown', section: 'helm' },
+    // ... other sections
+  ];
+
+  equipmentSections.forEach(({ dropdown, section }) => {
+    const dropdownElement = document.getElementById(dropdown);
+    if (!dropdownElement || !dropdownElement.value) return;
+
+    const itemData = window.itemList || itemList;
+    if (!itemData) return;
+
+    const item = itemData[dropdownElement.value];
+    if (!item) return;
+
+    const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
+
+    if (currentLevel >= actualRequiredLevel && item.properties) {
+      // Get base item life/mana (use tolife, not life)
+      bonuses.life += item.properties.tolife || 0;
+      bonuses.mana += item.properties.tomana || 0;
+    }
+  });
+
+  // ADD: Get life/mana from sockets
+  const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+  
+  sections.forEach(section => {
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    
+    sockets.forEach(socket => {
+      const socketLevel = parseInt(socket.dataset.levelReq) || 1;
+      
+      if (currentLevel >= socketLevel) {
+        const stats = socket.dataset.stats;
+        if (stats) {
+          // Parse life/mana from socket stats text
+          const lifeMatch = stats.match(/\+(\d+)\s+(?:to\s+)?Life/i);
+          if (lifeMatch) bonuses.life += parseInt(lifeMatch[1]);
+          
+          const manaMatch = stats.match(/\+(\d+)\s+(?:to\s+)?Mana/i);
+          if (manaMatch) bonuses.mana += parseInt(manaMatch[1]);
+        }
+      }
+    });
+  });
+
+  return bonuses;
+}
+
+  updateElement(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.textContent = value;
     }
   }
 
-  // ==> STAT POINTS MANAGEMENT <==
   getAvailableStatPoints() {
-    // Level 1 = 15 points, +5 per level, max at level 99 = 505 points
-    return Math.min(505, 15 + (this.currentLevel - 1) * 5);
+    return 15 + (this.currentLevel - 1) * 5;
   }
 
   getTotalBaseStats() {
@@ -184,7 +302,6 @@ class CharacterManager {
     return Math.max(0, currentTotal - baseTotal);
   }
 
-  // ==> ITEM & SOCKET BONUSES <==
   getAllItemBonuses() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
@@ -202,50 +319,26 @@ class CharacterManager {
       { dropdown: 'amulets-dropdown', section: 'amulet' }
     ];
 
-    console.log(`🔍 Checking item bonuses for level ${currentLevel}...`);
-
     equipmentSections.forEach(({ dropdown, section }) => {
       const dropdownElement = document.getElementById(dropdown);
       if (!dropdownElement || !dropdownElement.value) return;
 
-      // Try multiple ways to access itemList
       const itemData = window.itemList || itemList;
       if (!itemData) return;
 
       const item = itemData[dropdownElement.value];
       if (!item) return;
 
-      // CRITICAL: Calculate actual required level INCLUDING sockets
       const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
 
-      // Debug logging
-      console.log(`🔍 ${section}: ${dropdownElement.value}`);
-      console.log(`   Base level req: ${item.properties?.reqlvl || 1}`);
-      console.log(`   Actual level req (with sockets): ${actualRequiredLevel}`);
-      console.log(`   Character level: ${currentLevel}`);
-      console.log(`   Can use item: ${currentLevel >= actualRequiredLevel}`);
-
-      // Only apply bonuses if level requirement is met
       if (currentLevel >= actualRequiredLevel && item.properties) {
-        const itemStr = item.properties.str || 0;
-        const itemDex = item.properties.dex || 0;
-        const itemVit = item.properties.vit || 0;
-        const itemEnr = item.properties.enr || 0;
-
-        bonuses.str += itemStr;
-        bonuses.dex += itemDex;
-        bonuses.vit += itemVit;
-        bonuses.enr += itemEnr;
-
-        if (itemStr || itemDex || itemVit || itemEnr) {
-          console.log(`   ✅ APPLIED bonuses: +${itemStr} str, +${itemDex} dex, +${itemVit} vit, +${itemEnr} enr`);
-        }
-      } else {
-        console.log(`   ❌ BLOCKED bonuses - need level ${actualRequiredLevel}, have ${currentLevel}`);
+        bonuses.str += item.properties.str || 0;
+        bonuses.dex += item.properties.dex || 0;
+        bonuses.vit += item.properties.vit || 0;
+        bonuses.enr += item.properties.enr || 0;
       }
     });
 
-    console.log('📊 Final item bonuses:', bonuses);
     return bonuses;
   }
 
@@ -261,7 +354,6 @@ class CharacterManager {
       sockets.forEach(socket => {
         const socketLevel = parseInt(socket.dataset.levelReq) || 1;
         
-        // Only apply socket bonuses if level requirement is met
         if (currentLevel >= socketLevel) {
           const stats = socket.dataset.stats;
           if (stats) {
@@ -285,7 +377,6 @@ class CharacterManager {
   getCharmBonuses() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     
-    // Get charm stats from the statsCalculator if it exists
     if (window.statsCalculator && window.statsCalculator.stats) {
       const stats = window.statsCalculator.stats;
       bonuses.str = stats.str || 0;
@@ -298,13 +389,11 @@ class CharacterManager {
   }
 
   getActualRequiredLevel(section, itemName) {
-    // Try multiple ways to access itemList
     const itemData = window.itemList || itemList;
     if (!itemData || !itemData[itemName]) return 1;
     
     const baseLevel = itemData[itemName].properties?.reqlvl || 1;
     
-    // Check socketed items for higher requirements
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
     let highestLevel = baseLevel;
     
@@ -318,7 +407,6 @@ class CharacterManager {
     return highestLevel;
   }
 
-  // ==> DISPLAY UPDATES <==
   updateTotalDisplay(statId, total) {
     let totalDiv = document.getElementById(statId + 'Total');
     if (!totalDiv) {
@@ -330,7 +418,6 @@ class CharacterManager {
       if (statRow) {
         statRow.appendChild(totalDiv);
       } else {
-        // Fallback: append to parent element
         const statInput = document.getElementById(statId);
         if (statInput && statInput.parentElement) {
           statInput.parentElement.appendChild(totalDiv);
@@ -343,9 +430,9 @@ class CharacterManager {
     
     if (bonus > 0) {
       totalDiv.textContent = ` ${total}`;
-      totalDiv.style.color = '#00ff00'; // Green for positive bonus
+      totalDiv.style.color = '#00ff00';
     } else {
-      totalDiv.textContent = ''; // No bonus, hide
+      totalDiv.textContent = '';
     }
   }
 
@@ -354,7 +441,6 @@ class CharacterManager {
     const used = this.getUsedStatPoints();
     const remaining = available - used;
     
-    // Create or update stat points display
     let statPointsDiv = document.getElementById('stat-points-display');
     if (!statPointsDiv) {
       statPointsDiv = document.createElement('div');
@@ -370,26 +456,21 @@ class CharacterManager {
         font-weight: bold;
       `;
       
-      // Insert after the last stat row or energy input
       const lastStatInput = document.getElementById('enr');
       if (lastStatInput && lastStatInput.parentElement) {
         lastStatInput.parentElement.appendChild(statPointsDiv);
       }
     }
     
-    // Color based on remaining points
-    let color = '#00bfff'; // Default blue
-    if (remaining < 0) color = '#ff5555'; // Red for over-allocated
-    else if (remaining === 0) color = '#00ff00'; // Green for perfectly allocated
+    let color = '#00bfff';
+    if (remaining < 0) color = '#ff5555';
+    else if (remaining === 0) color = '#00ff00';
     
-    statPointsDiv.innerHTML = `
-      <div>Stat Points: ${remaining}/${available}</div>
-    `;
+    statPointsDiv.innerHTML = `<div>Stat Points: ${remaining}/${available}</div>`;
     statPointsDiv.style.color = color;
   }
 
   updateTotalStats() {
-    // Get base stats from inputs
     const baseStats = {
       str: parseInt(document.getElementById('str')?.value) || 0,
       dex: parseInt(document.getElementById('dex')?.value) || 0,
@@ -397,12 +478,10 @@ class CharacterManager {
       enr: parseInt(document.getElementById('enr')?.value) || 0
     };
 
-    // Get all bonuses
     const itemBonuses = this.getAllItemBonuses();
     const socketBonuses = this.getSocketBonuses();
     const charmBonuses = this.getCharmBonuses();
 
-    // Calculate total bonuses
     const totalBonuses = {
       str: itemBonuses.str + socketBonuses.str + charmBonuses.str,
       dex: itemBonuses.dex + socketBonuses.dex + charmBonuses.dex,
@@ -410,25 +489,135 @@ class CharacterManager {
       enr: itemBonuses.enr + socketBonuses.enr + charmBonuses.enr
     };
 
-    // Update total displays
     this.updateTotalDisplay('str', baseStats.str + totalBonuses.str);
     this.updateTotalDisplay('dex', baseStats.dex + totalBonuses.dex);
     this.updateTotalDisplay('vit', baseStats.vit + totalBonuses.vit);
     this.updateTotalDisplay('enr', baseStats.enr + totalBonuses.enr);
 
-    console.log('📊 Character stats updated:', {
-      base: baseStats,
-      bonuses: totalBonuses,
-      totals: {
-        str: baseStats.str + totalBonuses.str,
-        dex: baseStats.dex + totalBonuses.dex,
-        vit: baseStats.vit + totalBonuses.vit,
-        enr: baseStats.enr + totalBonuses.enr
-      }
-    });
+    this.calculateLifeAndMana();
   }
 
-  // ==> PUBLIC API <==
+  handleLevelChange() {
+    const lvlInput = document.getElementById('lvlValue');
+    let level = parseInt(lvlInput.value) || 1;
+    
+    if (level > 99) {
+      level = 99;
+      lvlInput.value = 99;
+    } else if (level < 1) {
+      level = 1;
+      lvlInput.value = 1;
+    }
+    
+    this.level = level;
+    this.currentLevel = level;
+    
+    this.validateStats();
+    this.updateStatPointsDisplay();
+    this.updateTotalStats();
+  }
+
+  handleClassChange() {
+    const classSelect = document.getElementById('selectClass');
+    if (!classSelect) return;
+    
+    const selectedClass = classSelect.value;
+    const baseStats = this.classStats[selectedClass];
+    
+    if (baseStats) {
+      this.currentClass = selectedClass;
+      document.getElementById('str').value = baseStats.str;
+      document.getElementById('dex').value = baseStats.dex;
+      document.getElementById('vit').value = baseStats.vit;
+      document.getElementById('enr').value = baseStats.enr;
+      
+      this.updateTotalStats();
+      this.updateStatPointsDisplay();
+    }
+  }
+
+  validateStats() {
+    const baseStats = this.classStats[this.currentClass];
+    const availablePoints = this.getAvailableStatPoints();
+    const maxTotal = this.getTotalBaseStats() + availablePoints;
+    
+    let currentTotal = 0;
+    const statInputs = ['str', 'dex', 'vit', 'enr'];
+    const currentStats = {};
+    
+    statInputs.forEach(statId => {
+      const input = document.getElementById(statId);
+      let value = parseInt(input.value) || baseStats[statId];
+      
+      if (value < baseStats[statId]) {
+        value = baseStats[statId];
+        input.value = value;
+      }
+      
+      currentStats[statId] = value;
+      currentTotal += value;
+    });
+    
+    if (currentTotal > maxTotal) {
+      const excess = currentTotal - maxTotal;
+      this.reduceStatsProportionally(currentStats, baseStats, excess);
+    }
+  }
+
+  reduceStatsProportionally(currentStats, baseStats, excess) {
+    let remaining = excess;
+    const statIds = ['str', 'dex', 'vit', 'enr'];
+    
+    while (remaining > 0) {
+      let reduced = false;
+      let highestStat = null;
+      let highestValue = 0;
+      
+      statIds.forEach(statId => {
+        const current = currentStats[statId];
+        const base = baseStats[statId];
+        if (current > base && current > highestValue) {
+          highestValue = current;
+          highestStat = statId;
+        }
+      });
+      
+      if (highestStat) {
+        currentStats[highestStat]--;
+        document.getElementById(highestStat).value = currentStats[highestStat];
+        remaining--;
+        reduced = true;
+      }
+      
+      if (!reduced) break;
+    }
+  }
+
+  handleStatChange(statId) {
+    const input = document.getElementById(statId);
+    const baseValue = this.classStats[this.currentClass][statId];
+    let value = parseInt(input.value) || baseValue;
+    
+    if (value < baseValue) {
+      input.value = baseValue;
+      value = baseValue;
+    }
+    
+    const availablePoints = this.getAvailableStatPoints();
+    const currentUsed = this.getUsedStatPoints();
+    
+    if (currentUsed > availablePoints) {
+      this.validateStats();
+    }
+    
+    this.updateStatPointsDisplay();
+    
+    // Real-time life/mana updates for vit/enr
+    if (statId === 'vit' || statId === 'enr') {
+      this.calculateLifeAndMana();
+    }
+  }
+
   getCharacterStats() {
     return {
       class: this.currentClass,
@@ -446,14 +635,13 @@ class CharacterManager {
   }
 
   forceStatsUpdate() {
-    setTimeout(() => {
-      this.updateTotalStats();
-      this.updateStatPointsDisplay();
-    }, 50);
+    this.updateTotalStats();
+    this.updateStatPointsDisplay();
+    this.calculateLifeAndMana();
   }
 }
 
-// Initialize when DOM is ready
+// Initialize
 let characterManager;
 
 function initCharacterManager() {
@@ -461,7 +649,6 @@ function initCharacterManager() {
     characterManager = new CharacterManager();
     window.characterManager = characterManager;
     
-    // Override legacy methods for compatibility
     if (window.characterStats) {
       window.characterStats.getAllItemBonuses = () => characterManager.getAllItemBonuses();
       window.characterStats.getSocketBonuses = () => characterManager.getSocketBonuses();
@@ -469,28 +656,23 @@ function initCharacterManager() {
       window.characterStats.updateTotalStats = () => characterManager.updateTotalStats();
     }
     
-    console.log('✅ Lightweight Character Manager initialized');
+
   }
 }
 
-// Auto-initialize after a short delay
-setTimeout(initCharacterManager, 500);
-
-// Also try to initialize on different events
+setTimeout(initCharacterManager, 100);
 document.addEventListener('DOMContentLoaded', initCharacterManager);
 window.addEventListener('load', initCharacterManager);
 
-// Manual initialization function for testing
 window.initCharacter = initCharacterManager;
 window.testCharacterBonuses = function() {
   if (window.characterManager) {
-    console.log('🧪 Testing character bonuses...');
+
     const itemBonuses = window.characterManager.getAllItemBonuses();
     const socketBonuses = window.characterManager.getSocketBonuses();
-    console.log('Item bonuses:', itemBonuses);
-    console.log('Socket bonuses:', socketBonuses);
+
     window.characterManager.updateTotalStats();
   } else {
-    console.log('❌ Character manager not initialized');
+
   }
 };
