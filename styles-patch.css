@@ -724,7 +724,57 @@ body {
   white-space: nowrap !important;
 }
 
+.modecontainer {
+  position: absolute;
+  top: 5px;
+  left: 130px;
+  background-color: #2b1b17;
+  border: 1.13px solid #906363;
+  padding: 3px;
+  width: auto;
+}
 
+.anyacontainer {
+  position: absolute;
+  font-size: 9px;
+  top: 5px;
+  right: 80px;
+  background-color: #0f0f0f;
+  border: 1.13px solid #7b0e0e;
+  padding: 3px;
+  width: auto;
+}
+
+.section {
+  color: #d4a017;
+  font-weight: bold;
+}
+
+#anyasection {
+  color: #1d1502;
+  font-weight: italic;
+}
+
+label {
+  font-size: 14px;
+  font-weight: lighter;
+  color: #fff;
+
+}
+
+.checkbox {
+  margin-right: 3px;
+}
+
+
+.modedropdown {
+  background-color: #000;
+  color: #fff;
+  border: 1.5px solid #ff0000;
+  padding: 3px;
+  width: auto;
+  
+}
 /* .stat-row {
   display: flex;
   justify-content: space-between;

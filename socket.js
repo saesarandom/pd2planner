@@ -1487,22 +1487,28 @@ if (window.characterStatManager) {
     }
   }
 
-  calculateSocketStats() {
-    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
+ calculateSocketStats() {
+  const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
+  
+  sections.forEach(section => {
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
     
-    sections.forEach(section => {
-      const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    sockets.forEach(socket => {
+      const levelReq = parseInt(socket.dataset.levelReq) || 1;
       
-      sockets.forEach(socket => {
-        const levelReq = parseInt(socket.dataset.levelReq) || 1;
-        
-        // Only apply socket stats if level requirement is met
-        if (this.currentLevel >= levelReq && socket.dataset.stats) {
-          this.parseSocketStats(socket.dataset.stats, section);
-        }
-      });
+      // Only apply socket stats if level requirement is met
+      if (this.currentLevel >= levelReq && socket.dataset.stats) {
+        this.parseSocketStats(socket.dataset.stats, section);
+      }
     });
-  }
+  });
+  
+  // Add checkbox bonus ONCE at the end
+  this.stats.fireResist += window.checkboxResistBonus || 0;
+  this.stats.coldResist += window.checkboxResistBonus || 0;
+  this.stats.lightResist += window.checkboxResistBonus || 0;
+  this.stats.poisonResist += window.checkboxResistBonus || 0;
+}
 
   parseItemStats(item, section) {
     if (!item.description) return;
@@ -1792,7 +1798,7 @@ const fhrMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Faster\s+Hit\s+Recovery/i);
     }
     
     // Mana: +30 to Mana, 25 to Mana
-    const manaMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Mana/i);
+    const manaMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Mana(?!\s*[a-zA-Z])/i);
     if (manaMatch) {
       const value = parseInt(manaMatch[1]);
       this.addToStatsMap(statsMap, 'mana', { value });
@@ -2027,6 +2033,7 @@ getStatPattern(key) {
     this.updateElement('energycontainer', this.stats.energy);
     
     // Resistances - using correct HTML IDs
+    const checkboxBonus = (document.querySelectorAll('.checkbox:checked').length * 10);
     this.updateElement('fireresistcontainer', this.stats.fireResist);
     this.updateElement('coldresistcontainer', this.stats.coldResist);
     this.updateElement('lightresistcontainer', this.stats.lightResist);

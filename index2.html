@@ -17,6 +17,25 @@
         <!-- <div class="polyrellife">
             Polynomial Relative Life: <span id="polyrellife">0</span>
         </div> -->
+<div class="modecontainer">
+  <div class="section">
+    <select class="modedropdown">
+      <option value="pvm">PvM</option>
+      <option value="pvp-n">PvP N</option>
+      <option value="pvp-nm">PvP NM</option>
+      <option value="pvp-hell">PvP Hell</option>
+    </select>
+  </div>
+</div>
+
+<div class="anyacontainer">
+  <div id="anyasection">
+    <label><input type="checkbox" class="checkbox" value="anya-n"> Anya N</label>
+    <label><input type="checkbox" class="checkbox" value="anya-nm"> Anya NM</label>
+    <label><input type="checkbox" class="checkbox" value="anya-h"> Anya H</label>
+
+  </div>
+</div>
 
         <div class="menucontainer">
             <h4>Class</h4>
@@ -546,6 +565,8 @@
 
 
     <script>
+
+window.checkboxResistBonus = 0;
 
         function createInventoryGrid() {
             const inventory = document.querySelector('.inventorycontainer');
@@ -1194,6 +1215,18 @@ document.addEventListener('change', function(e) {
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(updateCritDisplay, 500); // Small delay to ensure everything is loaded
 });
+
+setTimeout(() => {
+  document.querySelectorAll('.checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      window.checkboxResistBonus = document.querySelectorAll('.checkbox:checked').length * 10;
+      
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
+    });
+  });
+}, 100);
 </script>
 </body>
 </html>

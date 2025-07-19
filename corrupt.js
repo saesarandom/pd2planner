@@ -33,7 +33,7 @@ const CORRUPTIONS = {
     { mod: "+[30-40]% Increased Attack Speed", type: "numeric", range: [30, 40] },
     { mod: "+[40-60]% Enhanced Damage<br>5% Life Stolen per Hit", type: "numeric", range: [40, 60] },
     { mod: "-[40-60] Target Defense per Hit", type: "numeric", range: [40, 60] },
-    { mod: "+[20-30]% Chance of Crushing Blow", type: "numeric", range: [20, 30] },
+    { mod: "[20-30]% Chance of Crushing Blow", type: "numeric", range: [20, 30] },
     { mod: "+[20-30]% Deadly Strike", type: "numeric", range: [20, 30] },
     { mod: "-[7-10]% to Enemy Fire Resistance", type: "numeric", range: [7, 10] },
     { mod: "-[7-10]% to Enemy Cold Resistance", type: "numeric", range: [7, 10] },
@@ -296,7 +296,7 @@ function createCorruptionModal() {
         max-height: 80vh;
         overflow-y: auto;
         color: white;
-        font-family: Arial, sans-serif;
+        font-family: Oswald, sans-serif;
       ">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
           <h2 style="margin: 0; color: #ff6b6b;">Corruption Options</h2>
@@ -467,7 +467,7 @@ function createDoubleModSliders(corruption, index) {
       
       html += `
         <div class="corruption-slider-row">
-          <span style="min-width: 120px; color: #ccc; font-size: 12px;">${range.label}:</span>
+          <span style="min-width: 120px; color: #ccc; font-size: 11px;">${range.label}:</span>
           <input type="range" 
                  class="corruption-slider"
                  id="${sliderId}"
@@ -483,7 +483,7 @@ function createDoubleModSliders(corruption, index) {
       // Fixed value
       html += `
         <div class="corruption-slider-row">
-          <span style="min-width: 120px; color: #ccc; font-size: 12px;">${range.label}:</span>
+          <span style="width: 70px; color: #ccc; font-size: 11px;">${range.label}:</span>
           <span style="flex: 1; color: #ffd700; text-align: center;">+${range.value}%</span>
           <span class="corruption-value-display">Fixed</span>
         </div>
@@ -750,7 +750,8 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\w+)\s+Resist\s+\+(\d+)%/i, type: 'resist' },
     { pattern: /All\s+Resistances\s+\+(\d+)/i, type: 'allres' },
     { pattern: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'pdr' },
-    { pattern: /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'mdr' }
+    { pattern: /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'mdr' },
+    { pattern: /(\+?\d+)%\s+(Chance of Crushing Blow)/i, type: 'cb' }
   ];
   
   // Split corruption text by <br> to handle multi-line mods
@@ -827,7 +828,8 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     'allskills': /(\+?\d+)\s+to\s+All\s+Skills/i,
     'allres': /All\s+Resistances\s+\+(\d+)/i,
     'pdr': /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
-    'mdr': /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i
+    'mdr': /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
+    'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i
   };
   
   // Handle special cases for resist stats
