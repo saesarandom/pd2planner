@@ -14,9 +14,9 @@
 
 
     <div class="main-wrapper">
-        <div class="polyrellife">
+        <!-- <div class="polyrellife">
             Polynomial Relative Life: <span id="polyrellife">0</span>
-        </div>
+        </div> -->
 
         <div class="menucontainer">
             <h4>Class</h4>
@@ -31,8 +31,8 @@
             </select>
             
 
-            <h4>Character Name</h4>
-            <input type="text" id="character-name" placeholder="Enter character name">
+            <!-- <h4>Character Name</h4>
+            <input type="text" id="character-name" placeholder="Enter character name"> -->
 
             <div class="stats-section">
                 <div class="stat-row">
@@ -300,6 +300,14 @@
     <div class="stat-group">
         <h4>Combat Stats</h4>
         <div class="stat-item">
+            <span class="stat-label">Life Steal:</span>
+            <span id="lifestealcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Mana Steal:</span>
+            <span id="manastealcontainer" class="stat-value">0</span>%
+        </div>
+        <div class="stat-item">
             <span class="stat-label">Open Wounds:</span>
             <span id="owcontainer" class="stat-value">0</span>%
         </div>
@@ -329,10 +337,12 @@
         </div>
         <div class="stat-item">
             <span class="stat-label">Crit Multiplier:</span>
-            <span id="crithitmultipliercontainer" class="stat-value">2.0</span>x
+            <span id="crithitmultipliercontainer" class="stat-value">skills.critMultiplier</span>x
         </div>
     </div>
 
+
+    
     <!-- Pierce Stats -->
     <div class="stat-group">
         <h4>Enemy Resistance Pierce</h4>
@@ -1144,252 +1154,45 @@ function updateItemInfo(event) {
             if (username) updateUIState(username);
         });
 
-//         class NuclearDropdownFilter {
-//   constructor() {
-//     this.allowedItems = {
-//       helm: new Set(),
-//       merchelm: new Set(),
-//       armor: new Set(), 
-//       mercarmor: new Set(),
-//       weapon: new Set(),
-//       mercweapon: new Set(),
-//       shield: new Set(),
-//       gloves: new Set(),
-//       belts: new Set(),
-//       boots: new Set(),
-//       ringsone: new Set(),
-//       ringstwo: new Set(),
-//       amulets: new Set()
-//     };
+        function updateCritDisplay() {
+  if (window.skillSystemInstance) {
+    const criticalStrike = skillSystemInstance.getCriticalStrikeChance();
+    const deadlyStrike = skillSystemInstance.getDeadlyStrikeChance();
+    const weaponMastery = skillSystemInstance.getWeaponMasteryChance();
     
-//     this.dropdownMap = {
-//       helm: 'helms-dropdown',
-//       merchelm: 'merchelms-dropdown',
-//       armor: 'armors-dropdown',
-//       mercarmor: 'mercarmors-dropdown',
-//       weapon: 'weapons-dropdown',
-//       mercweapon: 'mercweapons-dropdown',
-//       shield: 'offs-dropdown',
-//       gloves: 'gloves-dropdown',
-//       belts: 'belts-dropdown',
-//       boots: 'boots-dropdown',
-//       ringsone: 'ringsone-dropdown',
-//       ringstwo: 'ringstwo-dropdown',
-//       amulets: 'amulets-dropdown'
-//     };
+    const combinedCritChance = 1 - ((1 - criticalStrike/100) * (1 - deadlyStrike/100) * (1 - weaponMastery/100));
+    const critMultiplier = 1 + (combinedCritChance * 0.5);
     
-//     this.init();
-//   }
-  
-//   init() {
-//     // Build allowed items sets from itemDropdownData
-//     if (typeof itemDropdownData !== 'undefined') {
-//       Object.keys(this.allowedItems).forEach(category => {
-//         if (itemDropdownData[category]) {
-//           itemDropdownData[category].forEach(item => {
-//             this.allowedItems[category].add(item.name);
-//           });
-//         }
-//       });
-//     } else {
-//       console.error('itemDropdownData not found! Nuclear filter cannot work.');
-//       return;
-//     }
-    
-//     // Start filtering with multiple attempts to catch all scripts
-//     this.startNuclearFiltering();
-//   }
-  
-//   startNuclearFiltering() {
-//     // Immediate filter
-//     this.nukeUnwantedItems();
-    
-//     // Filter after short delay (catches most scripts)
-//     setTimeout(() => this.nukeUnwantedItems(), 100);
-    
-//     // Filter after medium delay (catches slower scripts)
-//     setTimeout(() => this.nukeUnwantedItems(), 500);
-    
-//     // Filter after long delay (catches really slow scripts)
-//     setTimeout(() => this.nukeUnwantedItems(), 1000);
-    
-//     // Set up continuous monitoring
-//     this.setupContinuousMonitoring();
-//   }
-  
-//   nukeUnwantedItems() {
-//     console.log(' NUCLEAR DROPDOWN FILTER: Starting purge...');
-    
-//     let totalRemoved = 0;
-//     let totalKept = 0;
-    
-//     Object.entries(this.dropdownMap).forEach(([category, dropdownId]) => {
-//       const dropdown = document.getElementById(dropdownId);
-//       if (!dropdown) {
-//         console.warn(` Dropdown not found: ${dropdownId}`);
-//         return;
-//       }
-      
-//       const allowedSet = this.allowedItems[category];
-//       const initialCount = dropdown.options.length;
-      
-//       // Convert to array to avoid live NodeList issues
-//       const options = Array.from(dropdown.options);
-//       let removedFromThis = 0;
-//       let keptFromThis = 0;
-      
-//       options.forEach(option => {
-//         const value = option.value;
-//         const text = option.textContent || option.text;
-        
-//         // Always keep empty/None options
-//         if (!value || value === '' || value === 'None' || text === 'None') {
-//           keptFromThis++;
-//           return;
-//         }
-        
-//         // Check if item is allowed (check both value and text)
-//         const isAllowed = allowedSet.has(value) || allowedSet.has(text);
-        
-//         if (!isAllowed) {
-//           console.log(` NUKING: "${value || text}" from ${category}`);
-//           option.remove();
-//           removedFromThis++;
-//           totalRemoved++;
-//         } else {
-//           // Apply quality styling to allowed items
-//           this.applyQualityStyling(option, category, value || text);
-//           keptFromThis++;
-//           totalKept++;
-//         }
-//       });
-      
-//       console.log(`📊 ${category}: ${initialCount} → ${keptFromThis} (removed ${removedFromThis})`);
-      
-//       // Remove any optgroups that might be messing things up
-//       this.removeOptgroups(dropdown);
-//     });
-    
-//     console.log(` NUCLEAR FILTER COMPLETE: Removed ${totalRemoved} items, Kept ${totalKept} items`);
-//   }
-  
-//   applyQualityStyling(option, category, itemName) {
-//     if (typeof itemDropdownData === 'undefined') return;
-    
-//     const categoryData = itemDropdownData[category];
-//     if (!categoryData) return;
-    
-//     const itemData = categoryData.find(item => item.name === itemName);
-//     if (!itemData) return;
-    
-//     // Apply quality-based styling
-//     if (itemData.quality === 'unique') {
-//       option.style.color = '#D4AF37'; // Gold
-//       option.style.fontWeight = 'bold';
-//       option.className = 'unique-item';
-//     } else if (itemData.quality === 'set') {
-//       option.style.color = '#32CD32'; // Green  
-//       option.style.fontWeight = 'bold';
-//       option.className = 'set-item';
-//     }
-//   }
-  
-//   removeOptgroups(dropdown) {
-//     // Remove all optgroups (they often cause categorization issues)
-//     const optgroups = Array.from(dropdown.querySelectorAll('optgroup'));
-//     optgroups.forEach(optgroup => {
-//       // Move options out of optgroup before removing it
-//       Array.from(optgroup.options).forEach(option => {
-//         dropdown.appendChild(option);
-//       });
-//       optgroup.remove();
-//     });
-//   }
-  
+    const critElement = document.getElementById('crithitmultipliercontainer');
+    if (critElement) {
+      critElement.textContent = critMultiplier.toFixed(2);
+    }
+  }
+}
 
-  
-//   setupContinuousMonitoring() {
-//     // Monitor for changes and re-filter if needed
-//     const observer = new MutationObserver((mutations) => {
-//       let needsRefilter = false;
-      
-//       mutations.forEach((mutation) => {
-//         if (mutation.type === 'childList') {
-//           // Check if new options were added
-//           mutation.addedNodes.forEach((node) => {
-//             if (node.nodeName === 'OPTION' || node.nodeName === 'OPTGROUP') {
-//               needsRefilter = true;
-//             }
-//           });
-//         }
-//       });
-      
-//       if (needsRefilter) {
-//         console.log('🔄 Detected dropdown changes, re-filtering...');
-//         setTimeout(() => this.nukeUnwantedItems(), 50);
-//       }
-//     });
-    
-//     // Observe all dropdowns
-//     Object.values(this.dropdownMap).forEach(dropdownId => {
-//       const dropdown = document.getElementById(dropdownId);
-//       if (dropdown) {
-//         observer.observe(dropdown, { 
-//           childList: true, 
-//           subtree: true 
-//         });
-//       }
-//     });
-    
-//     console.log(' Continuous monitoring activated');
-//   }
-  
-//   // Manual trigger function
-//   forceFilter() {
-//     console.log(' Manual nuclear filter triggered');
-//     this.nukeUnwantedItems();
-//   }
-// }
+// Add event listeners for when crit-related values change
+document.addEventListener('input', function(e) {
+  // Critical Strike skill input
+  if (e.target && e.target.id === 'criticalstrikecontainer') {
+    updateCritDisplay();
+  }
+  // Javelin Mastery skill input (affects deadly strike)
+  if (e.target && e.target.id === 'javelinandspearmasterycontainer') {
+    updateCritDisplay();
+  }
+});
 
-// // Initialize nuclear filter
-// let nuclearFilter;
+// Weapon changes (affects deadly strike)
+document.addEventListener('change', function(e) {
+  if (e.target && e.target.id === 'weapons-dropdown') {
+    updateCritDisplay();
+  }
+});
 
-// function initNuclearFilter() {
-//   if (nuclearFilter) {
-//     console.warn('Nuclear filter already initialized');
-//     return;
-//   }
-  
-//   nuclearFilter = new NuclearDropdownFilter();
-  
-//   // Expose global function for manual triggering
-//   window.forceFilterDropdowns = () => {
-//     if (nuclearFilter) {
-//       nuclearFilter.forceFilter();
-//     }
-//   };
-// }
-
-// // Multiple initialization methods to ensure it runs
-// if (document.readyState === 'loading') {
-//   document.addEventListener('DOMContentLoaded', () => {
-//     setTimeout(initNuclearFilter, 100);
-//   });
-// } else {
-//   setTimeout(initNuclearFilter, 100);
-// }
-
-// // Also initialize after window load (catches everything)
-// window.addEventListener('load', () => {
-//   setTimeout(initNuclearFilter, 200);
-// });
-
-// // Export for manual use
-// window.NuclearDropdownFilter = NuclearDropdownFilter;
-
-
-        
+// Initial calculation
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(updateCritDisplay, 500); // Small delay to ensure everything is loaded
+});
 </script>
-
 </body>
 </html>

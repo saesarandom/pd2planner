@@ -1455,7 +1455,7 @@ const itemList = {
 
   Corpsemourn: {
     description:
-      "Corpsemourn<br>Ornate Plate<br>Defense: 1246<br>Required Strength: 145<br>Required Level: 55<br>Adds 160 to 340 Fire Damage<br>+180% Enhanced Defense<br>+8 to Strength<br>+10 to Vitality<br>Cold Resist +35%<br>+40 to Corpse Explosion<br>5% Reanimate As: Returned<br>Requirements -15%<br>",
+      "Corpsemourn<br>Ornate Plate<br>Defense: 1246<br>Required Strength: 145<br>Required Level: 55<br>Adds 160-340 Fire Damage<br>+180% Enhanced Defense<br>+8 to Strength<br>+10 to Vitality<br>Cold Resist +35%<br>+40 to Corpse Explosion<br>5% Reanimate As: Returned<br>Requirements -15%<br>",
     properties: {
       defense: 1246,
       reqstr: 145,
@@ -3738,7 +3738,7 @@ const itemList = {
       tomindmg: 12, // Additional Damage Min (12)
       tomaxdmg: 45, // Additional Damage Max (45)
       toatt: 90, // Attack Rating Bonus (90)
-      lifesteal: 8, // Life Stolen per Hit (8%)
+      lleech: 8, // Life Stolen per Hit (8%)
       whirlwindosk: 3,
       generalmasteryosk: 4,
     },

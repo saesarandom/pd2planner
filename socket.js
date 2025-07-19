@@ -249,7 +249,7 @@ class UnifiedSocketSystem {
           img: 'img/perfectsapphire2.png', 
           levelReq: 18,
           stats: { 
-            weapon: '+10-14 Cold Damage', 
+            weapon: 'Adds 10-14 Cold Damage', 
             helm: '+38 to Mana', 
             armor: '+38 to Mana', 
             shield: 'Cold Resist +40%' 
@@ -1684,10 +1684,10 @@ parseStatsToMap(statsText) {
     }
     
     // Poison Damage: 1-4 over 2 seconds, +5 Poison Damage over 2 Seconds
-    const poisonMatch = cleanLine.match(/(?:\+)?(\d+)(?:-(\d+))?\s+Poison\s+Damage/i);
+    const poisonMatch = cleanLine.match(/(?:Adds\s+)?(\d+)-(\d+)\s+Poison\s+Damage/i);
     if (poisonMatch) {
       const min = parseInt(poisonMatch[1]);
-      const max = poisonMatch[2] ? parseInt(poisonMatch[2]) : min;
+      const max = parseInt(poisonMatch[2]);
       this.addToStatsMap(statsMap, 'poison_damage', { min, max, type: 'poison' });
       return;
     }
@@ -1891,7 +1891,7 @@ formatStackedStat(key, data) {
     case 'cold_damage':
       return `<span style="color: ${color}; font-weight: bold;">Adds ${data.min}-${data.max} Cold Damage</span>`;
     case 'poison_damage':
-      return `<span style="color: ${color}; font-weight: bold;">+${data.min}${data.max !== data.min ? '-' + data.max : ''} Poison Damage</span>`;
+      return `<span style="color: ${color}; font-weight: bold;">Adds ${data.min}-${data.max} Poison Damage</span>`;
     case 'fire_resist':
       return `<span style="color: ${color}; font-weight: bold;">Fire Resist +${data.value}%</span>`;
     case 'cold_resist':
@@ -1951,7 +1951,7 @@ getStatPattern(key) {
     case 'cold_damage':
       return /(?:Adds\s+)?\d+-\d+\s+Cold\s+Damage/gi;
     case 'poison_damage':
-      return /(?:\+)?\d+(?:-\d+)?\s+Poison\s+Damage/gi;
+      return /(?:Adds\s+)?\d+-\d+\s+Poison\s+Damage/gi;
     case 'fire_resist':
       return /Fire\s+Resist\s+\+?\d+%?/gi;
     case 'cold_resist':
@@ -2147,31 +2147,32 @@ getStatPattern(key) {
         grid-template-rows: repeat(2, 30px);
       }
       
-      /* 3 sockets - triangle: 2 top, 1 bottom center */
-      .socket-grid.sockets-3 { 
-        grid-template-columns: repeat(3, 30px);
-        grid-template-rows: repeat(2, 30px);
-      }
-      .socket-grid.sockets-3 .socket-slot:nth-child(1) { grid-column: 1; grid-row: 1; }
-      .socket-grid.sockets-3 .socket-slot:nth-child(2) { grid-column: 3; grid-row: 1; }
-      .socket-grid.sockets-3 .socket-slot:nth-child(3) { grid-column: 2; grid-row: 2; }
-      
-      /* 4 sockets - 2x2 square */
-      .socket-grid.sockets-4 { 
-        grid-template-columns: repeat(2, 30px);
-        grid-template-rows: repeat(2, 30px);
-      }
-      
-      /* 5 sockets - cross pattern */
-      .socket-grid.sockets-5 { 
-        grid-template-columns: repeat(3, 30px);
-        grid-template-rows: repeat(3, 30px);
-      }
-      .socket-grid.sockets-5 .socket-slot:nth-child(1) { grid-column: 2; grid-row: 1; }
-      .socket-grid.sockets-5 .socket-slot:nth-child(2) { grid-column: 1; grid-row: 2; }
-      .socket-grid.sockets-5 .socket-slot:nth-child(3) { grid-column: 2; grid-row: 2; }
-      .socket-grid.sockets-5 .socket-slot:nth-child(4) { grid-column: 3; grid-row: 2; }
-      .socket-grid.sockets-5 .socket-slot:nth-child(5) { grid-column: 2; grid-row: 3; }
+      .socket-grid.sockets-3 {
+  grid-template-columns: repeat(2, 25px);
+  grid-template-rows: repeat(2, 25px);
+  gap: 8px;
+}
+.socket-grid.sockets-3 .socket-slot:nth-child(1) { grid-column: 1; grid-row: 1; }
+.socket-grid.sockets-3 .socket-slot:nth-child(2) { grid-column: 2; grid-row: 1; }
+.socket-grid.sockets-3 .socket-slot:nth-child(3) { grid-column: 1 / span 2; grid-row: 2; justify-self: center; }
+
+/* 4 sockets - 2x2 square */
+.socket-grid.sockets-4 {
+  grid-template-columns: repeat(2, 25px);
+  grid-template-rows: repeat(2, 25px);
+  gap: 8px;
+}
+
+.socket-grid.sockets-5 {
+  grid-template-columns: repeat(3, 22px);
+  grid-template-rows: repeat(3, 22px);
+  gap: 4px;
+}
+.socket-grid.sockets-5 .socket-slot:nth-child(1) { grid-column: 1; grid-row: 1; }
+.socket-grid.sockets-5 .socket-slot:nth-child(2) { grid-column: 3; grid-row: 1; }
+.socket-grid.sockets-5 .socket-slot:nth-child(3) { grid-column: 2; grid-row: 2; }
+.socket-grid.sockets-5 .socket-slot:nth-child(4) { grid-column: 1; grid-row: 3; }
+.socket-grid.sockets-5 .socket-slot:nth-child(5) { grid-column: 3; grid-row: 3; }
       
       /* 6 sockets - 2 columns x 3 rows */
       .socket-grid.sockets-6 { 
