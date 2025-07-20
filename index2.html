@@ -29,8 +29,12 @@
 </div>
 
 <div class="anyacontainer">
-  <div id="anyasection">
-    <label><input type="checkbox" class="checkbox" value="anya-n"> Anya N</label>
+  <div class="anyasection">
+<label class="label">
+    <input type="checkbox">
+    <span class="checkbox"></span>
+    Anya N
+</label>
     <label><input type="checkbox" class="checkbox" value="anya-nm"> Anya NM</label>
     <label><input type="checkbox" class="checkbox" value="anya-h"> Anya H</label>
 
@@ -573,7 +577,7 @@ window.checkboxResistBonus = 0;
             for (let i = 0; i < 40; i++) {
                 const charm = document.createElement('div');
                 charm.className = 'charm1';
-                inventory.appendChild(charm);
+                // inventory.appendChild(charm);
             }
         }
 
@@ -1162,8 +1166,7 @@ function updateItemInfo(event) {
 
         // Main initialization
         document.addEventListener('DOMContentLoaded', function() {
-            createParticles();
-            createInventoryGrid();
+            // createInventoryGrid();
             populateItemDropdowns();
             setupDropdownHandlers();
             setupSocketHandlers();

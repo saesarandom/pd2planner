@@ -187,13 +187,13 @@ let currentCorruptionSlot = null;
 
 // Initialize corruption system
 function initCorruptionSystem() {
-  console.log('🚀 Initializing enhanced corruption system...');
+
   
   addCorruptionCSS();
   createCorruptionModal();
   attachCorruptionButtons();
   
-  console.log('✅ Enhanced corruption system initialized');
+
 }
 
 // Enhanced CSS for corruption styling
@@ -352,7 +352,7 @@ function createCorruptionModal() {
 
 // Attach corruption buttons to existing corrupt buttons
 function attachCorruptionButtons() {
-  console.log('🔧 Attaching corruption buttons...');
+
   
   const buttonMap = {
     'corruptHelm': 'helms-dropdown',
@@ -371,14 +371,14 @@ function attachCorruptionButtons() {
     const button = document.getElementById(buttonId);
     if (button) {
       button.onclick = () => openCorruptionModal(dropdownId);
-      console.log(`✅ Attached handler to ${buttonId}`);
+
     }
   });
 }
 
 // Open corruption modal for specific item slot
 function openCorruptionModal(dropdownId) {
-  console.log(`🎯 Opening corruption modal for: ${dropdownId}`);
+
   
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown || !dropdown.value) {
@@ -620,7 +620,7 @@ function applyDoubleCorruption(corruption, index) {
   
   const corruptionText = generateDoubleModText(corruption.mod, values);
   
-  console.log(`🎯 Applying double corruption: "${corruptionText}" to slot: ${currentCorruptionSlot}`);
+  
   
   applyCorruptionToItem(corruptionText);
 }
@@ -631,7 +631,7 @@ function applyCorruption(modTemplate, value = null) {
     generateCorruptionText(modTemplate, value) : 
     modTemplate;
     
-  console.log(`🎯 Applying corruption: "${corruptionText}" to slot: ${currentCorruptionSlot}`);
+
     
   applyCorruptionToItem(corruptionText);
 }
@@ -649,7 +649,7 @@ function applyCorruptionToItem(corruptionText) {
   // Store original description if not already stored
   if (!window.originalItemDescriptions[itemName]) {
     window.originalItemDescriptions[itemName] = itemList[itemName].description;
-    console.log(`💾 Stored original description for: ${itemName}`);
+  
   }
   
   // Store corruption info
@@ -665,8 +665,7 @@ function applyCorruptionToItem(corruptionText) {
   
   itemList[itemName].description = enhancedDescription;
   
-  console.log(`✅ Modified description for ${itemName} with stat stacking`);
-  console.log('💾 Corruption saved:', window.itemCorruptions[currentCorruptionSlot]);
+
   
   // Trigger item display update
   triggerItemUpdate(currentCorruptionSlot);
@@ -699,7 +698,7 @@ function addCorruptionWithStacking(originalDescription, corruptionText) {
       if (replaced.found) {
         description = replaced.description;
         stackedLines.add(stat.lineIndex); // Mark this line as handled
-        console.log(`🔄 Stacked ${stat.type}: ${replaced.originalValue} + ${stat.value} = ${replaced.newValue}`);
+       
       }
     }
   });
@@ -771,10 +770,10 @@ function parseCorruptionText(corruptionText) {
         // Handle special cases
         if (type === 'maxres') {
           value = parseInt(match[1]);
-          subtype = match[2].toLowerCase(); // fire, cold, etc.
+          subtype = match[2].toLowerCase(); 
         } else if (type === 'resist') {
           value = parseInt(match[2]);
-          subtype = match[1].toLowerCase(); // fire, cold, etc.
+          subtype = match[1].toLowerCase(); 
         } else {
           value = parseInt(match[1]);
         }
@@ -782,7 +781,7 @@ function parseCorruptionText(corruptionText) {
         stats.push({
           text: line,
           fullText: corruptionText,
-          lineIndex: lineIndex, // Track which line this came from
+          lineIndex: lineIndex, 
           value: value,
           type: type,
           subtype: subtype,
@@ -794,7 +793,7 @@ function parseCorruptionText(corruptionText) {
       }
     }
     
-    // If no stackable stat found, treat this line as non-stackable
+
     if (!matched) {
       stats.push({
         text: line,
@@ -808,9 +807,9 @@ function parseCorruptionText(corruptionText) {
   return stats;
 }
 
-// Replace existing stat with corruption (same as before)
+
 function replaceExistingStatWithCorruption(description, corruptionStat) {
-  // Define patterns to find existing stats in item description
+  
   const searchPatterns = {
     'ias': /(\+?\d+)%\s+(Increased Attack Speed)/i,
     'edmg': /(\+?\d+)%\s+(Enhanced Damage)/i,
@@ -832,7 +831,7 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i
   };
   
-  // Handle special cases for resist stats
+ 
   if (corruptionStat.type === 'maxres') {
     const pattern = new RegExp(`(\\+?\\d+)%\\s+(?:to\\s+)?Maximum\\s+${corruptionStat.subtype}\\s+Resist`, 'i');
     searchPatterns['maxres'] = pattern;
@@ -851,7 +850,7 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     const originalValue = parseInt(match[1]);
     const newValue = originalValue + corruptionStat.value;
     
-    // Replace the original stat with corrupted (red) version
+
     const newStatText = match[0].replace(match[1], `+${newValue}`);
     const redStatText = `<span class="corruption-enhanced-stat">${newStatText}</span>`;
     
@@ -868,21 +867,21 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
   return { found: false, description };
 }
 
-// Trigger item update
+
 function triggerItemUpdate(dropdownId) {
   setTimeout(() => {
     const dropdown = document.getElementById(dropdownId);
     if (dropdown) {
-      // Create fake event and call updateItemInfo
+
       const fakeEvent = { target: dropdown };
       if (typeof updateItemInfo === 'function') {
         updateItemInfo(fakeEvent);
       }
       
-      // Also trigger change event
+
       dropdown.dispatchEvent(new Event('change'));
       
-      // Update stats if available
+
       if (window.statsCalculator?.updateAll) {
         window.statsCalculator.updateAll();
       }
@@ -890,11 +889,11 @@ function triggerItemUpdate(dropdownId) {
   }, 100);
 }
 
-// Remove current corruption
+
 function removeCurrentCorruption() {
   if (!currentCorruptionSlot) return;
   
-  console.log(`🗑️ Removing corruption from: ${currentCorruptionSlot}`);
+
   
   const corruption = window.itemCorruptions[currentCorruptionSlot];
   if (corruption && corruption.itemName) {
@@ -902,31 +901,31 @@ function removeCurrentCorruption() {
     const originalDescription = window.originalItemDescriptions[corruption.itemName];
     if (originalDescription) {
       itemList[corruption.itemName].description = originalDescription;
-      console.log(`✅ Restored original description for: ${corruption.itemName}`);
+
     }
   }
   
-  // Remove corruption from storage
+
   delete window.itemCorruptions[currentCorruptionSlot];
   
-  // Trigger item update
+
   triggerItemUpdate(currentCorruptionSlot);
   
   closeCorruptionModal();
 }
 
-// Close corruption modal
+
 function closeCorruptionModal() {
   document.getElementById('corruptionModal').style.display = 'none';
   currentCorruptionSlot = null;
 }
 
-// Initialize when DOM is ready
+
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(initCorruptionSystem, 100);
 });
 
-// Also initialize if called directly
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initCorruptionSystem, 100);
@@ -935,7 +934,7 @@ if (document.readyState === 'loading') {
   setTimeout(initCorruptionSystem, 100);
 }
 
-// Export for external use
+
 window.CorruptionSystem = {
   init: initCorruptionSystem,
   openModal: openCorruptionModal,
@@ -944,10 +943,9 @@ window.CorruptionSystem = {
   getOriginalDescriptions: () => window.originalItemDescriptions
 };
 
-// Make global functions available
+
 window.updateDoubleModPreview = updateDoubleModPreview;
 window.updateSingleModPreview = updateSingleModPreview;
 window.generateCorruptionText = generateCorruptionText;
 window.generateDoubleModText = generateDoubleModText;
 
-console.log('📦 Enhanced Corruption.js with independent sliders loaded successfully')

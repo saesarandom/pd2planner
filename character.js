@@ -446,8 +446,8 @@ getDirectLifeManaFromItems() {
       statPointsDiv = document.createElement('div');
       statPointsDiv.id = 'stat-points-display';
       statPointsDiv.style.cssText = `
-        margin-top: 10px;
-        padding: 8px;
+        // margin-top: 10px;
+        padding: 0;
         background: rgba(15, 52, 96, 0.3);
         border: 1px solid #0f3460;
         border-radius: 5px;
@@ -456,7 +456,7 @@ getDirectLifeManaFromItems() {
         font-weight: bold;
       `;
       
-      const lastStatInput = document.getElementById('enr');
+      const lastStatInput = document.getElementById('enrTotal');
       if (lastStatInput && lastStatInput.parentElement) {
         lastStatInput.parentElement.appendChild(statPointsDiv);
       }
