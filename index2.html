@@ -445,9 +445,9 @@
               <select id="mercweapons-dropdown">
                 <option value="">None</option>
               </select>
-              <button id="upgradeHelmButton">Upgrade</button>
-              <button id="makeethereal">Make Ethereal</button>
-              <button id="corruptHelm">Corrupt</button>
+              <button id="upgradeWeaponButton">Upgrade</button>
+              <button id="makeetherealweapon">Make Ethereal</button>
+              <button id="corruptWeapon">Corrupt</button>
               <div id="merc-weapon-info" class="item-info"></div>
               <div class="socket-container" data-section="mercweapon">
                 <div class="socket-grid sockets-0">
@@ -479,9 +479,9 @@
               <select id="mercarmors-dropdown">
                 <option value="">None</option>
               </select>
-              <button id="upgradeHelmButton">Upgrade</button>
-              <button id="makeethereal">Make Ethereal</button>
-              <button id="corruptHelm">Corrupt</button>
+              <button id="upgradeArmorButton">Upgrade</button>
+              <button id="makeetherealarmor">Make Ethereal</button>
+              <button id="corruptArmor">Corrupt</button>
               <div id="merc-armor-info" class="item-info"></div>
               <div class="socket-container" data-section="mercarmor">
                 <div class="socket-grid sockets-0">
@@ -491,8 +491,62 @@
   <button class="add-socket-btn" onclick="addSocket('mercarmor')">+</button>
 </div>
 </div>
+
+ <div class="mercgroupoffs">
+              <label>Merc Off-Hand/Shield</label>
+              <select id="mercoffs-dropdown">
+                <option value="">None</option>
+              </select>
+              <button id="upgradeShieldButton">Upgrade</button>
+              <button id="makeetherealshield">Make Ethereal</button>
+              <button id="corruptShield">Corrupt</button>
+              <div id="merc-off-info" class="item-info"></div>
+              <div class="socket-container" data-section="mercoff">
+                <div class="socket-grid sockets-0">
+  <div class="socket-slot empty" data-index="0"></div>
+  <div class="socket-slot empty" data-index="1"></div>
+  </div>
+  <button class="add-socket-btn" onclick="addSocket('mercoff')">+</button>
+</div>
+</div>
+
+<div class="mercgroupgloves">
+                <label>Merc Gloves</label>
+                <select id="mercgloves-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeGloveButton">Upgrade</button>
+            <button id="makeetherealglove">Make Ethereal</button>
+            <button id="corruptGlove">Corrupt</button>
+
+            <div id="merc-glove-info" class="item-info"></div>
             </div>
-        </div>
+
+            <div class="mercgroupbelts">
+                <label>Merc Belts</label>
+                <select id="mercbelts-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeBeltButton">Upgrade</button>
+            <button id="makeetherealbelt">Make Ethereal</button>
+            <button id="corruptBelt">Corrupt</button>
+
+            <div id="merc-belt-info" class="item-info"></div>
+            </div>
+
+            <div class="mercgroupboots">
+                <label>Merc Boots</label>
+                <select id="mercboots-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeBootButton">Upgrade</button>
+            <button id="makeetherealboot">Make Ethereal</button>
+            <button id="corruptBoot">Corrupt</button>
+
+            <div id="merc-boot-info" class="item-info"></div>
+            </div>
+
+
 
         <!-- <div class="auth-container">
             <form id="loginForm" onsubmit="handleLogin(event)">
@@ -923,12 +977,12 @@ const itemDropdownData = {
 itemDropdownData.merchelm = itemDropdownData.helm;
 itemDropdownData.mercarmor = itemDropdownData.armor;
 itemDropdownData.mercweapon = itemDropdownData.weapon;
+itemDropdownData.mercoff = itemDropdownData.shield;
+itemDropdownData.mercgloves = itemDropdownData.gloves;
+itemDropdownData.mercbelts = itemDropdownData.belts;
+itemDropdownData.mercboots = itemDropdownData.boots;
 
-// Then make sure populateItemDropdowns() is called AFTER the assignment
-document.addEventListener('DOMContentLoaded', function() {
-  // Assignment should be done by now
-  populateItemDropdowns();
-  });
+
 // FIXED: Updated populate function to work with new structure
 function populateItemDropdowns() {
   const dropdownMap = {
@@ -939,9 +993,13 @@ function populateItemDropdowns() {
     weapon: 'weapons-dropdown',
     mercweapon: 'mercweapons-dropdown', // ADD THIS
     shield: 'offs-dropdown',
+    mercoff: 'mercoffs-dropdown',       // ADD THIS
     gloves: 'gloves-dropdown',
+    mercgloves: 'mercgloves-dropdown', // ADD THIS
     belts: 'belts-dropdown',
+    mercbelts: 'mercbelts-dropdown', // ADD THIS
     boots: 'boots-dropdown',
+    mercboots: 'mercboots-dropdown', // ADD THIS
     ringsone: 'ringsone-dropdown',
     ringstwo: 'ringstwo-dropdown',
     amulets: 'amulets-dropdown'
@@ -984,14 +1042,14 @@ function populateItemDropdowns() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  populateItemDropdowns();
+// document.addEventListener('DOMContentLoaded', function() {
+//   populateItemDropdowns();
   
   // Add event listeners to all dropdowns
   const allDropdowns = [
     'helms-dropdown', 'merchelms-dropdown', 'armors-dropdown', 'mercarmors-dropdown',
-    'mercweapons-dropdown', 'weapons-dropdown', 'offs-dropdown', 'gloves-dropdown', 
-    'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 
+    'mercweapons-dropdown', 'weapons-dropdown', 'offs-dropdown', 'mercoffs-dropdown', 'gloves-dropdown',
+    'mercgloves-dropdown', 'belts-dropdown', 'mercbelts-dropdown', 'boots-dropdown', 'mercboots-dropdown','ringsone-dropdown',
     'ringstwo-dropdown', 'amulets-dropdown'
   ];
   
@@ -1001,15 +1059,15 @@ document.addEventListener('DOMContentLoaded', function() {
       dropdown.addEventListener('change', updateItemInfo);
     }
   });
-});
+
         // CORRECTED: This function now correctly finds the info div for each dropdown.
         // Replace the updateItemInfo function in your index2.html with this version:
 
+// Replace your existing updateItemInfo function with this clean version:
 function updateItemInfo(event) {
     const dropdown = event.target;
     const selectedItemName = dropdown.value;
 
-    // A map to find the correct info div for each dropdown
     const infoDivIdMap = {
         'weapons-dropdown': 'weapon-info',
         'helms-dropdown': 'helm-info',
@@ -1018,17 +1076,27 @@ function updateItemInfo(event) {
         'mercweapons-dropdown': 'merc-weapon-info',
         'armors-dropdown': 'armor-info',
         'offs-dropdown': 'off-info',
+        'mercoffs-dropdown': 'merc-off-info',
         'gloves-dropdown': 'glove-info',
+        'mercgloves-dropdown': 'merc-glove-info',
         'belts-dropdown': 'belt-info',
+        'mercbelts-dropdown': 'merc-belt-info',
         'boots-dropdown': 'boot-info',
+        'mercboots-dropdown': 'merc-boot-info',
         'ringsone-dropdown': 'ringsone-info',
         'ringstwo-dropdown': 'ringstwo-info',
         'amulets-dropdown': 'amulet-info'
     };
 
-    // Map dropdown IDs to section names for socket system
     const sectionMap = {
         'weapons-dropdown': 'weapon',
+        'merchelms-dropdown': 'merchelm',
+        'mercweapons-dropdown': 'mercweapon',
+        'mercarmors-dropdown': 'mercarmor',
+        'mercoffs-dropdown': 'mercoff',
+        'mercgloves-dropdown': 'mercgloves',
+        'mercbelts-dropdown': 'mercbelts',
+        'mercboots-dropdown': 'mercboots',
         'helms-dropdown': 'helm',
         'armors-dropdown': 'armor',
         'offs-dropdown': 'shield',
@@ -1041,27 +1109,39 @@ function updateItemInfo(event) {
     };
 
     const infoDivId = infoDivIdMap[dropdown.id];
-    if (!infoDivId) {
-        return; // Exit if the dropdown ID isn't in our map
-    }
+    if (!infoDivId) return;
 
     const infoDiv = document.getElementById(infoDivId);
-    if (infoDiv) {
-        if (selectedItemName && itemList[selectedItemName]) {
-            const section = sectionMap[dropdown.id];
-            
-            // FIXED: Use socket-aware display if this item supports sockets
-            if (section && window.statsCalculator?.updateItemDisplay) {
-                // Use the socket-aware display function that preserves socket stats
+    if (!infoDiv) return;
+
+    if (selectedItemName && itemList[selectedItemName]) {
+        const section = sectionMap[dropdown.id];
+        
+        // Try socket system first for all items
+        if (section && window.statsCalculator && typeof window.statsCalculator.updateItemDisplay === 'function') {
+            try {
                 window.statsCalculator.updateItemDisplay(section);
-            } else {
-                // Fallback to normal display for non-socket items
+                
+                // Verify content was set, fallback if needed
+                setTimeout(() => {
+                    if (infoDiv.innerHTML.trim() === '') {
+                        const item = itemList[selectedItemName];
+                        infoDiv.innerHTML = item.description;
+                    }
+                }, 100);
+                
+            } catch (error) {
+                // Socket system failed, use direct method
                 const item = itemList[selectedItemName];
                 infoDiv.innerHTML = item.description;
             }
         } else {
-            infoDiv.innerHTML = ''; // Clear the info div if 'None' is selected
+            // Socket system not ready, use direct method
+            const item = itemList[selectedItemName];
+            infoDiv.innerHTML = item.description;
         }
+    } else {
+        infoDiv.innerHTML = '';
     }
 }
         // Function to set up event handlers for all dropdowns
@@ -1105,7 +1185,7 @@ function updateItemInfo(event) {
 
         async function handleSignup(event) {
             event.preventDefault();
-            // Similar to login...
+  
         }
 
         function updateUIState(username = null) {
@@ -1165,19 +1245,19 @@ function updateItemInfo(event) {
         }
 
         // Main initialization
-        document.addEventListener('DOMContentLoaded', function() {
-            // createInventoryGrid();
-            populateItemDropdowns();
-            setupDropdownHandlers();
-            setupSocketHandlers();
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // createInventoryGrid();
+        //     populateItemDropdowns();
+        //     setupDropdownHandlers();
+        //     setupSocketHandlers();
             
-            // Initialize other systems
-            if (typeof updatePolyLife === 'function') updatePolyLife();
+        //     // Initialize other systems
+        //     if (typeof updatePolyLife === 'function') updatePolyLife();
             
-            // Check login state
-            const username = localStorage.getItem('username');
-            if (username) updateUIState(username);
-        });
+        //     // Check login state
+        //     const username = localStorage.getItem('username');
+        //     if (username) updateUIState(username);
+        // });
 
         function updateCritDisplay() {
   if (window.skillSystemInstance) {
@@ -1216,20 +1296,72 @@ document.addEventListener('change', function(e) {
 
 // Initial calculation
 document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(updateCritDisplay, 500); // Small delay to ensure everything is loaded
+  console.log("🚀 Initializing page...");
+  
+  // 1. Populate dropdowns first
+  populateItemDropdowns();
+  console.log("✅ Dropdowns populated");
+  
+  // 2. Add event listeners to all dropdowns  
+  const allDropdowns = [
+    'helms-dropdown', 'merchelms-dropdown', 'armors-dropdown', 'mercarmors-dropdown',
+    'mercweapons-dropdown', 'weapons-dropdown', 'offs-dropdown', 'mercoffs-dropdown', 
+    'gloves-dropdown', 'mercgloves-dropdown', 'belts-dropdown', 'mercbelts-dropdown', 
+    'boots-dropdown', 'mercboots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown', 
+    'amulets-dropdown'
+  ];
+  
+  allDropdowns.forEach(dropdownId => {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) {
+      dropdown.addEventListener('change', updateItemInfo);
+      console.log(`✅ Added listener to: ${dropdownId}`);
+    }
+  });
+  
+  // 3. Setup socket handlers
+  setupSocketHandlers();
+  
+  // 4. Initialize other systems
+  if (typeof updatePolyLife === 'function') updatePolyLife();
+  
+  // 5. Check login state
+  const username = localStorage.getItem('username');
+  if (username) updateUIState(username);
+  
+  // 6. Setup checkbox listeners for resist bonus
+  setTimeout(() => {
+    document.querySelectorAll('.checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        window.checkboxResistBonus = document.querySelectorAll('.checkbox:checked').length * 10;
+        
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
+      });
+    });
+  }, 100);
+  
+  // 7. Setup crit display update
+  setTimeout(updateCritDisplay, 500);
+  
+  console.log("🎯 Page initialization complete!");
 });
 
-setTimeout(() => {
-  document.querySelectorAll('.checkbox').forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
-      window.checkboxResistBonus = document.querySelectorAll('.checkbox:checked').length * 10;
+// setTimeout(() => {
+//   document.querySelectorAll('.checkbox').forEach(checkbox => {
+//     checkbox.addEventListener('change', () => {
+//       window.checkboxResistBonus = document.querySelectorAll('.checkbox:checked').length * 10;
       
-      if (window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
-      }
-    });
-  });
-}, 100);
+//       if (window.unifiedSocketSystem?.updateAll) {
+//         window.unifiedSocketSystem.updateAll();
+//       }
+//     });
+//   });
+// }, 100);
+
+
+  
 </script>
 </body>
 </html>
