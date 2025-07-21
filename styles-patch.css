@@ -8,6 +8,147 @@
   
 }
 
+.equipment-container > *:nth-child(10) {
+  grid-column: 2 / 3; /* Places the 10th element in the second column */
+}
+
+.buffcontainer {
+  position: relative;
+  left: -420px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  display: block;
+
+}
+
+.buff-icon {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.buff-icon img {
+  width: 28px;
+  height: 28px;
+  transition: all 0.2s ease;
+}
+
+.buff-icon:hover img {
+  border-color: #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  transform: scale(1.05);
+}
+
+/* Diablo 2 Style Tooltip */
+.buff-tooltip {
+  position: absolute;
+  top: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, rgba(20, 10, 5, 0.95), rgba(0, 0, 0, 0.95));
+  border: 2px solid #8B4513;
+  border-radius: 4px;
+  padding: 12px 16px;
+  color: #F5DEB3;
+  font-family: "Oswald", "Bahnschrift Condensed", sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  white-space: nowrap;
+  z-index: 565;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* Tooltip arrow */
+.buff-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: #fc0000;
+}
+
+.buff-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-bottom-color: rgba(40, 20, 10, 0.95);
+  z-index: 1;
+}
+
+/* Show tooltip on hover */
+.buff-icon:hover .buff-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(5px);
+}
+
+/* Tooltip content styling */
+.buff-tooltip .buff-name {
+  color: #FFD700;
+  font-weight: bold;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.buff-tooltip .buff-type {
+  color: #90EE90;
+  font-size: 12px;
+  font-style: italic;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.buff-tooltip .buff-level {
+  color: #87CEEB;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.buff-tooltip .buff-description {
+  color: #F5DEB3;
+  font-size: 12px;
+  line-height: 1.3;
+  display: block;
+}
+
+/* Different tooltip styles for different buff types */
+.buff-tooltip.aura {
+  border-color: #4169E1;
+}
+
+.buff-tooltip.aura::after {
+  border-top-color: #4169E1;
+}
+
+.buff-tooltip.curse {
+  border-color: #8B0000;
+  background: linear-gradient(135deg, rgba(40, 5, 5, 0.95), rgba(60, 10, 10, 0.95));
+}
+
+.buff-tooltip.curse::after {
+  border-top-color: #8B0000;
+}
+
+.buff-tooltip.blessing {
+  border-color: #FFD700;
+}
+
+.buff-tooltip.blessing::after {
+  border-top-color: #FFD700;
+}
+
 /* Styling for each category group */
 .groupweapons,
 .mercgroupweapons,
@@ -23,6 +164,7 @@
 .groupringstwo,
 .groupamulets {
   display: flex;
+  margin-top: 25%;
   flex-direction: column;
   gap: 10px;
   background-color: rgba(18, 7, 7, 0.9);
@@ -252,6 +394,10 @@ body {
   
 }
 
+.mercequipment-container > *:nth-child(7) {
+  grid-column: 2 / 3; /* Places the 7th element in the second column */
+}
+
 .mercenary-section label {
   color: var(--gold-color);
   font-size: 16px;
@@ -314,7 +460,7 @@ body {
   display: grid;
   position: absolute;
   left: 33%;
-  top: 17%;
+  top: 23%;
   grid-template-columns: repeat(10, 40px);
   grid-gap: 1px;
   background-color: #0f0e0e;
@@ -652,7 +798,7 @@ body {
 
 .skill-calculator-container {
   position: absolute !important;
-  top: 140px !important;
+  top: 190px !important;
   left: 220px !important;
   background: rgba(0,0,0,0.9) !important;
   border: 2px solid #666 !important;
@@ -682,7 +828,7 @@ body {
 
 .skill-damage-display {
   position: absolute !important;
-  top: 140px !important;
+  top: 190px !important;
   left: 380px !important;
   background: rgba(0,0,0,0.9) !important;
   border: 2px solid #666 !important;
@@ -738,7 +884,7 @@ body {
   position: absolute;
   font-size: 9px;
   top: 5px;
-  right: 80px;
+  right: 680px;
   background-color: #0f0f0f;
   border: 1.13px solid #7b0e0e;
   padding: 3px;
@@ -869,4 +1015,14 @@ body.moody .stat-group {
 body.moody .stat-group h4 {
     color: #e879f9;
 }
+
+/* .buff-tooltip {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  
+.buff-tooltip .buff-name {
+    font-size: 14px;
+  } */
+
 }

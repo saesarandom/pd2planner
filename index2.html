@@ -17,6 +17,7 @@
         <!-- <div class="polyrellife">
             Polynomial Relative Life: <span id="polyrellife">0</span>
         </div> -->
+       
 <div class="modecontainer">
   <div class="section">
     <select class="modedropdown">
@@ -42,7 +43,7 @@
 </div>
 
         <div class="menucontainer">
-            <h4>Class</h4>
+
             <select id="selectClass">
                 <option>Amazon</option>
                 <option>Assassin</option>
@@ -52,7 +53,9 @@
                 <option>Paladin</option>
                 <option>Sorceress</option>
             </select>
+            </div>
             
+
 
             <!-- <h4>Character Name</h4>
             <input type="text" id="character-name" placeholder="Enter character name"> -->
@@ -76,7 +79,7 @@
             </div>
         </div>
 
-
+<div class="buffcontainer"></div>
 
         <div class="equipment-section">
           <div class="equipment-container">
@@ -192,7 +195,7 @@
             <div id="boot-info" class="item-info"></div>
             </div>
 
-            <div class="groupringone">
+            <div class="groupringsone">
                 <label>Ring 1</label>
                 <select id="ringsone-dropdown">
                     <option value="">None</option>
@@ -200,7 +203,7 @@
                 <button id="corruptRingOne">Corrupt</button>
                 <div id="ringsone-info" class="item-info"></div>
             </div>
-            <div class="groupringtwo">
+            <div class="groupringstwo">
                 <label>Ring 2</label>
             <select id="ringstwo-dropdown">
                 <option value="">None</option>
@@ -545,9 +548,11 @@
 
             <div id="merc-boot-info" class="item-info"></div>
             </div>
+             </div>
+              </div>
 
 
-
+    
         <!-- <div class="auth-container">
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <h2>Login</h2>
@@ -604,6 +609,7 @@
 <script src="character.js"></script>
 <script src="socket.js"></script>
 <script src="corrupt.js"></script>
+<script src="buffs.js"></script>
 <!-- <script src="socket-system.js"></script> -->
 <!-- <script src="character.js"></script> -->
 <script src="inventory.js"></script>

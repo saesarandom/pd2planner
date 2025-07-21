@@ -667,7 +667,7 @@ class UnifiedSocketSystem {
       },
       jewels: {
         'rare-jewel': { 
-          name: 'Rare Jewel', img: 'img/jewel1.png', levelReq: 1, 
+          name: 'Rare Jewel', img: 'img/jewelgreen.png', levelReq: 1, 
           stats: { weapon: '+15% Enhanced Damage', armor: '+15% Enhanced Damage', 
                   helm: '+15% Enhanced Damage', shield: '+15% Enhanced Damage' }
         }
