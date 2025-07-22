@@ -1460,25 +1460,60 @@ function getCharmBonuses() {
       if (match = line.match(/\+(\d+)\s+Defense/i)) {
         bonuses.defense = (bonuses.defense || 0) + parseInt(match[1]);
       }
-      
+
+
+      if (match = line.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i)) {
+        bonuses.magicFind = (bonuses.magicFind || 0) + parseInt(match[1]);
+      }
+
+      if (match = line.match(/(\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i)) {
+        bonuses.goldFind = (bonuses.goldFind || 0) + parseInt(match[1]);
+      }
+
+      if (match = line.match(/(\d+)%\s+Faster\s+Run\/Walk/i)) {
+        bonuses.frw = (bonuses.frw || 0) + parseInt(match[1]);
+      }
+
+      if (match = line.match(/(\d+)%\s+Faster\s+Hit\s+Recovery/i)) {
+        bonuses.fhr = (bonuses.fhr || 0) + parseInt(match[1]);
+      }
+
+      if (match = line.match(/Adds\s+(\d+)(?:-(\d+))?\s+Lightning\s+Damage/i)) {
+        bonuses.lightDmgMin = (bonuses.lightDmgMin || 0) + parseInt(match[1]);
+        bonuses.lightDmgMax = (bonuses.lightDmgMax || 0) + (match[2] ? parseInt(match[2]) : parseInt(match[1]));
+      }
+      if (match = line.match(/Adds\s+(\d+)(?:-(\d+))?\s+Cold\s+Damage/i)) {
+        bonuses.coldDmgMin = (bonuses.coldDmgMin || 0) + parseInt(match[1]);
+        bonuses.coldDmgMax = (bonuses.coldDmgMax || 0) + (match[2] ? parseInt(match[2]) : parseInt(match[1]));
+      }
+
+      if (match = line.match(/Adds\s+(\d+)(?:-(\d+))?\s+Fire\s+Damage/i)) {
+        bonuses.fireDmgMin = (bonuses.fireDmgMin || 0) + parseInt(match[1]);
+        bonuses.fireDmgMax = (bonuses.fireDmgMax || 0) + (match[2] ? parseInt(match[2]) : parseInt(match[1]));
+      }
+
+      if (match = line.match(/Adds\s+(\d+)(?:-(\d+))?\s+Poison\s+Damage/i)) {
+        bonuses.poisonDmgMin = (bonuses.poisonDmgMin || 0) + parseInt(match[1]);
+        bonuses.poisonDmgMax = (bonuses.poisonDmgMax || 0) + (match[2] ? parseInt(match[2]) : parseInt(match[1]));
+      }
       // Cold Resist
       if (match = line.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i)) {
-        bonuses.cold = (bonuses.cold || 0) + parseInt(match[1]);
+        bonuses.coldResist = (bonuses.coldResist || 0) + parseInt(match[1]);
       }
 
       // Fire Resist
       if (match = line.match(/Fire\s+Resist\s+(?:\+)?(\d+)%?/i)) {
-        bonuses.fire = (bonuses.fire || 0) + parseInt(match[1]);
+        bonuses.fireResist = (bonuses.fireResist || 0) + parseInt(match[1]);
       }
       
       // Lightning Resist
       if (match = line.match(/Lightning\s+Resist\s+\+(\d+)%/i)) {
-        bonuses.lightning = (bonuses.lightning || 0) + parseInt(match[1]);
+        bonuses.lightResist = (bonuses.lightResist || 0) + parseInt(match[1]);
       }
       
       // Poison Resist
       if (match = line.match(/Poison\s+Resist\s+\+(\d+)%/i)) {
-        bonuses.poison = (bonuses.poison || 0) + parseInt(match[1]);
+        bonuses.poisonResist = (bonuses.poisonResist || 0) + parseInt(match[1]);
       }
       
       // All Resistances
@@ -1533,15 +1568,28 @@ function getCharmBonuses() {
 function captureCurrentBaseValues() {
   const containers = {
     defense: 'defensecontainer',
-    cold: 'coldresistcontainer', 
-    fire: 'fireresistcontainer',
-    lightning: 'lightningresistcontainer',
-    poison: 'poisonresistcontainer',
+    coldResist: 'coldresistcontainer',
+    fireResist: 'fireresistcontainer',
+    lightResist: 'lightningresistcontainer',
+    poisonResist: 'poisonresistcontainer',
     life: 'lifecontainer',
     mana: 'manacontainer',
     str: 'str',
     dex: 'dex',
-    attackrating: 'attackratingcontainer'
+    attackrating: 'attackratingcontainer',
+    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightningresistcontainer', 'poisonresistcontainer'], // Assuming all resistances are shown in their respective containers
+    magicFind: 'magicfindcontainer',
+    goldFind: 'goldfindcontainer',
+    frw: 'frwcontainer',
+    fhr: 'fhrcontainer',
+    lightDmgMin: 'flatlightmincontainer',
+    lightDmgMax: 'flatlightmaxcontainer',
+    coldDmgMin: 'flatcoldmincontainer',
+    coldDmgMax: 'flatcoldmaxcontainer',
+    fireDmgMin: 'flatfiremincontainer',
+    fireDmgMax: 'flatfiremaxcontainer',
+    poisonDmgMin: 'flatpoisonmincontainer',
+    poisonDmgMax: 'flatpoisonmaxcontainer'
   };
   
   console.log('📋 Capturing current base values (equipment + sockets, minus current charms)');
@@ -1574,15 +1622,28 @@ function updateCharmDisplay() {
   const newCharmBonuses = getCharmBonuses();
   const containers = {
     defense: 'defensecontainer',
-    cold: 'coldresistcontainer', 
-    fire: 'fireresistcontainer',
-    lightning: 'lightningresistcontainer',
-    poison: 'poisonresistcontainer',
+    coldResist: 'coldresistcontainer',
+    fireResist: 'fireresistcontainer',
+    lightResist: 'lightningresistcontainer',
+    poisonResist: 'poisonresistcontainer',
     life: 'lifecontainer',
     mana: 'manacontainer',
     str: 'str',
     dex: 'dex',
-    attackrating: 'attackratingcontainer'
+    attackrating: 'attackratingcontainer',
+    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightningresistcontainer', 'poisonresistcontainer'], // Assuming all resistances are shown in their respective containers
+    magicFind: 'magicfindcontainer',
+    goldFind: 'goldfindcontainer',
+    frw: 'frwcontainer',
+    fhr: 'fhrcontainer',
+    lightDmgMin: 'flatlightmincontainer',
+    lightDmgMax: 'flatlightmaxcontainer',
+    coldDmgMin: 'flatcoldmincontainer',
+    coldDmgMax: 'flatcoldmaxcontainer',
+    fireDmgMin: 'flatfiremincontainer',
+    fireDmgMax: 'flatfiremaxcontainer',
+    poisonDmgMin: 'flatpoisonmincontainer',
+    poisonDmgMax: 'flatpoisonmaxcontainer'
   };
   
   console.log('✨ Updating display with new charm bonuses:');
@@ -1649,11 +1710,24 @@ function onCharmChange() {
   // Update non-attribute stats directly
   const containers = {
     defense: 'defensecontainer',
-    cold: 'coldresistcontainer', 
-    fire: 'fireresistcontainer',
-    lightning: 'lightningresistcontainer',
-    poison: 'poisonresistcontainer',
-    attackrating: 'attackratingcontainer'
+    coldResist: 'coldresistcontainer', 
+    fireResist: 'fireresistcontainer',
+    lightResist: 'lightningresistcontainer',
+    poisonResist: 'poisonresistcontainer',
+    attackrating: 'attackratingcontainer',
+    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightningresistcontainer', 'poisonresistcontainer'],  // Assuming all resistances are shown in their respective containers
+    magicFind: 'magicfindcontainer',
+    goldFind: 'goldfindcontainer',
+    frw: 'frwcontainer',
+    fhr: 'fhrcontainer',
+    lightDmgMin: 'flatlightmincontainer',
+    lightDmgMax: 'flatlightmaxcontainer',
+    coldDmgMin: 'flatcoldmincontainer',
+    coldDmgMax: 'flatcoldmaxcontainer',
+    fireDmgMin: 'flatfiremincontainer',
+    fireDmgMax: 'flatfiremaxcontainer',
+    poisonDmgMin: 'flatpoisonmincontainer',
+    poisonDmgMax: 'flatpoisonmaxcontainer'
   };
   
   Object.keys(containers).forEach(stat => {
