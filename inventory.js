@@ -1205,6 +1205,8 @@ placeCharm(position, charmType, backgroundImage, charmData) {
   if (window.characterStats) {
   setTimeout(() => window.characterStats.updateTotalStats(), 100);
 }
+window.onCharmChange();
+
 }
 
 
@@ -1280,6 +1282,7 @@ removeCharm(position) {
   if (window.characterStats) {
   setTimeout(() => window.characterStats.updateTotalStats(), 100);
 }
+window.onCharmChange();
 }
 
 
@@ -1394,7 +1397,10 @@ hideModal() {
   }
 }
 
-// Initialize
+
+
+
+
 let charmInventory;
 
 function initCharmInventory() {
@@ -1420,3 +1426,288 @@ window.addEventListener('load', () => {
 });
 
 window.forceInitCharmInventory = initCharmInventory;
+
+// === FIXED CHARM STATS - NO DOUBLE ADDING ===
+// Paste this at the very end of inventory.js
+
+// === SUPER SIMPLE CHARM STATS - MANUAL TRIGGER ONLY ===
+// Paste this at the very end of inventory.js
+
+// === PROPER CHARM SYSTEM - FRESH CALCULATION ===
+// Paste this at the very end of inventory.js
+
+// === SMART CHARM SYSTEM - PRESERVES SOCKET BONUSES ===
+// Paste this at the very end of inventory.js
+
+let charmSystem = {
+  baseValues: {}, // Store equipment + socket values (without charm bonuses)
+  currentCharmBonuses: {}, // Track current charm bonuses
+  initialized: false
+};
+
+function getCharmBonuses() {
+  const bonuses = {};
+  const charms = document.querySelectorAll('[data-charm-data]');
+  
+  charms.forEach(charm => {
+    const data = charm.dataset.charmData;
+    if (!data) return;
+    
+    data.split('\n').forEach(line => {
+      let match;
+      
+      // Defense
+      if (match = line.match(/\+(\d+)\s+Defense/i)) {
+        bonuses.defense = (bonuses.defense || 0) + parseInt(match[1]);
+      }
+      
+      // Cold Resist
+      if (match = line.match(/Cold\s+Resist\s+\+(\d+)%/i)) {
+        bonuses.cold = (bonuses.cold || 0) + parseInt(match[1]);
+      }
+      
+      // Fire Resist  
+      if (match = line.match(/Fire\s+Resist\s+\+(\d+)%/i)) {
+        bonuses.fire = (bonuses.fire || 0) + parseInt(match[1]);
+      }
+      
+      // Lightning Resist
+      if (match = line.match(/Lightning\s+Resist\s+\+(\d+)%/i)) {
+        bonuses.lightning = (bonuses.lightning || 0) + parseInt(match[1]);
+      }
+      
+      // Poison Resist
+      if (match = line.match(/Poison\s+Resist\s+\+(\d+)%/i)) {
+        bonuses.poison = (bonuses.poison || 0) + parseInt(match[1]);
+      }
+      
+      // All Resistances
+      if (match = line.match(/All\s+Resistances\s+\+(\d+)%/i)) {
+        const val = parseInt(match[1]);
+        bonuses.cold = (bonuses.cold || 0) + val;
+        bonuses.fire = (bonuses.fire || 0) + val;
+        bonuses.lightning = (bonuses.lightning || 0) + val;
+        bonuses.poison = (bonuses.poison || 0) + val;
+      }
+      
+      // Life
+      if (match = line.match(/\+(\d+)\s+to\s+Life/i)) {
+        bonuses.life = (bonuses.life || 0) + parseInt(match[1]);
+      }
+      
+      // Mana
+      if (match = line.match(/\+(\d+)\s+to\s+Mana/i)) {
+        bonuses.mana = (bonuses.mana || 0) + parseInt(match[1]);
+      }
+      
+       // Strength - FIXED: use 'str' key to match character.js
+      if (match = line.match(/\+(\d+)\s+to\s+Strength/i)) {
+        bonuses.str = (bonuses.str || 0) + parseInt(match[1]);
+      }
+      
+      // Dexterity - FIXED: use 'dex' key to match character.js  
+      if (match = line.match(/\+(\d+)\s+to\s+Dexterity/i)) {
+        bonuses.dex = (bonuses.dex || 0) + parseInt(match[1]);
+      }
+      
+      // Vitality - ADD: missing from your current code
+      if (match = line.match(/\+(\d+)\s+to\s+Vitality/i)) {
+        bonuses.vit = (bonuses.vit || 0) + parseInt(match[1]);
+      }
+      
+      // Energy - ADD: missing from your current code
+      if (match = line.match(/\+(\d+)\s+to\s+Energy/i)) {
+        bonuses.enr = (bonuses.enr || 0) + parseInt(match[1]);
+      }
+      
+      // Attack Rating
+      if (match = line.match(/\+(\d+)\s+to\s+Attack\s+Rating/i)) {
+        bonuses.attackrating = (bonuses.attackrating || 0) + parseInt(match[1]);
+      }
+    });
+  });
+  
+  return bonuses;
+}
+
+function captureCurrentBaseValues() {
+  const containers = {
+    defense: 'defensecontainer',
+    cold: 'coldresistcontainer', 
+    fire: 'fireresistcontainer',
+    lightning: 'lightningresistcontainer',
+    poison: 'poisonresistcontainer',
+    life: 'lifecontainer',
+    mana: 'manacontainer',
+    str: 'str',
+    dex: 'dex',
+    attackrating: 'attackratingcontainer'
+  };
+  
+  console.log('📋 Capturing current base values (equipment + sockets, minus current charms)');
+  
+  Object.keys(containers).forEach(stat => {
+    const containerId = containers[stat];
+    const container = document.getElementById(containerId);
+    
+    if (container) {
+      const currentDisplayValue = parseInt(container.textContent) || 0;
+      const currentCharmBonus = charmSystem.currentCharmBonuses[stat] || 0;
+      
+      // Base value = current display - current charm bonuses
+      const baseValue = currentDisplayValue - currentCharmBonus;
+      charmSystem.baseValues[stat] = baseValue;
+      
+      console.log(`  📌 ${stat}: ${currentDisplayValue} - ${currentCharmBonus} = ${baseValue} (base)`);
+    }
+  });
+  
+  charmSystem.initialized = true;
+}
+
+function updateCharmDisplay() {
+  if (!charmSystem.initialized) {
+    console.log('❌ Base values not captured yet!');
+    return;
+  }
+  
+  const newCharmBonuses = getCharmBonuses();
+  const containers = {
+    defense: 'defensecontainer',
+    cold: 'coldresistcontainer', 
+    fire: 'fireresistcontainer',
+    lightning: 'lightningresistcontainer',
+    poison: 'poisonresistcontainer',
+    life: 'lifecontainer',
+    mana: 'manacontainer',
+    str: 'str',
+    dex: 'dex',
+    attackrating: 'attackratingcontainer'
+  };
+  
+  console.log('✨ Updating display with new charm bonuses:');
+  
+  Object.keys(containers).forEach(stat => {
+    const containerId = containers[stat];
+    const container = document.getElementById(containerId);
+    
+    if (container) {
+      const baseValue = charmSystem.baseValues[stat] || 0;
+      const newCharmBonus = newCharmBonuses[stat] || 0;
+      const totalValue = baseValue + newCharmBonus;
+      
+      container.textContent = totalValue;
+      
+      if (newCharmBonus > 0) {
+        container.style.color = '#90EE90'; // Green when has charm bonus
+        console.log(`  ✅ ${stat}: ${baseValue} (base) + ${newCharmBonus} (charms) = ${totalValue}`);
+      } else {
+        container.style.color = ''; // Normal when no charm bonus
+      }
+    }
+  });
+  
+  // Update tracked charm bonuses
+  charmSystem.currentCharmBonuses = { ...newCharmBonuses };
+}
+
+// Call this when equipment OR sockets change (recaptures base including socket bonuses)
+function onEquipmentOrSocketChange() {
+  console.log('🔄 Equipment/Socket changed - recapturing base values');
+  
+  // First, reset charm bonuses to 0 so we capture clean base
+  charmSystem.currentCharmBonuses = {};
+  
+  // Give other systems a moment to update containers
+  setTimeout(() => {
+    captureCurrentBaseValues();
+    updateCharmDisplay();
+  }, 100);
+}
+
+// Call this when ONLY charms are added/removed (preserves socket bonuses in base)
+function onCharmChange() {
+  console.log('💎 Charm inventory changed - updating display only');
+  
+  const newCharmBonuses = getCharmBonuses();
+  
+  // Store charm bonuses for character system to access
+  if (!window.statsCalculator) {
+    window.statsCalculator = { stats: {} };
+  }
+  
+  // FIXED: Set the stats that character.js expects
+  window.statsCalculator.stats = {
+    str: newCharmBonuses.str || 0,
+    dex: newCharmBonuses.dex || 0, 
+    vit: newCharmBonuses.vit || 0,
+    enr: newCharmBonuses.enr || 0,
+    life: newCharmBonuses.life || 0,
+    mana: newCharmBonuses.mana || 0
+  };
+  
+  // Update non-attribute stats directly
+  const containers = {
+    defense: 'defensecontainer',
+    cold: 'coldresistcontainer', 
+    fire: 'fireresistcontainer',
+    lightning: 'lightningresistcontainer',
+    poison: 'poisonresistcontainer',
+    attackrating: 'attackratingcontainer'
+  };
+  
+  Object.keys(containers).forEach(stat => {
+    const containerId = containers[stat];
+    const container = document.getElementById(containerId);
+    
+    if (container) {
+      const baseValue = charmSystem.baseValues[stat] || 0;
+      const newCharmBonus = newCharmBonuses[stat] || 0;
+      const totalValue = baseValue + newCharmBonus;
+      
+      container.textContent = totalValue;
+      
+      if (newCharmBonus > 0) {
+        container.style.color = '#90EE90';
+      } else {
+        container.style.color = '';
+      }
+    }
+  });
+  
+  // FIXED: Trigger character system to handle str/dex/vit/enr/life/mana
+  if (window.characterManager) {
+    window.characterManager.updateTotalStats();
+  }
+  
+  // Update tracked charm bonuses
+  charmSystem.currentCharmBonuses = { ...newCharmBonuses };
+
+  captureCurrentBaseValues();
+updateCharmDisplay();
+}
+
+// Recapture base values to account for the charm change
+
+
+// Call this to do initial setup (captures whatever is currently displayed as base)
+function initializeCharmSystem() {
+  console.log('🚀 Initializing charm system');
+  
+  // Start fresh - assume current containers have no charm bonuses
+  charmSystem.currentCharmBonuses = {};
+  captureCurrentBaseValues();
+  updateCharmDisplay();
+}
+
+// Public functions
+window.onEquipmentOrSocketChange = onEquipmentOrSocketChange;
+window.onCharmChange = onCharmChange;
+window.initializeCharmSystem = initializeCharmSystem;
+
+// Initialize after other systems are ready
+setTimeout(initializeCharmSystem, 2000);
+
+console.log('✨ Smart charm system ready!');
+console.log('📝 Call window.onEquipmentOrSocketChange() when equipment/sockets change');
+console.log('📝 Call window.onCharmChange() when charms are added/removed');

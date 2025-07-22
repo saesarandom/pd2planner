@@ -951,6 +951,26 @@ label {
   width: auto;
   
 }
+
+.charm-stat,
+.affix,
+.suffix {
+    color: #E91E63;
+    font-size: 11px;
+    margin: 1px 0;
+}
+
+/* Charm stat breakdown tooltip */
+.stat-breakdown {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid #666;
+    padding: 5px;
+    font-size: 10px;
+    z-index: 1000;
+    pointer-events: none;
+    white-space: nowrap;
+}
 /* .stat-row {
   display: flex;
   justify-content: space-between;

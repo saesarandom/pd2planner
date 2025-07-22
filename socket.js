@@ -1485,6 +1485,7 @@ if (window.characterStatManager) {
     if (this.currentLevel >= actualLevel && item.properties) {
       this.parseItemStats(item, section);
     }
+    // window.onEquipmentChange();
   }
 
  calculateSocketStats() {
@@ -1508,6 +1509,7 @@ if (window.characterStatManager) {
   this.stats.coldResist += window.checkboxResistBonus || 0;
   this.stats.lightResist += window.checkboxResistBonus || 0;
   this.stats.poisonResist += window.checkboxResistBonus || 0;
+  // window.onEquipmentChange();
 }
 
   parseItemStats(item, section) {
@@ -2082,7 +2084,7 @@ getStatPattern(key) {
     this.updateElement('flatpoisonmincontainer', this.stats.poisonDmgMin);
     this.updateElement('flatpoisonmaxcontainer', this.stats.poisonDmgMax);
     
-
+window.onEquipmentOrSocketChange();
   }
 
   updateElement(id, value) {
