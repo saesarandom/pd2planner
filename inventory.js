@@ -1462,12 +1462,12 @@ function getCharmBonuses() {
       }
       
       // Cold Resist
-      if (match = line.match(/Cold\s+Resist\s+\+(\d+)%/i)) {
+      if (match = line.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i)) {
         bonuses.cold = (bonuses.cold || 0) + parseInt(match[1]);
       }
-      
-      // Fire Resist  
-      if (match = line.match(/Fire\s+Resist\s+\+(\d+)%/i)) {
+
+      // Fire Resist
+      if (match = line.match(/Fire\s+Resist\s+(?:\+)?(\d+)%?/i)) {
         bonuses.fire = (bonuses.fire || 0) + parseInt(match[1]);
       }
       
@@ -1682,10 +1682,18 @@ function onCharmChange() {
   
   // Update tracked charm bonuses
   charmSystem.currentCharmBonuses = { ...newCharmBonuses };
-
-  captureCurrentBaseValues();
-updateCharmDisplay();
+  
+  // ADD: Force immediate refresh of character displays
+  setTimeout(() => {
+    if (window.characterManager) {
+      window.characterManager.forceStatsUpdate();
+    }
+  }, 10);
 }
+
+//   captureCurrentBaseValues();
+// updateCharmDisplay();
+// }
 
 // Recapture base values to account for the charm change
 
@@ -1699,6 +1707,26 @@ function initializeCharmSystem() {
   captureCurrentBaseValues();
   updateCharmDisplay();
 }
+
+function enhanceStatInputResponsiveness() {
+  ['str', 'dex', 'vit', 'enr'].forEach(statId => {
+    const input = document.getElementById(statId);
+    if (input) {
+      // Add immediate update on input change
+      input.addEventListener('input', () => {
+        setTimeout(() => {
+          if (window.characterManager) {
+            window.characterManager.updateTotalStats();
+          }
+        }, 5);
+      });
+    }
+  });
+}
+
+setTimeout(() => {
+  enhanceStatInputResponsiveness();
+}, 2100);
 
 // Public functions
 window.onEquipmentOrSocketChange = onEquipmentOrSocketChange;
