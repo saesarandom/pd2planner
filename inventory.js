@@ -650,11 +650,11 @@ getStatForAffix(affix) {
     'Wildfirelarge' : { min: 2, max: 3, text: '+{value}% to Fire Skill Damage' },
     'Maliciouslarge' : { min: 2, max: 3, text: '+{value}% to Poison Skill Damage' },
     'Effervescentlarge': { min: 2, max: 3, text: '+{value}% to Magic Skill Damage' },
-    'Conduitlarge' : { min: 3, max: 4, text: '+{value}% to Lightning Skill Damage' },
-    'Numbinglarge' : { min: 3, max: 4, text: '+{value}% to Cold Skill Damage' },
-    'Infernolarge' : { min: 3, max: 4, text: '+{value}% to Fire Skill Damage' },
-    'Infectiouslarge' : { min: 3, max: 4, text: '+{value}% to Poison Skill Damage' },
-    'Scintillatinglarge': { min: 3, max: 4, text: '+{value}% to Magic Skill Damage' },
+    // 'Conduitlarge' : { min: 3, max: 4, text: '+{value}% to Lightning Skill Damage' },
+    // 'Numbinglarge' : { min: 3, max: 4, text: '+{value}% to Cold Skill Damage' },
+    // 'Infernolarge' : { min: 3, max: 4, text: '+{value}% to Fire Skill Damage' },
+    // 'Infectiouslarge' : { min: 3, max: 4, text: '+{value}% to Poison Skill Damage' },
+    // 'Scintillatinglarge': { min: 3, max: 4, text: '+{value}% to Magic Skill Damage' },
 
     // Resistances
     'Shimmering': { min: 3, max: 5, text: 'All Resistances +{value}%' },
@@ -1015,7 +1015,8 @@ getCharmAffixes() {
     'large-charm': {
       prefixes: [
         'Stoutlarge', 'Stout2large', 'Stout3large', 'Burlylarge', 'Burly2large',
-        'Stalwartlarge', 'Redlarge', 'Jaggedlarge', 'Finelarge', 'Sharplarge', 'Bronzelarge', 'Serpentslarge', 'Discharginglarge', 'Frigidlarge', 'Wildfirelarge', 'Maliciouslarge', 'Effervescentlarge', 'Conduitlarge', 'Numbinglarge', 'Infernolarge', 'Infectiouslarge', 'Scintillatinglarge'
+        'Stalwartlarge', 'Redlarge', 'Jaggedlarge', 'Finelarge', 'Sharplarge', 'Bronzelarge', 'Serpentslarge', 'Discharginglarge', 'Frigidlarge', 'Wildfirelarge', 'Maliciouslarge', 'Effervescentlarge'
+        //  'Conduitlarge', 'Numbinglarge', 'Infernolarge', 'Infectiouslarge', 'Scintillatinglarge'
       ],
       suffixes: [
         'Oflifelarge', 'Ofvitalarge', 'Ofstrengthlarge', 'Ofstrength2large', 'Ofdexteritylarge', 'Ofdexterity2large',
@@ -1516,21 +1517,22 @@ function getCharmBonuses() {
         bonuses.poisonDmgMax = (bonuses.poisonDmgMax || 0) + (match[2] ? parseInt(match[2]) : parseInt(match[1]));
       }
 
-      if (match = line.match(/(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i)) {
-        bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + parseInt(match[1]);
-      }
-      if (match = line.match(/(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i)) {
-        bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + parseInt(match[1]);
-      }
-      if (match = line.match(/(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i)) {
-        bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + parseInt(match[1]);
-      }
-      if (match = line.match(/(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i)) {
-        bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + parseInt(match[1]);
-      }
-      if (match = line.match(/(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
-        bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + parseInt(match[1]);
-      }
+      // FIXED: Add \+ to match the plus sign in charm text
+if (match = line.match(/\+?(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i)) {
+  bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + parseInt(match[1]);
+}
+if (match = line.match(/\+?(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i)) {
+  bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + parseInt(match[1]);
+}
+if (match = line.match(/\+?(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i)) {
+  bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + parseInt(match[1]);
+}
+if (match = line.match(/\+?(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i)) {
+  bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + parseInt(match[1]);
+}
+if (match = line.match(/\+?(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
+  bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + parseInt(match[1]);
+}
       // Cold Resist
       if (match = line.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i)) {
         bonuses.coldResist = (bonuses.coldResist || 0) + parseInt(match[1]);
@@ -1626,12 +1628,7 @@ function captureCurrentBaseValues() {
     poisonDmgMin: 'flatpoisonmincontainer',
     poisonDmgMax: 'flatpoisonmaxcontainer',
     magicDmgMin: 'flatmagicmincontainer',
-    magicDmgMax: 'flatmagicmaxcontainer',
-    poisonSkillDmg: 'poisonskilldmgcontainer',
-    coldSkillDmg: 'coldskilldmgcontainer',
-    fireSkillDmg: 'fireskilldmgcontainer',
-    lightningSkillDmg: 'lightningskilldmgcontainer',
-    magicSkillDmg: 'magicskilldmgcontainer'
+    magicDmgMax: 'flatmagicmaxcontainer'
   };
   
   
@@ -1651,6 +1648,16 @@ function captureCurrentBaseValues() {
       
     }
   });
+  
+  // SPECIAL: Handle skill damage stats separately
+  const equipmentSkillBonuses = getEquipmentSkillDamageBonuses();
+  
+  // For skill damage, base = equipment bonuses (not current display)
+  charmSystem.baseValues.poisonSkillDmg = equipmentSkillBonuses.poisonSkillDmg || 0;
+  charmSystem.baseValues.coldSkillDmg = equipmentSkillBonuses.coldSkillDmg || 0;
+  charmSystem.baseValues.fireSkillDmg = equipmentSkillBonuses.fireSkillDmg || 0;
+  charmSystem.baseValues.lightningSkillDmg = equipmentSkillBonuses.lightningSkillDmg || 0;
+  charmSystem.baseValues.magicSkillDmg = equipmentSkillBonuses.magicSkillDmg || 0;
   
   charmSystem.initialized = true;
 }
@@ -1720,6 +1727,102 @@ function updateCharmDisplay() {
   // Update tracked charm bonuses
   charmSystem.currentCharmBonuses = { ...newCharmBonuses };
 }
+
+
+
+
+
+function getEquipmentSkillDamageBonuses() {
+  const bonuses = {};
+  const equipmentSections = [
+    { dropdown: 'weapons-dropdown', section: 'weapon' },
+    { dropdown: 'helms-dropdown', section: 'helm' },
+    { dropdown: 'armors-dropdown', section: 'armor' },
+    { dropdown: 'offs-dropdown', section: 'shield' },
+    { dropdown: 'gloves-dropdown', section: 'gloves' },
+    { dropdown: 'belts-dropdown', section: 'belts' },
+    { dropdown: 'boots-dropdown', section: 'boots' },
+    { dropdown: 'ringsone-dropdown', section: 'ringone' },
+    { dropdown: 'ringstwo-dropdown', section: 'ringtwo' },
+    { dropdown: 'amulets-dropdown', section: 'amulet' }
+  ];
+
+  equipmentSections.forEach(({ dropdown, section }) => {
+    const dropdownElement = document.getElementById(dropdown);
+    if (!dropdownElement || !dropdownElement.value) return;
+
+    const itemData = window.itemList || itemList;
+    const item = itemData?.[dropdownElement.value];
+    if (!item) return;
+
+    // Check equipment description for skill damage bonuses
+    if (item.description) {
+      const desc = item.description;
+      
+      let match;
+      if (match = desc.match(/(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i)) {
+        bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + parseInt(match[1]);
+      }
+      if (match = desc.match(/(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i)) {
+        bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + parseInt(match[1]);
+      }
+      if (match = desc.match(/(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i)) {
+        bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + parseInt(match[1]);
+      }
+      if (match = desc.match(/(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i)) {
+        bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + parseInt(match[1]);
+      }
+      if (match = desc.match(/(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
+        bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + parseInt(match[1]);
+      }
+    }
+
+    // Also check properties
+    if (item.properties) {
+      bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + (item.properties.poisonSkillDmg || 0);
+      bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + (item.properties.coldSkillDmg || 0);
+      bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + (item.properties.fireSkillDmg || 0);
+      bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + (item.properties.lightningSkillDmg || 0);
+      bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + (item.properties.magicSkillDmg || 0);
+    }
+  });
+
+  // Add socket bonuses
+  const socketSections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
+  
+  socketSections.forEach(section => {
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    
+    sockets.forEach(socket => {
+      const stats = socket.dataset.stats;
+      if (stats) {
+        let match;
+        if (match = stats.match(/(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i)) {
+          bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + parseInt(match[1]);
+        }
+        if (match = stats.match(/(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i)) {
+          bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + parseInt(match[1]);
+        }
+        if (match = stats.match(/(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i)) {
+          bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + parseInt(match[1]);
+        }
+        if (match = stats.match(/(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i)) {
+          bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + parseInt(match[1]);
+        }
+        if (match = stats.match(/(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
+          bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + parseInt(match[1]);
+        }
+      }
+    });
+  });
+
+  return bonuses;
+}
+
+
+
+
+
 
 // Call this when equipment OR sockets change (recaptures base including socket bonuses)
 function onEquipmentOrSocketChange() {
