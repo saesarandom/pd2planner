@@ -50,7 +50,7 @@ class CharacterManager {
     const lvlInput = document.getElementById('lvlValue');
     if (lvlInput) {
       lvlInput.addEventListener('input', () => this.handleLevelChange());
-      lvlInput.addEventListener('blur', () => this.validateLevel());
+      // lvlInput.addEventListener('blur', () => this.validateLevel());
     }
     
     // Class change
@@ -217,7 +217,7 @@ class CharacterManager {
   }
   }
 
-  console.log(`🔢 Life: ${totalLife}, Mana: ${totalMana} (Class: ${charClass}, Level: ${level})`);
+  //(`🔢 Life: ${totalLife}, Mana: ${totalMana} (Class: ${charClass}, Level: ${level})`);
   return { life: totalLife, mana: totalMana };
 }
 
@@ -239,24 +239,24 @@ getDirectLifeManaFromItems() {
     { dropdown: 'amulets-dropdown', section: 'amulet' }
   ];
 
-  console.log('🔍 Checking equipment for life/mana bonuses:');
+  //('🔍 Checking equipment for life/mana bonuses:');
 
   equipmentSections.forEach(({ dropdown, section }) => {
     const dropdownElement = document.getElementById(dropdown);
     if (!dropdownElement || !dropdownElement.value) {
-      console.log(`  ❌ ${section}: No item selected`);
+      //(`  ❌ ${section}: No item selected`);
       return;
     }
 
     const itemData = window.itemList || itemList;
     if (!itemData) {
-      console.log(`  ❌ ${section}: No itemList found`);
+      //(`  ❌ ${section}: No itemList found`);
       return;
     }
 
     const item = itemData[dropdownElement.value];
     if (!item) {
-      console.log(`  ❌ ${section}: Item not found in itemList`);
+      //(`  ❌ ${section}: Item not found in itemList`);
       return;
     }
 
@@ -289,9 +289,9 @@ getDirectLifeManaFromItems() {
       bonuses.life += itemLife;
       bonuses.mana += itemMana;
       
-      console.log(`  ✅ ${section} (${dropdownElement.value}): +${itemLife} life, +${itemMana} mana`);
+      //(`  ✅ ${section} (${dropdownElement.value}): +${itemLife} life, +${itemMana} mana`);
     } else {
-      console.log(`  ⚠️ ${section}: Level requirement not met (${actualRequiredLevel} > ${currentLevel})`);
+      //(`  ⚠️ ${section}: Level requirement not met (${actualRequiredLevel} > ${currentLevel})`);
     }
   });
 
@@ -311,21 +311,21 @@ getDirectLifeManaFromItems() {
           if (lifeMatch) {
             const socketLife = parseInt(lifeMatch[1]);
             bonuses.life += socketLife;
-            console.log(`  🔷 ${section} socket: +${socketLife} life`);
+            //(`  🔷 ${section} socket: +${socketLife} life`);
           }
           
           const manaMatch = stats.match(/\+(\d+)\s+(?:to\s+)?Mana/i);
           if (manaMatch) {
             const socketMana = parseInt(manaMatch[1]);
             bonuses.mana += socketMana;
-            console.log(`  🔷 ${section} socket: +${socketMana} mana`);
+            //(`  🔷 ${section} socket: +${socketMana} mana`);
           }
         }
       }
     });
   });
 
-  console.log(`  🎯 Total from equipment+sockets: +${bonuses.life} life, +${bonuses.mana} mana`);
+  //(`  🎯 Total from equipment+sockets: +${bonuses.life} life, +${bonuses.mana} mana`);
   return bonuses;
 }
 

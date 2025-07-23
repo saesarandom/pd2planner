@@ -36,7 +36,7 @@ class CharmInventory {
       this.createModal();
       this.setupEventListeners();
       this.initialized = true;
-      console.log('✨ Seamless Spanning Charm System initialized');
+      
     }, 100);
   }
 
@@ -1069,9 +1069,9 @@ setupEventListeners() {
     
     if (targetPosition !== null && this.canPlaceCharm(targetPosition, this.draggedCharm.charmType)) {
       this.placeCharm(targetPosition, this.draggedCharm.charmType, this.draggedCharm.backgroundImage, this.draggedCharm.charmData);
-      console.log('Charm duplicated');
+      
     } else {
-      console.log('Cannot place charm here');
+      
     }
   }
   this.draggedCharm = null;
@@ -1592,7 +1592,7 @@ function captureCurrentBaseValues() {
     poisonDmgMax: 'flatpoisonmaxcontainer'
   };
   
-  console.log('📋 Capturing current base values (equipment + sockets, minus current charms)');
+  
   
   Object.keys(containers).forEach(stat => {
     const containerId = containers[stat];
@@ -1606,7 +1606,7 @@ function captureCurrentBaseValues() {
       const baseValue = currentDisplayValue - currentCharmBonus;
       charmSystem.baseValues[stat] = baseValue;
       
-      console.log(`  📌 ${stat}: ${currentDisplayValue} - ${currentCharmBonus} = ${baseValue} (base)`);
+      
     }
   });
   
@@ -1615,7 +1615,7 @@ function captureCurrentBaseValues() {
 
 function updateCharmDisplay() {
   if (!charmSystem.initialized) {
-    console.log('❌ Base values not captured yet!');
+    
     return;
   }
   
@@ -1646,7 +1646,7 @@ function updateCharmDisplay() {
     poisonDmgMax: 'flatpoisonmaxcontainer'
   };
   
-  console.log('✨ Updating display with new charm bonuses:');
+  
   
   Object.keys(containers).forEach(stat => {
     const containerId = containers[stat];
@@ -1660,8 +1660,8 @@ function updateCharmDisplay() {
       container.textContent = totalValue;
       
       if (newCharmBonus > 0) {
-        container.style.color = '#d6a608ff'; // Green when has charm bonus
-        console.log(`  ✅ ${stat}: ${baseValue} (base) + ${newCharmBonus} (charms) = ${totalValue}`);
+        container.style.color = '#d0d007ff'; // Green when has charm bonus
+        
       } else {
         container.style.color = ''; // Normal when no charm bonus
       }
@@ -1674,7 +1674,7 @@ function updateCharmDisplay() {
 
 // Call this when equipment OR sockets change (recaptures base including socket bonuses)
 function onEquipmentOrSocketChange() {
-  console.log('🔄 Equipment/Socket changed - recapturing base values');
+  
   
   // First, reset charm bonuses to 0 so we capture clean base
   charmSystem.currentCharmBonuses = {};
@@ -1688,7 +1688,7 @@ function onEquipmentOrSocketChange() {
 
 // Call this when ONLY charms are added/removed (preserves socket bonuses in base)
 function onCharmChange() {
-  console.log('💎 Charm inventory changed - updating display only');
+  
   
   const newCharmBonuses = getCharmBonuses();
   
@@ -1774,7 +1774,7 @@ function onCharmChange() {
 
 // Call this to do initial setup (captures whatever is currently displayed as base)
 function initializeCharmSystem() {
-  console.log('🚀 Initializing charm system');
+ 
   
   // Start fresh - assume current containers have no charm bonuses
   charmSystem.currentCharmBonuses = {};
@@ -1810,6 +1810,3 @@ window.initializeCharmSystem = initializeCharmSystem;
 // Initialize after other systems are ready
 setTimeout(initializeCharmSystem, 2000);
 
-console.log('✨ Smart charm system ready!');
-console.log('📝 Call window.onEquipmentOrSocketChange() when equipment/sockets change');
-console.log('📝 Call window.onCharmChange() when charms are added/removed');

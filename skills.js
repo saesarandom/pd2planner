@@ -79,7 +79,7 @@ class SkillSystem {
     this.setupEvents();
     this.createPointsDisplay();
     this.createSkillCalculator();
-    console.log('✅ Skills System ready');
+    //('✅ Skills System ready');
   }
 
   createContainers() {
@@ -103,10 +103,10 @@ class SkillSystem {
       container.appendChild(title);
       document.body.appendChild(container);
       
-      console.log('Created container:', pos.id);
+      //('Created container:', pos.id);
     } else {
       container.className = 'skill-tree-container';
-      console.log('Updated existing container:', pos.id);
+      //('Updated existing container:', pos.id);
     }
   }
 }
@@ -186,7 +186,7 @@ class SkillSystem {
   document.body.appendChild(calcContainer);
   document.body.appendChild(damageDisplay);
   
-  console.log('Created skill calculator at top: 1350px');
+  //('Created skill calculator at top: 1350px');
 }
 
   setupEvents() {
@@ -493,7 +493,7 @@ getWeaponMasteryChance() {
     elementalDamages.poison.max = parseInt(poisonMaxContainer.textContent) || 0;
   }
 
-  console.log('Elemental damages from stats calculator:', elementalDamages);
+  //('Elemental damages from stats calculator:', elementalDamages);
   return elementalDamages;
 }
 
@@ -687,11 +687,11 @@ function initSkillSystem() {
 }
 
 window.testSkillSystem = function() {
-  console.log('🧪 Testing...');
+  //('🧪 Testing...');
   if (skillSystemInstance) {
-    console.log('✅ Skills working:', skillSystemInstance.getTotalUsed(), 'points used');
+    //('✅ Skills working:', skillSystemInstance.getTotalUsed(), 'points used');
   } else {
-    console.log('❌ Not initialized');
+    //('❌ Not initialized');
   }
 };
 

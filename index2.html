@@ -609,6 +609,7 @@
 <script src="character.js"></script>
 <script src="socket.js"></script>
 <script src="corrupt.js"></script>
+<script src="upgrade.js"></script>
 <script src="buffs.js"></script>
 <script src="inventory.js"></script>
 <script src="skills.js"></script>
@@ -1296,11 +1297,10 @@ document.addEventListener('change', function(e) {
 
 // Initial calculation
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("🚀 Initializing page...");
+  
   
   // 1. Populate dropdowns first
   populateItemDropdowns();
-  console.log("✅ Dropdowns populated");
   
   // 2. Add event listeners to all dropdowns  
   const allDropdowns = [
@@ -1315,7 +1315,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdown = document.getElementById(dropdownId);
     if (dropdown) {
       dropdown.addEventListener('change', updateItemInfo);
-      console.log(`✅ Added listener to: ${dropdownId}`);
+      
     }
   });
   

@@ -169,7 +169,7 @@ class UnifiedSocketSystem {
         },
         'ruby': { 
           name: 'ruby', 
-          img: 'img/Ruby.png', 
+          img: 'img/ruby.png', 
           levelReq: 12,
           stats: { 
             weapon: 'Adds 8-12 Fire Damage', 
