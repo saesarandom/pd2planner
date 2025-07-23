@@ -1,4 +1,35 @@
-// skills-clean-fixed.js - Fixed Skills System
+function isWeaponUsable() {
+  var weaponDropdown = document.getElementById('weapons-dropdown');
+  if (!weaponDropdown || !weaponDropdown.value || typeof itemList === 'undefined') {
+    return true; // No weapon selected, so no restrictions
+  }
+
+  var weapon = itemList[weaponDropdown.value];
+  if (!weapon || !weapon.properties) {
+    return true; // Invalid weapon data
+  }
+
+  // Get current character level
+  var levelInput = document.getElementById('lvlValue');
+  var currentLevel = parseInt(levelInput && levelInput.value ? levelInput.value : '1') || 1;
+
+  // Check level requirement
+  var requiredLevel = weapon.properties.reqlvl || 1;
+  
+  // Also check if there are sockets that increase the level requirement
+  var actualRequiredLevel = requiredLevel;
+  var sockets = document.querySelectorAll('.socket-container[data-section="weapon"] .socket-slot.filled');
+  sockets.forEach(function(socket) {
+    var socketLevelReq = parseInt(socket.dataset.levelReq) || 1;
+    if (socketLevelReq > actualRequiredLevel) {
+      actualRequiredLevel = socketLevelReq;
+    }
+  });
+
+  return currentLevel >= actualRequiredLevel;
+}// skills-clean-fixed.js - Fixed Skills System
+
+
 
 class SkillSystem {
   constructor() {
@@ -292,76 +323,87 @@ class SkillSystem {
 
   calculateSkillDamage() {
     var dropdown = document.getElementById('active-skill-dropdown');
-    var display = document.getElementById('damage-results');
+  var display = document.getElementById('damage-results');
+  
+  if (!dropdown || !display || !dropdown.value) {
+    if (display) display.innerHTML = 'Select a skill to see damage calculations';
+    return;
+  }
+
+  var skillId = dropdown.value;
+  var skill = this.skillData[skillId];
+  var skillInput = document.getElementById(skillId);
+  var skillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+
+  if (skillLevel === 0) {
+    display.innerHTML = 'No points invested in this skill';
+    return;
+  }
+
+  var dexInput = document.getElementById('dex');
+  var dexterity = parseInt(dexInput && dexInput.value ? dexInput.value : '0') || 0;
+
+  var weaponDamage = this.getWeaponDamage();
+  
+  var html = '<div style="margin-bottom: 10px;"><strong>' + skill.name + ' (Level ' + skillLevel + ')</strong></div>';
+
+  // Check if weapon is usable before showing damage calculations
+  var weaponUsable = isWeaponUsable();
+
+  if (skill.type === 'physical') {
+    var damageInfo = this.calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity);
     
-    if (!dropdown || !display || !dropdown.value) {
-      if (display) display.innerHTML = 'Select a skill to see damage calculations';
-      return;
-    }
-
-    var skillId = dropdown.value;
-    var skill = this.skillData[skillId];
-    var skillInput = document.getElementById(skillId);
-    var skillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
-
-    if (skillLevel === 0) {
-      display.innerHTML = 'No points invested in this skill';
-      return;
-    }
-
-    var dexInput = document.getElementById('dex');
-    var dexterity = parseInt(dexInput && dexInput.value ? dexInput.value : '0') || 0;
-
-    var weaponDamage = this.getWeaponDamage();
+    html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+    html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+    html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
     
-    var html = '<div style="margin-bottom: 10px;"><strong>' + skill.name + ' (Level ' + skillLevel + ')</strong></div>';
-
-    if (skill.type === 'physical') {
-      var damageInfo = this.calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity);
-      
-      html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
-      html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
-      html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
-      
-      // Show elemental damages if they exist
-      var elem = damageInfo.elementalDamages;
-      if (elem.fire.max > 0) {
-        html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
-      }
-      if (elem.cold.max > 0) {
-        html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
-      }
-      if (elem.lightning.max > 0) {
-        html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
-      }
-      if (elem.poison.max > 0) {
-        html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
-      }
-      
+    // Show elemental damages if they exist
+    var elem = damageInfo.elementalDamages;
+    if (elem.fire.max > 0) {
+      html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+    }
+    if (elem.cold.max > 0) {
+      html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+    }
+    if (elem.lightning.max > 0) {
+      html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+    }
+    if (elem.poison.max > 0) {
+      html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+    }
+    
+    // Only show Physical, Total, and Average damage if weapon is usable
+    if (weaponUsable) {
       html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
       html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
       html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
-      
-      if (damageInfo.criticalStrike > 0) {
-        html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + damageInfo.criticalStrike + '%</div>';
-      }
-      if (damageInfo.deadlyStrike > 0) {
-        html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
-      }
-    } else if (skill.type === 'poison') {
-      var damageInfo = this.calculatePoisonDamage(skill, skillLevel);
-      html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + damageInfo.min + '-' + damageInfo.max + ' over 4s</div>';
-      html += '<div style="margin: 5px 0;">Per Second: ' + damageInfo.average + '</div>';
-    } else if (skill.type === 'lightning') {
-      var damageInfo = this.calculateElementalDamage(skill, skillLevel);
-      html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: 1-' + damageInfo.max + '</div>';
-      html += '<div style="margin: 5px 0;">Average: ' + damageInfo.average + '</div>';
+    } else {
+      html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level requirement not met</div>';
     }
-    if (damageInfo.critMultiplier > 1) {
-  html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
-}
-    display.innerHTML = html;
+    
+    var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+  if (combinedCriticalStrike > 0) {
+    html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
   }
+    if (damageInfo.deadlyStrike > 0) {
+      html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+    }
+  } else if (skill.type === 'poison') {
+    var damageInfo = this.calculatePoisonDamage(skill, skillLevel);
+    html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + damageInfo.min + '-' + damageInfo.max + ' over 4s</div>';
+    html += '<div style="margin: 5px 0;">Per Second: ' + damageInfo.average + '</div>';
+  } else if (skill.type === 'lightning') {
+    var damageInfo = this.calculateElementalDamage(skill, skillLevel);
+    html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: 1-' + damageInfo.max + '</div>';
+    html += '<div style="margin: 5px 0;">Average: ' + damageInfo.average + '</div>';
+  }
+  
+  if (damageInfo && damageInfo.critMultiplier > 1) {
+    html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
+  }
+  
+  display.innerHTML = html;
+}
 
   getWeaponDamage() {
     var weaponDropdown = document.getElementById('weapons-dropdown');
@@ -380,7 +422,7 @@ class SkillSystem {
     return { min: min, max: max };
   }
 
-  calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity) {
+ calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity) {
   // Base skill damage bonus
   var skillDamageBonus = skill.damage.base + (skill.damage.perLevel * (skillLevel - 1));
   
@@ -394,20 +436,29 @@ class SkillSystem {
   var baseMinDamage = Math.floor((weaponDamage.min) * (1 + skillDamageBonus / 100 + statBonus / 100));
   var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + skillDamageBonus / 100 + statBonus / 100));
   
-  // Add elemental damages (these don't get multiplied by skill bonus, just added)
-  var totalMinDamage = baseMinDamage + elementalDamages.fire.min + elementalDamages.cold.min + elementalDamages.lightning.min + elementalDamages.poison.min;
-  var totalMaxDamage = baseMaxDamage + elementalDamages.fire.max + elementalDamages.cold.max + elementalDamages.lightning.max + elementalDamages.poison.max;
+  // Get individual critical chances (each capped at 75%)
+  var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
+  var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
+  var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
+
+   console.log("Critical Strike:", criticalStrike);
+  console.log("Deadly Strike:", deadlyStrike);  
+  console.log("Weapon Mastery:", weaponMastery);
   
-  // Get critical strike, deadly strike, and weapon mastery chances
-  var criticalStrike = this.getCriticalStrikeChance();
-  var deadlyStrike = this.getDeadlyStrikeChance();
-  var weaponMastery = this.getWeaponMasteryChance();
+  // NEW CRIT SYSTEM: Calculate total crit chance using multiplicative formula
+  // Total Crit Chance = 1 - ((1 - DS) * (1 - CS) * (1 - WM))
+  var totalCritChance = 1 - ((1 - deadlyStrike/100) * (1 - criticalStrike/100) * (1 - weaponMastery/100));
   
-  // Calculate proper critical hit multiplier
-  var combinedCritChance = 1 - ((1 - criticalStrike/100) * (1 - deadlyStrike/100) * (1 - weaponMastery/100));
-  var critMultiplier = 1 + (combinedCritChance * 0.5); // 50% more damage on crit
+  // Round down to nearest percent
+  totalCritChance = Math.floor(totalCritChance * 100);
   
-  // Apply crit multiplier directly to physical damage
+  // Cap at 95% maximum
+  totalCritChance = Math.min(totalCritChance, 95);
+  
+  // NEW CRIT MULTIPLIER: All crits now multiply by 1.5x instead of 2x
+  var critMultiplier = 1 + (totalCritChance / 100) * 0.5; // 50% more damage on crit
+  
+  // Apply crit multiplier to physical damage only
   var physicalMinWithCrits = Math.floor(baseMinDamage * critMultiplier);
   var physicalMaxWithCrits = Math.floor(baseMaxDamage * critMultiplier);
   
@@ -415,7 +466,7 @@ class SkillSystem {
   var totalMinDamage = physicalMinWithCrits + elementalDamages.fire.min + elementalDamages.cold.min + elementalDamages.lightning.min + elementalDamages.poison.min;
   var totalMaxDamage = physicalMaxWithCrits + elementalDamages.fire.max + elementalDamages.cold.max + elementalDamages.lightning.max + elementalDamages.poison.max;
   
-  // Apply crit multiplier to physical damage only
+  // Calculate average
   var avgPhysicalDamage = (baseMinDamage + baseMaxDamage) / 2;
   var avgPhysicalWithCrits = Math.floor(avgPhysicalDamage * critMultiplier);
 
@@ -427,7 +478,7 @@ class SkillSystem {
   
   var totalAvgDamage = avgPhysicalWithCrits + avgElemental;
 
-   return {
+  return {
     min: totalMinDamage,
     max: totalMaxDamage,
     average: Math.floor((totalMinDamage + totalMaxDamage) / 2),
@@ -437,20 +488,29 @@ class SkillSystem {
     criticalStrike: criticalStrike,
     deadlyStrike: deadlyStrike,
     weaponMastery: weaponMastery,
+    totalCritChance: totalCritChance, // Show the combined crit chance
     critMultiplier: critMultiplier.toFixed(2),
-    physicalMin: physicalMinWithCrits,  // Now shows physical damage WITH crit multiplier
-    physicalMax: physicalMaxWithCrits   // Now shows physical damage WITH crit multiplier
+    physicalMin: physicalMinWithCrits,
+    physicalMax: physicalMaxWithCrits
+
+
   };
+
 }
 
+
+
+
+
+
 getWeaponMasteryChance() {
-  // Check for weapon mastery skill (javelin mastery, etc.)
+  // Check for weapon mastery from javelin mastery
   var masteryInput = document.getElementById('javelinandspearmasterycontainer');
   if (!masteryInput || parseInt(masteryInput.value) === 0) return 0;
 
   var level = parseInt(masteryInput.value);
-  // Weapon mastery gives critical hit chance - adjust formula as needed
-  return Math.min(5 + (level * 2), 50); // Example: 5% + 2% per level, max 50%
+  // Weapon mastery gives critical hit chance: 5% + 2% per level, max 50%
+  return Math.min(5 + (level * 2), 50);
 }
 
   getWeaponElementalDamages() {
@@ -497,39 +557,36 @@ getWeaponMasteryChance() {
   return elementalDamages;
 }
 
-  getCriticalStrikeChance() {
-    var criticalInput = document.getElementById('criticalstrikecontainer');
-    if (!criticalInput || parseInt(criticalInput.value) === 0) return 0;
 
-    var level = parseInt(criticalInput.value);
-    // Critical Strike chance formula: 15% + 3% per level, max 75%
-    return Math.min(15 + (level * 3), 75);
-  }
+ getCriticalStrikeChance() {
+  var criticalInput = document.getElementById('criticalstrikecontainer');
+  if (!criticalInput || parseInt(criticalInput.value) === 0) return 0;
 
-  getDeadlyStrikeChance() {
-    // Check weapon for deadly strike
-    var weaponDropdown = document.getElementById('weapons-dropdown');
-    var deadlyStrike = 0;
-    
-    if (weaponDropdown && weaponDropdown.value && typeof itemList !== 'undefined') {
-      var weapon = itemList[weaponDropdown.value];
-      if (weapon && weapon.description) {
-        var deadlyMatch = weapon.description.match(/(\d+)% Deadly Strike/i);
-        if (deadlyMatch) {
-          deadlyStrike += parseInt(deadlyMatch[1]);
-        }
+  var level = parseInt(criticalInput.value);
+  // Critical Strike chance formula: 15% + 3% per level, max 75%
+  return Math.min(15 + (level * 3), 75);
+}
+
+getDeadlyStrikeChance() {
+  // Check weapon for deadly strike
+  var weaponDropdown = document.getElementById('weapons-dropdown');
+  var deadlyStrike = 0;
+  
+  if (weaponDropdown && weaponDropdown.value && typeof itemList !== 'undefined') {
+    var weapon = itemList[weaponDropdown.value];
+    if (weapon && weapon.description) {
+      var deadlyMatch = weapon.description.match(/(\d+)% Deadly Strike/i);
+      if (deadlyMatch) {
+        deadlyStrike += parseInt(deadlyMatch[1]);
       }
     }
-    
-    // Check for deadly strike from javelin mastery
-    var masteryInput = document.getElementById('javelinandspearmasterycontainer');
-    if (masteryInput && parseInt(masteryInput.value) > 0) {
-      var level = parseInt(masteryInput.value);
-      deadlyStrike += Math.min(5 + (level * 2), 50); // 5% + 2% per level, max 50%
-    }
-
-    return Math.min(deadlyStrike, 95); // Cap at 95%
   }
+
+  // FIXED: Return deadlyStrike, not weaponMastery
+  return Math.min(deadlyStrike, 75); // Cap at 75%
+}
+
+
 
   calculatePoisonDamage(skill, skillLevel) {
     var levelIndex = Math.min(skillLevel - 1, skill.poisonDamage.min.length - 1);
@@ -674,6 +731,10 @@ getWeaponMasteryChance() {
       this.updatePointsDisplay();
     }
   }
+
+
+
+
 }
 
 // Initialize
@@ -702,5 +763,7 @@ if (document.readyState === 'loading') {
 } else {
   setTimeout(initSkillSystem, 100);
 }
+
+
 
 window.initSkillSystem = initSkillSystem;

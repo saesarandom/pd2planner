@@ -724,8 +724,84 @@ getDirectLifeManaFromItems() {
   }
 }
 
-// Initialize
+
+
+
+
+
+// Move this OUTSIDE and BEFORE initCharacterManager
+function calculateAndDisplayBlock() {
+  // Get current values
+  const levelInput = document.getElementById('lvlValue');
+  const dexInput = document.getElementById('dex');
+  const classSelect = document.getElementById('selectClass');
+  const blockContainer = document.getElementById('realblockcontainer');
+  
+  if (!levelInput || !dexInput || !blockContainer) return;
+  
+  const currentLevel = parseInt(levelInput.value) || 1;
+
+  const currentClass = classSelect ? classSelect.value : 'Amazon';
+  
+  // FIXED: Get TOTAL dexterity instead of just base dex
+  let totalDex = 0;
+  
+  // Try to get total dexterity from your stats system
+  const totalDexElement = document.getElementById('dexTotal');
+  if (totalDexElement) {
+    totalDex = parseInt(totalDexElement.textContent) || 0;
+  } else {
+    // Fallback to base dex if total not available
+    const dexInput = document.getElementById('dex');
+    totalDex = parseInt(dexInput?.value) || 0;
+    }
+
+  // Get shield data
+  const shieldDropdown = document.getElementById('offs-dropdown');
+  let baseBlock = 0;
+  
+  if (shieldDropdown && shieldDropdown.value && itemList[shieldDropdown.value]) {
+    const shieldData = itemList[shieldDropdown.value];
+    baseBlock = shieldData.properties?.block1 || 0;
+  }
+  
+  // Get helm block bonus
+  const helmDropdown = document.getElementById('helms-dropdown');
+  let helmBlock = 0;
+  
+  if (helmDropdown && helmDropdown.value && itemList[helmDropdown.value]) {
+    const helmData = itemList[helmDropdown.value];
+    helmBlock = helmData.properties?.block || 0;
+  }
+  
+  // Calculate total block based on class
+  let totalBlock = 0;
+  
+  if (baseBlock > 0) {
+    let classModifier = 0;
+    
+    // Amazon and Barbarian should have the same modifier (both are +5)
+    if (currentClass === "Druid" || currentClass === "Necromancer" || currentClass === "Sorceress") {
+      classModifier = 0; // Worst blockers
+    } else if (currentClass === "Paladin") {
+      classModifier = 10; // Best blocker
+    } else {
+      classModifier = 5; // Amazon, Barbarian, Assassin - same blocking ability
+    }
+    
+    const effectiveBlock = baseBlock + classModifier;
+    totalBlock = Math.floor(effectiveBlock * (totalDex - 15) / (currentLevel * 2));
+    totalBlock = Math.min(Math.max(totalBlock, 0), 75);
+  }
+  
+  blockContainer.textContent = totalBlock;
+  console.log(`Block calc: Class=${currentClass}, TotalDex=${totalDex}, BaseBlock=${baseBlock}, Result=${totalBlock}%`);
+  
+  return totalBlock;
+}
+
 let characterManager;
+
 
 function initCharacterManager() {
   if (!characterManager) {
@@ -738,24 +814,24 @@ function initCharacterManager() {
       window.characterStats.getCharmBonuses = () => characterManager.getCharmBonuses();
       window.characterStats.updateTotalStats = () => characterManager.updateTotalStats();
     }
-    
 
+    // Add event listeners for block calculation
+    const relevantInputs = ['lvlValue', 'dex', 'offs-dropdown', 'helms-dropdown'];
+    
+    relevantInputs.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.addEventListener('input', calculateAndDisplayBlock);
+        element.addEventListener('change', calculateAndDisplayBlock);
+      }
+    });
+    
+    // Initial block calculation
+    setTimeout(calculateAndDisplayBlock, 200);
   }
 }
 
+// Rest of your code stays the same
 setTimeout(initCharacterManager, 100);
 document.addEventListener('DOMContentLoaded', initCharacterManager);
 window.addEventListener('load', initCharacterManager);
-
-window.initCharacter = initCharacterManager;
-window.testCharacterBonuses = function() {
-  if (window.characterManager) {
-
-    const itemBonuses = window.characterManager.getAllItemBonuses();
-    const socketBonuses = window.characterManager.getSocketBonuses();
-
-    window.characterManager.updateTotalStats();
-  } else {
-
-  }
-};

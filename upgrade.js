@@ -2925,8 +2925,17 @@ function buildDefensiveDescription(itemName, newBase, newProps, magicalPropertie
   return description;
 }
 
-// Dynamic damage recalculation for per-level weapons
-function updateWeaponDamageIfNeeded() {
+// Track last level to avoid unnecessary recalculations
+let lastCharacterLevel = null;
+
+// Dynamic damage recalculation for per-level weapons (only when level changes)
+function updateWeaponDamageOnLevelChange() {
+  const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+  
+  // Only recalculate if level actually changed
+  if (currentLevel === lastCharacterLevel) return;
+  lastCharacterLevel = currentLevel;
+  
   const weaponDropdown = document.getElementById('weapons-dropdown');
   if (!weaponDropdown || !weaponDropdown.value) return;
   
@@ -2934,7 +2943,7 @@ function updateWeaponDamageIfNeeded() {
   const weaponData = itemList[selectedWeapon];
   
   if (weaponData && weaponData.properties.maxdmgperlvl) {
-    // Recalculate damage with current level
+    // Recalculate damage with new level
     const baseType = weaponData.description.split("<br>")[1];
     const isTwoHanded = weaponData.properties.twohandmin !== undefined;
     
@@ -2949,8 +2958,11 @@ function updateWeaponDamageIfNeeded() {
     // Update the description
     updateWeaponDescription(weaponData, baseType, isTwoHanded);
     
-    // Trigger display update
-    weaponDropdown.dispatchEvent(new Event('change'));
+    // Update display without triggering other event handlers
+    const weaponInfo = document.getElementById('weapon-info');
+    if (weaponInfo) {
+      weaponInfo.innerHTML = weaponData.description;
+    }
   }
 }
 
@@ -2979,19 +2991,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Attach dynamic damage updates to level input
+  // Attach damage updates ONLY to level input changes
   const levelInput = document.getElementById('lvlValue');
   if (levelInput) {
-    levelInput.addEventListener('input', updateWeaponDamageIfNeeded);
-    levelInput.addEventListener('change', updateWeaponDamageIfNeeded);
+    levelInput.addEventListener('input', updateWeaponDamageOnLevelChange);
+    levelInput.addEventListener('change', updateWeaponDamageOnLevelChange);
   }
   
-  // Also update when weapon is changed
-  const weaponDropdown = document.getElementById('weapons-dropdown');
-  if (weaponDropdown) {
-    weaponDropdown.addEventListener('change', function() {
-      // Small delay to let other handlers complete first
-      setTimeout(updateWeaponDamageIfNeeded, 10);
-    });
-  }
+  // Initialize last level tracking
+  lastCharacterLevel = parseInt(levelInput?.value) || 1;
 });

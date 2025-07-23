@@ -640,11 +640,22 @@ getStatForAffix(affix) {
     'Iron': { min: 16, max: 25, text: '+{value} to Attack Rating' },
     'Steel': { min: 26, max: 35, text: '+{value} to Attack Rating' },
     
-    // Mana
+    // Mana and rest
     'Lizards': { min: 1, max: 5, text: '+{value} to Mana' },
     'Snakes': { min: 6, max: 10, text: '+{value} to Mana' },
     'Serpents': { min: 11, max: 15, text: '+{value} to Mana' },
-    
+    'Serpentslarge': { min: 30, max: 34, text: '+{value} to Mana' },
+    'Discharginglarge' : { min: 2, max: 3, text: '+{value}% to Lightning Skill Damage' },
+    'Frigidlarge' : { min: 2, max: 3, text: '+{value}% to Cold Skill Damage' },
+    'Wildfirelarge' : { min: 2, max: 3, text: '+{value}% to Fire Skill Damage' },
+    'Maliciouslarge' : { min: 2, max: 3, text: '+{value}% to Poison Skill Damage' },
+    'Effervescentlarge': { min: 2, max: 3, text: '+{value}% to Magic Skill Damage' },
+    'Conduitlarge' : { min: 3, max: 4, text: '+{value}% to Lightning Skill Damage' },
+    'Numbinglarge' : { min: 3, max: 4, text: '+{value}% to Cold Skill Damage' },
+    'Infernolarge' : { min: 3, max: 4, text: '+{value}% to Fire Skill Damage' },
+    'Infectiouslarge' : { min: 3, max: 4, text: '+{value}% to Poison Skill Damage' },
+    'Scintillatinglarge': { min: 3, max: 4, text: '+{value}% to Magic Skill Damage' },
+
     // Resistances
     'Shimmering': { min: 3, max: 5, text: 'All Resistances +{value}%' },
     'Azure': { min: 3, max: 5, text: 'Cold Resist +{value}%' },
@@ -755,9 +766,17 @@ getStatForAffix(affix) {
     'Ofvita': { min: 6, max: 10, text: '+{value} to Life' },
     
     // Attribute suffixes
-    'Ofstrength': { min: 1, max: 3, text: '+{value} to Strength' },
-    'Ofdexterity': { min: 1, max: 3, text: '+{value} to Dexterity' },
-    
+    'Ofstrength': { min: 1, max: 1, text: '+{value} to Strength' },
+    'Ofstrength2': { min: 2, max: 2, text: '+{value} to Strength' },
+    'Ofdexterity': { min: 1, max: 1, text: '+{value} to Dexterity' },
+    'Ofdexterity2': { min: 2, max: 2, text: '+{value} to Dexterity' },
+    'Ofstrengthlarge': { min: 2, max: 3, text: '+{value} to Strength' },
+    'Ofstrength2large': { min: 4, max: 5, text: '+{value} to Strength' },
+    'Ofdexteritylarge': { min: 2, max: 3, text: '+{value} to Dexterity' },
+    'Ofdexterity2large': { min: 4, max: 5, text: '+{value} to Dexterity' },
+    'Ofsustenancelarge': { min: 16, max: 20, text: '+{value} to Life' },
+
+
     // Other suffixes
     'Ofinertia': { min: 3, max: 7, text: '+{value}% Faster Run/Walk' },
     'Ofgreed': { min: 10, max: 20, text: '+{value}% Extra Gold from Monsters' },
@@ -782,7 +801,7 @@ getStatForAffix(affix) {
 'Ofwinter': { 
   minRange: { min: 6, max: 7 }, 
   maxRange: { min: 10, max: 13 }, 
-  text: 'Adds [{minValue}]-{maxValue} Cold Damage (1 second chill)' 
+  text: 'Adds {minValue}-{maxValue} Cold Damage (1 second chill)' 
 },
 
 // FIRE DAMAGE SUFFIXES
@@ -996,11 +1015,11 @@ getCharmAffixes() {
     'large-charm': {
       prefixes: [
         'Stoutlarge', 'Stout2large', 'Stout3large', 'Burlylarge', 'Burly2large',
-        'Stalwartlarge', 'Redlarge', 'Jaggedlarge', 'Finelarge', 'Sharplarge', 'Bronzelarge'
+        'Stalwartlarge', 'Redlarge', 'Jaggedlarge', 'Finelarge', 'Sharplarge', 'Bronzelarge', 'Serpentslarge', 'Discharginglarge', 'Frigidlarge', 'Wildfirelarge', 'Maliciouslarge', 'Effervescentlarge', 'Conduitlarge', 'Numbinglarge', 'Infernolarge', 'Infectiouslarge', 'Scintillatinglarge'
       ],
       suffixes: [
-        'Oflifelarge', 'Ofvitalarge', 'Ofstrengthlarge', 'Ofdexteritylarge',
-        'Ofinertialarge', 'Ofgreedlarge', 'Ofbalancelarge'
+        'Oflifelarge', 'Ofvitalarge', 'Ofstrengthlarge', 'Ofstrength2large', 'Ofdexteritylarge', 'Ofdexterity2large',
+        'Ofinertialarge', 'Ofgreedlarge', 'Ofbalancelarge', 'Ofsustenancelarge'
       ]
     },
     'grand-charm': {
@@ -1496,6 +1515,22 @@ function getCharmBonuses() {
         bonuses.poisonDmgMin = (bonuses.poisonDmgMin || 0) + parseInt(match[1]);
         bonuses.poisonDmgMax = (bonuses.poisonDmgMax || 0) + (match[2] ? parseInt(match[2]) : parseInt(match[1]));
       }
+
+      if (match = line.match(/(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i)) {
+        bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + parseInt(match[1]);
+      }
+      if (match = line.match(/(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i)) {
+        bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + parseInt(match[1]);
+      }
+      if (match = line.match(/(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i)) {
+        bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + parseInt(match[1]);
+      }
+      if (match = line.match(/(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i)) {
+        bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + parseInt(match[1]);
+      }
+      if (match = line.match(/(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
+        bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + parseInt(match[1]);
+      }
       // Cold Resist
       if (match = line.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i)) {
         bonuses.coldResist = (bonuses.coldResist || 0) + parseInt(match[1]);
@@ -1589,7 +1624,14 @@ function captureCurrentBaseValues() {
     fireDmgMin: 'flatfiremincontainer',
     fireDmgMax: 'flatfiremaxcontainer',
     poisonDmgMin: 'flatpoisonmincontainer',
-    poisonDmgMax: 'flatpoisonmaxcontainer'
+    poisonDmgMax: 'flatpoisonmaxcontainer',
+    magicDmgMin: 'flatmagicmincontainer',
+    magicDmgMax: 'flatmagicmaxcontainer',
+    poisonSkillDmg: 'poisonskilldmgcontainer',
+    coldSkillDmg: 'coldskilldmgcontainer',
+    fireSkillDmg: 'fireskilldmgcontainer',
+    lightningSkillDmg: 'lightningskilldmgcontainer',
+    magicSkillDmg: 'magicskilldmgcontainer'
   };
   
   
@@ -1643,7 +1685,14 @@ function updateCharmDisplay() {
     fireDmgMin: 'flatfiremincontainer',
     fireDmgMax: 'flatfiremaxcontainer',
     poisonDmgMin: 'flatpoisonmincontainer',
-    poisonDmgMax: 'flatpoisonmaxcontainer'
+    poisonDmgMax: 'flatpoisonmaxcontainer',
+    magicDmgMin: 'flatmagicmincontainer',
+    magicDmgMax: 'flatmagicmaxcontainer',
+    poisonSkillDmg: 'poisonskilldmgcontainer',
+    coldSkillDmg: 'coldskilldmgcontainer',
+    fireSkillDmg: 'fireskilldmgcontainer',
+    lightningSkillDmg: 'lightningskilldmgcontainer',
+    magicSkillDmg: 'magicskilldmgcontainer'
   };
   
   
@@ -1727,7 +1776,14 @@ function onCharmChange() {
     fireDmgMin: 'flatfiremincontainer',
     fireDmgMax: 'flatfiremaxcontainer',
     poisonDmgMin: 'flatpoisonmincontainer',
-    poisonDmgMax: 'flatpoisonmaxcontainer'
+    poisonDmgMax: 'flatpoisonmaxcontainer',
+    magicDmgMin: 'flatmagicmincontainer',
+    magicDmgMax: 'flatmagicmaxcontainer',
+    poisonSkillDmg: 'poisonskilldmgcontainer',
+    coldSkillDmg: 'coldskilldmgcontainer',
+    fireSkillDmg: 'fireskilldmgcontainer',
+    lightningSkillDmg: 'lightningskilldmgcontainer',
+    magicSkillDmg: 'magicskilldmgcontainer'
   };
   
   Object.keys(containers).forEach(stat => {
