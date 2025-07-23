@@ -144,75 +144,80 @@ class CharacterManager {
   }
 
   calculateLifeAndMana() {
-  const level = this.currentLevel;
-  const charClass = this.currentClass;
-  const baseStats = this.classStats[this.currentClass];
-  const totalVit = parseInt(document.getElementById('vit')?.value) || baseStats.vit;
-  const totalEnr = parseInt(document.getElementById('enr')?.value) || baseStats.enr;
+  const level = parseInt(document.getElementById('lvlValue')?.value) || 1;
+  const charClass = document.getElementById('selectClass')?.value || 'Amazon';
   
+  const baseLife = this.classBaseLifeMana[charClass].life;
+  const baseMana = this.classBaseLifeMana[charClass].mana;
   
+  // FIXED: Get base stat values from inputs, not total displays
+  const baseVit = parseInt(document.getElementById('vit')?.value) || this.classStats[charClass].vit;
+  const baseEnr = parseInt(document.getElementById('enr')?.value) || this.classStats[charClass].enr;
   
-  // Get bonuses from items/sockets/charms (but NOT the socket life/mana)
+  // Get item/socket bonuses for vitality and energy
   const itemBonuses = this.getAllItemBonuses();
   const socketBonuses = this.getSocketBonuses();
   const charmBonuses = this.getCharmBonuses();
   
-  // Calculate final stats including bonuses
-  const finalVit = totalVit + itemBonuses.vit + socketBonuses.vit + charmBonuses.vit;
-  const finalEnr = totalEnr + itemBonuses.enr + socketBonuses.enr + charmBonuses.enr;
+  // Calculate TOTAL vitality and energy (base + bonuses)
+  const totalVit = baseVit + (itemBonuses.vit || 0) + (socketBonuses.vit || 0) + (charmBonuses.vit || 0);
+  const totalEnr = baseEnr + (itemBonuses.enr || 0) + (socketBonuses.enr || 0) + (charmBonuses.enr || 0);
   
-  // Get base values for this class
-  const baseLife = this.classBaseLifeMana[charClass].life;
-  const baseMana = this.classBaseLifeMana[charClass].mana;
+  // Starting stats for this class
   const startingVit = this.classStats[charClass].vit;
   const startingEnr = this.classStats[charClass].enr;
   
   // Calculate base life/mana from character level and stats
   let calculatedLife = baseLife;
   calculatedLife += (level - 1) * 2; // 2 life per level
-  calculatedLife += (finalVit - startingVit) * 3; // 3 life per vitality point
+  calculatedLife += (totalVit - startingVit) * 3; // 3 life per vitality point (including bonuses)
   
   let calculatedMana = baseMana;
   calculatedMana += (level - 1) * 1.5; // 1.5 mana per level  
-  calculatedMana += (finalEnr - startingEnr) * 2; // 2 mana per energy point
+  calculatedMana += (totalEnr - startingEnr) * 2; // 2 mana per energy point (including bonuses)
   
-  // NOW add the direct life/mana bonuses from items/sockets
-  let itemLifeBonus = 0;
-  let itemManaBonus = 0;
-  
+  // Add direct life/mana bonuses from items/sockets
   const directLifeMana = this.getDirectLifeManaFromItems();
-itemLifeBonus = directLifeMana.life;
-itemManaBonus = directLifeMana.mana;
+  calculatedLife += directLifeMana.life;
+  calculatedMana += directLifeMana.mana;
+  
+  // Add charm life/mana bonuses
+  const charmBonuses_LifeMana = this.getCharmLifeManaBonus();
+  calculatedLife += charmBonuses_LifeMana.life;
+  calculatedMana += charmBonuses_LifeMana.mana;
   
   // Final totals
-  const totalLife = Math.floor(calculatedLife + itemLifeBonus);
-  const totalMana = Math.floor(calculatedMana + itemManaBonus);
-
-   if (window.statsCalculator && window.statsCalculator.stats) {
-    // Store current values
-    const currentSocketLife = window.statsCalculator.stats.life || 0;
-    
-    // Force socket system to recalculate
-    if (window.statsCalculator.resetAllStats) {
-      window.statsCalculator.resetAllStats();
-    }
-    if (window.statsCalculator.updateAll) {
-      window.statsCalculator.updateAll();
-    }
-    
-    // Now get the fresh values
-    itemLifeBonus = window.statsCalculator.stats.life || 0;
-    itemManaBonus = window.statsCalculator.stats.mana || 0;
-    
-
-  }
-  
-
+  const totalLife = Math.floor(calculatedLife);
+  const totalMana = Math.floor(calculatedMana);
   
   // Update the displays
   this.updateElement('lifecontainer', totalLife);
   this.updateElement('manacontainer', totalMana);
   
+
+  
+  // Style life container if charm bonus exists
+  const lifeContainer = document.getElementById('lifecontainer');
+  if (lifeContainer) {
+    if (charmBonuses_LifeMana.life > 0) {
+      lifeContainer.style.color = '#d0d007ff'; // Same yellow color as other charm bonuses
+    } else {
+      lifeContainer.style.color = ''; // Reset to default
+    }
+  
+  
+  // Style mana container if charm bonus exists
+  const manaContainer = document.getElementById('manacontainer');
+  if (manaContainer) {
+    if (charmBonuses_LifeMana.mana > 0) {
+      manaContainer.style.color = '#d0d007ff'; // Same yellow color as other charm bonuses
+    } else {
+      manaContainer.style.color = ''; // Reset to default
+    }
+  }
+  }
+
+  console.log(`🔢 Life: ${totalLife}, Mana: ${totalMana} (Class: ${charClass}, Level: ${level})`);
   return { life: totalLife, mana: totalMana };
 }
 
@@ -220,36 +225,80 @@ getDirectLifeManaFromItems() {
   const bonuses = { life: 0, mana: 0 };
   const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
-  // Get life/mana from base items
+  // FIXED: Complete list of all equipment sections
   const equipmentSections = [
     { dropdown: 'weapons-dropdown', section: 'weapon' },
     { dropdown: 'helms-dropdown', section: 'helm' },
-    // ... other sections
+    { dropdown: 'armors-dropdown', section: 'armor' },
+    { dropdown: 'offs-dropdown', section: 'shield' },
+    { dropdown: 'gloves-dropdown', section: 'gloves' },
+    { dropdown: 'belts-dropdown', section: 'belts' },
+    { dropdown: 'boots-dropdown', section: 'boots' },
+    { dropdown: 'ringsone-dropdown', section: 'ringone' },
+    { dropdown: 'ringstwo-dropdown', section: 'ringtwo' },
+    { dropdown: 'amulets-dropdown', section: 'amulet' }
   ];
+
+  console.log('🔍 Checking equipment for life/mana bonuses:');
 
   equipmentSections.forEach(({ dropdown, section }) => {
     const dropdownElement = document.getElementById(dropdown);
-    if (!dropdownElement || !dropdownElement.value) return;
+    if (!dropdownElement || !dropdownElement.value) {
+      console.log(`  ❌ ${section}: No item selected`);
+      return;
+    }
 
     const itemData = window.itemList || itemList;
-    if (!itemData) return;
+    if (!itemData) {
+      console.log(`  ❌ ${section}: No itemList found`);
+      return;
+    }
 
     const item = itemData[dropdownElement.value];
-    if (!item) return;
+    if (!item) {
+      console.log(`  ❌ ${section}: Item not found in itemList`);
+      return;
+    }
 
     const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
 
-    if (currentLevel >= actualRequiredLevel && item.properties) {
-      // Get base item life/mana (use tolife, not life)
-      bonuses.life += item.properties.tolife || 0;
-      bonuses.mana += item.properties.tomana || 0;
+    if (currentLevel >= actualRequiredLevel) {
+      // Check multiple possible property names for life/mana
+      let itemLife = 0;
+      let itemMana = 0;
+      
+      if (item.properties) {
+        // Try different property names
+        itemLife = item.properties.tolife || item.properties.life || 0;
+        itemMana = item.properties.tomana || item.properties.mana || 0;
+      }
+      
+      // Also parse from description if not in properties
+      if (item.description && (itemLife === 0 || itemMana === 0)) {
+        const lifeMatch = item.description.match(/\+(\d+)\s+(?:to\s+)?Life/i);
+        if (lifeMatch && itemLife === 0) {
+          itemLife = parseInt(lifeMatch[1]);
+        }
+        
+        const manaMatch = item.description.match(/\+(\d+)\s+(?:to\s+)?Mana/i);
+        if (manaMatch && itemMana === 0) {
+          itemMana = parseInt(manaMatch[1]);
+        }
+      }
+      
+      bonuses.life += itemLife;
+      bonuses.mana += itemMana;
+      
+      console.log(`  ✅ ${section} (${dropdownElement.value}): +${itemLife} life, +${itemMana} mana`);
+    } else {
+      console.log(`  ⚠️ ${section}: Level requirement not met (${actualRequiredLevel} > ${currentLevel})`);
     }
   });
 
-  // ADD: Get life/mana from sockets
-  const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+  // Get life/mana from sockets
+  const socketSections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
   
-  sections.forEach(section => {
+  socketSections.forEach(section => {
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
     
     sockets.forEach(socket => {
@@ -258,17 +307,25 @@ getDirectLifeManaFromItems() {
       if (currentLevel >= socketLevel) {
         const stats = socket.dataset.stats;
         if (stats) {
-          // Parse life/mana from socket stats text
           const lifeMatch = stats.match(/\+(\d+)\s+(?:to\s+)?Life/i);
-          if (lifeMatch) bonuses.life += parseInt(lifeMatch[1]);
+          if (lifeMatch) {
+            const socketLife = parseInt(lifeMatch[1]);
+            bonuses.life += socketLife;
+            console.log(`  🔷 ${section} socket: +${socketLife} life`);
+          }
           
           const manaMatch = stats.match(/\+(\d+)\s+(?:to\s+)?Mana/i);
-          if (manaMatch) bonuses.mana += parseInt(manaMatch[1]);
+          if (manaMatch) {
+            const socketMana = parseInt(manaMatch[1]);
+            bonuses.mana += socketMana;
+            console.log(`  🔷 ${section} socket: +${socketMana} mana`);
+          }
         }
       }
     });
   });
 
+  console.log(`  🎯 Total from equipment+sockets: +${bonuses.life} life, +${bonuses.mana} mana`);
   return bonuses;
 }
 
@@ -387,6 +444,32 @@ getDirectLifeManaFromItems() {
     
     return bonuses;
   }
+
+  getCharmLifeManaBonus() {
+  let charmLifeBonus = 0;
+  let charmManaBonus = 0;
+  
+  // Get charm bonuses from inventory system
+  const charms = document.querySelectorAll('[data-charm-data]');
+  charms.forEach(charm => {
+    const data = charm.dataset.charmData;
+    if (!data) return;
+    
+    data.split('\n').forEach(line => {
+      const lifeMatch = line.match(/\+(\d+)\s+to\s+Life/i);
+      if (lifeMatch) {
+        charmLifeBonus += parseInt(lifeMatch[1]);
+      }
+      
+      const manaMatch = line.match(/\+(\d+)\s+to\s+Mana/i);
+      if (manaMatch) {
+        charmManaBonus += parseInt(manaMatch[1]);
+      }
+    });
+  });
+  
+  return { life: charmLifeBonus, mana: charmManaBonus };
+}
 
   getActualRequiredLevel(section, itemName) {
     const itemData = window.itemList || itemList;

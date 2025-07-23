@@ -1626,8 +1626,8 @@ function updateCharmDisplay() {
     fireResist: 'fireresistcontainer',
     lightResist: 'lightningresistcontainer',
     poisonResist: 'poisonresistcontainer',
-    life: 'lifecontainer',
-    mana: 'manacontainer',
+    // life: 'lifecontainer',
+    // mana: 'manacontainer',
     str: 'str',
     dex: 'dex',
     attackrating: 'attackratingcontainer',
@@ -1660,7 +1660,7 @@ function updateCharmDisplay() {
       container.textContent = totalValue;
       
       if (newCharmBonus > 0) {
-        container.style.color = '#90EE90'; // Green when has charm bonus
+        container.style.color = '#d6a608ff'; // Green when has charm bonus
         console.log(`  ✅ ${stat}: ${baseValue} (base) + ${newCharmBonus} (charms) = ${totalValue}`);
       } else {
         container.style.color = ''; // Normal when no charm bonus
@@ -1742,7 +1742,7 @@ function onCharmChange() {
       container.textContent = totalValue;
       
       if (newCharmBonus > 0) {
-        container.style.color = '#90EE90';
+        container.style.color = '#d0d007ff';
       } else {
         container.style.color = '';
       }

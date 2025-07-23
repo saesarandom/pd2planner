@@ -1485,7 +1485,6 @@ if (window.characterStatManager) {
     if (this.currentLevel >= actualLevel && item.properties) {
       this.parseItemStats(item, section);
     }
-    // window.onEquipmentChange();
   }
 
  calculateSocketStats() {
@@ -1509,7 +1508,6 @@ if (window.characterStatManager) {
   this.stats.coldResist += window.checkboxResistBonus || 0;
   this.stats.lightResist += window.checkboxResistBonus || 0;
   this.stats.poisonResist += window.checkboxResistBonus || 0;
-  // window.onEquipmentChange();
 }
 
   parseItemStats(item, section) {
@@ -2009,83 +2007,86 @@ getStatPattern(key) {
   }
 }
 
-  updateStatsDisplay() {
-    // Get base character stats
-    const baseStr = parseInt(document.getElementById('str')?.value) || 0;
-    const baseDex = parseInt(document.getElementById('dex')?.value) || 0;
-    const baseVit = parseInt(document.getElementById('vit')?.value) || 0;
-    const baseEnr = parseInt(document.getElementById('enr')?.value) || 0;
-    
-    // Calculate totals
-    const totalStr = baseStr + this.stats.strength;
-    const totalDex = baseDex + this.stats.dexterity;
-    const totalVit = baseVit + this.stats.vitality;
-    const totalEnr = baseEnr + this.stats.energy;
-    
-    // Update attribute totals (next to base stats)
-    this.updateElement('total-str', totalStr);
-    this.updateElement('total-dex', totalDex);
-    this.updateElement('total-vit', totalVit);
-    this.updateElement('total-enr', totalEnr);
-    
-    // Update the actual stat containers with correct IDs from HTML
-    this.updateElement('strengthcontainer', this.stats.strength);
-    this.updateElement('dexteritycontainer', this.stats.dexterity);
-    this.updateElement('vitalitycontainer', this.stats.vitality);
-    this.updateElement('energycontainer', this.stats.energy);
-    
-    // Resistances - using correct HTML IDs
-    const checkboxBonus = (document.querySelectorAll('.checkbox:checked').length * 10);
-    this.updateElement('fireresistcontainer', this.stats.fireResist);
-    this.updateElement('coldresistcontainer', this.stats.coldResist);
-    this.updateElement('lightresistcontainer', this.stats.lightResist);
-    this.updateElement('poisonresistcontainer', this.stats.poisonResist);
-    this.updateElement('curseresistcontainer', this.stats.curseResist || 0);
-    
-    // Speed stats - using correct HTML IDs
-    this.updateElement('iascontainer', this.stats.ias);
-    this.updateElement('fcrcontainer', this.stats.fcr);
-    this.updateElement('frwcontainer', this.stats.frw);
-    this.updateElement('fhrcontainer', this.stats.fhr);
-    
-    // Combat stats - using correct HTML IDs
-    this.updateElement('owcontainer', this.stats.openWounds);
-    this.updateElement('owdmgcontainer', this.stats.openWounds * 5); // OW damage per second approximation
-    this.updateElement('cbcontainer', this.stats.crushingBlow);
-    this.updateElement('cbdmgcontainer', this.stats.crushingBlow); // CB damage %
-    this.updateElement('deadlystrikecontainer', this.stats.deadlyStrike);
-    this.updateElement('criticalhitcontainer', this.stats.criticalHit || 0);
-    
-    // Defensive stats - using correct HTML IDs
-    this.updateElement('drcontainer', this.stats.dr);
-    this.updateElement('pdrcontainer', this.stats.pdr);
-    this.updateElement('mdrcontainer', this.stats.mdr);
-    this.updateElement('plrcontainer', this.stats.plr || 0);
-    this.updateElement('blockchancecontainer', this.stats.blockChance || 0);
-    
-    // Core stats
-    this.updateElement('allskillscontainer', this.stats.allSkills);
-    this.updateElement('magicfindcontainer', this.stats.magicFind);
-    this.updateElement('goldfindcontainer', this.stats.goldFind);
-    this.updateElement('defensecontainer', this.stats.defense);
-    // this.updateElement('lifecontainer', this.stats.life);
-    // this.updateElement('manacontainer', this.stats.mana);
-    
-    // Boolean stats
-    this.updateElement('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');
-    
-    // Damage ranges
-    this.updateElement('flatfiremincontainer', this.stats.fireDmgMin);
-    this.updateElement('flatfiremaxcontainer', this.stats.fireDmgMax);
-    this.updateElement('flatcoldmincontainer', this.stats.coldDmgMin);
-    this.updateElement('flatcoldmaxcontainer', this.stats.coldDmgMax);
-    this.updateElement('flatlightmincontainer', this.stats.lightDmgMin);
-    this.updateElement('flatlightmaxcontainer', this.stats.lightDmgMax);
-    this.updateElement('flatpoisonmincontainer', this.stats.poisonDmgMin);
-    this.updateElement('flatpoisonmaxcontainer', this.stats.poisonDmgMax);
-    
-window.onEquipmentOrSocketChange();
+  // Replace the updateStatsDisplay method with this CRAZY DEBUG version:
+
+updateStatsDisplay() {
+  // Get base character stats
+  const baseStr = parseInt(document.getElementById('str')?.value) || 0;
+  const baseDex = parseInt(document.getElementById('dex')?.value) || 0;
+  const baseVit = parseInt(document.getElementById('vit')?.value) || 0;
+  const baseEnr = parseInt(document.getElementById('enr')?.value) || 0;
+  
+  // Calculate totals
+  const totalStr = baseStr + this.stats.strength;
+  const totalDex = baseDex + this.stats.dexterity;
+  const totalVit = baseVit + this.stats.vitality;
+  const totalEnr = baseEnr + this.stats.energy;
+  
+  // Update attribute totals (next to base stats)
+  this.updateElement('total-str', totalStr);
+  this.updateElement('total-dex', totalDex);
+  this.updateElement('total-vit', totalVit);
+  this.updateElement('total-enr', totalEnr);
+  
+  // Update the actual stat containers with correct IDs from HTML
+  this.updateElement('strengthcontainer', this.stats.strength);
+  this.updateElement('dexteritycontainer', this.stats.dexterity);
+  this.updateElement('vitalitycontainer', this.stats.vitality);
+  this.updateElement('energycontainer', this.stats.energy);
+  
+  // Resistances - using correct HTML IDs
+  const checkboxBonus = (document.querySelectorAll('.checkbox:checked').length * 10);
+  this.updateElement('fireresistcontainer', this.stats.fireResist);
+  this.updateElement('coldresistcontainer', this.stats.coldResist);
+  this.updateElement('lightresistcontainer', this.stats.lightResist);
+  this.updateElement('poisonresistcontainer', this.stats.poisonResist);
+  this.updateElement('curseresistcontainer', this.stats.curseResist || 0);
+  
+  // Speed stats - using correct HTML IDs
+  this.updateElement('iascontainer', this.stats.ias);
+  this.updateElement('fcrcontainer', this.stats.fcr);
+  this.updateElement('frwcontainer', this.stats.frw);
+  this.updateElement('fhrcontainer', this.stats.fhr);
+  
+  // Combat stats - using correct HTML IDs
+  this.updateElement('owcontainer', this.stats.openWounds);
+  this.updateElement('owdmgcontainer', this.stats.openWounds * 5);
+  this.updateElement('cbcontainer', this.stats.crushingBlow);
+  this.updateElement('cbdmgcontainer', this.stats.crushingBlow);
+  this.updateElement('deadlystrikecontainer', this.stats.deadlyStrike);
+  this.updateElement('criticalhitcontainer', this.stats.criticalHit || 0);
+  
+  // Defensive stats - using correct HTML IDs
+  this.updateElement('drcontainer', this.stats.dr);
+  this.updateElement('pdrcontainer', this.stats.pdr);
+  this.updateElement('mdrcontainer', this.stats.mdr);
+  this.updateElement('plrcontainer', this.stats.plr || 0);
+  this.updateElement('blockchancecontainer', this.stats.blockChance || 0);
+  
+  // Core stats
+  this.updateElement('allskillscontainer', this.stats.allSkills);
+  this.updateElement('magicfindcontainer', this.stats.magicFind);
+  this.updateElement('goldfindcontainer', this.stats.goldFind);
+  this.updateElement('defensecontainer', this.stats.defense);
+  
+  // Boolean stats
+  this.updateElement('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');
+  
+  // Damage ranges
+  this.updateElement('flatfiremincontainer', this.stats.fireDmgMin);
+  this.updateElement('flatfiremaxcontainer', this.stats.fireDmgMax);
+  this.updateElement('flatcoldmincontainer', this.stats.coldDmgMin);
+  this.updateElement('flatcoldmaxcontainer', this.stats.coldDmgMax);
+  this.updateElement('flatlightmincontainer', this.stats.lightDmgMin);
+  this.updateElement('flatlightmaxcontainer', this.stats.lightDmgMax);
+  this.updateElement('flatpoisonmincontainer', this.stats.poisonDmgMin);
+  this.updateElement('flatpoisonmaxcontainer', this.stats.poisonDmgMax);
+  
+    if (window.onEquipmentOrSocketChange) {
+    window.onEquipmentOrSocketChange();
   }
+}
+
 
   updateElement(id, value) {
     const element = document.getElementById(id);
