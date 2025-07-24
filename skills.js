@@ -441,9 +441,7 @@ class SkillSystem {
   var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
   var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
 
-   console.log("Critical Strike:", criticalStrike);
-  console.log("Deadly Strike:", deadlyStrike);  
-  console.log("Weapon Mastery:", weaponMastery);
+
   
   // NEW CRIT SYSTEM: Calculate total crit chance using multiplicative formula
   // Total Crit Chance = 1 - ((1 - DS) * (1 - CS) * (1 - WM))

@@ -795,7 +795,6 @@ function calculateAndDisplayBlock() {
   }
   
   blockContainer.textContent = totalBlock;
-  console.log(`Block calc: Class=${currentClass}, TotalDex=${totalDex}, BaseBlock=${baseBlock}, Result=${totalBlock}%`);
   
   return totalBlock;
 }

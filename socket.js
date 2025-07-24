@@ -1101,7 +1101,6 @@
     // Replace your populateSocketItems method with this:
 
   populateSocketItems(category) {
-    console.log('🔍 populateSocketItems called with category:', category);
     const grid = document.getElementById('socketItemGrid');
     
     if (!grid) {
@@ -1148,8 +1147,7 @@
       `;
       
       rainbowDiv.onclick = () => {
-        console.log('🌈 Rainbow Facet clicked');
-        console.log('🌈 Current socket before modal:', this.currentSocket);
+
         
         if (!this.currentSocket) {
           alert('Please click on a socket first, then try again.');
@@ -1159,8 +1157,7 @@
         
         // CRITICAL FIX: Store the socket reference in a way that won't get lost
         this.rainbowFacetTargetSocket = this.currentSocket;
-        console.log('🌈 Stored socket reference:', this.rainbowFacetTargetSocket);
-        
+  
         this.hideSocketModal();
         this.createRainbowFacetModal();
       };
@@ -1569,31 +1566,23 @@
   calculateSocketStats() {
     const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
     
-    console.log('🔍 calculateSocketStats called');
+
     
     sections.forEach(section => {
       const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-      console.log(`🔍 Section ${section}: Found ${sockets.length} filled sockets`);
+
       
       sockets.forEach((socket, index) => {
         const levelReq = parseInt(socket.dataset.levelReq) || 1;
         const itemName = socket.dataset.itemName;
         const stats = socket.dataset.stats;
         
-        console.log(`🔍 Socket ${index} in ${section}:`, {
-          itemName,
-          levelReq,
-          currentLevel: this.currentLevel,
-          usable: this.currentLevel >= levelReq,
-          stats
-        });
+
         
         // Only apply socket stats if level requirement is met
         if (this.currentLevel >= levelReq && stats) {
-          console.log(`✅ Processing socket stats: "${stats}"`);
+
           this.parseSocketStats(stats, section);
-        } else {
-          console.log(`❌ Socket not usable (level ${levelReq} required, have ${this.currentLevel})`);
         }
       });
     });
@@ -1623,29 +1612,22 @@
     parseSocketStats(statsText, section) {
   if (!statsText) return;
   
-  console.log(`🔍 parseSocketStats called with: "${statsText}" for section: ${section}`);
   
   // Split by comma and process each stat separately
   const statLines = statsText.split(',').map(line => line.trim()).filter(line => line);
   
-  console.log(`🔍 Total stat lines to process: ${statLines.length}`);
-  console.log(`🔍 Stat lines array:`, statLines);
   
   statLines.forEach((line, index) => {
     try {
-      console.log(`🔍 Processing stat line ${index + 1}: "${line}"`);
-      console.log(`🔍 About to call parseStatLine with: "${line}"`);
       
       this.parseStatLine(line);
       
-      console.log(`✅ Successfully processed stat line ${index + 1}`);
     } catch (error) {
       console.error(`❌ Error processing stat line ${index + 1}: "${line}"`, error);
       console.error(`❌ Error stack:`, error.stack);
     }
   });
   
-  console.log(`🔍 parseSocketStats completed for ${statLines.length} lines`);
 }
 
 
@@ -1655,7 +1637,6 @@
   const cleanLine = line.replace(/<[^>]*>/g, '').trim();
   if (!cleanLine) return;
   
-  console.log('🔍 parseStatLine START - Parsing line:', cleanLine);
   
   try {
     // === RAINBOW FACET PATTERNS FIRST (most specific) ===
@@ -1666,7 +1647,6 @@
       if (match) {
         const value = parseInt(match[1]);
         this.stats.fireSkillDamage = (this.stats.fireSkillDamage || 0) + value;
-        console.log(`🔥🎯 FIRE SKILL DAMAGE MATCHED: +${value}%, Total: ${this.stats.fireSkillDamage}%`);
         return;
       }
     }
@@ -1676,7 +1656,6 @@
       if (match) {
         const value = parseInt(match[1]);
         this.stats.coldSkillDamage = (this.stats.coldSkillDamage || 0) + value;
-        console.log(`❄️🎯 COLD SKILL DAMAGE MATCHED: +${value}%, Total: ${this.stats.coldSkillDamage}%`);
         return;
       }
     }
@@ -1686,7 +1665,6 @@
       if (match) {
         const value = parseInt(match[1]);
         this.stats.lightningSkillDamage = (this.stats.lightningSkillDamage || 0) + value;
-        console.log(`⚡🎯 LIGHTNING SKILL DAMAGE MATCHED: +${value}%, Total: ${this.stats.lightningSkillDamage}%`);
         return;
       }
     }
@@ -1696,7 +1674,6 @@
       if (match) {
         const value = parseInt(match[1]);
         this.stats.poisonSkillDamage = (this.stats.poisonSkillDamage || 0) + value;
-        console.log(`☠️🎯 POISON SKILL DAMAGE MATCHED: +${value}%, Total: ${this.stats.poisonSkillDamage}%`);
         return;
       }
     }
@@ -1707,7 +1684,6 @@
       if (match) {
         const value = parseInt(match[1]);
         this.stats.pierceFire = (this.stats.pierceFire || 0) + value;
-        console.log(`🔥⚔️ FIRE RESISTANCE PIERCE MATCHED: +${value}%, Total: ${this.stats.pierceFire}%`);
         return;
       }
     }
@@ -1717,7 +1693,6 @@
       if (match) {
         const value = parseInt(match[1]);
         this.stats.pierceCold = (this.stats.pierceCold || 0) + value;
-        console.log(`❄️⚔️ COLD RESISTANCE PIERCE MATCHED: +${value}%, Total: ${this.stats.pierceCold}%`);
         return;
       }
     }
@@ -1727,7 +1702,6 @@
       if (match) {
         const value = parseInt(match[1]);
         this.stats.pierceLightning = (this.stats.pierceLightning || 0) + value;
-        console.log(`⚡⚔️ LIGHTNING RESISTANCE PIERCE MATCHED: +${value}%, Total: ${this.stats.pierceLightning}%`);
         return;
       }
     }
@@ -1737,7 +1711,6 @@
       if (match) {
         const value = parseInt(match[1]);
         this.stats.piercePoison = (this.stats.piercePoison || 0) + value;
-        console.log(`☠️⚔️ POISON RESISTANCE PIERCE MATCHED: +${value}%, Total: ${this.stats.piercePoison}%`);
         return;
       }
     }
@@ -1751,7 +1724,6 @@
       const max = parseInt(fireDmgMatch[2] || fireDmgMatch[1]);
       this.stats.fireDmgMin += min;
       this.stats.fireDmgMax += max;
-      console.log(`🔥 Added Fire Damage: ${min}-${max}, Total: ${this.stats.fireDmgMin}-${this.stats.fireDmgMax}`);
       return;
     }
     
@@ -1762,7 +1734,6 @@
       const max = parseInt(lightDmgMatch[2] || lightDmgMatch[1]);
       this.stats.lightDmgMin += min;
       this.stats.lightDmgMax += max;
-      console.log(`⚡ Added Lightning Damage: ${min}-${max}, Total: ${this.stats.lightDmgMin}-${this.stats.lightDmgMax}`);
       return;
     }
     
@@ -1773,7 +1744,6 @@
       const max = parseInt(coldDmgMatch[2] || coldDmgMatch[1]);
       this.stats.coldDmgMin += min;
       this.stats.coldDmgMax += max;
-      console.log(`❄️ Added Cold Damage: ${min}-${max}, Total: ${this.stats.coldDmgMin}-${this.stats.coldDmgMax}`);
       return;
     }
     
@@ -1784,7 +1754,6 @@
       const max = parseInt(poisonDmgMatch[2] || poisonDmgMatch[1]);
       this.stats.poisonDmgMin += min;
       this.stats.poisonDmgMax += max;
-      console.log(`☠️ Added Poison Damage: ${min}-${max}, Total: ${this.stats.poisonDmgMin}-${this.stats.poisonDmgMax}`);
       return;
     }
     
@@ -1797,7 +1766,6 @@
         level: parseInt(levelUpProcMatch[2]),
         skill: levelUpProcMatch[3]
       });
-      console.log(`🎆 Added Level-Up Proc: ${levelUpProcMatch[0]}`);
       return;
     }
     
@@ -1809,7 +1777,6 @@
         level: parseInt(deathProcMatch[2]),
         skill: deathProcMatch[3]
       });
-      console.log(`💀 Added Death Proc: ${deathProcMatch[0]}`);
       return;
     }
     
@@ -1818,16 +1785,90 @@ if (defMatch) {
   this.stats.defense += parseInt(defMatch[1]);
   return;
 }
+
+   const strMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(?:Strength|STR)/i);
+    if (strMatch) { this.stats.strength += parseInt(strMatch[1]); return; }
+    
+    const dexMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(?:Dexterity|DEX)/i);
+    if (dexMatch) { this.stats.dexterity += parseInt(dexMatch[1]); return; }
+    
+    const vitMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(?:Vitality|VIT)/i);
+    if (vitMatch) { this.stats.vitality += parseInt(vitMatch[1]); return; }
+    
+    const enrMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(?:Energy|ENR)/i);
+    if (enrMatch) { this.stats.energy += parseInt(enrMatch[1]); return; }
+    
+    // Life and Mana
+    const lifeMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Life/i);
+    if (lifeMatch) { this.stats.life += parseInt(lifeMatch[1]); return; }
+    
+    const manaMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Mana/i);
+    if (manaMatch) { this.stats.mana += parseInt(manaMatch[1]); return; }
+    
+    // Resistances
+    const allResMatch = cleanLine.match(/All\s+Resistances?\s+(?:\+)?(\d+)%?/i);
+    if (allResMatch) { 
+      const value = parseInt(allResMatch[1]);
+      this.stats.allResistances += value;
+      this.stats.fireResist += value;
+      this.stats.coldResist += value;
+      this.stats.lightResist += value;
+      this.stats.poisonResist += value;
+      return; 
+    }
+    
+    const fireResMatch = cleanLine.match(/Fire\s+Resist\s+(?:\+)?(\d+)%?/i);
+    if (fireResMatch) { this.stats.fireResist += parseInt(fireResMatch[1]); return; }
+    
+    const coldResMatch = cleanLine.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i);
+    if (coldResMatch) { this.stats.coldResist += parseInt(coldResMatch[1]); return; }
+    
+    const lightResMatch = cleanLine.match(/Lightning\s+Resist\s+(?:\+)?(\d+)%?/i);
+    if (lightResMatch) { this.stats.lightResist += parseInt(lightResMatch[1]); return; }
+    
+    const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+(?:\+)?(\d+)%?/i);
+    if (poisonResMatch) { this.stats.poisonResist += parseInt(poisonResMatch[1]); return; }
+    
+    // Magic Find
+    const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
+    if (mfMatch) { this.stats.magicFind += parseInt(mfMatch[1]); return; }
+    
+    // Gold Find
+    const gfMatch = cleanLine.match(/(\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
+    if (gfMatch) { this.stats.goldFind += parseInt(gfMatch[1]); return; }
+    
+    // Combat stats
+    const cbMatch = cleanLine.match(/(\d+)%\s+Chance\s+of\s+Crushing\s+Blow/i);
+    if (cbMatch) { this.stats.crushingBlow += parseInt(cbMatch[1]); return; }
+    
+    const dsMatch = cleanLine.match(/(\d+)%\s+Deadly\s+Strike/i);
+    if (dsMatch) { this.stats.deadlyStrike += parseInt(dsMatch[1]); return; }
+    
+    const owMatch = cleanLine.match(/(\d+)%\s+Chance\s+of\s+Open\s+Wounds/i);
+    if (owMatch) { this.stats.openWounds += parseInt(owMatch[1]); return; }
+    
+    // Speed stats
+    const iasMatch = cleanLine.match(/(\d+)%\s+Increased\s+Attack\s+Speed/i);
+    if (iasMatch) { this.stats.ias += parseInt(iasMatch[1]); return; }
+    
+    const fcrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Cast\s+Rate/i);
+    if (fcrMatch) { this.stats.fcr += parseInt(fcrMatch[1]); return; }
+    
+    const frwMatch = cleanLine.match(/(\d+)%\s+Faster\s+Run\/Walk/i);
+    if (frwMatch) { this.stats.frw += parseInt(frwMatch[1]); return; }
+    
+    const fhrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Hit\s+Recovery/i);
+    if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
+
+
     
     // If we get here, the stat wasn't recognized
-    console.log(`❓ Unrecognized stat: "${cleanLine}"`);
     
   } catch (error) {
     console.error(`❌ Error in parseStatLine for: "${cleanLine}"`, error);
     throw error; // Re-throw to be caught by parseSocketStats
   }
   
-  console.log('🔍 parseStatLine END');
 }
 
   // Add these methods to your existing socket.js class
@@ -1908,25 +1949,36 @@ if (statsText.includes('<br>')) {
     }
     
     // Proc effects - store as special non-stackable stats
-    const levelUpProcMatch = cleanLine.match(/(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+?)\s+when\s+you\s+Level[- ]Up/i);
-    if (levelUpProcMatch) {
-      statsMap.set(`level_up_proc_${Date.now()}_${Math.random()}`, { 
-        text: cleanLine, 
-        stackable: false, 
-        fromSocket: true 
-      });
-      return;
-    }
-    
-    const deathProcMatch = cleanLine.match(/(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+?)\s+when\s+you\s+Die/i);
-    if (deathProcMatch) {
-      statsMap.set(`death_proc_${Date.now()}_${Math.random()}`, { 
-        text: cleanLine, 
-        stackable: false, 
-        fromSocket: true 
-      });
-      return;
-    }
+
+const levelUpProcMatch = cleanLine.match(/(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+)\s+when\s+you\s+Level\s+Up/i);
+if (levelUpProcMatch) {
+  const [, chance, level, skill] = levelUpProcMatch;
+  // Use skill name as key so identical procs stack
+  const skillKey = `level_up_proc_${skill.trim().replace(/\s+/g, '_').toLowerCase()}`;
+  this.addToStatsMap(statsMap, skillKey, { 
+    chance: parseInt(chance),
+    level: parseInt(level),
+    skill: skill.trim(),
+    stackable: true,  // Now they can stack
+    fromSocket: true
+  });
+  return;
+}
+
+const deathProcMatch = cleanLine.match(/(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+)\s+when\s+you\s+Die/i);
+if (deathProcMatch) {
+  const [, chance, level, skill] = deathProcMatch;
+  // Use skill name as key so identical procs stack
+  const skillKey = `death_proc_${skill.trim().replace(/\s+/g, '_').toLowerCase()}`;
+  this.addToStatsMap(statsMap, skillKey, { 
+    chance: parseInt(chance),
+    level: parseInt(level),
+    skill: skill.trim(),
+    stackable: true,  // Now they can stack
+    fromSocket: true
+  });
+  return;
+}
       // Lightning Damage: 1-55, Adds 1-55 Lightning Damage
       const lightningMatch = cleanLine.match(/(?:Adds\s+)?(\d+)-(\d+)\s+Lightning\s+Damage/i);
       if (lightningMatch) {
@@ -2102,6 +2154,8 @@ if (statsText.includes('<br>')) {
         return;
       }
 
+     
+
       // Store other stats as non-stackable
       statsMap.set(`other_${Date.now()}_${Math.random()}`, { text: cleanLine, stackable: false });
     });
@@ -2110,23 +2164,31 @@ if (statsText.includes('<br>')) {
   }
 
   // Helper to add stats to map with proper stacking
-  addToStatsMap(statsMap, key, data) {
-    if (statsMap.has(key)) {
-      const existing = statsMap.get(key);
-      if (data.min !== undefined && data.max !== undefined) {
-        // Damage ranges - stack them
-        existing.min = (existing.min || 0) + data.min;
-        existing.max = (existing.max || 0) + data.max;
-        existing.stacked = true;
-      } else if (data.value !== undefined) {
-        // Single values - stack them
-        existing.value = (existing.value || 0) + data.value;
-        existing.stacked = true;
-      }
-    } else {
-      statsMap.set(key, { ...data, stacked: false });
+ // Add this to your addToStatsMap function
+addToStatsMap(statsMap, key, data) {
+  if (statsMap.has(key)) {
+    const existing = statsMap.get(key);
+    if (data.min !== undefined && data.max !== undefined) {
+      // Damage ranges - stack them
+      existing.min = (existing.min || 0) + data.min;
+      existing.max = (existing.max || 0) + data.max;
+      existing.stacked = true;
+    } else if (data.value !== undefined) {
+      // Single values - stack them
+      existing.value = (existing.value || 0) + data.value;
+      existing.stacked = true;
+    } else if (data.chance !== undefined && key.includes('_proc_')) {
+      // Proc chances - stack them
+      existing.chance = (existing.chance || 0) + data.chance;
+      existing.stacked = true;
+      // Keep the first skill name and level (they should be the same for stacking)
+      if (!existing.skill) existing.skill = data.skill;
+      if (!existing.level) existing.level = data.level;
     }
+  } else {
+    statsMap.set(key, { ...data, stacked: false });
   }
+}
 
   // Merge socket stats into base item stats
   mergeStatsMaps(baseStats, socketStats) {
@@ -2154,6 +2216,14 @@ if (statsText.includes('<br>')) {
   formatStackedStat(key, data) {
     const color = data.stacked || data.fromSocket ? '#4a90e2' : 'inherit';
     
+    if (key.startsWith('level_up_proc_')) {
+    return `<span style="color: ${color}; font-weight: bold;">${data.chance}% Chance to Cast Level ${data.level} ${data.skill} when you Level Up</span>`;
+  }
+  if (key.startsWith('death_proc_')) {
+    return `<span style="color: ${color}; font-weight: bold;">${data.chance}% Chance to Cast Level ${data.level} ${data.skill} when you Die</span>`;
+  }
+  
+
     switch(key) {
       case 'lightning_damage':
         return `<span style="color: ${color}; font-weight: bold;">Adds ${data.min}-${data.max} Lightning Damage</span>`;
@@ -2223,7 +2293,7 @@ if (statsText.includes('<br>')) {
         return `<span style="color: ${color}; font-weight: bold;">-${data.value}% to Enemy Lightning Resistance</span>`;
       case 'poison_resist_pierce':
         return `<span style="color: ${color}; font-weight: bold;">-${data.value}% to Enemy Poison Resistance</span>`;
-        
+      
       default:
         return data.text || '';
     }
@@ -2301,7 +2371,7 @@ if (statsText.includes('<br>')) {
       case 'poison_resist_pierce':
         return /-(\d+)%\s+to\s+Enemy\s+Poison\s+Resistance/gi;    
       case 'level_up_proc':
-        return /(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+?)\s+when\s+you\s+Level[- ]Up/gi;
+        return /(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+?)\s+when\s+you\s+Level\s+Up/gi;
       case 'death_proc':
         return /(\d+)%\s+Chance\s+to\s+Cast\s+(.+?)\s+when\s+you\s+Die/gi;  
       default:
@@ -2740,7 +2810,6 @@ if (statsText.includes('<br>')) {
 
 
     createRainbowFacetModal() {
-    console.log('🌈 createRainbowFacetModal called');
     
     // Remove existing modal first
     const existingModal = document.getElementById('rainbowFacetModal');
@@ -2806,13 +2875,11 @@ if (statsText.includes('<br>')) {
     
     // SIMPLE CLOSE HANDLERS
     modal.querySelector('.socket-close').onclick = () => {
-      console.log('🌈 Close clicked');
       this.hideRainbowFacetModal();
     };
     
     modal.onclick = (e) => {
       if (e.target === modal) {
-        console.log('🌈 Background clicked');
         this.hideRainbowFacetModal();
       }
     };
@@ -2822,7 +2889,6 @@ if (statsText.includes('<br>')) {
     elementOptions.forEach(option => {
       option.onclick = () => {
         const element = option.dataset.element;
-        console.log('🌈 Element selected:', element);
         
         // Clear previous selections
         elementOptions.forEach(opt => {
@@ -2847,7 +2913,6 @@ if (statsText.includes('<br>')) {
         btn.onclick = (e) => {
           e.preventDefault();
           e.stopPropagation();
-          console.log('🌈 BUTTON CLICKED! Element:', this.selectedFacetElement);
           this.createRainbowFacet();
         };
         
@@ -2859,7 +2924,6 @@ if (statsText.includes('<br>')) {
   }
 
   selectRainbowFacetElement(element) {
-    console.log('🌈 selectRainbowFacetElement called with:', element);
     
     // Clear previous selection
     document.querySelectorAll('.element-option').forEach(opt => {
@@ -2889,7 +2953,6 @@ if (statsText.includes('<br>')) {
       }
       
       this.updateRainbowFacetPreview();
-      console.log('🌈 Element selected:', element);
     }
   }
 
@@ -2932,7 +2995,7 @@ if (statsText.includes('<br>')) {
     const facets = {
       fire: {
         name: 'Rainbow Facet (Fire)',
-        onLevelUp: '100% Chance to Cast Level 29 Blaze when you Level-Up',
+        onLevelUp: '100% Chance to Cast Level 29 Blaze when you Level Up',
         onDeath: '100% Chance to Cast Level 31 Meteor when you Die',
         damage: 'Adds 17-45 Fire Damage',
         skillDamage: `+${this.getRandomValue(3, 5)}% to Fire Skill Damage`,
@@ -2940,7 +3003,7 @@ if (statsText.includes('<br>')) {
       },
       lightning: {
         name: 'Rainbow Facet (Lightning)',
-        onLevelUp: '100% Chance to Cast Level 41 Nova when you Level-Up',
+        onLevelUp: '100% Chance to Cast Level 41 Nova when you Level Up',
         onDeath: '100% Chance to Cast Level 47 Chain Lightning when you Die',
         damage: 'Adds 1-74 Lightning Damage',
         skillDamage: `+${this.getRandomValue(3, 5)}% to Lightning Skill Damage`,
@@ -2948,7 +3011,7 @@ if (statsText.includes('<br>')) {
       },
       cold: {
         name: 'Rainbow Facet (Cold)',
-        onLevelUp: '100% Chance to Cast Level 35 Frozen Orb when you Level-Up',
+        onLevelUp: '100% Chance to Cast Level 35 Frozen Orb when you Level Up',
         onDeath: '100% Chance to Cast Level 40 Blizzard when you Die',
         damage: 'Adds 25-35 Cold Damage',
         skillDamage: `+${this.getRandomValue(3, 5)}% to Cold Skill Damage`,
@@ -2956,7 +3019,7 @@ if (statsText.includes('<br>')) {
       },
       poison: {
         name: 'Rainbow Facet (Poison)',
-        onLevelUp: '100% Chance to Cast Level 33 Poison Nova when you Level-Up',
+        onLevelUp: '100% Chance to Cast Level 33 Poison Nova when you Level Up',
         onDeath: '100% Chance to Cast Level 38 Poison Explosion when you Die',
         damage: 'Adds 15-25 Poison Damage',
         skillDamage: `+${this.getRandomValue(3, 5)}% to Poison Skill Damage`,
@@ -2977,7 +3040,6 @@ if (statsText.includes('<br>')) {
   }
 
   createRainbowFacet() {
-    console.log('🌈 createRainbowFacet START');
     
     const socketToUse = this.currentSocket || this.rainbowFacetTargetSocket;
     
@@ -3011,9 +3073,6 @@ const statsArray = [
     
     const statsText = statsArray.join(', ');
     
-    console.log('🌈 Generated facet data:', facetData);
-    console.log('🌈 Final stats array:', statsArray);
-    console.log('🌈 Final stats string:', statsText);
     
     // Set socket data
     socketToUse.dataset.itemKey = 'rainbow-facet-' + this.selectedFacetElement;
@@ -3032,10 +3091,8 @@ const statsArray = [
     this.selectedFacetElement = null;
     
     // Force immediate update
-    console.log('🌈 Forcing stat calculation...');
     this.updateAll();
     
-    console.log('🌈 Rainbow Facet created successfully!');
   }
 
   hideRainbowFacetModal() {
