@@ -1155,17 +1155,18 @@
     }
 
     createJewelModal() {
-      if (document.getElementById('jewelModal')) return;
-      
-      const modal = document.createElement('div');
-      modal.id = 'jewelModal';
-      modal.className = 'socket-modal';
-      modal.innerHTML = `
-        <div class="socket-modal-content">
+    if (document.getElementById('jewelModal')) return;
+    
+    const modal = document.createElement('div');
+    modal.id = 'jewelModal';
+    modal.className = 'socket-modal';
+    
+    modal.innerHTML = `
+        <div class="socket-modal-content jewel-modal-content">
           <span class="socket-close">&times;</span>
           <h3>Create Custom Jewel</h3>
-          
           <div class="jewel-creation-section">
+            
             <h4>1. Select Color</h4>
             <div class="jewel-color-grid">
               ${['white', 'blue', 'yellow', 'green', 'orange', 'red'].map(color => `
@@ -1176,95 +1177,136 @@
               `).join('')}
             </div>
             
-            <h4>2. Select Prefix</h4>
-            <select id="jewelPrefixSelect">
-              <option value="">No Prefix</option>
-              ${Object.entries(this.jewelPrefixes).map(([key, prefix]) => 
-                `<option value="${key}">${prefix.name} - ${prefix.effect}</option>`
-              ).join('')}
-            </select>
+            <h4>2. Select Prefixes (up to 3)</h4>
+            ${[1, 2, 3].map(num => `
+              <div style="margin-bottom: 15px;">
+                <label>Prefix ${num}:</label>
+                <select id="jewelPrefix${num}Select">
+                  <option value="">No Prefix</option>
+                  ${Object.entries(this.jewelPrefixes).map(([key, prefix]) => 
+                    `<option value="${key}">${prefix.effect} (Req Level: ${prefix.reqLevel || 1})</option>`
+                  ).join('')}
+                </select>
+                <div id="prefix${num}ValueContainer" style="display: none;"></div>
+              </div>
+            `).join('')}
             
-            <div id="prefixValueContainer" style="display: none;">
-              <label>Prefix Value: <span id="prefixValueDisplay">0</span></label>
-              <input type="range" id="prefixValue" min="0" max="100" value="0">
-            </div>
-            
-            <h4>3. Select Suffix</h4>
-            <select id="jewelSuffixSelect">
-              <option value="">No Suffix</option>
-              ${Object.entries(this.jewelSuffixes).map(([key, suffix]) => 
-                `<option value="${key}">${suffix.name} - ${suffix.effect}</option>`
-              ).join('')}
-            </select>
-            
-            <div id="suffixValueContainer" style="display: none;">
-              <label>Suffix Value: <span id="suffixValueDisplay">0</span></label>
-              <input type="range" id="suffixValue" min="0" max="100" value="0">
-            </div>
+            <h4>3. Select Suffixes (up to 3)</h4>
+            ${[1, 2, 3].map(num => `
+              <div style="margin-bottom: 15px;">
+                <label>Suffix ${num}:</label>
+                <select id="jewelSuffix${num}Select">
+                  <option value="">No Suffix</option>
+                  ${Object.entries(this.jewelSuffixes).map(([key, suffix]) => 
+                    `<option value="${key}">${suffix.effect} (Req Level: ${suffix.reqLevel || 1})</option>`
+                  ).join('')}
+                </select>
+                <div id="suffix${num}ValueContainer" style="display: none;"></div>
+              </div>
+            `).join('')}
             
             <div id="jewelPreview" class="jewel-preview">
-              White Jewel
+              White Jewel<br>
+              <span style="color: #888; font-size: 12px;">Required Level: 1</span>
             </div>
             
             <button id="createJewelBtn" class="create-jewel-btn">Create Jewel</button>
           </div>
         </div>
       `;
-      
-      document.body.appendChild(modal);
-      this.setupJewelModalEvents();
-    }
-
-    setupJewelModalEvents() {
-      const modal = document.getElementById('jewelModal');
-      
-      // Close handlers
-      modal.querySelector('.socket-close').onclick = () => this.hideJewelModal();
-      modal.onclick = (e) => {
+    
+    document.body.appendChild(modal);
+    this.setupEnhancedJewelModalEvents();
+}
+    setupEnhancedJewelModalEvents() {
+    const modal = document.getElementById('jewelModal');
+    
+    // Close handlers
+    modal.querySelector('.socket-close').onclick = () => this.hideJewelModal();
+    modal.onclick = (e) => {
         if (e.target === modal) this.hideJewelModal();
-      };
-      
-      // Color selection
-      modal.querySelectorAll('.color-option').forEach(option => {
+    };
+    
+    // Color selection
+    modal.querySelectorAll('.color-option').forEach(option => {
         option.onclick = () => {
-          modal.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
-          option.classList.add('selected');
-          this.selectedJewelColor = option.dataset.color;
-          this.updateJewelPreview();
+            modal.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            this.selectedJewelColor = option.dataset.color;
+            this.updateJewelPreview();
         };
-      });
-      
-      // Prefix selection
-      modal.querySelector('#jewelPrefixSelect').onchange = (e) => {
-        this.selectedJewelPrefix = e.target.value;
-        this.updatePrefixValueInput();
-        this.updateJewelPreview();
-      };
-      
-      // Suffix selection
-      modal.querySelector('#jewelSuffixSelect').onchange = (e) => {
-        this.selectedJewelSuffix = e.target.value;
-        this.updateSuffixValueInput();
-        this.updateJewelPreview();
-      };
-      
-      // Value inputs
-      modal.querySelector('#prefixValue').oninput = (e) => {
-        this.selectedJewelPrefixValue = e.target.value;
-        modal.querySelector('#prefixValueDisplay').textContent = e.target.value;
-        this.updateJewelPreview();
-      };
-      
-      modal.querySelector('#suffixValue').oninput = (e) => {
-        this.selectedJewelSuffixValue = e.target.value;
-        modal.querySelector('#suffixValueDisplay').textContent = e.target.value;
-        this.updateJewelPreview();
-      };
-      
-      // Create jewel button
-      modal.querySelector('#createJewelBtn').onclick = () => this.createCustomJewel();
-    }
+    });
+    
+    // Prefix selections with validation
+    [1, 2, 3].forEach(num => {
+        modal.querySelector(`#jewelPrefix${num}Select`).onchange = (e) => {
+            this[`selectedJewelPrefix${num}`] = e.target.value;
+            this.validateAffixLimit();
+            this.updatePrefixValueInput(num);
+            this.updateJewelPreview();
+        };
+    });
+    
+    // Suffix selections with validation
+    [1, 2, 3].forEach(num => {
+        modal.querySelector(`#jewelSuffix${num}Select`).onchange = (e) => {
+            this[`selectedJewelSuffix${num}`] = e.target.value;
+            this.validateAffixLimit();
+            this.updateSuffixValueInput(num);
+            this.updateJewelPreview();
+        };
+    });
+    
+    // Create jewel button
+    modal.querySelector('#createJewelBtn').onclick = () => this.createCustomJewel();
+}
 
+// Validate affix limit and disable selectors when needed
+validateAffixLimit() {
+    const prefixCount = [this.selectedJewelPrefix1, this.selectedJewelPrefix2, this.selectedJewelPrefix3].filter(p => p).length;
+    const suffixCount = [this.selectedJewelSuffix1, this.selectedJewelSuffix2, this.selectedJewelSuffix3].filter(s => s).length;
+    const totalAffixes = prefixCount + suffixCount;
+    
+    // Disable/enable selectors based on current count
+    const modal = document.getElementById('jewelModal');
+    if (modal) {
+        // If we have 4 affixes, disable empty selectors
+        if (totalAffixes >= 4) {
+            [1, 2, 3].forEach(num => {
+                const select = modal.querySelector(`#jewelPrefix${num}Select`);
+                if (select && !this[`selectedJewelPrefix${num}`]) {
+                    select.disabled = true;
+                    select.style.opacity = '0.5';
+                }
+            });
+            
+            [1, 2, 3].forEach(num => {
+                const select = modal.querySelector(`#jewelSuffix${num}Select`);
+                if (select && !this[`selectedJewelSuffix${num}`]) {
+                    select.disabled = true;
+                    select.style.opacity = '0.5';
+                }
+            });
+        } else {
+            // Re-enable all selectors
+            [1, 2, 3].forEach(num => {
+                const select = modal.querySelector(`#jewelPrefix${num}Select`);
+                if (select) {
+                    select.disabled = false;
+                    select.style.opacity = '1';
+                }
+            });
+            
+            [1, 2].forEach(num => {
+                const select = modal.querySelector(`#jewelSuffix${num}Select`);
+                if (select) {
+                    select.disabled = false;
+                    select.style.opacity = '1';
+                }
+            });
+        }
+    }
+}
     // === MODAL MANAGEMENT ===
     showSocketModal() {
       const modal = document.getElementById('socketModal');
@@ -1390,56 +1432,53 @@
     }
   }
     // === JEWEL CREATION ===
-    updatePrefixValueInput() {
-    const container = document.getElementById('prefixValueContainer');
+    updatePrefixValueInput(num) {
+    const container = document.getElementById(`prefix${num}ValueContainer`);
+    const selectedPrefix = this[`selectedJewelPrefix${num}`];
     
-    if (this.selectedJewelPrefix && this.jewelPrefixes[this.selectedJewelPrefix]) {
-        const prefixData = this.jewelPrefixes[this.selectedJewelPrefix];
+    if (selectedPrefix && this.jewelPrefixes[selectedPrefix]) {
+        const prefixData = this.jewelPrefixes[selectedPrefix];
         
-        // Check if this has minRange/maxRange (damage affixes)
         if (prefixData.minRange && prefixData.maxRange) {
             container.innerHTML = `
                 <div style="margin: 10px 0;">
-                    <label style="color: #FFD700;">Min Damage: <span id="prefixMinValueDisplay">${prefixData.minRange[0]}</span></label>
-                    <input type="range" id="prefixMinValue" min="${prefixData.minRange[0]}" max="${prefixData.minRange[1]}" value="${prefixData.minRange[0]}" style="width: 100%; margin: 5px 0;">
+                    <label style="color: #FFD700;">Min: <span id="prefix${num}MinValueDisplay">${prefixData.minRange[0]}</span></label>
+                    <input type="range" id="prefix${num}MinValue" min="${prefixData.minRange[0]}" max="${prefixData.minRange[1]}" value="${prefixData.minRange[0]}">
                 </div>
                 <div style="margin: 10px 0;">
-                    <label style="color: #FFD700;">Max Damage: <span id="prefixMaxValueDisplay">${prefixData.maxRange[0]}</span></label>
-                    <input type="range" id="prefixMaxValue" min="${prefixData.maxRange[0]}" max="${prefixData.maxRange[1]}" value="${prefixData.maxRange[0]}" style="width: 100%; margin: 5px 0;">
+                    <label style="color: #FFD700;">Max: <span id="prefix${num}MaxValueDisplay">${prefixData.maxRange[0]}</span></label>
+                    <input type="range" id="prefix${num}MaxValue" min="${prefixData.maxRange[0]}" max="${prefixData.maxRange[1]}" value="${prefixData.maxRange[0]}">
                 </div>
             `;
             
-            // Store initial values
-            this.selectedJewelPrefixMinValue = prefixData.minRange[0];
-            this.selectedJewelPrefixMaxValue = prefixData.maxRange[0];
+            this[`selectedJewelPrefix${num}MinValue`] = prefixData.minRange[0];
+            this[`selectedJewelPrefix${num}MaxValue`] = prefixData.maxRange[0];
             
-            // Add event listeners
-            document.getElementById('prefixMinValue').oninput = (e) => {
-                this.selectedJewelPrefixMinValue = e.target.value;
-                document.getElementById('prefixMinValueDisplay').textContent = e.target.value;
+            document.getElementById(`prefix${num}MinValue`).oninput = (e) => {
+                this[`selectedJewelPrefix${num}MinValue`] = e.target.value;
+                document.getElementById(`prefix${num}MinValueDisplay`).textContent = e.target.value;
                 this.updateJewelPreview();
             };
             
-            document.getElementById('prefixMaxValue').oninput = (e) => {
-                this.selectedJewelPrefixMaxValue = e.target.value;
-                document.getElementById('prefixMaxValueDisplay').textContent = e.target.value;
+            document.getElementById(`prefix${num}MaxValue`).oninput = (e) => {
+                this[`selectedJewelPrefix${num}MaxValue`] = e.target.value;
+                document.getElementById(`prefix${num}MaxValueDisplay`).textContent = e.target.value;
                 this.updateJewelPreview();
             };
             
         } else if (prefixData.range) {
-            // Single value affix
             container.innerHTML = `
                 <div style="margin: 10px 0;">
-                    <label style="color: #FFD700;">Value: <span id="prefixValueDisplay">${prefixData.range[0]}</span></label>
-                    <input type="range" id="prefixValue" min="${prefixData.range[0]}" max="${prefixData.range[1]}" value="${prefixData.range[0]}" style="width: 100%; margin: 5px 0;">
+                    <label style="color: #FFD700;">Value: <span id="prefix${num}ValueDisplay">${prefixData.range[0]}</span></label>
+                    <input type="range" id="prefix${num}Value" min="${prefixData.range[0]}" max="${prefixData.range[1]}" value="${prefixData.range[0]}">
                 </div>
             `;
             
-            this.selectedJewelPrefixValue = prefixData.range[0];
+            this[`selectedJewelPrefix${num}Value`] = prefixData.range[0];
             
-            document.getElementById('prefixValue').oninput = (e) => {
-                this.selectedJewelPrefixValue = e.target.value;
-                document.getElementById('prefixValueDisplay').textContent = e.target.value;
+            document.getElementById(`prefix${num}Value`).oninput = (e) => {
+                this[`selectedJewelPrefix${num}Value`] = e.target.value;
+                document.getElementById(`prefix${num}ValueDisplay`).textContent = e.target.value;
                 this.updateJewelPreview();
             };
         }
@@ -1447,62 +1486,59 @@
         container.style.display = 'block';
     } else {
         container.style.display = 'none';
-        this.selectedJewelPrefixValue = null;
-        this.selectedJewelPrefixMinValue = null;
-        this.selectedJewelPrefixMaxValue = null;
+        this[`selectedJewelPrefix${num}Value`] = null;
+        this[`selectedJewelPrefix${num}MinValue`] = null;
+        this[`selectedJewelPrefix${num}MaxValue`] = null;
     }
 }
+
+updateSuffixValueInput(num) {
+    const container = document.getElementById(`suffix${num}ValueContainer`);
+    const selectedSuffix = this[`selectedJewelSuffix${num}`];
     
-   updateSuffixValueInput() {
-    const container = document.getElementById('suffixValueContainer');
-    
-    if (this.selectedJewelSuffix && this.jewelSuffixes[this.selectedJewelSuffix]) {
-        const suffixData = this.jewelSuffixes[this.selectedJewelSuffix];
+    if (selectedSuffix && this.jewelSuffixes[selectedSuffix]) {
+        const suffixData = this.jewelSuffixes[selectedSuffix];
         
-        // Check if this has minRange/maxRange (damage affixes)
         if (suffixData.minRange && suffixData.maxRange) {
             container.innerHTML = `
                 <div style="margin: 10px 0;">
-                    <label style="color: #FFD700;">Min Damage: <span id="suffixMinValueDisplay">${suffixData.minRange[0]}</span></label>
-                    <input type="range" id="suffixMinValue" min="${suffixData.minRange[0]}" max="${suffixData.minRange[1]}" value="${suffixData.minRange[0]}" style="width: 100%; margin: 5px 0;">
+                    <label style="color: #FFD700;">Min: <span id="suffix${num}MinValueDisplay">${suffixData.minRange[0]}</span></label>
+                    <input type="range" id="suffix${num}MinValue" min="${suffixData.minRange[0]}" max="${suffixData.minRange[1]}" value="${suffixData.minRange[0]}">
                 </div>
                 <div style="margin: 10px 0;">
-                    <label style="color: #FFD700;">Max Damage: <span id="suffixMaxValueDisplay">${suffixData.maxRange[0]}</span></label>
-                    <input type="range" id="suffixMaxValue" min="${suffixData.maxRange[0]}" max="${suffixData.maxRange[1]}" value="${suffixData.maxRange[0]}" style="width: 100%; margin: 5px 0;">
+                    <label style="color: #FFD700;">Max: <span id="suffix${num}MaxValueDisplay">${suffixData.maxRange[0]}</span></label>
+                    <input type="range" id="suffix${num}MaxValue" min="${suffixData.maxRange[0]}" max="${suffixData.maxRange[1]}" value="${suffixData.maxRange[0]}">
                 </div>
             `;
             
-            // Store initial values
-            this.selectedJewelSuffixMinValue = suffixData.minRange[0];
-            this.selectedJewelSuffixMaxValue = suffixData.maxRange[0];
+            this[`selectedJewelSuffix${num}MinValue`] = suffixData.minRange[0];
+            this[`selectedJewelSuffix${num}MaxValue`] = suffixData.maxRange[0];
             
-            // Add event listeners
-            document.getElementById('suffixMinValue').oninput = (e) => {
-                this.selectedJewelSuffixMinValue = e.target.value;
-                document.getElementById('suffixMinValueDisplay').textContent = e.target.value;
+            document.getElementById(`suffix${num}MinValue`).oninput = (e) => {
+                this[`selectedJewelSuffix${num}MinValue`] = e.target.value;
+                document.getElementById(`suffix${num}MinValueDisplay`).textContent = e.target.value;
                 this.updateJewelPreview();
             };
             
-            document.getElementById('suffixMaxValue').oninput = (e) => {
-                this.selectedJewelSuffixMaxValue = e.target.value;
-                document.getElementById('suffixMaxValueDisplay').textContent = e.target.value;
+            document.getElementById(`suffix${num}MaxValue`).oninput = (e) => {
+                this[`selectedJewelSuffix${num}MaxValue`] = e.target.value;
+                document.getElementById(`suffix${num}MaxValueDisplay`).textContent = e.target.value;
                 this.updateJewelPreview();
             };
             
         } else if (suffixData.range) {
-            // Single value affix
             container.innerHTML = `
                 <div style="margin: 10px 0;">
-                    <label style="color: #FFD700;">Value: <span id="suffixValueDisplay">${suffixData.range[0]}</span></label>
-                    <input type="range" id="suffixValue" min="${suffixData.range[0]}" max="${suffixData.range[1]}" value="${suffixData.range[0]}" style="width: 100%; margin: 5px 0;">
+                    <label style="color: #FFD700;">Value: <span id="suffix${num}ValueDisplay">${suffixData.range[0]}</span></label>
+                    <input type="range" id="suffix${num}Value" min="${suffixData.range[0]}" max="${suffixData.range[1]}" value="${suffixData.range[0]}">
                 </div>
             `;
             
-            this.selectedJewelSuffixValue = suffixData.range[0];
+            this[`selectedJewelSuffix${num}Value`] = suffixData.range[0];
             
-            document.getElementById('suffixValue').oninput = (e) => {
-                this.selectedJewelSuffixValue = e.target.value;
-                document.getElementById('suffixValueDisplay').textContent = e.target.value;
+            document.getElementById(`suffix${num}Value`).oninput = (e) => {
+                this[`selectedJewelSuffix${num}Value`] = e.target.value;
+                document.getElementById(`suffix${num}ValueDisplay`).textContent = e.target.value;
                 this.updateJewelPreview();
             };
         }
@@ -1510,9 +1546,9 @@
         container.style.display = 'block';
     } else {
         container.style.display = 'none';
-        this.selectedJewelSuffixValue = null;
-        this.selectedJewelSuffixMinValue = null;
-        this.selectedJewelSuffixMaxValue = null;
+        this[`selectedJewelSuffix${num}Value`] = null;
+        this[`selectedJewelSuffix${num}MinValue`] = null;
+        this[`selectedJewelSuffix${num}MaxValue`] = null;
     }
 }
 
@@ -1522,53 +1558,63 @@
     
     let jewelName = `${this.selectedJewelColor.charAt(0).toUpperCase() + this.selectedJewelColor.slice(1)} Jewel`;
     let stats = [];
+    let maxRequiredLevel = 1;
     
-    // Handle prefix
-    if (this.selectedJewelPrefix) {
-        const prefix = this.jewelPrefixes[this.selectedJewelPrefix];
-        let effect = prefix.effect;
-        
-        // Replace placeholders for damage ranges
-        if (this.selectedJewelPrefixMinValue && this.selectedJewelPrefixMaxValue) {
-            // Replace both min and max ranges
-            effect = effect.replace(/\[\d+-\d+\]/g, (match, offset) => {
-                // First occurrence is min range, second is max range
-                const beforeMatch = effect.substring(0, offset);
-                const minRangeCount = (beforeMatch.match(/\[\d+-\d+\]/g) || []).length;
-                return minRangeCount === 0 ? this.selectedJewelPrefixMinValue : this.selectedJewelPrefixMaxValue;
-            });
-        } else if (this.selectedJewelPrefixValue) {
-            // Single value replacement
-            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefixValue);
+    // Handle all prefixes
+    [1, 2, 3].forEach(num => {
+        const selectedPrefix = this[`selectedJewelPrefix${num}`];
+        if (selectedPrefix) {
+            const prefix = this.jewelPrefixes[selectedPrefix];
+            let effect = prefix.effect;
+            
+            const minVal = this[`selectedJewelPrefix${num}MinValue`];
+            const maxVal = this[`selectedJewelPrefix${num}MaxValue`];
+            const singleVal = this[`selectedJewelPrefix${num}Value`];
+            
+            if (minVal && maxVal) {
+                effect = effect.replace(/\[\d+-\d+\]/g, (match, offset) => {
+                    const beforeMatch = effect.substring(0, offset);
+                    const minRangeCount = (beforeMatch.match(/\[\d+-\d+\]/g) || []).length;
+                    return minRangeCount === 0 ? minVal : maxVal;
+                });
+            } else if (singleVal) {
+                effect = effect.replace(/\[\d+-\d+\]/, singleVal);
+            }
+            
+            stats.push(`<span style="color: #8888ff;">${effect}</span>`);
+            maxRequiredLevel = Math.max(maxRequiredLevel, prefix.reqLevel || 1);
         }
-        
-        stats.push(`<span style="color: #8888ff;">${effect}</span>`);
-    }
+    });
     
-    // Handle suffix
-    if (this.selectedJewelSuffix) {
-        const suffix = this.jewelSuffixes[this.selectedJewelSuffix];
-        let effect = suffix.effect;
-        
-        // Replace placeholders for damage ranges
-        if (this.selectedJewelSuffixMinValue && this.selectedJewelSuffixMaxValue) {
-            // Replace both min and max ranges
-            effect = effect.replace(/\[\d+-\d+\]/g, (match, offset) => {
-                // First occurrence is min range, second is max range
-                const beforeMatch = effect.substring(0, offset);
-                const minRangeCount = (beforeMatch.match(/\[\d+-\d+\]/g) || []).length;
-                return minRangeCount === 0 ? this.selectedJewelSuffixMinValue : this.selectedJewelSuffixMaxValue;
-            });
-        } else if (this.selectedJewelSuffixValue) {
-            // Single value replacement
-            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffixValue);
+    // Handle all suffixes
+    [1, 2, 3].forEach(num => {
+        const selectedSuffix = this[`selectedJewelSuffix${num}`];
+        if (selectedSuffix) {
+            const suffix = this.jewelSuffixes[selectedSuffix];
+            let effect = suffix.effect;
+            
+            const minVal = this[`selectedJewelSuffix${num}MinValue`];
+            const maxVal = this[`selectedJewelSuffix${num}MaxValue`];
+            const singleVal = this[`selectedJewelSuffix${num}Value`];
+            
+            if (minVal && maxVal) {
+                effect = effect.replace(/\[\d+-\d+\]/g, (match, offset) => {
+                    const beforeMatch = effect.substring(0, offset);
+                    const minRangeCount = (beforeMatch.match(/\[\d+-\d+\]/g) || []).length;
+                    return minRangeCount === 0 ? minVal : maxVal;
+                });
+            } else if (singleVal) {
+                effect = effect.replace(/\[\d+-\d+\]/, singleVal);
+            }
+            
+            stats.push(`<span style="color: #8888ff;">${effect}</span>`);
+            maxRequiredLevel = Math.max(maxRequiredLevel, suffix.reqLevel || 1);
         }
-        
-        stats.push(`<span style="color: #8888ff;">${effect}</span>`);
-    }
+    });
     
     preview.innerHTML = `
         <div style="color: ${this.getJewelColor()}; font-weight: bold;">${jewelName}</div>
+        <div style="color: #888; font-size: 12px;">Required Level: ${maxRequiredLevel}</div>
         ${stats.length > 0 ? stats.join('<br>') : '<span style="color: #888;">No special properties</span>'}
     `;
 }
@@ -1606,15 +1652,36 @@
 
     resetJewelSelections() {
     this.selectedJewelColor = 'white';
-    this.selectedJewelPrefix = null;
-    this.selectedJewelSuffix = null;
-    this.selectedJewelPrefixValue = null;
-    this.selectedJewelSuffixValue = null;
-    this.selectedJewelPrefixMinValue = null;
-    this.selectedJewelPrefixMaxValue = null;
-    this.selectedJewelSuffixMinValue = null;
-    this.selectedJewelSuffixMaxValue = null;
+    
+    // Reset all prefixes
+    this.selectedJewelPrefix1 = null;
+    this.selectedJewelPrefix2 = null;
+    this.selectedJewelPrefix3 = null;
+    this.selectedJewelPrefix1Value = null;
+    this.selectedJewelPrefix2Value = null;
+    this.selectedJewelPrefix3Value = null;
+    this.selectedJewelPrefix1MinValue = null;
+    this.selectedJewelPrefix2MinValue = null;
+    this.selectedJewelPrefix3MinValue = null;
+    this.selectedJewelPrefix1MaxValue = null;
+    this.selectedJewelPrefix2MaxValue = null;
+    this.selectedJewelPrefix3MaxValue = null;
+    
+    // Reset all suffixes
+    this.selectedJewelSuffix1 = null;
+    this.selectedJewelSuffix2 = null;
+    this.selectedJewelSuffix3 = null;
+this.selectedJewelSuffix3Value = null;
+this.selectedJewelSuffix3MinValue = null;
+this.selectedJewelSuffix3MaxValue = null;
+    this.selectedJewelSuffix1Value = null;
+    this.selectedJewelSuffix2Value = null;
+    this.selectedJewelSuffix1MinValue = null;
+    this.selectedJewelSuffix2MinValue = null;
+    this.selectedJewelSuffix1MaxValue = null;
+    this.selectedJewelSuffix2MaxValue = null;
 }
+
 
 
     createCustomJewel() {
@@ -1624,37 +1691,112 @@
         return;
     }
     
-    // Create jewel stats string
+    // Collect all selected affixes
     let stats = [];
+    let maxRequiredLevel = 1;
     
-    // Handle prefix
-    if (this.selectedJewelPrefix) {
-        const prefix = this.jewelPrefixes[this.selectedJewelPrefix];
+    // Handle prefix 1
+    if (this.selectedJewelPrefix1) {
+        const prefix = this.jewelPrefixes[this.selectedJewelPrefix1];
         let effect = prefix.effect;
         
-        if (this.selectedJewelPrefixMinValue && this.selectedJewelPrefixMaxValue) {
-            // Generate final damage format: "Adds X-Y Element Damage"
-            effect = `Adds ${this.selectedJewelPrefixMinValue}-${this.selectedJewelPrefixMaxValue} ${prefix.effect.includes('Cold') ? 'Cold' : prefix.effect.includes('Fire') ? 'Fire' : 'Lightning'} Damage`;
-        } else if (this.selectedJewelPrefixValue) {
-            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefixValue);
+        if (this.selectedJewelPrefix1MinValue && this.selectedJewelPrefix1MaxValue) {
+            effect = `Adds ${this.selectedJewelPrefix1MinValue}-${this.selectedJewelPrefix1MaxValue} ${prefix.effect.includes('Cold') ? 'Cold' : prefix.effect.includes('Fire') ? 'Fire' : 'Lightning'} Damage`;
+        } else if (this.selectedJewelPrefix1Value) {
+            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefix1Value);
         }
         
         stats.push(effect);
+        maxRequiredLevel = Math.max(maxRequiredLevel, prefix.reqLevel || 1);
     }
     
-    // Handle suffix  
-    if (this.selectedJewelSuffix) {
-        const suffix = this.jewelSuffixes[this.selectedJewelSuffix];
-        let effect = suffix.effect;
+    // Handle prefix 2
+    if (this.selectedJewelPrefix2) {
+        const prefix = this.jewelPrefixes[this.selectedJewelPrefix2];
+        let effect = prefix.effect;
         
-        if (this.selectedJewelSuffixMinValue && this.selectedJewelSuffixMaxValue) {
-            // Generate final damage format: "Adds X-Y Element Damage"
-            effect = `Adds ${this.selectedJewelSuffixMinValue}-${this.selectedJewelSuffixMaxValue} ${suffix.effect.includes('Cold') ? 'Cold' : suffix.effect.includes('Fire') ? 'Fire' : 'Lightning'} Damage`;
-        } else if (this.selectedJewelSuffixValue) {
-            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffixValue);
+        if (this.selectedJewelPrefix2MinValue && this.selectedJewelPrefix2MaxValue) {
+            effect = `Adds ${this.selectedJewelPrefix2MinValue}-${this.selectedJewelPrefix2MaxValue} ${prefix.effect.includes('Cold') ? 'Cold' : prefix.effect.includes('Fire') ? 'Fire' : 'Lightning'} Damage`;
+        } else if (this.selectedJewelPrefix2Value) {
+            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefix2Value);
         }
         
         stats.push(effect);
+        maxRequiredLevel = Math.max(maxRequiredLevel, prefix.reqLevel || 1);
+    }
+    
+    // Handle prefix 3
+    if (this.selectedJewelPrefix3) {
+        const prefix = this.jewelPrefixes[this.selectedJewelPrefix3];
+        let effect = prefix.effect;
+        
+        if (this.selectedJewelPrefix3MinValue && this.selectedJewelPrefix3MaxValue) {
+            effect = `Adds ${this.selectedJewelPrefix3MinValue}-${this.selectedJewelPrefix3MaxValue} ${prefix.effect.includes('Cold') ? 'Cold' : prefix.effect.includes('Fire') ? 'Fire' : 'Lightning'} Damage`;
+        } else if (this.selectedJewelPrefix3Value) {
+            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelPrefix3Value);
+        }
+        
+        stats.push(effect);
+        maxRequiredLevel = Math.max(maxRequiredLevel, prefix.reqLevel || 1);
+    }
+    
+    // Handle suffix 1
+    if (this.selectedJewelSuffix1) {
+        const suffix = this.jewelSuffixes[this.selectedJewelSuffix1];
+        let effect = suffix.effect;
+        
+        if (this.selectedJewelSuffix1MinValue && this.selectedJewelSuffix1MaxValue) {
+            effect = `Adds ${this.selectedJewelSuffix1MinValue}-${this.selectedJewelSuffix1MaxValue} ${suffix.effect.includes('Cold') ? 'Cold' : suffix.effect.includes('Fire') ? 'Fire' : 'Lightning'} Damage`;
+        } else if (this.selectedJewelSuffix1Value) {
+            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffix1Value);
+        }
+        
+        stats.push(effect);
+        maxRequiredLevel = Math.max(maxRequiredLevel, suffix.reqLevel || 1);
+    }
+    
+    // Handle suffix 2
+    if (this.selectedJewelSuffix2) {
+        const suffix = this.jewelSuffixes[this.selectedJewelSuffix2];
+        let effect = suffix.effect;
+        
+        if (this.selectedJewelSuffix2MinValue && this.selectedJewelSuffix2MaxValue) {
+            effect = `Adds ${this.selectedJewelSuffix2MinValue}-${this.selectedJewelSuffix2MaxValue} ${suffix.effect.includes('Cold') ? 'Cold' : suffix.effect.includes('Fire') ? 'Fire' : 'Lightning'} Damage`;
+        } else if (this.selectedJewelSuffix2Value) {
+            effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffix2Value);
+        }
+        
+        stats.push(effect);
+        maxRequiredLevel = Math.max(maxRequiredLevel, suffix.reqLevel || 1);
+    }
+
+    if (this.selectedJewelSuffix3) {
+    const suffix = this.jewelSuffixes[this.selectedJewelSuffix3];
+    let effect = suffix.effect;
+    
+    if (this.selectedJewelSuffix3MinValue && this.selectedJewelSuffix3MaxValue) {
+        effect = `Adds ${this.selectedJewelSuffix3MinValue}-${this.selectedJewelSuffix3MaxValue} ${suffix.effect.includes('Cold') ? 'Cold' : suffix.effect.includes('Fire') ? 'Fire' : 'Lightning'} Damage`;
+    } else if (this.selectedJewelSuffix3Value) {
+        effect = effect.replace(/\[\d+-\d+\]/, this.selectedJewelSuffix3Value);
+    }
+    
+    stats.push(effect);
+    maxRequiredLevel = Math.max(maxRequiredLevel, suffix.reqLevel || 1);
+}
+    
+    // Validate affix requirements
+    const prefixCount = [this.selectedJewelPrefix1, this.selectedJewelPrefix2, this.selectedJewelPrefix3].filter(p => p).length;
+    const suffixCount = [this.selectedJewelSuffix1, this.selectedJewelSuffix2, this.selectedJewelSuffix3].filter(s => s).length;
+    const totalAffixes = prefixCount + suffixCount;
+    
+    if (prefixCount === 0 || suffixCount === 0) {
+        alert('You must select at least 1 prefix and 1 suffix!');
+        return;
+    }
+    
+    if (totalAffixes > 4) {
+        alert('Maximum 4 affixes allowed! You have selected ' + totalAffixes + ' affixes.');
+        return;
     }
     
     const jewelStats = stats.join(', ');
@@ -1670,7 +1812,7 @@
     socketToUse.dataset.category = 'jewels';
     socketToUse.dataset.itemName = jewelName;
     socketToUse.dataset.stats = jewelStats;
-    socketToUse.dataset.levelReq = '1';
+    socketToUse.dataset.levelReq = maxRequiredLevel.toString();
     
     this.hideJewelModal();
     this.updateAll();
@@ -1678,7 +1820,6 @@
     // Reset selections
     this.resetJewelSelections();
 }
-
     // === STATS CALCULATION ===
     calculateActualRequiredLevel(section, itemName) {
       if (!itemList[itemName]) return 1;
