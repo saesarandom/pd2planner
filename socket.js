@@ -767,6 +767,12 @@
             reqLevel: 50,
             range: [11, 15]
         },
+        'Dun': { 
+            effect: '+[7-12]% Damage Taken Gained as Mana when Hit', 
+            reqLevel: 5,
+            range: [7, 12]
+        },
+
         'Nickel': { 
             effect: '+[10-20] to Attack Rating', 
             reqLevel: 1,
@@ -786,6 +792,11 @@
             effect: '+[61-100] to Attack Rating', 
             reqLevel: 36,
             range: [61, 100]
+        },
+        'Bright': { 
+            effect: '+1 to Light Radius, +10 to Attack Rating', 
+            reqLevel: 1,
+            range: [10, 10]
         },
         'Emerald': { 
             effect: '[3-7]% Better Chance of Getting Magic Items', 
@@ -831,7 +842,72 @@
             effect: 'Cold Resist +[16-30]%', 
             reqLevel: 14,
             range: [16, 30]
-        }
+        },
+        'Garnet': { 
+            effect: 'Fire Resist +[5-15]%', 
+            reqLevel: 1,
+            range: [5, 15]
+        },
+        'Ruby': { 
+            effect: 'Fire Resist +[16-30]%', 
+            reqLevel: 14,
+            range: [16, 30]
+        },
+        'Camphor': { 
+            effect: 'Lightning Resist +[5-15]%', 
+            reqLevel: 1,
+            range: [5, 15]
+        },
+        'Ambergris': { 
+            effect: 'Lightning Resist +[16-30]%', 
+            reqLevel: 14,
+            range: [16, 30]
+        },
+        'Beryl': { 
+            effect: 'Poison Resist +[5-15]%', 
+            reqLevel: 1,
+            range: [5, 15]
+        },
+        'Jade': { 
+            effect: 'Poison Resist +[16-30]%', 
+            reqLevel: 14,
+            range: [16, 30]
+        },
+        'Aureolic': { 
+            effect: '[1-3] Mana After Each Kill', 
+            reqLevel: 9,
+            range: [1, 3]
+        },
+        'Diamond': { 
+            effect: '[25-50] to Attack Rating against Demons', 
+            reqLevel: 19,
+            range: [25, 50]
+        },
+        'Pearl': { 
+            effect: '[25-50] to Attack Rating against Undead', 
+            reqLevel: 13,
+            range: [25, 50]
+        },
+        'Cultists': { 
+            effect: '5% Chance of Open Wounds, +[30-40] Open Wounds Damage per Second', 
+            reqLevel: 25,
+            range: [30, 40]
+        },
+        'Bloodthirsters': { 
+            effect: '5% Chance of Open Wounds, +[65-85] Open Wounds Damage per Second', 
+            reqLevel: 45,
+            range: [65, 85]
+        },
+        'Gorelusts': { 
+            effect: '5% Chance of Open Wounds, +[95-125] Open Wounds Damage per Second', 
+            reqLevel: 65,
+            range: [95, 125]
+        },
+        'Blood Sucking': { 
+            effect: '[1-3] Life After Each Kill', 
+            reqLevel: 26,
+            range: [1, 3]
+        },
     };
 
     this.jewelSuffixes = {
@@ -841,41 +917,11 @@
             range: [30, 40]
         },
         'Fervor': { 
-            effect: '+15% Increased Attack Speed', 
+            effect: '+15% Increased Attack Speed', //magic only
             reqLevel: 31,
             range: [15, 15]  // Fixed value
         },
-        'Maiming': { 
-            effect: '[5-8]% Chance of Open Wounds', 
-            reqLevel: 24,
-            range: [5, 8]
-        },
-        'Slaying': { 
-            effect: '[1-3]% Deadly Strike', 
-            reqLevel: 38,
-            range: [1, 3]
-        },
-        'Gore': { 
-            effect: '[4-10]% Deadly Strike', 
-            reqLevel: 63,
-            range: [4, 10]
-        },
-        'Carnage': { 
-            effect: '[11-15]% Deadly Strike', 
-            reqLevel: 77,
-            range: [11, 15]
-        },
-        'Slaughter': { 
-            effect: '[16-20]% Deadly Strike', 
-            reqLevel: 85,
-            range: [16, 20]
-        },
-        'Frost': { 
-            effect: 'Adds [1-3] to [4-6] Cold Damage', 
-            reqLevel: 6,
-            minRange: [1, 3],
-            maxRange: [4, 6]
-        },
+        
         'Frigidity': { 
             effect: 'Adds [1-1] to [3-5] Cold Damage', 
             reqLevel: 12,
@@ -889,7 +935,7 @@
             maxRange: [6, 10]
         },
         'Glacier': { 
-            effect: 'Adds [4-5] to [11-15] Cold Damage', 
+            effect: 'Adds [4-5] to [11-15] Cold Damage', //magiconly
             reqLevel: 50,
             minRange: [4, 5],
             maxRange: [11, 15]
@@ -929,7 +975,117 @@
             reqLevel: 49,
             minRange: [1, 1],
             maxRange: [61, 100]
-        }
+        },
+        'Ire': { 
+            effect: '+[2-5] to Maximum Damage', 
+            reqLevel: 3,
+            range: [2, 5]
+        },
+        'Wrath': { 
+            effect: '+[6-10] to Maximum Damage', 
+            reqLevel: 8,
+            range: [6, 10]
+        },
+        'Carnage': { 
+            effect: '+[11-15] to Maximum Damage', 
+            reqLevel: 18,
+            range: [11, 15]
+        },
+        'Joyfulness': { 
+            effect: '+[1-4] to Minimum Damage', 
+            reqLevel: 3,
+            range: [1, 4]
+        },
+        'Bliss': { 
+            effect: '+[5-10] to Minimum Damage', 
+            reqLevel: 37,
+            range: [5, 10]
+        },
+        'Envy': { 
+            effect: 'Adds 20 Poison Damage', 
+            reqLevel: 1,
+            range: [20, 20]
+        },
+        'Daring': {
+            effect: '+[1-3] to Dexterity',
+            reqLevel: 1,
+            range: [1, 3]
+        },
+        'Daring2': {
+            effect: '+[4-6] to Dexterity',
+            reqLevel: 14,
+            range: [4, 6]
+        },
+        'Daring3': {
+            effect: '+[7-9] to Dexterity',
+            reqLevel: 28,
+            range: [7, 9]
+        },
+        'Truth': {
+            effect: '+7% Faster Hit Recovery',
+            reqLevel: 36,
+            range: [7, 7]
+        },
+        'Honor': {
+            effect: 'Replenish Life+ [1-4]',
+            reqLevel: 35,
+            range: [1, 4]
+        },
+        'Avarice': {
+            effect: '+[10-30]% Extra Gold from Monsters',
+            reqLevel: 1,
+            range: [10, 30]
+        },
+        'Prosperity': {
+            effect: '+[5-10]% Better Chance of Getting Magic Items',
+            reqLevel: 19,
+            range: [5, 10]
+        },
+        'Knowledge': {
+            effect: '+[1-5] to Energy',
+            reqLevel: 6,
+            range: [1, 5]
+        },
+        'Knowledge2': {
+            effect: '+[4-6] to Energy',
+            reqLevel: 18,
+            range: [4, 6]
+        },
+        'Knowledge3': {
+            effect: '+[7-9] to Energy',
+            reqLevel: 33,
+            range: [7, 9]
+        },
+        'Spirit': {
+            effect: '+[3-8] to Life',
+            reqLevel: 1,
+            range: [3, 8]
+        },
+        'Hope': {
+            effect: '+[9-20] to Life', //maic only
+            reqLevel: 37,
+            range: [9, 20]
+        },
+        'Freedom': {
+            effect: 'Requirements -15%', 
+            reqLevel: 33,
+            range: [-15, -15]
+        },
+        'Virility': {
+            effect: '+[1-4] to Strength',
+            reqLevel: 13,
+            range: [1, 4]
+        },
+        'Virility2': {
+            effect: '+[5-6] to Strength',
+            reqLevel: 25,
+            range: [5, 6]
+        },
+        'Virility3': {
+            effect: '+[7-9] to Strength',
+            reqLevel: 42,
+            range: [7, 9]
+        },
     };
 }
 
