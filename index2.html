@@ -635,6 +635,7 @@
 <script src="upgrade.js"></script>
 <script src="buffs.js"></script>
 <script src="inventory.js"></script>
+<script src="runeword.js"></script>
 <script src="skills.js"></script>
 
 
@@ -726,7 +727,8 @@ const itemDropdownData = {
     { name: "M'avina's True Sight", quality: "set" },
     { name: "Natalya's Totem", quality: "set" },
     { name: "Tal Rasha's Horadric Crest", quality: "set" },
-    { name: "Trang-Oul's Guise", quality: "set" }
+    { name: "Trang-Oul's Guise", quality: "set" },
+    { name: "Nadir", quality: "runeword" }
   ],
 
   armor: [
@@ -889,7 +891,8 @@ const itemDropdownData = {
     { name: "Schaefer's Hammer", quality: "unique" },
     { name: "Windhammer", quality: "unique" },
     { name: "Earth Shifter", quality: "unique" },
-    { name: "The Cranium Basher", quality: "unique" }
+    { name: "The Cranium Basher", quality: "unique" },
+    { name: "Steel", quality: "runeword" }
   ],
 
   // FIXED: Convert all remaining arrays to object structure
@@ -1045,7 +1048,7 @@ function populateItemDropdowns() {
       if (dropdown) {
         items.forEach(item => {
           // Check if item exists in itemList
-          if (itemList[item.name]) {
+          if (itemList[item.name] || item.quality === 'runeword') {
             const option = document.createElement('option');
             option.value = item.name;
             option.textContent = item.name;
@@ -1056,6 +1059,9 @@ function populateItemDropdowns() {
               option.className = 'unique-item';
             } else if (item.quality === 'set') {
               option.className = 'set-item';
+            } else if (item.quality === 'runeword') {
+              option.style.color = '#D2691E';
+              option.style.fontWeight = 'bold';
             }
             
             dropdown.appendChild(option);

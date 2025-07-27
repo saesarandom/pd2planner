@@ -3820,6 +3820,39 @@ const itemList = {
       maxdeadlystrike: 15, // Maximum Deadly Strike (+15%)
     },
   },
+
+  "Steel": {
+  description:
+    "Steel<br>Short Sword<br>One-Hand Damage: 5 to 11<br>Required Strength: 27<br>Required Dexterity: 28<br>Required Level: 13<br>+25% Increased Attack Speed<br>+20% Enhanced Damage<br>+3 to Minimum Damage<br>+3 to Maximum Damage<br>+50 to Attack Rating<br>+50% Chance of Open Wounds<br>+1 to Light Radius<br>Socketed (2)",
+  properties: {
+    onehandmin: 5,
+    onehandmax: 11,
+    reqstr: 27,
+    reqdex: 28,
+    reqlvl: 13,
+    ias: 25,
+    edmg: 20,
+    mindmg: 3,
+    maxdmg: 3,
+    toatt: 50,
+    openwounds: 50,
+    socketed: true,
+    socketCount: 2
+  }
+},
+
+"Nadir": {
+  description:
+    "Nadir<br>Cap<br>Defense: 5<br>Required Strength: 0<br>Required Dexterity: 0<br>Required Level: 13<br>+5 to Strength<br>-33% Extra Gold from Monsters<br>+6 to Mana after each Kill<br>-3 to Light Radius<br>Socketed (2)",
+  properties: {
+    defense: 5,
+    reqlvl: 13,
+    goldfind: -33,
+    str: 5,
+    socketed: true,
+    socketCount: 2
+    }
+},
   //shields/
 
   "Pelta Lunata": {

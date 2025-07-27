@@ -733,7 +733,7 @@
             range: [21, 40]
         },
         'Ivory': { 
-            effect: '+[41-64] Defense', 
+            effect: '+[41-64] Defense', //magic only
             reqLevel: 56,
             range: [41, 64]
         },
@@ -829,7 +829,7 @@
             range: [5, 10]
         },
         'Scintillating': { 
-            effect: 'All Resistances +[11-15]', 
+            effect: 'All Resistances +[11-15]', //magic only
             reqLevel: 26,
             range: [11, 15]
         },
@@ -2483,7 +2483,8 @@ if (defMatch) {
     if (mfMatch) { this.stats.magicFind += parseInt(mfMatch[1]); return; }
     
     // Gold Find
-    const gfMatch = cleanLine.match(/(\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
+    // const gfMatch = cleanLine.match(/(\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
+    const gfMatch = cleanLine.match(/([+-]?\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
     if (gfMatch) { this.stats.goldFind += parseInt(gfMatch[1]); return; }
     
     // Combat stats
