@@ -635,15 +635,16 @@ getStatForAffix(affix) {
 'Mentalistsgrand': { min: 1, max: 1, text: '+{value} to Shadow Disciplines (Assassin Only)' },
 'Shogukushasgrand': { min: 1, max: 1, text: '+{value} to Martial Arts (Assassin Only)' },
     // Attack Rating
-    'Bronze': { min: 7, max: 15, text: '+{value} to Attack Rating' },
-    'Bronze2': { min: 16, max: 25, text: '+{value} to Attack Rating' },
-    'Iron': { min: 16, max: 25, text: '+{value} to Attack Rating' },
-    'Steel': { min: 26, max: 35, text: '+{value} to Attack Rating' },
+    'Bronze': { min: 2, max: 4, text: '+{value} to Attack Rating' },
+    'Bronze2': { min: 6, max: 12, text: '+{value} to Attack Rating' },
+    'Iron': { min: 13, max: 24, text: '+{value} to Attack Rating' },
+    'Steel': { min: 25, max: 36, text: '+{value} to Attack Rating' },
     
     // Mana and rest
-    'Lizards': { min: 1, max: 5, text: '+{value} to Mana' },
-    'Snakes': { min: 6, max: 10, text: '+{value} to Mana' },
-    'Serpents': { min: 11, max: 15, text: '+{value} to Mana' },
+    'Lizards': { min: 1, max: 2, text: '+{value} to Mana' },
+    'Lizards2': { min: 3, max: 7, text: '+{value} to Mana' },
+    'Snakes': { min: 8, max: 12, text: '+{value} to Mana' },
+    'Serpents': { min: 13, max: 17, text: '+{value} to Mana' },
     'Serpentslarge': { min: 30, max: 34, text: '+{value} to Mana' },
     'Discharginglarge' : { min: 2, max: 3, text: '+{value}% to Lightning Skill Damage' },
     'Frigidlarge' : { min: 2, max: 3, text: '+{value}% to Cold Skill Damage' },
@@ -657,7 +658,7 @@ getStatForAffix(affix) {
     // 'Scintillatinglarge': { min: 3, max: 4, text: '+{value}% to Magic Skill Damage' },
 
     // Resistances
-    'Shimmering': { min: 3, max: 5, text: 'All Resistances +{value}%' },
+    'Shimmering': { min: 3, max: 5, text: 'All Resistances +{value}' },
     'Azure': { min: 3, max: 5, text: 'Cold Resist +{value}%' },
     'Crimson': { min: 3, max: 5, text: 'Fire Resist +{value}%' },
     'Tangerine': { min: 3, max: 5, text: 'Lightning Resist +{value}%' },
@@ -761,9 +762,9 @@ getStatForAffix(affix) {
   
 
     // Life suffixes
-    'Oflife': { min: 1, max: 5, text: '+{value} to Life' },
-    'Ofsustenance': { min: 1, max: 5, text: '+{value} to Life' },
-    'Ofvita': { min: 6, max: 10, text: '+{value} to Life' },
+    'Oflife': { min: 5, max: 10, text: '+{value} to Life' },
+    'Ofsustenance': { min: 11, max: 15, text: '+{value} to Life' },
+    'Ofvita': { min: 16, max: 20, text: '+{value} to Life' },
     
     // Attribute suffixes
     'Ofstrength': { min: 1, max: 1, text: '+{value} to Strength' },
@@ -778,11 +779,11 @@ getStatForAffix(affix) {
 
 
     // Other suffixes
-    'Ofinertia': { min: 3, max: 7, text: '+{value}% Faster Run/Walk' },
-    'Ofgreed': { min: 10, max: 20, text: '+{value}% Extra Gold from Monsters' },
-    'Offortune': { min: 5, max: 15, text: '+{value}% Better Chance of Getting Magic Items' },
-    'Ofgoodluck': { min: 1, max: 3, text: '+{value}% Better Chance of Getting Magic Items' },
-    'Ofbalance': { min: 5, max: 10, text: '+{value}% Faster Hit Recovery' },
+    'Ofinertia': { min: 3, max: 3, text: '+{value}% Faster Run/Walk' },
+    'Ofgreed': { min: 5, max: 10, text: '+{value}% Extra Gold from Monsters' },
+    'Offortune': { min: 3, max: 5, text: '+{value}% Better Chance of Getting Magic Items' },
+    'Ofgoodluck': { min: 6, max: 73, text: '+{value}% Better Chance of Getting Magic Items' },
+    'Ofbalance': { min: 5, max: 5, text: '+{value}% Faster Hit Recovery' },
     'Offrost': { 
   minRange: { min: 1, max: 1 }, 
   maxRange: { min: 2, max: 2 }, 
@@ -1554,13 +1555,13 @@ if (match = line.match(/\+?(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
       }
       
       // All Resistances
-      if (match = line.match(/All\s+Resistances\s+\+(\d+)%/i)) {
-        const val = parseInt(match[1]);
-        bonuses.cold = (bonuses.cold || 0) + val;
-        bonuses.fire = (bonuses.fire || 0) + val;
-        bonuses.lightning = (bonuses.lightning || 0) + val;
-        bonuses.poison = (bonuses.poison || 0) + val;
-      }
+      if (match = line.match(/All\s+Resistances\s+\+(\d+)/i)) {
+  const val = parseInt(match[1]);
+  bonuses.coldResist = (bonuses.coldResist || 0) + val;
+  bonuses.fireResist = (bonuses.fireResist || 0) + val;
+  bonuses.lightResist = (bonuses.lightResist || 0) + val;
+  bonuses.poisonResist = (bonuses.poisonResist || 0) + val;
+}
       
       // Life
       if (match = line.match(/\+(\d+)\s+to\s+Life/i)) {
@@ -1607,14 +1608,14 @@ function captureCurrentBaseValues() {
     defense: 'defensecontainer',
     coldResist: 'coldresistcontainer',
     fireResist: 'fireresistcontainer',
-    lightResist: 'lightningresistcontainer',
+    lightResist: 'lightresistcontainer', //instead of lightningresist
     poisonResist: 'poisonresistcontainer',
     life: 'lifecontainer',
     mana: 'manacontainer',
     str: 'str',
     dex: 'dex',
     attackrating: 'attackratingcontainer',
-    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightningresistcontainer', 'poisonresistcontainer'], // Assuming all resistances are shown in their respective containers
+    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightresistcontainer', 'poisonresistcontainer'], // Assuming all resistances are shown in their respective containers
     magicFind: 'magicfindcontainer',
     goldFind: 'goldfindcontainer',
     frw: 'frwcontainer',
@@ -1673,14 +1674,14 @@ function updateCharmDisplay() {
     defense: 'defensecontainer',
     coldResist: 'coldresistcontainer',
     fireResist: 'fireresistcontainer',
-    lightResist: 'lightningresistcontainer',
+    lightResist: 'lightresistcontainer',
     poisonResist: 'poisonresistcontainer',
     // life: 'lifecontainer',
     // mana: 'manacontainer',
     str: 'str',
     dex: 'dex',
     attackrating: 'attackratingcontainer',
-    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightningresistcontainer', 'poisonresistcontainer'], // Assuming all resistances are shown in their respective containers
+    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightresistcontainer', 'poisonresistcontainer'], // Assuming all resistances are shown in their respective containers
     magicFind: 'magicfindcontainer',
     goldFind: 'goldfindcontainer',
     frw: 'frwcontainer',
@@ -1864,10 +1865,10 @@ function onCharmChange() {
     defense: 'defensecontainer',
     coldResist: 'coldresistcontainer', 
     fireResist: 'fireresistcontainer',
-    lightResist: 'lightningresistcontainer',
+    lightResist: 'lightresistcontainer',
     poisonResist: 'poisonresistcontainer',
     attackrating: 'attackratingcontainer',
-    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightningresistcontainer', 'poisonresistcontainer'],  // Assuming all resistances are shown in their respective containers
+    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightresistcontainer', 'poisonresistcontainer'],  // Assuming all resistances are shown in their respective containers
     magicFind: 'magicfindcontainer',
     goldFind: 'goldfindcontainer',
     frw: 'frwcontainer',
