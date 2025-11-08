@@ -2504,16 +2504,16 @@ this.selectedJewelSuffix3MaxValue = null;
       // Generate final description with stacked stats
       let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
 
-      // Update Required Level display
-      const levelColor = meetsRequirement && isUsableByClass && meetsStatRequirements ? '#00ff00' : '#ff5555';
+      // Update Required Level display - only check level requirement
+      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
       const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
       const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
       if (levelPattern.test(finalDescription)) {
         finalDescription = finalDescription.replace(levelPattern, newLevelLine);
       }
 
-      // Update Required Strength and Dexterity colors
-      finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value, meetsRequirement && isUsableByClass && meetsStatRequirements);
+      // Update Required Strength and Dexterity colors - check individually
+      finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
 
       // Update display
       infoDiv.innerHTML = finalDescription;
@@ -2575,8 +2575,8 @@ this.selectedJewelSuffix3MaxValue = null;
     // Generate final description with stacked properties
     let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
 
-    // Update Required Level display
-    const levelColor = meetsRequirement && isUsableByClass && meetsStatRequirements ? '#00ff00' : '#ff5555';
+    // Update Required Level display - only check level requirement
+    const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
     const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
 
     const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
@@ -2584,8 +2584,8 @@ this.selectedJewelSuffix3MaxValue = null;
       finalDescription = finalDescription.replace(levelPattern, newLevelLine);
     }
 
-    // Update Required Strength and Dexterity colors
-    finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value, meetsRequirement && isUsableByClass && meetsStatRequirements);
+    // Update Required Strength and Dexterity colors - check individually
+    finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
 
     // Visual feedback for unusable items
     if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
@@ -2642,7 +2642,7 @@ this.selectedJewelSuffix3MaxValue = null;
     return finalDescription;
   }
 
-  updateStatRequirementColors(description, itemName, isFullyUsable) {
+  updateStatRequirementColors(description, itemName) {
     let updatedDescription = description;
     const reqStats = this.getItemRequiredStats(itemName);
 
@@ -2650,12 +2650,13 @@ this.selectedJewelSuffix3MaxValue = null;
     const strInput = parseInt(document.getElementById('str')?.value) || 0;
     const dexInput = parseInt(document.getElementById('dex')?.value) || 0;
 
+    // Check each requirement independently
     const meetsStrRequirement = strInput >= reqStats.str;
     const meetsDexRequirement = dexInput >= reqStats.dex;
 
-    // Determine color based on overall usability and specific requirement
-    const strColor = isFullyUsable && meetsStrRequirement ? '#00ff00' : '#ff5555';
-    const dexColor = isFullyUsable && meetsDexRequirement ? '#00ff00' : '#ff5555';
+    // Determine color based on EACH requirement independently
+    const strColor = meetsStrRequirement ? '#00ff00' : '#ff5555';
+    const dexColor = meetsDexRequirement ? '#00ff00' : '#ff5555';
 
     // Replace Required Strength
     if (reqStats.str > 0) {
