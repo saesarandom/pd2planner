@@ -2060,20 +2060,20 @@ this.selectedJewelSuffix3MaxValue = null;
         return; // Preserve user's input values
       }
 
-      // Has sockets - need to show socket bonuses WITHOUT regenerating item description
-      // Find or create socket stats marker div
-      let socketMarker = infoDiv.querySelector('.socket-stats-marker');
+      // Has sockets - need to merge stats and regenerate description
+      // First, generate clean base description
+      const baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
 
-      if (!socketMarker) {
-        // Create marker div if it doesn't exist
-        socketMarker = document.createElement('div');
-        socketMarker.className = 'socket-stats-marker';
-        infoDiv.appendChild(document.createElement('br'));
-        infoDiv.appendChild(socketMarker);
-      }
+      // Parse base stats from the generated description (strip input elements first)
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = baseDescription;
+      tempDiv.querySelectorAll('.stat-input').forEach(input => input.remove());
+      const cleanBaseDescription = tempDiv.innerHTML;
 
-      // Build socket stats HTML
-      let socketStatsHTML = '';
+      const baseStats = this.parseStatsToMap(cleanBaseDescription);
+
+      // Build socket items and merge stats
+      const socketItems = [];
       sockets.forEach(socket => {
         const stats = socket.dataset.stats;
         const itemName = socket.dataset.itemName;
@@ -2081,19 +2081,41 @@ this.selectedJewelSuffix3MaxValue = null;
         const socketUsable = currentLevel >= levelReq;
 
         if (stats && itemName) {
-          const color = socketUsable ? '#6495ED' : '#888';
-          const levelText = socketUsable ? '' : ` (Level ${levelReq} Required)`;
-          // Parse and display each socket stat
-          stats.split('<br>').forEach(line => {
-            if (line.trim()) {
-              socketStatsHTML += `<span style="color: ${color};">${line}${levelText}</span><br>`;
-            }
+          socketItems.push({
+            name: itemName,
+            stats,
+            levelReq,
+            usable: socketUsable && meetsRequirement
           });
+
+          // Merge stats if usable
+          if (socketUsable && meetsRequirement) {
+            const parsedSocketStats = this.parseStatsToMap(stats);
+            this.mergeStatsMaps(baseStats, parsedSocketStats);
+          }
         }
       });
 
-      // Update socket marker content (doesn't destroy parent elements)
-      socketMarker.innerHTML = socketStatsHTML;
+      // Generate final description with stacked stats
+      let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
+
+      // Update Required Level display
+      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
+      const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
+      const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
+      if (levelPattern.test(finalDescription)) {
+        finalDescription = finalDescription.replace(levelPattern, newLevelLine);
+      }
+
+      // Update display
+      infoDiv.innerHTML = finalDescription;
+
+      // Re-attach input listeners
+      if (typeof attachStatInputListeners === 'function') {
+        attachStatInputListeners();
+      } else if (typeof window.attachStatInputListeners === 'function') {
+        window.attachStatInputListeners();
+      }
 
       // Update visual feedback
       if (!meetsRequirement) {
