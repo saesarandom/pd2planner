@@ -3815,6 +3815,9 @@ function updateDefense() {
     const item = itemList[select.value];
     if (!item) return;
 
+    // Skip items without static descriptions (e.g., items with dynamic descriptions)
+    if (!item.description) return;
+
     const baseType = item.description.split("<br>")[1];
     const newDefense = calculateItemDefense(item, baseType, type);
 

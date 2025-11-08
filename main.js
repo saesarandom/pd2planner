@@ -181,18 +181,11 @@ function detectItemType(itemName, item) {
  * Populate all item dropdowns by loading from itemList
  */
 function populateItemDropdowns() {
-  console.log('🔍 populateItemDropdowns called');
-  console.log('itemList type:', typeof itemList);
-  console.log('itemList available:', typeof itemList !== 'undefined');
-
   // Check if itemList is available
   if (typeof itemList === 'undefined') {
-    console.warn('⚠️  itemList not available yet, retrying in 100ms');
     setTimeout(populateItemDropdowns, 100);
     return;
   }
-
-  console.log('✅ itemList is available, starting population...');
 
   // Create a map to collect items by type
   const itemsByType = {
@@ -222,19 +215,16 @@ function populateItemDropdowns() {
   for (const itemName in itemList) {
     const item = itemList[itemName];
     if (!item) {
-      console.warn(`⚠️  Item ${itemName} is null or undefined`);
       continue;
     }
 
     // Items need either description or baseType
     if (!item.description && !item.baseType) {
-      console.warn(`⚠️  Item ${itemName} missing description and baseType`);
       continue;
     }
 
     itemCount++;
     const itemType = detectItemType(itemName, item);
-    console.log(`📦 ${itemName} -> ${itemType}`);
 
     if (itemType && itemsByType[itemType]) {
       itemsByType[itemType].push(itemName);
@@ -252,38 +242,15 @@ function populateItemDropdowns() {
     }
   }
 
-  console.log(`📊 Total items processed: ${itemCount}`);
-  console.log('📊 Items by type:', {
-    weapons: itemsByType.weapon.length,
-    helms: itemsByType.helm.length,
-    armor: itemsByType.armor.length,
-    shields: itemsByType.shield.length,
-    gloves: itemsByType.gloves.length,
-    belts: itemsByType.belts.length,
-    boots: itemsByType.boots.length,
-    rings1: itemsByType.ringsone.length,
-    rings2: itemsByType.ringstwo.length,
-    amulets: itemsByType.amulets.length,
-    merc_weapons: itemsByType.mercweapon.length,
-    merc_helms: itemsByType.merchelm.length,
-    merc_armor: itemsByType.mercarmor.length,
-    merc_shields: itemsByType.mercoff.length,
-    merc_gloves: itemsByType.mercgloves.length,
-    merc_belts: itemsByType.mercbelts.length,
-    merc_boots: itemsByType.mercboots.length
-  });
-
   // Add items to their respective dropdowns
   for (const [itemType, items] of Object.entries(itemsByType)) {
     const dropdownId = DROPDOWN_MAP[itemType];
     if (!dropdownId) {
-      console.warn(`⚠️  No dropdown mapped for type: ${itemType}`);
       continue;
     }
 
     const dropdown = document.getElementById(dropdownId);
     if (!dropdown) {
-      console.warn(`⚠️  Dropdown element not found: ${dropdownId}`);
       continue;
     }
 
@@ -297,11 +264,7 @@ function populateItemDropdowns() {
       option.textContent = itemName;
       dropdown.appendChild(option);
     });
-
-    console.log(`✅ Added ${items.length} items to ${dropdownId}`);
   }
-
-  console.log('✅ Dropdowns populated successfully!');
 }
 
 /**
@@ -558,8 +521,6 @@ function setupCritListeners() {
  * Main initialization
  */
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("🎯 Initializing PD2 Planner...");
-
   // 1. Populate dropdowns first
   populateItemDropdowns();
 
@@ -586,6 +547,4 @@ document.addEventListener('DOMContentLoaded', () => {
   if (username && typeof updateUIState === 'function') {
     updateUIState(username);
   }
-
-  console.log("✅ PD2 Planner initialized successfully!");
 });
