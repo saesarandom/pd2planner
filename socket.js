@@ -2041,13 +2041,31 @@ this.selectedJewelSuffix3MaxValue = null;
     const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
     const meetsRequirement = currentLevel >= actualRequiredLevel;
 
+    // Get socket stats first to check if we need to process
+    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+
+    // Skip regeneration for items with dynamic descriptions and no sockets
+    // This preserves user input values (like Biggin's Bonnet variable stats)
+    if (!item.description && sockets.length === 0) {
+      // Just update visual feedback for level requirement
+      if (!meetsRequirement) {
+        infoDiv.style.opacity = '0.6';
+        infoDiv.style.filter = 'grayscale(50%)';
+        infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+      } else {
+        infoDiv.style.opacity = '1';
+        infoDiv.style.filter = 'none';
+        infoDiv.title = '';
+      }
+      return; // Don't touch innerHTML - preserve user's input values
+    }
+
     // Parse base item stats
     // Use existing innerHTML if no static description (for dynamically generated items like Biggin's Bonnet)
     let baseDescription = item.description || infoDiv.innerHTML || '';
     const baseStats = this.parseStatsToMap(baseDescription);
-    
-    // Get socket stats and merge with base stats
-    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+
+    // Build socket items array
     const socketItems = [];
     
     sockets.forEach(socket => {
