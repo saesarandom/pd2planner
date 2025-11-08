@@ -144,20 +144,18 @@ function detectItemType(itemName, description) {
  * Populate all item dropdowns by loading from itemList
  */
 function populateItemDropdowns() {
+  console.log('🔍 populateItemDropdowns called');
+  console.log('itemList type:', typeof itemList);
+  console.log('itemList available:', typeof itemList !== 'undefined');
+
   // Check if itemList is available
   if (typeof itemList === 'undefined') {
-    console.warn('itemList not available yet, retrying in 100ms');
+    console.warn('⚠️  itemList not available yet, retrying in 100ms');
     setTimeout(populateItemDropdowns, 100);
     return;
   }
 
-  console.log('📦 Loading items from itemList...');
-
-  // Clear all dropdowns first
-  Object.values(DROPDOWN_MAP).forEach(id => {
-    const dropdown = document.getElementById(id);
-    if (dropdown) dropdown.innerHTML = '<option value="">None</option>';
-  });
+  console.log('✅ itemList is available, starting population...');
 
   // Create a map to collect items by type
   const itemsByType = {
@@ -172,24 +170,54 @@ function populateItemDropdowns() {
     amulets: []
   };
 
+  let itemCount = 0;
+
   // Iterate through all items in itemList
   for (const itemName in itemList) {
     const item = itemList[itemName];
-    if (!item.description) continue;
+    if (!item || !item.description) {
+      console.warn(`⚠️  Item ${itemName} missing description`);
+      continue;
+    }
 
+    itemCount++;
     const itemType = detectItemType(itemName, item.description);
+    console.log(`📦 ${itemName} -> ${itemType}`);
+
     if (itemType && itemsByType[itemType]) {
       itemsByType[itemType].push(itemName);
     }
   }
 
+  console.log(`📊 Total items processed: ${itemCount}`);
+  console.log('📊 Items by type:', {
+    weapons: itemsByType.weapon.length,
+    helms: itemsByType.helm.length,
+    armor: itemsByType.armor.length,
+    shields: itemsByType.shield.length,
+    gloves: itemsByType.gloves.length,
+    belts: itemsByType.belts.length,
+    boots: itemsByType.boots.length,
+    rings: itemsByType.ringsone.length,
+    amulets: itemsByType.amulets.length
+  });
+
   // Add items to their respective dropdowns
   for (const [itemType, items] of Object.entries(itemsByType)) {
     const dropdownId = DROPDOWN_MAP[itemType];
-    if (!dropdownId) continue;
+    if (!dropdownId) {
+      console.warn(`⚠️  No dropdown mapped for type: ${itemType}`);
+      continue;
+    }
 
     const dropdown = document.getElementById(dropdownId);
-    if (!dropdown) continue;
+    if (!dropdown) {
+      console.warn(`⚠️  Dropdown element not found: ${dropdownId}`);
+      continue;
+    }
+
+    // Clear the dropdown first
+    dropdown.innerHTML = '<option value="">None</option>';
 
     // Sort items alphabetically
     items.sort().forEach(itemName => {
@@ -199,7 +227,7 @@ function populateItemDropdowns() {
       dropdown.appendChild(option);
     });
 
-    console.log(`✓ Added ${items.length} items to ${dropdownId}`);
+    console.log(`✅ Added ${items.length} items to ${dropdownId}`);
   }
 
   console.log('✅ Dropdowns populated successfully!');
