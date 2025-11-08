@@ -399,19 +399,35 @@ function updateItemInfo(event) {
   const dropdown = event.target;
   const selectedItemName = dropdown.value;
 
+  console.log('===== updateItemInfo CALLED =====');
+  console.log('Dropdown ID:', dropdown.id);
+  console.log('Selected item:', selectedItemName);
+
   const infoDivId = INFO_DIV_MAP[dropdown.id];
-  if (!infoDivId) return;
+  console.log('Info div ID:', infoDivId);
+
+  if (!infoDivId) {
+    console.log('NO INFO DIV ID FOUND - RETURNING');
+    return;
+  }
 
   const infoDiv = document.getElementById(infoDivId);
-  if (!infoDiv) return;
+  console.log('Info div element:', infoDiv);
+
+  if (!infoDiv) {
+    console.log('NO INFO DIV ELEMENT FOUND - RETURNING');
+    return;
+  }
 
   if (!selectedItemName) {
+    console.log('NO ITEM SELECTED - CLEARING');
     infoDiv.innerHTML = '';
     return;
   }
 
   // Try to get item info from itemList
   const item = itemList && itemList[selectedItemName];
+  console.log('Item from itemList:', item);
 
   if (item) {
     // Generate description (handles both static and dynamic with variable stats)
@@ -423,6 +439,7 @@ function updateItemInfo(event) {
     attachStatInputListeners();
   } else {
     // If not in itemList, try to show a basic placeholder
+    console.log('Item not found in itemList - using placeholder');
     infoDiv.innerHTML = selectedItemName;
   }
 
