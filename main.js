@@ -460,11 +460,13 @@ window.updateItemInfo = function updateItemInfo(event) {
   const section = SECTION_MAP[dropdown.id];
   if (section && window.unifiedSocketSystem) {
     try {
-      // Adjust socket count to match new item's max (this also calls updateAll internally)
+      // Adjust socket count to match new item's max
       if (typeof window.unifiedSocketSystem.adjustSocketsForItem === 'function') {
         window.unifiedSocketSystem.adjustSocketsForItem(section);
-      } else if (typeof window.unifiedSocketSystem.updateAll === 'function') {
-        // Fallback if adjustSocketsForItem is not available
+      }
+
+      // Always update to add socket stats to description
+      if (typeof window.unifiedSocketSystem.updateAll === 'function') {
         window.unifiedSocketSystem.updateAll();
       }
     } catch (error) {

@@ -3216,6 +3216,7 @@ function handleUpgrade() {
 
         select.dispatchEvent(new Event("change"));
   if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
       
     }
@@ -3245,6 +3246,7 @@ function handleUpgrade() {
 
           select.dispatchEvent(new Event("change"));
     if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
       
     }
@@ -3299,6 +3301,7 @@ function handleArmorUpgrade() {
 
         select.dispatchEvent(new Event("change"));
   if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
       
     }
@@ -3328,6 +3331,7 @@ function handleArmorUpgrade() {
 
           select.dispatchEvent(new Event("change"));
     if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
       
     }
@@ -3417,6 +3421,7 @@ function handleWeaponUpgrade() {
 
         select.dispatchEvent(new Event("change"));
   if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
     }
   } else {
@@ -3475,6 +3480,7 @@ function handleWeaponUpgrade() {
 
           select.dispatchEvent(new Event("change"));
     if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
     }
   }
@@ -3604,6 +3610,7 @@ function handleWeaponUpgradeWithCorruption() {
   // Trigger update
   select.dispatchEvent(new Event("change"));
 if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
   updateWeaponDamageDisplay();
 
   // Make sure corruptions are still displayed
@@ -3662,6 +3669,7 @@ function handleGloveUpgrade() {
 
         select.dispatchEvent(new Event("change"));
   if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
       
     }
@@ -3692,6 +3700,7 @@ function handleGloveUpgrade() {
 
           select.dispatchEvent(new Event("change"));
     if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
       
     }
@@ -3750,6 +3759,7 @@ function handleBeltUpgrade() {
 
         select.dispatchEvent(new Event("change"));
   if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
       return;
     }
@@ -3780,6 +3790,7 @@ function handleBeltUpgrade() {
 
           select.dispatchEvent(new Event("change"));
     if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
       
       
     }
@@ -3832,6 +3843,7 @@ function updateDefense() {
       }
       select.dispatchEvent(new Event("change"));
 if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
     }
   });
 }
@@ -3993,6 +4005,7 @@ function makeEtherealItem(category) {
   // Trigger change event to update display
   select.dispatchEvent(new Event("change"));
 if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
 
   // Reapply socket corruption if there was one
   if (socketCorruption) {
@@ -4860,6 +4873,7 @@ function makeEtherealShield() {
   // Trigger display update
   select.dispatchEvent(new Event("change"));
 if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      return;
 
   console.log("Shield made ethereal with defense:", newDefense);
 }
