@@ -147,7 +147,15 @@ function populateItemDropdowns() {
     boots: [],
     ringsone: [],
     ringstwo: [],
-    amulets: []
+    amulets: [],
+    // Mercenary item types (same items as regular, just for merc slots)
+    mercweapon: [],
+    merchelm: [],
+    mercarmor: [],
+    mercoff: [],
+    mercgloves: [],
+    mercbelts: [],
+    mercboots: []
   };
 
   let itemCount = 0;
@@ -171,6 +179,12 @@ function populateItemDropdowns() {
       if (itemType === 'ringsone') {
         itemsByType.ringstwo.push(itemName);
       }
+
+      // Add items to mercenary slots as well
+      const mercType = 'merc' + itemType;
+      if (itemsByType[mercType]) {
+        itemsByType[mercType].push(itemName);
+      }
     }
   }
 
@@ -185,7 +199,14 @@ function populateItemDropdowns() {
     boots: itemsByType.boots.length,
     rings1: itemsByType.ringsone.length,
     rings2: itemsByType.ringstwo.length,
-    amulets: itemsByType.amulets.length
+    amulets: itemsByType.amulets.length,
+    merc_weapons: itemsByType.mercweapon.length,
+    merc_helms: itemsByType.merchelm.length,
+    merc_armor: itemsByType.mercarmor.length,
+    merc_shields: itemsByType.mercoff.length,
+    merc_gloves: itemsByType.mercgloves.length,
+    merc_belts: itemsByType.mercbelts.length,
+    merc_boots: itemsByType.mercboots.length
   });
 
   // Add items to their respective dropdowns
