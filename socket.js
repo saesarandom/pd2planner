@@ -1350,12 +1350,22 @@
             const section = this.equipmentMap[dropdownId].section;
             const newItemName = dropdown.value;
 
+            // Track if we're clearing a socket corruption on armor/helm/shield
+            let clearedSocketCorruption = false;
+
             // Clear corruption if switching to a different item
             if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
               const corruption = window.itemCorruptions[dropdownId];
               // If the corrupted item is different from the newly selected item, clear corruption
               if (corruption.itemName && corruption.itemName !== newItemName) {
                 console.log(`Clearing corruption for ${corruption.itemName} when switching to ${newItemName}`);
+
+                // Check if this was a socket corruption on armor, helm, or shield
+                if (corruption.type === 'socket_corruption' &&
+                    (section === 'armor' || section === 'helm' || section === 'shield')) {
+                  clearedSocketCorruption = true;
+                }
+
                 delete window.itemCorruptions[dropdownId];
 
                 // Restore original description if available
@@ -1367,10 +1377,16 @@
               }
             }
 
-            // Only adjust sockets for socketable items
-            const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
-            if (socketableSections.includes(section)) {
-              this.adjustSocketsForItem(section);
+            // If we cleared a socket corruption on armor/helm/shield, reset sockets to 1 (base Larzuk amount)
+            if (clearedSocketCorruption && newItemName) {
+              console.log(`Resetting sockets to 1 after clearing ${section} socket corruption`);
+              this.setSocketCount(section, 1);
+            } else {
+              // Only adjust sockets for socketable items (remove excess)
+              const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
+              if (socketableSections.includes(section)) {
+                this.adjustSocketsForItem(section);
+              }
             }
             setTimeout(() => this.updateAll(), 50);
           });
@@ -1479,11 +1495,11 @@
       const newSocketCount = existingSockets + 1;
       socketGrid.className = `socket-grid sockets-${newSocketCount}`;
 
-      // Auto-apply socket corruption when adding 3rd socket to armor
-      if (section === 'armor' && newSocketCount === 3) {
+      // Auto-apply socket corruption when adding 3rd socket to armor, helm, or shield
+      if ((section === 'armor' || section === 'helm' || section === 'shield') && newSocketCount === 3) {
         const dropdownId = this.getSectionDropdownId(section);
         if (dropdownId && typeof window.applySocketCorruption === 'function') {
-          console.log('Auto-applying 3 Sockets corruption to armor');
+          console.log(`Auto-applying 3 Sockets corruption to ${section}`);
           window.applySocketCorruption(dropdownId, 3);
         }
       }
