@@ -1340,8 +1340,8 @@
             const section = this.equipmentMap[dropdownId].section;
             const newItemName = dropdown.value;
 
-            // Track if we're clearing a socket corruption on armor
-            let clearedArmorSocketCorruption = false;
+            // Track if we're clearing a socket corruption on armor/helm/shield
+            let clearedSocketCorruption = false;
 
             // Clear corruption if switching to a different item
             if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
@@ -1350,9 +1350,10 @@
               if (corruption.itemName && corruption.itemName !== newItemName) {
                 console.log(`Clearing corruption for ${corruption.itemName} when switching to ${newItemName}`);
 
-                // Check if this was a socket corruption on armor
-                if (corruption.type === 'socket_corruption' && section === 'armor') {
-                  clearedArmorSocketCorruption = true;
+                // Check if this was a socket corruption on armor, helm, or shield
+                if (corruption.type === 'socket_corruption' &&
+                    (section === 'armor' || section === 'helm' || section === 'shield')) {
+                  clearedSocketCorruption = true;
                 }
 
                 delete window.itemCorruptions[dropdownId];
@@ -1366,9 +1367,9 @@
               }
             }
 
-            // If we cleared a socket corruption on armor, reset sockets to 1 (base Larzuk amount)
-            if (clearedArmorSocketCorruption && newItemName) {
-              console.log(`Resetting sockets to 1 after clearing armor socket corruption`);
+            // If we cleared a socket corruption on armor/helm/shield, reset sockets to 1 (base Larzuk amount)
+            if (clearedSocketCorruption && newItemName) {
+              console.log(`Resetting sockets to 1 after clearing ${section} socket corruption`);
               this.setSocketCount(section, 1);
             } else {
               // Only adjust sockets for socketable items (remove excess)
@@ -1484,11 +1485,11 @@
       const newSocketCount = existingSockets + 1;
       socketGrid.className = `socket-grid sockets-${newSocketCount}`;
 
-      // Auto-apply socket corruption when adding 3rd socket to armor
-      if (section === 'armor' && newSocketCount === 3) {
+      // Auto-apply socket corruption when adding 3rd socket to armor, helm, or shield
+      if ((section === 'armor' || section === 'helm' || section === 'shield') && newSocketCount === 3) {
         const dropdownId = this.getSectionDropdownId(section);
         if (dropdownId && typeof window.applySocketCorruption === 'function') {
-          console.log('Auto-applying 3 Sockets corruption to armor');
+          console.log(`Auto-applying 3 Sockets corruption to ${section}`);
           window.applySocketCorruption(dropdownId, 3);
         }
       }

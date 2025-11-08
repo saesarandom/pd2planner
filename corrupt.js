@@ -11,7 +11,10 @@ const CORRUPTIONS = {
     { mod: "+[20-30] to Life", type: "numeric", range: [20, 30] },
     { mod: "+10% Faster Hit Recovery", type: "fixed" },
     { mod: "+10% Faster Cast Rate", type: "fixed" },
-    { mod: "+1 to All Skills", type: "fixed" }
+    { mod: "+1 to All Skills", type: "fixed" },
+    { mod: "Socketed (1)", type: "socket", sockets: 1 },
+    { mod: "Socketed (2)", type: "socket", sockets: 2 },
+    { mod: "Socketed (3)", type: "socket", sockets: 3 }
   ],
   armor: [
     { mod: "+[40-60] to Life", type: "numeric", range: [40, 60] },
@@ -139,13 +142,16 @@ const CORRUPTIONS = {
       ]
     },
     { 
-      mod: "+[4-5]% to Maximum Poison Resist<br>Poison Resist +[15-20]%", 
-      type: "double", 
+      mod: "+[4-5]% to Maximum Poison Resist<br>Poison Resist +[15-20]%",
+      type: "double",
       ranges: [
         { label: "Maximum Poison Resist", range: [4, 5], type: "numeric" },
         { label: "Poison Resist", range: [15, 20], type: "numeric" }
       ]
-    }
+    },
+    { mod: "Socketed (1)", type: "socket", sockets: 1 },
+    { mod: "Socketed (2)", type: "socket", sockets: 2 },
+    { mod: "Socketed (3)", type: "socket", sockets: 3 }
   ],
   gloves: [
     { mod: "+[20-30] to Life", type: "numeric", range: [20, 30] },
