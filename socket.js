@@ -33,7 +33,15 @@
         'boots-dropdown': { info: 'boot-info', section: 'boots' },
         'ringsone-dropdown': { info: 'ringsone-info', section: 'ringone' },
         'ringstwo-dropdown': { info: 'ringstwo-info', section: 'ringtwo' },
-        'amulets-dropdown': { info: 'amulet-info', section: 'amulet' }
+        'amulets-dropdown': { info: 'amulet-info', section: 'amulet' },
+        // Mercenary equipment
+        'mercweapons-dropdown': { info: 'merc-weapon-info', section: 'mercweapon' },
+        'merchelms-dropdown': { info: 'merc-helm-info', section: 'merchelm' },
+        'mercarmors-dropdown': { info: 'merc-armor-info', section: 'mercarmor' },
+        'mercoffs-dropdown': { info: 'merc-off-info', section: 'mercoff' },
+        'mercgloves-dropdown': { info: 'merc-glove-info', section: 'mercgloves' },
+        'mercbelts-dropdown': { info: 'merc-belt-info', section: 'mercbelts' },
+        'mercboots-dropdown': { info: 'merc-boot-info', section: 'mercboots' }
       };
       
       // Fast stats tracking

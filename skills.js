@@ -715,10 +715,7 @@ getDeadlyStrikeChance() {
       }
     }
 
-    // Recheck overall skill points if any value was adjusted
-    if (anyChanged) {
-      this.handleSkillInput({value: 0});  // Trigger the validation logic
-    }
+    // No need to call handleSkillInput - updatePointsDisplay is already called in setupEvents
   }
 
   updatePointsDisplay() {
