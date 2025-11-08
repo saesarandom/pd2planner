@@ -1506,6 +1506,50 @@
 
     }
 
+    // Adjust socket count when item changes to ensure it doesn't exceed new item's max
+    adjustSocketsForItem(section) {
+      console.log(`🔄 adjustSocketsForItem called for section: ${section}`);
+
+      const container = document.querySelector(`.socket-container[data-section="${section}"]`);
+      if (!container) {
+        console.log(`⚠️ No socket container found for section: ${section}`);
+        return;
+      }
+
+      const socketGrid = container.querySelector('.socket-grid');
+      if (!socketGrid) {
+        console.log(`⚠️ No socket grid found for section: ${section}`);
+        return;
+      }
+
+      const currentSocketCount = socketGrid.children.length;
+      const maxSockets = this.getMaxSocketsForSection(section);
+
+      console.log(`📊 Current sockets: ${currentSocketCount}, Max allowed for new item: ${maxSockets}`);
+
+      // If current socket count exceeds max for new item, remove excess sockets
+      if (currentSocketCount > maxSockets) {
+        console.log(`⚠️ Removing ${currentSocketCount - maxSockets} excess sockets`);
+
+        // Remove sockets from the end (highest indices first)
+        while (socketGrid.children.length > maxSockets) {
+          const lastSocket = socketGrid.lastElementChild;
+          socketGrid.removeChild(lastSocket);
+        }
+
+        // Update grid class to reflect new socket count
+        const newSocketCount = socketGrid.children.length;
+        socketGrid.className = `socket-grid sockets-${newSocketCount}`;
+
+        console.log(`✅ Adjusted to ${newSocketCount} sockets`);
+
+        // Update stats after removing sockets
+        this.updateAll();
+      } else {
+        console.log(`✅ Socket count is within limit, no adjustment needed`);
+      }
+    }
+
     handleSocketClick(e) {
       const socket = e.target;
       

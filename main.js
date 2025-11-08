@@ -486,11 +486,17 @@ window.updateItemInfo = function updateItemInfo(event) {
     infoDiv.innerHTML = selectedItemName;
   }
 
-  // Trigger unified socket system update if available
+  // Adjust socket count for new item if needed, then update socket system
   const section = SECTION_MAP[dropdown.id];
-  if (section && window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+  if (section && window.unifiedSocketSystem) {
     try {
-      window.unifiedSocketSystem.updateAll();
+      // Adjust socket count to match new item's max (this also calls updateAll internally)
+      if (typeof window.unifiedSocketSystem.adjustSocketsForItem === 'function') {
+        window.unifiedSocketSystem.adjustSocketsForItem(section);
+      } else if (typeof window.unifiedSocketSystem.updateAll === 'function') {
+        // Fallback if adjustSocketsForItem is not available
+        window.unifiedSocketSystem.updateAll();
+      }
     } catch (error) {
       console.error('Error updating socket system:', error);
     }
