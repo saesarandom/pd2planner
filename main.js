@@ -435,7 +435,10 @@ window.updateItemInfo = function updateItemInfo(event) {
     // Generate description (handles both static and dynamic with variable stats)
     const description = generateItemDescription(selectedItemName, item, dropdown.id);
     console.log('Generated description for', selectedItemName, ':', description);
+    console.log('📝 ABOUT TO SET innerHTML on div:', infoDiv);
     infoDiv.innerHTML = description;
+    console.log('✅ innerHTML SET! Div now contains:', infoDiv.innerHTML);
+    console.log('📊 Div visibility:', window.getComputedStyle(infoDiv).display, 'opacity:', window.getComputedStyle(infoDiv).opacity);
 
     // Attach event listeners to any stat input boxes
     attachStatInputListeners();
