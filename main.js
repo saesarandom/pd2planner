@@ -6,341 +6,8 @@
 // Global state
 window.checkboxResistBonus = 0;
 
-// Item dropdown data configuration
-const itemDropdownData = {
-  helm: [
-    { name: "Biggin's Bonnet", quality: "unique" },
-    { name: "Tarnhelm", quality: "unique" },
-    { name: "Coif of Glory", quality: "unique" },
-    { name: "Duskeep", quality: "unique" },
-    { name: "The Face of Horror", quality: "unique" },
-    { name: "Wormskull", quality: "unique" },
-    { name: "Howltusk", quality: "unique" },
-    { name: "Undead Crown", quality: "unique" },
-    { name: "Peasant Crown", quality: "unique" },
-    { name: "Rockstopper", quality: "unique" },
-    { name: "Stealskull", quality: "unique" },
-    { name: "Darksight Helm", quality: "unique" },
-    { name: "Blackhorn's Face", quality: "unique" },
-    { name: "Valkyrie Wing", quality: "unique" },
-    { name: "Crown of Thieves", quality: "unique" },
-    { name: "Harlequin Crest", quality: "unique" },
-    { name: "Steel Shade", quality: "unique" },
-    { name: "Andariel's Visage", quality: "unique" },
-    { name: "Giant Skull", quality: "unique" },
-    { name: "Veil of Steel", quality: "unique" },
-    { name: "Nightwing's Veil", quality: "unique" },
-    { name: "Crown of Ages", quality: "unique" },
-    { name: "Overlord's Helm", quality: "unique" },
-    { name: "Kira's Guardian", quality: "unique" },
-    { name: "Griffon's Eye", quality: "unique" },
-    { name: "Cyclopean Roar", quality: "unique" },
-    { name: "Arreat's Face", quality: "unique" },
-    { name: "Wolfhowl", quality: "unique" },
-    { name: "Demonhorn's Edge", quality: "unique" },
-    { name: "Halaberd's Reign", quality: "unique" },
-    { name: "Raekor's Virtue", quality: "unique" },
-    { name: "Quetzalcoatl", quality: "unique" },
-    { name: "Jalal's Mane", quality: "unique" },
-    { name: "Cerebus' Bite", quality: "unique" },
-    { name: "Denmother", quality: "unique" },
-    { name: "Ravenlore", quality: "unique" },
-    { name: "Spirit Keeper", quality: "unique" },
-    { name: "Ursa's Nightmare", quality: "unique" },
-    { name: "Arcanna's Head", quality: "set" },
-    { name: "Berserker's Headgear", quality: "set" },
-    { name: "Infernal Cranium", quality: "set" },
-    { name: "Sigon's Visor", quality: "set" },
-    { name: "Isenhart's Horns", quality: "set" },
-    { name: "Cathan's Visage", quality: "set" },
-    { name: "Iratha's Coil", quality: "set" },
-    { name: "Milabrega's Diadem", quality: "set" },
-    { name: "Tancred's Skull", quality: "set" },
-    { name: "Cow King's Horns", quality: "set" },
-    { name: "Sander's Paragon", quality: "set" },
-    { name: "Hwanin's Splendor", quality: "set" },
-    { name: "Guillaume's Face", quality: "set" },
-    { name: "Najs's Circlet", quality: "set" },
-    { name: "Sazabi's Mental Sheath", quality: "set" },
-    { name: "Ondal's Almighty", quality: "set" },
-    { name: "Aldur's Stony Gaze", quality: "set" },
-    { name: "Griswold's Valor", quality: "set" },
-    { name: "Immortal King's Will", quality: "set" },
-    { name: "M'avina's True Sight", quality: "set" },
-    { name: "Natalya's Totem", quality: "set" },
-    { name: "Tal Rasha's Horadric Crest", quality: "set" },
-    { name: "Trang-Oul's Guise", quality: "set" },
-    { name: "Nadir", quality: "runeword" }
-  ],
-
-  armor: [
-    { name: "Greyform", quality: "unique" },
-    { name: "Blinkbat's Form", quality: "unique" },
-    { name: "The Centurion", quality: "unique" },
-    { name: "Twitchthroe", quality: "unique" },
-    { name: "Darkglow", quality: "unique" },
-    { name: "Hawkmail", quality: "unique" },
-    { name: "Sparking Mail", quality: "unique" },
-    { name: "Venom Ward", quality: "unique" },
-    { name: "Iceblink", quality: "unique" },
-    { name: "Boneflesh", quality: "unique" },
-    { name: "Rockfleece", quality: "unique" },
-    { name: "Rattlecage", quality: "unique" },
-    { name: "Heavenly Garb", quality: "unique" },
-    { name: "Goldskin", quality: "unique" },
-    { name: "Silks of the Victor", quality: "unique" },
-    { name: "Spirit Shroud", quality: "unique" },
-    { name: "Skin of the Vipermagi", quality: "unique" },
-    { name: "Skin of the Flayed One", quality: "unique" },
-    { name: "Iron Pelt", quality: "unique" },
-    { name: "Crow Caw", quality: "unique" },
-    { name: "Shaftstop", quality: "unique" },
-    { name: "Skullder's Ire", quality: "unique" },
-    { name: "Que-Hegan's Wisdom", quality: "unique" },
-    { name: "Toothrow", quality: "unique" },
-    { name: "Guardian Angel", quality: "unique" },
-    { name: "Atma's Wail", quality: "unique" },
-    { name: "Black Hades", quality: "unique" },
-    { name: "Corpsemourn", quality: "unique" },
-    { name: "Arctic Furs", quality: "set" },
-    { name: "Berserker's Hauberk", quality: "set" },
-    { name: "Sigon's Shelter", quality: "set" },
-    { name: "Isenhart's Case", quality: "set" },
-    { name: "Cathan's Mesh", quality: "set" },
-    { name: "Angelic Mantle", quality: "set" },
-    { name: "Vidala's Ambush", quality: "set" },
-    { name: "Arcanna's Flesh", quality: "set" }
-  ],
-
-  weapon: [
-    { name: "The Gnasher", quality: "unique" },
-    { name: "Bladebone", quality: "unique" },
-    { name: "Skull Splitter", quality: "unique" },
-    { name: "Rakescar", quality: "unique" },
-    { name: "Axe of Fechmar", quality: "unique" },
-    { name: "Goreshovel", quality: "unique" },
-    { name: "The Chieftain", quality: "unique" },
-    { name: "Brainhew", quality: "unique" },
-    { name: "Humongous", quality: "unique" },
-    { name: "Felloak", quality: "unique" },
-    { name: "Stoutnail", quality: "unique" },
-    { name: "Crushflange", quality: "unique" },
-    { name: "Bloodrise", quality: "unique" },
-    { name: "The General's Tan Do Li Ga", quality: "unique" },
-    { name: "Ironstone", quality: "unique" },
-    { name: "Bonesnap", quality: "unique" },
-    { name: "Upped Bonesnap", quality: "unique" },
-    { name: "Steeldriver", quality: "unique" },
-    { name: "Rixot's Keen", quality: "unique" },
-    { name: "Blood Crescent", quality: "unique" },
-    { name: "Skewer of Krintiz", quality: "unique" },
-    { name: "Gleamscythe", quality: "unique" },
-    { name: "Griswold's Edge", quality: "unique" },
-    { name: "Hellplague", quality: "unique" },
-    { name: "Culwen's Point", quality: "unique" },
-    { name: "Shadowfang", quality: "unique" },
-    { name: "Soulflay", quality: "unique" },
-    { name: "Kinemil's Awl", quality: "unique" },
-    { name: "Blacktongue", quality: "unique" },
-    { name: "Ripsaw", quality: "unique" },
-    { name: "The Patriarch", quality: "unique" },
-    { name: "Gull", quality: "unique" },
-    { name: "The Diggler", quality: "unique" },
-    { name: "The Jade Tan Do", quality: "unique" },
-    { name: "Spectral Shard", quality: "unique" },
-    { name: "The Gidbinn", quality: "unique" },
-    { name: "The Dragon Chang", quality: "unique" },
-    { name: "Razortine", quality: "unique" },
-    { name: "Bloodthief", quality: "unique" },
-    { name: "Lance of Yaggai", quality: "unique" },
-    { name: "The Tannr Gorerod", quality: "unique" },
-    { name: "Dimoak's Hew", quality: "unique" },
-    { name: "Steelgoad", quality: "unique" },
-    { name: "The Battlebranch", quality: "unique" },
-    { name: "Woestave", quality: "unique" },
-    { name: "The Grim Reaper", quality: "unique" },
-    { name: "Pluckeye", quality: "unique" },
-    { name: "Witherstring", quality: "unique" },
-    { name: "Raven Claw", quality: "unique" },
-    { name: "Rogue's Bow", quality: "unique" },
-    { name: "Stormstrike", quality: "unique" },
-    { name: "Wizendraw", quality: "unique" },
-    { name: "Hellclap", quality: "unique" },
-    { name: "Blastbark", quality: "unique" },
-    { name: "Skystrike", quality: "unique" },
-    { name: "Riphook", quality: "unique" },
-    { name: "Kuko Shakaku", quality: "unique" },
-    { name: "Endlesshail", quality: "unique" },
-    { name: "Witchwild String", quality: "unique" },
-    { name: "Cliffkiller", quality: "unique" },
-    { name: "Magewrath", quality: "unique" },
-    { name: "Goldstrike Arch", quality: "unique" },
-    { name: "Eaglehorn", quality: "unique" },
-    { name: "Widowmaker", quality: "unique" },
-    { name: "Windforce", quality: "unique" },
-    { name: "Leadcrow", quality: "unique" },
-    { name: "Ichorsting", quality: "unique" },
-    { name: "Hellcast", quality: "unique" },
-    { name: "Doomslinger", quality: "unique" },
-    { name: "Bane Ash", quality: "unique" },
-    { name: "Serpent Lord", quality: "unique" },
-    { name: "Spire of Lazarus", quality: "unique" },
-    { name: "The Salamander", quality: "unique" },
-    { name: "The Iron Jang Bong", quality: "unique" },
-    { name: "Knell Striker", quality: "unique" },
-    { name: "Rust Handle", quality: "unique" },
-    { name: "Stormeye", quality: "unique" },
-    { name: "True Silver", quality: "unique" },
-    { name: "Mage Slayer", quality: "unique" },
-    { name: "Tempest", quality: "unique" },
-    { name: "Coldkill", quality: "unique" },
-    { name: "Butcher's Pupil", quality: "unique" },
-    { name: "Islestrike", quality: "unique" },
-    { name: "Pompeii's Wrath", quality: "unique" },
-    { name: "Guardian Naga", quality: "unique" },
-    { name: "Warlord's Trust", quality: "unique" },
-    { name: "Spellsteel", quality: "unique" },
-    { name: "Stormrider", quality: "unique" },
-    { name: "Boneslayer Blade", quality: "unique" },
-    { name: "The Minotaur", quality: "unique" },
-    { name: "Razor's Edge", quality: "unique" },
-    { name: "Rune Master", quality: "unique" },
-    { name: "Cranebeak", quality: "unique" },
-    { name: "Death Cleaver", quality: "unique" },
-    { name: "Ethereal Edge", quality: "unique" },
-    { name: "Hellslayer", quality: "unique" },
-    { name: "Messerschmidt's Reaver", quality: "unique" },
-    { name: "Executioner's Justice", quality: "unique" },
-    { name: "Dark Clan Crusher", quality: "unique" },
-    { name: "Fleshrender", quality: "unique" },
-    { name: "Sureshrill Frost", quality: "unique" },
-    { name: "Moonfall", quality: "unique" },
-    { name: "Baezil's Vortex", quality: "unique" },
-    { name: "Earthshaker", quality: "unique" },
-    { name: "Bloodtree Stump", quality: "unique" },
-    { name: "The Gavel of Pain", quality: "unique" },
-    { name: "Nord's Tenderizer", quality: "unique" },
-    { name: "Demon Limb", quality: "unique" },
-    { name: "Baranar's Star", quality: "unique" },
-    { name: "Horizon's Tornado", quality: "unique" },
-    { name: "Stormlash", quality: "unique" },
-    { name: "Stone Crusher", quality: "unique" },
-    { name: "Schaefer's Hammer", quality: "unique" },
-    { name: "Windhammer", quality: "unique" },
-    { name: "Earth Shifter", quality: "unique" },
-    { name: "The Cranium Basher", quality: "unique" },
-    { name: "Steel", quality: "runeword" }
-  ],
-
-  shield: [
-    { name: "Pelta Lunata", quality: "unique" },
-    { name: "Umbral Disk", quality: "unique" },
-    { name: "Swordback Hold", quality: "unique" },
-    { name: "Steelclash", quality: "unique" },
-    { name: "Wall of the Eyeless", quality: "unique" },
-    { name: "Bverrit Keep", quality: "unique" },
-    { name: "The Ward", quality: "unique" },
-    { name: "Visceratuant", quality: "unique" }
-  ],
-
-  gloves: [
-    { name: "The Hand of Broc", quality: "unique" },
-    { name: "Bloodfist", quality: "unique" },
-    { name: "Chance Guards", quality: "unique" },
-    { name: "Magefist", quality: "unique" },
-    { name: "Frostburn", quality: "unique" },
-    { name: "Venom Grip", quality: "unique" },
-    { name: "Gravepalm", quality: "unique" },
-    { name: "Ghoulhide", quality: "unique" },
-    { name: "Lava Gout", quality: "unique" },
-    { name: "Hellmouth", quality: "unique" },
-    { name: "Dracul's Grasp", quality: "unique" },
-    { name: "Soul Drainer", quality: "unique" },
-    { name: "Steelrend", quality: "unique" }
-  ],
-
-  belts: [
-    { name: "Arachnid Mesh", quality: "unique" },
-    { name: "Lenymo", quality: "unique" },
-    { name: "Snakecord", quality: "unique" },
-    { name: "Nightsmoke", quality: "unique" },
-    { name: "Goldwrap", quality: "unique" },
-    { name: "Bladebuckle", quality: "unique" },
-    { name: "String of Ears", quality: "unique" },
-    { name: "Razortail", quality: "unique" },
-    { name: "Gloom's Trap", quality: "unique" },
-    { name: "Snowclash", quality: "unique" },
-    { name: "Thundergod's Vigor", quality: "unique" },
-    { name: "Nosferatu's Coil", quality: "unique" },
-    { name: "Verdungo's Hearty Cord", quality: "unique" },
-    { name: "Band of Skulls", quality: "unique" }
-  ],
-
-  boots: [
-    { name: "Hotspur", quality: "unique" },
-    { name: "Gorefoot", quality: "unique" },
-    { name: "Treads of Cthon", quality: "unique" },
-    { name: "Goblin Toe", quality: "unique" },
-    { name: "Tearhaunch", quality: "unique" },
-    { name: "Infernostride", quality: "unique" },
-    { name: "Waterwalk", quality: "unique" },
-    { name: "Silkweave", quality: "unique" },
-    { name: "War Traveler", quality: "unique" },
-    { name: "Gore Rider", quality: "unique" },
-    { name: "Sandstorm Trek", quality: "unique" },
-    { name: "Marrowwalk", quality: "unique" },
-    { name: "Shadow Dancer", quality: "unique" }
-  ],
-
-  ringsone: [
-    { name: "Nagelring", quality: "unique" },
-    { name: "Manald Heal", quality: "unique" },
-    { name: "The Stone of Jordan", quality: "unique" },
-    { name: "Dwarf Star", quality: "unique" },
-    { name: "Raven Frost", quality: "unique" },
-    { name: "Bul-Kathos' Wedding Band", quality: "unique" },
-    { name: "Carrion Wind", quality: "unique" },
-    { name: "Nature's Peace", quality: "unique" },
-    { name: "Wisp Projector", quality: "unique" }
-  ],
-
-  ringstwo: [
-    { name: "Nagelring", quality: "unique" },
-    { name: "Manald Heal", quality: "unique" },
-    { name: "The Stone of Jordan", quality: "unique" },
-    { name: "Dwarf Star", quality: "unique" },
-    { name: "Raven Frost", quality: "unique" },
-    { name: "Bul-Kathos' Wedding Band", quality: "unique" },
-    { name: "Carrion Wind", quality: "unique" },
-    { name: "Nature's Peace", quality: "unique" },
-    { name: "Wisp Projector", quality: "unique" }
-  ],
-
-  amulets: [
-    { name: "Nokozan Relic", quality: "unique" },
-    { name: "The Eye of Etlich", quality: "unique" },
-    { name: "The Mahim-Oak Curio", quality: "unique" },
-    { name: "Saracen's Chance", quality: "unique" },
-    { name: "Crescent Moon", quality: "unique" },
-    { name: "The Cat's Eye", quality: "unique" },
-    { name: "Atma's Scarab", quality: "unique" },
-    { name: "Highlord's Wrath", quality: "unique" },
-    { name: "The Rising Sun", quality: "unique" },
-    { name: "Seraph's Hymn", quality: "unique" },
-    { name: "Mara's Kaleidoscope", quality: "unique" },
-    { name: "Metalgrid", quality: "unique" },
-    { name: "The Third Eye", quality: "unique" }
-  ]
-};
-
-// Create mercenary references
-itemDropdownData.merchelm = itemDropdownData.helm;
-itemDropdownData.mercarmor = itemDropdownData.armor;
-itemDropdownData.mercweapon = itemDropdownData.weapon;
-itemDropdownData.mercoff = itemDropdownData.shield;
-itemDropdownData.mercgloves = itemDropdownData.gloves;
-itemDropdownData.mercbelts = itemDropdownData.belts;
-itemDropdownData.mercboots = itemDropdownData.boots;
+// REMOVED: itemDropdownData - now loading directly from itemList in items.js
+// This approach is simpler and always in sync with items.json
 
 // Dropdown ID mapping
 const DROPDOWN_MAP = {
@@ -415,7 +82,66 @@ const ALL_DROPDOWNS = [
 ];
 
 /**
- * Populate all item dropdowns with their respective items
+ * Detect item type from description
+ */
+function detectItemType(itemName, description) {
+  const desc = description.toLowerCase();
+
+  // Weapons
+  if (desc.includes('sword') || desc.includes('axe') || desc.includes('mace') ||
+      desc.includes('hammer') || desc.includes('spear') || desc.includes('bow') ||
+      desc.includes('staff') || desc.includes('dagger') || desc.includes('wand') ||
+      desc.includes('claw') || desc.includes('orb') || desc.includes('javelin') ||
+      desc.includes('polearm') || desc.includes('scepter') || desc.includes('scythe')) {
+    return 'weapon';
+  }
+
+  // Helms
+  if (desc.includes('helm') || desc.includes('crown') || desc.includes('cap') ||
+      desc.includes('skull') || desc.includes('mask') || desc.includes('circlet') ||
+      desc.includes('headgear') || desc.includes('horns') || desc.includes('coif')) {
+    return 'helm';
+  }
+
+  // Armor
+  if (desc.includes('armor') || desc.includes('mail') || desc.includes('plate') ||
+      desc.includes('hide') || desc.includes('leather') || desc.includes('robe') ||
+      desc.includes('chain') || desc.includes('coat') || desc.includes('garb')) {
+    return 'armor';
+  }
+
+  // Shields
+  if (desc.includes('shield') || desc.includes('buckler') || desc.includes('ward')) {
+    return 'shield';
+  }
+
+  // Gloves
+  if (desc.includes('gloves') || desc.includes('gauntlet') || desc.includes('hand')) {
+    return 'gloves';
+  }
+
+  // Belts
+  if (desc.includes('belt') || desc.includes('sash')) {
+    return 'belts';
+  }
+
+  // Boots
+  if (desc.includes('boots') || desc.includes('greaves') || desc.includes('treads') ||
+      desc.includes('shoes')) {
+    return 'boots';
+  }
+
+  // Rings
+  if (desc.includes('ring')) return 'ringsone';
+
+  // Amulets
+  if (desc.includes('amulet')) return 'amulets';
+
+  return null;
+}
+
+/**
+ * Populate all item dropdowns by loading from itemList
  */
 function populateItemDropdowns() {
   // Check if itemList is available
@@ -425,44 +151,58 @@ function populateItemDropdowns() {
     return;
   }
 
+  console.log('📦 Loading items from itemList...');
+
   // Clear all dropdowns first
   Object.values(DROPDOWN_MAP).forEach(id => {
     const dropdown = document.getElementById(id);
     if (dropdown) dropdown.innerHTML = '<option value="">None</option>';
   });
 
-  // Populate with new structure
-  for (const category in itemDropdownData) {
-    const items = itemDropdownData[category];
-    const dropdownId = DROPDOWN_MAP[category];
+  // Create a map to collect items by type
+  const itemsByType = {
+    weapon: [],
+    helm: [],
+    armor: [],
+    shield: [],
+    gloves: [],
+    belts: [],
+    boots: [],
+    ringsone: [],
+    amulets: []
+  };
 
-    if (dropdownId && items) {
-      const dropdown = document.getElementById(dropdownId);
-      if (dropdown) {
-        items.forEach(item => {
-          // Add all items from itemDropdownData (they're pre-validated)
-          const option = document.createElement('option');
-          option.value = item.name;
-          option.textContent = item.name;
-          option.setAttribute('data-quality', item.quality);
+  // Iterate through all items in itemList
+  for (const itemName in itemList) {
+    const item = itemList[itemName];
+    if (!item.description) continue;
 
-          // Add CSS class for styling based on quality
-          if (item.quality === 'unique') {
-            option.className = 'unique-item';
-            option.style.color = '#C7B377'; // Gold for unique
-          } else if (item.quality === 'set') {
-            option.className = 'set-item';
-            option.style.color = '#00FF00'; // Green for set
-          } else if (item.quality === 'runeword') {
-            option.style.color = '#D2691E'; // Brown/tan for runeword
-            option.style.fontWeight = 'bold';
-          }
-
-          dropdown.appendChild(option);
-        });
-      }
+    const itemType = detectItemType(itemName, item.description);
+    if (itemType && itemsByType[itemType]) {
+      itemsByType[itemType].push(itemName);
     }
   }
+
+  // Add items to their respective dropdowns
+  for (const [itemType, items] of Object.entries(itemsByType)) {
+    const dropdownId = DROPDOWN_MAP[itemType];
+    if (!dropdownId) continue;
+
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown) continue;
+
+    // Sort items alphabetically
+    items.sort().forEach(itemName => {
+      const option = document.createElement('option');
+      option.value = itemName;
+      option.textContent = itemName;
+      dropdown.appendChild(option);
+    });
+
+    console.log(`✓ Added ${items.length} items to ${dropdownId}`);
+  }
+
+  console.log('✅ Dropdowns populated successfully!');
 }
 
 /**
