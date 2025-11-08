@@ -946,10 +946,15 @@ function triggerItemUpdate(dropdownId) {
       if (typeof updateItemInfo === 'function') {
         updateItemInfo(fakeEvent);
       }
-      
+
 
       dropdown.dispatchEvent(new Event('change'));
-      
+
+
+      // Update socket system to re-add socket stats to description
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
 
       if (window.statsCalculator?.updateAll) {
         window.statsCalculator.updateAll();
