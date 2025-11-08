@@ -769,24 +769,31 @@ getDirectLifeManaFromItems() {
     const input = document.getElementById(statId);
     const baseValue = this.classStats[this.currentClass][statId];
     let value = parseInt(input.value) || baseValue;
-    
+
     if (value < baseValue) {
       input.value = baseValue;
       value = baseValue;
     }
-    
+
     const availablePoints = this.getAvailableStatPoints();
     const currentUsed = this.getUsedStatPoints();
-    
+
     if (currentUsed > availablePoints) {
       this.validateStats();
     }
-    
+
     this.updateStatPointsDisplay();
-    
+
     // Real-time life/mana updates for vit/enr
     if (statId === 'vit' || statId === 'enr') {
       this.calculateLifeAndMana();
+    }
+
+    // Update item displays for strength/dexterity requirement changes
+    if (statId === 'str' || statId === 'dex') {
+      if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+        window.unifiedSocketSystem.updateAll();
+      }
     }
   }
 

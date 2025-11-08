@@ -715,25 +715,31 @@ function applySocketCorruptionFromModal(corruption) {
 function applyCorruptionToItem(corruptionText) {
   const dropdown = document.getElementById(currentCorruptionSlot);
   const itemName = dropdown.value;
-  
+
   if (!itemName || !itemList[itemName]) {
     console.error('❌ Item not found:', itemName);
     return;
   }
-  
+
   // Store original description if not already stored
   if (!window.originalItemDescriptions[itemName]) {
-    window.originalItemDescriptions[itemName] = itemList[itemName].description;
-  
+    let description = itemList[itemName].description;
+
+    // For dynamic items without a static description, generate it
+    if (!description) {
+      description = window.generateItemDescription(itemName, itemList[itemName], currentCorruptionSlot);
+    }
+
+    window.originalItemDescriptions[itemName] = description;
   }
-  
+
   // Store corruption info
   window.itemCorruptions[currentCorruptionSlot] = {
     text: corruptionText,
     type: 'corruption',
     itemName: itemName
   };
-  
+
   // Create enhanced description with stat stacking
   const originalDescription = window.originalItemDescriptions[itemName];
   const enhancedDescription = addCorruptionWithStacking(originalDescription, corruptionText);
@@ -750,8 +756,13 @@ function applyCorruptionToItem(corruptionText) {
 
 // Add corruption with proper stat stacking (same as before)
 function addCorruptionWithStacking(originalDescription, corruptionText) {
-  let description = originalDescription;
-  
+  let description = originalDescription || '';
+
+  // Safety check - make sure description is a string
+  if (typeof description !== 'string') {
+    description = String(description || '');
+  }
+
   // Parse corruption stats
   const corruptionStats = parseCorruptionText(corruptionText);
   
@@ -884,7 +895,11 @@ function parseCorruptionText(corruptionText) {
 
 
 function replaceExistingStatWithCorruption(description, corruptionStat) {
-  
+  // Safety check - ensure description is a valid string
+  if (!description || typeof description !== 'string') {
+    return { found: false, description: description || '' };
+  }
+
   const searchPatterns = {
     'ias': /(\+?\d+)%\s+(Increased Attack Speed)/i,
     'edmg': /(\+?\d+)%\s+(Enhanced Damage)/i,
