@@ -167,17 +167,11 @@
         'Spear': 6,
         'Polearm': 6,
         'Javelin': 6,
-        'Orb': 2,
+        'Orb': 2
 
-        // Gloves/Boots/Belts
-        'Gloves': 4,
-        'Boots': 4,
-        'Belt': 2,
-        'Sash': 2,
-        'Light Belt': 2,
-        'Heavy Belt': 2
-
-        // Note: Rings and amulets are not socketable (rare exceptions handled via item.properties.maxSockets)
+        // Note: Only weapons, helms, armors, and shields are socketable
+        // Gloves, belts, boots, rings, and amulets cannot have sockets
+        // (rare exceptions can be handled via item.properties.maxSockets)
       };
 
       this.initializeSocketData();
@@ -1225,8 +1219,9 @@
 
     // === SOCKET CONTAINER INITIALIZATION ===
     initializeSocketContainers() {
-      // Rings and amulets cannot have sockets (with rare exceptions handled via maxSockets property)
-      const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+      // Only weapons, helms, armors, and shields can have sockets
+      // (rare exceptions for other slots can be handled via item.properties.maxSockets)
+      const sections = ['weapon', 'helm', 'armor', 'shield'];
 
       sections.forEach(section => {
         const infoId = this.getSectionInfoId(section);
