@@ -1307,9 +1307,7 @@
           socketContainer.className = 'socket-container';
           socketContainer.dataset.section = section;
           socketContainer.innerHTML = `
-            <div class="socket-grid sockets-1">
-              <div class="socket-slot empty" data-index="0"></div>
-            </div>
+            <div class="socket-grid sockets-0"></div>
             <button class="add-socket-btn" onclick="addSocket('${section}')">Add Socket</button>
           `;
           infoDiv.appendChild(socketContainer);
