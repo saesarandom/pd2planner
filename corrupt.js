@@ -171,7 +171,7 @@ const CORRUPTIONS = {
 // Section mapping for dropdowns to item types
 const SECTION_MAP = {
   'helms-dropdown': 'helm',
-  'armors-dropdown': 'armor', 
+  'armors-dropdown': 'armor',
   'weapons-dropdown': 'weapon',
   'offs-dropdown': 'shield',
   'gloves-dropdown': 'gloves',
@@ -179,7 +179,15 @@ const SECTION_MAP = {
   'boots-dropdown': 'boots',
   'ringsone-dropdown': 'ring',
   'ringstwo-dropdown': 'ring',
-  'amulets-dropdown': 'amulet'
+  'amulets-dropdown': 'amulet',
+  // Mercenary equipment
+  'merchelms-dropdown': 'merchelm',
+  'mercarmors-dropdown': 'mercarmor',
+  'mercweapons-dropdown': 'mercweapon',
+  'mercoffs-dropdown': 'mercoff',
+  'mercgloves-dropdown': 'mercgloves',
+  'mercbelts-dropdown': 'mercbelts',
+  'mercboots-dropdown': 'mercboots'
 };
 
 // Global variables

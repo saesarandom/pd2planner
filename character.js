@@ -225,7 +225,7 @@ getDirectLifeManaFromItems() {
   const bonuses = { life: 0, mana: 0 };
   const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
-  // FIXED: Complete list of all equipment sections
+  // FIXED: Complete list of all equipment sections (player + mercenary)
   const equipmentSections = [
     { dropdown: 'weapons-dropdown', section: 'weapon' },
     { dropdown: 'helms-dropdown', section: 'helm' },
@@ -236,7 +236,15 @@ getDirectLifeManaFromItems() {
     { dropdown: 'boots-dropdown', section: 'boots' },
     { dropdown: 'ringsone-dropdown', section: 'ringone' },
     { dropdown: 'ringstwo-dropdown', section: 'ringtwo' },
-    { dropdown: 'amulets-dropdown', section: 'amulet' }
+    { dropdown: 'amulets-dropdown', section: 'amulet' },
+    // Mercenary equipment
+    { dropdown: 'mercweapons-dropdown', section: 'mercweapon' },
+    { dropdown: 'merchelms-dropdown', section: 'merchelm' },
+    { dropdown: 'mercarmors-dropdown', section: 'mercarmor' },
+    { dropdown: 'mercoffs-dropdown', section: 'mercoff' },
+    { dropdown: 'mercgloves-dropdown', section: 'mercgloves' },
+    { dropdown: 'mercbelts-dropdown', section: 'mercbelts' },
+    { dropdown: 'mercboots-dropdown', section: 'mercboots' }
   ];
 
   //('🔍 Checking equipment for life/mana bonuses:');
@@ -295,8 +303,8 @@ getDirectLifeManaFromItems() {
     }
   });
 
-  // Get life/mana from sockets
-  const socketSections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
+  // Get life/mana from sockets (player + mercenary)
+  const socketSections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet', 'mercweapon', 'merchelm', 'mercarmor', 'mercoff', 'mercgloves', 'mercbelts', 'mercboots'];
   
   socketSections.forEach(section => {
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
@@ -373,7 +381,15 @@ getDirectLifeManaFromItems() {
       { dropdown: 'boots-dropdown', section: 'boots' },
       { dropdown: 'ringsone-dropdown', section: 'ring' },
       { dropdown: 'ringstwo-dropdown', section: 'ring' },
-      { dropdown: 'amulets-dropdown', section: 'amulet' }
+      { dropdown: 'amulets-dropdown', section: 'amulet' },
+      // Mercenary equipment
+      { dropdown: 'mercweapons-dropdown', section: 'mercweapon' },
+      { dropdown: 'merchelms-dropdown', section: 'merchelm' },
+      { dropdown: 'mercarmors-dropdown', section: 'mercarmor' },
+      { dropdown: 'mercoffs-dropdown', section: 'mercoff' },
+      { dropdown: 'mercgloves-dropdown', section: 'mercgloves' },
+      { dropdown: 'mercbelts-dropdown', section: 'mercbelts' },
+      { dropdown: 'mercboots-dropdown', section: 'mercboots' }
     ];
 
     equipmentSections.forEach(({ dropdown, section }) => {
@@ -403,7 +419,7 @@ getDirectLifeManaFromItems() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
-    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
+    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'mercweapon', 'merchelm', 'mercarmor', 'mercoff', 'mercgloves', 'mercbelts', 'mercboots'];
     
     sections.forEach(section => {
       const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
