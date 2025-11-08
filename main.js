@@ -378,7 +378,16 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       if (infoDivId) {
         const infoDiv = document.getElementById(infoDivId);
         if (infoDiv) {
+          // Preserve socket marker if it exists
+          const socketMarker = infoDiv.querySelector('.socket-stats-marker');
+          const socketHTML = socketMarker ? socketMarker.outerHTML : '';
+
           infoDiv.innerHTML = generateItemDescription(itemName, item, dropdownId);
+
+          // Restore socket marker if it existed
+          if (socketHTML) {
+            infoDiv.innerHTML += '<br>' + socketHTML;
+          }
 
           // Re-attach event listeners to the new input boxes
           attachStatInputListeners();
@@ -457,11 +466,21 @@ window.updateItemInfo = function updateItemInfo(event) {
   console.log('Item from itemList:', item);
 
   if (item) {
+    // Preserve socket marker if it exists (from previous socket insertions)
+    const socketMarker = infoDiv.querySelector('.socket-stats-marker');
+    const socketHTML = socketMarker ? socketMarker.outerHTML : '';
+
     // Generate description (handles both static and dynamic with variable stats)
     const description = generateItemDescription(selectedItemName, item, dropdown.id);
     console.log('Generated description for', selectedItemName, ':', description);
     console.log('📝 ABOUT TO SET innerHTML on div:', infoDiv);
     infoDiv.innerHTML = description;
+
+    // Restore socket marker if it existed
+    if (socketHTML) {
+      infoDiv.innerHTML += '<br>' + socketHTML;
+    }
+
     console.log('✅ innerHTML SET! Div now contains:', infoDiv.innerHTML);
     console.log('📊 Div visibility:', window.getComputedStyle(infoDiv).display, 'opacity:', window.getComputedStyle(infoDiv).opacity);
 

@@ -2061,17 +2061,19 @@ this.selectedJewelSuffix3MaxValue = null;
       }
 
       // Has sockets - need to show socket bonuses WITHOUT regenerating item description
-      // Remove any existing socket stats first (they have a marker div)
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = infoDiv.innerHTML;
-      const existingSocketStats = tempDiv.querySelector('.socket-stats-marker');
-      if (existingSocketStats) {
-        existingSocketStats.remove();
+      // Find or create socket stats marker div
+      let socketMarker = infoDiv.querySelector('.socket-stats-marker');
+
+      if (!socketMarker) {
+        // Create marker div if it doesn't exist
+        socketMarker = document.createElement('div');
+        socketMarker.className = 'socket-stats-marker';
+        infoDiv.appendChild(document.createElement('br'));
+        infoDiv.appendChild(socketMarker);
       }
-      let baseHTML = tempDiv.innerHTML;
 
       // Build socket stats HTML
-      let socketStatsHTML = '<div class="socket-stats-marker">';
+      let socketStatsHTML = '';
       sockets.forEach(socket => {
         const stats = socket.dataset.stats;
         const itemName = socket.dataset.itemName;
@@ -2089,12 +2091,9 @@ this.selectedJewelSuffix3MaxValue = null;
           });
         }
       });
-      socketStatsHTML += '</div>';
 
-      // Combine base description + socket stats
-      if (sockets.length > 0) {
-        infoDiv.innerHTML = baseHTML + '<br>' + socketStatsHTML;
-      }
+      // Update socket marker content (doesn't destroy parent elements)
+      socketMarker.innerHTML = socketStatsHTML;
 
       // Update visual feedback
       if (!meetsRequirement) {
