@@ -110,6 +110,7 @@ class SkillSystem {
     this.setupEvents();
     this.createPointsDisplay();
     this.createSkillCalculator();
+    this.updateSkillMaxValues();  // Set initial max values based on starting level
     //('✅ Skills System ready');
   }
 
@@ -222,13 +223,15 @@ class SkillSystem {
 
   setupEvents() {
     var self = this;
-    
+
     // Level changes
     var levelInput = document.getElementById('lvlValue');
     if (levelInput) {
       levelInput.addEventListener('input', function(e) {
         self.currentLevel = parseInt(e.target.value) || 1;
         self.maxSkillPoints = self.currentLevel + 11;
+        self.updateSkillMaxValues();  // Update all skill input max attributes immediately
+        self.validateAllSkillInputs(); // Validate and adjust existing values if needed
         self.updatePointsDisplay();
         self.scheduleCalculation();
       });
@@ -679,6 +682,44 @@ getDeadlyStrikeChance() {
   document.body.appendChild(display);
   this.updatePointsDisplay();
 }
+
+  updateSkillMaxValues() {
+    // Update max attribute on all skill container inputs based on character level
+    var inputs = document.querySelectorAll('[id$="container"] input[type="number"]');
+    var self = this;
+
+    for (var i = 0; i < inputs.length; i++) {
+      var input = inputs[i];
+      var skillLevel = parseInt(input.getAttribute('data-skill-level')) || 1;
+      var maxAllowed = this.getMaxAllowed(skillLevel);
+      input.max = maxAllowed;  // Update the HTML max attribute for instant visual feedback
+    }
+  }
+
+  validateAllSkillInputs() {
+    // Check all skill inputs and adjust values if they exceed the new maximum
+    var inputs = document.querySelectorAll('[id$="container"] input[type="number"]');
+    var self = this;
+    var anyChanged = false;
+
+    for (var i = 0; i < inputs.length; i++) {
+      var input = inputs[i];
+      var currentValue = parseInt(input.value) || 0;
+      var skillLevel = parseInt(input.getAttribute('data-skill-level')) || 1;
+      var maxAllowed = this.getMaxAllowed(skillLevel);
+
+      // If value exceeds new max, reduce it
+      if (currentValue > maxAllowed) {
+        input.value = maxAllowed;
+        anyChanged = true;
+      }
+    }
+
+    // Recheck overall skill points if any value was adjusted
+    if (anyChanged) {
+      this.handleSkillInput({value: 0});  // Trigger the validation logic
+    }
+  }
 
   updatePointsDisplay() {
     var display = document.getElementById('skill-points-display');
