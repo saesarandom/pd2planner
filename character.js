@@ -51,6 +51,24 @@ function isItemUsableByClass(itemName, characterClass) {
   return restriction === characterClass;
 }
 
+/**
+ * Check if character meets strength and dexterity requirements for an item
+ * Returns true if character has enough strength and dexterity, false otherwise
+ */
+function doesCharacterMeetStatRequirements(itemName, characterStrength, characterDexterity) {
+  const itemData = window.itemList || itemList;
+  if (!itemData || !itemData[itemName]) return true;
+
+  const item = itemData[itemName];
+  if (!item.properties) return true;
+
+  const requiredStr = item.properties.reqstr || 0;
+  const requiredDex = item.properties.reqdex || 0;
+
+  // Character must meet both strength and dexterity requirements
+  return characterStrength >= requiredStr && characterDexterity >= requiredDex;
+}
+
 class CharacterManager {
   constructor() {
     this.currentLevel = 1;
@@ -413,6 +431,12 @@ getDirectLifeManaFromItems() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
+    // Get current character stats (base + bonuses from equipment)
+    const baseStr = this.classStats[this.currentClass].str;
+    const baseDex = this.classStats[this.currentClass].dex;
+    const currentStr = parseInt(document.getElementById('str')?.value) || baseStr;
+    const currentDex = parseInt(document.getElementById('dex')?.value) || baseDex;
+
     // Player equipment only (mercenary items don't affect player stats)
     const equipmentSections = [
       { dropdown: 'weapons-dropdown', section: 'weapon' },
@@ -439,8 +463,9 @@ getDirectLifeManaFromItems() {
 
       const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
       const isUsableByClass = isItemUsableByClass(dropdownElement.value, this.currentClass);
+      const meetsStatRequirements = doesCharacterMeetStatRequirements(dropdownElement.value, currentStr, currentDex);
 
-      if (currentLevel >= actualRequiredLevel && isUsableByClass && item.properties) {
+      if (currentLevel >= actualRequiredLevel && isUsableByClass && meetsStatRequirements && item.properties) {
         bonuses.str += getPropertyValue(item.properties.str) || 0;
         bonuses.dex += getPropertyValue(item.properties.dex) || 0;
         bonuses.vit += getPropertyValue(item.properties.vit) || 0;
