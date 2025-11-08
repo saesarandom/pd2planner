@@ -664,13 +664,11 @@ function applyCorruption(modTemplate, value = null) {
 function applySocketCorruptionFromModal(corruption) {
   const dropdown = document.getElementById(currentCorruptionSlot);
   if (!dropdown) {
-    console.error('Dropdown not found');
     return;
   }
 
   const itemName = dropdown.value;
   if (!itemName || !itemList[itemName]) {
-    console.error('Item not found:', itemName);
     return;
   }
 
@@ -678,7 +676,6 @@ function applySocketCorruptionFromModal(corruption) {
   const section = SECTION_MAP[currentCorruptionSlot];
 
   if (!section) {
-    console.error('Section not found for dropdown:', currentCorruptionSlot);
     return;
   }
 
@@ -717,7 +714,6 @@ function applyCorruptionToItem(corruptionText) {
   const itemName = dropdown.value;
 
   if (!itemName || !itemList[itemName]) {
-    console.error('❌ Item not found:', itemName);
     return;
   }
 
@@ -1029,13 +1025,11 @@ function closeCorruptionModal() {
 window.applySocketCorruption = function(dropdownId, socketCount) {
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) {
-    console.error('Dropdown not found:', dropdownId);
     return;
   }
 
   const itemName = dropdown.value;
   if (!itemName || !itemList[itemName]) {
-    console.error('Item not found:', itemName);
     return;
   }
 
@@ -1055,7 +1049,6 @@ window.applySocketCorruption = function(dropdownId, socketCount) {
     socketCount: socketCount
   };
 
-  console.log(`Auto-applied ${corruptionText} corruption to ${itemName}`);
 
   // Add corruption text to item description
   const originalDescription = window.originalItemDescriptions[itemName];

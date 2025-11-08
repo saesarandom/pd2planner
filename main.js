@@ -3,7 +3,6 @@
 // Extracted and modernized from index2.html
 // ===================================================================
 
-console.log('🚀🚀🚀 MAIN.JS IS LOADING - VERSION 2023 🚀🚀🚀');
 
 // Global state
 window.checkboxResistBonus = 0;
@@ -291,9 +290,6 @@ function populateItemDropdowns() {
 
     // Debug logging for specific problematic items
     if (itemName === "Blackhorn's Face" || itemName === "Raven Frost") {
-      console.log(`🐛 Detected ${itemName} as type: ${itemType}`);
-      console.log(`   baseType: ${item.baseType}`);
-      console.log(`   has description: ${!!item.description}`);
     }
 
     if (itemType && itemsByType[itemType]) {
@@ -410,18 +406,15 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   for (const [key, prop] of Object.entries(props)) {
     if (skipProperties.includes(key)) continue;
 
-    console.log('Processing property:', key, prop);
     if (propertyDisplay[key]) {
       const value = getPropertyValue(prop);
       const displayText = propertyDisplay[key](value, prop);
-      console.log('Adding to html:', displayText);
       if (displayText) { // Skip empty strings (for properties that are already handled)
         html += displayText + '<br>';
       }
     }
   }
 
-  console.log('Final HTML:', html);
   return html;
 }
 
@@ -581,7 +574,6 @@ window.updateItemInfo = function updateItemInfo(event) {
         window.unifiedSocketSystem.updateAll();
       }
     } catch (error) {
-      console.error('Error updating socket system:', error);
     }
   }
 }
@@ -597,7 +589,6 @@ function setupDropdownHandlers() {
         try {
           window.updateItemInfo(event);
         } catch (error) {
-          console.error('Error in updateItemInfo:', error);
         }
       });
     }

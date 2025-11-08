@@ -1358,7 +1358,6 @@
               const corruption = window.itemCorruptions[dropdownId];
               // If the corrupted item is different from the newly selected item, clear corruption
               if (corruption.itemName && corruption.itemName !== newItemName) {
-                console.log(`Clearing corruption for ${corruption.itemName} when switching to ${newItemName}`);
 
                 // Check if this was a socket corruption on armor, helm, or shield
                 if (corruption.type === 'socket_corruption' &&
@@ -1379,7 +1378,6 @@
 
             // If we cleared a socket corruption on armor/helm/shield, reset sockets to 1 (base Larzuk amount)
             if (clearedSocketCorruption && newItemName) {
-              console.log(`Resetting sockets to 1 after clearing ${section} socket corruption`);
               this.setSocketCount(section, 1);
             } else {
               // Only adjust sockets for socketable items (remove excess)
@@ -1458,7 +1456,6 @@
           if (section === 'armor' && limit > 3) {
             limit = 3;
           }
-          console.log(`Socket limit for ${itemName}: ${limit}`);
           return limit;
         }
       }
@@ -1499,7 +1496,6 @@
       if ((section === 'armor' || section === 'helm' || section === 'shield') && newSocketCount === 3) {
         const dropdownId = this.getSectionDropdownId(section);
         if (dropdownId && typeof window.applySocketCorruption === 'function') {
-          console.log(`Auto-applying 3 Sockets corruption to ${section}`);
           window.applySocketCorruption(dropdownId, 3);
         }
       }
@@ -1523,7 +1519,6 @@
 
       // If current socket count exceeds max for new item, remove excess sockets
       if (currentSocketCount > maxSockets) {
-        console.log(`Adjusting sockets: ${currentSocketCount} → ${maxSockets}`);
 
         // Remove sockets from the end (highest indices first)
         while (socketGrid.children.length > maxSockets) {
@@ -1544,18 +1539,15 @@
     setSocketCount(section, targetCount) {
       const container = document.querySelector(`.socket-container[data-section="${section}"]`);
       if (!container) {
-        console.error(`No container found for section: ${section}`);
         return;
       }
 
       const socketGrid = container.querySelector('.socket-grid');
       if (!socketGrid) {
-        console.error(`No socket grid found for section: ${section}`);
         return;
       }
 
       const currentCount = socketGrid.children.length;
-      console.log(`Setting socket count for ${section}: ${currentCount} → ${targetCount}`);
 
       // Remove all existing sockets first
       while (socketGrid.firstChild) {
