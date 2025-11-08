@@ -2935,47 +2935,32 @@ function calculateItemDefense(item, baseType, category = "helm") {
 }
 
 function calculateItemDamage(item, baseType, isMax = false) {
-  // Log calculation start for debugging
-  console.log("=== CALCULATE ITEM DAMAGE CALLED ===");
-  console.log("Item:", item);
-  console.log("Base Type:", baseType);
-  console.log("isMax:", isMax);
-
   // Get base damage from the damage table
   const baseDamage = baseDamages[baseType.trim()] || { min: 0, max: 0 };
-  console.log("Base Damage from table:", baseDamage);
 
   // Get the base enhanced damage from the item
   const itemEdmg = item.properties?.edmg || 0;
-  console.log("Item's own edmg property:", itemEdmg);
 
   // Check if item is ethereal
   const isEthereal = item.description.includes("Ethereal");
   const ethMult = isEthereal ? 1.5 : 1;
-  console.log("Ethereal multiplier:", ethMult);
 
   // Calculate enhanced damage from socketed items (jewels AND runes)
   let socketEnhancedDamage = 0;
   const socketElements = document.querySelectorAll(
     '.socketz[data-section="weapon"]'
   );
-  console.log("Found socket elements:", socketElements.length);
 
   socketElements.forEach((socket, index) => {
     if (!socket.dataset.itemName) {
-      console.log(`Socket ${index}: Empty`);
       return;
     }
-
-    console.log(`Socket ${index}: Contains ${socket.dataset.itemName}`);
 
     let stats = [];
     if (socket.dataset.itemName === "jewel") {
       try {
         stats = JSON.parse(socket.dataset.stats);
-        console.log(`Socket ${index}: Jewel stats parsed:`, stats);
       } catch (e) {
-        console.error(`Socket ${index}: Error parsing jewel stats:`, e);
         return;
       }
     } else {
@@ -2985,9 +2970,6 @@ function calculateItemDamage(item, baseType, isMax = false) {
           .split(/\n|,/)
           .map((s) => s.trim())
           .filter(Boolean);
-        console.log(`Socket ${index}: Item stats:`, stats);
-      } else {
-        console.log(`Socket ${index}: No stats found for item`);
       }
     }
 
@@ -2997,9 +2979,6 @@ function calculateItemDamage(item, baseType, isMax = false) {
       if (enhancedDamageMatch) {
         const value = parseInt(enhancedDamageMatch[1]);
         socketEnhancedDamage += value;
-        console.log(
-          `Socket ${index}: Found enhanced damage: +${value}%, new total: ${socketEnhancedDamage}%`
-        );
       }
     });
   });
