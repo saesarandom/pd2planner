@@ -359,12 +359,7 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId) {
     const clampedValue = Math.max(prop.min, Math.min(prop.max, parseInt(newValue) || prop.max));
     prop.current = clampedValue;
 
-    // Trigger stat recalculation
-    if (window.characterManager) {
-      window.characterManager.updateTotalStats();
-    }
-
-    // Update the description display
+    // Update the description display FIRST
     const infoDivId = INFO_DIV_MAP[dropdownId];
     if (infoDivId) {
       const infoDiv = document.getElementById(infoDivId);
@@ -374,6 +369,16 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId) {
         // Re-attach event listeners to the new input boxes
         attachStatInputListeners();
       }
+    }
+
+    // Then trigger stat recalculation (which may call socket system)
+    if (window.characterManager) {
+      window.characterManager.updateTotalStats();
+    }
+
+    // Notify socket system to update with the new innerHTML
+    if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+      window.unifiedSocketSystem.updateAll();
     }
   }
 }
