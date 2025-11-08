@@ -418,6 +418,13 @@ const ALL_DROPDOWNS = [
  * Populate all item dropdowns with their respective items
  */
 function populateItemDropdowns() {
+  // Check if itemList is available
+  if (typeof itemList === 'undefined') {
+    console.warn('itemList not available yet, retrying in 100ms');
+    setTimeout(populateItemDropdowns, 100);
+    return;
+  }
+
   // Clear all dropdowns first
   Object.values(DROPDOWN_MAP).forEach(id => {
     const dropdown = document.getElementById(id);
@@ -433,25 +440,25 @@ function populateItemDropdowns() {
       const dropdown = document.getElementById(dropdownId);
       if (dropdown) {
         items.forEach(item => {
-          // Check if item exists in itemList
-          if (itemList[item.name] || item.quality === 'runeword') {
-            const option = document.createElement('option');
-            option.value = item.name;
-            option.textContent = item.name;
-            option.setAttribute('data-quality', item.quality);
+          // Add all items from itemDropdownData (they're pre-validated)
+          const option = document.createElement('option');
+          option.value = item.name;
+          option.textContent = item.name;
+          option.setAttribute('data-quality', item.quality);
 
-            // Add CSS class for styling
-            if (item.quality === 'unique') {
-              option.className = 'unique-item';
-            } else if (item.quality === 'set') {
-              option.className = 'set-item';
-            } else if (item.quality === 'runeword') {
-              option.style.color = '#D2691E';
-              option.style.fontWeight = 'bold';
-            }
-
-            dropdown.appendChild(option);
+          // Add CSS class for styling based on quality
+          if (item.quality === 'unique') {
+            option.className = 'unique-item';
+            option.style.color = '#C7B377'; // Gold for unique
+          } else if (item.quality === 'set') {
+            option.className = 'set-item';
+            option.style.color = '#00FF00'; // Green for set
+          } else if (item.quality === 'runeword') {
+            option.style.color = '#D2691E'; // Brown/tan for runeword
+            option.style.fontWeight = 'bold';
           }
+
+          dropdown.appendChild(option);
         });
       }
     }
@@ -471,34 +478,29 @@ function updateItemInfo(event) {
   const infoDiv = document.getElementById(infoDivId);
   if (!infoDiv) return;
 
-  if (selectedItemName && itemList[selectedItemName]) {
-    const section = SECTION_MAP[dropdown.id];
-
-    // Try socket system first for all items
-    if (section && window.statsCalculator && typeof window.statsCalculator.updateItemDisplay === 'function') {
-      try {
-        window.statsCalculator.updateItemDisplay(section);
-
-        // Verify content was set, fallback if needed
-        setTimeout(() => {
-          if (infoDiv.innerHTML.trim() === '') {
-            const item = itemList[selectedItemName];
-            infoDiv.innerHTML = item.description;
-          }
-        }, 100);
-
-      } catch (error) {
-        // Socket system failed, use direct method
-        const item = itemList[selectedItemName];
-        infoDiv.innerHTML = item.description;
-      }
-    } else {
-      // Socket system not ready, use direct method
-      const item = itemList[selectedItemName];
-      infoDiv.innerHTML = item.description;
-    }
-  } else {
+  if (!selectedItemName) {
     infoDiv.innerHTML = '';
+    return;
+  }
+
+  // Try to get item info from itemList
+  const item = itemList && itemList[selectedItemName];
+
+  if (item && item.description) {
+    infoDiv.innerHTML = item.description;
+  } else {
+    // If not in itemList, try to show a basic placeholder
+    infoDiv.innerHTML = selectedItemName;
+  }
+
+  // Trigger unified socket system update if available
+  const section = SECTION_MAP[dropdown.id];
+  if (section && window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+    try {
+      window.unifiedSocketSystem.updateAll();
+    } catch (error) {
+      console.error('Error updating socket system:', error);
+    }
   }
 }
 
