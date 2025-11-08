@@ -134,7 +134,7 @@ const itemList = {
       edef: 100,
       vit: 20,
       enr: 20,
-      repl: 12,
+      repl: { min: 6, max: 12, current: 12 },
     },
   },
 
