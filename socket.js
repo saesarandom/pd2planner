@@ -41,7 +41,7 @@
         strength: 0, dexterity: 0, vitality: 0, energy: 0,
         allSkills: 0, magicFind: 0, goldFind: 0, defense: 0,
         ias: 0, fcr: 0, frw: 0, fhr: 0,
-        fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0,
+        fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
         allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0,
         life: 0, mana: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
         lightDmgMin: 0, lightDmgMax: 0, fireDmgMin: 0, fireDmgMax: 0,
@@ -2242,6 +2242,7 @@ this.selectedJewelSuffix3MaxValue = null;
     this.stats.coldResist += window.checkboxResistBonus || 0;
     this.stats.lightResist += window.checkboxResistBonus || 0;
     this.stats.poisonResist += window.checkboxResistBonus || 0;
+    this.stats.curseResist += window.checkboxResistBonus || 0;
   }
 
     parseItemStats(item, section) {
@@ -2456,27 +2457,31 @@ if (defMatch) {
     
     // Resistances
     const allResMatch = cleanLine.match(/All\s+Resistances?\s+(?:\+)?(\d+)%?/i);
-    if (allResMatch) { 
+    if (allResMatch) {
       const value = parseInt(allResMatch[1]);
       this.stats.allResistances += value;
       this.stats.fireResist += value;
       this.stats.coldResist += value;
       this.stats.lightResist += value;
       this.stats.poisonResist += value;
-      return; 
+      this.stats.curseResist += value;
+      return;
     }
-    
+
     const fireResMatch = cleanLine.match(/Fire\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (fireResMatch) { this.stats.fireResist += parseInt(fireResMatch[1]); return; }
-    
+
     const coldResMatch = cleanLine.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (coldResMatch) { this.stats.coldResist += parseInt(coldResMatch[1]); return; }
-    
+
     const lightResMatch = cleanLine.match(/Lightning\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (lightResMatch) { this.stats.lightResist += parseInt(lightResMatch[1]); return; }
-    
+
     const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (poisonResMatch) { this.stats.poisonResist += parseInt(poisonResMatch[1]); return; }
+
+    const curseResMatch = cleanLine.match(/Curse\s+Resist\s+(?:\+)?(\d+)%?/i);
+    if (curseResMatch) { this.stats.curseResist += parseInt(curseResMatch[1]); return; }
     
     // Magic Find
     const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
