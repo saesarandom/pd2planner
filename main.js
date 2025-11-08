@@ -349,7 +349,7 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
 /**
  * Handle changes to variable stat inputs
  */
-function handleVariableStatChange(itemName, propKey, newValue, dropdownId) {
+function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipRegeneration = false) {
   const item = itemList[itemName];
   if (!item || !item.properties || !item.properties[propKey]) return;
 
@@ -359,19 +359,21 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId) {
     const clampedValue = Math.max(prop.min, Math.min(prop.max, parseInt(newValue) || prop.max));
     prop.current = clampedValue;
 
-    // Update the description display FIRST
-    const infoDivId = INFO_DIV_MAP[dropdownId];
-    if (infoDivId) {
-      const infoDiv = document.getElementById(infoDivId);
-      if (infoDiv) {
-        infoDiv.innerHTML = generateItemDescription(itemName, item, dropdownId);
+    if (!skipRegeneration) {
+      // Update the description display
+      const infoDivId = INFO_DIV_MAP[dropdownId];
+      if (infoDivId) {
+        const infoDiv = document.getElementById(infoDivId);
+        if (infoDiv) {
+          infoDiv.innerHTML = generateItemDescription(itemName, item, dropdownId);
 
-        // Re-attach event listeners to the new input boxes
-        attachStatInputListeners();
+          // Re-attach event listeners to the new input boxes
+          attachStatInputListeners();
+        }
       }
     }
 
-    // Then trigger stat recalculation (which may call socket system)
+    // Trigger stat recalculation
     if (window.characterManager) {
       window.characterManager.updateTotalStats();
     }
@@ -392,70 +394,15 @@ function attachStatInputListeners() {
     if (input.dataset.listenersAttached === 'true') return;
     input.dataset.listenersAttached = 'true';
 
-    let isMouseDown = false;
-    let lastValue = parseInt(input.value);
-    let intervalId = null;
-    let direction = null;
-
-    // Handle manual typing changes
+    // Simple input handler - just update the value
     input.addEventListener('input', (e) => {
       const itemName = e.target.dataset.item;
       const propKey = e.target.dataset.prop;
       const dropdownId = e.target.dataset.dropdown;
       const newValue = e.target.value;
 
-      // Detect direction if mouse is down
-      if (isMouseDown) {
-        const currentValue = parseInt(newValue);
-        if (currentValue > lastValue) direction = 'up';
-        else if (currentValue < lastValue) direction = 'down';
-        lastValue = currentValue;
-      }
-
       handleVariableStatChange(itemName, propKey, newValue, dropdownId);
     });
-
-    // Start detecting spinner clicks
-    input.addEventListener('mousedown', () => {
-      isMouseDown = true;
-      lastValue = parseInt(input.value);
-      direction = null;
-
-      // After 500ms, if direction detected, start continuous change
-      setTimeout(() => {
-        if (isMouseDown && direction) {
-          const itemName = input.dataset.item;
-          const propKey = input.dataset.prop;
-          const dropdownId = input.dataset.dropdown;
-          const min = parseInt(input.min);
-          const max = parseInt(input.max);
-
-          intervalId = setInterval(() => {
-            let currentValue = parseInt(input.value) || min;
-            let newValue = direction === 'up' ? currentValue + 1 : currentValue - 1;
-            newValue = Math.max(min, Math.min(max, newValue));
-
-            if (newValue !== currentValue) {
-              input.value = newValue;
-              handleVariableStatChange(itemName, propKey, newValue, dropdownId);
-            }
-          }, 100);
-        }
-      }, 500);
-    });
-
-    // Stop continuous change
-    const stopChange = () => {
-      isMouseDown = false;
-      direction = null;
-      if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
-      }
-    };
-
-    input.addEventListener('mouseup', stopChange);
-    input.addEventListener('mouseleave', stopChange);
   });
 }
 
