@@ -2041,13 +2041,62 @@ this.selectedJewelSuffix3MaxValue = null;
     const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
     const meetsRequirement = currentLevel >= actualRequiredLevel;
 
-    // Get socket stats first to check if we need to process
+    // Get socket stats
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
 
-    // COMPLETELY SKIP dynamic items (no static description)
-    // Socket system can't properly merge stats with dynamic HTML/inputs
-    // Just update visual feedback for level requirement
+    // Handle dynamic items (no static description)
     if (!item.description) {
+      // No sockets? Just update visual feedback
+      if (sockets.length === 0) {
+        if (!meetsRequirement) {
+          infoDiv.style.opacity = '0.6';
+          infoDiv.style.filter = 'grayscale(50%)';
+          infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+        } else {
+          infoDiv.style.opacity = '1';
+          infoDiv.style.filter = 'none';
+          infoDiv.title = '';
+        }
+        return; // Preserve user's input values
+      }
+
+      // Has sockets - need to show socket bonuses WITHOUT regenerating item description
+      // Remove any existing socket stats first (they have a marker div)
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = infoDiv.innerHTML;
+      const existingSocketStats = tempDiv.querySelector('.socket-stats-marker');
+      if (existingSocketStats) {
+        existingSocketStats.remove();
+      }
+      let baseHTML = tempDiv.innerHTML;
+
+      // Build socket stats HTML
+      let socketStatsHTML = '<div class="socket-stats-marker">';
+      sockets.forEach(socket => {
+        const stats = socket.dataset.stats;
+        const itemName = socket.dataset.itemName;
+        const levelReq = parseInt(socket.dataset.levelReq) || 1;
+        const socketUsable = currentLevel >= levelReq;
+
+        if (stats && itemName) {
+          const color = socketUsable ? '#6495ED' : '#888';
+          const levelText = socketUsable ? '' : ` (Level ${levelReq} Required)`;
+          // Parse and display each socket stat
+          stats.split('<br>').forEach(line => {
+            if (line.trim()) {
+              socketStatsHTML += `<span style="color: ${color};">${line}${levelText}</span><br>`;
+            }
+          });
+        }
+      });
+      socketStatsHTML += '</div>';
+
+      // Combine base description + socket stats
+      if (sockets.length > 0) {
+        infoDiv.innerHTML = baseHTML + '<br>' + socketStatsHTML;
+      }
+
+      // Update visual feedback
       if (!meetsRequirement) {
         infoDiv.style.opacity = '0.6';
         infoDiv.style.filter = 'grayscale(50%)';
@@ -2057,10 +2106,10 @@ this.selectedJewelSuffix3MaxValue = null;
         infoDiv.style.filter = 'none';
         infoDiv.title = '';
       }
-      return; // Don't touch innerHTML - preserve dynamic content
+      return;
     }
 
-    // From here on, we only handle static description items
+    // From here on, handle static description items
     let baseDescription = item.description;
     const baseStats = this.parseStatsToMap(baseDescription);
 
