@@ -2391,6 +2391,18 @@ this.selectedJewelSuffix3MaxValue = null;
       return strInput >= requiredStr && dexInput >= requiredDex;
     }
 
+    getItemRequiredStats(itemName) {
+      if (!itemList[itemName]) return { str: 0, dex: 0 };
+
+      const item = itemList[itemName];
+      if (!item.properties) return { str: 0, dex: 0 };
+
+      return {
+        str: item.properties.reqstr || 0,
+        dex: item.properties.reqdex || 0
+      };
+    }
+
     updateAll() {
       if (this.isInitializing) return;
       
@@ -2500,6 +2512,9 @@ this.selectedJewelSuffix3MaxValue = null;
         finalDescription = finalDescription.replace(levelPattern, newLevelLine);
       }
 
+      // Update Required Strength and Dexterity colors
+      finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value, meetsRequirement && isUsableByClass && meetsStatRequirements);
+
       // Update display
       infoDiv.innerHTML = finalDescription;
 
@@ -2569,6 +2584,9 @@ this.selectedJewelSuffix3MaxValue = null;
       finalDescription = finalDescription.replace(levelPattern, newLevelLine);
     }
 
+    // Update Required Strength and Dexterity colors
+    finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value, meetsRequirement && isUsableByClass && meetsStatRequirements);
+
     // Visual feedback for unusable items
     if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
       infoDiv.style.opacity = '0.6';
@@ -2622,6 +2640,38 @@ this.selectedJewelSuffix3MaxValue = null;
     });
     
     return finalDescription;
+  }
+
+  updateStatRequirementColors(description, itemName, isFullyUsable) {
+    let updatedDescription = description;
+    const reqStats = this.getItemRequiredStats(itemName);
+
+    // Get current character stats from inputs
+    const strInput = parseInt(document.getElementById('str')?.value) || 0;
+    const dexInput = parseInt(document.getElementById('dex')?.value) || 0;
+
+    const meetsStrRequirement = strInput >= reqStats.str;
+    const meetsDexRequirement = dexInput >= reqStats.dex;
+
+    // Determine color based on overall usability and specific requirement
+    const strColor = isFullyUsable && meetsStrRequirement ? '#00ff00' : '#ff5555';
+    const dexColor = isFullyUsable && meetsDexRequirement ? '#00ff00' : '#ff5555';
+
+    // Replace Required Strength
+    if (reqStats.str > 0) {
+      const strPattern = /(?:<span[^>]*>)?Required Strength: \d+(?:<\/span>)?/gi;
+      const newStrLine = `<span style="color: ${strColor}; font-weight: bold;">Required Strength: ${reqStats.str}</span>`;
+      updatedDescription = updatedDescription.replace(strPattern, newStrLine);
+    }
+
+    // Replace Required Dexterity
+    if (reqStats.dex > 0) {
+      const dexPattern = /(?:<span[^>]*>)?Required Dexterity: \d+(?:<\/span>)?/gi;
+      const newDexLine = `<span style="color: ${dexColor}; font-weight: bold;">Required Dexterity: ${reqStats.dex}</span>`;
+      updatedDescription = updatedDescription.replace(dexPattern, newDexLine);
+    }
+
+    return updatedDescription;
   }
 
   // Add stacking styles
