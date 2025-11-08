@@ -1475,13 +1475,11 @@
 
       const container = document.querySelector(`.socket-container[data-section="${section}"]`);
       if (!container) {
-        console.error(`❌ No socket container found for section: ${section}`);
         return;
       }
 
       const socketGrid = container.querySelector('.socket-grid');
       if (!socketGrid) {
-        console.error(`❌ No socket grid found in container for section: ${section}`);
         return;
       }
 
@@ -1794,12 +1792,11 @@ validateAffixLimit() {
 
   populateSocketItems(category) {
     const grid = document.getElementById('socketItemGrid');
-    
+
     if (!grid) {
-      console.error('❌ socketItemGrid not found!');
       return;
     }
-    
+
     grid.innerHTML = '';
     
     const items = this.socketData[category] || {};
@@ -2302,24 +2299,18 @@ this.selectedJewelSuffix3MaxValue = null;
     // Replace your existing updateItemDisplay method with this enhanced version
 
   updateItemDisplay(section) {
-    console.log(`🔍 updateItemDisplay called for section: ${section}`);
-
     const infoId = this.getSectionInfoId(section);
     const infoDiv = document.getElementById(infoId);
     if (!infoDiv) {
-      console.warn(`❌ Info div '${infoId}' not found for section '${section}'`);
       return;
     }
 
     const dropdownId = this.getSectionDropdownId(section);
     const dropdown = document.getElementById(dropdownId);
     if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
-      console.log(`⚠️ No item selected for section ${section}, clearing`);
       infoDiv.innerHTML = '';
       return;
     }
-
-    console.log(`📝 Processing ${dropdown.value} in section ${section}`);
     
     const item = itemList[dropdown.value];
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
@@ -2331,7 +2322,6 @@ this.selectedJewelSuffix3MaxValue = null;
 
     // Handle dynamic items (no static description)
     if (!item.description) {
-      console.log(`🎯 Dynamic item detected: ${dropdown.value}, sockets: ${sockets.length}`);
       // No sockets? Just update visual feedback
       if (sockets.length === 0) {
         if (!meetsRequirement) {
@@ -2347,7 +2337,6 @@ this.selectedJewelSuffix3MaxValue = null;
       }
 
       // Has sockets - need to merge stats and regenerate description
-      console.log(`🔧 Dynamic item WITH sockets - merging stats for ${dropdown.value}`);
       // First, generate clean base description
       const baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
 
@@ -2652,12 +2641,11 @@ this.selectedJewelSuffix3MaxValue = null;
   
   statLines.forEach((line, index) => {
     try {
-      
+
       this.parseStatLine(line);
-      
+
     } catch (error) {
-      console.error(`❌ Error processing stat line ${index + 1}: "${line}"`, error);
-      console.error(`❌ Error stack:`, error.stack);
+      // Silent error - skip invalid stat lines
     }
   });
   
@@ -2899,14 +2887,13 @@ if (defMatch) {
     if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
 
 
-    
+
     // If we get here, the stat wasn't recognized
-    
+
   } catch (error) {
-    console.error(`❌ Error in parseStatLine for: "${cleanLine}"`, error);
     throw error; // Re-throw to be caught by parseSocketStats
   }
-  
+
 }
 
   // Add these methods to your existing socket.js class
@@ -4176,13 +4163,11 @@ const statsArray = [
     // Simple fallback if system not ready yet
     const container = document.querySelector(`.socket-container[data-section="${section}"]`);
     if (!container) {
-      console.error(`❌ No socket container found for section: ${section}`);
       return;
     }
-    
+
     const socketGrid = container.querySelector('.socket-grid');
     if (!socketGrid) {
-      console.error(`❌ No socket grid found in container for section: ${section}`);
       return;
     }
     
