@@ -165,6 +165,11 @@ function populateItemDropdowns() {
 
     if (itemType && itemsByType[itemType]) {
       itemsByType[itemType].push(itemName);
+
+      // Rings should appear in BOTH ring slots (you can wear 2 different rings in D2)
+      if (itemType === 'ringsone') {
+        itemsByType.ringstwo.push(itemName);
+      }
     }
   }
 
@@ -177,7 +182,8 @@ function populateItemDropdowns() {
     gloves: itemsByType.gloves.length,
     belts: itemsByType.belts.length,
     boots: itemsByType.boots.length,
-    rings: itemsByType.ringsone.length,
+    rings1: itemsByType.ringsone.length,
+    rings2: itemsByType.ringstwo.length,
     amulets: itemsByType.amulets.length
   });
 
