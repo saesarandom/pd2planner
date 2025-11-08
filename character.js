@@ -12,6 +12,63 @@ function getPropertyValue(prop) {
   return prop;
 }
 
+/**
+ * Extract class restriction from item description
+ * Returns the restricted class name or null if item has no class restriction
+ */
+function getItemClassRestriction(itemName) {
+  const itemData = window.itemList || itemList;
+  if (!itemData || !itemData[itemName]) return null;
+
+  const item = itemData[itemName];
+  if (!item.description) return null;
+
+  // Look for class-only pattern at the start of a line (after <br>)
+  // Patterns: "(Amazon Only)", "(Druid Only)", etc.
+  const classPattern = /\(([A-Za-z]+)\s+Only\)/i;
+  const match = item.description.match(classPattern);
+
+  if (match && match[1]) {
+    // Normalize class name to match enum (capitalize first letter)
+    const restrictedClass = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
+    const validClasses = ['Amazon', 'Assassin', 'Barbarian', 'Druid', 'Necromancer', 'Paladin', 'Sorceress'];
+
+    if (validClasses.includes(restrictedClass)) {
+      return restrictedClass;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check if an item is usable by a character class
+ * Returns true if item has no class restriction or character matches the restriction
+ */
+function isItemUsableByClass(itemName, characterClass) {
+  const restriction = getItemClassRestriction(itemName);
+  if (!restriction) return true; // No restriction, usable by all classes
+  return restriction === characterClass;
+}
+
+/**
+ * Check if character meets strength and dexterity requirements for an item
+ * Returns true if character has enough strength and dexterity, false otherwise
+ */
+function doesCharacterMeetStatRequirements(itemName, characterStrength, characterDexterity) {
+  const itemData = window.itemList || itemList;
+  if (!itemData || !itemData[itemName]) return true;
+
+  const item = itemData[itemName];
+  if (!item.properties) return true;
+
+  const requiredStr = item.properties.reqstr || 0;
+  const requiredDex = item.properties.reqdex || 0;
+
+  // Character must meet both strength and dexterity requirements
+  return characterStrength >= requiredStr && characterDexterity >= requiredDex;
+}
+
 class CharacterManager {
   constructor() {
     this.currentLevel = 1;
@@ -374,6 +431,12 @@ getDirectLifeManaFromItems() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
+    // Get current character stats (base + bonuses from equipment)
+    const baseStr = this.classStats[this.currentClass].str;
+    const baseDex = this.classStats[this.currentClass].dex;
+    const currentStr = parseInt(document.getElementById('str')?.value) || baseStr;
+    const currentDex = parseInt(document.getElementById('dex')?.value) || baseDex;
+
     // Player equipment only (mercenary items don't affect player stats)
     const equipmentSections = [
       { dropdown: 'weapons-dropdown', section: 'weapon' },
@@ -399,8 +462,10 @@ getDirectLifeManaFromItems() {
       if (!item) return;
 
       const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
+      const isUsableByClass = isItemUsableByClass(dropdownElement.value, this.currentClass);
+      const meetsStatRequirements = doesCharacterMeetStatRequirements(dropdownElement.value, currentStr, currentDex);
 
-      if (currentLevel >= actualRequiredLevel && item.properties) {
+      if (currentLevel >= actualRequiredLevel && isUsableByClass && meetsStatRequirements && item.properties) {
         bonuses.str += getPropertyValue(item.properties.str) || 0;
         bonuses.dex += getPropertyValue(item.properties.dex) || 0;
         bonuses.vit += getPropertyValue(item.properties.vit) || 0;

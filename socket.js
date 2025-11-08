@@ -2337,10 +2337,10 @@ this.selectedJewelSuffix3MaxValue = null;
     // === STATS CALCULATION ===
     calculateActualRequiredLevel(section, itemName) {
       if (!itemList[itemName]) return 1;
-      
+
       const item = itemList[itemName];
       let actualLevel = item.properties?.reqlvl || 1;
-      
+
       // Check socket requirements
       const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
       sockets.forEach(socket => {
@@ -2349,8 +2349,46 @@ this.selectedJewelSuffix3MaxValue = null;
           actualLevel = socketLevel;
         }
       });
-      
+
       return actualLevel;
+    }
+
+    isItemUsableByCharacterClass(itemName) {
+      if (!itemList[itemName]) return true;
+
+      const item = itemList[itemName];
+      if (!item.description) return true;
+
+      // Look for class restriction pattern: "(ClassName Only)"
+      const classPattern = /\(([A-Za-z]+)\s+Only\)/i;
+      const match = item.description.match(classPattern);
+
+      if (match && match[1]) {
+        const restrictedClass = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
+        const currentClass = document.getElementById('selectClass')?.value || 'Amazon';
+        return restrictedClass === currentClass;
+      }
+
+      return true; // No class restriction
+    }
+
+    doesCharacterMeetStatRequirements(itemName) {
+      if (!itemList[itemName]) return true;
+
+      const item = itemList[itemName];
+      if (!item.properties) return true;
+
+      const requiredStr = item.properties.reqstr || 0;
+      const requiredDex = item.properties.reqdex || 0;
+
+      // Get current character stats from inputs
+      const strInput = parseInt(document.getElementById('str')?.value);
+      const dexInput = parseInt(document.getElementById('dex')?.value);
+
+      // If inputs are not available, return true (allow display)
+      if (isNaN(strInput) || isNaN(dexInput)) return true;
+
+      return strInput >= requiredStr && dexInput >= requiredDex;
     }
 
     updateAll() {
@@ -2387,6 +2425,8 @@ this.selectedJewelSuffix3MaxValue = null;
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
     const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
     const meetsRequirement = currentLevel >= actualRequiredLevel;
+    const isUsableByClass = this.isItemUsableByCharacterClass(dropdown.value);
+    const meetsStatRequirements = this.doesCharacterMeetStatRequirements(dropdown.value);
 
     // Get socket stats
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
@@ -2395,10 +2435,16 @@ this.selectedJewelSuffix3MaxValue = null;
     if (!item.description) {
       // No sockets? Just update visual feedback
       if (sockets.length === 0) {
-        if (!meetsRequirement) {
+        if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
           infoDiv.style.opacity = '0.6';
           infoDiv.style.filter = 'grayscale(50%)';
-          infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+          if (!meetsRequirement) {
+            infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+          } else if (!isUsableByClass) {
+            infoDiv.title = `This item is restricted to a different class`;
+          } else {
+            infoDiv.title = `You don't have the required strength or dexterity to use this item`;
+          }
         } else {
           infoDiv.style.opacity = '1';
           infoDiv.style.filter = 'none';
@@ -2432,11 +2478,11 @@ this.selectedJewelSuffix3MaxValue = null;
             name: itemName,
             stats,
             levelReq,
-            usable: socketUsable && meetsRequirement
+            usable: socketUsable && meetsRequirement && isUsableByClass && meetsStatRequirements
           });
 
           // Merge stats if usable
-          if (socketUsable && meetsRequirement) {
+          if (socketUsable && meetsRequirement && isUsableByClass && meetsStatRequirements) {
             const parsedSocketStats = this.parseStatsToMap(stats);
             this.mergeStatsMaps(baseStats, parsedSocketStats);
           }
@@ -2447,7 +2493,7 @@ this.selectedJewelSuffix3MaxValue = null;
       let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
 
       // Update Required Level display
-      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
+      const levelColor = meetsRequirement && isUsableByClass && meetsStatRequirements ? '#00ff00' : '#ff5555';
       const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
       const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
       if (levelPattern.test(finalDescription)) {
@@ -2465,10 +2511,16 @@ this.selectedJewelSuffix3MaxValue = null;
       }
 
       // Update visual feedback
-      if (!meetsRequirement) {
+      if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
         infoDiv.style.opacity = '0.6';
         infoDiv.style.filter = 'grayscale(50%)';
-        infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+        if (!meetsRequirement) {
+          infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+        } else if (!isUsableByClass) {
+          infoDiv.title = `This item is restricted to a different class`;
+        } else {
+          infoDiv.title = `You don't have the required strength or dexterity to use this item`;
+        }
       } else {
         infoDiv.style.opacity = '1';
         infoDiv.style.filter = 'none';
@@ -2483,51 +2535,57 @@ this.selectedJewelSuffix3MaxValue = null;
 
     // Build socket items array
     const socketItems = [];
-    
+
     sockets.forEach(socket => {
       const stats = socket.dataset.stats;
       const itemName = socket.dataset.itemName;
       const levelReq = parseInt(socket.dataset.levelReq) || 1;
-      
+
       if (stats && itemName) {
-        socketItems.push({ 
-          name: itemName, 
-          stats, 
-          levelReq, 
-          usable: currentLevel >= levelReq && meetsRequirement
+        socketItems.push({
+          name: itemName,
+          stats,
+          levelReq,
+          usable: currentLevel >= levelReq && meetsRequirement && isUsableByClass && meetsStatRequirements
         });
-        
+
         // Only merge stats if both item and socket are usable
-        if (meetsRequirement && currentLevel >= levelReq) {
+        if (meetsRequirement && currentLevel >= levelReq && isUsableByClass && meetsStatRequirements) {
           const parsedSocketStats = this.parseStatsToMap(stats);
           this.mergeStatsMaps(baseStats, parsedSocketStats);
         }
       }
     });
-    
+
     // Generate final description with stacked properties
     let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
-    
+
     // Update Required Level display
-    const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
+    const levelColor = meetsRequirement && isUsableByClass && meetsStatRequirements ? '#00ff00' : '#ff5555';
     const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
-    
+
     const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
     if (levelPattern.test(finalDescription)) {
       finalDescription = finalDescription.replace(levelPattern, newLevelLine);
     }
-    
+
     // Visual feedback for unusable items
-    if (!meetsRequirement) {
+    if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
       infoDiv.style.opacity = '0.6';
       infoDiv.style.filter = 'grayscale(50%)';
-      infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+      if (!meetsRequirement) {
+        infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
+      } else if (!isUsableByClass) {
+        infoDiv.title = `This item is restricted to a different class`;
+      } else {
+        infoDiv.title = `You don't have the required strength or dexterity to use this item`;
+      }
     } else {
       infoDiv.style.opacity = '1';
       infoDiv.style.filter = 'none';
       infoDiv.title = '';
     }
-    
+
     infoDiv.innerHTML = finalDescription;
   }
 
