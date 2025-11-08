@@ -3149,17 +3149,25 @@ addToStatsMap(statsMap, key, data) {
         'weapon': 'weapon-info', 'helm': 'helm-info', 'armor': 'armor-info',
         'shield': 'off-info', 'gloves': 'glove-info', 'belts': 'belt-info',
         'boots': 'boot-info', 'ringone': 'ringsone-info', 'ringtwo': 'ringstwo-info',
-        'amulet': 'amulet-info'
+        'amulet': 'amulet-info',
+        // Mercenary equipment
+        'mercweapon': 'merc-weapon-info', 'merchelm': 'merc-helm-info', 'mercarmor': 'merc-armor-info',
+        'mercoff': 'merc-off-info', 'mercgloves': 'merc-glove-info', 'mercbelts': 'merc-belt-info',
+        'mercboots': 'merc-boot-info'
       };
       return mapping[section] || `${section}-info`;
     }
-    
+
     getSectionDropdownId(section) {
       const mapping = {
         'weapon': 'weapons-dropdown', 'helm': 'helms-dropdown', 'armor': 'armors-dropdown',
         'shield': 'offs-dropdown', 'gloves': 'gloves-dropdown', 'belts': 'belts-dropdown',
         'boots': 'boots-dropdown', 'ringone': 'ringsone-dropdown', 'ringtwo': 'ringstwo-dropdown',
-        'amulet': 'amulets-dropdown'
+        'amulet': 'amulets-dropdown',
+        // Mercenary equipment
+        'mercweapon': 'mercweapons-dropdown', 'merchelm': 'merchelms-dropdown', 'mercarmor': 'mercarmors-dropdown',
+        'mercoff': 'mercoffs-dropdown', 'mercgloves': 'mercgloves-dropdown', 'mercbelts': 'mercbelts-dropdown',
+        'mercboots': 'mercboots-dropdown'
       };
       return mapping[section] || `${section}s-dropdown`;
     }
