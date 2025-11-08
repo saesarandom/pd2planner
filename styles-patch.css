@@ -459,7 +459,7 @@ body {
 .inventorycontainer {
   display: grid;
   position: absolute;
-  left: 33%;
+  left: 60vw;
   top: 23%;
   grid-template-columns: repeat(10, 40px);
   grid-gap: 1px;
