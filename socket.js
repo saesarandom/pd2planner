@@ -155,19 +155,94 @@
         'Monarch': 4,
         'Aegis': 4,
 
-        // Weapons (general defaults - specific types can override)
-        'Sword': 6,
-        'Axe': 6,
-        'Mace': 6,
-        'Bow': 6,
-        'Staff': 6,
-        'Wand': 2,
-        'Scepter': 5,
-        'Dagger': 3,
-        'Spear': 6,
-        'Polearm': 6,
-        'Javelin': 6,
-        'Orb': 2
+        // Weapons - Swords
+        'Short Sword': 3, 'Scimitar': 3, 'Sabre': 3, 'Falchion': 3, 'Crystal Sword': 6,
+        'Broad Sword': 4, 'Long Sword': 4, 'War Sword': 4, 'Two-Handed Sword': 6,
+        'Claymore': 6, 'Giant Sword': 6, 'Bastard Sword': 5, 'Flamberge': 6, 'Great Sword': 6,
+        'Gladius': 3, 'Cutlass': 3, 'Shamshir': 3, 'Tulwar': 3, 'Dimensional Blade': 6,
+        'Battle Sword': 4, 'Rune Sword': 4, 'Ancient Sword': 4, 'Espandon': 6,
+        'Dacian Falx': 6, 'Tusk Sword': 6, 'Gothic Sword': 5, 'Zweihander': 6, 'Executioner Sword': 6,
+        'Blade': 2, 'Falcata': 3, 'Ataghan': 3, 'Elegant Blade': 3, 'Hydra Edge': 6,
+        'Phase Blade': 6, 'Conquest Sword': 5, 'Cryptic Sword': 4, 'Mythical Sword': 6, 'Legend Sword': 6,
+        'Highland Blade': 6, 'Balrog Blade': 6, 'Champion Sword': 5, 'Colossus Sword': 6, 'Colossus Blade': 6,
+
+        // Weapons - Axes
+        'Hand Axe': 4, 'Axe': 5, 'Double Axe': 6, 'Military Pick': 5, 'War Axe': 6,
+        'Large Axe': 6, 'Broad Axe': 6, 'Battle Axe': 6, 'Great Axe': 6, 'Giant Axe': 6,
+        'Hatchet': 4, 'Cleaver': 5, 'Twin Axe': 6, 'Crowbill': 5, 'Naga': 6,
+        'Military Axe': 6, 'Bearded Axe': 6, 'Tabar': 6, 'Gothic Axe': 6, 'Ancient Axe': 6,
+        'Tomahawk': 4, 'Small Crescent': 5, 'Ettin Axe': 6, 'War Spike': 5, 'Berserker Axe': 6,
+        'Feral Axe': 6, 'Silver-Edged Axe': 6, 'Decapitator': 6, 'Champion Axe': 6, 'Glorious Axe': 6,
+
+        // Weapons - Maces/Clubs/Hammers
+        'Club': 3, 'Spiked Club': 5, 'Mace': 5, 'Morning Star': 5, 'Flail': 5,
+        'War Hammer': 6, 'Maul': 6, 'Great Maul': 6, 'Cudgel': 3, 'Barbed Club': 5,
+        'Flanged Mace': 5, 'Jagged Star': 5, 'Knout': 5, 'Battle Hammer': 6, 'War Club': 6,
+        'Martel de Fer': 6, 'Truncheon': 3, 'Tyrant Club': 5, 'Reinforced Mace': 5,
+        'Devil Star': 5, 'Scourge': 5, 'Legendary Mallet': 6, 'Ogre Maul': 6, 'Thunder Maul': 6,
+
+        // Weapons - Staves
+        'Short Staff': 2, 'Long Staff': 4, 'Gnarled Staff': 4, 'Battle Staff': 6, 'War Staff': 6,
+        'Jo Staff': 2, 'Quarterstaff': 4, 'Cedar Staff': 4, 'Gothic Staff': 6, 'Rune Staff': 6,
+        'Walking Stick': 2, 'Stalagmite': 4, 'Elder Staff': 4, 'Shillelagh': 6, 'Archon Staff': 6,
+
+        // Weapons - Bows/Crossbows
+        'Short Bow': 3, 'Hunter\'s Bow': 4, 'Long Bow': 3, 'Composite Bow': 3, 'Short Battle Bow': 4,
+        'Long Battle Bow': 4, 'Short War Bow': 5, 'Long War Bow': 5, 'Light Crossbow': 3, 'Crossbow': 4,
+        'Heavy Crossbow': 6, 'Repeating Crossbow': 6, 'Edge Bow': 3, 'Razor Bow': 4, 'Cedar Bow': 3,
+        'Double Bow': 3, 'Short Siege Bow': 4, 'Large Siege Bow': 4, 'Rune Bow': 5, 'Gothic Bow': 5,
+        'Arbalest': 3, 'Siege Crossbow': 4, 'Ballista': 6, 'Chu-Ko-Nu': 6, 'Spider Bow': 3,
+        'Blade Bow': 4, 'Shadow Bow': 3, 'Great Bow': 3, 'Diamond Bow': 4, 'Crusader Bow': 4,
+        'Ward Bow': 5, 'Hydra Bow': 5, 'Pellet Bow': 3, 'Gorgon Crossbow': 4, 'Colossus Crossbow': 6,
+        'Demon Crossbow': 6,
+
+        // Weapons - Polearms
+        'Bardiche': 6, 'Voulge': 6, 'Scythe': 6, 'Poleaxe': 6, 'Halberd': 6,
+        'War Scythe': 5, 'Lochaber Axe': 6, 'Bill': 6, 'Battle Scythe': 6, 'Partisan': 6,
+        'Bec-de-Corbin': 6, 'Grim Scythe': 5, 'Ogre Axe': 6, 'Colossus Voulge': 6, 'Thresher': 6,
+        'Cryptic Axe': 6, 'Great Poleaxe': 6, 'Giant Thresher': 6,
+
+        // Weapons - Spears
+        'Spear': 3, 'Trident': 5, 'Brandistock': 5, 'Spetum': 5, 'Pike': 6,
+        'Lance': 6, 'Fuscina': 6, 'War Fork': 6, 'Yari': 6, 'War Spear': 6,
+        'Hyperion Spear': 6, 'Stygian Pike': 6, 'Mancatcher': 6, 'Ghost Spear': 6, 'War Pike': 6,
+
+        // Weapons - Daggers/Throwing
+        'Dagger': 3, 'Dirk': 3, 'Kris': 3, 'Blade': 2, 'Throwing Knife': 2,
+        'Throwing Axe': 4, 'Balanced Knife': 3, 'Poignard': 3, 'Rondel': 3, 'Cinquedeas': 3,
+        'Stiletto': 3, 'Battle Dart': 2, 'Francisca': 4, 'War Dart': 2, 'Bone Knife': 3,
+        'Mithril Point': 3, 'Fanged Knife': 3, 'Legend Spike': 3,
+
+        // Weapons - Javelins
+        'Javelin': 4, 'Pilum': 4, 'Short Spear': 3, 'Glaive': 5, 'Throwing Spear': 4,
+        'War Javelin': 4, 'Great Pilum': 4, 'Simbilan': 3, 'Spiculum': 5, 'Harpoon': 4,
+        'Hyperion Javelin': 4, 'Stygian Pilum': 4, 'Balrog Spear': 3, 'Ghost Glaive': 5, 'Winged Harpoon': 4,
+
+        // Weapons - Wands
+        'Wand': 2, 'Yew Wand': 2, 'Bone Wand': 2, 'Grim Wand': 2, 'Burnt Wand': 2,
+        'Petrified Wand': 2, 'Tomb Wand': 2, 'Grave Wand': 2, 'Polished Wand': 2, 'Ghost Wand': 2,
+        'Lich Wand': 2, 'Unearthed Wand': 2,
+
+        // Weapons - Scepters
+        'Scepter': 5, 'Grand Scepter': 5, 'War Scepter': 5, 'Rune Scepter': 5, 'Holy Water Sprinkler': 5,
+        'Divine Scepter': 5, 'Barbed Club': 5, 'Caduceus': 5, 'Tyrant Club': 5,
+
+        // Weapons - Orbs
+        'Orb': 2, 'Eldritch Orb': 2, 'Demon Heart': 2, 'Vortex Orb': 2, 'Dimensional Shard': 2,
+        'Heavenly Stone': 2, 'Swirling Crystal': 2,
+
+        // Weapons - Barbarian (cannot socket)
+        // Weapons - Druid (Pelts - cannot socket)
+        // Weapons - Necromancer (Shrunken Heads - cannot socket)
+        // Weapons - Assassin
+        'Katar': 3, 'Wrist Blade': 3, 'Hatchet Hands': 3, 'Cestus': 3, 'Claws': 3,
+        'Blade Talons': 3, 'Scissors Katar': 3, 'Quhab': 3, 'Wrist Spike': 3, 'Fascia': 3,
+        'Hand Scythe': 3, 'Greater Claws': 3, 'Greater Talons': 3, 'Scissors Quhab': 3,
+        'Suwayyah': 3, 'Wrist Sword': 3, 'War Fist': 3, 'Battle Cestus': 3, 'Feral Claws': 3,
+        'Runic Talons': 3, 'Scissors Suwayyah': 3
+
+        // Note: Class-specific items (Barb helms, Druid pelts, Necro heads, Paladin shields, Amazon items)
+        // may have different socket rules - handle via item.properties.maxSockets if needed
 
         // Note: Only weapons, helms, armors, and shields are socketable
         // Gloves, belts, boots, rings, and amulets cannot have sockets
@@ -1312,12 +1387,25 @@
         return item.properties.maxSockets;
       }
 
-      // Use baseType to lookup socket limit
-      if (item.baseType) {
-        const limit = this.baseTypeSocketLimits[item.baseType];
+      // Try to get base type from item.baseType or parse from description
+      let baseType = item.baseType;
+
+      if (!baseType && item.description) {
+        // Parse base type from description (it's usually the second line)
+        const lines = item.description.split('<br>');
+        if (lines.length >= 2) {
+          baseType = lines[1].trim();
+        }
+      }
+
+      // Lookup socket limit by base type
+      if (baseType) {
+        const limit = this.baseTypeSocketLimits[baseType];
         if (limit !== undefined) {
+          console.log(`✅ Found socket limit for ${itemName} (${baseType}): ${limit}`);
           return limit;
         }
+        console.log(`⚠️ No socket limit found for base type: ${baseType}, defaulting to 1`);
       }
 
       // Default to 1 socket for any unspecified items
