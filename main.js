@@ -401,7 +401,7 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
 /**
  * Attach event listeners to stat input boxes
  */
-function attachStatInputListeners() {
+window.attachStatInputListeners = function attachStatInputListeners() {
   document.querySelectorAll('.stat-input').forEach(input => {
     // Skip if already has listeners attached
     if (input.dataset.listenersAttached === 'true') return;
@@ -462,6 +462,7 @@ window.updateItemInfo = function updateItemInfo(event) {
     console.log('Generated description for', selectedItemName, ':', description);
     console.log('📝 ABOUT TO SET innerHTML on div:', infoDiv);
     infoDiv.innerHTML = description;
+
     console.log('✅ innerHTML SET! Div now contains:', infoDiv.innerHTML);
     console.log('📊 Div visibility:', window.getComputedStyle(infoDiv).display, 'opacity:', window.getComputedStyle(infoDiv).opacity);
 
