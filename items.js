@@ -1030,7 +1030,7 @@ const itemList = {
       defense: 62,
       reqstr: 27,
       reqlvl: 16,
-      ias: 40,
+      ias: { min: 20, max: 40, current: 40 },
       fhr: 20,
       block: 25,
       todef: 25,
