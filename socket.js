@@ -1341,7 +1341,7 @@
             // Only adjust sockets for socketable items
             const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
             if (socketableSections.includes(section)) {
-              this.adjustSocketsForNewItem(section);
+              this.adjustSocketsForItem(section);
             }
             setTimeout(() => this.updateAll(), 50);
           });
@@ -1404,15 +1404,17 @@
         }
       }
 
-      // Lookup socket limit by base type
+      // For armor section, ALL unique/set armors can have 1-3 sockets
+      // (3rd socket requires corruption, but we allow manual socket addition up to 3)
+      if (section === 'armor') {
+        console.log(`Socket limit for ${itemName}: 3 (unique/set armor)`);
+        return 3;
+      }
+
+      // Lookup socket limit by base type for other sections
       if (baseType) {
         let limit = this.baseTypeSocketLimits[baseType];
         if (limit !== undefined) {
-          // For armor section, cap at 3 sockets for unique/set items
-          // (3+ sockets only possible through corruption)
-          if (section === 'armor' && limit > 3) {
-            limit = 3;
-          }
           console.log(`Socket limit for ${itemName}: ${limit}`);
           return limit;
         }
