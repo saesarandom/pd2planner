@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
             } catch (error) {
-                console.error('Error in weapon dropdown change:', error);
             } finally {
                 setTimeout(() => { isProcessingWeaponChange = false; }, 100);
             }
@@ -2872,7 +2871,6 @@ function getSocketStats(socket) {
       }
     }
   } catch (e) {
-    console.error("Error parsing socket stats:", e);
   }
 
   return Array.isArray(stats) ? stats : [stats];
@@ -3033,17 +3031,14 @@ function calculateItemDamage(item, baseType, isMax = false) {
   return finalDamage;
 }
 if (typeof typeCorruptions !== "undefined" && typeCorruptions.weapon) {
-  console.log("Checking for weapon corruption:", typeCorruptions.weapon);
   const corruptionStat = typeCorruptions.weapon;
   const enhancedDamageMatch = corruptionStat.match(
     /\+(\d+)%\s*Enhanced\s*Damage/i
   );
   if (enhancedDamageMatch) {
     corruptionEnhancedDamage = parseInt(enhancedDamageMatch[1]);
-    console.log("Found corruption enhanced damage:", corruptionEnhancedDamage);
   }
 } else {
-  console.log("No weapon corruption found or typeCorruptions is undefined");
 }
 
 // // Get base min or max damage value
@@ -3081,7 +3076,14 @@ function updateWeaponDescription() {
   const currentItemData = itemList[currentItem];
 
   if (currentItemData) {
-    const baseType = currentItemData.description.split("<br>")[1];
+    // Get description (generate if dynamic item)
+    let description = currentItemData.description;
+    if (!description && currentItemData.baseType) {
+      description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+    }
+    if (!description) return;
+
+    const baseType = description.split("<br>")[1];
     const descriptionContainer = document.getElementById("weapon-info");
 
     if (descriptionContainer) {
@@ -3104,7 +3106,7 @@ function updateWeaponDescription() {
       const damageType = isTwoHanded ? "Two-Hand" : "One-Hand";
 
       // Get the description lines
-      const lines = currentItemData.description.split("<br>");
+      const lines = description.split("<br>");
 
       // Find and update the damage line
       const damageIndex = lines.findIndex((line) => line.includes("Damage:"));
@@ -3178,16 +3180,23 @@ function handleUpgrade() {
 
   if (!upgrades) return;
 
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'helms-dropdown');
+  }
+  if (!description) return;
+
   const level = parseInt(document.getElementById("lvlValue").value) || 0;
   const str = parseInt(document.getElementById("str").value) || 0;
-  const baseType = currentItemData.description.split("<br>")[1];
+  const baseType = description.split("<br>")[1];
 
   if (baseType === upgrades.elite.base) {
     alert("Item is already at maximum upgrade level");
     return;
   }
 
-  const magicalProperties = currentItemData.description
+  const magicalProperties = description
     .split("<br>")
     .slice(3)
     .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
@@ -3263,9 +3272,16 @@ function handleArmorUpgrade() {
 
   if (!upgrades) return;
 
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'armors-dropdown');
+  }
+  if (!description) return;
+
   const level = parseInt(document.getElementById("lvlValue").value) || 0;
   const str = parseInt(document.getElementById("str").value) || 0;
-  const baseType = currentItemData.description.split("<br>")[1];
+  const baseType = description.split("<br>")[1];
 
   if (baseType === upgrades.elite.base) {
     alert("Item is already at maximum upgrade level");
@@ -3348,16 +3364,23 @@ function handleWeaponUpgrade() {
 
   if (!upgrades) return;
 
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+  }
+  if (!description) return;
+
   const level = parseInt(document.getElementById("lvlValue").value) || 0;
   const str = parseInt(document.getElementById("str").value) || 0;
-  const baseType = currentItemData.description.split("<br>")[1];
+  const baseType = description.split("<br>")[1];
 
   if (baseType === upgrades.elite.base) {
     alert("Item is already at maximum upgrade level");
     return;
   }
 
-  const magicalProperties = currentItemData.description
+  const magicalProperties = description
     .split("<br>")
     .slice(3)
     .filter((prop) => !prop.includes("Required") && !prop.includes("Damage:"))
@@ -3400,7 +3423,6 @@ function handleWeaponUpgrade() {
       }
 
       // DEBUG: Log the new damage values
-      console.log("Upgrade to Elite - New Damage:", newProperties);
 
       // Create a new description with updated damage
       const newDescription = buildDescriptionWeapon(
@@ -3411,7 +3433,6 @@ function handleWeaponUpgrade() {
       );
 
       // DEBUG: Log the new description
-      console.log("New Description:", newDescription);
 
       // Update the item in itemList with new properties and description
       itemList[currentItem] = {
@@ -3459,7 +3480,6 @@ function handleWeaponUpgrade() {
       }
 
       // DEBUG: Log the new damage values
-      console.log("Upgrade to Exceptional - New Damage:", newProperties);
 
       // Create a new description with updated damage
       const newDescription = buildDescriptionWeapon(
@@ -3470,7 +3490,6 @@ function handleWeaponUpgrade() {
       );
 
       // DEBUG: Log the new description
-      console.log("New Description:", newDescription);
 
       // Update the item in itemList with new properties and description
       itemList[currentItem] = {
@@ -3496,9 +3515,16 @@ function handleWeaponUpgradeWithCorruption() {
 
   if (!upgrades) return;
 
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+  }
+  if (!description) return;
+
   const level = parseInt(document.getElementById("lvlValue").value) || 0;
   const str = parseInt(document.getElementById("str").value) || 0;
-  const baseType = currentItemData.description.split("<br>")[1];
+  const baseType = description.split("<br>")[1];
 
   if (baseType === upgrades.elite.base) {
     alert("Item is already at maximum upgrade level");
@@ -3627,16 +3653,23 @@ function handleGloveUpgrade() {
 
   if (!upgrades) return;
 
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'gloves-dropdown');
+  }
+  if (!description) return;
+
   const level = parseInt(document.getElementById("lvlValue").value) || 0;
   const str = parseInt(document.getElementById("str").value) || 0;
-  const baseType = currentItemData.description.split("<br>")[1];
+  const baseType = description.split("<br>")[1];
 
   if (baseType === upgrades.elite.base) {
     alert("Item is already at maximum upgrade level");
     return;
   }
 
-  const magicalProperties = currentItemData.description
+  const magicalProperties = description
     .split("<br>")
     .slice(3)
     .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
@@ -3717,9 +3750,16 @@ function handleBeltUpgrade() {
 
   if (!upgrades) return;
 
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'belts-dropdown');
+  }
+  if (!description) return;
+
   const level = parseInt(document.getElementById("lvlValue").value) || 0;
   const str = parseInt(document.getElementById("str").value) || 0;
-  const baseType = currentItemData.description.split("<br>")[1];
+  const baseType = description.split("<br>")[1];
 
   if (baseType === upgrades.elite.base) {
     alert("Item is already at maximum upgrade level");
@@ -3928,11 +3968,18 @@ function makeEtherealItem(category) {
   }
 
   if (category === "weapons") {
-    const baseType = currentItemData.description.split("<br>")[1];
+    // Get description (generate if dynamic item)
+    let description = currentItemData.description;
+    if (!description && currentItemData.baseType) {
+      description = window.generateItemDescription(currentItem, currentItemData, `${category}-dropdown`);
+    }
+    if (!description) return;
+
+    const baseType = description.split("<br>")[1];
     const isTwoHanded = currentItemData.properties.twohandmin !== undefined;
 
     const etherealDesc =
-      currentItemData.description +
+      description +
       ' <span style="color: #C0C0C0">Ethereal</span>';
 
     const tempItem = {
@@ -4077,7 +4124,15 @@ function updateWeaponDamageDisplay() {
   const currentItemData = itemList[currentItem];
 
   if (currentItemData) {
-    const baseType = currentItemData.description.split("<br>")[1];
+    // Get description (generate if dynamic item)
+    let description = currentItemData.description;
+    if (!description && currentItemData.baseType) {
+      description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+    }
+
+    if (!description) return;
+
+    const baseType = description.split("<br>")[1];
     const isTwoHanded = currentItemData.properties.twohandmin !== undefined;
 
     // Calculate new min/max damage values considering all factors:
@@ -4267,7 +4322,14 @@ function updateWeaponDescription() {
   const currentItemData = itemList[currentItem];
 
   if (currentItemData) {
-    const baseType = currentItemData.description.split("<br>")[1];
+    // Get description (generate if dynamic item)
+    let description = currentItemData.description;
+    if (!description && currentItemData.baseType) {
+      description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+    }
+    if (!description) return;
+
+    const baseType = description.split("<br>")[1];
     const descriptionContainer = document.getElementById("weapon-info");
 
     if (descriptionContainer) {
@@ -4342,7 +4404,6 @@ function collectAllWeaponStats() {
         try {
           stats = JSON.parse(socket.dataset.stats);
         } catch (e) {
-          console.error("Error parsing jewel stats:", e);
           return;
         }
       } else {
@@ -4360,9 +4421,6 @@ function collectAllWeaponStats() {
         const edMatch = stat.match(/\+?(\d+)%\s*Enhanced\s*Damage/i);
         if (edMatch) {
           allStats.enhancedDamage += parseInt(edMatch[1]);
-          console.log(
-            `Socket ED: +${edMatch[1]}%, Total now: ${allStats.enhancedDamage}%`
-          );
         }
 
         // Min damage bonus
@@ -4394,9 +4452,6 @@ function collectAllWeaponStats() {
     if (edMatch) {
       const edmg = parseInt(edMatch[1]);
       allStats.enhancedDamage += edmg;
-      console.log(
-        `Corruption ED: +${edmg}%, Total now: ${allStats.enhancedDamage}%`
-      );
     }
 
     // Attack rating from corruption
@@ -4408,7 +4463,6 @@ function collectAllWeaponStats() {
     // Other corruption stats can be added here
   }
 
-  console.log("Final collected weapon stats:", allStats);
   return allStats;
 }
 
@@ -4422,8 +4476,15 @@ function updateWeaponDisplayWithCorruption() {
 
   if (!currentItemData) return;
 
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(selectedWeapon, currentItemData, 'weapons-dropdown');
+  }
+  if (!description) return;
+
   // Get base type for damage calculation
-  const baseType = currentItemData.description.split("<br>")[1];
+  const baseType = description.split("<br>")[1];
   const weaponInfo = document.getElementById("weapon-info");
 
   if (!weaponInfo) return;
@@ -4619,8 +4680,16 @@ function updateWeaponDisplayWithPerLevelDamage() {
 
   if (!currentItemData) return;
 
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(selectedWeapon, currentItemData, 'weapons-dropdown');
+  }
+
+  if (!description) return;
+
   // Get base type for damage calculation
-  const baseType = currentItemData.description.split("<br>")[1];
+  const baseType = description.split("<br>")[1];
   const weaponInfo = document.getElementById("weapon-info");
 
   if (!weaponInfo) return;
@@ -4648,8 +4717,6 @@ function updateWeaponDisplayWithPerLevelDamage() {
     const toMinDamage = currentItemData.properties.tomindmg || 0;
     const toMaxDamage = currentItemData.properties.tomaxdmg || 0;
 
-    console.log("Flat min damage bonus:", toMinDamage);
-    console.log("Flat max damage bonus:", toMaxDamage);
 
     // Add flat min damage bonus
     minDamage = baseMinDamage + toMinDamage;
@@ -4667,25 +4734,6 @@ function updateWeaponDisplayWithPerLevelDamage() {
 
     // Add per-level bonus and flat max damage bonus
     maxDamage = baseMaxDamage + perLevelDamage + toMaxDamage;
-
-    console.log(
-      "Base min damage:",
-      baseMinDamage,
-      "+ flat bonus:",
-      toMinDamage,
-      "= final:",
-      minDamage
-    );
-    console.log(
-      "Base max damage:",
-      baseMaxDamage,
-      "+ per-level:",
-      perLevelDamage,
-      "+ flat bonus:",
-      toMaxDamage,
-      "= final:",
-      maxDamage
-    );
   } else {
     // For one-handed weapons
     let baseMinDamage = calculateItemDamage(currentItemData, baseType, false);
@@ -4704,8 +4752,6 @@ function updateWeaponDisplayWithPerLevelDamage() {
     const toMinDamage = currentItemData.properties.tomindmg || 0;
     const toMaxDamage = currentItemData.properties.tomaxdmg || 0;
 
-    console.log("Flat min damage bonus:", toMinDamage);
-    console.log("Flat max damage bonus:", toMaxDamage);
 
     // Add flat min damage bonus
     minDamage = baseMinDamage + toMinDamage;
@@ -4723,25 +4769,6 @@ function updateWeaponDisplayWithPerLevelDamage() {
 
     // Add per-level bonus and flat max damage bonus
     maxDamage = baseMaxDamage + perLevelDamage + toMaxDamage;
-
-    console.log(
-      "Base min damage:",
-      baseMinDamage,
-      "+ flat bonus:",
-      toMinDamage,
-      "= final:",
-      minDamage
-    );
-    console.log(
-      "Base max damage:",
-      baseMaxDamage,
-      "+ per-level:",
-      perLevelDamage,
-      "+ flat bonus:",
-      toMaxDamage,
-      "= final:",
-      maxDamage
-    );
   }
 
   // Store the calculated damage values on the item for display and further calculations
@@ -4807,26 +4834,30 @@ function makeEtherealShield() {
   const currentItem = select.value;
   const currentItemData = itemList[currentItem];
 
-  if (!currentItemData || currentItemData.description.includes("Ethereal")) {
+  if (!currentItemData) return;
+
+  // Get description (generate if dynamic item)
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'offs-dropdown');
+  }
+  if (!description) return;
+
+  if (description.includes("Ethereal")) {
     return;
   }
 
   // Log initial state for debugging
-  console.log("Making shield ethereal:", currentItem);
-  console.log("Initial defense:", currentItemData.properties.defense);
 
   // Get base type from description
-  const baseType = currentItemData.description.split("<br>")[1];
-  console.log("Shield base type:", baseType);
+  const baseType = description.split("<br>")[1];
 
   // Get base defense from your table
   const baseDefense = baseDefenses[baseType] || 0;
-  console.log("Base defense from table:", baseDefense);
 
   // Get item's enhanced defense and other properties
   const edef = currentItemData.properties.edef || 0;
   const todef = currentItemData.properties.todef || 0;
-  console.log("Enhanced defense:", edef, "Bonus defense:", todef);
 
   // Mark as ethereal in properties
   currentItemData.properties.ethereal = true;
@@ -4838,7 +4869,6 @@ function makeEtherealShield() {
   // Calculate new defense manually for shields
   // Apply 50% ethereal bonus to base defense
   const baseWithEth = Math.floor(baseDefense * 1.5);
-  console.log("Base defense after ethereal bonus:", baseWithEth);
 
   // Calculate final defense based on enhanced defense and bonuses
   let newDefense;
@@ -4856,7 +4886,6 @@ function makeEtherealShield() {
     newDefense = baseWithEth;
   }
 
-  console.log("Calculated new defense:", newDefense);
 
   // Update defense in properties
   currentItemData.properties.defense = newDefense;
@@ -4875,7 +4904,6 @@ function makeEtherealShield() {
 if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
 
-  console.log("Shield made ethereal with defense:", newDefense);
 }
 // Add this line to your event listeners
 
@@ -4889,10 +4917,10 @@ document.addEventListener('DOMContentLoaded', function() {
     'upgradeHelmButton': handleUpgrade,
     'upgradeArmorButton': handleArmorUpgrade,
     'upgradeWeaponButton': handleWeaponUpgrade,
-    'upgradeShieldButton': () => console.log('Shield upgrade not yet implemented'),
+    'upgradeShieldButton': () => {},
     'upgradeGloveButton': handleGloveUpgrade,
     'upgradeBeltButton': handleBeltUpgrade,
-    'upgradeBootButton': () => console.log('Boot upgrade not yet implemented')
+    'upgradeBootButton': () => {}
   };
 
   Object.entries(upgradeButtons).forEach(([buttonId, handler]) => {
@@ -4902,5 +4930,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  console.log('✅ Upgrade buttons initialized');
 });

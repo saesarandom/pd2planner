@@ -664,13 +664,11 @@ function applyCorruption(modTemplate, value = null) {
 function applySocketCorruptionFromModal(corruption) {
   const dropdown = document.getElementById(currentCorruptionSlot);
   if (!dropdown) {
-    console.error('Dropdown not found');
     return;
   }
 
   const itemName = dropdown.value;
   if (!itemName || !itemList[itemName]) {
-    console.error('Item not found:', itemName);
     return;
   }
 
@@ -678,7 +676,6 @@ function applySocketCorruptionFromModal(corruption) {
   const section = SECTION_MAP[currentCorruptionSlot];
 
   if (!section) {
-    console.error('Section not found for dropdown:', currentCorruptionSlot);
     return;
   }
 
@@ -717,7 +714,6 @@ function applyCorruptionToItem(corruptionText) {
   const itemName = dropdown.value;
 
   if (!itemName || !itemList[itemName]) {
-    console.error('❌ Item not found:', itemName);
     return;
   }
 
@@ -743,7 +739,8 @@ function applyCorruptionToItem(corruptionText) {
   // Create enhanced description with stat stacking
   const originalDescription = window.originalItemDescriptions[itemName];
   const enhancedDescription = addCorruptionWithStacking(originalDescription, corruptionText);
-  
+
+  // Set the corrupted description (will be regenerated for dynamic items anyway)
   itemList[itemName].description = enhancedDescription;
   
 
@@ -990,16 +987,22 @@ function triggerItemUpdate(dropdownId) {
 
 function removeCurrentCorruption() {
   if (!currentCorruptionSlot) return;
-  
 
-  
+
   const corruption = window.itemCorruptions[currentCorruptionSlot];
   if (corruption && corruption.itemName) {
-    // Restore original description
-    const originalDescription = window.originalItemDescriptions[corruption.itemName];
-    if (originalDescription) {
-      itemList[corruption.itemName].description = originalDescription;
+    // Check if item is dynamic (has baseType)
+    const isDynamic = itemList[corruption.itemName].baseType;
 
+    if (isDynamic) {
+      // For dynamic items, delete the description so it regenerates dynamically
+      delete itemList[corruption.itemName].description;
+    } else {
+      // For static items, restore the original description
+      const originalDescription = window.originalItemDescriptions[corruption.itemName];
+      if (originalDescription) {
+        itemList[corruption.itemName].description = originalDescription;
+      }
     }
   }
   
@@ -1022,13 +1025,11 @@ function closeCorruptionModal() {
 window.applySocketCorruption = function(dropdownId, socketCount) {
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) {
-    console.error('Dropdown not found:', dropdownId);
     return;
   }
 
   const itemName = dropdown.value;
   if (!itemName || !itemList[itemName]) {
-    console.error('Item not found:', itemName);
     return;
   }
 
@@ -1048,7 +1049,6 @@ window.applySocketCorruption = function(dropdownId, socketCount) {
     socketCount: socketCount
   };
 
-  console.log(`Auto-applied ${corruptionText} corruption to ${itemName}`);
 
   // Add corruption text to item description
   const originalDescription = window.originalItemDescriptions[itemName];
