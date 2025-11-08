@@ -126,6 +126,68 @@ function detectItemType(itemName, item) {
   if (item.description) {
     const desc = item.description.toLowerCase();
 
+    // Extract base type (second line after first <br>)
+    // Format: "ItemName<br>BaseType<br>..."
+    const lines = desc.split('<br>');
+    const baseTypeLine = lines.length > 1 ? lines[1].trim() : '';
+
+    // Check base type line first for more accurate detection
+    if (baseTypeLine) {
+      // Belts - check first to avoid "skull" in item names matching helms
+      if (baseTypeLine.includes('belt') || baseTypeLine.includes('sash')) {
+        return 'belts';
+      }
+
+      // Gloves
+      if (baseTypeLine.includes('gloves') || baseTypeLine.includes('gauntlet') ||
+          baseTypeLine.includes('hand')) {
+        return 'gloves';
+      }
+
+      // Boots
+      if (baseTypeLine.includes('boots') || baseTypeLine.includes('greaves') ||
+          baseTypeLine.includes('treads') || baseTypeLine.includes('shoes')) {
+        return 'boots';
+      }
+
+      // Weapons - use word boundary regex to avoid false matches
+      const weaponPattern = /\b(sword|axe|mace|hammer|spear|bow|staff|dagger|wand|claw|orb|javelin|polearm|scepter|scythe|pick|club|flail|blade|knout|star|crossbow|ballista|decapitator|tabar|spetum|trident|halberd|bardiche|partisan|bill|glaive|lance|pike|voulge|maul|martel|whip)\b/;
+      if (weaponPattern.test(baseTypeLine)) {
+        return 'weapon';
+      }
+
+      // Helms
+      if (baseTypeLine.includes('helm') || baseTypeLine.includes('crown') ||
+          baseTypeLine.includes('cap') || baseTypeLine.includes('mask') ||
+          baseTypeLine.includes('circlet') || baseTypeLine.includes('headgear') ||
+          baseTypeLine.includes('horns') || baseTypeLine.includes('coif') ||
+          baseTypeLine.includes('hat')) {
+        return 'helm';
+      }
+
+      // Armor
+      if (baseTypeLine.includes('armor') || baseTypeLine.includes('mail') ||
+          baseTypeLine.includes('plate') || baseTypeLine.includes('hide') ||
+          baseTypeLine.includes('leather') || baseTypeLine.includes('robe') ||
+          baseTypeLine.includes('chain') || baseTypeLine.includes('coat') ||
+          baseTypeLine.includes('garb')) {
+        return 'armor';
+      }
+
+      // Shields
+      if (baseTypeLine.includes('shield') || baseTypeLine.includes('buckler') ||
+          baseTypeLine.includes('ward')) {
+        return 'shield';
+      }
+
+      // Rings
+      if (baseTypeLine.includes('ring')) return 'ringsone';
+
+      // Amulets
+      if (baseTypeLine.includes('amulet')) return 'amulets';
+    }
+
+    // Fallback to full description check if base type line didn't match
     // Weapons - use word boundary regex to avoid false matches (e.g., "absorb" contains "orb")
     const weaponPattern = /\b(sword|axe|mace|hammer|spear|bow|staff|dagger|wand|claw|orb|javelin|polearm|scepter|scythe)\b/;
     if (weaponPattern.test(desc)) {
