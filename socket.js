@@ -1338,7 +1338,11 @@
         if (dropdown) {
           dropdown.addEventListener('change', () => {
             const section = this.equipmentMap[dropdownId].section;
-            this.adjustSocketsForNewItem(section);
+            // Only adjust sockets for socketable items
+            const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
+            if (socketableSections.includes(section)) {
+              this.adjustSocketsForNewItem(section);
+            }
             setTimeout(() => this.updateAll(), 50);
           });
         }
@@ -1428,11 +1432,19 @@
 
     // Adjust socket count when switching items
     adjustSocketsForNewItem(section) {
+      console.log(`⚙️ adjustSocketsForNewItem called for section: ${section}`);
+
       const container = document.querySelector(`.socket-container[data-section="${section}"]`);
-      if (!container) return;
+      if (!container) {
+        console.log(`⚠️ No container found for section: ${section}`);
+        return;
+      }
 
       const socketGrid = container.querySelector('.socket-grid');
-      if (!socketGrid) return;
+      if (!socketGrid) {
+        console.log(`⚠️ No socket grid found in container`);
+        return;
+      }
 
       const maxSockets = this.getMaxSocketsForSection(section);
       const currentSockets = socketGrid.querySelectorAll('.socket-slot');
@@ -1442,15 +1454,19 @@
 
       if (currentCount > maxSockets) {
         // Remove excess sockets
+        console.log(`✂️ Removing ${currentCount - maxSockets} excess sockets...`);
         for (let i = currentCount - 1; i >= maxSockets; i--) {
           const socket = currentSockets[i];
+          console.log(`  Removing socket ${i}`);
           socket.remove();
         }
         socketGrid.className = `socket-grid sockets-${maxSockets}`;
-        console.log(`✂️ Removed ${currentCount - maxSockets} sockets, now have ${maxSockets}`);
+        console.log(`✅ Removed sockets, now have ${maxSockets}`);
       } else if (currentCount < maxSockets) {
         // Don't auto-add sockets, user must use + button
         console.log(`📊 Can add ${maxSockets - currentCount} more sockets`);
+      } else {
+        console.log(`✅ Socket count matches max (${currentCount})`);
       }
     }
 
