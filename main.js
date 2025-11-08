@@ -3,6 +3,8 @@
 // Extracted and modernized from index2.html
 // ===================================================================
 
+console.log('🚀🚀🚀 MAIN.JS IS LOADING - VERSION 2023 🚀🚀🚀');
+
 // Global state
 window.checkboxResistBonus = 0;
 
@@ -458,12 +460,21 @@ function updateItemInfo(event) {
  * Set up event handlers for all dropdowns
  */
 function setupDropdownHandlers() {
+  console.log('📋 setupDropdownHandlers CALLED');
+  console.log('All dropdowns:', ALL_DROPDOWNS);
+
   ALL_DROPDOWNS.forEach(dropdownId => {
     const dropdown = document.getElementById(dropdownId);
+    console.log(`Dropdown ${dropdownId}:`, dropdown);
     if (dropdown) {
       dropdown.addEventListener('change', updateItemInfo);
+      console.log(`✅ Event listener attached to ${dropdownId}`);
+    } else {
+      console.log(`❌ Dropdown ${dropdownId} not found`);
     }
   });
+
+  console.log('📋 setupDropdownHandlers COMPLETE');
 }
 
 /**
