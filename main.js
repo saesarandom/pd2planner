@@ -361,7 +361,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Generate dynamic description for items with variable stats
   const props = item.properties || {};
 
-  let html = `<strong>${itemName}</strong><br>`;
+  let html = `${itemName}<br>`;
 
   // Add base type if available
   if (item.baseType) {
@@ -371,6 +371,10 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Map property keys to display format
   const propertyDisplay = {
     defense: (val) => `Defense: ${val}`,
+    onehandmin: (val, prop) => `One-Hand Damage: ${val} to ${props.onehandmax || '?'}, Avg ${Math.round((val + (props.onehandmax || 0)) / 2 * 10) / 10}`,
+    throwmin: (val, prop) => `Throw Damage: ${val} to ${props.throwmax || '?'}, Avg ${Math.round((val + (props.throwmax || 0)) / 2 * 10) / 10}`,
+    onehandmax: () => '', // Skip, handled by onehandmin
+    throwmax: () => '', // Skip, handled by throwmin
     reqlvl: (val) => `Required Level: ${val}`,
     reqstr: (val) => `Required Strength: ${val}`,
     reqdex: (val) => `Required Dexterity: ${val}`,
@@ -396,13 +400,20 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   };
 
   // Build description from properties
+  // Skip certain properties that are metadata or handled elsewhere
+  const skipProperties = ['javelin', 'speed', 'onehandmax', 'throwmax'];
+
   for (const [key, prop] of Object.entries(props)) {
+    if (skipProperties.includes(key)) continue;
+
     console.log('Processing property:', key, prop);
     if (propertyDisplay[key]) {
       const value = getPropertyValue(prop);
       const displayText = propertyDisplay[key](value, prop);
       console.log('Adding to html:', displayText);
-      html += displayText + '<br>';
+      if (displayText) { // Skip empty strings (for properties that are already handled)
+        html += displayText + '<br>';
+      }
     }
   }
 
