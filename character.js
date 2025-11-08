@@ -686,19 +686,24 @@ getDirectLifeManaFromItems() {
   handleClassChange() {
     const classSelect = document.getElementById('selectClass');
     if (!classSelect) return;
-    
+
     const selectedClass = classSelect.value;
     const baseStats = this.classStats[selectedClass];
-    
+
     if (baseStats) {
       this.currentClass = selectedClass;
       document.getElementById('str').value = baseStats.str;
       document.getElementById('dex').value = baseStats.dex;
       document.getElementById('vit').value = baseStats.vit;
       document.getElementById('enr').value = baseStats.enr;
-      
+
       this.updateTotalStats();
       this.updateStatPointsDisplay();
+
+      // Update socket system to refresh item displays with class restrictions and requirements
+      if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+        window.unifiedSocketSystem.updateAll();
+      }
     }
   }
 
