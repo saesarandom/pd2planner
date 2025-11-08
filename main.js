@@ -468,7 +468,22 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       if (infoDivId) {
         const infoDiv = document.getElementById(infoDivId);
         if (infoDiv) {
-          infoDiv.innerHTML = generateItemDescription(itemName, item, dropdownId);
+          let description = generateItemDescription(itemName, item, dropdownId);
+
+          // If item has corruption, we need to reapply it to the regenerated description
+          if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+            const corruption = window.itemCorruptions[dropdownId];
+            if (corruption.text) {
+              // Get the original description (dynamic, without corruption)
+              const originalDynamic = description;
+              // Add corruption back to the regenerated description
+              if (typeof window.addCorruptionWithStacking === 'function') {
+                description = window.addCorruptionWithStacking(originalDynamic, corruption.text);
+              }
+            }
+          }
+
+          infoDiv.innerHTML = description;
 
           // Re-attach event listeners to the new input boxes
           attachStatInputListeners();
