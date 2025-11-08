@@ -353,8 +353,12 @@ function getPropertyValue(prop) {
 window.generateItemDescription = function generateItemDescription(itemName, item, dropdownId) {
   if (!item) return '';
 
-  // If item has a static description, use it
-  if (item.description) {
+  // Items with baseType are dynamic - always regenerate them
+  const isDynamic = item.baseType;
+
+  // If item has a static description AND is not dynamic, use it
+  // (Dynamic items always regenerate, even if description was set by corruption)
+  if (item.description && !isDynamic) {
     return item.description;
   }
 
