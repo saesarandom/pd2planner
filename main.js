@@ -397,7 +397,7 @@ function attachStatInputListeners() {
 /**
  * Update item info display when dropdown selection changes
  */
-function updateItemInfo(event) {
+window.updateItemInfo = function updateItemInfo(event) {
   const dropdown = event.target;
   const selectedItemName = dropdown.value;
 
