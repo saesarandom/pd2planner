@@ -1367,23 +1367,30 @@
 
     // Get max sockets for current item in a section
     getMaxSocketsForSection(section) {
+      console.log(`🔍 getMaxSocketsForSection called for section: ${section}`);
+
       // Get the dropdown for this section
       const dropdownId = this.getSectionDropdownId(section);
       const dropdown = document.getElementById(dropdownId);
 
       if (!dropdown || !dropdown.value) {
+        console.log(`⚠️ No dropdown or value for section ${section}`);
         return 1; // Default to 1 socket if no item selected
       }
 
       const itemName = dropdown.value;
+      console.log(`📋 Item selected: ${itemName}`);
+
       const item = itemList[itemName];
 
       if (!item) {
+        console.log(`⚠️ Item ${itemName} not found in itemList`);
         return 1; // Default to 1 socket if item not found
       }
 
       // Check if item has custom maxSockets property
       if (item.properties && item.properties.maxSockets !== undefined) {
+        console.log(`✅ Using custom maxSockets: ${item.properties.maxSockets}`);
         return item.properties.maxSockets;
       }
 
@@ -1395,7 +1402,10 @@
         const lines = item.description.split('<br>');
         if (lines.length >= 2) {
           baseType = lines[1].trim();
+          console.log(`📝 Parsed base type from description: "${baseType}"`);
         }
+      } else if (baseType) {
+        console.log(`📝 Using item.baseType: "${baseType}"`);
       }
 
       // Lookup socket limit by base type
@@ -1405,7 +1415,9 @@
           console.log(`✅ Found socket limit for ${itemName} (${baseType}): ${limit}`);
           return limit;
         }
-        console.log(`⚠️ No socket limit found for base type: ${baseType}, defaulting to 1`);
+        console.log(`⚠️ No socket limit found for base type: "${baseType}", defaulting to 1`);
+      } else {
+        console.log(`⚠️ No base type found for ${itemName}, defaulting to 1`);
       }
 
       // Default to 1 socket for any unspecified items
@@ -1413,7 +1425,7 @@
     }
 
     addSocket(section) {
-
+      console.log(`🔧 addSocket called for section: ${section}`);
 
       const container = document.querySelector(`.socket-container[data-section="${section}"]`);
       if (!container) {
@@ -1430,6 +1442,8 @@
       const existingSockets = socketGrid.children.length;
       const maxSockets = this.getMaxSocketsForSection(section);
 
+      console.log(`📊 Existing sockets: ${existingSockets}, Max allowed: ${maxSockets}`);
+
       if (existingSockets >= maxSockets) {
         alert(`Maximum ${maxSockets} sockets allowed for this item`);
         return;
@@ -1444,6 +1458,7 @@
       const newSocketCount = existingSockets + 1;
       socketGrid.className = `socket-grid sockets-${newSocketCount}`;
 
+      console.log(`✅ Socket added! Now have ${newSocketCount} sockets`);
 
     }
 
