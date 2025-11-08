@@ -470,12 +470,18 @@ function setupDropdownHandlers() {
       // Add wrapper function to log event firing and catch errors
       dropdown.addEventListener('change', (event) => {
         console.log(`🔔🔔🔔 CHANGE EVENT FIRED for ${dropdownId}!`);
+        console.log('About to call updateItemInfo...');
+        console.log('Event object:', event);
+        console.log('updateItemInfo function:', updateItemInfo);
         try {
+          console.log('INSIDE TRY BLOCK');
           updateItemInfo(event);
+          console.log('AFTER updateItemInfo call');
         } catch (error) {
           console.error('💥💥💥 ERROR in updateItemInfo:', error);
           console.error('Stack trace:', error.stack);
         }
+        console.log('After try-catch block');
       });
       console.log(`✅ Event listener attached to ${dropdownId}`);
     } else {
