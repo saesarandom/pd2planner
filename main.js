@@ -467,10 +467,15 @@ function setupDropdownHandlers() {
     const dropdown = document.getElementById(dropdownId);
     console.log(`Dropdown ${dropdownId}:`, dropdown);
     if (dropdown) {
-      // Add wrapper function to log event firing
+      // Add wrapper function to log event firing and catch errors
       dropdown.addEventListener('change', (event) => {
         console.log(`🔔🔔🔔 CHANGE EVENT FIRED for ${dropdownId}!`);
-        updateItemInfo(event);
+        try {
+          updateItemInfo(event);
+        } catch (error) {
+          console.error('💥💥💥 ERROR in updateItemInfo:', error);
+          console.error('Stack trace:', error.stack);
+        }
       });
       console.log(`✅ Event listener attached to ${dropdownId}`);
     } else {
