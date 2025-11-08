@@ -281,15 +281,22 @@ function getPropertyValue(prop) {
  * Generate item description HTML with input boxes for variable stats
  */
 function generateItemDescription(itemName, item, dropdownId) {
+  console.log('generateItemDescription called for:', itemName, 'item:', item, 'dropdownId:', dropdownId);
+
   if (!item) return '';
 
   // If item has a static description, use it
   if (item.description) {
+    console.log('Using static description');
     return item.description;
   }
 
+  console.log('Generating dynamic description');
+
   // Generate dynamic description for items with variable stats
   const props = item.properties || {};
+  console.log('Properties:', props);
+
   let html = `<strong>${itemName}</strong><br>`;
 
   // Add base type if available
@@ -312,12 +319,16 @@ function generateItemDescription(itemName, item, dropdownId) {
 
   // Build description from properties
   for (const [key, prop] of Object.entries(props)) {
+    console.log('Processing property:', key, prop);
     if (propertyDisplay[key]) {
       const value = getPropertyValue(prop);
-      html += propertyDisplay[key](value, prop) + '<br>';
+      const displayText = propertyDisplay[key](value, prop);
+      console.log('Adding to html:', displayText);
+      html += displayText + '<br>';
     }
   }
 
+  console.log('Final HTML:', html);
   return html;
 }
 
@@ -404,7 +415,9 @@ function updateItemInfo(event) {
 
   if (item) {
     // Generate description (handles both static and dynamic with variable stats)
-    infoDiv.innerHTML = generateItemDescription(selectedItemName, item, dropdown.id);
+    const description = generateItemDescription(selectedItemName, item, dropdown.id);
+    console.log('Generated description for', selectedItemName, ':', description);
+    infoDiv.innerHTML = description;
 
     // Attach event listeners to any stat input boxes
     attachStatInputListeners();
