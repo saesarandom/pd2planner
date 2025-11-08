@@ -2060,9 +2060,21 @@ this.selectedJewelSuffix3MaxValue = null;
       return; // Don't touch innerHTML - preserve user's input values
     }
 
-    // Parse base item stats
-    // Use existing innerHTML if no static description (for dynamically generated items like Biggin's Bonnet)
-    let baseDescription = item.description || infoDiv.innerHTML || '';
+    // For dynamic items WITH sockets, regenerate the description using main.js function
+    // Do NOT try to parse innerHTML - it contains input boxes which breaks parsing!
+    let baseDescription;
+    if (!item.description && sockets.length > 0 && typeof window.generateItemDescription === 'function') {
+      // Call main.js to regenerate clean description
+      baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
+      // Strip out any input elements for parsing
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = baseDescription;
+      tempDiv.querySelectorAll('.stat-input').forEach(input => input.remove());
+      baseDescription = tempDiv.innerHTML;
+    } else {
+      baseDescription = item.description || '';
+    }
+
     const baseStats = this.parseStatsToMap(baseDescription);
 
     // Build socket items array

@@ -282,7 +282,7 @@ function getPropertyValue(prop) {
 /**
  * Generate item description HTML with input boxes for variable stats
  */
-function generateItemDescription(itemName, item, dropdownId) {
+window.generateItemDescription = function generateItemDescription(itemName, item, dropdownId) {
   console.log('generateItemDescription called for:', itemName, 'item:', item, 'dropdownId:', dropdownId);
 
   if (!item) return '';
