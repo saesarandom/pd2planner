@@ -126,12 +126,9 @@ function detectItemType(itemName, item) {
   if (item.description) {
     const desc = item.description.toLowerCase();
 
-    // Weapons
-    if (desc.includes('sword') || desc.includes('axe') || desc.includes('mace') ||
-        desc.includes('hammer') || desc.includes('spear') || desc.includes('bow') ||
-        desc.includes('staff') || desc.includes('dagger') || desc.includes('wand') ||
-        desc.includes('claw') || desc.includes('orb') || desc.includes('javelin') ||
-        desc.includes('polearm') || desc.includes('scepter') || desc.includes('scythe')) {
+    // Weapons - use word boundary regex to avoid false matches (e.g., "absorb" contains "orb")
+    const weaponPattern = /\b(sword|axe|mace|hammer|spear|bow|staff|dagger|wand|claw|orb|javelin|polearm|scepter|scythe)\b/;
+    if (weaponPattern.test(desc)) {
       return 'weapon';
     }
 

@@ -596,7 +596,7 @@ getDirectLifeManaFromItems() {
   handleLevelChange() {
     const lvlInput = document.getElementById('lvlValue');
     let level = parseInt(lvlInput.value) || 1;
-    
+
     if (level > 99) {
       level = 99;
       lvlInput.value = 99;
@@ -604,13 +604,18 @@ getDirectLifeManaFromItems() {
       level = 1;
       lvlInput.value = 1;
     }
-    
+
     this.level = level;
     this.currentLevel = level;
-    
+
     this.validateStats();
     this.updateStatPointsDisplay();
     this.updateTotalStats();
+
+    // Update socket system to refresh item displays with merged stats
+    if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+      window.unifiedSocketSystem.updateAll();
+    }
   }
 
   handleClassChange() {
