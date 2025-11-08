@@ -4559,6 +4559,11 @@ function updateWeaponTooltip(currentItemData, baseType, isTwoHanded) {
   if (socketStats) weaponInfo.appendChild(socketStats);
   if (corruptedMod) weaponInfo.appendChild(corruptedMod);
   if (corruptedText) weaponInfo.appendChild(corruptedText);
+
+  // Update socket system to regenerate merged stats for dynamic items
+  if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+    window.unifiedSocketSystem.updateAll();
+  }
 }
 
 function updateWeaponDescription(itemData, isTwoHanded) {
