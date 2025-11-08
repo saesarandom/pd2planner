@@ -123,8 +123,7 @@ const itemList = {
   },
 
   "Peasant Crown": {
-    description:
-      "Peasant Crown<br>War Hat<br>Defense: 108<br>Required Strength: 20<br>Required Level: 28<br>+1 to All Skills<br>+20% Faster Run/Walk<br>+100% Enhanced Defense<br>+20 to Vitality<br>+20 to Energy<br>Replenish Life +12<br>",
+    baseType: "War Hat",
     properties: {
       defense: 108,
       reqstr: 20,
@@ -1024,8 +1023,7 @@ const itemList = {
   },
 
   Twitchthroe: {
-    description:
-      "Twitchthroe<br>Studded Leather<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 62<br>Required Strength: 27<br>Required Level: 16<br>+40% Increased Attack Speed<br>+20% Faster Hit Recovery<br>25% Increased Chance of Blocking<br>+25 Defense<br>+10 to Strength<br>+10 to Dexterity<br>",
+    baseType: "Studded Leather",
     properties: {
       defense: 62,
       reqstr: 27,
