@@ -289,21 +289,15 @@ function getPropertyValue(prop) {
  * Generate item description HTML with input boxes for variable stats
  */
 window.generateItemDescription = function generateItemDescription(itemName, item, dropdownId) {
-  console.log('generateItemDescription called for:', itemName, 'item:', item, 'dropdownId:', dropdownId);
-
   if (!item) return '';
 
   // If item has a static description, use it
   if (item.description) {
-    console.log('Using static description');
     return item.description;
   }
 
-  console.log('Generating dynamic description');
-
   // Generate dynamic description for items with variable stats
   const props = item.properties || {};
-  console.log('Properties:', props);
 
   let html = `<strong>${itemName}</strong><br>`;
 
@@ -430,59 +424,35 @@ window.updateItemInfo = function updateItemInfo(event) {
   const dropdown = event.target;
   const selectedItemName = dropdown.value;
 
-  console.log('===== updateItemInfo CALLED =====');
-  console.log('Dropdown ID:', dropdown.id);
-  console.log('Selected item:', selectedItemName);
-
   const infoDivId = INFO_DIV_MAP[dropdown.id];
-  console.log('Info div ID:', infoDivId);
 
   if (!infoDivId) {
-    console.log('NO INFO DIV ID FOUND - RETURNING');
     return;
   }
 
   const infoDiv = document.getElementById(infoDivId);
-  console.log('Info div element:', infoDiv);
 
   if (!infoDiv) {
-    console.log('NO INFO DIV ELEMENT FOUND - RETURNING');
     return;
   }
 
   if (!selectedItemName) {
-    console.log('NO ITEM SELECTED - CLEARING');
     infoDiv.innerHTML = '';
     return;
   }
 
   // Try to get item info from itemList
   const item = itemList && itemList[selectedItemName];
-  console.log('Item from itemList:', item);
 
   if (item) {
     // Generate description (handles both static and dynamic with variable stats)
     const description = generateItemDescription(selectedItemName, item, dropdown.id);
-    console.log('Generated description for', selectedItemName, ':', description);
-    console.log('📝 ABOUT TO SET innerHTML on div:', infoDiv);
     infoDiv.innerHTML = description;
-
-    console.log('✅ innerHTML SET! Div now contains:', infoDiv.innerHTML);
-    console.log('📊 Div visibility:', window.getComputedStyle(infoDiv).display, 'opacity:', window.getComputedStyle(infoDiv).opacity);
-
-    // Check if content persists after a delay
-    setTimeout(() => {
-      console.log('⏰ 100ms later, div contains:', infoDiv.innerHTML);
-      if (!infoDiv.innerHTML || infoDiv.innerHTML.trim() === '') {
-        console.error('🚨 CONTENT WAS CLEARED! Something removed it!');
-      }
-    }, 100);
 
     // Attach event listeners to any stat input boxes
     attachStatInputListeners();
   } else {
     // If not in itemList, try to show a basic placeholder
-    console.log('Item not found in itemList - using placeholder');
     infoDiv.innerHTML = selectedItemName;
   }
 
@@ -507,36 +477,18 @@ window.updateItemInfo = function updateItemInfo(event) {
  * Set up event handlers for all dropdowns
  */
 function setupDropdownHandlers() {
-  console.log('📋 setupDropdownHandlers CALLED');
-  console.log('All dropdowns:', ALL_DROPDOWNS);
-
   ALL_DROPDOWNS.forEach(dropdownId => {
     const dropdown = document.getElementById(dropdownId);
-    console.log(`Dropdown ${dropdownId}:`, dropdown);
     if (dropdown) {
-      // Add wrapper function to log event firing and catch errors
       dropdown.addEventListener('change', (event) => {
-        console.log(`🔔🔔🔔 CHANGE EVENT FIRED for ${dropdownId}!`);
-        console.log('About to call updateItemInfo...');
-        console.log('Event object:', event);
-        console.log('updateItemInfo function:', window.updateItemInfo);
         try {
-          console.log('INSIDE TRY BLOCK');
           window.updateItemInfo(event);
-          console.log('AFTER updateItemInfo call');
         } catch (error) {
-          console.error('💥💥💥 ERROR in updateItemInfo:', error);
-          console.error('Stack trace:', error.stack);
+          console.error('Error in updateItemInfo:', error);
         }
-        console.log('After try-catch block');
       });
-      console.log(`✅ Event listener attached to ${dropdownId}`);
-    } else {
-      console.log(`❌ Dropdown ${dropdownId} not found`);
     }
   });
-
-  console.log('📋 setupDropdownHandlers COMPLETE');
 }
 
 /**
