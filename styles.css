@@ -130,7 +130,7 @@ body {
 .inventorycontainer {
   position: absolute;
   margin-top: 590px;
-  left: 835px;
+  left: 60vw;
   display: grid;
   padding: 1px;
   background-color: rgb(0, 0, 0);
