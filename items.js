@@ -3188,7 +3188,7 @@ const itemList = {
       reqlvl: 20,
       ias: 40,
       edmg: { min: 80, max: 120, current: 120 },
-      maxdmgperlvl: 2.25, //asi tu nevim jestli to jde
+      maxdmgperlvl: 2.25,
       cb: { min: 10, max: 15, current: 15 },
       magicfind: { min: 25, max: 45, current: 45 },
     },

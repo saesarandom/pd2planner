@@ -699,6 +699,7 @@ getDirectLifeManaFromItems() {
 
       this.updateTotalStats();
       this.updateStatPointsDisplay();
+      this.calculateLifeAndMana();
 
       // Update socket system to refresh item displays with class restrictions and requirements
       if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {

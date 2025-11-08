@@ -390,6 +390,9 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     dex: (val, prop) => formatVariableStat('+', val, ' to Dexterity', prop, itemName, 'dex', dropdownId),
     vit: (val, prop) => formatVariableStat('+', val, ' to Vitality', prop, itemName, 'vit', dropdownId),
     enr: (val, prop) => formatVariableStat('+', val, ' to Energy', prop, itemName, 'enr', dropdownId),
+    cb: (val, prop) => formatVariableStat('', val, '% Chance of Crushing Blow', prop, itemName, 'cb', dropdownId),
+    magicfind: (val, prop) => formatVariableStat('', val, '% Better Chance of Getting Magic Items', prop, itemName, 'magicfind', dropdownId),
+    maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
   };
 
   // Build description from properties
@@ -417,6 +420,22 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
   }
   // Fixed stat - show normally
   return `${prefix}${value}${suffix}`;
+}
+
+/**
+ * Format stats that scale with character level (like maxdmgperlvl)
+ */
+function formatLevelScaledStat(perLevelValue, prop, itemName, propKey, dropdownId) {
+  const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+  const scaledValue = Math.floor(currentLevel * perLevelValue);
+
+  // Calculate min and max range
+  // Assuming min is 2 and max is current value * max level (99)
+  const minScaled = Math.floor(1 * perLevelValue); // At level 1
+  const maxScaled = Math.floor(99 * perLevelValue); // At level 99
+
+  // For True Silver with 2.25: min=2 (at lvl 1), max=222 (at lvl 99), current=scaled value
+  return `+[${minScaled}-${maxScaled}] to Maximum Damage (+${perLevelValue} per Character Level)`;
 }
 
 /**
