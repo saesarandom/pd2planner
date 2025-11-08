@@ -4847,3 +4847,28 @@ function makeEtherealShield() {
 }
 // Add this line to your event listeners
 
+
+// ===================================================================
+// EVENT LISTENERS - Connect upgrade buttons to their functions
+// ===================================================================
+document.addEventListener('DOMContentLoaded', function() {
+  // Setup upgrade button event listeners
+  const upgradeButtons = {
+    'upgradeHelmButton': handleUpgrade,
+    'upgradeArmorButton': handleArmorUpgrade,
+    'upgradeWeaponButton': handleWeaponUpgrade,
+    'upgradeShieldButton': () => console.log('Shield upgrade not yet implemented'),
+    'upgradeGloveButton': handleGloveUpgrade,
+    'upgradeBeltButton': handleBeltUpgrade,
+    'upgradeBootButton': () => console.log('Boot upgrade not yet implemented')
+  };
+
+  Object.entries(upgradeButtons).forEach(([buttonId, handler]) => {
+    const button = document.getElementById(buttonId);
+    if (button) {
+      button.addEventListener('click', handler);
+    }
+  });
+
+  console.log('✅ Upgrade buttons initialized');
+});
