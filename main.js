@@ -241,6 +241,120 @@ function populateItemDropdowns() {
 }
 
 /**
+ * Get the current value of a property (handles both fixed values and ranges)
+ */
+function getPropertyValue(prop) {
+  if (typeof prop === 'object' && prop !== null && 'current' in prop) {
+    return prop.current;
+  }
+  return prop;
+}
+
+/**
+ * Generate item description HTML with input boxes for variable stats
+ */
+function generateItemDescription(itemName, item, dropdownId) {
+  if (!item) return '';
+
+  // If item has a static description, use it
+  if (item.description) {
+    return item.description;
+  }
+
+  // Generate dynamic description for items with variable stats
+  const props = item.properties || {};
+  let html = `<strong>${itemName}</strong><br>`;
+
+  // Add base type if available
+  if (item.baseType) {
+    html += `${item.baseType}<br>`;
+  }
+
+  // Map property keys to display format
+  const propertyDisplay = {
+    defense: (val) => `Defense: ${val}`,
+    reqlvl: (val) => `Required Level: ${val}`,
+    reqstr: (val) => `Required Strength: ${val}`,
+    reqdex: (val) => `Required Dexterity: ${val}`,
+    edmg: (val, prop) => formatVariableStat('+', val, '% Enhanced Damage', prop, itemName, 'edmg', dropdownId),
+    toatt: (val, prop) => formatVariableStat('', val, ' to Attack Rating', prop, itemName, 'toatt', dropdownId),
+    todef: (val) => `+${val} Defense`,
+    tolife: (val) => `+${val} to Life`,
+    tomana: (val) => `+${val} to Mana`,
+  };
+
+  // Build description from properties
+  for (const [key, prop] of Object.entries(props)) {
+    if (propertyDisplay[key]) {
+      const value = getPropertyValue(prop);
+      html += propertyDisplay[key](value, prop) + '<br>';
+    }
+  }
+
+  return html;
+}
+
+/**
+ * Format a stat that might have a variable range
+ */
+function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, dropdownId) {
+  if (typeof prop === 'object' && prop !== null && 'min' in prop && 'max' in prop) {
+    // Variable stat - show with range and input box
+    return `${prefix}${value}${suffix} <span style="color: #888;">[${prop.min}-${prop.max}]</span> <input type="number" class="stat-input" data-item="${itemName}" data-prop="${propKey}" data-dropdown="${dropdownId}" min="${prop.min}" max="${prop.max}" value="${value}" style="width: 45px; padding: 2px; background: #1a1a2e; color: #fff; border: 1px solid #0f3460; border-radius: 3px;">`;
+  }
+  // Fixed stat - show normally
+  return `${prefix}${value}${suffix}`;
+}
+
+/**
+ * Handle changes to variable stat inputs
+ */
+function handleVariableStatChange(itemName, propKey, newValue, dropdownId) {
+  const item = itemList[itemName];
+  if (!item || !item.properties || !item.properties[propKey]) return;
+
+  const prop = item.properties[propKey];
+  if (typeof prop === 'object' && 'min' in prop && 'max' in prop) {
+    // Clamp value to range
+    const clampedValue = Math.max(prop.min, Math.min(prop.max, parseInt(newValue) || prop.max));
+    prop.current = clampedValue;
+
+    // Trigger stat recalculation
+    if (window.characterManager) {
+      window.characterManager.updateTotalStats();
+    }
+
+    // Update the description display
+    const infoDivId = INFO_DIV_MAP[dropdownId];
+    if (infoDivId) {
+      const infoDiv = document.getElementById(infoDivId);
+      if (infoDiv) {
+        infoDiv.innerHTML = generateItemDescription(itemName, item, dropdownId);
+
+        // Re-attach event listeners to the new input boxes
+        attachStatInputListeners();
+      }
+    }
+  }
+}
+
+/**
+ * Attach event listeners to stat input boxes
+ */
+function attachStatInputListeners() {
+  document.querySelectorAll('.stat-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const itemName = e.target.dataset.item;
+      const propKey = e.target.dataset.prop;
+      const dropdownId = e.target.dataset.dropdown;
+      const newValue = e.target.value;
+
+      handleVariableStatChange(itemName, propKey, newValue, dropdownId);
+    });
+  });
+}
+
+/**
  * Update item info display when dropdown selection changes
  */
 function updateItemInfo(event) {
@@ -261,8 +375,12 @@ function updateItemInfo(event) {
   // Try to get item info from itemList
   const item = itemList && itemList[selectedItemName];
 
-  if (item && item.description) {
-    infoDiv.innerHTML = item.description;
+  if (item) {
+    // Generate description (handles both static and dynamic with variable stats)
+    infoDiv.innerHTML = generateItemDescription(selectedItemName, item, dropdown.id);
+
+    // Attach event listeners to any stat input boxes
+    attachStatInputListeners();
   } else {
     // If not in itemList, try to show a basic placeholder
     infoDiv.innerHTML = selectedItemName;

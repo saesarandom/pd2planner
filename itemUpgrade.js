@@ -3818,14 +3818,25 @@ function updateDefense() {
     const baseType = item.description.split("<br>")[1];
     const newDefense = calculateItemDefense(item, baseType, type);
 
-    if (newDefense !== item.properties.defense) {
+    // Get current defense value (handling variable stats)
+    const currentDefense = (typeof item.properties.defense === 'object' && 'current' in item.properties.defense)
+      ? item.properties.defense.current
+      : item.properties.defense;
+
+    if (newDefense !== currentDefense) {
       const lines = item.description.split("<br>");
       const defenseIndex = lines.findIndex((line) =>
         line.startsWith("Defense:")
       );
       lines[defenseIndex] = `Defense: ${newDefense}`;
       item.description = lines.join("<br>");
-      item.properties.defense = newDefense;
+
+      // Update defense (handling variable stats)
+      if (typeof item.properties.defense === 'object' && 'current' in item.properties.defense) {
+        item.properties.defense.current = newDefense;
+      } else {
+        item.properties.defense = newDefense;
+      }
       // select.dispatchEvent(new Event("change"));
     }
   });
@@ -3976,7 +3987,13 @@ function makeEtherealItem(category) {
     const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
     lines[defenseIndex] = `Defense: ${newDefense}`;
     currentItemData.description = lines.join("<br>");
-    currentItemData.properties.defense = newDefense;
+
+    // Update defense (handling variable stats)
+    if (typeof currentItemData.properties.defense === 'object' && 'current' in currentItemData.properties.defense) {
+      currentItemData.properties.defense.current = newDefense;
+    } else {
+      currentItemData.properties.defense = newDefense;
+    }
   }
 
   // Trigger change event to update display
