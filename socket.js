@@ -2044,10 +2044,10 @@ this.selectedJewelSuffix3MaxValue = null;
     // Get socket stats first to check if we need to process
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
 
-    // Skip regeneration for items with dynamic descriptions and no sockets
-    // This preserves user input values (like Biggin's Bonnet variable stats)
-    if (!item.description && sockets.length === 0) {
-      // Just update visual feedback for level requirement
+    // COMPLETELY SKIP dynamic items (no static description)
+    // Socket system can't properly merge stats with dynamic HTML/inputs
+    // Just update visual feedback for level requirement
+    if (!item.description) {
       if (!meetsRequirement) {
         infoDiv.style.opacity = '0.6';
         infoDiv.style.filter = 'grayscale(50%)';
@@ -2057,24 +2057,11 @@ this.selectedJewelSuffix3MaxValue = null;
         infoDiv.style.filter = 'none';
         infoDiv.title = '';
       }
-      return; // Don't touch innerHTML - preserve user's input values
+      return; // Don't touch innerHTML - preserve dynamic content
     }
 
-    // For dynamic items WITH sockets, regenerate the description using main.js function
-    // Do NOT try to parse innerHTML - it contains input boxes which breaks parsing!
-    let baseDescription;
-    if (!item.description && sockets.length > 0 && typeof window.generateItemDescription === 'function') {
-      // Call main.js to regenerate clean description
-      baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
-      // Strip out any input elements for parsing
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = baseDescription;
-      tempDiv.querySelectorAll('.stat-input').forEach(input => input.remove());
-      baseDescription = tempDiv.innerHTML;
-    } else {
-      baseDescription = item.description || '';
-    }
-
+    // From here on, we only handle static description items
+    let baseDescription = item.description;
     const baseStats = this.parseStatsToMap(baseDescription);
 
     // Build socket items array

@@ -82,7 +82,8 @@ function detectItemType(itemName, item) {
     // Helms
     if (baseType.includes('helm') || baseType.includes('crown') || baseType.includes('cap') ||
         baseType.includes('skull') || baseType.includes('mask') || baseType.includes('circlet') ||
-        baseType.includes('headgear') || baseType.includes('horns') || baseType.includes('coif')) {
+        baseType.includes('headgear') || baseType.includes('horns') || baseType.includes('coif') ||
+        baseType.includes('hat')) {
       return 'helm';
     }
 
@@ -137,7 +138,8 @@ function detectItemType(itemName, item) {
     // Helms
     if (desc.includes('helm') || desc.includes('crown') || desc.includes('cap') ||
         desc.includes('skull') || desc.includes('mask') || desc.includes('circlet') ||
-        desc.includes('headgear') || desc.includes('horns') || desc.includes('coif')) {
+        desc.includes('headgear') || desc.includes('horns') || desc.includes('coif') ||
+        desc.includes('hat')) {
       return 'helm';
     }
 
