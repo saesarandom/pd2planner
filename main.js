@@ -388,65 +388,74 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId) {
  */
 function attachStatInputListeners() {
   document.querySelectorAll('.stat-input').forEach(input => {
-    // Handle manual input changes
+    // Skip if already has listeners attached
+    if (input.dataset.listenersAttached === 'true') return;
+    input.dataset.listenersAttached = 'true';
+
+    let isMouseDown = false;
+    let lastValue = parseInt(input.value);
+    let intervalId = null;
+    let direction = null;
+
+    // Handle manual typing changes
     input.addEventListener('input', (e) => {
       const itemName = e.target.dataset.item;
       const propKey = e.target.dataset.prop;
       const dropdownId = e.target.dataset.dropdown;
       const newValue = e.target.value;
 
+      // Detect direction if mouse is down
+      if (isMouseDown) {
+        const currentValue = parseInt(newValue);
+        if (currentValue > lastValue) direction = 'up';
+        else if (currentValue < lastValue) direction = 'down';
+        lastValue = currentValue;
+      }
+
       handleVariableStatChange(itemName, propKey, newValue, dropdownId);
     });
 
-    // Add continuous increment/decrement when holding arrow buttons
-    let intervalId = null;
-    let timeoutId = null;
+    // Start detecting spinner clicks
+    input.addEventListener('mousedown', () => {
+      isMouseDown = true;
+      lastValue = parseInt(input.value);
+      direction = null;
 
-    const startContinuousChange = (direction) => {
-      const itemName = input.dataset.item;
-      const propKey = input.dataset.prop;
-      const dropdownId = input.dataset.dropdown;
-      const min = parseInt(input.min);
-      const max = parseInt(input.max);
+      // After 500ms, if direction detected, start continuous change
+      setTimeout(() => {
+        if (isMouseDown && direction) {
+          const itemName = input.dataset.item;
+          const propKey = input.dataset.prop;
+          const dropdownId = input.dataset.dropdown;
+          const min = parseInt(input.min);
+          const max = parseInt(input.max);
 
-      // Initial delay before continuous changes start
-      timeoutId = setTimeout(() => {
-        intervalId = setInterval(() => {
-          let currentValue = parseInt(input.value) || min;
-          let newValue = direction === 'up' ? currentValue + 1 : currentValue - 1;
-          newValue = Math.max(min, Math.min(max, newValue));
+          intervalId = setInterval(() => {
+            let currentValue = parseInt(input.value) || min;
+            let newValue = direction === 'up' ? currentValue + 1 : currentValue - 1;
+            newValue = Math.max(min, Math.min(max, newValue));
 
-          if (newValue !== currentValue) {
-            input.value = newValue;
-            handleVariableStatChange(itemName, propKey, newValue, dropdownId);
-          }
-        }, 100); // Change every 100ms
-      }, 300); // Start after 300ms hold
-    };
-
-    const stopContinuousChange = () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      if (intervalId) clearInterval(intervalId);
-      timeoutId = null;
-      intervalId = null;
-    };
-
-    // Detect when clicking on spinner arrows
-    input.addEventListener('mousedown', (e) => {
-      const rect = input.getBoundingClientRect();
-      const clickY = e.clientY - rect.top;
-      const height = rect.height;
-
-      // Top half = increment, bottom half = decrement
-      if (clickY < height / 2) {
-        startContinuousChange('up');
-      } else {
-        startContinuousChange('down');
-      }
+            if (newValue !== currentValue) {
+              input.value = newValue;
+              handleVariableStatChange(itemName, propKey, newValue, dropdownId);
+            }
+          }, 100);
+        }
+      }, 500);
     });
 
-    input.addEventListener('mouseup', stopContinuousChange);
-    input.addEventListener('mouseleave', stopContinuousChange);
+    // Stop continuous change
+    const stopChange = () => {
+      isMouseDown = false;
+      direction = null;
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+
+    input.addEventListener('mouseup', stopChange);
+    input.addEventListener('mouseleave', stopChange);
   });
 }
 
