@@ -1,6 +1,17 @@
 // ===== CHARACTER.JS - CLEAN VERSION =====
 // Handles stat bonuses from items/sockets and stat point management
 
+/**
+ * Get the current value of a property (handles both fixed values and ranges)
+ * This is needed for variable stat items
+ */
+function getPropertyValue(prop) {
+  if (typeof prop === 'object' && prop !== null && 'current' in prop) {
+    return prop.current;
+  }
+  return prop;
+}
+
 class CharacterManager {
   constructor() {
     this.currentLevel = 1;
@@ -225,7 +236,7 @@ getDirectLifeManaFromItems() {
   const bonuses = { life: 0, mana: 0 };
   const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
-  // FIXED: Complete list of all equipment sections (player + mercenary)
+  // Player equipment only (mercenary items don't affect player stats)
   const equipmentSections = [
     { dropdown: 'weapons-dropdown', section: 'weapon' },
     { dropdown: 'helms-dropdown', section: 'helm' },
@@ -236,15 +247,7 @@ getDirectLifeManaFromItems() {
     { dropdown: 'boots-dropdown', section: 'boots' },
     { dropdown: 'ringsone-dropdown', section: 'ringone' },
     { dropdown: 'ringstwo-dropdown', section: 'ringtwo' },
-    { dropdown: 'amulets-dropdown', section: 'amulet' },
-    // Mercenary equipment
-    { dropdown: 'mercweapons-dropdown', section: 'mercweapon' },
-    { dropdown: 'merchelms-dropdown', section: 'merchelm' },
-    { dropdown: 'mercarmors-dropdown', section: 'mercarmor' },
-    { dropdown: 'mercoffs-dropdown', section: 'mercoff' },
-    { dropdown: 'mercgloves-dropdown', section: 'mercgloves' },
-    { dropdown: 'mercbelts-dropdown', section: 'mercbelts' },
-    { dropdown: 'mercboots-dropdown', section: 'mercboots' }
+    { dropdown: 'amulets-dropdown', section: 'amulet' }
   ];
 
   //('🔍 Checking equipment for life/mana bonuses:');
@@ -276,9 +279,9 @@ getDirectLifeManaFromItems() {
       let itemMana = 0;
       
       if (item.properties) {
-        // Try different property names
-        itemLife = item.properties.tolife || item.properties.life || 0;
-        itemMana = item.properties.tomana || item.properties.mana || 0;
+        // Try different property names and handle variable stats
+        itemLife = getPropertyValue(item.properties.tolife) || getPropertyValue(item.properties.life) || 0;
+        itemMana = getPropertyValue(item.properties.tomana) || getPropertyValue(item.properties.mana) || 0;
       }
       
       // Also parse from description if not in properties
@@ -303,8 +306,8 @@ getDirectLifeManaFromItems() {
     }
   });
 
-  // Get life/mana from sockets (player + mercenary)
-  const socketSections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet', 'mercweapon', 'merchelm', 'mercarmor', 'mercoff', 'mercgloves', 'mercbelts', 'mercboots'];
+  // Get life/mana from sockets (player only)
+  const socketSections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
   
   socketSections.forEach(section => {
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
@@ -371,6 +374,7 @@ getDirectLifeManaFromItems() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
+    // Player equipment only (mercenary items don't affect player stats)
     const equipmentSections = [
       { dropdown: 'weapons-dropdown', section: 'weapon' },
       { dropdown: 'helms-dropdown', section: 'helm' },
@@ -381,15 +385,7 @@ getDirectLifeManaFromItems() {
       { dropdown: 'boots-dropdown', section: 'boots' },
       { dropdown: 'ringsone-dropdown', section: 'ring' },
       { dropdown: 'ringstwo-dropdown', section: 'ring' },
-      { dropdown: 'amulets-dropdown', section: 'amulet' },
-      // Mercenary equipment
-      { dropdown: 'mercweapons-dropdown', section: 'mercweapon' },
-      { dropdown: 'merchelms-dropdown', section: 'merchelm' },
-      { dropdown: 'mercarmors-dropdown', section: 'mercarmor' },
-      { dropdown: 'mercoffs-dropdown', section: 'mercoff' },
-      { dropdown: 'mercgloves-dropdown', section: 'mercgloves' },
-      { dropdown: 'mercbelts-dropdown', section: 'mercbelts' },
-      { dropdown: 'mercboots-dropdown', section: 'mercboots' }
+      { dropdown: 'amulets-dropdown', section: 'amulet' }
     ];
 
     equipmentSections.forEach(({ dropdown, section }) => {
@@ -405,10 +401,10 @@ getDirectLifeManaFromItems() {
       const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
 
       if (currentLevel >= actualRequiredLevel && item.properties) {
-        bonuses.str += item.properties.str || 0;
-        bonuses.dex += item.properties.dex || 0;
-        bonuses.vit += item.properties.vit || 0;
-        bonuses.enr += item.properties.enr || 0;
+        bonuses.str += getPropertyValue(item.properties.str) || 0;
+        bonuses.dex += getPropertyValue(item.properties.dex) || 0;
+        bonuses.vit += getPropertyValue(item.properties.vit) || 0;
+        bonuses.enr += getPropertyValue(item.properties.enr) || 0;
       }
     });
 
@@ -419,7 +415,8 @@ getDirectLifeManaFromItems() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
-    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'mercweapon', 'merchelm', 'mercarmor', 'mercoff', 'mercgloves', 'mercbelts', 'mercboots'];
+    // Player equipment only (mercenary sockets don't affect player stats)
+    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
     
     sections.forEach(section => {
       const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
@@ -490,8 +487,8 @@ getDirectLifeManaFromItems() {
   getActualRequiredLevel(section, itemName) {
     const itemData = window.itemList || itemList;
     if (!itemData || !itemData[itemName]) return 1;
-    
-    const baseLevel = itemData[itemName].properties?.reqlvl || 1;
+
+    const baseLevel = getPropertyValue(itemData[itemName].properties?.reqlvl) || 1;
     
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
     let highestLevel = baseLevel;
@@ -778,16 +775,16 @@ function calculateAndDisplayBlock() {
   
   if (shieldDropdown && shieldDropdown.value && itemList[shieldDropdown.value]) {
     const shieldData = itemList[shieldDropdown.value];
-    baseBlock = shieldData.properties?.block1 || 0;
+    baseBlock = getPropertyValue(shieldData.properties?.block1) || 0;
   }
-  
+
   // Get helm block bonus
   const helmDropdown = document.getElementById('helms-dropdown');
   let helmBlock = 0;
-  
+
   if (helmDropdown && helmDropdown.value && itemList[helmDropdown.value]) {
     const helmData = itemList[helmDropdown.value];
-    helmBlock = helmData.properties?.block || 0;
+    helmBlock = getPropertyValue(helmData.properties?.block) || 0;
   }
   
   // Calculate total block based on class

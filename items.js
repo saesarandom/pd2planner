@@ -1,12 +1,12 @@
 const itemList = {
   "Biggin's Bonnet": {
-    description:
-      "Biggin's Bonnet<br>Cap<br>Defense: 19<br>Required Level: 3<br>+50% Enhanced Damage<br>50 to Attack Rating<br>+14 Defense<br>+15 to Life<br>+15 to Mana<br>",
+    baseType: "Cap",
+    // Description will be generated dynamically based on property values
     properties: {
       defense: 19,
       reqlvl: 3,
-      edmg: 50,
-      toatt: 50,
+      edmg: { min: 30, max: 50, current: 50 },
+      toatt: { min: 30, max: 50, current: 50 },
       todef: 14,
       tolife: 15,
       tomana: 15,
