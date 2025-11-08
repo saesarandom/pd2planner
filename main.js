@@ -146,6 +146,7 @@ function populateItemDropdowns() {
     belts: [],
     boots: [],
     ringsone: [],
+    ringstwo: [],
     amulets: []
   };
 
