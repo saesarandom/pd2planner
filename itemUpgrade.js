@@ -148,26 +148,6 @@ const upgradeDefinitions = {
         },
       },
     },
-    "The Face of Horror": {
-      exceptional: {
-        name: "The Face of Horror",
-        base: "Death Mask",
-        properties: {
-          defense: 111,
-          reqstr: 55,
-          reqlvl: 25,
-        },
-      },
-      elite: {
-        name: "The Face of Horror",
-        base: "Demonhead",
-        properties: {
-          defense: 179,
-          reqstr: 102,
-          reqlvl: 55,
-        },
-      },
-    },
     Wormskull: {
       exceptional: {
         name: "Wormskull",
