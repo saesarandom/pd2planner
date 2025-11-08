@@ -1,277 +1,111 @@
 // ===================================================================
-// ENHANCED RUNEWORD SYSTEM WITH CUSTOM STYLING - CORRECTED
-// Prevents socket additions + preserves Steel base + custom runeword styling
+// ENHANCED RUNEWORD SYSTEM - SIMPLIFIED
+// Prevents socket additions + preserves runeword displays
 // ===================================================================
 
-let currentSteelDisplay = null; // Store current Steel display
-let currentNadirDisplay = null; // Store current Nadir display
+let currentSteelDisplay = null;
+let currentNadirDisplay = null;
 
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(() => {
-    // Add custom CSS for runewords
     addRunewordStyling();
-    
-    // Hook addSocket to prevent socket additions
-    if (window.addSocket) {
-      const originalAddSocket = window.addSocket;
-      window.addSocket = function(section) {
-        if (section === 'weapon') {
-          const weaponDropdown = document.getElementById('weapons-dropdown');
-          if (weaponDropdown && weaponDropdown.value === 'Steel') {
-            showSteelBaseSelector();
-            return;
-          }
-        }
-        if (section === 'helm') {
-          const helmDropdown = document.getElementById('helms-dropdown');
-          if (helmDropdown && helmDropdown.value === 'Nadir') {
-            showNadirBaseSelector();
-            return;
-          }
-        }
-        originalAddSocket(section);
-      };
-    }
-
-    // Hook updateItemInfo to preserve runewords across ALL changes
-    if (window.updateItemInfo) {
-      const originalUpdateItemInfo = window.updateItemInfo;
-      window.updateItemInfo = function(event) {
-        const result = originalUpdateItemInfo.call(this, event);
-        
-        // After any dropdown change, check if runewords need restoration
-        setTimeout(() => {
-          const weaponDropdown = document.getElementById('weapons-dropdown');
-          const helmDropdown = document.getElementById('helms-dropdown');
-          
-          if (weaponDropdown && weaponDropdown.value === 'Steel' && currentSteelDisplay) {
-            restoreSteelDisplay();
-          }
-          if (helmDropdown && helmDropdown.value === 'Nadir' && currentNadirDisplay) {
-            restoreNadirDisplay();
-          }
-        }, 50);
-        
-        return result;
-      };
-    }
-
-    // Style runeword options and watch for changes
+    hookAddSocket();
     styleRunewordOptions();
-    watchAllChanges();
-  }, 1000);
+    watchForRunewordRestoration();
+  }, 100);
 });
 
 function addRunewordStyling() {
-  // Check if style already exists
   if (document.getElementById('runeword-styles')) return;
-  
+
   const style = document.createElement('style');
   style.id = 'runeword-styles';
   style.textContent = `
     .runeword-item {
-      color: #b8b8b8 !important; /* Gray for runewords */
+      color: #b8b8b8 !important;
       font-weight: bold !important;
       text-shadow: 0 0 2px #9e1515 !important;
       background: linear-gradient(90deg, rgba(184, 184, 184, 0.1), rgba(184, 184, 184, 0.05)) !important;
     }
-    
     .runeword-item:hover {
       background: linear-gradient(90deg, rgba(184, 184, 184, 0.2), rgba(184, 184, 184, 0.1)) !important;
       color: #d42e00 !important;
     }
   `;
-  
   document.head.appendChild(style);
 }
 
+function hookAddSocket() {
+  if (!window.addSocket) return;
+
+  const originalAddSocket = window.addSocket;
+  window.addSocket = function(section) {
+    if (section === 'weapon') {
+      const weaponDropdown = document.getElementById('weapons-dropdown');
+      if (weaponDropdown && weaponDropdown.value === 'Steel') {
+        showSteelBaseSelector();
+        return;
+      }
+    }
+    if (section === 'helm') {
+      const helmDropdown = document.getElementById('helms-dropdown');
+      if (helmDropdown && helmDropdown.value === 'Nadir') {
+        showNadirBaseSelector();
+        return;
+      }
+    }
+    originalAddSocket(section);
+  };
+}
+
 function styleRunewordOptions() {
-  // Style Steel option in weapons dropdown
   const weaponDropdown = document.getElementById('weapons-dropdown');
+  const helmDropdown = document.getElementById('helms-dropdown');
+
   if (weaponDropdown) {
-    const steelOption = Array.from(weaponDropdown.options).find(option => option.value === 'Steel');
+    const steelOption = Array.from(weaponDropdown.options).find(o => o.value === 'Steel');
     if (steelOption) {
       steelOption.className = 'runeword-item';
       steelOption.setAttribute('data-quality', 'runeword');
     }
   }
-  
-  // Style Nadir option in helms dropdown
-  const helmDropdown = document.getElementById('helms-dropdown');
+
   if (helmDropdown) {
-    const nadirOption = Array.from(helmDropdown.options).find(option => option.value === 'Nadir');
+    const nadirOption = Array.from(helmDropdown.options).find(o => o.value === 'Nadir');
     if (nadirOption) {
       nadirOption.className = 'runeword-item';
       nadirOption.setAttribute('data-quality', 'runeword');
     }
   }
-  
-  // Watch for dropdown population changes
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.type === 'childList') {
-        if (mutation.target.id === 'weapons-dropdown') {
-          setTimeout(() => {
-            const steelOption = Array.from(weaponDropdown.options).find(option => option.value === 'Steel');
-            if (steelOption && !steelOption.classList.contains('runeword-item')) {
-              steelOption.className = 'runeword-item';
-              steelOption.setAttribute('data-quality', 'runeword');
-            }
-          }, 100);
-        }
-        if (mutation.target.id === 'helms-dropdown') {
-          setTimeout(() => {
-            const nadirOption = Array.from(helmDropdown.options).find(option => option.value === 'Nadir');
-            if (nadirOption && !nadirOption.classList.contains('runeword-item')) {
-              nadirOption.className = 'runeword-item';
-              nadirOption.setAttribute('data-quality', 'runeword');
-            }
-          }, 100);
-        }
-      }
-    });
-  });
-  
-  if (weaponDropdown) observer.observe(weaponDropdown, { childList: true, subtree: true });
-  if (helmDropdown) observer.observe(helmDropdown, { childList: true, subtree: true });
 }
 
-function watchAllChanges() {
-  // Watch weapon dropdown changes
-  const weaponDropdown = document.getElementById('weapons-dropdown');
-  if (weaponDropdown) {
-    weaponDropdown.addEventListener('change', function() {
-      if (this.value === 'Steel' && currentSteelDisplay) {
-        setTimeout(() => restoreSteelDisplay(), 100);
-      }
-    });
-  }
-
-  // Watch helm dropdown changes
-  const helmDropdown = document.getElementById('helms-dropdown');
-  if (helmDropdown) {
-    helmDropdown.addEventListener('change', function() {
-      if (this.value === 'Nadir' && currentNadirDisplay) {
-        setTimeout(() => restoreNadirDisplay(), 100);
-      }
-    });
-  }
-
-  // Watch ALL other dropdowns to preserve runewords when switching sections
-  const allDropdowns = [
-    'helms-dropdown', 'armors-dropdown', 'offs-dropdown', 'gloves-dropdown',
-    'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown', 'ringstwo-dropdown',
-    'amulets-dropdown', 'mercweapons-dropdown', 'merchelms-dropdown', 
-    'mercarmors-dropdown', 'mercoffs-dropdown', 'mercgloves-dropdown',
-    'mercbelts-dropdown', 'mercboots-dropdown'
-  ];
-
-  allDropdowns.forEach(dropdownId => {
-    const dropdown = document.getElementById(dropdownId);
-    if (dropdown) {
-      dropdown.addEventListener('change', function() {
-        // After any slot change, restore runewords if selected
-        setTimeout(() => {
-          const weaponDropdown = document.getElementById('weapons-dropdown');
-          const helmDropdown = document.getElementById('helms-dropdown');
-          
-          if (weaponDropdown && weaponDropdown.value === 'Steel' && currentSteelDisplay) {
-            restoreSteelDisplay();
-          }
-          if (helmDropdown && helmDropdown.value === 'Nadir' && currentNadirDisplay) {
-            restoreNadirDisplay();
-          }
-        }, 100);
-      });
-    }
-  });
-
-  // Watch stat inputs to also check for runewords
-  ['lvlValue', 'str', 'dex', 'vit', 'enr'].forEach(id => {
-    const input = document.getElementById(id);
-    if (input) {
-      input.addEventListener('input', function() {
-        setTimeout(() => {
-          const weaponDropdown = document.getElementById('weapons-dropdown');
-          const helmDropdown = document.getElementById('helms-dropdown');
-          
-          if (weaponDropdown && weaponDropdown.value === 'Steel' && currentSteelDisplay) {
-            restoreSteelDisplay();
-          }
-          if (helmDropdown && helmDropdown.value === 'Nadir' && currentNadirDisplay) {
-            restoreNadirDisplay();
-          }
-        }, 50);
-      });
-    }
-  });
-
-  // Use MutationObserver to catch any other changes to weapon-info
+function watchForRunewordRestoration() {
+  // Watch weapon-info div for changes
   const weaponInfo = document.getElementById('weapon-info');
   if (weaponInfo) {
-    const observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.type === 'childList' || mutation.type === 'characterData') {
-          const weaponDropdown = document.getElementById('weapons-dropdown');
-          if (weaponDropdown && weaponDropdown.value === 'Steel' && currentSteelDisplay) {
-            if (!weaponInfo.innerHTML.includes(currentSteelDisplay.base)) {
-              setTimeout(() => restoreSteelDisplay(), 50);
-            }
-          }
+    const observer = new MutationObserver(() => {
+      const weaponDropdown = document.getElementById('weapons-dropdown');
+      if (weaponDropdown && weaponDropdown.value === 'Steel' && currentSteelDisplay) {
+        if (!weaponInfo.innerHTML.includes(currentSteelDisplay.base)) {
+          weaponInfo.innerHTML = currentSteelDisplay.html;
         }
-      });
+      }
     });
-    
-    observer.observe(weaponInfo, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
+    observer.observe(weaponInfo, { childList: true, subtree: true, characterData: true });
   }
 
-  // Use MutationObserver to catch any other changes to helm-info
+  // Watch helm-info div for changes
   const helmInfo = document.getElementById('helm-info');
   if (helmInfo) {
-    const helmObserver = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.type === 'childList' || mutation.type === 'characterData') {
-          const helmDropdown = document.getElementById('helms-dropdown');
-          if (helmDropdown && helmDropdown.value === 'Nadir' && currentNadirDisplay) {
-            if (!helmInfo.innerHTML.includes(currentNadirDisplay.base)) {
-              setTimeout(() => restoreNadirDisplay(), 50);
-            }
-          }
+    const observer = new MutationObserver(() => {
+      const helmDropdown = document.getElementById('helms-dropdown');
+      if (helmDropdown && helmDropdown.value === 'Nadir' && currentNadirDisplay) {
+        if (!helmInfo.innerHTML.includes(currentNadirDisplay.base)) {
+          helmInfo.innerHTML = currentNadirDisplay.html;
         }
-      });
+      }
     });
-    
-    helmObserver.observe(helmInfo, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
-  }
-}
-
-function restoreSteelDisplay() {
-  const weaponInfo = document.getElementById('weapon-info');
-  const weaponDropdown = document.getElementById('weapons-dropdown');
-  
-  if (weaponInfo && weaponDropdown && weaponDropdown.value === 'Steel' && currentSteelDisplay) {
-    if (!weaponInfo.innerHTML.includes(currentSteelDisplay.base)) {
-      weaponInfo.innerHTML = currentSteelDisplay.html;
-    }
-  }
-}
-
-function restoreNadirDisplay() {
-  const helmInfo = document.getElementById('helm-info');
-  const helmDropdown = document.getElementById('helms-dropdown');
-  
-  if (helmInfo && helmDropdown && helmDropdown.value === 'Nadir' && currentNadirDisplay) {
-    if (!helmInfo.innerHTML.includes(currentNadirDisplay.base)) {
-      helmInfo.innerHTML = currentNadirDisplay.html;
-    }
+    observer.observe(helmInfo, { childList: true, subtree: true, characterData: true });
   }
 }
 
@@ -282,7 +116,7 @@ function showSteelBaseSelector() {
   const modal = document.createElement('div');
   modal.className = 'steel-base-modal';
   modal.style.cssText = `
-    position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; 
+    position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
     background-color: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
   `;
 
@@ -311,8 +145,6 @@ function showSteelBaseSelector() {
   const supCheckbox = modal.querySelector('#steelSup');
   const edSlider = modal.querySelector('#steelED');
   const edValue = modal.querySelector('#steelEDValue');
-  const applyBtn = modal.querySelector('#applySteelBtn');
-  const cancelBtn = modal.querySelector('#cancelSteelBtn');
 
   supCheckbox.onchange = function() {
     edSlider.disabled = !this.checked;
@@ -326,19 +158,9 @@ function showSteelBaseSelector() {
     edValue.textContent = this.value + '%';
   };
 
-  applyBtn.onclick = function() {
-    applySteelBase();
-  };
-
-  cancelBtn.onclick = function() {
-    modal.remove();
-  };
-
-  modal.onclick = function(e) {
-    if (e.target === modal) {
-      modal.remove();
-    }
-  };
+  modal.querySelector('#applySteelBtn').onclick = () => applySteelBase();
+  modal.querySelector('#cancelSteelBtn').onclick = () => modal.remove();
+  modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
 
   document.body.appendChild(modal);
 }
@@ -351,7 +173,6 @@ function applySteelBase() {
   const isSup = modal.querySelector('#steelSup').checked;
   const ed = parseInt(modal.querySelector('#steelED').value);
 
-  // Base stats for weapons
   const stats = {
     'Short Sword': {min: 2, max: 7, str: 27, dex: 28},
     'Club': {min: 1, max: 6, str: 35, dex: 0},
@@ -360,12 +181,10 @@ function applySteelBase() {
     'Flail': {min: 1, max: 15, str: 30, dex: 35}
   }[base];
 
-  // Calculate damage (Steel adds 20% ED base + superior if applicable)
   const totalED = 20 + (isSup ? ed : 0);
   const minDmg = Math.floor(stats.min * (1 + totalED/100)) + 3;
   const maxDmg = Math.floor(stats.max * (1 + totalED/100)) + 3;
 
-  // Create Steel display HTML
   const steelHTML = `<span style="color: #646464ff; font-weight: bold; text-shadow: 0 0 3px #646464ff;">Steel</span><br>${base}${isSup ? ' (Superior)' : ''}<br>` +
     `One-Hand Damage: ${minDmg} to ${maxDmg}<br>` +
     `Required Strength: ${stats.str}<br>` +
@@ -380,15 +199,10 @@ function applySteelBase() {
     `<span style="color: #646464ff;">+50 Attack Rating</span><br>` +
     `<span style="color: #646464ff;">+1 to Light Radius</span><br>`;
 
-  currentSteelDisplay = {
-    base: base,
-    html: steelHTML
-  };
+  currentSteelDisplay = { base: base, html: steelHTML };
 
   const weaponInfo = document.getElementById('weapon-info');
-  if (weaponInfo) {
-    weaponInfo.innerHTML = steelHTML;
-  }
+  if (weaponInfo) weaponInfo.innerHTML = steelHTML;
 
   modal.remove();
   alert(`Steel runeword updated to ${base}!`);
@@ -401,7 +215,7 @@ function showNadirBaseSelector() {
   const modal = document.createElement('div');
   modal.className = 'nadir-base-modal';
   modal.style.cssText = `
-    position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; 
+    position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
     background-color: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
   `;
 
@@ -432,8 +246,6 @@ function showNadirBaseSelector() {
   const supCheckbox = modal.querySelector('#nadirSup');
   const edSlider = modal.querySelector('#nadirED');
   const edValue = modal.querySelector('#nadirEDValue');
-  const applyBtn = modal.querySelector('#applyNadirBtn');
-  const cancelBtn = modal.querySelector('#cancelNadirBtn');
 
   supCheckbox.onchange = function() {
     edSlider.disabled = !this.checked;
@@ -447,19 +259,9 @@ function showNadirBaseSelector() {
     edValue.textContent = this.value + '%';
   };
 
-  applyBtn.onclick = function() {
-    applyNadirBase();
-  };
-
-  cancelBtn.onclick = function() {
-    modal.remove();
-  };
-
-  modal.onclick = function(e) {
-    if (e.target === modal) {
-      modal.remove();
-    }
-  };
+  modal.querySelector('#applyNadirBtn').onclick = () => applyNadirBase();
+  modal.querySelector('#cancelNadirBtn').onclick = () => modal.remove();
+  modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
 
   document.body.appendChild(modal);
 }
@@ -472,7 +274,6 @@ function applyNadirBase() {
   const isSup = modal.querySelector('#nadirSup').checked;
   const ed = parseInt(modal.querySelector('#nadirED').value);
 
-  // Base stats for helms
   const stats = {
     'Cap': {def: 5, str: 0},
     'Skull Cap': {def: 11, str: 15},
@@ -483,11 +284,9 @@ function applyNadirBase() {
     'Mask': {def: 27, str: 23}
   }[base];
 
-  // Calculate defense (Nadir adds 50% ED base + superior affects the base defense)
   const baseDefWithSup = isSup ? Math.floor(stats.def * (1 + ed/100)) : stats.def;
-  const finalDef = Math.floor(baseDefWithSup * 1.5) + 10; // 50% ED + 10 flat defense
+  const finalDef = Math.floor(baseDefWithSup * 1.5) + 10;
 
-  // Create Nadir display HTML
   const nadirHTML = `<span style="color: #646464ff; font-weight: bold; text-shadow: 0 0 3px #646464ff;">Nadir</span><br>${base}${isSup ? ' (Superior)' : ''}<br>` +
     `Defense: ${finalDef}<br>` +
     `Required Strength: ${stats.str}<br>` +
@@ -501,15 +300,10 @@ function applyNadirBase() {
     `<span style="color: #646464ff;">+30 Defense vs Missile</span><br>` +
     `<span style="color: #646464ff;">+6 to Mana after each Kill<br></span><br>`;
 
-  currentNadirDisplay = {
-    base: base,
-    html: nadirHTML
-  };
+  currentNadirDisplay = { base: base, html: nadirHTML };
 
   const helmInfo = document.getElementById('helm-info');
-  if (helmInfo) {
-    helmInfo.innerHTML = nadirHTML;
-  }
+  if (helmInfo) helmInfo.innerHTML = nadirHTML;
 
   modal.remove();
   alert(`Nadir runeword updated to ${base}!`);
