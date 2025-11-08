@@ -61,60 +61,118 @@ const ALL_DROPDOWNS = [
 ];
 
 /**
- * Detect item type from description
+ * Detect item type from description or baseType
  */
-function detectItemType(itemName, description) {
-  const desc = description.toLowerCase();
+function detectItemType(itemName, item) {
+  // If item has baseType, use that directly
+  if (item.baseType) {
+    const baseType = item.baseType.toLowerCase();
 
-  // Weapons
-  if (desc.includes('sword') || desc.includes('axe') || desc.includes('mace') ||
-      desc.includes('hammer') || desc.includes('spear') || desc.includes('bow') ||
-      desc.includes('staff') || desc.includes('dagger') || desc.includes('wand') ||
-      desc.includes('claw') || desc.includes('orb') || desc.includes('javelin') ||
-      desc.includes('polearm') || desc.includes('scepter') || desc.includes('scythe')) {
-    return 'weapon';
+    // Weapons
+    if (baseType.includes('sword') || baseType.includes('axe') || baseType.includes('mace') ||
+        baseType.includes('hammer') || baseType.includes('spear') || baseType.includes('bow') ||
+        baseType.includes('staff') || baseType.includes('dagger') || baseType.includes('wand') ||
+        baseType.includes('claw') || baseType.includes('orb') || baseType.includes('javelin') ||
+        baseType.includes('polearm') || baseType.includes('scepter') || baseType.includes('scythe')) {
+      return 'weapon';
+    }
+
+    // Helms
+    if (baseType.includes('helm') || baseType.includes('crown') || baseType.includes('cap') ||
+        baseType.includes('skull') || baseType.includes('mask') || baseType.includes('circlet') ||
+        baseType.includes('headgear') || baseType.includes('horns') || baseType.includes('coif')) {
+      return 'helm';
+    }
+
+    // Armor
+    if (baseType.includes('armor') || baseType.includes('mail') || baseType.includes('plate') ||
+        baseType.includes('hide') || baseType.includes('leather') || baseType.includes('robe') ||
+        baseType.includes('chain') || baseType.includes('coat') || baseType.includes('garb')) {
+      return 'armor';
+    }
+
+    // Shields
+    if (baseType.includes('shield') || baseType.includes('buckler') || baseType.includes('ward')) {
+      return 'shield';
+    }
+
+    // Gloves
+    if (baseType.includes('gloves') || baseType.includes('gauntlet') || baseType.includes('hand')) {
+      return 'gloves';
+    }
+
+    // Belts
+    if (baseType.includes('belt') || baseType.includes('sash')) {
+      return 'belts';
+    }
+
+    // Boots
+    if (baseType.includes('boots') || baseType.includes('greaves') || baseType.includes('treads') ||
+        baseType.includes('shoes')) {
+      return 'boots';
+    }
+
+    // Rings
+    if (baseType.includes('ring')) return 'ringsone';
+
+    // Amulets
+    if (baseType.includes('amulet')) return 'amulets';
   }
 
-  // Helms
-  if (desc.includes('helm') || desc.includes('crown') || desc.includes('cap') ||
-      desc.includes('skull') || desc.includes('mask') || desc.includes('circlet') ||
-      desc.includes('headgear') || desc.includes('horns') || desc.includes('coif')) {
-    return 'helm';
+  // Fallback to description-based detection
+  if (item.description) {
+    const desc = item.description.toLowerCase();
+
+    // Weapons
+    if (desc.includes('sword') || desc.includes('axe') || desc.includes('mace') ||
+        desc.includes('hammer') || desc.includes('spear') || desc.includes('bow') ||
+        desc.includes('staff') || desc.includes('dagger') || desc.includes('wand') ||
+        desc.includes('claw') || desc.includes('orb') || desc.includes('javelin') ||
+        desc.includes('polearm') || desc.includes('scepter') || desc.includes('scythe')) {
+      return 'weapon';
+    }
+
+    // Helms
+    if (desc.includes('helm') || desc.includes('crown') || desc.includes('cap') ||
+        desc.includes('skull') || desc.includes('mask') || desc.includes('circlet') ||
+        desc.includes('headgear') || desc.includes('horns') || desc.includes('coif')) {
+      return 'helm';
+    }
+
+    // Armor
+    if (desc.includes('armor') || desc.includes('mail') || desc.includes('plate') ||
+        desc.includes('hide') || desc.includes('leather') || desc.includes('robe') ||
+        desc.includes('chain') || desc.includes('coat') || desc.includes('garb')) {
+      return 'armor';
+    }
+
+    // Shields
+    if (desc.includes('shield') || desc.includes('buckler') || desc.includes('ward')) {
+      return 'shield';
+    }
+
+    // Gloves
+    if (desc.includes('gloves') || desc.includes('gauntlet') || desc.includes('hand')) {
+      return 'gloves';
+    }
+
+    // Belts
+    if (desc.includes('belt') || desc.includes('sash')) {
+      return 'belts';
+    }
+
+    // Boots
+    if (desc.includes('boots') || desc.includes('greaves') || desc.includes('treads') ||
+        desc.includes('shoes')) {
+      return 'boots';
+    }
+
+    // Rings
+    if (desc.includes('ring')) return 'ringsone';
+
+    // Amulets
+    if (desc.includes('amulet')) return 'amulets';
   }
-
-  // Armor
-  if (desc.includes('armor') || desc.includes('mail') || desc.includes('plate') ||
-      desc.includes('hide') || desc.includes('leather') || desc.includes('robe') ||
-      desc.includes('chain') || desc.includes('coat') || desc.includes('garb')) {
-    return 'armor';
-  }
-
-  // Shields
-  if (desc.includes('shield') || desc.includes('buckler') || desc.includes('ward')) {
-    return 'shield';
-  }
-
-  // Gloves
-  if (desc.includes('gloves') || desc.includes('gauntlet') || desc.includes('hand')) {
-    return 'gloves';
-  }
-
-  // Belts
-  if (desc.includes('belt') || desc.includes('sash')) {
-    return 'belts';
-  }
-
-  // Boots
-  if (desc.includes('boots') || desc.includes('greaves') || desc.includes('treads') ||
-      desc.includes('shoes')) {
-    return 'boots';
-  }
-
-  // Rings
-  if (desc.includes('ring')) return 'ringsone';
-
-  // Amulets
-  if (desc.includes('amulet')) return 'amulets';
 
   return null;
 }
@@ -163,13 +221,19 @@ function populateItemDropdowns() {
   // Iterate through all items in itemList
   for (const itemName in itemList) {
     const item = itemList[itemName];
-    if (!item || !item.description) {
-      console.warn(`⚠️  Item ${itemName} missing description`);
+    if (!item) {
+      console.warn(`⚠️  Item ${itemName} is null or undefined`);
+      continue;
+    }
+
+    // Items need either description or baseType
+    if (!item.description && !item.baseType) {
+      console.warn(`⚠️  Item ${itemName} missing description and baseType`);
       continue;
     }
 
     itemCount++;
-    const itemType = detectItemType(itemName, item.description);
+    const itemType = detectItemType(itemName, item);
     console.log(`📦 ${itemName} -> ${itemType}`);
 
     if (itemType && itemsByType[itemType]) {
