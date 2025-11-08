@@ -415,9 +415,9 @@ getDirectLifeManaFromItems() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
-    // Player equipment only (mercenary sockets don't affect player stats)
-    const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots'];
-    
+    // Only weapons, helms, armors, and shields can have sockets
+    const sections = ['weapon', 'helm', 'armor', 'shield'];
+
     sections.forEach(section => {
       const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
       

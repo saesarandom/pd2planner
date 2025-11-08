@@ -77,7 +77,103 @@
       this.selectedJewelSuffix = null;
       this.selectedJewelPrefixValue = null;
       this.selectedJewelSuffixValue = null;
-      
+
+      // Base type socket limits (for corruption)
+      this.baseTypeSocketLimits = {
+        // Helms
+        'Cap': 2,
+        'Skull Cap': 2,
+        'Helm': 3,
+        'Full Helm': 3,
+        'Great Helm': 3,
+        'Crown': 3,
+        'Mask': 3,
+        'Bone Helm': 3,
+        'War Hat': 2,
+        'Sallet': 2,
+        'Casque': 2,
+        'Basinet': 3,
+        'Winged Helm': 3,
+        'Grand Crown': 3,
+        'Death Mask': 3,
+        'Grim Helm': 3,
+        'Bone Visage': 3,
+        'Shako': 2,
+        'Hydraskull': 2,
+        'Armet': 2,
+        'Giant Conch': 3,
+        'Spired Helm': 3,
+        'Corona': 3,
+        'Demonhead': 3,
+        'Circlet': 2,
+        'Coronet': 2,
+        'Tiara': 3,
+        'Diadem': 3,
+
+        // Armors
+        'Quilted Armor': 3,
+        'Leather Armor': 3,
+        'Hard Leather Armor': 3,
+        'Studded Leather': 3,
+        'Ring Mail': 4,
+        'Scale Mail': 4,
+        'Chain Mail': 4,
+        'Breast Plate': 4,
+        'Splint Mail': 4,
+        'Plate Mail': 4,
+        'Field Plate': 4,
+        'Gothic Plate': 4,
+        'Full Plate Mail': 4,
+        'Ancient Armor': 4,
+        'Light Plate': 4,
+        'Mage Plate': 3,
+        'Archon Plate': 4,
+        'Dusk Shroud': 4,
+        'Wyrmhide': 4,
+        'Scarab Husk': 4,
+        'Wire Fleece': 4,
+        'Great Hauberk': 4,
+        'Boneweave': 4,
+        'Kraken Shell': 4,
+        'Lacquered Plate': 4,
+        'Shadow Plate': 4,
+        'Sacred Armor': 4,
+
+        // Shields
+        'Buckler': 3,
+        'Small Shield': 3,
+        'Large Shield': 4,
+        'Kite Shield': 4,
+        'Tower Shield': 4,
+        'Gothic Shield': 4,
+        'Bone Shield': 3,
+        'Spiked Shield': 3,
+        'Defender': 4,
+        'Round Shield': 4,
+        'Scutum': 4,
+        'Dragon Shield': 4,
+        'Monarch': 4,
+        'Aegis': 4,
+
+        // Weapons (general defaults - specific types can override)
+        'Sword': 6,
+        'Axe': 6,
+        'Mace': 6,
+        'Bow': 6,
+        'Staff': 6,
+        'Wand': 2,
+        'Scepter': 5,
+        'Dagger': 3,
+        'Spear': 6,
+        'Polearm': 6,
+        'Javelin': 6,
+        'Orb': 2
+
+        // Note: Only weapons, helms, armors, and shields are socketable
+        // Gloves, belts, boots, rings, and amulets cannot have sockets
+        // (rare exceptions can be handled via item.properties.maxSockets)
+      };
+
       this.initializeSocketData();
       this.initializeJewelData();
       this.init();
@@ -1123,12 +1219,14 @@
 
     // === SOCKET CONTAINER INITIALIZATION ===
     initializeSocketContainers() {
-      const sections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
-      
+      // Only weapons, helms, armors, and shields can have sockets
+      // (rare exceptions for other slots can be handled via item.properties.maxSockets)
+      const sections = ['weapon', 'helm', 'armor', 'shield'];
+
       sections.forEach(section => {
         const infoId = this.getSectionInfoId(section);
         const infoDiv = document.getElementById(infoId);
-        
+
         if (infoDiv && !infoDiv.querySelector('.socket-container')) {
           const socketContainer = document.createElement('div');
           socketContainer.className = 'socket-container';
@@ -1191,38 +1289,73 @@
     }
 
     // === SOCKET MANAGEMENT ===
+
+    // Get max sockets for current item in a section
+    getMaxSocketsForSection(section) {
+      // Get the dropdown for this section
+      const dropdownId = this.getSectionDropdownId(section);
+      const dropdown = document.getElementById(dropdownId);
+
+      if (!dropdown || !dropdown.value) {
+        return 1; // Default to 1 socket if no item selected
+      }
+
+      const itemName = dropdown.value;
+      const item = itemList[itemName];
+
+      if (!item) {
+        return 1; // Default to 1 socket if item not found
+      }
+
+      // Check if item has custom maxSockets property
+      if (item.properties && item.properties.maxSockets !== undefined) {
+        return item.properties.maxSockets;
+      }
+
+      // Use baseType to lookup socket limit
+      if (item.baseType) {
+        const limit = this.baseTypeSocketLimits[item.baseType];
+        if (limit !== undefined) {
+          return limit;
+        }
+      }
+
+      // Default to 1 socket for any unspecified items
+      return 1;
+    }
+
     addSocket(section) {
 
-      
+
       const container = document.querySelector(`.socket-container[data-section="${section}"]`);
       if (!container) {
         console.error(`❌ No socket container found for section: ${section}`);
         return;
       }
-      
+
       const socketGrid = container.querySelector('.socket-grid');
       if (!socketGrid) {
         console.error(`❌ No socket grid found in container for section: ${section}`);
         return;
       }
-      
+
       const existingSockets = socketGrid.children.length;
-      const maxSockets = 6;
-      
+      const maxSockets = this.getMaxSocketsForSection(section);
+
       if (existingSockets >= maxSockets) {
-        alert(`Maximum ${maxSockets} sockets allowed`);
+        alert(`Maximum ${maxSockets} sockets allowed for this item`);
         return;
       }
-      
+
       const newSocket = document.createElement('div');
       newSocket.className = 'socket-slot empty';
       newSocket.dataset.index = existingSockets.toString();
-      
+
       socketGrid.appendChild(newSocket);
-      
+
       const newSocketCount = existingSockets + 1;
       socketGrid.className = `socket-grid sockets-${newSocketCount}`;
-      
+
 
     }
 
