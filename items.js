@@ -3175,6 +3175,7 @@ const itemList = {
   },
 
   "True Silver": {
+    baseType: "Maiden Javelin",
     properties: {
       javelin: 1,
       speed: -10,
