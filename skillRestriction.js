@@ -140,6 +140,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (currentValue > maxAllowedPoints) {
         input.value = maxAllowedPoints;
+        // Trigger input event to update displays and calculations
+        input.dispatchEvent(new Event('input', { bubbles: true }));
       }
     });
 
@@ -160,6 +162,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (currentValue > 0) {
           const removeFromThis = Math.min(currentValue, pointsToRemove);
           input.value = currentValue - removeFromThis;
+          // Trigger input event to update displays and calculations
+          input.dispatchEvent(new Event('input', { bubbles: true }));
           pointsToRemove -= removeFromThis;
         }
       }
