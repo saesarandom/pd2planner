@@ -16,7 +16,10 @@ const CORRUPTIONS = {
   armor: [
     { mod: "+[40-60] to Life", type: "numeric", range: [40, 60] },
     { mod: "+10% Faster Hit Recovery", type: "fixed" },
-    { mod: "+1 to All Skills", type: "fixed" }
+    { mod: "+1 to All Skills", type: "fixed" },
+    { mod: "1 Socket", type: "socket", sockets: 1 },
+    { mod: "2 Sockets", type: "socket", sockets: 2 },
+    { mod: "3 Sockets", type: "socket", sockets: 3 }
   ],
   weapon: [
     { mod: "+[40-80]% Enhanced Damage", type: "numeric", range: [40, 80] },
@@ -927,6 +930,43 @@ function closeCorruptionModal() {
   document.getElementById('corruptionModal').style.display = 'none';
   currentCorruptionSlot = null;
 }
+
+// Programmatically apply socket corruption (called from socket system)
+window.applySocketCorruption = function(dropdownId, socketCount) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) {
+    console.error('Dropdown not found:', dropdownId);
+    return;
+  }
+
+  const itemName = dropdown.value;
+  if (!itemName || !itemList[itemName]) {
+    console.error('Item not found:', itemName);
+    return;
+  }
+
+  // Store original description if not already stored
+  if (!window.originalItemDescriptions[itemName]) {
+    window.originalItemDescriptions[itemName] = itemList[itemName].description;
+  }
+
+  // Create corruption text based on socket count
+  const corruptionText = socketCount === 1 ? '1 Socket' : `${socketCount} Sockets`;
+
+  // Store corruption info
+  window.itemCorruptions[dropdownId] = {
+    text: corruptionText,
+    type: 'socket_corruption',
+    itemName: itemName,
+    socketCount: socketCount
+  };
+
+  console.log(`Auto-applied ${corruptionText} corruption to ${itemName}`);
+
+  // Don't modify description for socket corruptions - sockets are visual
+  // Just mark the item as corrupted in the UI
+  triggerItemUpdate(dropdownId);
+};
 
 
 document.addEventListener('DOMContentLoaded', () => {

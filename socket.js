@@ -1406,8 +1406,13 @@
 
       // Lookup socket limit by base type
       if (baseType) {
-        const limit = this.baseTypeSocketLimits[baseType];
+        let limit = this.baseTypeSocketLimits[baseType];
         if (limit !== undefined) {
+          // For armor section, cap at 3 sockets for unique/set items
+          // (3+ sockets only possible through corruption)
+          if (section === 'armor' && limit > 3) {
+            limit = 3;
+          }
           console.log(`Socket limit for ${itemName}: ${limit}`);
           return limit;
         }
@@ -1484,6 +1489,15 @@
 
       const newSocketCount = existingSockets + 1;
       socketGrid.className = `socket-grid sockets-${newSocketCount}`;
+
+      // Auto-apply socket corruption when adding 3rd socket to armor
+      if (section === 'armor' && newSocketCount === 3) {
+        const dropdownId = this.getSectionDropdownId(section);
+        if (dropdownId && typeof window.applySocketCorruption === 'function') {
+          console.log('Auto-applying 3 Sockets corruption to armor');
+          window.applySocketCorruption(dropdownId, 3);
+        }
+      }
 
     }
 
