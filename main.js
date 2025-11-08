@@ -472,10 +472,10 @@ function setupDropdownHandlers() {
         console.log(`🔔🔔🔔 CHANGE EVENT FIRED for ${dropdownId}!`);
         console.log('About to call updateItemInfo...');
         console.log('Event object:', event);
-        console.log('updateItemInfo function:', updateItemInfo);
+        console.log('updateItemInfo function:', window.updateItemInfo);
         try {
           console.log('INSIDE TRY BLOCK');
-          updateItemInfo(event);
+          window.updateItemInfo(event);
           console.log('AFTER updateItemInfo call');
         } catch (error) {
           console.error('💥💥💥 ERROR in updateItemInfo:', error);
