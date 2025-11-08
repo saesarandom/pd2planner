@@ -2040,9 +2040,10 @@ this.selectedJewelSuffix3MaxValue = null;
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
     const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
     const meetsRequirement = currentLevel >= actualRequiredLevel;
-    
+
     // Parse base item stats
-    let baseDescription = item.description || '';
+    // Use existing innerHTML if no static description (for dynamically generated items like Biggin's Bonnet)
+    let baseDescription = item.description || infoDiv.innerHTML || '';
     const baseStats = this.parseStatsToMap(baseDescription);
     
     // Get socket stats and merge with base stats

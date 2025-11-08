@@ -440,6 +440,14 @@ window.updateItemInfo = function updateItemInfo(event) {
     console.log('✅ innerHTML SET! Div now contains:', infoDiv.innerHTML);
     console.log('📊 Div visibility:', window.getComputedStyle(infoDiv).display, 'opacity:', window.getComputedStyle(infoDiv).opacity);
 
+    // Check if content persists after a delay
+    setTimeout(() => {
+      console.log('⏰ 100ms later, div contains:', infoDiv.innerHTML);
+      if (!infoDiv.innerHTML || infoDiv.innerHTML.trim() === '') {
+        console.error('🚨 CONTENT WAS CLEARED! Something removed it!');
+      }
+    }, 100);
+
     // Attach event listeners to any stat input boxes
     attachStatInputListeners();
   } else {
