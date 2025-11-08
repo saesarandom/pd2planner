@@ -1338,6 +1338,25 @@
         if (dropdown) {
           dropdown.addEventListener('change', () => {
             const section = this.equipmentMap[dropdownId].section;
+            const newItemName = dropdown.value;
+
+            // Clear corruption if switching to a different item
+            if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+              const corruption = window.itemCorruptions[dropdownId];
+              // If the corrupted item is different from the newly selected item, clear corruption
+              if (corruption.itemName && corruption.itemName !== newItemName) {
+                console.log(`Clearing corruption for ${corruption.itemName} when switching to ${newItemName}`);
+                delete window.itemCorruptions[dropdownId];
+
+                // Restore original description if available
+                if (window.originalItemDescriptions && window.originalItemDescriptions[corruption.itemName]) {
+                  if (itemList[corruption.itemName]) {
+                    itemList[corruption.itemName].description = window.originalItemDescriptions[corruption.itemName];
+                  }
+                }
+              }
+            }
+
             // Only adjust sockets for socketable items
             const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
             if (socketableSections.includes(section)) {
@@ -1404,17 +1423,15 @@
         }
       }
 
-      // For armor section, ALL unique/set armors can have 1-3 sockets
-      // (3rd socket requires corruption, but we allow manual socket addition up to 3)
-      if (section === 'armor') {
-        console.log(`Socket limit for ${itemName}: 3 (unique/set armor)`);
-        return 3;
-      }
-
-      // Lookup socket limit by base type for other sections
+      // Lookup socket limit by base type
       if (baseType) {
         let limit = this.baseTypeSocketLimits[baseType];
         if (limit !== undefined) {
+          // For armor section, cap at 3 for unique/set items (even if base allows 4)
+          // 3rd socket requires corruption
+          if (section === 'armor' && limit > 3) {
+            limit = 3;
+          }
           console.log(`Socket limit for ${itemName}: ${limit}`);
           return limit;
         }
