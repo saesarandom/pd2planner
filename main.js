@@ -51,27 +51,6 @@ const INFO_DIV_MAP = {
   'amulets-dropdown': 'amulet-info'
 };
 
-// Section mapping
-const SECTION_MAP = {
-  'weapons-dropdown': 'weapon',
-  'merchelms-dropdown': 'merchelm',
-  'mercweapons-dropdown': 'mercweapon',
-  'mercarmors-dropdown': 'mercarmor',
-  'mercoffs-dropdown': 'mercoff',
-  'mercgloves-dropdown': 'mercgloves',
-  'mercbelts-dropdown': 'mercbelts',
-  'mercboots-dropdown': 'mercboots',
-  'helms-dropdown': 'helm',
-  'armors-dropdown': 'armor',
-  'offs-dropdown': 'shield',
-  'gloves-dropdown': 'gloves',
-  'belts-dropdown': 'belts',
-  'boots-dropdown': 'boots',
-  'ringsone-dropdown': 'ringone',
-  'ringstwo-dropdown': 'ringtwo',
-  'amulets-dropdown': 'amulet'
-};
-
 // All dropdown IDs
 const ALL_DROPDOWNS = [
   'helms-dropdown', 'merchelms-dropdown', 'armors-dropdown', 'mercarmors-dropdown',
