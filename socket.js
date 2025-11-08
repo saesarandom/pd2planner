@@ -1422,46 +1422,6 @@
       return 1;
     }
 
-    // Adjust socket count when switching items
-    adjustSocketsForNewItem(section) {
-      console.log(`⚙️ adjustSocketsForNewItem called for section: ${section}`);
-
-      const container = document.querySelector(`.socket-container[data-section="${section}"]`);
-      if (!container) {
-        console.log(`⚠️ No container found for section: ${section}`);
-        return;
-      }
-
-      const socketGrid = container.querySelector('.socket-grid');
-      if (!socketGrid) {
-        console.log(`⚠️ No socket grid found in container`);
-        return;
-      }
-
-      const maxSockets = this.getMaxSocketsForSection(section);
-      const currentSockets = socketGrid.querySelectorAll('.socket-slot');
-      const currentCount = currentSockets.length;
-
-      console.log(`🔄 Adjusting sockets for ${section}: current=${currentCount}, max=${maxSockets}`);
-
-      if (currentCount > maxSockets) {
-        // Remove excess sockets
-        console.log(`✂️ Removing ${currentCount - maxSockets} excess sockets...`);
-        for (let i = currentCount - 1; i >= maxSockets; i--) {
-          const socket = currentSockets[i];
-          console.log(`  Removing socket ${i}`);
-          socket.remove();
-        }
-        socketGrid.className = `socket-grid sockets-${maxSockets}`;
-        console.log(`✅ Removed sockets, now have ${maxSockets}`);
-      } else if (currentCount < maxSockets) {
-        // Don't auto-add sockets, user must use + button
-        console.log(`📊 Can add ${maxSockets - currentCount} more sockets`);
-      } else {
-        console.log(`✅ Socket count matches max (${currentCount})`);
-      }
-    }
-
     addSocket(section) {
       const container = document.querySelector(`.socket-container[data-section="${section}"]`);
       if (!container) {
@@ -1533,6 +1493,43 @@
         // Update stats after removing sockets
         this.updateAll();
       }
+    }
+
+    // Set socket count to exact number (for corruption system)
+    setSocketCount(section, targetCount) {
+      const container = document.querySelector(`.socket-container[data-section="${section}"]`);
+      if (!container) {
+        console.error(`No container found for section: ${section}`);
+        return;
+      }
+
+      const socketGrid = container.querySelector('.socket-grid');
+      if (!socketGrid) {
+        console.error(`No socket grid found for section: ${section}`);
+        return;
+      }
+
+      const currentCount = socketGrid.children.length;
+      console.log(`Setting socket count for ${section}: ${currentCount} → ${targetCount}`);
+
+      // Remove all existing sockets first
+      while (socketGrid.firstChild) {
+        socketGrid.removeChild(socketGrid.firstChild);
+      }
+
+      // Add the target number of sockets
+      for (let i = 0; i < targetCount; i++) {
+        const socket = document.createElement('div');
+        socket.className = 'socket-slot empty';
+        socket.dataset.index = i.toString();
+        socketGrid.appendChild(socket);
+      }
+
+      // Update grid class
+      socketGrid.className = `socket-grid sockets-${targetCount}`;
+
+      // Update stats
+      this.updateAll();
     }
 
     handleSocketClick(e) {

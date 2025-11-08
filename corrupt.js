@@ -17,9 +17,9 @@ const CORRUPTIONS = {
     { mod: "+[40-60] to Life", type: "numeric", range: [40, 60] },
     { mod: "+10% Faster Hit Recovery", type: "fixed" },
     { mod: "+1 to All Skills", type: "fixed" },
-    { mod: "1 Socket", type: "socket", sockets: 1 },
-    { mod: "2 Sockets", type: "socket", sockets: 2 },
-    { mod: "3 Sockets", type: "socket", sockets: 3 }
+    { mod: "Socketed (1)", type: "socket", sockets: 1 },
+    { mod: "Socketed (2)", type: "socket", sockets: 2 },
+    { mod: "Socketed (3)", type: "socket", sockets: 3 }
   ],
   weapon: [
     { mod: "+[40-80]% Enhanced Damage", type: "numeric", range: [40, 80] },
@@ -438,19 +438,26 @@ function populateCorruptionList(corruptions) {
     } else if (corruption.type === 'numeric') {
       // Handle single numeric mods
       item.innerHTML = createSingleModSlider(corruption, index);
-      
+
       item.onclick = (e) => {
         if (!e.target.classList.contains('corruption-slider')) {
           const slider = item.querySelector('.corruption-slider');
           applyCorruption(corruption.mod, parseInt(slider.value));
         }
       };
+    } else if (corruption.type === 'socket') {
+      // Handle socket corruptions - these need to create actual sockets
+      item.innerHTML = `
+        <div style="color: #ff6b6b; font-weight: bold;">${corruption.mod}</div>
+      `;
+
+      item.onclick = () => applySocketCorruptionFromModal(corruption);
     } else {
       // Handle fixed mods
       item.innerHTML = `
         <div style="color: #ff6b6b; font-weight: bold;">${corruption.mod}</div>
       `;
-      
+
       item.onclick = () => applyCorruption(corruption.mod);
     }
     
@@ -638,13 +645,64 @@ function applyDoubleCorruption(corruption, index) {
 
 // Apply single corruption
 function applyCorruption(modTemplate, value = null) {
-  const corruptionText = value !== null ? 
-    generateCorruptionText(modTemplate, value) : 
+  const corruptionText = value !== null ?
+    generateCorruptionText(modTemplate, value) :
     modTemplate;
-    
 
-    
+
+
   applyCorruptionToItem(corruptionText);
+}
+
+// Apply socket corruption from modal (creates actual sockets)
+function applySocketCorruptionFromModal(corruption) {
+  const dropdown = document.getElementById(currentCorruptionSlot);
+  if (!dropdown) {
+    console.error('Dropdown not found');
+    return;
+  }
+
+  const itemName = dropdown.value;
+  if (!itemName || !itemList[itemName]) {
+    console.error('Item not found:', itemName);
+    return;
+  }
+
+  const socketCount = corruption.sockets;
+  const section = SECTION_MAP[currentCorruptionSlot];
+
+  if (!section) {
+    console.error('Section not found for dropdown:', currentCorruptionSlot);
+    return;
+  }
+
+  // Store original description if not already stored
+  if (!window.originalItemDescriptions[itemName]) {
+    window.originalItemDescriptions[itemName] = itemList[itemName].description;
+  }
+
+  // Store corruption info
+  window.itemCorruptions[currentCorruptionSlot] = {
+    text: corruption.mod,
+    type: 'socket_corruption',
+    itemName: itemName,
+    socketCount: socketCount
+  };
+
+  // Add corruption text to item description
+  const originalDescription = window.originalItemDescriptions[itemName];
+  const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.mod}</span><br>`;
+  itemList[itemName].description = enhancedDescription;
+
+  // Set the socket count to the specified number
+  if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.setSocketCount === 'function') {
+    window.unifiedSocketSystem.setSocketCount(section, socketCount);
+  }
+
+  // Trigger item display update
+  triggerItemUpdate(currentCorruptionSlot);
+
+  closeCorruptionModal();
 }
 
 // Common function to apply corruption to item
@@ -951,7 +1009,7 @@ window.applySocketCorruption = function(dropdownId, socketCount) {
   }
 
   // Create corruption text based on socket count
-  const corruptionText = socketCount === 1 ? '1 Socket' : `${socketCount} Sockets`;
+  const corruptionText = socketCount === 1 ? 'Socketed (1)' : `Socketed (${socketCount})`;
 
   // Store corruption info
   window.itemCorruptions[dropdownId] = {
@@ -963,8 +1021,12 @@ window.applySocketCorruption = function(dropdownId, socketCount) {
 
   console.log(`Auto-applied ${corruptionText} corruption to ${itemName}`);
 
-  // Don't modify description for socket corruptions - sockets are visual
-  // Just mark the item as corrupted in the UI
+  // Add corruption text to item description
+  const originalDescription = window.originalItemDescriptions[itemName];
+  const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruptionText}</span><br>`;
+  itemList[itemName].description = enhancedDescription;
+
+  // Trigger item display update
   triggerItemUpdate(dropdownId);
 };
 
