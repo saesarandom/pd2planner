@@ -25,6 +25,27 @@ function createWarningDiv() {
   return div;
 }
 
+function updateRemainingPointsDisplay() {
+  const currentLevel = parseInt(document.getElementById("lvlValue").value) || 1;
+  const maxTotalPoints = currentLevel + 11;
+  const skillInputs = document.querySelectorAll(
+    '[id$="container"] input[type="number"]'
+  );
+  const currentTotal = Array.from(skillInputs).reduce(
+    (sum, inp) => sum + (parseInt(inp.value) || 0),
+    0
+  );
+  const remainingPoints = maxTotalPoints - currentTotal;
+
+  if (remainingPoints < 0) {
+    showWarning(`⚠️ ERROR: ${Math.abs(remainingPoints)} skill points OVER cap!`, true);
+  } else if (remainingPoints === 0) {
+    showWarning("✅ All skill points used!", false);
+  } else if (remainingPoints <= 5) {
+    showWarning(`⚠️ Only ${remainingPoints} skill point${remainingPoints !== 1 ? 's' : ''} remaining!`, false);
+  }
+}
+
 function getMaxAllowedPoints(currentLevel, skillAvailabilityLevel) {
   if (currentLevel < skillAvailabilityLevel) {
     return 0;
@@ -87,6 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
       // Store last valid value
       this.dataset.lastValue = this.value;
 
+      // Update remaining points display
+      updateRemainingPointsDisplay();
+
       // Call updateDamageCalculations if exists
       if (typeof updateDamageCalculations === "function") {
         updateDamageCalculations();
@@ -97,8 +121,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Level change handler
   document.getElementById("lvlValue").addEventListener("input", function () {
     const currentLevel = parseInt(this.value) || 1;
+    const maxTotalPoints = currentLevel + 11;
 
     updateVisibility();
+
+    // First pass: reduce individual skills that exceed their max
+    const skillInputs = document.querySelectorAll(
+      '[id$="container"] input[type="number"]'
+    );
 
     skillInputs.forEach((input) => {
       const skillAvailabilityLevel = getSkillAvailabilityLevel(input);
@@ -110,9 +140,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (currentValue > maxAllowedPoints) {
         input.value = maxAllowedPoints;
-        showWarning(`Reduced points in skill due to level change!`, true);
       }
     });
+
+    // Second pass: check total points and reduce if needed
+    let totalPoints = Array.from(skillInputs).reduce(
+      (sum, input) => sum + (parseInt(input.value) || 0),
+      0
+    );
+
+    if (totalPoints > maxTotalPoints) {
+      // Need to reduce total points - go through skills and reduce them proportionally
+      let pointsToRemove = totalPoints - maxTotalPoints;
+
+      // Start removing from the end of the skills list (typically lower priority)
+      for (let i = skillInputs.length - 1; i >= 0 && pointsToRemove > 0; i--) {
+        const input = skillInputs[i];
+        const currentValue = parseInt(input.value) || 0;
+        if (currentValue > 0) {
+          const removeFromThis = Math.min(currentValue, pointsToRemove);
+          input.value = currentValue - removeFromThis;
+          pointsToRemove -= removeFromThis;
+        }
+      }
+
+      showWarning(
+        `Level lowered! Removed skill points to stay within ${maxTotalPoints} point cap.`,
+        true
+      );
+    }
+
+    // Update remaining points display
+    updateRemainingPointsDisplay();
   });
 });
 
@@ -235,13 +294,8 @@ function handleSkillInput(e) {
     showWarning(`Cannot exceed ${maxTotal} total skill points!`, true);
   }
 
-  // Update remaining points warning
-  const remainingPoints = maxTotal - currentTotal;
-  if (remainingPoints === 0) {
-    showWarning("You have used all available skill points!", false);
-  } else if (remainingPoints <= currentLevel / 7) {
-    showWarning(`Only ${remainingPoints} skill points remaining!`, false);
-  }
+  // Update remaining points display
+  updateRemainingPointsDisplay();
 
   // Update damage calculations if needed
   if (typeof updateDamageCalculations === "function") {
@@ -275,3 +329,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Initial visibility update
 updateVisibility();
+
+// Initial remaining points display
+updateRemainingPointsDisplay();
