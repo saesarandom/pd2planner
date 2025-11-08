@@ -3778,24 +3778,15 @@ const statsArray = [
     // Hide modal when clicking outside
   // === AUTO-INITIALIZATION ===
   document.addEventListener('DOMContentLoaded', function() {
-
-    
     // Create global instance
     window.unifiedSocketSystem = new UnifiedSocketSystem();
-    
-    // Also create legacy function names for compatibility
-    window.updateItemInfo = () => {
-      if (window.unifiedSocketSystem) {
-        window.unifiedSocketSystem.updateAll();
-      }
-    };
-    
+
+    // Legacy function for compatibility
     window.validateAllItems = () => {
       if (window.unifiedSocketSystem) {
         window.unifiedSocketSystem.updateAll();
       }
     };
-
   });
 
   // === FALLBACK FOR IMMEDIATE AVAILABILITY ===
