@@ -3214,9 +3214,10 @@ function handleUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //   select.dispatchEvent(new Event("change"));
-      //   // alert("Item upgraded to elite version!");
-      //   return;
+        select.dispatchEvent(new Event("change"));
+  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
+      
     }
   } else {
     if (
@@ -3242,9 +3243,10 @@ function handleUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //     select.dispatchEvent(new Event("change"));
-      //     // alert("Item upgraded to exceptional version!");
-      //     return;
+          select.dispatchEvent(new Event("change"));
+    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
+      
     }
   }
 
@@ -3295,9 +3297,10 @@ function handleArmorUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //   select.dispatchEvent(new Event("change"));
-      //   // alert("Item upgraded to elite version!");
-      //   return;
+        select.dispatchEvent(new Event("change"));
+  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
+      
     }
   } else {
     if (
@@ -3323,9 +3326,10 @@ function handleArmorUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //     select.dispatchEvent(new Event("change"));
-      //     // alert("Item upgraded to exceptional version!");
-      //     return;
+          select.dispatchEvent(new Event("change"));
+    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
+      
     }
   }
 
@@ -3411,8 +3415,9 @@ function handleWeaponUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //   select.dispatchEvent(new Event("change"));
-      //   return;
+        select.dispatchEvent(new Event("change"));
+  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
     }
   } else {
     if (
@@ -3468,8 +3473,9 @@ function handleWeaponUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //     select.dispatchEvent(new Event("change"));
-      //     return;
+          select.dispatchEvent(new Event("change"));
+    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
     }
   }
 
@@ -3596,7 +3602,8 @@ function handleWeaponUpgradeWithCorruption() {
   };
 
   // Trigger update
-  // select.dispatchEvent(new Event("change"));
+  select.dispatchEvent(new Event("change"));
+if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
   updateWeaponDamageDisplay();
 
   // Make sure corruptions are still displayed
@@ -3653,9 +3660,10 @@ function handleGloveUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //   select.dispatchEvent(new Event("change"));
-      //   // alert("Item upgraded to elite version!");
-      //   return;
+        select.dispatchEvent(new Event("change"));
+  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
+      
     }
   } else {
     if (
@@ -3682,9 +3690,10 @@ function handleGloveUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //     select.dispatchEvent(new Event("change"));
-      //     // alert("Item upgraded to exceptional version!");
-      //     return;
+          select.dispatchEvent(new Event("change"));
+    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
+      
     }
   }
 
@@ -3739,8 +3748,9 @@ function handleBeltUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //   select.dispatchEvent(new Event("change"));
-      //   // alert("Item upgraded to elite version!");
+        select.dispatchEvent(new Event("change"));
+  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
       return;
     }
   } else {
@@ -3768,9 +3778,10 @@ function handleBeltUpgrade() {
         properties: { ...currentItemData.properties, ...newProperties },
       };
 
-      //     select.dispatchEvent(new Event("change"));
-      //     // alert("Item upgraded to exceptional version!");
-      //     return;
+          select.dispatchEvent(new Event("change"));
+    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      
+      
     }
   }
 
@@ -3819,7 +3830,8 @@ function updateDefense() {
       } else {
         item.properties.defense = newDefense;
       }
-      // select.dispatchEvent(new Event("change"));
+      select.dispatchEvent(new Event("change"));
+if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
     }
   });
 }
@@ -3979,7 +3991,8 @@ function makeEtherealItem(category) {
   }
 
   // Trigger change event to update display
-  // select.dispatchEvent(new Event("change"));
+  select.dispatchEvent(new Event("change"));
+if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
 
   // Reapply socket corruption if there was one
   if (socketCorruption) {
@@ -4845,7 +4858,8 @@ function makeEtherealShield() {
   currentItemData.description = lines.join("<br>");
 
   // Trigger display update
-  // select.dispatchEvent(new Event("change"));
+  select.dispatchEvent(new Event("change"));
+if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
 
   console.log("Shield made ethereal with defense:", newDefense);
 }
