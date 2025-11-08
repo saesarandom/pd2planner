@@ -55,7 +55,7 @@ class CharmInventory {
     container.style.cssText = `
       position: absolute;
       margin-top: -120px;
-      left: 335px;
+      left: 60vw;
       display: grid;
       padding: 0;
       background-color: rgb(0, 0, 0);
