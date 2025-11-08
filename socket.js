@@ -2798,9 +2798,26 @@ this.selectedJewelSuffix3MaxValue = null;
   }
 
     parseItemStats(item, section) {
-      if (!item.description) return;
-      
-      const lines = item.description.split('<br>');
+      let description = item.description;
+
+      // For dynamic items without a static description, generate it
+      if (!description && item.baseType) {
+        // Find the dropdown for this section to use as dropdownId
+        const dropdownId = Object.entries(this.equipmentMap).find(
+          ([_, config]) => config.section === section
+        )?.[0];
+
+        if (dropdownId) {
+          const itemName = document.getElementById(dropdownId)?.value;
+          if (itemName) {
+            description = window.generateItemDescription(itemName, item, dropdownId);
+          }
+        }
+      }
+
+      if (!description) return;
+
+      const lines = description.split('<br>');
       lines.forEach(line => this.parseStatLine(line.trim()));
     }
 
