@@ -230,6 +230,13 @@ function populateItemDropdowns() {
     itemCount++;
     const itemType = detectItemType(itemName, item);
 
+    // Debug logging for specific problematic items
+    if (itemName === "Blackhorn's Face" || itemName === "Raven Frost") {
+      console.log(`🐛 Detected ${itemName} as type: ${itemType}`);
+      console.log(`   baseType: ${item.baseType}`);
+      console.log(`   has description: ${!!item.description}`);
+    }
+
     if (itemType && itemsByType[itemType]) {
       itemsByType[itemType].push(itemName);
 
