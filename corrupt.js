@@ -804,10 +804,13 @@ function addCorruptionWithStacking(originalDescription, corruptionText) {
       description += `<span class="corruption-enhanced-stat">${corruptionText}</span><br>`;
     }
   }
-  
+
   description += '';
   return description;
 }
+
+// Make corruption function available globally
+window.addCorruptionWithStacking = addCorruptionWithStacking;
 
 
 // Parse corruption text into individual stats (same as before)
