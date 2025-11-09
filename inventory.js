@@ -1260,6 +1260,31 @@ window.onCharmChange();
   // Replace the placeCharm method with this:
 
 
+  // Restore a charm from saved data
+  restoreCharm(charmData) {
+    if (!charmData || !charmData.type || !charmData.position) {
+      console.error('Invalid charm data:', charmData);
+      return;
+    }
+
+    // Get a random background image for this charm type
+    const images = this.charmImages[charmData.type];
+    if (!images) {
+      console.error('Unknown charm type:', charmData.type);
+      return;
+    }
+    const randomImage = images[Math.floor(Math.random() * images.length)];
+    const backgroundImage = `url('${randomImage}')`;
+
+    // Place the charm at the saved position with saved data
+    this.placeCharm(
+      charmData.position,
+      charmData.type,
+      backgroundImage,
+      JSON.stringify(charmData.data)
+    );
+  }
+
 // Also update removeCharm method:
 removeCharm(position) {
   const container = document.querySelector('.inventorycontainer');
