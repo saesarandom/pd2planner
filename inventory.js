@@ -1230,15 +1230,17 @@ placeCharm(position, charmType, backgroundImage, charmData) {
     }
   }
 
-  // Recalculate stats after placing ANY charm (moved outside the if/else and loop)
-  if (window.statsCalculator) {
-    setTimeout(() => window.statsCalculator.calculateAllStats(), 50);
+  // Recalculate stats after placing ANY charm
+  if (window.statsCalculator?.updateAll) {
+    setTimeout(() => window.statsCalculator.updateAll(), 50);
   }
-  if (window.characterStats) {
-  setTimeout(() => window.characterStats.updateTotalStats(), 100);
-}
-window.onCharmChange();
-
+  if (window.characterStats?.updateTotalStats) {
+    setTimeout(() => window.characterStats.updateTotalStats(), 100);
+  }
+  // Trigger charm change which handles stat recalculation
+  if (typeof window.onCharmChange === 'function') {
+    setTimeout(() => window.onCharmChange(), 150);
+  }
 }
 
 
@@ -1345,14 +1347,17 @@ removeCharm(position) {
     mainSlot.dataset.charmData = '';
   }
 
-  // Recalculate stats after removing ANY charm (moved outside the if/else)
-  if (window.statsCalculator) {
-    setTimeout(() => window.statsCalculator.calculateAllStats(), 50);
+  // Recalculate stats after removing ANY charm
+  if (window.statsCalculator?.updateAll) {
+    setTimeout(() => window.statsCalculator.updateAll(), 50);
   }
-  if (window.characterStats) {
-  setTimeout(() => window.characterStats.updateTotalStats(), 100);
-}
-window.onCharmChange();
+  if (window.characterStats?.updateTotalStats) {
+    setTimeout(() => window.characterStats.updateTotalStats(), 100);
+  }
+  // Trigger charm change which handles stat recalculation
+  if (typeof window.onCharmChange === 'function') {
+    setTimeout(() => window.onCharmChange(), 150);
+  }
 }
 
 
