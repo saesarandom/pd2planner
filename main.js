@@ -752,13 +752,13 @@ function createSaveButton() {
   saveContainer.id = 'save-build-container';
   saveContainer.style.cssText = `
     position: fixed;
-    right: 20px;
+    right: 10px;
     top: calc(50% + 80px);
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
     gap: 10px;
-    z-index: 9998;
+    z-index: 3;
     width: 200px;
   `;
 
@@ -769,13 +769,13 @@ function createSaveButton() {
   saveBtn.style.cssText = `
     background: linear-gradient(135deg, black, #000447);
     color: #ffffff;
-    padding: 5px 10px;
+    padding: 5px 5px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.8);
+    box-shadow: 0 4px 15px rgba(34, 8, 44, 0.8);
     transition: all 0.3s ease;
     width: 66%;
     white-space: normal;
