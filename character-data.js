@@ -111,12 +111,12 @@ window.exportCharacterData = function() {
         });
     }
 
-    // Get resistances from displayed values
+    // Get resistances from displayed values (look in .stat-value child element)
     const resistances = {
-        fire: parseInt(document.getElementById('fireresistcontainer')?.textContent) || 0,
-        cold: parseInt(document.getElementById('coldresistcontainer')?.textContent) || 0,
-        lightning: parseInt(document.getElementById('lightresistcontainer')?.textContent) || 0,
-        poison: parseInt(document.getElementById('poisonresistcontainer')?.textContent) || 0
+        fire: parseInt(document.querySelector('#fireresistcontainer .stat-value')?.textContent) || 0,
+        cold: parseInt(document.querySelector('#coldresistcontainer .stat-value')?.textContent) || 0,
+        lightning: parseInt(document.querySelector('#lightresistcontainer .stat-value')?.textContent) || 0,
+        poison: parseInt(document.querySelector('#poisonresistcontainer .stat-value')?.textContent) || 0
     };
 
     return {
