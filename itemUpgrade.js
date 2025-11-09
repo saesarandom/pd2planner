@@ -2936,8 +2936,11 @@ function calculateItemDamage(item, baseType, isMax = false) {
   // Get base damage from the damage table
   const baseDamage = baseDamages[baseType.trim()] || { min: 0, max: 0 };
 
-  // Get the base enhanced damage from the item
-  const itemEdmg = item.properties?.edmg || 0;
+  // Get the base enhanced damage from the item (extract current value if it's an object)
+  let itemEdmg = item.properties?.edmg || 0;
+  if (typeof itemEdmg === 'object' && itemEdmg !== null && 'current' in itemEdmg) {
+    itemEdmg = itemEdmg.current;
+  }
 
   // Check if item is ethereal
   const isEthereal = item.description && item.description.includes("Ethereal");
