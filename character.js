@@ -224,7 +224,7 @@ class CharacterManager {
         // Wait for DOM to update with new resistance values
         setTimeout(() => {
           const characterData = window.exportCharacterData();
-          console.log('Achievement check triggered, resistances:', characterData.resistances);
+          
           window.auth.checkCharacterState(characterData).then(result => {
             if (result.success && result.newAchievements && result.newAchievements.length > 0) {
               result.newAchievements.forEach(achievement => {
@@ -252,7 +252,7 @@ class CharacterManager {
       }
     });
 
-    console.log('Achievement watcher initialized for equipment and level changes');
+    
   }
 
   calculateLifeAndMana() {

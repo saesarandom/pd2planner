@@ -54,7 +54,7 @@ class CharmInventory {
     // If grid already exists with 40 slots, don't recreate it
     // This prevents clearing charms that were already placed
     if (container.children.length === 40) {
-      console.log('Charm inventory grid already exists, skipping recreation');
+      
       return;
     }
 
@@ -1324,12 +1324,7 @@ placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
     const randomImage = images[Math.floor(Math.random() * images.length)];
     const backgroundImage = `url('${randomImage}')`;
 
-    console.log('Restoring charm:', {
-      type: charmData.type,
-      position: charmData.position,
-      data: charmData.data,
-      canPlace: this.canPlaceCharm(charmData.position, charmData.type)
-    });
+    
 
     // Check if we can place the charm at this position
     if (!this.canPlaceCharm(charmData.position, charmData.type)) {
@@ -1540,19 +1535,16 @@ fixCharmTitles() {
 
     // Debug: Check what slots exist
     const allSlots = container.querySelectorAll('.charm1');
-    console.log(`getAllCharms: Found ${allSlots.length} total .charm1 slots`);
+    
 
     // Get small charms from regular slots
     const smallCharmSlots = container.querySelectorAll('.charm1:not([data-has-overlay])');
-    console.log(`getAllCharms: Found ${smallCharmSlots.length} slots without overlays`);
+    
 
     smallCharmSlots.forEach((slot, i) => {
       const hasCharmData = !!slot.dataset.charmData;
       const hasBackgroundImage = !!slot.style.backgroundImage;
-      console.log(`  Slot ${i}: charmData=${hasCharmData}, bgImage=${hasBackgroundImage}`, {
-        dataAttr: slot.dataset.charmData?.substring(0, 50),
-        bgImage: slot.style.backgroundImage?.substring(0, 50)
-      });
+      
 
       if (slot.dataset.charmData && slot.style.backgroundImage) {
         try {
@@ -1572,13 +1564,10 @@ fixCharmTitles() {
 
     // Get large/grand charms from overlay elements
     const overlays = container.querySelectorAll('.charm-overlay');
-    console.log(`getAllCharms: Found ${overlays.length} overlay charms`);
+    
 
     overlays.forEach((overlay, i) => {
-      console.log(`  Overlay ${i}:`, {
-        charmData: overlay.dataset.charmData?.substring(0, 50),
-        position: overlay.dataset.position
-      });
+      
 
       try {
         const charmData = JSON.parse(overlay.dataset.charmData);
@@ -1593,7 +1582,7 @@ fixCharmTitles() {
       }
     });
 
-    console.log(`getAllCharms: Total charms found: ${charms.length}`, charms);
+    
     return charms;
   }
 
@@ -1607,7 +1596,6 @@ fixCharmTitles() {
       return;
     }
 
-    console.log('Restoring', charmsArray.length, 'charms');
 
     // Clear existing charms first
     this.clearInventory();
@@ -1651,7 +1639,7 @@ fixCharmTitles() {
       }
     });
 
-    console.log(`Successfully restored ${successCount}/${charmsArray.length} charms`);
+    
 
     // Fix titles on all restored charms
     setTimeout(() => this.fixCharmTitles(), 50);
@@ -1690,7 +1678,7 @@ fixCharmTitles() {
     // Log what we've cleared
     const childCount = container.children.length;
     const overlayCount = container.querySelectorAll('.charm-overlay').length;
-    console.log(`Inventory cleared: ${childCount} slots remaining, ${overlayCount} overlays remaining`);
+   
   }
 }
 

@@ -59,8 +59,7 @@ window.exportCharacterData = function() {
     if (window.unifiedSocketSystem) {
         // Export socket data from the unified socket system
         sockets.data = window.unifiedSocketSystem.exportSocketData?.() || {};
-        console.log('Exported socket data:', sockets.data);
-    } else {
+        
         console.warn('No unified socket system found during export');
     }
 
@@ -85,7 +84,7 @@ window.exportCharacterData = function() {
                 }
                 if (Object.keys(varStats).length > 0) {
                     variableStats[slot] = { itemName, stats: varStats };
-                    console.log(`Exported variable stats for ${slot}:`, variableStats[slot]);
+                   
                 }
             }
         }
@@ -95,7 +94,7 @@ window.exportCharacterData = function() {
     // This is simpler and more reliable than parsing the DOM manually
     const charms = window.charmInventory?.getAllCharms?.() || [];
     if (charms.length > 0) {
-        console.log('Exported charms:', charms.length, charms);
+       
     }
 
     // Get skills allocation
@@ -120,9 +119,7 @@ window.exportCharacterData = function() {
         poison: parseInt(document.getElementById('poisonresistcontainer')?.textContent) || 0
     };
 
-    // DEBUG: Log resistance values
-    console.log('Exported resistances:', resistances);
-    console.log('Fire:', resistances.fire, 'Cold:', resistances.cold, 'Lightning:', resistances.lightning, 'Poison:', resistances.poison);
+   
 
     return {
         version: '1.1',
@@ -221,23 +218,23 @@ window.loadCharacterFromData = function(data) {
         // This ensures that when equipment dropdowns trigger regeneration of descriptions,
         // the saved variable stat values are already in place
         if (data.variableStats && typeof itemList !== 'undefined') {
-            console.log('Pre-restoring variable stats before equipment changes:', data.variableStats);
+            
             for (const [slot, varData] of Object.entries(data.variableStats)) {
                 const itemName = varData.itemName;
-                console.log(`Pre-restoring variable stats for ${slot} (${itemName}):`, varData.stats);
+                
                 if (itemList[itemName]) {
                     const item = itemList[itemName];
                     if (item.properties) {
                         for (const [propKey, value] of Object.entries(varData.stats)) {
                             if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
-                                console.log(`  Setting ${propKey} to ${value}`);
+                                
                                 item.properties[propKey].current = value;
                             }
                         }
                     }
                 }
             }
-            console.log('Pre-restoration of variable stats complete');
+            
         }
 
         // Set equipment
@@ -274,14 +271,14 @@ window.loadCharacterFromData = function(data) {
 
         // Log variable stats AFTER equipment is set to verify they're still correct
         if (data.variableStats && typeof itemList !== 'undefined') {
-            console.log('Verifying variable stats after equipment set:');
+            
             for (const [slot, varData] of Object.entries(data.variableStats)) {
                 const itemName = varData.itemName;
                 if (itemList[itemName]) {
                     const item = itemList[itemName];
                     for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
                         const actualValue = item.properties?.[propKey]?.current;
-                        console.log(`  ${slot} ${propKey}: expected=${expectedValue}, actual=${actualValue}, match=${expectedValue === actualValue}`);
+                        
                     }
                 }
             }
@@ -289,9 +286,9 @@ window.loadCharacterFromData = function(data) {
 
         // Restore socket data
         if (data.sockets?.data && window.unifiedSocketSystem?.importSocketData) {
-            console.log('Restoring socket data:', data.sockets.data);
+            
             window.unifiedSocketSystem.importSocketData(data.sockets.data);
-            console.log('Socket data restored');
+            
         } else {
             console.warn('Socket data not available or socket system not ready', {
                 hasData: !!data.sockets?.data,
@@ -312,25 +309,25 @@ window.loadCharacterFromData = function(data) {
                 const container = document.querySelector('.inventorycontainer');
                 const charmSlots = container?.querySelectorAll('.charm1').length ?? 0;
                 if (container && charmSlots >= 40) {
-                    console.log('Clearing charm inventory before restoring...');
+                    
                     window.charmInventory.clearInventory();
 
                     // Now restore charms if there are any
                     if (data.charms && data.charms.length > 0) {
-                        console.log('Starting charm restoration process, need to restore:', data.charms.length, 'charms');
+                        
                         if (window.charmInventory.restoreAllCharms) {
                             window.charmInventory.restoreAllCharms(data.charms);
                         } else {
                             console.warn('restoreAllCharms not available, using individual charm restoration');
                             data.charms.forEach((charm, idx) => {
-                                console.log(`Restoring charm ${idx + 1}/${data.charms.length}:`, charm);
+                                
                                 if (window.charmInventory.restoreCharm) {
                                     window.charmInventory.restoreCharm(charm);
                                 }
                             });
                         }
                     } else {
-                        console.log('No charms to restore - inventory cleared');
+                        
                     }
                 } else {
                     console.warn('Charm inventory grid not ready, retrying...', {
@@ -392,7 +389,7 @@ window.loadCharacterFromData = function(data) {
             window._isLoadingCharacterData = false;
         }, 1500);
 
-        console.log('Character loaded successfully!');
+        
 
         // Show success message
         alert('Character build loaded successfully!');
