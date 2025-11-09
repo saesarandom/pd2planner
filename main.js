@@ -766,17 +766,17 @@ function createSaveButton() {
   saveBtn.id = 'save-build-btn';
   saveBtn.innerHTML = '💾 Save Build';
   saveBtn.style.cssText = `
-    background: linear-gradient(135deg, #00ff88, #00cc66);
+    background: linear-gradient(135deg, black, #000447);
     color: #ffffff;
-    padding: 15px 20px;
+    padding: 5px 10px;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.8);
     transition: all 0.3s ease;
-    width: 100%;
+    width: 66%;
     white-space: normal;
     word-wrap: break-word;
   `;
