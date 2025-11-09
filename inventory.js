@@ -36,6 +36,8 @@ class CharmInventory {
       this.createModal();
       this.setupEventListeners();
       this.initialized = true;
+      // Fix any existing charms' titles
+      this.fixCharmTitles();
 
     }, 100);
   }
@@ -1204,6 +1206,8 @@ placeCharm(position, charmType, backgroundImage, charmData) {
     mainSlot.classList.add(charmType);
     mainSlot.dataset.charmData = charmData;
     mainSlot.title = displayText;
+    // Remove any previous data attributes that might show in tooltips
+    mainSlot.removeAttribute('data-tooltip');
   } else {
     // Large/Grand charm - create overlay element
     const charmOverlay = document.createElement('div');
@@ -1467,6 +1471,45 @@ hideModal() {
   this.selectedSlot = null;
 }
 
+/**
+ * Fix titles on all existing charms in the DOM
+ * Ensures charms placed before the fix have proper hover text
+ */
+fixCharmTitles() {
+  const container = document.querySelector('.inventorycontainer');
+  if (!container) return;
+
+  // Fix small charms in regular slots
+  container.querySelectorAll('.charm1[data-charm-data]').forEach(slot => {
+    if (!slot.title || slot.title.includes('{') || slot.title.includes('name:')) {
+      const charmDataStr = slot.dataset.charmData;
+      let displayText = '';
+      try {
+        const data = JSON.parse(charmDataStr);
+        displayText = data.displayText || data.name || charmDataStr;
+      } catch (e) {
+        displayText = charmDataStr;
+      }
+      slot.title = displayText;
+    }
+  });
+
+  // Fix large/grand charms in overlay elements
+  container.querySelectorAll('.charm-overlay[data-charm-data]').forEach(overlay => {
+    if (!overlay.title || overlay.title.includes('{') || overlay.title.includes('name:')) {
+      const charmDataStr = overlay.dataset.charmData;
+      let displayText = '';
+      try {
+        const data = JSON.parse(charmDataStr);
+        displayText = data.displayText || data.name || charmDataStr;
+      } catch (e) {
+        displayText = charmDataStr;
+      }
+      overlay.title = displayText;
+    }
+  });
+}
+
   /**
    * Get all charms currently in inventory as a serializable array
    * Scans the DOM for all placed charms
@@ -1593,6 +1636,9 @@ hideModal() {
     });
 
     console.log(`Successfully restored ${successCount}/${charmsArray.length} charms`);
+
+    // Fix titles on all restored charms
+    setTimeout(() => this.fixCharmTitles(), 50);
   }
 
   clearInventory() {
