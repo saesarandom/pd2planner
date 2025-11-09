@@ -4627,12 +4627,24 @@ function updateWeaponTooltip(currentItemData, baseType, isTwoHanded) {
   // Parse the current description
   const lines = currentItemData.description.split("<br>");
 
-  // Find and update the damage line
+  // Find and update or insert the damage line
   const damageLineIndex = lines.findIndex((line) => line.includes("Damage:"));
+  const damageLine = `${damageType} Damage: ${min} to ${max}, Avg ${avg}`;
+
   if (damageLineIndex !== -1) {
-    lines[
-      damageLineIndex
-    ] = `${damageType} Damage: ${min} to ${max}, Avg ${avg}`;
+    // Update existing damage line
+    lines[damageLineIndex] = damageLine;
+  } else {
+    // Insert damage line after base type (which is usually at index 1)
+    // Look for where to insert - after the base type line
+    let insertIndex = 2; // Default: after item name (0) and base type (1)
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes("Required")) {
+        insertIndex = i;
+        break;
+      }
+    }
+    lines.splice(insertIndex, 0, damageLine);
   }
 
   // Rebuild the description
@@ -4668,13 +4680,30 @@ function updateWeaponDescription(itemData, isTwoHanded) {
   const damageType = isTwoHanded ? "Two-Hand" : "One-Hand";
 
   const lines = itemData.description.split("<br>");
+  const damageLine = `${damageType} Damage: ${min}-${max}`;
 
-  // Find and update the damage line
+  // Find and update or insert the damage line
+  let damageLineIndex = -1;
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].includes("Damage:")) {
-      lines[i] = `${damageType} Damage: ${min}-${max}`;
+      damageLineIndex = i;
       break;
     }
+  }
+
+  if (damageLineIndex !== -1) {
+    // Update existing damage line
+    lines[damageLineIndex] = damageLine;
+  } else {
+    // Insert damage line before first "Required" line or at index 2
+    let insertIndex = 2;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes("Required")) {
+        insertIndex = i;
+        break;
+      }
+    }
+    lines.splice(insertIndex, 0, damageLine);
   }
 
   // Save corruption and socket info
@@ -4820,11 +4849,30 @@ function updateWeaponDisplayWithPerLevelDamage() {
 
   // Update description
   const lines = currentItemData.description.split("<br>");
+  const damageLine = `${damageType} Damage: ${min}-${max}`;
+
+  // Find and update or insert the damage line
+  let damageLineIndex = -1;
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].includes("Damage:")) {
-      lines[i] = `${damageType} Damage: ${min}-${max}`;
+      damageLineIndex = i;
       break;
     }
+  }
+
+  if (damageLineIndex !== -1) {
+    // Update existing damage line
+    lines[damageLineIndex] = damageLine;
+  } else {
+    // Insert damage line before first "Required" line or at index 2
+    let insertIndex = 2;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].includes("Required")) {
+        insertIndex = i;
+        break;
+      }
+    }
+    lines.splice(insertIndex, 0, damageLine);
   }
 
   // Save corruption and socket info
