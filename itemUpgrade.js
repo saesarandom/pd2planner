@@ -4135,6 +4135,7 @@ function updateWeaponDamageDisplay() {
 
     const baseType = description.split("<br>")[1];
     const isTwoHanded = currentItemData.properties.twohandmin !== undefined;
+    const isJavelin = currentItemData.properties.javelin === 1;
 
     // Calculate new min/max damage values considering all factors:
     // 1. Base weapon damage
@@ -4180,6 +4181,21 @@ function updateWeaponDamageDisplay() {
         minDisplay.textContent = currentItemData.properties.onehandmin;
       if (maxDisplay)
         maxDisplay.textContent = currentItemData.properties.onehandmax;
+
+      // For javelins, also calculate throw damage
+      if (isJavelin) {
+        const throwBaseType = baseType + " (throw)";
+        currentItemData.properties.throwmin = calculateItemDamage(
+          currentItemData,
+          throwBaseType,
+          false
+        );
+        currentItemData.properties.throwmax = calculateItemDamage(
+          currentItemData,
+          throwBaseType,
+          true
+        );
+      }
     }
 
     // Update the tooltip/description
@@ -4698,6 +4714,11 @@ function updateWeaponDisplayWithPerLevelDamage() {
 
   // Get base type for damage calculation
   const baseType = description.split("<br>")[1];
+
+  // If baseType is invalid or calculation returns NaN, just display the static values
+  if (!baseType || !baseType.trim()) {
+    return;
+  }
   const weaponInfo = document.getElementById("weapon-info");
 
   if (!weaponInfo) return;
