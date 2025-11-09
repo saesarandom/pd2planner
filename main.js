@@ -786,14 +786,14 @@ function createSaveButton() {
 
   saveBtn.addEventListener('mouseenter', () => {
     saveBtn.style.transform = 'translateY(-2px)';
-    saveBtn.style.boxShadow = '0 6px 20px rgba(0, 255, 136, 0.6)';
-    saveBtn.style.background = 'linear-gradient(135deg, #00ff88, #00dd77)';
+    saveBtn.style.boxShadow = '0 6px 20px rgba(81, 2, 83, 0.6)';
+    saveBtn.style.background = 'linear-gradient(135deg, #a00e80ff, #4d041aff)';
   });
 
   saveBtn.addEventListener('mouseleave', () => {
     saveBtn.style.transform = 'translateY(0)';
-    saveBtn.style.boxShadow = '0 4px 15px rgba(0, 255, 136, 0.4)';
-    saveBtn.style.background = 'linear-gradient(135deg, #00ff88, #00cc66)';
+    saveBtn.style.boxShadow = '0 4px 15px rgba(160, 9, 190, 0.4)';
+    saveBtn.style.background = 'linear-gradient(135deg, #630366ff, #4e0222ff)';
   });
 
   saveContainer.appendChild(saveBtn);
