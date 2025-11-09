@@ -1664,6 +1664,7 @@ fixCharmTitles() {
     this.occupiedSlots.clear();
     this.charmElements.clear();
 
+    // First pass: clear all existing charm slots
     Array.from(container.children).forEach(slot => {
       slot.className = 'charm1';
       slot.textContent = '';
@@ -1675,12 +1676,21 @@ fixCharmTitles() {
       slot.style.zIndex = '';
       slot.style.visibility = 'visible';
       slot.dataset.charmData = '';
+      // Clear the hasOverlay flag so canPlaceCharm doesn't think there's an overlay
+      delete slot.dataset.hasOverlay;
+      slot.removeAttribute('data-has-overlay');
     });
 
-    // Also remove overlay elements
-    container.querySelectorAll('.charm-overlay').forEach(overlay => {
+    // Second pass: remove ALL overlay elements (both direct and nested)
+    const overlays = container.querySelectorAll('.charm-overlay');
+    overlays.forEach(overlay => {
       overlay.remove();
     });
+
+    // Log what we've cleared
+    const childCount = container.children.length;
+    const overlayCount = container.querySelectorAll('.charm-overlay').length;
+    console.log(`Inventory cleared: ${childCount} slots remaining, ${overlayCount} overlays remaining`);
   }
 }
 
