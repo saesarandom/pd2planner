@@ -84,6 +84,7 @@ window.exportCharacterData = function() {
                 }
                 if (Object.keys(varStats).length > 0) {
                     variableStats[slot] = { itemName, stats: varStats };
+                    console.log(`Exported variable stats for ${slot}:`, variableStats[slot]);
                 }
             }
         }
@@ -236,19 +237,23 @@ window.loadCharacterFromData = function(data) {
         // Restore variable item stats (needs to happen after equipment is loaded)
         setTimeout(() => {
             if (data.variableStats) {
+                console.log('Restoring variable stats:', data.variableStats);
                 for (const [slot, varData] of Object.entries(data.variableStats)) {
                     const itemName = varData.itemName;
+                    console.log(`Restoring variable stats for ${slot} (${itemName}):`, varData.stats);
                     if (window.itemList?.[itemName]) {
                         const item = window.itemList[itemName];
                         if (item.properties) {
                             for (const [propKey, value] of Object.entries(varData.stats)) {
                                 if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
+                                    console.log(`  Setting ${propKey} to ${value} (was ${item.properties[propKey].current})`);
                                     item.properties[propKey].current = value;
                                 }
                             }
                         }
                     }
                 }
+                console.log('Variable stats restoration complete');
                 // Force update the display
                 if (window.characterManager) {
                     window.characterManager.updateTotalStats();
