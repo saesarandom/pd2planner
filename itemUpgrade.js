@@ -4127,11 +4127,16 @@ function updateWeaponDamageDisplay() {
   const currentItemData = itemList[currentItem];
 
   if (currentItemData) {
-    // Get description (generate if dynamic item)
-    let description = currentItemData.description;
-    if (!description && currentItemData.baseType) {
+    // Get description - for dynamic items always regenerate to reflect current property values
+    let description;
+    const isDynamic = currentItemData.baseType;
+
+    if (isDynamic) {
+      // Dynamic items (with baseType) must always regenerate to show current values
       description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
-      currentItemData.description = description;
+    } else {
+      // Static items can use cached description
+      description = currentItemData.description;
     }
 
     if (!description) return;
@@ -4735,11 +4740,16 @@ function updateWeaponDisplayWithPerLevelDamage() {
 
   if (!currentItemData) return;
 
-  // Get description (generate if dynamic item)
-  let description = currentItemData.description;
-  if (!description && currentItemData.baseType) {
+  // Get description - for dynamic items always regenerate to reflect current property values
+  let description;
+  const isDynamic = currentItemData.baseType;
+
+  if (isDynamic) {
+    // Dynamic items (with baseType) must always regenerate to show current values
     description = window.generateItemDescription(selectedWeapon, currentItemData, 'weapons-dropdown');
-    currentItemData.description = description;
+  } else {
+    // Static items can use cached description
+    description = currentItemData.description;
   }
 
   if (!description) return;
