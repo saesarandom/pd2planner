@@ -11,6 +11,16 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 };
 
+// Generate random 32-char token for sessions
+function generateToken() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let token = '';
+  for (let i = 0; i < 32; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return token;
+}
+
 // Generate random 6-char hash
 function generateHash() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -112,9 +122,24 @@ async function handleRequest(request, env) {
         });
       }
 
+      // Generate session token
+      const token = generateToken();
+      const userId = result[0].id;
+
+      // Store token (replace any existing token for this user)
+      await sql`
+        DELETE FROM session_tokens WHERE user_id = ${userId}
+      `;
+
+      await sql`
+        INSERT INTO session_tokens (user_id, token, expires_at)
+        VALUES (${userId}, ${token}, NOW() + INTERVAL '30 days')
+      `;
+
       return new Response(JSON.stringify({
         success: true,
-        user: result[0]
+        user: result[0],
+        token: token
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -264,9 +289,29 @@ async function handleRequest(request, env) {
       });
     }
 
-    // Unlock achievement
+    // Unlock achievement (requires valid token)
     if (path === '/api/achievements/unlock' && request.method === 'POST') {
-      const { userId, achievementId, achievementData } = await request.json();
+      const { userId, token, achievementId, achievementData } = await request.json();
+
+      if (!token) {
+        return new Response(JSON.stringify({ error: 'Token required' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Validate token
+      const tokenResult = await sql`
+        SELECT user_id FROM session_tokens
+        WHERE user_id = ${userId} AND token = ${token} AND expires_at > NOW()
+      `;
+
+      if (tokenResult.length === 0) {
+        return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
 
       try {
         await sql`

@@ -673,6 +673,11 @@ getDirectLifeManaFromItems() {
     this.level = level;
     this.currentLevel = level;
 
+    // Unlock "Fresh Start" achievement when reaching level 99
+    if (level === 99 && window.auth?.isLoggedIn()) {
+      window.auth.unlockAchievement('fresh_start', { level: 99 });
+    }
+
     this.validateStats();
     this.updateStatPointsDisplay();
     this.updateTotalStats();

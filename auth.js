@@ -7,6 +7,7 @@ const API_URL = 'https://pd2-planner-api.saesarandom.workers.dev'; // Replace wi
 class Auth {
     constructor() {
         this.user = null;
+        this.token = null;
         this.loadUser();
     }
 
@@ -15,16 +16,30 @@ class Auth {
         if (userData) {
             this.user = JSON.parse(userData);
         }
+        const tokenData = localStorage.getItem('pd2_token');
+        if (tokenData) {
+            this.token = tokenData;
+        }
     }
 
-    saveUser(user) {
+    saveUser(user, token = null) {
         this.user = user;
         localStorage.setItem('pd2_user', JSON.stringify(user));
+        if (token) {
+            this.token = token;
+            localStorage.setItem('pd2_token', token);
+        }
     }
 
     clearUser() {
         this.user = null;
+        this.token = null;
         localStorage.removeItem('pd2_user');
+        localStorage.removeItem('pd2_token');
+    }
+
+    getToken() {
+        return this.token;
     }
 
     isLoggedIn() {
@@ -66,7 +81,7 @@ class Auth {
                 throw new Error(data.error || 'Login failed');
             }
 
-            this.saveUser(data.user);
+            this.saveUser(data.user, data.token);
             return { success: true, user: data.user };
         } catch (error) {
             return { success: false, error: error.message };
@@ -200,6 +215,7 @@ class Auth {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userId: this.user.id,
+                    token: this.getToken(),
                     achievementId,
                     achievementData
                 })
