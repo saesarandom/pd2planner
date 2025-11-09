@@ -37,6 +37,14 @@ async function handleRequest(request, env) {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Validate DATABASE_URL exists
+  if (!env.DATABASE_URL) {
+    return new Response(JSON.stringify({ error: 'DATABASE_URL not configured' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
   const sql = neon(env.DATABASE_URL);
   const url = new URL(request.url);
   const path = url.pathname;
@@ -307,6 +315,18 @@ async function handleRequest(request, env) {
 
 export default {
   async fetch(request, env) {
-    return handleRequest(request, env);
+    try {
+      return await handleRequest(request, env);
+    } catch (error) {
+      console.error('Worker error:', error);
+      return new Response(JSON.stringify({
+        error: 'Internal server error',
+        message: error.message,
+        stack: error.stack
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
   }
 };
