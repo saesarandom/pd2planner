@@ -212,16 +212,16 @@ class CharacterManager {
 
   }
 
-   setupAchievementWatcher() {
-    // Watch for equipment and level changes that affect resistances
-    const equipmentIds = [
-      'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown',
-      'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
-      'ringstwo-dropdown', 'amulets-dropdown', 'lvlValue'
-    ];
-
+  setupAchievementWatcher() {
+    // Function to check achievements after resistances update
     const checkAchievements = () => {
       if (window.auth && window.auth.isLoggedIn()) {
+        // Trigger socket system to recalculate resistances
+        if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+          window.unifiedSocketSystem.updateAll();
+        }
+
+        // Wait for DOM to update with new resistance values
         setTimeout(() => {
           const characterData = window.exportCharacterData();
           console.log('Achievement check triggered, resistances:', characterData.resistances);
@@ -238,15 +238,21 @@ class CharacterManager {
       }
     };
 
+    // Watch equipment dropdowns and level changes
+    const equipmentIds = [
+      'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown',
+      'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
+      'ringstwo-dropdown', 'amulets-dropdown', 'lvlValue'
+    ];
+
     equipmentIds.forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener('change', checkAchievements);
-        el.addEventListener('input', checkAchievements);
       }
     });
 
-    console.log('Achievement watcher initialized, watching equipment and level changes');
+    console.log('Achievement watcher initialized for equipment and level changes');
   }
 
   calculateLifeAndMana() {
