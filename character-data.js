@@ -88,27 +88,62 @@ window.exportCharacterData = function() {
 
     // Get charm inventory data
     const charms = [];
-    if (window.charmInventory?.charmElements) {
-        window.charmInventory.charmElements.forEach((charmData, charmElement) => {
-            if (charmData && charmData.data) {
-                charms.push({
-                    type: charmData.type,
-                    position: charmData.position,
-                    data: charmData.data
-                });
-            }
-        });
+    if (window.charmInventory) {
+        const container = document.querySelector('.inventorycontainer');
+        if (container) {
+            // Check regular charm slots (small charms)
+            const slots = container.querySelectorAll('.charm1');
+            slots.forEach((slot, index) => {
+                if (slot.dataset.charmData && slot.style.backgroundImage && !slot.dataset.hasOverlay) {
+                    const charmDataStr = slot.dataset.charmData;
+                    let charmType = 'small-charm';
+                    if (slot.classList.contains('large-charm')) charmType = 'large-charm';
+                    if (slot.classList.contains('grand-charm')) charmType = 'grand-charm';
+
+                    try {
+                        const parsedData = JSON.parse(charmDataStr);
+                        charms.push({
+                            type: charmType,
+                            position: index,
+                            data: parsedData
+                        });
+                    } catch (e) {
+                        console.error('Failed to parse charm data:', e);
+                    }
+                }
+            });
+
+            // Check overlay charms (large and grand charms)
+            const overlays = container.querySelectorAll('.charm-overlay');
+            overlays.forEach(overlay => {
+                const charmDataStr = overlay.dataset.charmData;
+                const position = parseInt(overlay.dataset.position);
+                let charmType = 'large-charm';
+                if (overlay.classList.contains('grand-charm')) charmType = 'grand-charm';
+
+                try {
+                    const parsedData = JSON.parse(charmDataStr);
+                    charms.push({
+                        type: charmType,
+                        position: position,
+                        data: parsedData
+                    });
+                } catch (e) {
+                    console.error('Failed to parse charm data:', e);
+                }
+            });
+        }
     }
 
     // Get skills allocation
     const skills = {};
     if (window.skillSystem) {
-        // Try to export skill points from the skill system
-        const skillContainers = document.querySelectorAll('[id$="container"]');
-        skillContainers.forEach(container => {
-            const input = container.querySelector('input[type="number"]');
-            if (input && parseInt(input.value) > 0) {
-                skills[container.id] = parseInt(input.value);
+        // Get all skill inputs (they have IDs ending with "container")
+        const skillInputs = document.querySelectorAll('input[id$="container"][type="number"]');
+        skillInputs.forEach(input => {
+            const points = parseInt(input.value);
+            if (points > 0) {
+                skills[input.id] = points;
             }
         });
     }
@@ -268,15 +303,12 @@ window.loadCharacterFromData = function(data) {
         // Restore skills
         if (data.skills) {
             setTimeout(() => {
-                for (const [containerId, points] of Object.entries(data.skills)) {
-                    const container = document.getElementById(containerId);
-                    if (container) {
-                        const input = container.querySelector('input[type="number"]');
-                        if (input) {
-                            input.value = points;
-                            // Trigger change event to update skill calculations
-                            input.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
+                for (const [inputId, points] of Object.entries(data.skills)) {
+                    const input = document.getElementById(inputId);
+                    if (input && input.tagName === 'INPUT') {
+                        input.value = points;
+                        // Trigger change event to update skill calculations
+                        input.dispatchEvent(new Event('change', { bubbles: true }));
                     }
                 }
             }, 1000);
