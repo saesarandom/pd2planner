@@ -371,56 +371,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Map property keys to display format
   const propertyDisplay = {
     defense: (val) => `Defense: ${val}`,
-    onehandmin: (val, prop) => {
-      // Calculate actual damage using correct formula:
-      // Min: base_min * (1 + edmg/100)
-      // Max: (base_max * (1 + edmg/100)) + (charLevel * maxdmgperlvl)
-      const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-      const maxVal = props.onehandmax || 0;
-
-      // Get enhanced damage multiplier
-      let enhancedMultiplier = 1;
-      if (props.edmg && typeof props.edmg === 'object' && 'current' in props.edmg) {
-        enhancedMultiplier = 1 + props.edmg.current / 100;
-      }
-
-      // Min damage: NO level scaling, only enhanced damage
-      let minDmg = Math.floor(val * enhancedMultiplier);
-
-      // Max damage: enhanced damage PLUS level scaling (only for maxdmgperlvl)
-      let maxDmg = Math.floor(maxVal * enhancedMultiplier);
-      if (props.maxdmgperlvl) {
-        maxDmg += Math.floor(currentLevel * props.maxdmgperlvl);
-      }
-
-      const avg = Math.round((minDmg + maxDmg) / 2 * 10) / 10;
-      return `One-Hand Damage: ${Math.round(minDmg)} to ${Math.round(maxDmg)}, Avg ${avg}`;
-    },
-    throwmin: (val, prop) => {
-      // Calculate actual damage using correct formula:
-      // Min: base_min * (1 + edmg/100)
-      // Max: (base_max * (1 + edmg/100)) + (charLevel * maxdmgperlvl)
-      const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-      const maxVal = props.throwmax || 0;
-
-      // Get enhanced damage multiplier
-      let enhancedMultiplier = 1;
-      if (props.edmg && typeof props.edmg === 'object' && 'current' in props.edmg) {
-        enhancedMultiplier = 1 + props.edmg.current / 100;
-      }
-
-      // Min damage: NO level scaling, only enhanced damage
-      let minDmg = Math.floor(val * enhancedMultiplier);
-
-      // Max damage: enhanced damage PLUS level scaling (only for maxdmgperlvl)
-      let maxDmg = Math.floor(maxVal * enhancedMultiplier);
-      if (props.maxdmgperlvl) {
-        maxDmg += Math.floor(currentLevel * props.maxdmgperlvl);
-      }
-
-      const avg = Math.round((minDmg + maxDmg) / 2 * 10) / 10;
-      return `Throw Damage: ${Math.round(minDmg)} to ${Math.round(maxDmg)}, Avg ${avg}`;
-    },
+    onehandmin: (val, prop) => `One-Hand Damage: ${val} to ${props.onehandmax || '?'}, Avg ${Math.round((val + (props.onehandmax || 0)) / 2 * 10) / 10}`,
+    throwmin: (val, prop) => `Throw Damage: ${val} to ${props.throwmax || '?'}, Avg ${Math.round((val + (props.throwmax || 0)) / 2 * 10) / 10}`,
     onehandmax: () => '', // Skip, handled by onehandmin
     throwmax: () => '', // Skip, handled by throwmin
     reqlvl: (val) => `Required Level: ${val}`,
@@ -876,40 +828,6 @@ async function loadBuildFromURL() {
 /**
  * Main initialization
  */
-/**
- * Setup level change listener to regenerate weapon damage descriptions
- */
-function setupLevelChangeListener() {
-  const lvlInput = document.getElementById('lvlValue');
-  if (lvlInput) {
-    lvlInput.addEventListener('change', () => {
-      // Regenerate weapon and throw damage descriptions when level changes
-      const weaponDropdown = document.getElementById('weapons-dropdown');
-      const helmDropdown = document.getElementById('helms-dropdown');
-      const armorDropdown = document.getElementById('armors-dropdown');
-      const shieldDropdown = document.getElementById('offs-dropdown');
-
-      if (weaponDropdown && weaponDropdown.value) {
-        window.updateItemInfo({ target: weaponDropdown });
-      }
-      if (helmDropdown && helmDropdown.value) {
-        window.updateItemInfo({ target: helmDropdown });
-      }
-      if (armorDropdown && armorDropdown.value) {
-        window.updateItemInfo({ target: armorDropdown });
-      }
-      if (shieldDropdown && shieldDropdown.value) {
-        window.updateItemInfo({ target: shieldDropdown });
-      }
-
-      // Recalculate stats
-      if (window.characterManager) {
-        window.characterManager.updateTotalStats();
-      }
-    });
-  }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Populate dropdowns first
   populateItemDropdowns();
@@ -920,28 +838,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. Setup socket handlers
   setupSocketHandlers();
 
-  // 4. Setup level change listener for weapon damage updates
-  setupLevelChangeListener();
-
-  // 5. Setup Anya checkbox listeners (delayed to ensure DOM is ready)
+  // 4. Setup Anya checkbox listeners (delayed to ensure DOM is ready)
   setTimeout(setupAnyaCheckboxes, 100);
 
-  // 6. Setup crit display listeners
+  // 5. Setup crit display listeners
   setupCritListeners();
 
-  // 7. Initialize crit display
+  // 6. Initialize crit display
   setTimeout(updateCritDisplay, 500);
 
-  // 8. Initialize other systems if available
+  // 7. Initialize other systems if available
   if (typeof updatePolyLife === 'function') updatePolyLife();
 
-  // 9. Create save button
+  // 8. Create save button
   setTimeout(createSaveButton, 500);
 
-  // 10. Load build from URL if present
+  // 9. Load build from URL if present
   setTimeout(loadBuildFromURL, 1000);
 
-  // 11. Check login state (legacy)
+  // 10. Check login state (legacy)
   const username = localStorage.getItem('username');
   if (username && typeof updateUIState === 'function') {
     updateUIState(username);
