@@ -729,145 +729,145 @@ body {
 }
 
 .socket-enhanced-stat {
-  color: #00BFFF !important;
-  font-weight: bold !important;
-  border-left: none !important;
+  color: #00BFFF;
+  font-weight: bold;
+  border-left: none;
 }
 
 
   .skill-tree-container {
-    position: absolute !important;
-    top: 1300px !important;
-    width: 250px !important;
-    height: 450px !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    background: rgba(0,0,0,0.9) !important;
-    border: 2px solid #666 !important;
-    border-radius: 8px !important;
-    padding: 12px !important;
-    color: white !important;
-    font-family: Oswald, sans-serif !important;
-    z-index: 1000 !important;
-    display: block !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    float: none !important;
-    transform: none !important;
+    position: absolute;
+    top: 1300px;
+    width: 250px;
+    height: 450px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: rgba(0,0,0,0.9);
+    border: 2px solid #666;
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    font-family: Oswald, sans-serif;
+    z-index: 1000;
+    display: block;
+    box-sizing: border-box;
+    margin: 0;
+    float: none;
+    transform: none;
   }
 
   .skill-tree-container input[type="number"] {
-  font-family: Oswald, sans-serif !important;
+  font-family: Oswald, sans-serif;
 }
 
 .skill-tree-container h3 {
-  margin: 0 0 15px 0 !important;
-  color: #ffd700 !important;
-  text-align: center !important;
-  border-bottom: 1px solid #666 !important;
-  padding-bottom: 8px !important;
-  font-size: 16px !important;
+  margin: 0 0 15px 0;
+  color: #ffd700;
+  text-align: center;
+  border-bottom: 1px solid #666;
+  padding-bottom: 8px;
+  font-size: 16px;
 }
 
 .skill-points-display {
-  position: absolute !important;
-  top: 1150px !important;  /* Just above the skill containers at 1500px */
-  right: 110px !important;  /* Same left position as first container */
-  background: rgba(0,0,0,0.9) !important;
-  color: white !important;
-  padding: 15px !important;
-  border-radius: 8px !important;
-  border: 2px solid #666 !important;
-  font-family: Oswald, sans-serif !important;
-  z-index: 10000 !important;
-  min-width: 150px !important;
-  box-sizing: border-box !important;
+  position: absolute;
+  top: 1150px;  /* Just above the skill containers at 1500px */
+  right: 110px;  /* Same left position as first container */
+  background: rgba(0,0,0,0.9);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #666;
+  font-family: Oswald, sans-serif;
+  z-index: 10000;
+  min-width: 150px;
+  box-sizing: border-box;
 }
 
 #javelinandspearskillscontainer {
-  right: 10px !important;
+  right: 10px;
 }
 
 #passiveskillscontainer {
-  right: -260px !important;
+  right: -260px;
 }
 
 #bowandcrossbowskillscontainer {
-  right: -530px !important;
+  right: -530px;
 }
 
 .skill-calculator-container {
-  position: absolute !important;
-  top: 190px !important;
-  left: 220px !important;
-  background: rgba(0,0,0,0.9) !important;
-  border: 2px solid #666 !important;
-  border-radius: 5px !important;
-  padding: 3px !important;
-  color: white !important;
-  font-family: Oswald, sans-serif !important;
-  font-size: 12px !important;
-  width: 160px !important;
-  z-index: 4 !important;
-  box-sizing: border-box !important;
+  position: absolute;
+  top: 190px;
+  left: 220px;
+  background: rgba(0,0,0,0.9);
+  border: 2px solid #666;
+  border-radius: 5px;
+  padding: 3px;
+  color: white;
+  font-family: Oswald, sans-serif;
+  font-size: 12px;
+  width: 160px;
+  z-index: 4;
+  box-sizing: border-box;
 }
 
 .skill-calculator-container h5 {
-  margin: 0 0 10px 0 !important;
-  color: #ffd700 !important;
+  margin: 0 0 10px 0;
+  color: #ffd700;
 }
 
 .skill-calculator-container select {
-  width: 100% !important;
-  padding: 5px !important;
-  background: #333 !important;
-  color: white !important;
-  border: 1px solid #666 !important;
-  margin-bottom: 10px !important;
+  width: 100%;
+  padding: 5px;
+  background: #333;
+  color: white;
+  border: 1px solid #666;
+  margin-bottom: 10px;
 }
 
 .skill-damage-display {
-  position: absolute !important;
-  top: 190px !important;
-  left: 380px !important;
-  background: rgba(0,0,0,0.9) !important;
-  border: 2px solid #666 !important;
-  border-radius: 5px !important;
-  padding: 5px !important;
-  color: white !important;
-  font-family: Oswald, sans-serif !important;
-  font-size: 12px !important;
-  width: 640px !important;  /* Wider to accommodate horizontal layout */
-  max-height: 240px !important;  /* Shorter since content spreads horizontally */
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  word-wrap: break-word !important;
-  box-sizing: border-box !important;
-  z-index: 4 !important;
+  position: absolute;
+  top: 190px;
+  left: 380px;
+  background: rgba(0,0,0,0.9);
+  border: 2px solid #666;
+  border-radius: 5px;
+  padding: 5px;
+  color: white;
+  font-family: Oswald, sans-serif;
+  font-size: 12px;
+  width: 640px;  /* Wider to accommodate horizontal layout */
+  max-height: 240px;  /* Shorter since content spreads horizontally */
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  box-sizing: border-box;
+  z-index: 4;
 }
 
 .skill-damage-display h5 {
-  margin: 0 0 10px 0 !important;
-  color: #ffd700 !important;
-  width: 100% !important;
+  margin: 0 0 10px 0;
+  color: #ffd700;
+  width: 100%;
 }
 
 /* Horizontal layout for damage info */
 .skill-damage-display #damage-results {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 3px !important;
-  align-items: flex-start !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: flex-start;
 }
 
 .skill-damage-display #damage-results > div {
-  flex: 0 0 auto !important;
-  min-width: 120px !important;
-  margin: 0 !important;
-  padding: 2px 4px !important;
-  background: rgba(255,255,255,0.1) !important;
-  border-radius: 3px !important;
-  white-space: nowrap !important;
+  flex: 0 0 auto;
+  min-width: 120px;
+  margin: 0;
+  padding: 2px 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  white-space: nowrap;
 }
 
 .modecontainer {
