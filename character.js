@@ -683,17 +683,22 @@ getDirectLifeManaFromItems() {
     }
 
     // Check character state for achievements (conditions hidden server-side)
+    // Check character state for achievements (conditions hidden server-side)
+    // Add delay to allow DOM to update with new resistance values
     if (window.auth && window.auth.isLoggedIn()) {
-      const characterData = window.exportCharacterData();
-      window.auth.checkCharacterState(characterData).then(result => {
-        if (result.success && result.newAchievements && result.newAchievements.length > 0) {
-          result.newAchievements.forEach(achievement => {
-            alert(`🏆 Achievement Unlocked!\n\n${achievement.name}\n\n${achievement.description}`);
-          });
-        }
-      }).catch(error => {
-        console.error('Error checking character state:', error);
-      });
+      setTimeout(() => {
+        const characterData = window.exportCharacterData();
+        console.log('Exported data with resistances:', characterData.resistances);
+        window.auth.checkCharacterState(characterData).then(result => {
+          if (result.success && result.newAchievements && result.newAchievements.length > 0) {
+            result.newAchievements.forEach(achievement => {
+              alert(`🏆 Achievement Unlocked!\n\n${achievement.name}\n\n${achievement.description}`);
+            });
+          }
+        }).catch(error => {
+          console.error('Error checking character state:', error);
+        });
+      }, 300); // Wait 300ms for DOM to update
     }
   }
 
