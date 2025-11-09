@@ -644,12 +644,21 @@ getDeadlyStrikeChance() {
     var skillLevel = parseInt(input.getAttribute('data-skill-level')) || 1;
     var maxAllowed = this.getMaxAllowed(skillLevel);
 
+    // Enforce absolute maximum of 20 points per skill
+    if (newValue > 20) {
+      input.value = 20;
+      this.showWarning('Maximum 20 points per skill');
+      newValue = 20;
+    }
+
+    // Enforce character level-based maximum
     if (newValue > maxAllowed) {
       input.value = maxAllowed;
       this.showWarning('Max ' + maxAllowed + ' points at level ' + this.currentLevel);
       return;
     }
 
+    // Enforce total skill points available
     var totalUsed = this.getTotalUsed();
     if (totalUsed > this.maxSkillPoints) {
       var excess = totalUsed - this.maxSkillPoints;

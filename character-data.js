@@ -305,15 +305,29 @@ window.loadCharacterFromData = function(data) {
             window.itemCorruptions = data.corruptions.data;
         }
 
-        // Restore charms
-        if (data.charms && window.charmInventory) {
-            setTimeout(() => {
-                data.charms.forEach(charm => {
-                    if (window.charmInventory.restoreCharm) {
-                        window.charmInventory.restoreCharm(charm);
+        // Restore charms (wait for charm inventory to be fully initialized)
+        if (data.charms && data.charms.length > 0) {
+            const restoreCharmsWhenReady = () => {
+                if (window.charmInventory && window.charmInventory.initialized) {
+                    const container = document.querySelector('.inventorycontainer');
+                    if (container && container.children.length === 40) {
+                        console.log('Restoring', data.charms.length, 'charms');
+                        data.charms.forEach(charm => {
+                            if (window.charmInventory.restoreCharm) {
+                                window.charmInventory.restoreCharm(charm);
+                            }
+                        });
+                    } else {
+                        console.warn('Charm inventory grid not ready, retrying...');
+                        setTimeout(restoreCharmsWhenReady, 200);
                     }
-                });
-            }, 1000);
+                } else {
+                    console.warn('Charm inventory not initialized, retrying...');
+                    setTimeout(restoreCharmsWhenReady, 200);
+                }
+            };
+
+            setTimeout(restoreCharmsWhenReady, 500);
         }
 
         // Restore skills (just set values without triggering validation)
