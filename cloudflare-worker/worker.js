@@ -55,10 +55,12 @@ async function checkAndAwardAchievements(userId, characterData, sql) {
 
     // Debug logging
     console.log('Character data received:', JSON.stringify(characterData));
-    console.log('Level value:', characterData.character?.level, 'Type:', typeof characterData.character?.level);
+    const levelValue = characterData.character?.level;
+    const levelNumber = parseInt(levelValue);
+    console.log('Level value:', levelValue, 'Type:', typeof levelValue, 'Parsed:', levelNumber);
 
     // Fresh Start: Reach level 99
-    if (characterData.character?.level === 99 && !existingIds.has('fresh_start')) {
+    if (levelNumber === 99 && !existingIds.has('fresh_start')) {
       await sql`
         INSERT INTO achievements (user_id, achievement_id, achievement_data)
         VALUES (${userId}, 'fresh_start', ${JSON.stringify({ level: 99 })})
