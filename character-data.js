@@ -111,13 +111,18 @@ window.exportCharacterData = function() {
         });
     }
 
-    // Get resistances from displayed values (look in .stat-value child element)
+  
+    // Get resistances from displayed values
     const resistances = {
-        fire: parseInt(document.querySelector('#fireresistcontainer .stat-value')?.textContent) || 0,
-        cold: parseInt(document.querySelector('#coldresistcontainer .stat-value')?.textContent) || 0,
-        lightning: parseInt(document.querySelector('#lightresistcontainer .stat-value')?.textContent) || 0,
-        poison: parseInt(document.querySelector('#poisonresistcontainer .stat-value')?.textContent) || 0
+        fire: parseInt(document.getElementById('fireresistcontainer')?.textContent) || 0,
+        cold: parseInt(document.getElementById('coldresistcontainer')?.textContent) || 0,
+        lightning: parseInt(document.getElementById('lightresistcontainer')?.textContent) || 0,
+        poison: parseInt(document.getElementById('poisonresistcontainer')?.textContent) || 0
     };
+
+    // DEBUG: Log resistance values
+    console.log('Exported resistances:', resistances);
+    console.log('Fire:', resistances.fire, 'Cold:', resistances.cold, 'Lightning:', resistances.lightning, 'Poison:', resistances.poison);
 
     return {
         version: '1.1',
