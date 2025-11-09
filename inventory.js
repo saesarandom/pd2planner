@@ -1405,6 +1405,20 @@ removeCharm(position) {
   showTooltip(e, charmData) {
   this.hideTooltip();
 
+  // Extract clean display text from JSON charm data
+  let displayText = '';
+  try {
+    const data = JSON.parse(charmData);
+    displayText = data.name || '';
+    // Add stats if available
+    if (data.stats && Array.isArray(data.stats)) {
+      displayText += ' ' + data.stats.join(' ');
+    }
+  } catch (err) {
+    // If not JSON, just show as-is
+    displayText = charmData;
+  }
+
   const tooltip = document.createElement('div');
   tooltip.id = 'charmTooltip';
   tooltip.style.cssText = `
@@ -1422,7 +1436,7 @@ removeCharm(position) {
     left: ${e.clientX + 10}px;
     top: ${e.clientY + 10}px;
   `;
-  tooltip.textContent = charmData;
+  tooltip.textContent = displayText;
 
   document.body.appendChild(tooltip);
 }
