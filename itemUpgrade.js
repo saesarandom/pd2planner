@@ -4128,6 +4128,7 @@ function updateWeaponDamageDisplay() {
     let description = currentItemData.description;
     if (!description && currentItemData.baseType) {
       description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+      currentItemData.description = description;
     }
 
     if (!description) return;
@@ -4601,6 +4602,12 @@ function updateWeaponTooltip(currentItemData, baseType, isTwoHanded) {
   const avg = ((min + max) / 2).toFixed(1);
   const damageType = isTwoHanded ? "Two-Hand" : "One-Hand";
 
+  // Ensure description exists before parsing
+  if (!currentItemData.description) {
+    console.warn("updateWeaponTooltip: description is undefined for item", currentItemData);
+    return;
+  }
+
   // Parse the current description
   const lines = currentItemData.description.split("<br>");
 
@@ -4684,6 +4691,7 @@ function updateWeaponDisplayWithPerLevelDamage() {
   let description = currentItemData.description;
   if (!description && currentItemData.baseType) {
     description = window.generateItemDescription(selectedWeapon, currentItemData, 'weapons-dropdown');
+    currentItemData.description = description;
   }
 
   if (!description) return;
