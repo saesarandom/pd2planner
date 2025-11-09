@@ -229,6 +229,35 @@ class Auth {
         }
     }
 
+    async checkCharacterState(characterData) {
+        if (!this.isLoggedIn() || !this.token) {
+            return { success: false, error: 'Not logged in', newAchievements: [] };
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/api/check-state`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: this.user.id,
+                    token: this.token,
+                    characterData
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                return { success: false, error: data.error, newAchievements: [] };
+            }
+
+            return { success: true, newAchievements: data.newAchievements || [] };
+        } catch (error) {
+            console.error('Failed to check character state:', error);
+            return { success: false, error: error.message, newAchievements: [] };
+        }
+    }
+
     async getAchievements() {
         if (!this.isLoggedIn()) return [];
 

@@ -681,6 +681,20 @@ getDirectLifeManaFromItems() {
     if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
       window.unifiedSocketSystem.updateAll();
     }
+
+    // Check character state for achievements (conditions hidden server-side)
+    if (window.auth && window.auth.isLoggedIn()) {
+      const characterData = window.exportCharacterData();
+      window.auth.checkCharacterState(characterData).then(result => {
+        if (result.success && result.newAchievements && result.newAchievements.length > 0) {
+          result.newAchievements.forEach(achievement => {
+            alert(`🏆 Achievement Unlocked!\n\n${achievement.name}\n\n${achievement.description}`);
+          });
+        }
+      }).catch(error => {
+        console.error('Error checking character state:', error);
+      });
+    }
   }
 
   handleClassChange() {

@@ -41,53 +41,64 @@ async function hashPassword(password) {
     .join('');
 }
 
-// Check and award achievements based on character data
-// Returns list of newly unlocked achievements (not previously earned)
-async function checkAndAwardAchievements(userId, characterData, sql) {
+// Check all possible achievements (conditions hidden from client)
+// Returns array of newly unlocked achievement details
+async function checkAllAchievements(userId, characterData, sql) {
   const newlyUnlocked = [];
+  const level = parseInt(characterData.character?.level);
+  const charms = characterData.charms || [];
 
-  try {
-    // Get existing achievements for this user
-    const existing = await sql`
-      SELECT achievement_id FROM achievements WHERE user_id = ${userId}
-    `;
-    const existingIds = new Set(existing.map(a => a.achievement_id));
+  // Get existing achievements for this user
+  const existing = await sql`
+    SELECT achievement_id FROM achievements WHERE user_id = ${userId}
+  `;
+  const existingIds = new Set(existing.map(a => a.achievement_id));
 
-    // Debug logging
-    console.log('Character data received:', JSON.stringify(characterData));
-    console.log('Level value:', characterData.character?.level, 'Type:', typeof characterData.character?.level);
-
-    // Fresh Start: Reach level 99
-    if (characterData.character?.level === 99 && !existingIds.has('fresh_start')) {
+  // Fresh Start: Reach level 99
+  if (level === 99 && !existingIds.has('fresh_start')) {
+    try {
       await sql`
         INSERT INTO achievements (user_id, achievement_id, achievement_data)
-        VALUES (${userId}, 'fresh_start', ${JSON.stringify({ level: 99 })})
+        VALUES (${userId}, 'fresh_start', ${JSON.stringify({ level: 99, earnedAt: new Date().toISOString() })})
       `;
       newlyUnlocked.push({
         id: 'fresh_start',
         name: 'Fresh Start',
-        description: 'You have unlocked an achievement!'
+        description: 'Reach level 99'
       });
+    } catch (e) {
+      console.error('Error awarding fresh_start:', e);
     }
+  }
 
-    // Under Clouds: Save a build (first save only)
-    if (!existingIds.has('under_clouds')) {
+  // Charm Collector: Fill entire charm inventory (16 slots)
+  if (Array.isArray(charms) && charms.length >= 16 && !existingIds.has('charm_collector')) {
+    try {
       await sql`
         INSERT INTO achievements (user_id, achievement_id, achievement_data)
-        VALUES (${userId}, 'under_clouds', ${JSON.stringify({ saved: true })})
+        VALUES (${userId}, 'charm_collector', ${JSON.stringify({ charms: charms.length, earnedAt: new Date().toISOString() })})
       `;
       newlyUnlocked.push({
-        id: 'under_clouds',
-        name: 'Under Clouds',
-        description: 'You have unlocked an achievement!'
+        id: 'charm_collector',
+        name: 'Charm Collector',
+        description: 'Fill your entire charm inventory'
       });
+    } catch (e) {
+      console.error('Error awarding charm_collector:', e);
     }
-  } catch (error) {
-    console.error('Error checking achievements:', error);
-    // Don't fail the save if achievement check fails
   }
 
   return newlyUnlocked;
+}
+
+// Legacy wrapper - calls the new checkAllAchievements
+async function checkAndAwardAchievements(userId, characterData, sql) {
+  try {
+    return await checkAllAchievements(userId, characterData, sql);
+  } catch (error) {
+    console.error('Error checking achievements:', error);
+    return [];
+  }
 }
 
 async function handleRequest(request, env) {
@@ -199,6 +210,41 @@ async function handleRequest(request, env) {
         success: true,
         user: result[0],
         token: token
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Check character state and award any applicable achievements (conditions stay hidden)
+    if (path === '/api/check-state' && request.method === 'POST') {
+      const { userId, token, characterData } = await request.json();
+
+      if (!userId || !token || !characterData) {
+        return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Validate token
+      const tokenCheck = await sql`
+        SELECT user_id FROM session_tokens
+        WHERE user_id = ${userId} AND token = ${token} AND expires_at > NOW()
+      `;
+
+      if (tokenCheck.length === 0) {
+        return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Check all achievements (conditions hidden from client)
+      const newAchievements = await checkAllAchievements(userId, characterData, sql);
+
+      return new Response(JSON.stringify({
+        success: true,
+        newAchievements: newAchievements
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
