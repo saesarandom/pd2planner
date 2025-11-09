@@ -212,12 +212,17 @@ class CharacterManager {
 
   }
 
-  setupAchievementWatcher() {
-    // Watch socket containers for changes and check achievements when sockets update
-    const observer = new MutationObserver(() => {
-      // Add small delay to let resistances finish calculating
-      setTimeout(() => {
-        if (window.auth && window.auth.isLoggedIn()) {
+   setupAchievementWatcher() {
+    // Watch for equipment and level changes that affect resistances
+    const equipmentIds = [
+      'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown',
+      'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
+      'ringstwo-dropdown', 'amulets-dropdown', 'lvlValue'
+    ];
+
+    const checkAchievements = () => {
+      if (window.auth && window.auth.isLoggedIn()) {
+        setTimeout(() => {
           const characterData = window.exportCharacterData();
           console.log('Achievement check triggered, resistances:', characterData.resistances);
           window.auth.checkCharacterState(characterData).then(result => {
@@ -229,21 +234,19 @@ class CharacterManager {
           }).catch(error => {
             console.error('Error checking character state:', error);
           });
-        }
-      }, 100);
+        }, 100);
+      }
+    };
+
+    equipmentIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('change', checkAchievements);
+        el.addEventListener('input', checkAchievements);
+      }
     });
 
-    // Watch all socket containers
-    const socketContainers = document.querySelectorAll('.socket-container');
-    socketContainers.forEach(container => {
-      observer.observe(container, {
-        childList: true,
-        subtree: true,
-        attributes: true
-      });
-    });
-
-    console.log('Achievement watcher initialized, watching', socketContainers.length, 'socket containers');
+    console.log('Achievement watcher initialized, watching equipment and level changes');
   }
 
   calculateLifeAndMana() {
