@@ -212,14 +212,23 @@ window.loadCharacterFromData = function(data) {
                 console.log(`Pre-restoring variable stats for ${slot} (${itemName}):`, varData.stats);
                 if (window.itemList?.[itemName]) {
                     const item = window.itemList[itemName];
+                    console.log(`  Item found in itemList:`, item);
                     if (item.properties) {
                         for (const [propKey, value] of Object.entries(varData.stats)) {
+                            const oldValue = item.properties[propKey]?.current;
                             if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
-                                console.log(`  Setting ${propKey} to ${value} (was ${item.properties[propKey].current})`);
+                                console.log(`  Setting ${propKey} from ${oldValue} to ${value}`);
                                 item.properties[propKey].current = value;
+                                console.log(`  Verified: ${propKey}.current is now ${item.properties[propKey].current}`);
+                            } else {
+                                console.warn(`  ${propKey} is not a variable property:`, item.properties[propKey]);
                             }
                         }
+                    } else {
+                        console.warn(`  Item has no properties!`, item);
                     }
+                } else {
+                    console.warn(`  Item NOT found in itemList! Available items:`, Object.keys(window.itemList || {}).slice(0, 5), '...');
                 }
             }
             console.log('Pre-restoration of variable stats complete');
@@ -253,6 +262,21 @@ window.loadCharacterFromData = function(data) {
                     dropdown.value = data.equipment[slot];
                     // Trigger change event to update UI
                     dropdown.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        }
+
+        // Log variable stats AFTER equipment is set to verify they're still correct
+        if (data.variableStats) {
+            console.log('Verifying variable stats after equipment set:');
+            for (const [slot, varData] of Object.entries(data.variableStats)) {
+                const itemName = varData.itemName;
+                if (window.itemList?.[itemName]) {
+                    const item = window.itemList[itemName];
+                    for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
+                        const actualValue = item.properties?.[propKey]?.current;
+                        console.log(`  ${slot} ${propKey}: expected=${expectedValue}, actual=${actualValue}, match=${expectedValue === actualValue}`);
+                    }
                 }
             }
         }
