@@ -2747,12 +2747,13 @@ this.selectedJewelSuffix3MaxValue = null;
     calculateEquipmentStats(dropdownId, section) {
       const dropdown = document.getElementById(dropdownId);
       if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
-      
+
       const item = itemList[dropdown.value];
       const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
-      
-      // Only apply stats if level requirement is met
-      if (this.currentLevel >= actualLevel && item.properties) {
+      const meetsStatRequirements = this.doesCharacterMeetStatRequirements(dropdown.value);
+
+      // Only apply stats if level and stat requirements (strength/dexterity) are met
+      if (this.currentLevel >= actualLevel && meetsStatRequirements && item.properties) {
         this.parseItemStats(item, section);
       }
     }
