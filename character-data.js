@@ -274,30 +274,22 @@ window.loadCharacterFromData = function(data) {
             window.itemCorruptions = data.corruptions.data;
         }
 
-        // Restore charms using the new restoreAllCharms method
-        // This waits for the charm inventory to be ready and then restores all charms at once
-        if (data.charms && data.charms.length > 0) {
-            console.log('Starting charm restoration process, need to restore:', data.charms.length, 'charms');
+        // Clear and restore charms - always clear inventory when loading a character
+        // This ensures empty builds have empty charm inventory
+        const clearCharmsWhenReady = (attempt = 1) => {
+            if (window.charmInventory && window.charmInventory.initialized) {
+                const container = document.querySelector('.inventorycontainer');
+                const charmSlots = container?.querySelectorAll('.charm1').length ?? 0;
+                if (container && charmSlots >= 40) {
+                    console.log('Clearing charm inventory before restoring...');
+                    window.charmInventory.clearInventory();
 
-            const restoreCharmsWhenReady = (attempt = 1) => {
-                console.log(`Charm restoration attempt ${attempt}:`, {
-                    hasCharmInventory: !!window.charmInventory,
-                    initialized: window.charmInventory?.initialized,
-                    containerExists: !!document.querySelector('.inventorycontainer'),
-                    containerSlotCount: document.querySelector('.inventorycontainer')?.children.length
-                });
-
-                if (window.charmInventory && window.charmInventory.initialized) {
-                    const container = document.querySelector('.inventorycontainer');
-                    // Count actual charm slots (.charm1 elements), not total children (which include overlays)
-                    const charmSlots = container?.querySelectorAll('.charm1').length ?? 0;
-                    if (container && charmSlots >= 40) {
-                        console.log('Charm inventory ready! Using restoreAllCharms method');
-                        // Use the new method that handles everything internally
+                    // Now restore charms if there are any
+                    if (data.charms && data.charms.length > 0) {
+                        console.log('Starting charm restoration process, need to restore:', data.charms.length, 'charms');
                         if (window.charmInventory.restoreAllCharms) {
                             window.charmInventory.restoreAllCharms(data.charms);
                         } else {
-                            // Fallback to individual charm restoration for compatibility
                             console.warn('restoreAllCharms not available, using individual charm restoration');
                             data.charms.forEach((charm, idx) => {
                                 console.log(`Restoring charm ${idx + 1}/${data.charms.length}:`, charm);
@@ -307,22 +299,22 @@ window.loadCharacterFromData = function(data) {
                             });
                         }
                     } else {
-                        console.warn('Charm inventory grid not ready, retrying...', {
-                            containerExists: !!container,
-                            charmSlots: charmSlots
-                        });
-                        setTimeout(() => restoreCharmsWhenReady(attempt + 1), 200);
+                        console.log('No charms to restore - inventory cleared');
                     }
                 } else {
-                    console.warn('Charm inventory not initialized, retrying...');
-                    setTimeout(() => restoreCharmsWhenReady(attempt + 1), 200);
+                    console.warn('Charm inventory grid not ready, retrying...', {
+                        containerExists: !!container,
+                        charmSlots: charmSlots
+                    });
+                    setTimeout(() => clearCharmsWhenReady(attempt + 1), 200);
                 }
-            };
+            } else {
+                console.warn('Charm inventory not initialized, retrying...');
+                setTimeout(() => clearCharmsWhenReady(attempt + 1), 200);
+            }
+        };
 
-            setTimeout(restoreCharmsWhenReady, 500);
-        } else {
-            console.log('No charms to restore');
-        }
+        setTimeout(clearCharmsWhenReady, 500);
 
         // Restore skills (just set values without triggering validation)
         if (data.skills) {
