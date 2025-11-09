@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Build - PD2 Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Overlock SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/icon.png">
+    <style>
+        .build-viewer-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 20px;
+            border-bottom: 2px solid #00ff88;
+            z-index: 10000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .build-viewer-header h1 {
+            color: #00ff88;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .build-viewer-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .build-viewer-actions button {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .build-viewer-actions button:hover {
+            background: linear-gradient(135deg, #00ff88, #00dd77);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .build-viewer-actions .secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00ff88;
+        }
+
+        .build-viewer-actions .secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .build-loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #00ff88;
+            font-size: 20px;
+        }
+
+        .build-error {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ff4444;
+            font-size: 18px;
+            max-width: 500px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            border: 2px solid #ff4444;
+        }
+
+        .build-stats {
+            position: fixed;
+            top: 100px;
+            left: 20px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            color: #fff;
+            max-width: 250px;
+        }
+
+        .build-stats h3 {
+            color: #00ff88;
+            margin-top: 0;
+        }
+
+        .build-stats p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .build-stats .stat-label {
+            color: #888;
+            display: inline-block;
+            width: 80px;
+        }
+
+        .build-stats .stat-value {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        body {
+            padding-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="build-viewer-header">
+        <h1 id="build-title">Loading build...</h1>
+        <div class="build-viewer-actions">
+            <button onclick="copyShareLink()" class="secondary">📋 Copy Link</button>
+            <button onclick="window.location.href='/'">✨ Create Your Own</button>
+        </div>
+    </div>
+
+    <div id="build-loading" class="build-loading">
+        Loading build data...
+    </div>
+
+    <div id="build-error" class="build-error" style="display: none;">
+        <h2>Build Not Found</h2>
+        <p>This build may have been deleted or the link is incorrect.</p>
+        <button onclick="window.location.href='/'" style="margin-top: 20px; padding: 10px 20px;">Go to Planner</button>
+    </div>
+
+    <div id="build-stats" class="build-stats" style="display: none;">
+        <h3>Build Info</h3>
+        <p><span class="stat-label">Views:</span> <span class="stat-value" id="build-views">0</span></p>
+        <p><span class="stat-label">Created:</span> <span class="stat-value" id="build-created">-</span></p>
+        <p><span class="stat-label">Class:</span> <span class="stat-value" id="build-class">-</span></p>
+        <p><span class="stat-label">Level:</span> <span class="stat-value" id="build-level">-</span></p>
+    </div>
+
+    <!-- Include all the same scripts as index.html -->
+    <script src="items.js"></script>
+    <script src="character.js"></script>
+    <script src="socket.js"></script>
+    <script src="corrupt.js"></script>
+    <script src="itemUpgrade.js"></script>
+    <script src="buffs.js"></script>
+    <script src="inventory.js"></script>
+    <script src="runeword.js"></script>
+    <script src="skills.js"></script>
+    <script src="character-data.js"></script>
+    <script src="auth.js"></script>
+    <script src="auth-ui.js"></script>
+    <script src="main.js"></script>
+
+    <script>
+        // Load and display the build
+        async function loadAndDisplayBuild() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const buildId = urlParams.get('id') || urlParams.get('build');
+
+            if (!buildId) {
+                showError('No build ID provided');
+                return;
+            }
+
+            try {
+                // Wait for auth to be initialized
+                await new Promise(resolve => {
+                    if (window.auth) {
+                        resolve();
+                    } else {
+                        setTimeout(resolve, 500);
+                    }
+                });
+
+                const build = await window.auth.getBuild(buildId);
+
+                if (!build || !build.character_data) {
+                    showError('Build not found');
+                    return;
+                }
+
+                // Update header
+                document.getElementById('build-title').textContent = build.character_name;
+
+                // Update stats
+                document.getElementById('build-views').textContent = build.views || 0;
+                document.getElementById('build-created').textContent = new Date(build.created_at).toLocaleDateString();
+                document.getElementById('build-class').textContent = build.character_data.character?.class || '-';
+                document.getElementById('build-level').textContent = build.character_data.character?.level || '-';
+
+                // Hide loading, show stats
+                document.getElementById('build-loading').style.display = 'none';
+                document.getElementById('build-stats').style.display = 'block';
+
+                // Load the character data
+                if (window.loadCharacterFromData) {
+                    window.loadCharacterFromData(build.character_data);
+                }
+
+                // Update page title
+                document.title = `${build.character_name} - PD2 Planner`;
+
+            } catch (error) {
+                console.error('Error loading build:', error);
+                showError('Failed to load build: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('build-loading').style.display = 'none';
+            document.getElementById('build-error').style.display = 'block';
+            document.getElementById('build-error').querySelector('p').textContent = message;
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(window.location.href);
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+
+        // Start loading when page is ready
+        window.addEventListener('load', () => {
+            setTimeout(loadAndDisplayBuild, 1000);
+        });
+    </script>
+</body>
+</html>
