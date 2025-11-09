@@ -403,15 +403,17 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Skip certain properties that are metadata or handled elsewhere
   const skipProperties = ['javelin', 'speed', 'onehandmax', 'throwmax'];
 
-  for (const [key, prop] of Object.entries(props)) {
+  // Iterate through propertyDisplay keys in order to control display order
+  // This ensures damage lines appear in the correct position, not at the end
+  for (const key of Object.keys(propertyDisplay)) {
     if (skipProperties.includes(key)) continue;
+    if (!(key in props)) continue;
 
-    if (propertyDisplay[key]) {
-      const value = getPropertyValue(prop);
-      const displayText = propertyDisplay[key](value, prop);
-      if (displayText) { // Skip empty strings (for properties that are already handled)
-        html += displayText + '<br>';
-      }
+    const prop = props[key];
+    const value = getPropertyValue(prop);
+    const displayText = propertyDisplay[key](value, prop);
+    if (displayText) { // Skip empty strings (for properties that are already handled)
+      html += displayText + '<br>';
     }
   }
 
