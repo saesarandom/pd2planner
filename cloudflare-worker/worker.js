@@ -5,7 +5,7 @@ import { neon } from '@neondatabase/serverless';
 
 // CORS headers
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://pd2planner.net',
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Max-Age': '86400',
