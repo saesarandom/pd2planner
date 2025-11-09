@@ -42,27 +42,48 @@ async function hashPassword(password) {
 }
 
 // Check and award achievements based on character data
+// Returns list of newly unlocked achievements (not previously earned)
 async function checkAndAwardAchievements(userId, characterData, sql) {
+  const newlyUnlocked = [];
+
   try {
+    // Get existing achievements for this user
+    const existing = await sql`
+      SELECT achievement_id FROM achievements WHERE user_id = ${userId}
+    `;
+    const existingIds = new Set(existing.map(a => a.achievement_id));
+
     // Fresh Start: Reach level 99
-    if (characterData.character?.level === 99) {
+    if (characterData.character?.level === 99 && !existingIds.has('fresh_start')) {
       await sql`
         INSERT INTO achievements (user_id, achievement_id, achievement_data)
         VALUES (${userId}, 'fresh_start', ${JSON.stringify({ level: 99 })})
-        ON CONFLICT (user_id, achievement_id) DO NOTHING
       `;
+      newlyUnlocked.push({
+        id: 'fresh_start',
+        name: 'Fresh Start',
+        description: 'You have unlocked an achievement!'
+      });
     }
 
-    // Under Clouds: Save a build (every save counts)
-    await sql`
-      INSERT INTO achievements (user_id, achievement_id, achievement_data)
-      VALUES (${userId}, 'under_clouds', ${JSON.stringify({ saved: true })})
-      ON CONFLICT (user_id, achievement_id) DO NOTHING
-    `;
+    // Under Clouds: Save a build (first save only)
+    if (!existingIds.has('under_clouds')) {
+      await sql`
+        INSERT INTO achievements (user_id, achievement_id, achievement_data)
+        VALUES (${userId}, 'under_clouds', ${JSON.stringify({ saved: true })})
+      `;
+      newlyUnlocked.push({
+        id: 'under_clouds',
+        name: 'Under Clouds',
+        description: 'You have unlocked an achievement!'
+      });
+    }
   } catch (error) {
     console.error('Error checking achievements:', error);
     // Don't fail the save if achievement check fails
   }
+
+  return newlyUnlocked;
 }
 
 async function handleRequest(request, env) {
@@ -188,12 +209,13 @@ async function handleRequest(request, env) {
         RETURNING id, build_id, character_name, created_at
       `;
 
-      // Silently check and award achievements based on character data
-      await checkAndAwardAchievements(userId, characterData, sql);
+      // Check and award achievements based on character data
+      const newAchievements = await checkAndAwardAchievements(userId, characterData, sql);
 
       return new Response(JSON.stringify({
         success: true,
-        character: result[0]
+        character: result[0],
+        newAchievements: newAchievements
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });

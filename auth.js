@@ -115,7 +115,11 @@ class Auth {
                 throw new Error(data.error || 'Failed to save character');
             }
 
-            return data.character;
+            // Return both character and any newly unlocked achievements
+            return {
+                character: data.character,
+                newAchievements: data.newAchievements || []
+            };
         } catch (error) {
             throw error;
         }
