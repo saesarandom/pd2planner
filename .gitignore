@@ -1,2 +1,6 @@
 node_modules/
 .env
+# Cloudflare Worker source code (keep achievement logic private)
+cloudflare-worker/worker.js
+cloudflare-worker/node_modules/
+cloudflare-worker/.wrangler/
