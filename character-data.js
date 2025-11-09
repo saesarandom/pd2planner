@@ -111,14 +111,24 @@ window.exportCharacterData = function() {
         });
     }
 
-    // Get resistances from displayed values (look in .stat-value child element)
-    const resistances = {
-        fire: parseInt(document.querySelector('#fireresistcontainer .stat-value')?.textContent) || 0,
-        cold: parseInt(document.querySelector('#coldresistcontainer .stat-value')?.textContent) || 0,
-        lightning: parseInt(document.querySelector('#lightresistcontainer .stat-value')?.textContent) || 0,
-        poison: parseInt(document.querySelector('#poisonresistcontainer .stat-value')?.textContent) || 0
-    };
+   // Get resistances from displayed values
+    const fireEl = document.querySelector('#fireresistcontainer.stat-value');
+    const coldEl = document.querySelector('#coldresistcontainer.stat-value');
+    const lightningEl = document.querySelector('#lightresistcontainer.stat-value');
+    const poisonEl = document.querySelector('#poisonresistcontainer.stat-value');
 
+    console.log('Fire element:', fireEl, 'Content:', fireEl?.textContent);
+    console.log('Cold element:', coldEl, 'Content:', coldEl?.textContent);
+    console.log('Lightning element:', lightningEl, 'Content:', lightningEl?.textContent);
+    console.log('Poison element:', poisonEl, 'Content:', poisonEl?.textContent);
+
+    const resistances = {
+        fire: parseInt(fireEl?.textContent) || 0,
+        cold: parseInt(coldEl?.textContent) || 0,
+        lightning: parseInt(lightningEl?.textContent) || 0,
+        poison: parseInt(poisonEl?.textContent) || 0
+    };
+    
     return {
         version: '1.1',
         timestamp: new Date().toISOString(),
