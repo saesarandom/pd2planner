@@ -278,7 +278,9 @@ window.loadCharacterFromData = function(data) {
 
                 if (window.charmInventory && window.charmInventory.initialized) {
                     const container = document.querySelector('.inventorycontainer');
-                    if (container && container.children.length === 40) {
+                    // Count actual charm slots (.charm1 elements), not total children (which include overlays)
+                    const charmSlots = container?.querySelectorAll('.charm1').length ?? 0;
+                    if (container && charmSlots >= 40) {
                         console.log('Charm inventory ready! Using restoreAllCharms method');
                         // Use the new method that handles everything internally
                         if (window.charmInventory.restoreAllCharms) {
@@ -296,7 +298,7 @@ window.loadCharacterFromData = function(data) {
                     } else {
                         console.warn('Charm inventory grid not ready, retrying...', {
                             containerExists: !!container,
-                            slotCount: container?.children.length
+                            charmSlots: charmSlots
                         });
                         setTimeout(() => restoreCharmsWhenReady(attempt + 1), 200);
                     }
