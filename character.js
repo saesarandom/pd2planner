@@ -692,10 +692,14 @@ getDirectLifeManaFromItems() {
 
     if (baseStats) {
       this.currentClass = selectedClass;
-      document.getElementById('str').value = baseStats.str;
-      document.getElementById('dex').value = baseStats.dex;
-      document.getElementById('vit').value = baseStats.vit;
-      document.getElementById('enr').value = baseStats.enr;
+
+      // Only reset stats to base values if NOT loading character data
+      if (!window._isLoadingCharacterData) {
+        document.getElementById('str').value = baseStats.str;
+        document.getElementById('dex').value = baseStats.dex;
+        document.getElementById('vit').value = baseStats.vit;
+        document.getElementById('enr').value = baseStats.enr;
+      }
 
       this.updateTotalStats();
       this.updateStatPointsDisplay();
