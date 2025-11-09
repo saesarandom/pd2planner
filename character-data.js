@@ -86,8 +86,35 @@ window.exportCharacterData = function() {
         }
     }
 
+    // Get charm inventory data
+    const charms = [];
+    if (window.charmInventory?.charmElements) {
+        window.charmInventory.charmElements.forEach((charmData, charmElement) => {
+            if (charmData && charmData.data) {
+                charms.push({
+                    type: charmData.type,
+                    position: charmData.position,
+                    data: charmData.data
+                });
+            }
+        });
+    }
+
+    // Get skills allocation
+    const skills = {};
+    if (window.skillSystem) {
+        // Try to export skill points from the skill system
+        const skillContainers = document.querySelectorAll('[id$="container"]');
+        skillContainers.forEach(container => {
+            const input = container.querySelector('input[type="number"]');
+            if (input && parseInt(input.value) > 0) {
+                skills[container.id] = parseInt(input.value);
+            }
+        });
+    }
+
     return {
-        version: '1.0',
+        version: '1.1',
         timestamp: new Date().toISOString(),
         character: {
             level,
@@ -103,7 +130,9 @@ window.exportCharacterData = function() {
         equipment,
         sockets,
         corruptions,
-        variableStats
+        variableStats,
+        charms,
+        skills
     };
 };
 
@@ -192,22 +221,28 @@ window.loadCharacterFromData = function(data) {
             }
         }
 
-        // Restore variable item stats
-        if (data.variableStats) {
-            for (const [slot, varData] of Object.entries(data.variableStats)) {
-                const itemName = varData.itemName;
-                if (window.itemList?.[itemName]) {
-                    const item = window.itemList[itemName];
-                    if (item.properties) {
-                        for (const [propKey, value] of Object.entries(varData.stats)) {
-                            if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
-                                item.properties[propKey].current = value;
+        // Restore variable item stats (needs to happen after equipment is loaded)
+        setTimeout(() => {
+            if (data.variableStats) {
+                for (const [slot, varData] of Object.entries(data.variableStats)) {
+                    const itemName = varData.itemName;
+                    if (window.itemList?.[itemName]) {
+                        const item = window.itemList[itemName];
+                        if (item.properties) {
+                            for (const [propKey, value] of Object.entries(varData.stats)) {
+                                if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
+                                    item.properties[propKey].current = value;
+                                }
                             }
                         }
                     }
                 }
+                // Force update the display
+                if (window.characterManager) {
+                    window.characterManager.updateTotalStats();
+                }
             }
-        }
+        }, 500);
 
         // Restore socket data
         if (data.sockets?.data && window.unifiedSocketSystem?.importSocketData) {
@@ -217,6 +252,34 @@ window.loadCharacterFromData = function(data) {
         // Restore corruptions
         if (data.corruptions?.data) {
             window.itemCorruptions = data.corruptions.data;
+        }
+
+        // Restore charms
+        if (data.charms && window.charmInventory) {
+            setTimeout(() => {
+                data.charms.forEach(charm => {
+                    if (window.charmInventory.restoreCharm) {
+                        window.charmInventory.restoreCharm(charm);
+                    }
+                });
+            }, 1000);
+        }
+
+        // Restore skills
+        if (data.skills) {
+            setTimeout(() => {
+                for (const [containerId, points] of Object.entries(data.skills)) {
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        const input = container.querySelector('input[type="number"]');
+                        if (input) {
+                            input.value = points;
+                            // Trigger change event to update skill calculations
+                            input.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    }
+                }
+            }, 1000);
         }
 
         // Trigger character manager update
