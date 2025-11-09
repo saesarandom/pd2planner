@@ -1273,7 +1273,7 @@ window.onCharmChange();
 
   // Restore a charm from saved data
   restoreCharm(charmData) {
-    if (!charmData || !charmData.type || !charmData.position) {
+    if (!charmData || !charmData.type || charmData.position === undefined) {
       console.error('Invalid charm data:', charmData);
       return;
     }
@@ -1286,6 +1286,19 @@ window.onCharmChange();
     }
     const randomImage = images[Math.floor(Math.random() * images.length)];
     const backgroundImage = `url('${randomImage}')`;
+
+    console.log('Restoring charm:', {
+      type: charmData.type,
+      position: charmData.position,
+      data: charmData.data,
+      canPlace: this.canPlaceCharm(charmData.position, charmData.type)
+    });
+
+    // Check if we can place the charm at this position
+    if (!this.canPlaceCharm(charmData.position, charmData.type)) {
+      console.warn(`Cannot place ${charmData.type} at position ${charmData.position} - space occupied or invalid`);
+      return;
+    }
 
     // Place the charm at the saved position with saved data
     this.placeCharm(

@@ -93,9 +93,10 @@ window.exportCharacterData = function() {
         if (container) {
             // Check regular charm slots (small charms)
             const slots = container.querySelectorAll('.charm1');
-            slots.forEach((slot, index) => {
+            slots.forEach((slot) => {
                 if (slot.dataset.charmData && slot.style.backgroundImage && !slot.dataset.hasOverlay) {
                     const charmDataStr = slot.dataset.charmData;
+                    const position = parseInt(slot.dataset.index);
                     let charmType = 'small-charm';
                     if (slot.classList.contains('large-charm')) charmType = 'large-charm';
                     if (slot.classList.contains('grand-charm')) charmType = 'grand-charm';
@@ -104,7 +105,7 @@ window.exportCharacterData = function() {
                         const parsedData = JSON.parse(charmDataStr);
                         charms.push({
                             type: charmType,
-                            position: index,
+                            position: position,
                             data: parsedData
                         });
                     } catch (e) {
@@ -132,6 +133,10 @@ window.exportCharacterData = function() {
                     console.error('Failed to parse charm data:', e);
                 }
             });
+
+            if (charms.length > 0) {
+                console.log('Exported charms:', charms.length, charms);
+            }
         }
     }
 
@@ -307,27 +312,42 @@ window.loadCharacterFromData = function(data) {
 
         // Restore charms (wait for charm inventory to be fully initialized)
         if (data.charms && data.charms.length > 0) {
-            const restoreCharmsWhenReady = () => {
+            console.log('Starting charm restoration process, need to restore:', data.charms.length, 'charms');
+
+            const restoreCharmsWhenReady = (attempt = 1) => {
+                console.log(`Charm restoration attempt ${attempt}:`, {
+                    hasCharmInventory: !!window.charmInventory,
+                    initialized: window.charmInventory?.initialized,
+                    containerExists: !!document.querySelector('.inventorycontainer'),
+                    containerSlotCount: document.querySelector('.inventorycontainer')?.children.length
+                });
+
                 if (window.charmInventory && window.charmInventory.initialized) {
                     const container = document.querySelector('.inventorycontainer');
                     if (container && container.children.length === 40) {
-                        console.log('Restoring', data.charms.length, 'charms');
-                        data.charms.forEach(charm => {
+                        console.log('Charm inventory ready! Restoring', data.charms.length, 'charms');
+                        data.charms.forEach((charm, idx) => {
+                            console.log(`Restoring charm ${idx + 1}/${data.charms.length}:`, charm);
                             if (window.charmInventory.restoreCharm) {
                                 window.charmInventory.restoreCharm(charm);
                             }
                         });
                     } else {
-                        console.warn('Charm inventory grid not ready, retrying...');
-                        setTimeout(restoreCharmsWhenReady, 200);
+                        console.warn('Charm inventory grid not ready, retrying...', {
+                            containerExists: !!container,
+                            slotCount: container?.children.length
+                        });
+                        setTimeout(() => restoreCharmsWhenReady(attempt + 1), 200);
                     }
                 } else {
                     console.warn('Charm inventory not initialized, retrying...');
-                    setTimeout(restoreCharmsWhenReady, 200);
+                    setTimeout(() => restoreCharmsWhenReady(attempt + 1), 200);
                 }
             };
 
             setTimeout(restoreCharmsWhenReady, 500);
+        } else {
+            console.log('No charms to restore');
         }
 
         // Restore skills (just set values without triggering validation)
