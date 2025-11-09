@@ -4127,30 +4127,28 @@ function updateWeaponDamageDisplay() {
   const currentItemData = itemList[currentItem];
 
   if (currentItemData) {
-    // Get description - for dynamic items always regenerate to reflect current property values
-    let description;
     const isDynamic = currentItemData.baseType;
+    let description;
 
+    // For dynamic items, we need to get the base type from a generated description
+    // But first we need to know if it's one-handed or two-handed to calculate damage
+    const isTwoHanded = currentItemData.properties.twohandmin !== undefined;
+    const isJavelin = currentItemData.properties.javelin === 1;
+
+    // Generate a temporary description just to extract the base type
     if (isDynamic) {
-      // Dynamic items (with baseType) must always regenerate to show current values
-      description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+      const tempDesc = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+      description = tempDesc;
     } else {
-      // Static items can use cached description
       description = currentItemData.description;
     }
 
     if (!description) return;
 
     const baseType = description.split("<br>")[1];
-    const isTwoHanded = currentItemData.properties.twohandmin !== undefined;
-    const isJavelin = currentItemData.properties.javelin === 1;
 
-    // Calculate new min/max damage values considering all factors:
-    // 1. Base weapon damage
-    // 2. Item's own enhanced damage
-    // 3. Socket enhanced damage
-    // 4. Corruption enhanced damage
-    // 5. Ethereal bonus if applicable
+    // Calculate new min/max damage values FIRST (before regenerating description)
+    // This ensures the damage properties exist when generateItemDescription is called
     if (isTwoHanded) {
       currentItemData.properties.twohandmin = calculateItemDamage(
         currentItemData,
@@ -4204,6 +4202,13 @@ function updateWeaponDamageDisplay() {
           true
         );
       }
+    }
+
+    // Now regenerate description for dynamic items after damage is calculated
+    // This ensures damage lines are included in the generated description
+    if (isDynamic) {
+      description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
+      currentItemData.description = description;
     }
 
     // Update the tooltip/description

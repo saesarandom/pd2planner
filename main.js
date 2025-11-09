@@ -497,6 +497,11 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
       window.unifiedSocketSystem.updateAll();
     }
+
+    // Update weapon damage display if this is a weapon stat change
+    if (dropdownId === 'weapons-dropdown' && typeof window.updateWeaponDamageDisplay === 'function') {
+      window.updateWeaponDamageDisplay();
+    }
   }
 }
 
