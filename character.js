@@ -212,7 +212,7 @@ class CharacterManager {
 
   }
 
- setupAchievementWatcher() {
+  setupAchievementWatcher() {
     // Watch socket containers for changes and check achievements when sockets update
     const observer = new MutationObserver(() => {
       // Add small delay to let resistances finish calculating
