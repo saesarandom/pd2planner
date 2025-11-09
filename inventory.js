@@ -966,8 +966,8 @@ createManualCharm() {
     displayText: `${charmName}\n${stats.join('\n')}`
   });
 
-  // Create clean hover text (just text, no JSON, no newlines)
-  const hoverText = `${charmName} ${stats.join(' ')}`;
+  // Create clean hover text (charm name on first line, then each stat on its own line)
+  const hoverText = stats.length > 0 ? `${charmName}\n${stats.join('\n')}` : charmName;
 
   const backgroundImage = `url('${this.getRandomCharmImage(this.selectedCharmType)}')`;
 
@@ -1410,9 +1410,9 @@ removeCharm(position) {
   try {
     const data = JSON.parse(charmData);
     displayText = data.name || '';
-    // Add stats if available
-    if (data.stats && Array.isArray(data.stats)) {
-      displayText += ' ' + data.stats.join(' ');
+    // Add stats if available - each on a new line
+    if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
+      displayText += '\n' + data.stats.join('\n');
     }
   } catch (err) {
     // If not JSON, just show as-is
@@ -1510,8 +1510,11 @@ fixCharmTitles() {
       let displayText = '';
       try {
         const data = JSON.parse(charmDataStr);
-        // Use just the name, or combine name and first stat for hover
-        displayText = data.name || charmDataStr;
+        displayText = data.name || '';
+        // Add stats on separate lines if available
+        if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
+          displayText += '\n' + data.stats.join('\n');
+        }
       } catch (e) {
         // If parsing fails, don't show anything
         displayText = '';
@@ -1527,8 +1530,11 @@ fixCharmTitles() {
       let displayText = '';
       try {
         const data = JSON.parse(charmDataStr);
-        // Use just the name, or combine name and first stat for hover
-        displayText = data.name || charmDataStr;
+        displayText = data.name || '';
+        // Add stats on separate lines if available
+        if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
+          displayText += '\n' + data.stats.join('\n');
+        }
       } catch (e) {
         // If parsing fails, don't show anything
         displayText = '';
