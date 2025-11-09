@@ -264,7 +264,7 @@ async function showBuildsView() {
     document.querySelectorAll('.build-share').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const buildId = e.target.dataset.buildId;
-            const shareUrl = `https://pd2planner.net/build.html?id=${buildId}`;
+            const shareUrl = `https://pd2planner.net/?build=${buildId}`;
             navigator.clipboard.writeText(shareUrl);
             btn.textContent = 'Copied!';
             setTimeout(() => btn.textContent = 'Share', 2000);

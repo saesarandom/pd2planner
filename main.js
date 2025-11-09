@@ -696,7 +696,7 @@ async function saveCurrentBuild() {
 
     const result = await window.auth.saveCharacter(buildName.trim(), characterData);
 
-    alert(`Build saved successfully!\n\nShare URL: https://pd2planner.net/build.html?id=${result.build_id}\n\nClick "Share" in My Builds to copy the link.`);
+    alert(`Build saved successfully!\n\nShare URL: https://pd2planner.net/?build=${result.build_id}\n\nClick "Share" in My Builds to copy the link.`);
 
     // Unlock achievement for first save
     const characters = await window.auth.getCharacters();
