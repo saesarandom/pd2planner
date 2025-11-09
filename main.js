@@ -703,13 +703,14 @@ async function saveCurrentBuild() {
 
     const result = await window.auth.saveCharacter(buildName.trim(), characterData);
 
-    alert(`Build saved successfully!\n\nShare URL: https://pd2planner.net/?build=${result.build_id}\n\nClick "Share" in My Builds to copy the link.`);
-
-    // Unlock achievement for first save
-    const characters = await window.auth.getCharacters();
-    if (characters.length === 1) {
-      await window.auth.unlockAchievement('first_save', { buildName: buildName.trim() });
+    // Show alerts for newly unlocked achievements
+    if (result.newAchievements && result.newAchievements.length > 0) {
+      result.newAchievements.forEach(achievement => {
+        alert(`🏆 Achievement Unlocked!\n\n${achievement.name}\n\n${achievement.description}`);
+      });
     }
+
+    alert(`Build saved successfully!\n\nShare URL: https://pd2planner.net/?build=${result.character.build_id}\n\nClick "Share" in My Builds to copy the link.`);
   } catch (error) {
     console.error('Failed to save build:', error);
     alert('Failed to save build: ' + error.message);

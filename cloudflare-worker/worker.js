@@ -11,6 +11,16 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 };
 
+// Generate random 32-char token for sessions
+function generateToken() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let token = '';
+  for (let i = 0; i < 32; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return token;
+}
+
 // Generate random 6-char hash
 function generateHash() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -29,6 +39,51 @@ async function hashPassword(password) {
   return Array.from(new Uint8Array(hash))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
+}
+
+// Check and award achievements based on character data
+// Returns list of newly unlocked achievements (not previously earned)
+async function checkAndAwardAchievements(userId, characterData, sql) {
+  const newlyUnlocked = [];
+
+  try {
+    // Get existing achievements for this user
+    const existing = await sql`
+      SELECT achievement_id FROM achievements WHERE user_id = ${userId}
+    `;
+    const existingIds = new Set(existing.map(a => a.achievement_id));
+
+    // Fresh Start: Reach level 99
+    if (characterData.character?.level === 99 && !existingIds.has('fresh_start')) {
+      await sql`
+        INSERT INTO achievements (user_id, achievement_id, achievement_data)
+        VALUES (${userId}, 'fresh_start', ${JSON.stringify({ level: 99 })})
+      `;
+      newlyUnlocked.push({
+        id: 'fresh_start',
+        name: 'Fresh Start',
+        description: 'You have unlocked an achievement!'
+      });
+    }
+
+    // Under Clouds: Save a build (first save only)
+    if (!existingIds.has('under_clouds')) {
+      await sql`
+        INSERT INTO achievements (user_id, achievement_id, achievement_data)
+        VALUES (${userId}, 'under_clouds', ${JSON.stringify({ saved: true })})
+      `;
+      newlyUnlocked.push({
+        id: 'under_clouds',
+        name: 'Under Clouds',
+        description: 'You have unlocked an achievement!'
+      });
+    }
+  } catch (error) {
+    console.error('Error checking achievements:', error);
+    // Don't fail the save if achievement check fails
+  }
+
+  return newlyUnlocked;
 }
 
 async function handleRequest(request, env) {
@@ -112,9 +167,24 @@ async function handleRequest(request, env) {
         });
       }
 
+      // Generate session token
+      const token = generateToken();
+      const userId = result[0].id;
+
+      // Store token (replace any existing token for this user)
+      await sql`
+        DELETE FROM session_tokens WHERE user_id = ${userId}
+      `;
+
+      await sql`
+        INSERT INTO session_tokens (user_id, token, expires_at)
+        VALUES (${userId}, ${token}, NOW() + INTERVAL '30 days')
+      `;
+
       return new Response(JSON.stringify({
         success: true,
-        user: result[0]
+        user: result[0],
+        token: token
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -139,9 +209,13 @@ async function handleRequest(request, env) {
         RETURNING id, build_id, character_name, created_at
       `;
 
+      // Check and award achievements based on character data
+      const newAchievements = await checkAndAwardAchievements(userId, characterData, sql);
+
       return new Response(JSON.stringify({
         success: true,
-        character: result[0]
+        character: result[0],
+        newAchievements: newAchievements
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -264,9 +338,29 @@ async function handleRequest(request, env) {
       });
     }
 
-    // Unlock achievement
+    // Unlock achievement (requires valid token)
     if (path === '/api/achievements/unlock' && request.method === 'POST') {
-      const { userId, achievementId, achievementData } = await request.json();
+      const { userId, token, achievementId, achievementData } = await request.json();
+
+      if (!token) {
+        return new Response(JSON.stringify({ error: 'Token required' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Validate token
+      const tokenResult = await sql`
+        SELECT user_id FROM session_tokens
+        WHERE user_id = ${userId} AND token = ${token} AND expires_at > NOW()
+      `;
+
+      if (tokenResult.length === 0) {
+        return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
 
       try {
         await sql`
