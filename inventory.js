@@ -49,7 +49,16 @@ class CharmInventory {
       document.body.appendChild(container);
     }
 
-    container.innerHTML = '';
+    // Only clear if container is empty or doesn't have the right structure
+    // This prevents clearing charms that were already placed
+    if (container.children.length !== 40) {
+      container.innerHTML = '';
+    }
+
+    // If grid already exists with 40 slots, don't recreate it
+    if (container.children.length === 40) {
+      return;
+    }
 
     // Seamless grid without gaps
     container.style.cssText = `

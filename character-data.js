@@ -182,6 +182,9 @@ window.loadCharacterFromData = function(data) {
     }
 
     try {
+        // Set loading flag to prevent class change from resetting stats
+        window._isLoadingCharacterData = true;
+
         // Set basic character info
         const lvlInput = document.getElementById('lvlValue');
         if (lvlInput) {
@@ -193,70 +196,48 @@ window.loadCharacterFromData = function(data) {
         const classSelect = document.getElementById('selectClass');
         if (classSelect) {
             classSelect.value = data.character.class || 'Amazon';
-            // Trigger change event to update class-specific stats
-            classSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            // Update character manager class but don't reset stats
+            if (window.characterManager) {
+                window.characterManager.currentClass = data.character.class || 'Amazon';
+            }
         }
 
-        // Set base stats
+        // Set base stats (without triggering recalculations yet)
         const strInput = document.getElementById('str');
         const dexInput = document.getElementById('dex');
         const vitInput = document.getElementById('vit');
         const enrInput = document.getElementById('enr');
 
-        if (strInput) {
-            strInput.value = data.character.stats.str || 0;
-            strInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        if (dexInput) {
-            dexInput.value = data.character.stats.dex || 0;
-            dexInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        if (vitInput) {
-            vitInput.value = data.character.stats.vit || 0;
-            vitInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        if (enrInput) {
-            enrInput.value = data.character.stats.enr || 0;
-            enrInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
+        if (strInput) strInput.value = data.character.stats.str || 0;
+        if (dexInput) dexInput.value = data.character.stats.dex || 0;
+        if (vitInput) vitInput.value = data.character.stats.vit || 0;
+        if (enrInput) enrInput.value = data.character.stats.enr || 0;
 
         // Set game mode
         const modeDropdown = document.querySelector('.modedropdown');
         if (modeDropdown && data.mode) modeDropdown.value = data.mode;
 
-        // Set Anya bonuses
+        // Set Anya bonuses (just set values, recalculation happens at end)
         if (data.anya) {
             const anyaN = document.querySelector('input[value="anya-n"]');
             const anyaNM = document.querySelector('input[value="anya-nm"]');
             const anyaH = document.querySelector('input[value="anya-h"]');
 
-            if (anyaN) {
-                anyaN.checked = data.anya.n;
-                anyaN.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            if (anyaNM) {
-                anyaNM.checked = data.anya.nm;
-                anyaNM.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            if (anyaH) {
-                anyaH.checked = data.anya.h;
-                anyaH.dispatchEvent(new Event('change', { bubbles: true }));
-            }
+            if (anyaN) anyaN.checked = data.anya.n;
+            if (anyaNM) anyaNM.checked = data.anya.nm;
+            if (anyaH) anyaH.checked = data.anya.h;
+
+            // Update the global checkbox resistance bonus
+            window.checkboxResistBonus = (data.anya.n ? 10 : 0) + (data.anya.nm ? 10 : 0) + (data.anya.h ? 10 : 0);
         }
 
-        // Set mercenary info
+        // Set mercenary info (just set values, recalculation happens at end)
         if (data.mercenary) {
             const mercClassSelect = document.getElementById('mercclass');
             const mercLevelInput = document.getElementById('merclvlValue');
 
-            if (mercClassSelect) {
-                mercClassSelect.value = data.mercenary.class || 'No Mercenary';
-                mercClassSelect.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            if (mercLevelInput) {
-                mercLevelInput.value = data.mercenary.level || 1;
-                mercLevelInput.dispatchEvent(new Event('input', { bubbles: true }));
-            }
+            if (mercClassSelect) mercClassSelect.value = data.mercenary.class || 'No Mercenary';
+            if (mercLevelInput) mercLevelInput.value = data.mercenary.level || 1;
         }
 
         // Set equipment
@@ -335,16 +316,19 @@ window.loadCharacterFromData = function(data) {
             }, 1000);
         }
 
-        // Restore skills
+        // Restore skills (just set values without triggering validation)
         if (data.skills) {
             setTimeout(() => {
                 for (const [inputId, points] of Object.entries(data.skills)) {
                     const input = document.getElementById(inputId);
                     if (input && input.tagName === 'INPUT') {
                         input.value = points;
-                        // Trigger change event to update skill calculations
-                        input.dispatchEvent(new Event('change', { bubbles: true }));
                     }
+                }
+
+                // Update skill display after skills are loaded
+                if (window.skillSystem) {
+                    window.skillSystem.updatePointsDisplay();
                 }
 
                 // Final stats recalculation after all skills are loaded
@@ -355,10 +339,15 @@ window.loadCharacterFromData = function(data) {
             }, 1000);
         }
 
-        // Trigger character manager update immediately
+        // Trigger character manager update immediately after all values are set
         if (window.characterManager) {
             window.characterManager.updateTotalStats();
             window.characterManager.calculateLifeAndMana();
+        }
+
+        // Update socket system to show all bonuses
+        if (window.unifiedSocketSystem?.updateAll) {
+            window.unifiedSocketSystem.updateAll();
         }
 
         // Final recalculation after all async operations (charms, skills, etc.)
@@ -367,6 +356,9 @@ window.loadCharacterFromData = function(data) {
                 window.characterManager.updateTotalStats();
                 window.characterManager.calculateLifeAndMana();
             }
+
+            // Clear loading flag
+            window._isLoadingCharacterData = false;
         }, 1500);
 
         console.log('Character loaded successfully!');
