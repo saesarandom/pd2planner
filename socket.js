@@ -2781,14 +2781,14 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       });
     });
-    
-    
-    // Add checkbox bonus ONCE at the end
+
+
+    // Add checkbox bonus ONCE at the end (Anya quest - does NOT apply to curse resistance)
     this.stats.fireResist += window.checkboxResistBonus || 0;
     this.stats.coldResist += window.checkboxResistBonus || 0;
     this.stats.lightResist += window.checkboxResistBonus || 0;
     this.stats.poisonResist += window.checkboxResistBonus || 0;
-    this.stats.curseResist += window.checkboxResistBonus || 0;
+    // Curse resistance is NOT affected by Anya checkbox bonus
   }
 
     parseItemStats(item, section) {
@@ -3026,7 +3026,7 @@ if (defMatch) {
       this.stats.coldResist += value;
       this.stats.lightResist += value;
       this.stats.poisonResist += value;
-      this.stats.curseResist += value;
+      // Curse resistance is NOT included in "All Resistances"
       return;
     }
 
