@@ -72,23 +72,43 @@ window.exportCharacterData = function() {
 
     // Get variable item stats (for items with random ranges)
     const variableStats = {};
+    console.log('===== EXPORTING VARIABLE STATS =====');
+    console.log('Equipment to check:', equipment);
     for (const [slot, itemName] of Object.entries(equipment)) {
-        if (itemName && window.itemList?.[itemName]) {
-            const item = window.itemList[itemName];
-            if (item.properties) {
-                const varStats = {};
-                for (const [propKey, propValue] of Object.entries(item.properties)) {
-                    if (typeof propValue === 'object' && propValue !== null && 'current' in propValue) {
-                        varStats[propKey] = propValue.current;
+        console.log(`Checking slot "${slot}" with item "${itemName}"`);
+        if (itemName) {
+            if (window.itemList?.[itemName]) {
+                const item = window.itemList[itemName];
+                console.log(`  Item found in itemList:`, item);
+                if (item.properties) {
+                    const varStats = {};
+                    console.log(`  Item has properties:`, item.properties);
+                    for (const [propKey, propValue] of Object.entries(item.properties)) {
+                        console.log(`    Checking property "${propKey}":`, propValue, `is object? ${typeof propValue === 'object'}, has current? ${'current' in propValue}`);
+                        if (typeof propValue === 'object' && propValue !== null && 'current' in propValue) {
+                            varStats[propKey] = propValue.current;
+                            console.log(`      -> Exporting ${propKey}=${propValue.current}`);
+                        }
                     }
+                    if (Object.keys(varStats).length > 0) {
+                        variableStats[slot] = { itemName, stats: varStats };
+                        console.log(`  Result for ${slot}:`, variableStats[slot]);
+                    } else {
+                        console.log(`  No variable stats found for ${slot}`);
+                    }
+                } else {
+                    console.log(`  Item has no properties!`);
                 }
-                if (Object.keys(varStats).length > 0) {
-                    variableStats[slot] = { itemName, stats: varStats };
-                    console.log(`Exported variable stats for ${slot}:`, variableStats[slot]);
-                }
+            } else {
+                console.log(`  Item "${itemName}" NOT found in itemList`);
+                console.log(`  Available items (sample):`, Object.keys(window.itemList || {}).slice(0, 10));
             }
+        } else {
+            console.log(`  No item equipped in ${slot}`);
         }
     }
+    console.log('===== EXPORT COMPLETE =====');
+    console.log('Final variableStats:', variableStats);
 
     // Get charm inventory data using the new getAllCharms method
     // This is simpler and more reliable than parsing the DOM manually
