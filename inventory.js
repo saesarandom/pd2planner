@@ -1211,9 +1211,9 @@ placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
     mainSlot.style.backgroundImage = backgroundImage;
     mainSlot.classList.add(charmType);
     mainSlot.dataset.charmData = charmData;
-    // Set ONLY the title attribute for native browser hover tooltip
-    mainSlot.title = displayText;
-    // Remove any other hover attributes that might show alt text
+    // Don't set title - we use custom tooltip via showTooltip() instead
+    // Remove any hover attributes
+    mainSlot.removeAttribute('title');
     mainSlot.removeAttribute('data-title');
     mainSlot.removeAttribute('data-tooltip');
     mainSlot.removeAttribute('alt');
@@ -1240,9 +1240,9 @@ placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
     charmOverlay.classList.add('charm-overlay', charmType);
     charmOverlay.dataset.charmData = charmData;
     charmOverlay.dataset.position = position;
-    // Set ONLY the title attribute for native browser hover tooltip
-    charmOverlay.title = displayText;
-    // Remove any other hover attributes that might show alt text
+    // Don't set title - we use custom tooltip via showTooltip() instead
+    // Remove any hover attributes
+    charmOverlay.removeAttribute('title');
     charmOverlay.removeAttribute('data-title');
     charmOverlay.removeAttribute('data-tooltip');
     charmOverlay.removeAttribute('alt');
@@ -1509,50 +1509,20 @@ fixCharmTitles() {
 
   // Fix small charms in regular slots
   container.querySelectorAll('.charm1[data-charm-data]').forEach(slot => {
-    if (!slot.title || slot.title.includes('{') || slot.title.includes('name:')) {
-      const charmDataStr = slot.dataset.charmData;
-      let displayText = '';
-      try {
-        const data = JSON.parse(charmDataStr);
-        displayText = data.name || '';
-        // Add stats on separate lines if available
-        if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
-          displayText += '\n' + data.stats.join('\n');
-        }
-      } catch (e) {
-        // If parsing fails, don't show anything
-        displayText = '';
-      }
-      slot.title = displayText;
-      // Remove any other attributes that might show alt text
-      slot.removeAttribute('data-title');
-      slot.removeAttribute('data-tooltip');
-      slot.removeAttribute('alt');
-    }
+    // Remove all tooltip attributes since we use custom tooltip via showTooltip()
+    slot.removeAttribute('title');
+    slot.removeAttribute('data-title');
+    slot.removeAttribute('data-tooltip');
+    slot.removeAttribute('alt');
   });
 
   // Fix large/grand charms in overlay elements
   container.querySelectorAll('.charm-overlay[data-charm-data]').forEach(overlay => {
-    if (!overlay.title || overlay.title.includes('{') || overlay.title.includes('name:')) {
-      const charmDataStr = overlay.dataset.charmData;
-      let displayText = '';
-      try {
-        const data = JSON.parse(charmDataStr);
-        displayText = data.name || '';
-        // Add stats on separate lines if available
-        if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
-          displayText += '\n' + data.stats.join('\n');
-        }
-      } catch (e) {
-        // If parsing fails, don't show anything
-        displayText = '';
-      }
-      overlay.title = displayText;
-      // Remove any other attributes that might show alt text
-      overlay.removeAttribute('data-title');
-      overlay.removeAttribute('data-tooltip');
-      overlay.removeAttribute('alt');
-    }
+    // Remove all tooltip attributes since we use custom tooltip via showTooltip()
+    overlay.removeAttribute('title');
+    overlay.removeAttribute('data-title');
+    overlay.removeAttribute('data-tooltip');
+    overlay.removeAttribute('alt');
   });
 }
 
