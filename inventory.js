@@ -1183,6 +1183,16 @@ placeCharm(position, charmType, backgroundImage, charmData) {
   const container = document.querySelector('.inventorycontainer');
   const mainSlot = container.children[position];
 
+  // Parse charm data to extract display text for tooltip
+  let displayText = '';
+  try {
+    const data = JSON.parse(charmData);
+    displayText = data.displayText || data.name || '';
+  } catch (e) {
+    // If it's old format or plain text, use as-is
+    displayText = charmData;
+  }
+
   // Calculate position
   const row = Math.floor(position / 10);
   const col = position % 10;
@@ -1193,6 +1203,7 @@ placeCharm(position, charmType, backgroundImage, charmData) {
     mainSlot.style.backgroundImage = backgroundImage;
     mainSlot.classList.add(charmType);
     mainSlot.dataset.charmData = charmData;
+    mainSlot.title = displayText;
   } else {
     // Large/Grand charm - create overlay element
     const charmOverlay = document.createElement('div');
@@ -1216,6 +1227,7 @@ placeCharm(position, charmType, backgroundImage, charmData) {
     charmOverlay.classList.add('charm-overlay', charmType);
     charmOverlay.dataset.charmData = charmData;
     charmOverlay.dataset.position = position;
+    charmOverlay.title = displayText;
 
     // Add to container
     container.appendChild(charmOverlay);
