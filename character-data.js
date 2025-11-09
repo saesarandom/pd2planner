@@ -202,6 +202,29 @@ window.loadCharacterFromData = function(data) {
             if (mercLevelInput) mercLevelInput.value = data.mercenary.level || 1;
         }
 
+        // IMPORTANT: Restore variable item stats BEFORE setting equipment
+        // This ensures that when equipment dropdowns trigger regeneration of descriptions,
+        // the saved variable stat values are already in place
+        if (data.variableStats) {
+            console.log('Pre-restoring variable stats before equipment changes:', data.variableStats);
+            for (const [slot, varData] of Object.entries(data.variableStats)) {
+                const itemName = varData.itemName;
+                console.log(`Pre-restoring variable stats for ${slot} (${itemName}):`, varData.stats);
+                if (window.itemList?.[itemName]) {
+                    const item = window.itemList[itemName];
+                    if (item.properties) {
+                        for (const [propKey, value] of Object.entries(varData.stats)) {
+                            if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
+                                console.log(`  Setting ${propKey} to ${value} (was ${item.properties[propKey].current})`);
+                                item.properties[propKey].current = value;
+                            }
+                        }
+                    }
+                }
+            }
+            console.log('Pre-restoration of variable stats complete');
+        }
+
         // Set equipment
         if (data.equipment) {
             const equipmentMap = {
@@ -233,33 +256,6 @@ window.loadCharacterFromData = function(data) {
                 }
             }
         }
-
-        // Restore variable item stats (needs to happen after equipment is loaded)
-        setTimeout(() => {
-            if (data.variableStats) {
-                console.log('Restoring variable stats:', data.variableStats);
-                for (const [slot, varData] of Object.entries(data.variableStats)) {
-                    const itemName = varData.itemName;
-                    console.log(`Restoring variable stats for ${slot} (${itemName}):`, varData.stats);
-                    if (window.itemList?.[itemName]) {
-                        const item = window.itemList[itemName];
-                        if (item.properties) {
-                            for (const [propKey, value] of Object.entries(varData.stats)) {
-                                if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
-                                    console.log(`  Setting ${propKey} to ${value} (was ${item.properties[propKey].current})`);
-                                    item.properties[propKey].current = value;
-                                }
-                            }
-                        }
-                    }
-                }
-                console.log('Variable stats restoration complete');
-                // Force update the display
-                if (window.characterManager) {
-                    window.characterManager.updateTotalStats();
-                }
-            }
-        }, 500);
 
         // Restore socket data
         if (data.sockets?.data && window.unifiedSocketSystem?.importSocketData) {
