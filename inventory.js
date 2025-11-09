@@ -1205,7 +1205,9 @@ placeCharm(position, charmType, backgroundImage, charmData) {
     mainSlot.style.backgroundImage = backgroundImage;
     mainSlot.classList.add(charmType);
     mainSlot.dataset.charmData = charmData;
+    // Set title AND data-title for maximum compatibility
     mainSlot.title = displayText;
+    mainSlot.setAttribute('data-title', displayText);
     // Remove any previous data attributes that might show in tooltips
     mainSlot.removeAttribute('data-tooltip');
   } else {
@@ -1231,7 +1233,9 @@ placeCharm(position, charmType, backgroundImage, charmData) {
     charmOverlay.classList.add('charm-overlay', charmType);
     charmOverlay.dataset.charmData = charmData;
     charmOverlay.dataset.position = position;
+    // Set title AND data-title for maximum compatibility
     charmOverlay.title = displayText;
+    charmOverlay.setAttribute('data-title', displayText);
 
     // Add to container
     container.appendChild(charmOverlay);
