@@ -184,10 +184,18 @@ window.loadCharacterFromData = function(data) {
     try {
         // Set basic character info
         const lvlInput = document.getElementById('lvlValue');
-        if (lvlInput) lvlInput.value = data.character.level || 1;
+        if (lvlInput) {
+            lvlInput.value = data.character.level || 1;
+            // Trigger input event to update stats calculations
+            lvlInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
 
         const classSelect = document.getElementById('selectClass');
-        if (classSelect) classSelect.value = data.character.class || 'Amazon';
+        if (classSelect) {
+            classSelect.value = data.character.class || 'Amazon';
+            // Trigger change event to update class-specific stats
+            classSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
 
         // Set base stats
         const strInput = document.getElementById('str');
@@ -195,10 +203,22 @@ window.loadCharacterFromData = function(data) {
         const vitInput = document.getElementById('vit');
         const enrInput = document.getElementById('enr');
 
-        if (strInput) strInput.value = data.character.stats.str || 0;
-        if (dexInput) dexInput.value = data.character.stats.dex || 0;
-        if (vitInput) vitInput.value = data.character.stats.vit || 0;
-        if (enrInput) enrInput.value = data.character.stats.enr || 0;
+        if (strInput) {
+            strInput.value = data.character.stats.str || 0;
+            strInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (dexInput) {
+            dexInput.value = data.character.stats.dex || 0;
+            dexInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (vitInput) {
+            vitInput.value = data.character.stats.vit || 0;
+            vitInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (enrInput) {
+            enrInput.value = data.character.stats.enr || 0;
+            enrInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
 
         // Set game mode
         const modeDropdown = document.querySelector('.modedropdown');
@@ -210,9 +230,18 @@ window.loadCharacterFromData = function(data) {
             const anyaNM = document.querySelector('input[value="anya-nm"]');
             const anyaH = document.querySelector('input[value="anya-h"]');
 
-            if (anyaN) anyaN.checked = data.anya.n;
-            if (anyaNM) anyaNM.checked = data.anya.nm;
-            if (anyaH) anyaH.checked = data.anya.h;
+            if (anyaN) {
+                anyaN.checked = data.anya.n;
+                anyaN.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            if (anyaNM) {
+                anyaNM.checked = data.anya.nm;
+                anyaNM.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            if (anyaH) {
+                anyaH.checked = data.anya.h;
+                anyaH.dispatchEvent(new Event('change', { bubbles: true }));
+            }
         }
 
         // Set mercenary info
@@ -220,8 +249,14 @@ window.loadCharacterFromData = function(data) {
             const mercClassSelect = document.getElementById('mercclass');
             const mercLevelInput = document.getElementById('merclvlValue');
 
-            if (mercClassSelect) mercClassSelect.value = data.mercenary.class || 'No Mercenary';
-            if (mercLevelInput) mercLevelInput.value = data.mercenary.level || 1;
+            if (mercClassSelect) {
+                mercClassSelect.value = data.mercenary.class || 'No Mercenary';
+                mercClassSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            if (mercLevelInput) {
+                mercLevelInput.value = data.mercenary.level || 1;
+                mercLevelInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
         }
 
         // Set equipment
@@ -311,15 +346,28 @@ window.loadCharacterFromData = function(data) {
                         input.dispatchEvent(new Event('change', { bubbles: true }));
                     }
                 }
+
+                // Final stats recalculation after all skills are loaded
+                if (window.characterManager) {
+                    window.characterManager.updateTotalStats();
+                    window.characterManager.calculateLifeAndMana();
+                }
             }, 1000);
         }
 
-        // Trigger character manager update
+        // Trigger character manager update immediately
         if (window.characterManager) {
-            window.characterManager.handleClassChange();
             window.characterManager.updateTotalStats();
             window.characterManager.calculateLifeAndMana();
         }
+
+        // Final recalculation after all async operations (charms, skills, etc.)
+        setTimeout(() => {
+            if (window.characterManager) {
+                window.characterManager.updateTotalStats();
+                window.characterManager.calculateLifeAndMana();
+            }
+        }, 1500);
 
         console.log('Character loaded successfully!');
 
