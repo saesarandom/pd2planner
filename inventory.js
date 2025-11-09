@@ -957,7 +957,12 @@ createManualCharm() {
     if (suffixStatLine) stats.push(suffixStatLine);
   }
 
-  const charmData = `${charmName}\n${stats.join('\n')}`;
+  // Store charm data as JSON object instead of formatted string
+  const charmData = JSON.stringify({
+    name: charmName,
+    stats: stats,
+    displayText: `${charmName}\n${stats.join('\n')}`
+  });
   const backgroundImage = `url('${this.getRandomCharmImage(this.selectedCharmType)}')`;
 
   this.placeCharm(position, this.selectedCharmType, backgroundImage, charmData);
