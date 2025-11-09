@@ -4330,24 +4330,37 @@ const statsArray = [
   exportSocketData() {
     const socketData = {};
 
+    console.log('Starting socket export...');
+
     // Iterate through all socket containers on the page
     const containers = document.querySelectorAll('.socket-container');
+    console.log('Found socket containers:', containers.length);
+
     containers.forEach(container => {
       const section = container.dataset.section;
+      console.log(`Processing section: ${section}`);
       if (!section) return;
 
       socketData[section] = [];
 
+      // Get all socket slots (both filled and empty to understand structure)
+      const allSlots = container.querySelectorAll('.socket-slot');
+      console.log(`  Total slots in ${section}:`, allSlots.length);
+
       // Get all filled sockets in this container
       const filledSockets = container.querySelectorAll('.socket-slot.filled');
-      filledSockets.forEach(socket => {
-        socketData[section].push({
+      console.log(`  Filled slots in ${section}:`, filledSockets.length);
+
+      filledSockets.forEach((socket, idx) => {
+        const socketInfo = {
           itemKey: socket.dataset.itemKey || '',
           category: socket.dataset.category || '',
           itemName: socket.dataset.itemName || '',
           stats: socket.dataset.stats || '',
           levelReq: socket.dataset.levelReq || '1'
-        });
+        };
+        console.log(`    Socket ${idx}:`, socketInfo);
+        socketData[section].push(socketInfo);
       });
     });
 
