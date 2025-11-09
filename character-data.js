@@ -71,44 +71,25 @@ window.exportCharacterData = function() {
     }
 
     // Get variable item stats (for items with random ranges)
+    // Use global itemList (from items.js), not window.itemList
     const variableStats = {};
-    console.log('===== EXPORTING VARIABLE STATS =====');
-    console.log('Equipment to check:', equipment);
     for (const [slot, itemName] of Object.entries(equipment)) {
-        console.log(`Checking slot "${slot}" with item "${itemName}"`);
-        if (itemName) {
-            if (window.itemList?.[itemName]) {
-                const item = window.itemList[itemName];
-                console.log(`  Item found in itemList:`, item);
-                if (item.properties) {
-                    const varStats = {};
-                    console.log(`  Item has properties:`, item.properties);
-                    for (const [propKey, propValue] of Object.entries(item.properties)) {
-                        console.log(`    Checking property "${propKey}":`, propValue, `is object? ${typeof propValue === 'object'}, has current? ${'current' in propValue}`);
-                        if (typeof propValue === 'object' && propValue !== null && 'current' in propValue) {
-                            varStats[propKey] = propValue.current;
-                            console.log(`      -> Exporting ${propKey}=${propValue.current}`);
-                        }
+        if (itemName && typeof itemList !== 'undefined' && itemList[itemName]) {
+            const item = itemList[itemName];
+            if (item.properties) {
+                const varStats = {};
+                for (const [propKey, propValue] of Object.entries(item.properties)) {
+                    if (typeof propValue === 'object' && propValue !== null && 'current' in propValue) {
+                        varStats[propKey] = propValue.current;
                     }
-                    if (Object.keys(varStats).length > 0) {
-                        variableStats[slot] = { itemName, stats: varStats };
-                        console.log(`  Result for ${slot}:`, variableStats[slot]);
-                    } else {
-                        console.log(`  No variable stats found for ${slot}`);
-                    }
-                } else {
-                    console.log(`  Item has no properties!`);
                 }
-            } else {
-                console.log(`  Item "${itemName}" NOT found in itemList`);
-                console.log(`  Available items (sample):`, Object.keys(window.itemList || {}).slice(0, 10));
+                if (Object.keys(varStats).length > 0) {
+                    variableStats[slot] = { itemName, stats: varStats };
+                    console.log(`Exported variable stats for ${slot}:`, variableStats[slot]);
+                }
             }
-        } else {
-            console.log(`  No item equipped in ${slot}`);
         }
     }
-    console.log('===== EXPORT COMPLETE =====');
-    console.log('Final variableStats:', variableStats);
 
     // Get charm inventory data using the new getAllCharms method
     // This is simpler and more reliable than parsing the DOM manually
@@ -225,30 +206,21 @@ window.loadCharacterFromData = function(data) {
         // IMPORTANT: Restore variable item stats BEFORE setting equipment
         // This ensures that when equipment dropdowns trigger regeneration of descriptions,
         // the saved variable stat values are already in place
-        if (data.variableStats) {
+        if (data.variableStats && typeof itemList !== 'undefined') {
             console.log('Pre-restoring variable stats before equipment changes:', data.variableStats);
             for (const [slot, varData] of Object.entries(data.variableStats)) {
                 const itemName = varData.itemName;
                 console.log(`Pre-restoring variable stats for ${slot} (${itemName}):`, varData.stats);
-                if (window.itemList?.[itemName]) {
-                    const item = window.itemList[itemName];
-                    console.log(`  Item found in itemList:`, item);
+                if (itemList[itemName]) {
+                    const item = itemList[itemName];
                     if (item.properties) {
                         for (const [propKey, value] of Object.entries(varData.stats)) {
-                            const oldValue = item.properties[propKey]?.current;
                             if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
-                                console.log(`  Setting ${propKey} from ${oldValue} to ${value}`);
+                                console.log(`  Setting ${propKey} to ${value}`);
                                 item.properties[propKey].current = value;
-                                console.log(`  Verified: ${propKey}.current is now ${item.properties[propKey].current}`);
-                            } else {
-                                console.warn(`  ${propKey} is not a variable property:`, item.properties[propKey]);
                             }
                         }
-                    } else {
-                        console.warn(`  Item has no properties!`, item);
                     }
-                } else {
-                    console.warn(`  Item NOT found in itemList! Available items:`, Object.keys(window.itemList || {}).slice(0, 5), '...');
                 }
             }
             console.log('Pre-restoration of variable stats complete');
@@ -287,12 +259,12 @@ window.loadCharacterFromData = function(data) {
         }
 
         // Log variable stats AFTER equipment is set to verify they're still correct
-        if (data.variableStats) {
+        if (data.variableStats && typeof itemList !== 'undefined') {
             console.log('Verifying variable stats after equipment set:');
             for (const [slot, varData] of Object.entries(data.variableStats)) {
                 const itemName = varData.itemName;
-                if (window.itemList?.[itemName]) {
-                    const item = window.itemList[itemName];
+                if (itemList[itemName]) {
+                    const item = itemList[itemName];
                     for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
                         const actualValue = item.properties?.[propKey]?.current;
                         console.log(`  ${slot} ${propKey}: expected=${expectedValue}, actual=${actualValue}, match=${expectedValue === actualValue}`);
