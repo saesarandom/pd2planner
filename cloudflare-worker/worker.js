@@ -41,6 +41,30 @@ async function hashPassword(password) {
     .join('');
 }
 
+// Check and award achievements based on character data
+async function checkAndAwardAchievements(userId, characterData, sql) {
+  try {
+    // Fresh Start: Reach level 99
+    if (characterData.character?.level === 99) {
+      await sql`
+        INSERT INTO achievements (user_id, achievement_id, achievement_data)
+        VALUES (${userId}, 'fresh_start', ${JSON.stringify({ level: 99 })})
+        ON CONFLICT (user_id, achievement_id) DO NOTHING
+      `;
+    }
+
+    // Under Clouds: Save a build (every save counts)
+    await sql`
+      INSERT INTO achievements (user_id, achievement_id, achievement_data)
+      VALUES (${userId}, 'under_clouds', ${JSON.stringify({ saved: true })})
+      ON CONFLICT (user_id, achievement_id) DO NOTHING
+    `;
+  } catch (error) {
+    console.error('Error checking achievements:', error);
+    // Don't fail the save if achievement check fails
+  }
+}
+
 async function handleRequest(request, env) {
   // Handle CORS preflight
   if (request.method === 'OPTIONS') {
@@ -163,6 +187,9 @@ async function handleRequest(request, env) {
         VALUES (${userId}, ${buildId}, ${characterName}, ${JSON.stringify(characterData)})
         RETURNING id, build_id, character_name, created_at
       `;
+
+      // Silently check and award achievements based on character data
+      await checkAndAwardAchievements(userId, characterData, sql);
 
       return new Response(JSON.stringify({
         success: true,

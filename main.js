@@ -704,9 +704,6 @@ async function saveCurrentBuild() {
     const result = await window.auth.saveCharacter(buildName.trim(), characterData);
 
     alert(`Build saved successfully!\n\nShare URL: https://pd2planner.net/?build=${result.build_id}\n\nClick "Share" in My Builds to copy the link.`);
-
-    // Unlock "Under Clouds" achievement when saving a build (server validates the token)
-    await window.auth.unlockAchievement('under_clouds', { buildName: buildName.trim() });
   } catch (error) {
     console.error('Failed to save build:', error);
     alert('Failed to save build: ' + error.message);
