@@ -677,6 +677,155 @@ function setupCritListeners() {
 }
 
 /**
+ * Save current build to the cloud
+ */
+async function saveCurrentBuild() {
+  if (!window.auth?.isLoggedIn()) {
+    alert('Please login to save builds!');
+    document.getElementById('profile-btn')?.click();
+    return;
+  }
+
+  const buildName = prompt('Enter a name for this build:');
+  if (!buildName || buildName.trim() === '') {
+    return;
+  }
+
+  try {
+    const characterData = window.exportCharacterData();
+
+    const result = await window.auth.saveCharacter(buildName.trim(), characterData);
+
+    alert(`Build saved successfully!\n\nShare URL: https://pd2planner.net/build.html?id=${result.build_id}\n\nClick "Share" in My Builds to copy the link.`);
+
+    // Unlock achievement for first save
+    const characters = await window.auth.getCharacters();
+    if (characters.length === 1) {
+      await window.auth.unlockAchievement('first_save', { buildName: buildName.trim() });
+    }
+  } catch (error) {
+    console.error('Failed to save build:', error);
+    alert('Failed to save build: ' + error.message);
+  }
+}
+
+/**
+ * Quick save - updates existing build
+ */
+async function quickSaveBuild() {
+  if (!window.auth?.isLoggedIn()) {
+    alert('Please login to save builds!');
+    return;
+  }
+
+  const currentBuildId = window.currentLoadedBuildId;
+  if (!currentBuildId) {
+    // No build loaded, do a regular save
+    await saveCurrentBuild();
+    return;
+  }
+
+  try {
+    const characterData = window.exportCharacterData();
+    await window.auth.updateCharacter(currentBuildId, characterData);
+    alert('Build updated successfully!');
+  } catch (error) {
+    console.error('Failed to update build:', error);
+    alert('Failed to update build: ' + error.message);
+  }
+}
+
+/**
+ * Create save button and add to UI
+ */
+function createSaveButton() {
+  // Create save button container
+  const saveContainer = document.createElement('div');
+  saveContainer.id = 'save-build-container';
+  saveContainer.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 9998;
+  `;
+
+  // Save button
+  const saveBtn = document.createElement('button');
+  saveBtn.id = 'save-build-btn';
+  saveBtn.innerHTML = '💾 Save Build';
+  saveBtn.style.cssText = `
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+    transition: all 0.3s ease;
+  `;
+
+  saveBtn.addEventListener('click', saveCurrentBuild);
+
+  saveBtn.addEventListener('mouseenter', () => {
+    saveBtn.style.transform = 'translateY(-2px)';
+    saveBtn.style.boxShadow = '0 6px 20px rgba(76, 175, 80, 0.6)';
+  });
+
+  saveBtn.addEventListener('mouseleave', () => {
+    saveBtn.style.transform = 'translateY(0)';
+    saveBtn.style.boxShadow = '0 4px 15px rgba(76, 175, 80, 0.4)';
+  });
+
+  saveContainer.appendChild(saveBtn);
+  document.body.appendChild(saveContainer);
+}
+
+/**
+ * Load build from URL parameter (for shared builds)
+ */
+async function loadBuildFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const buildId = urlParams.get('build') || urlParams.get('id');
+
+  if (buildId && window.auth) {
+    try {
+      const build = await window.auth.getBuild(buildId);
+      if (build && build.character_data) {
+        window.loadCharacterFromData(build.character_data);
+        window.currentLoadedBuildId = buildId;
+
+        // Show notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 80px;
+          right: 20px;
+          background: linear-gradient(135deg, #1a1a2e, #16213e);
+          color: #00ff88;
+          padding: 15px 20px;
+          border-radius: 10px;
+          border: 2px solid #00ff88;
+          box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+          z-index: 10001;
+          font-weight: bold;
+        `;
+        notification.textContent = `Loaded build: ${build.character_name}`;
+        document.body.appendChild(notification);
+
+        setTimeout(() => notification.remove(), 3000);
+      }
+    } catch (error) {
+      console.error('Failed to load build from URL:', error);
+      alert('Failed to load build: ' + error.message);
+    }
+  }
+}
+
+/**
  * Main initialization
  */
 document.addEventListener('DOMContentLoaded', () => {
@@ -701,7 +850,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7. Initialize other systems if available
   if (typeof updatePolyLife === 'function') updatePolyLife();
 
-  // 8. Check login state
+  // 8. Create save button
+  setTimeout(createSaveButton, 500);
+
+  // 9. Load build from URL if present
+  setTimeout(loadBuildFromURL, 1000);
+
+  // 10. Check login state (legacy)
   const username = localStorage.getItem('username');
   if (username && typeof updateUIState === 'function') {
     updateUIState(username);
