@@ -1211,11 +1211,12 @@ placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
     mainSlot.style.backgroundImage = backgroundImage;
     mainSlot.classList.add(charmType);
     mainSlot.dataset.charmData = charmData;
-    // Set title AND data-title for maximum compatibility
+    // Set ONLY the title attribute for native browser hover tooltip
     mainSlot.title = displayText;
-    mainSlot.setAttribute('data-title', displayText);
-    // Remove any previous data attributes that might show in tooltips
+    // Remove any other hover attributes that might show alt text
+    mainSlot.removeAttribute('data-title');
     mainSlot.removeAttribute('data-tooltip');
+    mainSlot.removeAttribute('alt');
   } else {
     // Large/Grand charm - create overlay element
     const charmOverlay = document.createElement('div');
@@ -1239,9 +1240,12 @@ placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
     charmOverlay.classList.add('charm-overlay', charmType);
     charmOverlay.dataset.charmData = charmData;
     charmOverlay.dataset.position = position;
-    // Set title AND data-title for maximum compatibility
+    // Set ONLY the title attribute for native browser hover tooltip
     charmOverlay.title = displayText;
-    charmOverlay.setAttribute('data-title', displayText);
+    // Remove any other hover attributes that might show alt text
+    charmOverlay.removeAttribute('data-title');
+    charmOverlay.removeAttribute('data-tooltip');
+    charmOverlay.removeAttribute('alt');
 
     // Add to container
     container.appendChild(charmOverlay);
@@ -1520,6 +1524,10 @@ fixCharmTitles() {
         displayText = '';
       }
       slot.title = displayText;
+      // Remove any other attributes that might show alt text
+      slot.removeAttribute('data-title');
+      slot.removeAttribute('data-tooltip');
+      slot.removeAttribute('alt');
     }
   });
 
@@ -1540,6 +1548,10 @@ fixCharmTitles() {
         displayText = '';
       }
       overlay.title = displayText;
+      // Remove any other attributes that might show alt text
+      overlay.removeAttribute('data-title');
+      overlay.removeAttribute('data-tooltip');
+      overlay.removeAttribute('alt');
     }
   });
 }

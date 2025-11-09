@@ -59,6 +59,9 @@ window.exportCharacterData = function() {
     if (window.unifiedSocketSystem) {
         // Export socket data from the unified socket system
         sockets.data = window.unifiedSocketSystem.exportSocketData?.() || {};
+        console.log('Exported socket data:', sockets.data);
+    } else {
+        console.warn('No unified socket system found during export');
     }
 
     // Get item corruptions if available
@@ -255,7 +258,15 @@ window.loadCharacterFromData = function(data) {
 
         // Restore socket data
         if (data.sockets?.data && window.unifiedSocketSystem?.importSocketData) {
+            console.log('Restoring socket data:', data.sockets.data);
             window.unifiedSocketSystem.importSocketData(data.sockets.data);
+            console.log('Socket data restored');
+        } else {
+            console.warn('Socket data not available or socket system not ready', {
+                hasData: !!data.sockets?.data,
+                hasSystem: !!window.unifiedSocketSystem,
+                hasImport: !!window.unifiedSocketSystem?.importSocketData
+            });
         }
 
         // Restore corruptions
