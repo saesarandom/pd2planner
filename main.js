@@ -746,16 +746,19 @@ async function quickSaveBuild() {
  * Create save button and add to UI
  */
 function createSaveButton() {
-  // Create save button container
+  // Create save button container (positioned below profile button)
   const saveContainer = document.createElement('div');
   saveContainer.id = 'save-build-container';
   saveContainer.style.cssText = `
     position: fixed;
-    top: 20px;
     right: 20px;
+    top: calc(50% + 80px);
+    transform: translateY(-50%);
     display: flex;
+    flex-direction: column;
     gap: 10px;
     z-index: 9998;
+    width: 200px;
   `;
 
   // Save button
@@ -763,28 +766,33 @@ function createSaveButton() {
   saveBtn.id = 'save-build-btn';
   saveBtn.innerHTML = '💾 Save Build';
   saveBtn.style.cssText = `
-    background: linear-gradient(135deg, #4CAF50, #45a049);
-    color: white;
-    padding: 12px 24px;
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    color: #ffffff;
+    padding: 15px 20px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     font-weight: bold;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
     transition: all 0.3s ease;
+    width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
   `;
 
   saveBtn.addEventListener('click', saveCurrentBuild);
 
   saveBtn.addEventListener('mouseenter', () => {
     saveBtn.style.transform = 'translateY(-2px)';
-    saveBtn.style.boxShadow = '0 6px 20px rgba(76, 175, 80, 0.6)';
+    saveBtn.style.boxShadow = '0 6px 20px rgba(0, 255, 136, 0.6)';
+    saveBtn.style.background = 'linear-gradient(135deg, #00ff88, #00dd77)';
   });
 
   saveBtn.addEventListener('mouseleave', () => {
     saveBtn.style.transform = 'translateY(0)';
-    saveBtn.style.boxShadow = '0 4px 15px rgba(76, 175, 80, 0.4)';
+    saveBtn.style.boxShadow = '0 4px 15px rgba(0, 255, 136, 0.4)';
+    saveBtn.style.background = 'linear-gradient(135deg, #00ff88, #00cc66)';
   });
 
   saveContainer.appendChild(saveBtn);

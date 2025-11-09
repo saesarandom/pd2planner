@@ -188,6 +188,24 @@ function setupAuthListeners() {
     document.getElementById('register-email').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') document.getElementById('register-submit').click();
     });
+
+    // Username validation - limit to 21 chars, alphanumeric, '-', '_' only
+    const validateUsername = (input) => {
+        let value = input.value;
+        // Remove invalid characters: keep only alphanumeric, '-', '_'
+        value = value.replace(/[^a-zA-Z0-9\-_]/g, '');
+        // Limit to 21 characters
+        value = value.substring(0, 21);
+        input.value = value;
+    };
+
+    document.getElementById('login-username').addEventListener('input', function() {
+        validateUsername(this);
+    });
+
+    document.getElementById('register-username').addEventListener('input', function() {
+        validateUsername(this);
+    });
 }
 
 function showLoginForm() {
