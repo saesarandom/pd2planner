@@ -3179,10 +3179,6 @@ const itemList = {
     properties: {
       javelin: 1,
       speed: -10,
-      onehandmin: 17,
-      onehandmax: 252,
-      throwmin: 13,
-      throwmax: 270,
       reqstr: 33,
       reqdex: 47,
       reqlvl: 20,
