@@ -1452,10 +1452,27 @@ hideModal() {
   getAllCharms() {
     const charms = [];
     const container = document.querySelector('.inventorycontainer');
-    if (!container) return charms;
+    if (!container) {
+      console.warn('getAllCharms: No charm container found');
+      return charms;
+    }
+
+    // Debug: Check what slots exist
+    const allSlots = container.querySelectorAll('.charm1');
+    console.log(`getAllCharms: Found ${allSlots.length} total .charm1 slots`);
 
     // Get small charms from regular slots
-    container.querySelectorAll('.charm1:not([data-has-overlay])').forEach((slot) => {
+    const smallCharmSlots = container.querySelectorAll('.charm1:not([data-has-overlay])');
+    console.log(`getAllCharms: Found ${smallCharmSlots.length} slots without overlays`);
+
+    smallCharmSlots.forEach((slot, i) => {
+      const hasCharmData = !!slot.dataset.charmData;
+      const hasBackgroundImage = !!slot.style.backgroundImage;
+      console.log(`  Slot ${i}: charmData=${hasCharmData}, bgImage=${hasBackgroundImage}`, {
+        dataAttr: slot.dataset.charmData?.substring(0, 50),
+        bgImage: slot.style.backgroundImage?.substring(0, 50)
+      });
+
       if (slot.dataset.charmData && slot.style.backgroundImage) {
         try {
           const charmData = JSON.parse(slot.dataset.charmData);
@@ -1473,7 +1490,15 @@ hideModal() {
     });
 
     // Get large/grand charms from overlay elements
-    container.querySelectorAll('.charm-overlay').forEach((overlay) => {
+    const overlays = container.querySelectorAll('.charm-overlay');
+    console.log(`getAllCharms: Found ${overlays.length} overlay charms`);
+
+    overlays.forEach((overlay, i) => {
+      console.log(`  Overlay ${i}:`, {
+        charmData: overlay.dataset.charmData?.substring(0, 50),
+        position: overlay.dataset.position
+      });
+
       try {
         const charmData = JSON.parse(overlay.dataset.charmData);
         const position = parseInt(overlay.dataset.position);
@@ -1487,6 +1512,7 @@ hideModal() {
       }
     });
 
+    console.log(`getAllCharms: Total charms found: ${charms.length}`, charms);
     return charms;
   }
 
