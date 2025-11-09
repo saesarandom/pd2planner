@@ -101,12 +101,13 @@ class CharacterManager {
   init() {
     this.setupEventListeners();
     this.setupSocketListeners();
+    this.setupAchievementWatcher();
 
     const classSelect = document.getElementById('selectClass');
     if (classSelect && classSelect.value) {
       this.currentClass = classSelect.value;
     }
-    
+
     // Immediate calculation - no delays
     this.updateTotalStats();
     this.updateStatPointsDisplay();
@@ -209,6 +210,38 @@ class CharacterManager {
     });
 
 
+  }
+
+  setupAchievementWatcher() {
+    // Watch for resistance value changes and check achievements
+    const resistanceContainers = [
+      'fireresistcontainer',
+      'coldresistcontainer',
+      'lightresistcontainer',
+      'poisonresistcontainer'
+    ];
+
+    const observer = new MutationObserver(() => {
+      if (window.auth && window.auth.isLoggedIn()) {
+        const characterData = window.exportCharacterData();
+        window.auth.checkCharacterState(characterData).then(result => {
+          if (result.success && result.newAchievements && result.newAchievements.length > 0) {
+            result.newAchievements.forEach(achievement => {
+              alert(`🏆 Achievement Unlocked!\n\n${achievement.name}\n\n${achievement.description}`);
+            });
+          }
+        }).catch(error => {
+          console.error('Error checking character state:', error);
+        });
+      }
+    });
+
+    resistanceContainers.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        observer.observe(el, { characterData: true, subtree: true });
+      }
+    });
   }
 
   calculateLifeAndMana() {
@@ -681,20 +714,7 @@ getDirectLifeManaFromItems() {
     if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
       window.unifiedSocketSystem.updateAll();
     }
-
-    // Check character state for achievements (conditions hidden server-side)
-    if (window.auth && window.auth.isLoggedIn()) {
-      const characterData = window.exportCharacterData();
-      window.auth.checkCharacterState(characterData).then(result => {
-        if (result.success && result.newAchievements && result.newAchievements.length > 0) {
-          result.newAchievements.forEach(achievement => {
-            alert(`🏆 Achievement Unlocked!\n\n${achievement.name}\n\n${achievement.description}`);
-          });
-        }
-      }).catch(error => {
-        console.error('Error checking character state:', error);
-      });
-    }
+    // Achievement checking is now handled by setupAchievementWatcher using MutationObserver
   }
 
   handleClassChange() {
