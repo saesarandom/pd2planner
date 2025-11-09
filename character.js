@@ -213,11 +213,16 @@ class CharacterManager {
   }
 
   setupAchievementWatcher() {
-    // Watch socket containers for changes and check achievements when sockets update
-    const observer = new MutationObserver(() => {
-      // Add small delay to let resistances finish calculating
-      setTimeout(() => {
-        if (window.auth && window.auth.isLoggedIn()) {
+    // Function to check achievements after resistances update
+    const checkAchievements = () => {
+      if (window.auth && window.auth.isLoggedIn()) {
+        // Trigger socket system to recalculate resistances
+        if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+          window.unifiedSocketSystem.updateAll();
+        }
+
+        // Wait for DOM to update with new resistance values
+        setTimeout(() => {
           const characterData = window.exportCharacterData();
           console.log('Achievement check triggered, resistances:', characterData.resistances);
           window.auth.checkCharacterState(characterData).then(result => {
@@ -229,21 +234,25 @@ class CharacterManager {
           }).catch(error => {
             console.error('Error checking character state:', error);
           });
-        }
-      }, 100);
+        }, 100);
+      }
+    };
+
+    // Watch equipment dropdowns and level changes
+    const equipmentIds = [
+      'weapons-dropdown', 'helms-dropdown', 'armors-dropdown', 'offs-dropdown',
+      'gloves-dropdown', 'belts-dropdown', 'boots-dropdown', 'ringsone-dropdown',
+      'ringstwo-dropdown', 'amulets-dropdown', 'lvlValue'
+    ];
+
+    equipmentIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('change', checkAchievements);
+      }
     });
 
-    // Watch all socket containers
-    const socketContainers = document.querySelectorAll('.socket-container');
-    socketContainers.forEach(container => {
-      observer.observe(container, {
-        childList: true,
-        subtree: true,
-        attributes: true
-      });
-    });
-
-    console.log('Achievement watcher initialized, watching', socketContainers.length, 'socket containers');
+    console.log('Achievement watcher initialized for equipment and level changes');
   }
 
   calculateLifeAndMana() {
