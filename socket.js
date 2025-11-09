@@ -4325,6 +4325,108 @@ const statsArray = [
     // Don't clear the socket references here, let createRainbowFacet do it
     this.selectedFacetElement = null;
   }
+
+  // === EXPORT/IMPORT METHODS ===
+  exportSocketData() {
+    const socketData = {};
+
+    // Iterate through all socket containers on the page
+    const containers = document.querySelectorAll('.socket-container');
+    containers.forEach(container => {
+      const section = container.dataset.section;
+      if (!section) return;
+
+      socketData[section] = [];
+
+      // Get all filled sockets in this container
+      const filledSockets = container.querySelectorAll('.socket-slot.filled');
+      filledSockets.forEach(socket => {
+        socketData[section].push({
+          itemKey: socket.dataset.itemKey || '',
+          category: socket.dataset.category || '',
+          itemName: socket.dataset.itemName || '',
+          stats: socket.dataset.stats || '',
+          levelReq: socket.dataset.levelReq || '1'
+        });
+      });
+    });
+
+    console.log('Socket export completed:', socketData);
+    return socketData;
+  }
+
+  importSocketData(socketData) {
+    if (!socketData || typeof socketData !== 'object') {
+      console.warn('Invalid socket data provided for import');
+      return;
+    }
+
+    console.log('Starting socket import with data:', socketData);
+
+    // Iterate through each section's sockets
+    for (const [section, sockets] of Object.entries(socketData)) {
+      const container = document.querySelector(`.socket-container[data-section="${section}"]`);
+      if (!container) {
+        console.warn(`Socket container not found for section: ${section}`);
+        continue;
+      }
+
+      // Get all socket slots in this container
+      const socketSlots = container.querySelectorAll('.socket-slot');
+
+      // Fill each slot with the corresponding data
+      sockets.forEach((socketData, index) => {
+        if (index >= socketSlots.length) {
+          console.warn(`More socket data than slots available for section: ${section}`);
+          return;
+        }
+
+        const slot = socketSlots[index];
+
+        // Clear the slot first
+        slot.className = 'socket-slot empty';
+        slot.innerHTML = '';
+        delete slot.dataset.itemKey;
+        delete slot.dataset.category;
+        delete slot.dataset.itemName;
+        delete slot.dataset.stats;
+        delete slot.dataset.levelReq;
+
+        // Skip empty socket data
+        if (!socketData.itemKey || !socketData.category) {
+          return;
+        }
+
+        // Get the item data from the socket system
+        const item = this.socketData[socketData.category]?.[socketData.itemKey];
+
+        if (!item) {
+          console.warn(`Item not found: ${socketData.category}/${socketData.itemKey}`);
+          return;
+        }
+
+        // Fill the socket
+        slot.className = 'socket-slot filled';
+        slot.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
+        slot.dataset.itemKey = socketData.itemKey;
+        slot.dataset.category = socketData.category;
+        slot.dataset.itemName = socketData.itemName;
+        slot.dataset.levelReq = socketData.levelReq || '1';
+
+        // Set stats based on section
+        const stats = typeof item.stats === 'object' ? item.stats[section] : item.stats;
+        if (stats) {
+          slot.dataset.stats = stats;
+        }
+
+        console.log(`Restored socket ${section}[${index}]:`, socketData.itemName);
+      });
+    }
+
+    // Update all stats after importing
+    console.log('Socket import completed, updating stats');
+    this.updateAll();
+  }
   }
     // Hide modal when clicking outside
   // === AUTO-INITIALIZATION ===
