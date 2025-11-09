@@ -372,48 +372,50 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   const propertyDisplay = {
     defense: (val) => `Defense: ${val}`,
     onehandmin: (val, prop) => {
-      // Calculate actual damage considering level scaling and enhanced damage
+      // Calculate actual damage using correct formula:
+      // Min: base_min * (1 + edmg/100)
+      // Max: (base_max * (1 + edmg/100)) + (charLevel * maxdmgperlvl)
       const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
       const maxVal = props.onehandmax || 0;
 
-      // Apply level scaling if this item has maxdmgperlvl
-      let minDmg = val;
-      let maxDmg = maxVal;
-      if (props.maxdmgperlvl) {
-        const levelBonus = currentLevel * props.maxdmgperlvl;
-        minDmg = val + levelBonus;
-        maxDmg = maxVal + levelBonus;
+      // Get enhanced damage multiplier
+      let enhancedMultiplier = 1;
+      if (props.edmg && typeof props.edmg === 'object' && 'current' in props.edmg) {
+        enhancedMultiplier = 1 + props.edmg.current / 100;
       }
 
-      // Apply enhanced damage if available
-      if (props.edmg && typeof props.edmg === 'object' && 'current' in props.edmg) {
-        const enhancedDmgPercent = props.edmg.current / 100;
-        minDmg = minDmg * (1 + enhancedDmgPercent);
-        maxDmg = maxDmg * (1 + enhancedDmgPercent);
+      // Min damage: NO level scaling, only enhanced damage
+      let minDmg = Math.floor(val * enhancedMultiplier);
+
+      // Max damage: enhanced damage PLUS level scaling (only for maxdmgperlvl)
+      let maxDmg = Math.floor(maxVal * enhancedMultiplier);
+      if (props.maxdmgperlvl) {
+        maxDmg += Math.floor(currentLevel * props.maxdmgperlvl);
       }
 
       const avg = Math.round((minDmg + maxDmg) / 2 * 10) / 10;
       return `One-Hand Damage: ${Math.round(minDmg)} to ${Math.round(maxDmg)}, Avg ${avg}`;
     },
     throwmin: (val, prop) => {
-      // Calculate actual damage considering level scaling and enhanced damage
+      // Calculate actual damage using correct formula:
+      // Min: base_min * (1 + edmg/100)
+      // Max: (base_max * (1 + edmg/100)) + (charLevel * maxdmgperlvl)
       const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
       const maxVal = props.throwmax || 0;
 
-      // Apply level scaling if this item has maxdmgperlvl
-      let minDmg = val;
-      let maxDmg = maxVal;
-      if (props.maxdmgperlvl) {
-        const levelBonus = currentLevel * props.maxdmgperlvl;
-        minDmg = val + levelBonus;
-        maxDmg = maxVal + levelBonus;
+      // Get enhanced damage multiplier
+      let enhancedMultiplier = 1;
+      if (props.edmg && typeof props.edmg === 'object' && 'current' in props.edmg) {
+        enhancedMultiplier = 1 + props.edmg.current / 100;
       }
 
-      // Apply enhanced damage if available
-      if (props.edmg && typeof props.edmg === 'object' && 'current' in props.edmg) {
-        const enhancedDmgPercent = props.edmg.current / 100;
-        minDmg = minDmg * (1 + enhancedDmgPercent);
-        maxDmg = maxDmg * (1 + enhancedDmgPercent);
+      // Min damage: NO level scaling, only enhanced damage
+      let minDmg = Math.floor(val * enhancedMultiplier);
+
+      // Max damage: enhanced damage PLUS level scaling (only for maxdmgperlvl)
+      let maxDmg = Math.floor(maxVal * enhancedMultiplier);
+      if (props.maxdmgperlvl) {
+        maxDmg += Math.floor(currentLevel * props.maxdmgperlvl);
       }
 
       const avg = Math.round((minDmg + maxDmg) / 2 * 10) / 10;
