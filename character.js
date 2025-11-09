@@ -212,36 +212,38 @@ class CharacterManager {
 
   }
 
-  setupAchievementWatcher() {
-    // Watch for resistance value changes and check achievements
-    const resistanceContainers = [
-      'fireresistcontainer',
-      'coldresistcontainer',
-      'lightresistcontainer',
-      'poisonresistcontainer'
-    ];
-
+ setupAchievementWatcher() {
+    // Watch socket containers for changes and check achievements when sockets update
     const observer = new MutationObserver(() => {
-      if (window.auth && window.auth.isLoggedIn()) {
-        const characterData = window.exportCharacterData();
-        window.auth.checkCharacterState(characterData).then(result => {
-          if (result.success && result.newAchievements && result.newAchievements.length > 0) {
-            result.newAchievements.forEach(achievement => {
-              alert(`🏆 Achievement Unlocked!\n\n${achievement.name}\n\n${achievement.description}`);
-            });
-          }
-        }).catch(error => {
-          console.error('Error checking character state:', error);
-        });
-      }
+      // Add small delay to let resistances finish calculating
+      setTimeout(() => {
+        if (window.auth && window.auth.isLoggedIn()) {
+          const characterData = window.exportCharacterData();
+          console.log('Achievement check triggered, resistances:', characterData.resistances);
+          window.auth.checkCharacterState(characterData).then(result => {
+            if (result.success && result.newAchievements && result.newAchievements.length > 0) {
+              result.newAchievements.forEach(achievement => {
+                alert(`🏆 Achievement Unlocked!\n\n${achievement.name}\n\n${achievement.description}`);
+              });
+            }
+          }).catch(error => {
+            console.error('Error checking character state:', error);
+          });
+        }
+      }, 100);
     });
 
-    resistanceContainers.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        observer.observe(el, { characterData: true, subtree: true });
-      }
+    // Watch all socket containers
+    const socketContainers = document.querySelectorAll('.socket-container');
+    socketContainers.forEach(container => {
+      observer.observe(container, {
+        childList: true,
+        subtree: true,
+        attributes: true
+      });
     });
+
+    console.log('Achievement watcher initialized, watching', socketContainers.length, 'socket containers');
   }
 
   calculateLifeAndMana() {
