@@ -4213,6 +4213,11 @@ function updateWeaponDamageDisplay() {
 
     // Update the tooltip/description
     updateWeaponTooltip(currentItemData, baseType, isTwoHanded);
+
+    // Re-attach event listeners to stat input boxes in the weapon info
+    if (typeof window.attachStatInputListeners === 'function') {
+      window.attachStatInputListeners();
+    }
   }
 }
 
@@ -4920,6 +4925,11 @@ function updateWeaponDisplayWithPerLevelDamage() {
     const maxContainer = document.getElementById("onehandmaxdmgcontainer");
     if (minContainer) minContainer.textContent = min;
     if (maxContainer) maxContainer.textContent = max;
+  }
+
+  // Re-attach event listeners to stat input boxes in the weapon info
+  if (typeof window.attachStatInputListeners === 'function') {
+    window.attachStatInputListeners();
   }
 }
 
