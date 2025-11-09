@@ -111,6 +111,14 @@ window.exportCharacterData = function() {
         });
     }
 
+    // Get resistances from displayed values
+    const resistances = {
+        fire: parseInt(document.getElementById('fireresistcontainer')?.textContent) || 0,
+        cold: parseInt(document.getElementById('coldresistcontainer')?.textContent) || 0,
+        lightning: parseInt(document.getElementById('lightresistcontainer')?.textContent) || 0,
+        poison: parseInt(document.getElementById('poisonresistcontainer')?.textContent) || 0
+    };
+
     return {
         version: '1.1',
         timestamp: new Date().toISOString(),
@@ -130,7 +138,8 @@ window.exportCharacterData = function() {
         corruptions,
         variableStats,
         charms,
-        skills
+        skills,
+        resistances
     };
 };
 
