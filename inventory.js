@@ -965,9 +965,13 @@ createManualCharm() {
     stats: stats,
     displayText: `${charmName}\n${stats.join('\n')}`
   });
+
+  // Create clean hover text (just text, no JSON, no newlines)
+  const hoverText = `${charmName} ${stats.join(' ')}`;
+
   const backgroundImage = `url('${this.getRandomCharmImage(this.selectedCharmType)}')`;
 
-  this.placeCharm(position, this.selectedCharmType, backgroundImage, charmData);
+  this.placeCharm(position, this.selectedCharmType, backgroundImage, charmData, hoverText);
   this.hideModal();
 }
 
@@ -1181,18 +1185,20 @@ container.addEventListener('click', (e) => {
 
 
 // Add this missing placeCharm method:
-placeCharm(position, charmType, backgroundImage, charmData) {
+placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
   const container = document.querySelector('.inventorycontainer');
   const mainSlot = container.children[position];
 
-  // Parse charm data to extract display text for tooltip
-  let displayText = '';
-  try {
-    const data = JSON.parse(charmData);
-    displayText = data.displayText || data.name || '';
-  } catch (e) {
-    // If it's old format or plain text, use as-is
-    displayText = charmData;
+  // Use provided hoverText, or extract from charm data
+  let displayText = hoverText || '';
+  if (!displayText) {
+    try {
+      const data = JSON.parse(charmData);
+      displayText = data.name || '';
+    } catch (e) {
+      // If it's old format or plain text, just use the name part
+      displayText = charmData;
+    }
   }
 
   // Calculate position
@@ -1490,9 +1496,11 @@ fixCharmTitles() {
       let displayText = '';
       try {
         const data = JSON.parse(charmDataStr);
-        displayText = data.displayText || data.name || charmDataStr;
+        // Use just the name, or combine name and first stat for hover
+        displayText = data.name || charmDataStr;
       } catch (e) {
-        displayText = charmDataStr;
+        // If parsing fails, don't show anything
+        displayText = '';
       }
       slot.title = displayText;
     }
@@ -1505,9 +1513,11 @@ fixCharmTitles() {
       let displayText = '';
       try {
         const data = JSON.parse(charmDataStr);
-        displayText = data.displayText || data.name || charmDataStr;
+        // Use just the name, or combine name and first stat for hover
+        displayText = data.name || charmDataStr;
       } catch (e) {
-        displayText = charmDataStr;
+        // If parsing fails, don't show anything
+        displayText = '';
       }
       overlay.title = displayText;
     }
