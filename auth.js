@@ -1,6 +1,7 @@
 // Authentication system for PD2 Planner
 // Handles login, register, and user session
 
+
 const API_URL = 'https://pd2-planner-api.saesarandom.workers.dev'; // Replace with your Cloudflare Worker URL
 
 class Auth {
