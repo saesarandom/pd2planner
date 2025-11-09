@@ -49,15 +49,17 @@ class CharmInventory {
       document.body.appendChild(container);
     }
 
-    // Only clear if container is empty or doesn't have the right structure
+    // If grid already exists with 40 slots, don't recreate it
     // This prevents clearing charms that were already placed
-    if (container.children.length !== 40) {
-      container.innerHTML = '';
+    if (container.children.length === 40) {
+      console.log('Charm inventory grid already exists, skipping recreation');
+      return;
     }
 
-    // If grid already exists with 40 slots, don't recreate it
-    if (container.children.length === 40) {
-      return;
+    // Only clear and recreate if needed
+    if (container.children.length > 0 && container.children.length !== 40) {
+      console.warn('Charm inventory has wrong number of slots, recreating');
+      container.innerHTML = '';
     }
 
     // Seamless grid without gaps
