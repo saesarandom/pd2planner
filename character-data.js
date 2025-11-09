@@ -86,58 +86,11 @@ window.exportCharacterData = function() {
         }
     }
 
-    // Get charm inventory data
-    const charms = [];
-    if (window.charmInventory) {
-        const container = document.querySelector('.inventorycontainer');
-        if (container) {
-            // Check regular charm slots (small charms)
-            const slots = container.querySelectorAll('.charm1');
-            slots.forEach((slot) => {
-                if (slot.dataset.charmData && slot.style.backgroundImage && !slot.dataset.hasOverlay) {
-                    const charmDataStr = slot.dataset.charmData;
-                    const position = parseInt(slot.dataset.index);
-                    let charmType = 'small-charm';
-                    if (slot.classList.contains('large-charm')) charmType = 'large-charm';
-                    if (slot.classList.contains('grand-charm')) charmType = 'grand-charm';
-
-                    try {
-                        const parsedData = JSON.parse(charmDataStr);
-                        charms.push({
-                            type: charmType,
-                            position: position,
-                            data: parsedData
-                        });
-                    } catch (e) {
-                        console.error('Failed to parse charm data:', e);
-                    }
-                }
-            });
-
-            // Check overlay charms (large and grand charms)
-            const overlays = container.querySelectorAll('.charm-overlay');
-            overlays.forEach(overlay => {
-                const charmDataStr = overlay.dataset.charmData;
-                const position = parseInt(overlay.dataset.position);
-                let charmType = 'large-charm';
-                if (overlay.classList.contains('grand-charm')) charmType = 'grand-charm';
-
-                try {
-                    const parsedData = JSON.parse(charmDataStr);
-                    charms.push({
-                        type: charmType,
-                        position: position,
-                        data: parsedData
-                    });
-                } catch (e) {
-                    console.error('Failed to parse charm data:', e);
-                }
-            });
-
-            if (charms.length > 0) {
-                console.log('Exported charms:', charms.length, charms);
-            }
-        }
+    // Get charm inventory data using the new getAllCharms method
+    // This is simpler and more reliable than parsing the DOM manually
+    const charms = window.charmInventory?.getAllCharms?.() || [];
+    if (charms.length > 0) {
+        console.log('Exported charms:', charms.length, charms);
     }
 
     // Get skills allocation
@@ -310,7 +263,8 @@ window.loadCharacterFromData = function(data) {
             window.itemCorruptions = data.corruptions.data;
         }
 
-        // Restore charms (wait for charm inventory to be fully initialized)
+        // Restore charms using the new restoreAllCharms method
+        // This waits for the charm inventory to be ready and then restores all charms at once
         if (data.charms && data.charms.length > 0) {
             console.log('Starting charm restoration process, need to restore:', data.charms.length, 'charms');
 
@@ -325,13 +279,20 @@ window.loadCharacterFromData = function(data) {
                 if (window.charmInventory && window.charmInventory.initialized) {
                     const container = document.querySelector('.inventorycontainer');
                     if (container && container.children.length === 40) {
-                        console.log('Charm inventory ready! Restoring', data.charms.length, 'charms');
-                        data.charms.forEach((charm, idx) => {
-                            console.log(`Restoring charm ${idx + 1}/${data.charms.length}:`, charm);
-                            if (window.charmInventory.restoreCharm) {
-                                window.charmInventory.restoreCharm(charm);
-                            }
-                        });
+                        console.log('Charm inventory ready! Using restoreAllCharms method');
+                        // Use the new method that handles everything internally
+                        if (window.charmInventory.restoreAllCharms) {
+                            window.charmInventory.restoreAllCharms(data.charms);
+                        } else {
+                            // Fallback to individual charm restoration for compatibility
+                            console.warn('restoreAllCharms not available, using individual charm restoration');
+                            data.charms.forEach((charm, idx) => {
+                                console.log(`Restoring charm ${idx + 1}/${data.charms.length}:`, charm);
+                                if (window.charmInventory.restoreCharm) {
+                                    window.charmInventory.restoreCharm(charm);
+                                }
+                            });
+                        }
                     } else {
                         console.warn('Charm inventory grid not ready, retrying...', {
                             containerExists: !!container,

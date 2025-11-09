@@ -1445,6 +1445,108 @@ hideModal() {
   this.selectedSlot = null;
 }
 
+  /**
+   * Get all charms currently in inventory as a serializable array
+   * Scans the DOM for all placed charms
+   */
+  getAllCharms() {
+    const charms = [];
+    const container = document.querySelector('.inventorycontainer');
+    if (!container) return charms;
+
+    // Get small charms from regular slots
+    container.querySelectorAll('.charm1:not([data-has-overlay])').forEach((slot) => {
+      if (slot.dataset.charmData && slot.style.backgroundImage) {
+        try {
+          const charmData = JSON.parse(slot.dataset.charmData);
+          const position = parseInt(slot.dataset.index);
+
+          let type = 'small-charm';
+          if (slot.classList.contains('large-charm')) type = 'large-charm';
+          if (slot.classList.contains('grand-charm')) type = 'grand-charm';
+
+          charms.push({ type, position, data: charmData });
+        } catch (e) {
+          console.error('Failed to parse charm in slot', slot.dataset.index, e);
+        }
+      }
+    });
+
+    // Get large/grand charms from overlay elements
+    container.querySelectorAll('.charm-overlay').forEach((overlay) => {
+      try {
+        const charmData = JSON.parse(overlay.dataset.charmData);
+        const position = parseInt(overlay.dataset.position);
+
+        let type = 'large-charm';
+        if (overlay.classList.contains('grand-charm')) type = 'grand-charm';
+
+        charms.push({ type, position, data: charmData });
+      } catch (e) {
+        console.error('Failed to parse charm in overlay', overlay.dataset.position, e);
+      }
+    });
+
+    return charms;
+  }
+
+  /**
+   * Restore all charms from an array (the inverse of getAllCharms)
+   * Clears existing charms and places the provided ones
+   */
+  restoreAllCharms(charmsArray) {
+    if (!Array.isArray(charmsArray)) {
+      console.error('Invalid charms array:', charmsArray);
+      return;
+    }
+
+    console.log('Restoring', charmsArray.length, 'charms');
+
+    // Clear existing charms first
+    this.clearInventory();
+    this.occupiedSlots.clear();
+
+    // Place each charm
+    let successCount = 0;
+    charmsArray.forEach((charm, idx) => {
+      if (!charm || !charm.type || charm.position === undefined) {
+        console.error(`Invalid charm at index ${idx}:`, charm);
+        return;
+      }
+
+      // Get random image for this type
+      const images = this.charmImages[charm.type];
+      if (!images) {
+        console.error(`Unknown charm type: ${charm.type}`);
+        return;
+      }
+
+      const randomImage = images[Math.floor(Math.random() * images.length)];
+      const backgroundImage = `url('${randomImage}')`;
+
+      try {
+        // Check if we can place it
+        if (!this.canPlaceCharm(charm.position, charm.type)) {
+          console.warn(`Cannot place ${charm.type} at position ${charm.position}`);
+          return;
+        }
+
+        // Place the charm
+        this.placeCharm(
+          charm.position,
+          charm.type,
+          backgroundImage,
+          JSON.stringify(charm.data)
+        );
+        successCount++;
+      } catch (e) {
+        console.error(`Failed to restore charm at index ${idx}:`, e);
+      }
+    });
+
+    console.log(`Successfully restored ${successCount}/${charmsArray.length} charms`);
+  }
+
   clearInventory() {
     const container = document.querySelector('.inventorycontainer');
     if (!container) return;
@@ -1463,6 +1565,11 @@ hideModal() {
       slot.style.zIndex = '';
       slot.style.visibility = 'visible';
       slot.dataset.charmData = '';
+    });
+
+    // Also remove overlay elements
+    container.querySelectorAll('.charm-overlay').forEach(overlay => {
+      overlay.remove();
     });
   }
 }
