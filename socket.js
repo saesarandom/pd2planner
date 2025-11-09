@@ -4384,6 +4384,30 @@ const statsArray = [
         continue;
       }
 
+      const socketGrid = container.querySelector('.socket-grid');
+      if (!socketGrid) {
+        console.warn(`Socket grid not found for section: ${section}`);
+        continue;
+      }
+
+      console.log(`Importing ${sockets.length} sockets to ${section}, current slots: ${socketGrid.children.length}`);
+
+      // First, ensure we have enough socket slots
+      const currentSlotCount = socketGrid.children.length;
+      const requiredSlotCount = sockets.length;
+
+      // Add empty sockets if we need more
+      while (socketGrid.children.length < requiredSlotCount) {
+        const newSocket = document.createElement('div');
+        newSocket.className = 'socket-slot empty';
+        newSocket.dataset.index = socketGrid.children.length.toString();
+        socketGrid.appendChild(newSocket);
+        console.log(`  Added empty socket to ${section}, now have ${socketGrid.children.length} slots`);
+      }
+
+      // Update the socket grid CSS class to reflect socket count
+      socketGrid.className = `socket-grid sockets-${socketGrid.children.length}`;
+
       // Get all socket slots in this container
       const socketSlots = container.querySelectorAll('.socket-slot');
 
@@ -4407,6 +4431,7 @@ const statsArray = [
 
         // Skip empty socket data
         if (!socketData.itemKey || !socketData.category) {
+          console.log(`  Socket ${index} in ${section}: empty, skipping`);
           return;
         }
 
