@@ -131,9 +131,19 @@ async function handleRequest(request, env) {
           VALUES (${result[0].id}, true)
         `;
 
+        // Generate session token for new user
+        const token = generateToken();
+        const userId = result[0].id;
+
+        await sql`
+          INSERT INTO session_tokens (user_id, token, expires_at)
+          VALUES (${userId}, ${token}, NOW() + INTERVAL '30 days')
+        `;
+
         return new Response(JSON.stringify({
           success: true,
-          user: result[0]
+          user: result[0],
+          token: token
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });

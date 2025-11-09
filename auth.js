@@ -60,7 +60,7 @@ class Auth {
                 throw new Error(data.error || 'Registration failed');
             }
 
-            this.saveUser(data.user);
+            this.saveUser(data.user, data.token);
             return { success: true, user: data.user };
         } catch (error) {
             return { success: false, error: error.message };
