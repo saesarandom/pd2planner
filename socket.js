@@ -223,10 +223,11 @@
         'Stiletto': 3, 'Battle Dart': 2, 'Francisca': 4, 'War Dart': 2, 'Bone Knife': 3,
         'Mithril Point': 3, 'Fanged Knife': 3, 'Legend Spike': 3,
 
-        // Weapons - Javelins
-        'Javelin': 4, 'Pilum': 4, 'Short Spear': 3, 'Glaive': 5, 'Throwing Spear': 4,
-        'War Javelin': 4, 'Great Pilum': 4, 'Simbilan': 3, 'Spiculum': 5, 'Harpoon': 4,
-        'Hyperion Javelin': 4, 'Stygian Pilum': 4, 'Balrog Spear': 3, 'Ghost Glaive': 5, 'Winged Harpoon': 4,
+        // Weapons - Javelins FIXED
+        'Javelin': 1, 'Pilum': 2, 'Short Spear': 2, 'Glaive': 3, 'Throwing Spear': 3,
+        'Maiden Javelin': 2, 'Ceremonial Javelin': 2, 'Matriarchal Javelin': 2, 
+        'War Javelin': 2, 'Great Pilum': 2, 'Simbilan': 2, 'Spiculum': 3, 'Harpoon': 3,
+        'Hyperion Javelin': 2, 'Stygian Pilum': 2, 'Balrog Spear': 2, 'Ghost Glaive': 3, 'Winged Harpoon': 3,
 
         // Weapons - Wands
         'Wand': 2, 'Yew Wand': 2, 'Bone Wand': 2, 'Grim Wand': 2, 'Burnt Wand': 2,
