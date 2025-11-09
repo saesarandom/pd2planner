@@ -53,6 +53,10 @@ async function checkAndAwardAchievements(userId, characterData, sql) {
     `;
     const existingIds = new Set(existing.map(a => a.achievement_id));
 
+    // Debug logging
+    console.log('Character data received:', JSON.stringify(characterData));
+    console.log('Level value:', characterData.character?.level, 'Type:', typeof characterData.character?.level);
+
     // Fresh Start: Reach level 99
     if (characterData.character?.level === 99 && !existingIds.has('fresh_start')) {
       await sql`
