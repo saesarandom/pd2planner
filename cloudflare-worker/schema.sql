@@ -44,7 +44,18 @@ CREATE TABLE IF NOT EXISTS achievements (
   UNIQUE(user_id, achievement_id)
 );
 
+-- Session tokens table for authentication
+CREATE TABLE IF NOT EXISTS session_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  token VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at TIMESTAMP NOT NULL
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_characters_user_id ON characters(user_id);
 CREATE INDEX IF NOT EXISTS idx_characters_build_id ON characters(build_id);
 CREATE INDEX IF NOT EXISTS idx_achievements_user_id ON achievements(user_id);
+CREATE INDEX IF NOT EXISTS idx_session_tokens_user_id ON session_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_session_tokens_token ON session_tokens(token);
