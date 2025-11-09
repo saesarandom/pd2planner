@@ -2940,7 +2940,7 @@ function calculateItemDamage(item, baseType, isMax = false) {
   const itemEdmg = item.properties?.edmg || 0;
 
   // Check if item is ethereal
-  const isEthereal = item.description.includes("Ethereal");
+  const isEthereal = item.description && item.description.includes("Ethereal");
   const ethMult = isEthereal ? 1.5 : 1;
 
   // Calculate enhanced damage from socketed items (jewels AND runes)
