@@ -44,6 +44,7 @@ class SkillSystem {
         { id: 'powerstrikecontainer', name: 'Power Strike', level: 6 },
         { id: 'javelinandspearmasterycontainer', name: 'Javelin Mastery', level: 1 },
         { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12 },
+        { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12 },
         { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18 },
         { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18 },
         { id: 'fendcontainer', name: 'Fend', level: 24 },
@@ -86,9 +87,12 @@ class SkillSystem {
       },
       fendcontainer: {
         name: "Fend", type: "physical",
-        damage: { base: 45, perLevel: 25 },
-        attackRating: { base: 40, perLevel: 15 },
-        manaCost: { base: 3, perLevel: 0.3 }
+        damage: [100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525, 1550, 1575],
+        attackRating: [80, 86, 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, 164, 170, 176, 182, 188, 194, 200, 206, 212, 218, 224, 230, 236, 242, 248, 254, 260, 266, 272, 278, 284, 290, 296, 302, 308, 314, 320, 326, 332, 338, 344, 350, 356, 362, 368, 374, 380, 386, 392, 398, 404, 410, 416, 422, 428, 434],
+        manaCost: 5,
+        synergies: [
+          { skillId: 'jabcontainer', bonusPerLevel: 20, damageType: 'physical' }
+        ]
       },
       poisonjavelincontainer: {
         name: "Poison Javelin", type: "poison",
@@ -121,14 +125,56 @@ class SkillSystem {
           { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'nova' }
         ]
       },
+      chargedstrikecontainer: {
+        name: "Charged Strike", type: "lightning",
+        chargedBolts: [3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+        lightningDamage: {
+          min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+          max: [40, 52, 64, 76, 88, 100, 112, 124, 140, 156, 172, 188, 204, 220, 236, 252, 272, 292, 312, 332, 352, 372, 396, 420, 444, 468, 492, 516, 544, 572, 600, 628, 656, 684, 712, 740, 768, 796, 824, 852, 880, 908, 936, 964, 992, 1020, 1048, 1076, 1104, 1132, 1160, 1188, 1216, 1244, 1272, 1300, 1328, 1356, 1384, 1412]
+        },
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7]
+      },
       lightningstrikecontainer: {
-        name: "Lightning Strike", type: "placeholder"
+        name: "Lightning Strike", type: "lightning",
+        hits: [4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+        lightningDamage: {
+          min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+          max: [25, 35, 45, 55, 65, 75, 85, 95, 115, 135, 155, 175, 195, 215, 235, 255, 290, 325, 360, 395, 430, 465, 520, 575, 630, 685, 740, 795, 870, 945, 1020, 1095, 1170, 1245, 1320, 1395, 1470, 1545, 1620, 1695, 1770, 1845, 1920, 1995, 2070, 2145, 2220, 2295, 2370, 2445, 2520, 2595, 2670, 2745, 2820, 2895, 2970, 3045, 3120, 3195]
+        },
+        manaCost: [6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7, 20, 20.2, 20.5, 20.7],
+        synergies: [
+          { skillId: 'powerstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' },
+          { skillId: 'chargedstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' }
+        ]
       },
       lightningboltcontainer: {
         name: "Lightning Bolt", type: "placeholder"
       },
       plaguejavelincontainer: {
-        name: "Plague Javelin", type: "placeholder"
+        name: "Plague Javelin", type: "poison",
+        poisonDamage: {
+          min: [23, 37, 51, 65, 79, 93, 107, 121, 150, 178, 206, 234, 262, 290, 318, 346, 393, 440, 487, 534, 581, 628, 721, 815, 909, 1003, 1096, 1190, 1378, 1565, 1753, 1940, 2128, 2315, 2503, 2690, 2878, 3065, 3253, 3440, 3628, 3815, 4003, 4190, 4378, 4565, 4753, 4940, 5128, 5315, 5503, 5690, 5878, 6065, 6253, 6440, 6628, 6815, 7003, 7190],
+          max: [37, 51, 65, 79, 93, 107, 121, 135, 164, 192, 220, 248, 276, 304, 332, 360, 407, 454, 501, 548, 595, 642, 735, 829, 923, 1017, 1110, 1204, 1392, 1579, 1767, 1954, 2142, 2329, 2517, 2704, 2892, 3079, 3267, 3454, 3642, 3829, 4017, 4204, 4392, 4579, 4767, 4954, 5142, 5329, 5517, 5704, 5892, 6079, 6267, 6454, 6642, 6829, 7017, 7204]
+        },
+        attackRating: [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640],
+        manaCost: [7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 30, 30.5, 31, 31.5, 32, 32.5, 33, 33.5, 34, 34.5, 35, 35.5, 36, 36.5],
+        synergies: [
+          { skillId: 'poisonjavelincontainer', bonusPerLevel: 12, damageType: 'poison' },
+          { skillId: 'javelinandspearmasterycontainer', bonusPerLevel: 6, damageType: 'poison' }
+        ]
+      },
+      lightningfurycontainer: {
+        name: "Lightning Fury", type: "lightning",
+        bolts: [10, 10, 10, 10, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15, 16, 16, 16, 16, 16, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22],
+        lightningDamage: {
+          min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+          max: [65, 73, 81, 89, 97, 105, 113, 121, 130, 139, 148, 157, 166, 175, 184, 193, 203, 213, 223, 233, 243, 253, 264, 275, 286, 297, 308, 319, 331, 343, 355, 367, 379, 391, 403, 415, 427, 439, 451, 463, 475, 487, 499, 511, 523, 535, 547, 559, 571, 583, 595, 607, 619, 631, 643, 655, 667, 679, 691, 703]
+        },
+        manaCost: [5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7],
+        synergies: [
+          { skillId: 'powerstrikecontainer', bonusPerLevel: 3, damageType: 'lightning' },
+          { skillId: 'lightningboltcontainer', bonusPerLevel: 3, damageType: 'lightning' }
+        ]
       },
       javelinandspearmasterycontainer: {
         name: "Javelin and Spear Mastery", type: "passive",
@@ -396,7 +442,13 @@ class SkillSystem {
 
     // Display Attack Rating if available
     if (skill.attackRating) {
-      var attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+      var attackRatingBonus;
+      if (Array.isArray(skill.attackRating)) {
+        var levelIndex = Math.min(skillLevel - 1, skill.attackRating.length - 1);
+        attackRatingBonus = skill.attackRating[levelIndex] || 0;
+      } else {
+        attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+      }
       html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
     }
 
@@ -442,6 +494,19 @@ class SkillSystem {
     }
   } else if (skill.type === 'poison') {
     var damageInfo = this.calculatePoisonDamage(skill, skillLevel, skillId);
+
+    // Display Attack Rating if available
+    if (skill.attackRating) {
+      var attackRatingBonus;
+      if (Array.isArray(skill.attackRating)) {
+        var levelIndex = Math.min(skillLevel - 1, skill.attackRating.length - 1);
+        attackRatingBonus = skill.attackRating[levelIndex] || 0;
+      } else {
+        attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+      }
+      html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+    }
+
     html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + damageInfo.min + '-' + damageInfo.max + ' over 4s</div>';
     html += '<div style="margin: 5px 0;">Per Second: ' + damageInfo.average + '</div>';
     if (damageInfo.synergyBonus > 0) {
@@ -452,7 +517,13 @@ class SkillSystem {
 
     // Display Attack Rating if available
     if (skill.attackRating) {
-      var attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+      var attackRatingBonus;
+      if (Array.isArray(skill.attackRating)) {
+        var levelIndex = Math.min(skillLevel - 1, skill.attackRating.length - 1);
+        attackRatingBonus = skill.attackRating[levelIndex] || 0;
+      } else {
+        attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+      }
       html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
     }
 
@@ -463,11 +534,26 @@ class SkillSystem {
     }
 
     html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
-    html += '<div style="margin: 5px 0; color: #ffff00;">Nova: ' + damageInfo.novaMin + '-' + damageInfo.novaMax + '</div>';
+    if (damageInfo.novaMin !== undefined && damageInfo.novaMax !== undefined) {
+      html += '<div style="margin: 5px 0; color: #ffff00;">Nova: ' + damageInfo.novaMin + '-' + damageInfo.novaMax + '</div>';
+    }
     html += '<div style="margin: 5px 0;">Average Lightning: ' + damageInfo.averageLightning + '</div>';
-    html += '<div style="margin: 5px 0;">Average Nova: ' + damageInfo.averageNova + '</div>';
+    if (damageInfo.averageNova !== undefined) {
+      html += '<div style="margin: 5px 0;">Average Nova: ' + damageInfo.averageNova + '</div>';
+    }
     if (damageInfo.synergyBonus > 0) {
       html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+    }
+
+    // Display bolts, charged bolts, or hits if available
+    if (damageInfo.bolts) {
+      html += '<div style="margin: 5px 0; color: #cccccc;">Bolts: ' + damageInfo.bolts + '</div>';
+    }
+    if (damageInfo.chargedBolts) {
+      html += '<div style="margin: 5px 0; color: #cccccc;">Bolts: ' + damageInfo.chargedBolts + '</div>';
+    }
+    if (damageInfo.hits) {
+      html += '<div style="margin: 5px 0; color: #cccccc;">Hits: ' + damageInfo.hits + '</div>';
     }
   }
   
@@ -497,7 +583,14 @@ class SkillSystem {
 
  calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
   // Base skill damage bonus (just from the skill itself)
-  var skillDamageBonus = skill.damage.base + (skill.damage.perLevel * (skillLevel - 1));
+  // Handle both array format and object format
+  var skillDamageBonus;
+  if (Array.isArray(skill.damage)) {
+    var levelIndex = Math.min(skillLevel - 1, skill.damage.length - 1);
+    skillDamageBonus = skill.damage[levelIndex] || 0;
+  } else {
+    skillDamageBonus = skill.damage.base + (skill.damage.perLevel * (skillLevel - 1));
+  }
 
   // Get synergy bonus separately
   var synergyBonus = this.calculateSynergyBonus(skillId, 'physical');
@@ -713,28 +806,47 @@ getDeadlyStrikeChance() {
     var levelIndex = Math.min(skillLevel - 1, 59);
     var baseLightningMin = skill.lightningDamage.min[levelIndex] || 1;
     var baseLightningMax = skill.lightningDamage.max[levelIndex] || 1;
-    var baseNovaMin = skill.novaDamage.min[levelIndex] || 1;
-    var baseNovaMax = skill.novaDamage.max[levelIndex] || 1;
 
-    // Calculate synergy bonuses (separate for lightning and nova)
+    // Calculate synergy bonus for lightning
     var lightningSynergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
-    var novaSynergyBonus = this.calculateSynergyBonus(skillId, 'nova');
 
-    // Apply synergies
+    // Apply synergies to lightning damage
     var lightningMin = Math.floor(baseLightningMin * (1 + lightningSynergyBonus / 100));
     var lightningMax = Math.floor(baseLightningMax * (1 + lightningSynergyBonus / 100));
-    var novaMin = Math.floor(baseNovaMin * (1 + novaSynergyBonus / 100));
-    var novaMax = Math.floor(baseNovaMax * (1 + novaSynergyBonus / 100));
 
-    return {
+    var result = {
       lightningMin: lightningMin,
       lightningMax: lightningMax,
-      novaMin: novaMin,
-      novaMax: novaMax,
       averageLightning: Math.floor((lightningMin + lightningMax) / 2),
-      averageNova: Math.floor((novaMin + novaMax) / 2),
-      synergyBonus: Math.max(lightningSynergyBonus, novaSynergyBonus)
+      synergyBonus: lightningSynergyBonus
     };
+
+    // Check if this skill has nova damage (like Power Strike)
+    if (skill.novaDamage) {
+      var baseNovaMin = skill.novaDamage.min[levelIndex] || 1;
+      var baseNovaMax = skill.novaDamage.max[levelIndex] || 1;
+      var novaSynergyBonus = this.calculateSynergyBonus(skillId, 'nova');
+      var novaMin = Math.floor(baseNovaMin * (1 + novaSynergyBonus / 100));
+      var novaMax = Math.floor(baseNovaMax * (1 + novaSynergyBonus / 100));
+
+      result.novaMin = novaMin;
+      result.novaMax = novaMax;
+      result.averageNova = Math.floor((novaMin + novaMax) / 2);
+      result.synergyBonus = Math.max(lightningSynergyBonus, novaSynergyBonus);
+    }
+
+    // Check for bolts/hits (for display)
+    if (skill.bolts) {
+      result.bolts = skill.bolts[levelIndex] || 0;
+    }
+    if (skill.chargedBolts) {
+      result.chargedBolts = skill.chargedBolts[levelIndex] || 0;
+    }
+    if (skill.hits) {
+      result.hits = skill.hits[levelIndex] || 0;
+    }
+
+    return result;
   }
 
   restrictInput(e) {
