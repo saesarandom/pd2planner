@@ -1576,9 +1576,10 @@ const itemList = {
       fcr: 10,
       pdr: 6,
       ligrad: 2,
-      todef: 100,
-      enr: 20,
-      regmana: 20, //fullset
+      // Set bonuses removed - handled by setTracker.js:
+      // todef: 100,  // (2 Items)
+      // enr: 20,     // (3 Items)
+      // regmana: 20, // (Complete Set)
     },
   },
 
