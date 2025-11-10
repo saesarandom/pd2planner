@@ -548,7 +548,7 @@ const itemList = {
       reqlvl: 63,
       shapeshift: 4,
       toattpercent: 120,
-      deadlystrike: 33,
+      deadly: 33,
       openwounds: 33,
       owdmg: 360,
       feralragesk: 2,
@@ -802,7 +802,7 @@ const itemList = {
       reqlvl: 34,
       fhr: 30,
       cb: 35,
-      deadlystrike: 15,
+      deadly: 15,
       edef: 120,
       str: 15,
       targetdefpercent: -20, //3 itemy
@@ -1587,15 +1587,15 @@ const itemList = {
     description:
       "Milabrega's Robe<br>Ancient Armor<br>Defense: 186<br>Defense (2 Items): 372 (was 468)<br>Required Strength: 100<br>Required Level: 17<br>Adds 25-35 Cold Damage<br>Physical Damage Taken Reduced by 2<br>Attacker Takes Damage of 13<br>+100% Enhanced Defense<br>14% Chance to Cast Level 5 Frost Nova on Striking (2 Items)<br>",
     properties: {
-      defense: 99,
-      reqstr: 41,
-      reqlvl: 15,
-      fcr: 10,
-      pdr: 6,
-      ligrad: 2,
-      todef: 100,
-      enr: 20,
-      regmana: 20, //fullset
+      defense: 186,
+      reqstr: 100,
+      reqlvl: 17,
+      colddmgmin: 25,
+      colddmgmax: 35,
+      pdr: 2,
+      atdmg: 13,
+      edef: 100 // pronbably good
+      
     },
   },
 
@@ -1603,15 +1603,13 @@ const itemList = {
     description:
       "Tancred's Spine<br>Full Plate Mail<br>Defense: 150<br>Defense (2 Items): 151-744<br>Required Strength: 80<br>Required Level: 20<br>+45% Enhanced Damage<br>+15 to Strength<br>+40 to Life<br>+[6-594] Defense (+6 per Character Level) (2 Items)<br>",
     properties: {
-      defense: 99,
-      reqstr: 41,
-      reqlvl: 15,
-      fcr: 10,
-      pdr: 6,
-      ligrad: 2,
-      todef: 100,
-      enr: 20,
-      regmana: 20, //fullset
+      defense: 150,
+      reqstr: 80,
+      reqlvl: 20,
+      edmg: 45,
+      str: 15,
+      tolife: 40 //probably good
+      
     },
   },
 
@@ -3058,7 +3056,7 @@ const itemList = {
       twohandmax: 12,
       reqlvl: 18,
       ctcstaticfieldcast: (30, 15),
-      allskills: 3,
+      allsk: 3,
       fcr: 40,
       lightdmgmin: 1,
       lightdmgmax: 280,
@@ -3104,12 +3102,28 @@ const itemList = {
       ctcnovacast: (15, 20),
       ctcblazecast: (15, 24),
       ctcfrostnova: (15, 24),
-      allskills: 2,
+      allsk: 2,
       fcr: 60,
       edmg: 100,
       toattpercent: 50,
       todef: 30,
       dmgtoun: 50,
+    },
+  },
+
+  "Arcanna's Deathwand": {
+    baseType: "War Staff", // this has +75 to Mana (2 Items)	Regenerate Mana 20% (3 Items) +40% Increased Attack Speed (Complete Set)
+    properties: {
+      speed: 20,
+      twohandmin: 21,
+      twohandmax: 49,
+      reqlvl: 15,
+      ctcbonespearcast: (15, 2), //bone spear on casting
+      sorsk: 1,
+      fcr: 10,
+      edmg: { min: 50, max: 75, current: 75 },
+      deadly: { min: 25, max: 50, current: 25 },
+      dmgtoun: 50
     },
   },
 
@@ -3223,7 +3237,7 @@ const itemList = {
       reqlvl: 25,
       energyshield: 16,
       ctcfrostnovacast: (8, 12),
-      allskills: 2,
+      allsk: 2,
       fcr: 30,
       mana: 145,
       maxmana: 20,
@@ -3262,7 +3276,7 @@ const itemList = {
       edmg: 200, // Enhanced Damage (200%)
       tomindmg: 20, // Additional Damage Min (20)
       tomaxdmg: 30, // Additional Damage Max (30)
-      deadlystrike: 35, // Deadly Strike Chance (35%)
+      deadly: 35, // Deadly Strike Chance (35%)
       openwounds: 25, // Open Wounds Chance (25%)
       openwoundsdps: 120, // Open Wounds Damage per Second (120)
     },
@@ -3847,7 +3861,7 @@ const itemList = {
     socketCount: 2
     }
 },
-  //shields/
+  // UNIQUE SHIELDS
 
   "Pelta Lunata": {
     description:
@@ -3911,6 +3925,18 @@ const itemList = {
     properties: {
       smitedmgmin: 4,
       smitedmgmax: 11,
+      defense: 58,
+      reqstr: 47,
+      reqlvl: 17,
+      allsk: 1,
+      fbr: 20,
+      block1: 53,
+      block: 25,
+      edef: 100,
+      todef: 20,
+      allres: 10, //tu bude 5-10 dynamic
+      lightrad: 3,
+      dur: 20
     },
   },
 
@@ -3973,7 +3999,7 @@ const itemList = {
     },
   },
 
-  //gloovs//
+  // UNIQUE GLOVES
   "The Hand of Broc": {
     description:
       "The Hand of Broc<br>Leather Gloves<br>Defense: 14<br>Required Level: 5<br>Melee Attacks Deal Splash Damage<br>+30% Enhanced Damage<br>3% Mana Stolen per Hit<br>3% Life Stolen per Hit<br>+20% Enhanced Defense<br>+10 Defense<br>+20 to Mana<br>Poison Resist +10%<br>",
@@ -4087,7 +4113,7 @@ const itemList = {
       summoningsk: 1,
       dmgtoun: 200,
       toatt: 200,
-      deadlystrike: 15,
+      deadly: 15,
       edef: 180,
     },
   },
@@ -4374,7 +4400,7 @@ const itemList = {
       meteorosk: 20,
     },
   },
-  //belts
+  // UNIQUE BELTS
 
   Lenymo: {
     description:
@@ -4545,7 +4571,7 @@ const itemList = {
       defense: 138,
       reqstr: 50,
       reqlvl: 80,
-      allskills: 1,
+      allsk: 1,
       fcr: 20,
       slow: 20,
       edef: 120,
@@ -4563,7 +4589,7 @@ const itemList = {
       reqlvl: 51,
       ias: 20,
       lleech: 6,
-      deadlystrike: 10,
+      deadly: 10,
       slow: 10,
       str: 15,
       maek: 2,
@@ -4593,7 +4619,7 @@ const itemList = {
       defense: 138,
       reqstr: 50,
       reqlvl: 80,
-      allskills: 1,
+      allsk: 1,
       fcr: 20,
       slow: 20,
       edef: 120,
@@ -4744,7 +4770,7 @@ const itemList = {
       pdr5: 20, //5 items
     },
   },
-  //boots
+  // UNIQUE BOOTS
 
   Hotspur: {
     description:
@@ -4930,7 +4956,7 @@ const itemList = {
       reqlvl: 47,
       frw: 30,
       cb: 15,
-      deadlystrike: 20,
+      deadly: 20,
       openwounds: 10,
       owdmg: 200,
       edef: 200,
@@ -5195,7 +5221,7 @@ const itemList = {
     },
   },
 
-  // rings
+  // UNIQUE RINGS
 
   Nagelring: {
     description:
@@ -5345,7 +5371,7 @@ const itemList = {
       vendor: 10, //this ring not implemented, needd to come with 3 versions to fix
     },
   },
-  //amulets
+  // UNIQUE AMULETS
 
   "Nokozan Relic": {
     description:
