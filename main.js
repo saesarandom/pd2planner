@@ -619,6 +619,17 @@ window.updateItemInfo = function updateItemInfo(event) {
   const item = itemList && itemList[selectedItemName];
 
   if (item) {
+    // Reset any .current values for dynamic items to ensure fresh regeneration
+    // This prevents values from "sticking" when switching between items
+    if (item.properties && item.baseType) {
+      Object.keys(item.properties).forEach(key => {
+        const prop = item.properties[key];
+        if (typeof prop === 'object' && prop !== null && 'current' in prop) {
+          delete prop.current;
+        }
+      });
+    }
+
     // Generate description (handles both static and dynamic with variable stats)
     const description = generateItemDescription(selectedItemName, item, dropdown.id);
     infoDiv.innerHTML = description;
