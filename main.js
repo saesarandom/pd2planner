@@ -631,7 +631,7 @@ window.updateItemInfo = function updateItemInfo(event) {
   }
 
   // Adjust socket count for new item if needed, then update socket system
-  const section = SECTION_MAP[dropdown.id];
+  const section = window.SECTION_MAP && window.SECTION_MAP[dropdown.id];
   if (section && window.unifiedSocketSystem) {
     try {
       // Adjust socket count to match new item's max

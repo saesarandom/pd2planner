@@ -199,6 +199,9 @@ const SECTION_MAP = {
   'mercboots-dropdown': 'mercboots'
 };
 
+// Make SECTION_MAP globally accessible for main.js
+window.SECTION_MAP = SECTION_MAP;
+
 // Global variables
 let currentCorruptionSlot = null;
 
