@@ -406,9 +406,9 @@ class SkillSystem {
       html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
     }
     if (damageInfo.masteryDamageBonus > 0) {
-      html += '<div style="margin: 5px 0; color: #ff9966;">Mastery Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+      html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
     }
-    
+
     // Show elemental damages if they exist
     var elem = damageInfo.elementalDamages;
     if (elem.fire.max > 0) {
@@ -496,16 +496,17 @@ class SkillSystem {
   }
 
  calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
-  // Base skill damage bonus
+  // Base skill damage bonus (just from the skill itself)
   var skillDamageBonus = skill.damage.base + (skill.damage.perLevel * (skillLevel - 1));
 
-  // Add synergy bonus
+  // Get synergy bonus separately
   var synergyBonus = this.calculateSynergyBonus(skillId, 'physical');
-  skillDamageBonus += synergyBonus;
 
-  // Add mastery damage bonus (applies to all javelin/spear skills)
+  // Get mastery damage bonus (applies to all javelin/spear skills)
   var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
-  var totalDamageBonus = skillDamageBonus + masteryDamageBonus;
+
+  // Calculate total damage bonus (all bonuses are additive)
+  var totalDamageBonus = skillDamageBonus + synergyBonus + masteryDamageBonus;
 
   // Dexterity bonus for Amazon (applies to damage directly)
   var statBonus = Math.floor(dexterity * 1);
@@ -513,7 +514,7 @@ class SkillSystem {
   // Get weapon elemental damages
   var elementalDamages = this.getWeaponElementalDamages();
 
-  // Calculate base physical damage with stat, skill, synergy, and mastery bonuses
+  // Calculate base physical damage with all bonuses
   var baseMinDamage = Math.floor((weaponDamage.min) * (1 + totalDamageBonus / 100 + statBonus / 100));
   var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + totalDamageBonus / 100 + statBonus / 100));
 
