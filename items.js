@@ -5540,4 +5540,39 @@ const itemList = {
       poisres: 25,
     },
   },
+
+  "Arcanna's Deathwand": {
+    baseType: "War Staff",
+    // Explicit set bonuses for setTracker (since this is a dynamic item)
+    setBonuses: [
+      "+75 to Mana (2 Items)",
+      "Regenerate Mana 20% (3 Items)",
+      "+40% Increased Attack Speed (Complete Set)"
+    ],
+    properties: {
+      speed: 20,
+      twohandmin: 21,
+      twohandmax: 49,
+      reqlvl: 15,
+      ctcbonespearcast: (15, 2), //bone spear on casting
+      sorsk: 1,
+      fcr: 10,
+      edmg: { min: 50, max: 75, current: 75 },
+      deadly: { min: 25, max: 50, current: 25 },
+      dmgtoun: 50
+    },
+  },
+
+  "Arcanna's Sign": {
+    description:
+      "Arcanna's Sign<br> Amulet<br> Required Level:13<br> +35 to Mana<br> Regenerate Mana 10%<br> +50% Better Chance of Getting Magic Items (2 Items)<br> Fire Resist +30% (3 Items)<br>",
+    properties: {
+      reqlvl: 15,
+      tomana: 35,
+      regmana: 10
+      // Set bonuses removed - handled by setTracker.js:
+      // magicfind: 50,  // (2 Items)
+      // firres: 30,     // (3 Items)
+    },
+  },
 };

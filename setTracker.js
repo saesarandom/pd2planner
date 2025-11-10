@@ -29,23 +29,41 @@ class SetTracker {
   }
 
   /**
-   * Check if an item is a set item by looking for set bonus markers in description
+   * Check if an item is a set item by looking for set bonus markers
    */
-  isSetItem(item) {
-    if (!item || !item.description) return false;
+  isSetItem(item, itemName) {
+    if (!item) return false;
+
+    // Check for explicit setBonuses property (for dynamic items)
+    if (item.setBonuses && Array.isArray(item.setBonuses) && item.setBonuses.length > 0) {
+      return true;
+    }
+
+    // For static items, check description
+    if (!item.description) return false;
     // Set items have patterns like "(2 Items)", "(3 Items)", "(Complete Set)"
     return /\(\d+\s+Items?\)|\(Complete Set\)/i.test(item.description);
   }
 
   /**
-   * Parse set bonuses from item description
+   * Parse set bonuses from item description or setBonuses array
    * Returns array of {itemCount: number, bonuses: [{stat: string, value: any, text: string}]}
    */
-  parseSetBonuses(description) {
-    if (!description) return [];
+  parseSetBonuses(item) {
+    if (!item) return [];
 
     const bonuses = [];
-    const lines = description.split('<br>');
+    let lines = [];
+
+    // Check if item has explicit setBonuses array (for dynamic items)
+    if (item.setBonuses && Array.isArray(item.setBonuses)) {
+      lines = item.setBonuses;
+    } else if (item.description) {
+      // Parse from description
+      lines = item.description.split('<br>');
+    } else {
+      return [];
+    }
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
@@ -329,7 +347,7 @@ class SetTracker {
           if (meetsLevel && meetsStats) {
             const setName = this.extractSetName(itemName);
             if (setName) {
-              const bonuses = this.parseSetBonuses(item.description);
+              const bonuses = this.parseSetBonuses(item);
 
               equippedItems.push({
                 name: itemName,
