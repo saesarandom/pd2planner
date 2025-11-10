@@ -2438,28 +2438,8 @@ this.selectedJewelSuffix3MaxValue = null;
 
     // Handle dynamic items (no static description)
     if (!item.description) {
-      // No sockets? Just update visual feedback
-      if (sockets.length === 0) {
-        if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
-          infoDiv.style.opacity = '0.6';
-          infoDiv.style.filter = 'grayscale(50%)';
-          if (!meetsRequirement) {
-            infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
-          } else if (!isUsableByClass) {
-            infoDiv.title = `This item is restricted to a different class`;
-          } else {
-            infoDiv.title = `You don't have the required strength or dexterity to use this item`;
-          }
-        } else {
-          infoDiv.style.opacity = '1';
-          infoDiv.style.filter = 'none';
-          infoDiv.title = '';
-        }
-        return; // Preserve user's input values
-      }
-
-      // Has sockets - need to merge stats and regenerate description
-      // First, generate clean base description
+      // Always regenerate description for dynamic items to re-attach event listeners
+      // (This is critical for items like Arcanna's Deathweb with variable stats)
       const baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
 
       // Parse base stats from the generated description (strip input elements first)
