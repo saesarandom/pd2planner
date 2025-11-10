@@ -6,8 +6,19 @@
  * This is needed for variable stat items
  */
 function getPropertyValue(prop) {
-  if (typeof prop === 'object' && prop !== null && 'current' in prop) {
-    return prop.current;
+  if (typeof prop === 'object' && prop !== null) {
+    // If it's a variable stat object with min/max
+    if ('max' in prop) {
+      // Return current if valid, otherwise default to max
+      if ('current' in prop && typeof prop.current === 'number') {
+        return prop.current;
+      }
+      return prop.max;
+    }
+    // If current exists but no max, return current
+    if ('current' in prop) {
+      return prop.current;
+    }
   }
   return prop;
 }
