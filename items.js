@@ -1587,15 +1587,15 @@ const itemList = {
     description:
       "Milabrega's Robe<br>Ancient Armor<br>Defense: 186<br>Defense (2 Items): 372 (was 468)<br>Required Strength: 100<br>Required Level: 17<br>Adds 25-35 Cold Damage<br>Physical Damage Taken Reduced by 2<br>Attacker Takes Damage of 13<br>+100% Enhanced Defense<br>14% Chance to Cast Level 5 Frost Nova on Striking (2 Items)<br>",
     properties: {
-      defense: 99,
-      reqstr: 41,
-      reqlvl: 15,
-      fcr: 10,
-      pdr: 6,
-      ligrad: 2,
-      todef: 100,
-      enr: 20,
-      regmana: 20, //fullset
+      defense: 186,
+      reqstr: 100,
+      reqlvl: 17,
+      colddmgmin: 25,
+      colddmgmax: 35,
+      pdr: 2,
+      atdmg: 13,
+      edef: 100 // pronbably good
+      
     },
   },
 
@@ -1603,15 +1603,13 @@ const itemList = {
     description:
       "Tancred's Spine<br>Full Plate Mail<br>Defense: 150<br>Defense (2 Items): 151-744<br>Required Strength: 80<br>Required Level: 20<br>+45% Enhanced Damage<br>+15 to Strength<br>+40 to Life<br>+[6-594] Defense (+6 per Character Level) (2 Items)<br>",
     properties: {
-      defense: 99,
-      reqstr: 41,
-      reqlvl: 15,
-      fcr: 10,
-      pdr: 6,
-      ligrad: 2,
-      todef: 100,
-      enr: 20,
-      regmana: 20, //fullset
+      defense: 150,
+      reqstr: 80,
+      reqlvl: 20,
+      edmg: 45,
+      str: 15,
+      tolife: 40 //probably good
+      
     },
   },
 
@@ -5552,4 +5550,14 @@ const itemList = {
       poisres: 25,
     },
   },
+
+  "Arcanna's Sign": {
+    description:
+      "Arcanna's Sign<br> Amulet<br> Required Level:13<br> +35 to Mana<br> Regenerate Mana 10%<br> +50% Better Chance of Getting Magic Items% (2 Items)<br> Fire Resist +30% (3 Items)<br>",
+    properties: {
+      reqlvl: 13,
+      tomana: 35,
+      regmana: 10
+    },
+  }, 
 };
