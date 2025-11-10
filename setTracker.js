@@ -47,6 +47,24 @@ class SetTracker {
       "Trang-Oul's": "Trang-Oul's Avatar"
     };
 
+    // Map item names to set names (for items where set name is not in item name)
+    this.ITEM_TO_SET_MAP = {
+      // The Disciple set
+      "Dark Adherent": "The Disciple",
+      "Laying of Hands": "The Disciple",
+      "Rite of Passage": "The Disciple",
+      "Credendum": "The Disciple",
+      "Telling of Beads": "The Disciple",
+
+      // Orphan's Call set
+      "Guillaume's Face": "Orphan's",
+      "Wilhelm's Pride": "Orphan's",
+      "Whitstan's Guard": "Orphan's",
+
+      // Arctic Gear set
+      "Magnus' Skin": "Arctic",
+    };
+
     this.setupItemListeners();
   }
 
@@ -54,9 +72,15 @@ class SetTracker {
    * Extract set name from item name
    * Examples: "Arcanna's Flesh" -> "Arcanna's"
    *           "Angelic Mantle" -> "Angelic"
+   *           "Dark Adherent" -> "The Disciple" (from ITEM_TO_SET_MAP)
    */
   extractSetName(itemName) {
     if (!itemName) return null;
+
+    // First check if this item has an explicit mapping
+    if (this.ITEM_TO_SET_MAP[itemName]) {
+      return this.ITEM_TO_SET_MAP[itemName];
+    }
 
     // Set items typically have pattern: "SetName's ItemType" or "SetName ItemType"
     // Extract everything before the last word (which is usually the item type)
