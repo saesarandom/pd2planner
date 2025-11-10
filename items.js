@@ -3120,23 +3120,6 @@ const itemList = {
     },
   },
 
-  "Arcanna's Deathwand": {
-    baseType: "War Staff", // this has +75 to Mana (2 Items)	Regenerate Mana 20% (3 Items) +40% Increased Attack Speed (Complete Set)
-    properties: {
-      speed: 20,
-      twohandmin: 21,
-      twohandmax: 49,
-      reqlvl: 15,
-      ctcbonespearcast: 15, //bone spear on casting
-      ctcbonespearcastlevel: 2,
-      sorsk: 1,
-      fcr: 10,
-      edmg: { min: 50, max: 75, current: 75 },
-      deadly: { min: 25, max: 50, current: 25 },
-      dmgtoun: 50
-    },
-  },
-
   "Knell Striker": {
     description:
       "Knell Striker<br> Scepter<br> Base Damage: 6 to 11<br> Base Speed Modifier: 0<br> Base Maximum Sockets: 2<br> One-Hand Damage: 10 to 19, Avg 14.5<br> Required Strength: 25<br> Required Level: 5<br> +80% Enhanced Damage<br> +35 to Attack Rating<br> 25% Chance of Crushing Blow<br> +15 to Mana<br> Fire Resist +20%<br> Poison Resist +20%<br> +50% Damage to Undead<br>",
