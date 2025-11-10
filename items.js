@@ -5607,7 +5607,7 @@ const itemList = {
       sorsk: 1,
       fcr: 10,
       edmg: { min: 50, max: 75, current: 75 },
-      deadly: { min: 25, max: 50, current: 25 },
+      deadly: { min: 25, max: 50, current: 50 },
       dmgtoun: 50
     },
   },

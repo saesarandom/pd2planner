@@ -378,8 +378,19 @@ function populateItemDropdowns() {
  * Get the current value of a property (handles both fixed values and ranges)
  */
 function getPropertyValue(prop) {
-  if (typeof prop === 'object' && prop !== null && 'current' in prop) {
-    return prop.current;
+  if (typeof prop === 'object' && prop !== null) {
+    // If it's a variable stat object with min/max
+    if ('max' in prop) {
+      // Return current if valid, otherwise default to max
+      if ('current' in prop && typeof prop.current === 'number') {
+        return prop.current;
+      }
+      return prop.max;
+    }
+    // If current exists but no max, return current
+    if ('current' in prop) {
+      return prop.current;
+    }
   }
   return prop;
 }
@@ -571,23 +582,25 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
 }
 
 /**
- * Attach event listeners to stat input boxes
+ * Attach event listeners to stat input boxes using event delegation
+ * This approach attaches a single listener at the document level, so it works
+ * even when input elements are dynamically created/destroyed
  */
 window.attachStatInputListeners = function attachStatInputListeners() {
-  document.querySelectorAll('.stat-input').forEach(input => {
-    // Skip if already has listeners attached
-    if (input.dataset.listenersAttached === 'true') return;
-    input.dataset.listenersAttached = 'true';
+  // Check if already initialized
+  if (window.statInputListenerAttached) return;
+  window.statInputListenerAttached = true;
 
-    // Simple input handler - just update the value
-    input.addEventListener('input', (e) => {
+  // Use event delegation - one listener handles all .stat-input elements
+  document.addEventListener('input', (e) => {
+    if (e.target.classList.contains('stat-input')) {
       const itemName = e.target.dataset.item;
       const propKey = e.target.dataset.prop;
       const dropdownId = e.target.dataset.dropdown;
       const newValue = e.target.value;
 
       handleVariableStatChange(itemName, propKey, newValue, dropdownId);
-    });
+    }
   });
 }
 
@@ -619,6 +632,19 @@ window.updateItemInfo = function updateItemInfo(event) {
   const item = itemList && itemList[selectedItemName];
 
   if (item) {
+    // Reset any .current values for dynamic items to ensure fresh regeneration
+    // This prevents values from "sticking" when switching between items
+    // BUT skip if we're loading a saved build (to preserve the saved values)
+    if (item.properties && item.baseType && !window._isLoadingCharacterData) {
+      Object.keys(item.properties).forEach(key => {
+        const prop = item.properties[key];
+        if (typeof prop === 'object' && prop !== null && 'max' in prop) {
+          // Reset to max value instead of deleting to avoid [object Object] display
+          prop.current = prop.max;
+        }
+      });
+    }
+
     // Generate description (handles both static and dynamic with variable stats)
     const description = generateItemDescription(selectedItemName, item, dropdown.id);
     infoDiv.innerHTML = description;
