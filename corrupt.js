@@ -179,6 +179,7 @@ const CORRUPTIONS = {
 
 // Section mapping for dropdowns to item types
 const SECTION_MAP = {
+  
   'helms-dropdown': 'helm',
   'armors-dropdown': 'armor',
   'weapons-dropdown': 'weapon',
@@ -198,7 +199,7 @@ const SECTION_MAP = {
   'mercbelts-dropdown': 'mercbelts',
   'mercboots-dropdown': 'mercboots'
 };
-
+window.SECTION_MAP = SECTION_MAP;
 // Global variables
 let currentCorruptionSlot = null;
 
