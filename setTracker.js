@@ -229,6 +229,73 @@ class SetTracker {
         dropdown.addEventListener('change', () => this.updateSetTracking());
       }
     });
+
+    // Listen to level changes
+    const levelSlider = document.getElementById('lvl');
+    if (levelSlider) {
+      levelSlider.addEventListener('input', () => this.updateSetTracking());
+      levelSlider.addEventListener('change', () => this.updateSetTracking());
+    }
+
+    // Listen to stat changes (strength/dexterity)
+    const strInput = document.getElementById('str');
+    const dexInput = document.getElementById('dex');
+
+    if (strInput) {
+      strInput.addEventListener('input', () => this.updateSetTracking());
+      strInput.addEventListener('change', () => this.updateSetTracking());
+    }
+
+    if (dexInput) {
+      dexInput.addEventListener('input', () => this.updateSetTracking());
+      dexInput.addEventListener('change', () => this.updateSetTracking());
+    }
+  }
+
+  /**
+   * Check if character meets level requirement for an item
+   */
+  meetsLevelRequirement(item) {
+    if (!item || !item.properties) return true;
+
+    const requiredLevel = item.properties.reqlvl || 1;
+    const characterLevel = this.getCharacterLevel();
+
+    return characterLevel >= requiredLevel;
+  }
+
+  /**
+   * Check if character meets stat requirements (str/dex) for an item
+   */
+  meetsStatRequirements(item) {
+    if (!item || !item.properties) return true;
+
+    const requiredStr = item.properties.reqstr || 0;
+    const requiredDex = item.properties.reqdex || 0;
+
+    // Get current character stats from inputs
+    const strInput = parseInt(document.getElementById('str')?.value) || 0;
+    const dexInput = parseInt(document.getElementById('dex')?.value) || 0;
+
+    return strInput >= requiredStr && dexInput >= requiredDex;
+  }
+
+  /**
+   * Get current character level
+   */
+  getCharacterLevel() {
+    // Try to get from UnifiedSocketSystem first
+    if (window.unifiedSocketSystem && window.unifiedSocketSystem.currentLevel) {
+      return window.unifiedSocketSystem.currentLevel;
+    }
+
+    // Fallback to level slider
+    const levelSlider = document.getElementById('lvl');
+    if (levelSlider) {
+      return parseInt(levelSlider.value) || 1;
+    }
+
+    return 1;
   }
 
   /**
@@ -254,17 +321,24 @@ class SetTracker {
         const item = itemList[itemName];
 
         if (item && this.isSetItem(item)) {
-          const setName = this.extractSetName(itemName);
-          if (setName) {
-            const bonuses = this.parseSetBonuses(item.description);
+          // Check if character meets requirements for this item
+          const meetsLevel = this.meetsLevelRequirement(item);
+          const meetsStats = this.meetsStatRequirements(item);
 
-            equippedItems.push({
-              name: itemName,
-              setName: setName,
-              slot: dropdownId,
-              item: item,
-              bonuses: bonuses
-            });
+          // Only count the item toward the set if requirements are met
+          if (meetsLevel && meetsStats) {
+            const setName = this.extractSetName(itemName);
+            if (setName) {
+              const bonuses = this.parseSetBonuses(item.description);
+
+              equippedItems.push({
+                name: itemName,
+                setName: setName,
+                slot: dropdownId,
+                item: item,
+                bonuses: bonuses
+              });
+            }
           }
         }
       }
