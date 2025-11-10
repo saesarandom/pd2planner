@@ -384,22 +384,32 @@ class SetTracker {
     this.equippedSets.forEach((setData, setName) => {
       const itemCount = setData.items.length;
 
+      console.log(`[SetTracker] Getting active bonuses for ${setName}: ${itemCount} items equipped`);
+      console.log('[SetTracker] All possible bonuses:', setData.allBonuses);
+
       // Find bonuses that are active for this item count
       setData.allBonuses.forEach(bonusGroup => {
+        console.log(`[SetTracker] Checking bonus group: itemCount requirement = ${bonusGroup.itemCount}`);
+
         if (bonusGroup.itemCount === 'complete') {
+          console.log('[SetTracker] Skipping "Complete Set" bonus');
           // For now, skip "Complete Set" bonuses (would need to know full set size)
           // TODO: Add complete set detection
         } else if (typeof bonusGroup.itemCount === 'number' && itemCount >= bonusGroup.itemCount) {
+          console.log(`[SetTracker] ✓ Activating: ${itemCount} >= ${bonusGroup.itemCount}`);
           activeBonuses.push({
             setName: setName,
             itemCount: itemCount,
             requiredCount: bonusGroup.itemCount,
             bonuses: bonusGroup.bonuses
           });
+        } else {
+          console.log(`[SetTracker] ✗ Not activated: ${itemCount} < ${bonusGroup.itemCount}`);
         }
       });
     });
 
+    console.log('[SetTracker] Final active bonuses:', activeBonuses);
     return activeBonuses;
   }
 
@@ -495,13 +505,27 @@ class SetTracker {
       allSkills: 0
     };
 
+    // Debug: Log what we're applying
+    console.log('[SetTracker] Applying set bonuses:', activeBonuses);
+
     activeBonuses.forEach(activeBonus => {
-      activeBonus.bonuses.forEach(bonus => {
-        if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
-          totalBonuses[bonus.stat] += bonus.value;
-        }
-      });
+      console.log(`[SetTracker] Processing set: ${activeBonus.setName}, itemCount: ${activeBonus.itemCount}, requiredCount: ${activeBonus.requiredCount}`);
+
+      // Double-check that we meet the requirement (safety check)
+      if (activeBonus.itemCount >= activeBonus.requiredCount) {
+        activeBonus.bonuses.forEach(bonus => {
+          console.log(`[SetTracker] Applying bonus: ${bonus.stat} = ${bonus.value}`);
+
+          if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
+            totalBonuses[bonus.stat] += bonus.value;
+          }
+        });
+      } else {
+        console.warn(`[SetTracker] Skipping bonus - requirement not met: ${activeBonus.itemCount} < ${activeBonus.requiredCount}`);
+      }
     });
+
+    console.log('[SetTracker] Total bonuses to apply:', totalBonuses);
 
     // Store bonuses for access by other systems
     this.currentBonuses = totalBonuses;
