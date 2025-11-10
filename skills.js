@@ -112,6 +112,7 @@ class SkillSystem {
           min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
           max: [3, 7, 11, 15, 19, 23, 27, 31, 39, 47, 55, 63, 71, 79, 87, 95, 123, 151, 179, 207, 235, 263, 308, 353, 398, 443, 488, 533, 595, 657, 719, 781, 843, 905, 967, 1029, 1091, 1153, 1215, 1277, 1339, 1401, 1463, 1525, 1587, 1649, 1711, 1773, 1835, 1897, 1959, 2021, 2083, 2145, 2207, 2269, 2331, 2393, 2455, 2517]
         },
+        attackRating: { base: 20, perLevel: 12 },
         manaCost: [2, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1, 3.3, 3.5, 3.6, 3.8, 4, 4.2, 4.4, 4.6, 4.8, 5, 5.1, 5.3, 5.5, 5.7, 5.9, 6.1, 6.3, 6.5, 6.6, 6.8, 7, 7.2, 7.4, 7.6, 7.8, 8, 8.1, 8.3, 8.5, 8.7, 8.9, 9.1, 9.3, 9.5, 9.6, 9.8, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.1, 11.3, 11.5, 11.7, 11.9, 12.1, 12.3, 12.5, 12.6, 12.8, 13],
         synergies: [
           { skillId: 'lightningstrikecontainer', bonusPerLevel: 20, damageType: 'lightning' },
@@ -130,7 +131,9 @@ class SkillSystem {
         name: "Plague Javelin", type: "placeholder"
       },
       javelinandspearmasterycontainer: {
-        name: "Javelin and Spear Mastery", type: "placeholder"
+        name: "Javelin and Spear Mastery", type: "passive",
+        damage: [40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910, 925],
+        criticalStrike: [5, 9, 12, 15, 17, 19, 20, 21, 23, 23, 24, 25, 26, 26, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
       }
     };
 
@@ -390,12 +393,22 @@ class SkillSystem {
     var damageInfo = this.calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId);
 
     html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+    // Display Attack Rating if available
+    if (skill.attackRating) {
+      var attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+      html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+    }
+
     html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
     html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
     if (damageInfo.synergyBonus > 0) {
       html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
     }
-    
+    if (damageInfo.masteryDamageBonus > 0) {
+      html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+    }
+
     // Show elemental damages if they exist
     var elem = damageInfo.elementalDamages;
     if (elem.fire.max > 0) {
@@ -436,6 +449,19 @@ class SkillSystem {
     }
   } else if (skill.type === 'lightning') {
     var damageInfo = this.calculateElementalDamage(skill, skillLevel, skillId);
+
+    // Display Attack Rating if available
+    if (skill.attackRating) {
+      var attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+      html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+    }
+
+    // Display physical damage bonus from mastery (for javelin skills like Power Strike)
+    var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+    if (masteryDamageBonus > 0) {
+      html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + masteryDamageBonus + '%</div>';
+    }
+
     html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
     html += '<div style="margin: 5px 0; color: #ffff00;">Nova: ' + damageInfo.novaMin + '-' + damageInfo.novaMax + '</div>';
     html += '<div style="margin: 5px 0;">Average Lightning: ' + damageInfo.averageLightning + '</div>';
@@ -470,12 +496,17 @@ class SkillSystem {
   }
 
  calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
-  // Base skill damage bonus
+  // Base skill damage bonus (just from the skill itself)
   var skillDamageBonus = skill.damage.base + (skill.damage.perLevel * (skillLevel - 1));
 
-  // Add synergy bonus
+  // Get synergy bonus separately
   var synergyBonus = this.calculateSynergyBonus(skillId, 'physical');
-  skillDamageBonus += synergyBonus;
+
+  // Get mastery damage bonus (applies to all javelin/spear skills)
+  var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+
+  // Calculate total damage bonus (all bonuses are additive)
+  var totalDamageBonus = skillDamageBonus + synergyBonus + masteryDamageBonus;
 
   // Dexterity bonus for Amazon (applies to damage directly)
   var statBonus = Math.floor(dexterity * 1);
@@ -483,9 +514,9 @@ class SkillSystem {
   // Get weapon elemental damages
   var elementalDamages = this.getWeaponElementalDamages();
 
-  // Calculate base physical damage with stat and skill bonuses
-  var baseMinDamage = Math.floor((weaponDamage.min) * (1 + skillDamageBonus / 100 + statBonus / 100));
-  var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + skillDamageBonus / 100 + statBonus / 100));
+  // Calculate base physical damage with all bonuses
+  var baseMinDamage = Math.floor((weaponDamage.min) * (1 + totalDamageBonus / 100 + statBonus / 100));
+  var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + totalDamageBonus / 100 + statBonus / 100));
 
   // Get individual critical chances (each capped at 75%)
   var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
@@ -533,6 +564,7 @@ class SkillSystem {
     average: Math.floor((totalMinDamage + totalMaxDamage) / 2),
     skillBonus: skillDamageBonus,
     synergyBonus: synergyBonus,
+    masteryDamageBonus: masteryDamageBonus,
     statBonus: statBonus,
     elementalDamages: elementalDamages,
     criticalStrike: criticalStrike,
@@ -559,8 +591,26 @@ getWeaponMasteryChance() {
   if (!masteryInput || parseInt(masteryInput.value) === 0) return 0;
 
   var level = parseInt(masteryInput.value);
-  // Weapon mastery gives critical hit chance: 5% + 2% per level, max 50%
-  return Math.min(5 + (level * 2), 50);
+  var masteryData = this.skillData.javelinandspearmasterycontainer;
+  if (masteryData && masteryData.criticalStrike) {
+    var levelIndex = Math.min(level - 1, masteryData.criticalStrike.length - 1);
+    return masteryData.criticalStrike[levelIndex] || 0;
+  }
+  return 0;
+}
+
+getWeaponMasteryDamageBonus() {
+  // Check for weapon mastery from javelin mastery
+  var masteryInput = document.getElementById('javelinandspearmasterycontainer');
+  if (!masteryInput || parseInt(masteryInput.value) === 0) return 0;
+
+  var level = parseInt(masteryInput.value);
+  var masteryData = this.skillData.javelinandspearmasterycontainer;
+  if (masteryData && masteryData.damage) {
+    var levelIndex = Math.min(level - 1, masteryData.damage.length - 1);
+    return masteryData.damage[levelIndex] || 0;
+  }
+  return 0;
 }
 
   getWeaponElementalDamages() {
