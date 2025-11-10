@@ -61,182 +61,223 @@ const ALL_DROPDOWNS = [
   'amulets-dropdown'
 ];
 
+// Base type to category mapping - DEFINITIVE source of truth
+const BASE_TYPE_CATEGORIES = {
+  // Helms
+  'Cap': 'helm', 'Skull Cap': 'helm', 'Helm': 'helm', 'Full Helm': 'helm',
+  'Great Helm': 'helm', 'Crown': 'helm', 'Mask': 'helm', 'Bone Helm': 'helm',
+  'War Hat': 'helm', 'Sallet': 'helm', 'Casque': 'helm', 'Basinet': 'helm',
+  'Winged Helm': 'helm', 'Grand Crown': 'helm', 'Death Mask': 'helm', 'Grim Helm': 'helm',
+  'Bone Visage': 'helm', 'Diadem': 'helm', 'Circlet': 'helm', 'Coronet': 'helm',
+  'Tiara': 'helm', 'Wolf Head': 'helm', 'Hawk Helm': 'helm', 'Falcon Mask': 'helm',
+  'Alpha Helm': 'helm', 'Spirit Mask': 'helm', 'Jaw Bone': 'helm', 'Fanged Helm': 'helm',
+  'Horned Helm': 'helm', 'Totemic Mask': 'helm', 'Assault Helmet': 'helm',
+  'Avenger Guard': 'helm', 'Sky Spirit': 'helm', 'Targe Helm': 'helm',
+  'Blood Spirit': 'helm', 'Sun Spirit': 'helm', 'Earth Spirit': 'helm',
+  'Lion Helm': 'helm', 'Rage Mask': 'helm', 'Fury Visor': 'helm', 'Destroyer Helm': 'helm',
+  'Conqueror Crown': 'helm', 'Guardian Crown': 'helm', 'Sacred Mask': 'helm',
+
+  // Armors
+  'Quilted Armor': 'armor', 'Leather Armor': 'armor', 'Hard Leather Armor': 'armor',
+  'Studded Leather': 'armor', 'Ring Mail': 'armor', 'Scale Mail': 'armor',
+  'Chain Mail': 'armor', 'Breast Plate': 'armor', 'Splint Mail': 'armor',
+  'Plate Mail': 'armor', 'Field Plate': 'armor', 'Gothic Plate': 'armor',
+  'Full Plate Mail': 'armor', 'Ancient Armor': 'armor', 'Light Plate': 'armor',
+  'Mage Plate': 'armor', 'Ornate Plate': 'armor', 'Templar Coat': 'armor',
+  'Sharktooth Armor': 'armor', 'Embossed Plate': 'armor', 'Chaos Armor': 'armor',
+  'Sacred Armor': 'armor', 'Ghost Armor': 'armor', 'Serpentskin Armor': 'armor',
+  'Demonhide Armor': 'armor', 'Trellised Armor': 'armor', 'Linked Mail': 'armor',
+  'Tigulated Mail': 'armor', 'Mesh Armor': 'armor', 'Cuirass': 'armor',
+  'Russet Armor': 'armor', 'Boneweave': 'armor', 'Great Hauberk': 'armor',
+  'Balrog Skin': 'armor', 'Hellforge Plate': 'armor', 'Kraken Shell': 'armor',
+  'Lacquered Plate': 'armor', 'Shadow Plate': 'armor', 'Scarab Husk': 'armor',
+  'Wire Fleece': 'armor', 'Diamond Mail': 'armor', 'Loricated Mail': 'armor',
+  'Archon Plate': 'armor', 'Wyrmhide': 'armor', 'Dusk Shroud': 'armor',
+
+  // Shields
+  'Buckler': 'shield', 'Small Shield': 'shield', 'Large Shield': 'shield',
+  'Kite Shield': 'shield', 'Tower Shield': 'shield', 'Gothic Shield': 'shield',
+  'Bone Shield': 'shield', 'Spiked Shield': 'shield', 'Defender': 'shield',
+  'Round Shield': 'shield', 'Scutum': 'shield', 'Dragon Shield': 'shield',
+  'Pavilion Shield': 'shield', 'Ancient Shield': 'shield', 'Targe': 'shield',
+  'Rondache': 'shield', 'Heater': 'shield', 'Luna': 'shield', 'Hyperion': 'shield',
+  'Monarch': 'shield', 'Aegis': 'shield', 'Ward': 'shield', 'Grim Shield': 'shield',
+  'Barbed Shield': 'shield', 'Blade Barrier': 'shield', 'Troll Nest': 'shield',
+  'Akaran Targe': 'shield', 'Akaran Rondache': 'shield', 'Protector Shield': 'shield',
+  'Gilded Shield': 'shield', 'Royal Shield': 'shield', 'Sacred Targe': 'shield',
+  'Sacred Rondache': 'shield', 'Kurast Shield': 'shield', 'Zakarum Shield': 'shield',
+  'Vortex Shield': 'shield',
+
+  // Gloves
+  'Leather Gloves': 'gloves', 'Heavy Gloves': 'gloves', 'Chain Gloves': 'gloves',
+  'Light Gauntlets': 'gloves', 'Gauntlets': 'gloves', 'Demonhide Gloves': 'gloves',
+  'Sharkskin Gloves': 'gloves', 'Heavy Bracers': 'gloves', 'Battle Gauntlets': 'gloves',
+  'War Gauntlets': 'gloves', 'Bramble Mitts': 'gloves', 'Vampirebone Gloves': 'gloves',
+  'Vambraces': 'gloves', 'Crusader Gauntlets': 'gloves', 'Ogre Gauntlets': 'gloves',
+
+  // Belts
+  'Sash': 'belts', 'Light Belt': 'belts', 'Belt': 'belts', 'Heavy Belt': 'belts',
+  'Plated Belt': 'belts', 'Demonhide Sash': 'belts', 'Sharkskin Belt': 'belts',
+  'Mesh Belt': 'belts', 'Battle Belt': 'belts', 'War Belt': 'belts',
+  'Spiderweb Sash': 'belts', 'Vampirefang Belt': 'belts', 'Mithril Coil': 'belts',
+  'Troll Belt': 'belts', 'Colossus Girdle': 'belts',
+
+  // Boots
+  'Boots': 'boots', 'Heavy Boots': 'boots', 'Chain Boots': 'boots',
+  'Light Plated Boots': 'boots', 'Greaves': 'boots', 'Demonhide Boots': 'boots',
+  'Sharkskin Boots': 'boots', 'Mesh Boots': 'boots', 'Battle Boots': 'boots',
+  'War Boots': 'boots', 'Wyrmhide Boots': 'boots', 'Scarabshell Boots': 'boots',
+  'Boneweave Boots': 'boots', 'Mirrored Boots': 'boots', 'Myrmidon Greaves': 'boots',
+
+  // Rings
+  'Ring': 'ringsone',
+
+  // Amulets
+  'Amulet': 'amulets',
+
+  // Weapons - Axes
+  'Hand Axe': 'weapon', 'Axe': 'weapon', 'Double Axe': 'weapon',
+  'Military Pick': 'weapon', 'War Axe': 'weapon', 'Large Axe': 'weapon',
+  'Broad Axe': 'weapon', 'Battle Axe': 'weapon', 'Great Axe': 'weapon',
+  'Giant Axe': 'weapon', 'Hatchet': 'weapon', 'Cleaver': 'weapon',
+  'Twin Axe': 'weapon', 'Crowbill': 'weapon', 'Naga': 'weapon',
+  'Military Axe': 'weapon', 'Bearded Axe': 'weapon', 'Tabar': 'weapon',
+  'Gothic Axe': 'weapon', 'Ancient Axe': 'weapon', 'Tomahawk': 'weapon',
+  'Small Crescent': 'weapon', 'Ettin Axe': 'weapon', 'War Spike': 'weapon',
+  'Berserker Axe': 'weapon', 'Feral Axe': 'weapon', 'Silver Edged Axe': 'weapon',
+  'Decapitator': 'weapon', 'Champion Axe': 'weapon', 'Glorious Axe': 'weapon',
+
+  // Weapons - Swords
+  'Short Sword': 'weapon', 'Scimitar': 'weapon', 'Sabre': 'weapon',
+  'Falchion': 'weapon', 'Crystal Sword': 'weapon', 'Broad Sword': 'weapon',
+  'Long Sword': 'weapon', 'War Sword': 'weapon', 'Two-Handed Sword': 'weapon',
+  'Claymore': 'weapon', 'Giant Sword': 'weapon', 'Bastard Sword': 'weapon',
+  'Flamberge': 'weapon', 'Great Sword': 'weapon', 'Gladius': 'weapon',
+  'Cutlass': 'weapon', 'Shamshir': 'weapon', 'Tulwar': 'weapon',
+  'Dimensional Blade': 'weapon', 'Battle Sword': 'weapon', 'Rune Sword': 'weapon',
+  'Ancient Sword': 'weapon', 'Espandon': 'weapon', 'Dacian Falx': 'weapon',
+  'Tusk Sword': 'weapon', 'Gothic Sword': 'weapon', 'Zweihander': 'weapon',
+  'Executioner Sword': 'weapon', 'Blade': 'weapon', 'Falcata': 'weapon',
+  'Ataghan': 'weapon', 'Elegant Blade': 'weapon', 'Hydra Edge': 'weapon',
+  'Phase Blade': 'weapon', 'Conquest Sword': 'weapon', 'Cryptic Sword': 'weapon',
+  'Mythical Sword': 'weapon', 'Legend Sword': 'weapon', 'Highland Blade': 'weapon',
+  'Balrog Blade': 'weapon', 'Champion Sword': 'weapon', 'Colossus Sword': 'weapon',
+  'Colossus Blade': 'weapon',
+
+  // Weapons - Maces/Hammers
+  'Club': 'weapon', 'Spiked Club': 'weapon', 'Mace': 'weapon',
+  'Morning Star': 'weapon', 'Flail': 'weapon', 'War Hammer': 'weapon',
+  'Maul': 'weapon', 'Great Maul': 'weapon', 'Cudgel': 'weapon',
+  'Barbed Club': 'weapon', 'Flanged Mace': 'weapon', 'Jagged Star': 'weapon',
+  'Knout': 'weapon', 'Battle Hammer': 'weapon', 'War Club': 'weapon',
+  'Martel de Fer': 'weapon', 'Truncheon': 'weapon', 'Tyrant Club': 'weapon',
+  'Reinforced Mace': 'weapon', 'Devil Star': 'weapon', 'Scourge': 'weapon',
+  'Legendary Mallet': 'weapon', 'Ogre Maul': 'weapon', 'Thunder Maul': 'weapon',
+
+  // Weapons - Spears/Javelins/Polearms
+  'Javelin': 'weapon', 'Maiden Javelin': 'weapon', 'Pilum': 'weapon', 'Short Spear': 'weapon',
+  'Glaive': 'weapon', 'Throwing Spear': 'weapon', 'Spear': 'weapon',
+  'Trident': 'weapon', 'Brandistock': 'weapon', 'Spetum': 'weapon',
+  'Pike': 'weapon', 'Bardiche': 'weapon', 'Voulge': 'weapon',
+  'Scythe': 'weapon', 'Poleaxe': 'weapon', 'Halberd': 'weapon',
+  'War Scythe': 'weapon', 'War Javelin': 'weapon', 'Great Pilum': 'weapon',
+  'Simbilan': 'weapon', 'Spiculum': 'weapon', 'Harpoon': 'weapon',
+  'War Spear': 'weapon', 'Fuscina': 'weapon', 'War Fork': 'weapon',
+  'Yari': 'weapon', 'Lance': 'weapon', 'Lochaber Axe': 'weapon',
+  'Bill': 'weapon', 'Battle Scythe': 'weapon', 'Partizan': 'weapon',
+  'Bec-de-Corbin': 'weapon', 'Grim Scythe': 'weapon', 'Hyperion Javelin': 'weapon',
+  'Stygian Pilum': 'weapon', 'Balrog Spear': 'weapon', 'Ghost Glaive': 'weapon',
+  'Winged Harpoon': 'weapon', 'Hyperion Spear': 'weapon', 'Stygian Pike': 'weapon',
+  'Mancatcher': 'weapon', 'Ghost Spear': 'weapon', 'War Pike': 'weapon',
+  'Ogre Axe': 'weapon', 'Colossus Voulge': 'weapon', 'Thresher': 'weapon',
+  'Cryptic Axe': 'weapon', 'Great Poleaxe': 'weapon', 'Giant Thresher': 'weapon',
+
+  // Weapons - Bows/Crossbows
+  'Short Bow': 'weapon', 'Hunter\'s Bow': 'weapon', 'Long Bow': 'weapon',
+  'Composite Bow': 'weapon', 'Short Battle Bow': 'weapon', 'Long Battle Bow': 'weapon',
+  'Short War Bow': 'weapon', 'Long War Bow': 'weapon', 'Edge Bow': 'weapon',
+  'Razor Bow': 'weapon', 'Cedar Bow': 'weapon', 'Double Bow': 'weapon',
+  'Short Siege Bow': 'weapon', 'Large Siege Bow': 'weapon', 'Rune Bow': 'weapon',
+  'Gothic Bow': 'weapon', 'Spider Bow': 'weapon', 'Blade Bow': 'weapon',
+  'Shadow Bow': 'weapon', 'Great Bow': 'weapon', 'Diamond Bow': 'weapon',
+  'Crusader Bow': 'weapon', 'Ward Bow': 'weapon', 'Hydra Bow': 'weapon',
+  'Light Crossbow': 'weapon', 'Crossbow': 'weapon', 'Heavy Crossbow': 'weapon',
+  'Repeating Crossbow': 'weapon', 'Arbalest': 'weapon', 'Siege Crossbow': 'weapon',
+  'Ballista': 'weapon', 'Chu-Ko-Nu': 'weapon', 'Pellet Bow': 'weapon',
+  'Gorgon Crossbow': 'weapon', 'Colossus Crossbow': 'weapon', 'Demon Crossbow': 'weapon',
+
+  // Weapons - Staves/Wands
+  'Short Staff': 'weapon', 'Long Staff': 'weapon', 'Gnarled Staff': 'weapon',
+  'Battle Staff': 'weapon', 'War Staff': 'weapon', 'Jo Staff': 'weapon',
+  'Quarterstaff': 'weapon', 'Cedar Staff': 'weapon', 'Gothic Staff': 'weapon',
+  'Rune Staff': 'weapon', 'Walking Stick': 'weapon', 'Stalagmite': 'weapon',
+  'Elder Staff': 'weapon', 'Shillelagh': 'weapon', 'Archon Staff': 'weapon',
+  'Wand': 'weapon', 'Yew Wand': 'weapon', 'Bone Wand': 'weapon',
+  'Grim Wand': 'weapon', 'Burnt Wand': 'weapon', 'Petrified Wand': 'weapon',
+  'Tomb Wand': 'weapon', 'Grave Wand': 'weapon', 'Polished Wand': 'weapon',
+  'Ghost Wand': 'weapon', 'Lich Wand': 'weapon', 'Unearthed Wand': 'weapon',
+
+  // Weapons - Scepters
+  'Scepter': 'weapon', 'Grand Scepter': 'weapon', 'War Scepter': 'weapon',
+  'Rune Scepter': 'weapon', 'Holy Water Sprinkler': 'weapon', 'Divine Scepter': 'weapon',
+  'Mighty Scepter': 'weapon', 'Seraph Rod': 'weapon', 'Caduceus': 'weapon',
+
+  // Weapons - Daggers/Throwing
+  'Dagger': 'weapon', 'Dirk': 'weapon', 'Kriss': 'weapon',
+  'Blade': 'weapon', 'Throwing Knife': 'weapon', 'Throwing Axe': 'weapon',
+  'Balanced Knife': 'weapon', 'Balanced Axe': 'weapon', 'Poignard': 'weapon',
+  'Rondel': 'weapon', 'Cinquedeas': 'weapon', 'Stiletto': 'weapon',
+  'Battle Dart': 'weapon', 'Francisca': 'weapon', 'War Dart': 'weapon',
+  'Hurlbat': 'weapon', 'Bone Knife': 'weapon', 'Mithril Point': 'weapon',
+  'Fanged Knife': 'weapon', 'Legend Spike': 'weapon', 'Flying Knife': 'weapon',
+  'Flying Axe': 'weapon', 'Winged Knife': 'weapon', 'Winged Axe': 'weapon',
+
+  // Weapons - Class-specific
+  'Katar': 'weapon', 'Wrist Blade': 'weapon', 'Hatchet Hands': 'weapon',
+  'Cestus': 'weapon', 'Claws': 'weapon', 'Blade Talons': 'weapon',
+  'Scissors Katar': 'weapon', 'Quhab': 'weapon', 'Wrist Spike': 'weapon',
+  'Fascia': 'weapon', 'Hand Scythe': 'weapon', 'Greater Claws': 'weapon',
+  'Greater Talons': 'weapon', 'Scissors Quhab': 'weapon', 'Suwayyah': 'weapon',
+  'Wrist Sword': 'weapon', 'War Fist': 'weapon', 'Battle Cestus': 'weapon',
+  'Feral Claws': 'weapon', 'Runic Talons': 'weapon', 'Scissors Suwayyah': 'weapon',
+  'Orb': 'weapon', 'Eagle Orb': 'weapon', 'Sacred Globe': 'weapon',
+  'Smoked Sphere': 'weapon', 'Clasped Orb': 'weapon', 'Jared\'s Stone': 'weapon',
+  'Stag Bow': 'weapon', 'Matriarchal Bow': 'weapon', 'Ceremonial Bow': 'weapon',
+  'Ashwood Bow': 'weapon', 'Ceremonial Spear': 'weapon', 'Matriarchal Spear': 'weapon',
+  'Ceremonial Javelin': 'weapon', 'Matriarchal Javelin': 'weapon'
+};
+
+/**
+ * Get item category from base type
+ */
+function getItemCategory(item) {
+  if (!item) return null;
+
+  // Check if item has explicit baseType
+  if (item.baseType && BASE_TYPE_CATEGORIES[item.baseType]) {
+    return BASE_TYPE_CATEGORIES[item.baseType];
+  }
+
+  // Fallback: try to extract from description
+  if (item.description) {
+    const lines = item.description.split('<br>');
+    if (lines.length > 1) {
+      const baseTypeLine = lines[1].trim();
+      if (BASE_TYPE_CATEGORIES[baseTypeLine]) {
+        return BASE_TYPE_CATEGORIES[baseTypeLine];
+      }
+    }
+  }
+
+  return null;
+}
+
 /**
  * Detect item type from description or baseType
  */
 function detectItemType(itemName, item) {
-  // If item has baseType, use that directly
-  if (item.baseType) {
-    const baseType = item.baseType.toLowerCase();
-
-    // Weapons
-    if (baseType.includes('sword') || baseType.includes('axe') || baseType.includes('mace') ||
-        baseType.includes('hammer') || baseType.includes('spear') || baseType.includes('bow') ||
-        baseType.includes('staff') || baseType.includes('dagger') || baseType.includes('wand') ||
-        baseType.includes('claw') || baseType.includes('orb') || baseType.includes('javelin') ||
-        baseType.includes('polearm') || baseType.includes('scepter') || baseType.includes('scythe')) {
-      return 'weapon';
-    }
-
-    // Helms
-    if (baseType.includes('helm') || baseType.includes('crown') || baseType.includes('cap') ||
-        baseType.includes('skull') || baseType.includes('mask') || baseType.includes('circlet') ||
-        baseType.includes('headgear') || baseType.includes('horns') || baseType.includes('coif') ||
-        baseType.includes('hat')) {
-      return 'helm';
-    }
-
-    // Armor
-    if (baseType.includes('armor') || baseType.includes('mail') || baseType.includes('plate') ||
-        baseType.includes('hide') || baseType.includes('leather') || baseType.includes('robe') ||
-        baseType.includes('chain') || baseType.includes('coat') || baseType.includes('garb')) {
-      return 'armor';
-    }
-
-    // Shields
-    if (baseType.includes('shield') || baseType.includes('buckler') || baseType.includes('ward')) {
-      return 'shield';
-    }
-
-    // Gloves
-    if (baseType.includes('gloves') || baseType.includes('gauntlet') || baseType.includes('hand')) {
-      return 'gloves';
-    }
-
-    // Belts
-    if (baseType.includes('belt') || baseType.includes('sash')) {
-      return 'belts';
-    }
-
-    // Boots
-    if (baseType.includes('boots') || baseType.includes('greaves') || baseType.includes('treads') ||
-        baseType.includes('shoes')) {
-      return 'boots';
-    }
-
-    // Rings
-    if (baseType.includes('ring')) return 'ringsone';
-
-    // Amulets
-    if (baseType.includes('amulet')) return 'amulets';
-  }
-
-  // Fallback to description-based detection
-  if (item.description) {
-    const desc = item.description.toLowerCase();
-
-    // Extract base type (second line after first <br>)
-    // Format: "ItemName<br>BaseType<br>..."
-    const lines = desc.split('<br>');
-    const baseTypeLine = lines.length > 1 ? lines[1].trim() : '';
-
-    // Check base type line first for more accurate detection
-    if (baseTypeLine) {
-      // Belts - check first to avoid "skull" in item names matching helms
-      if (baseTypeLine.includes('belt') || baseTypeLine.includes('sash')) {
-        return 'belts';
-      }
-
-      // Gloves
-      if (baseTypeLine.includes('gloves') || baseTypeLine.includes('gauntlet') ||
-          baseTypeLine.includes('hand')) {
-        return 'gloves';
-      }
-
-      // Boots
-      if (baseTypeLine.includes('boots') || baseTypeLine.includes('greaves') ||
-          baseTypeLine.includes('treads') || baseTypeLine.includes('shoes')) {
-        return 'boots';
-      }
-
-      // Weapons - use word boundary regex to avoid false matches
-      const weaponPattern = /\b(sword|axe|mace|hammer|spear|bow|staff|dagger|wand|claw|orb|javelin|polearm|scepter|scythe|pick|club|flail|blade|knout|star|crossbow|ballista|decapitator|tabar|spetum|trident|halberd|bardiche|partisan|bill|glaive|lance|pike|voulge|maul|martel|whip)\b/;
-      if (weaponPattern.test(baseTypeLine)) {
-        return 'weapon';
-      }
-
-      // Helms
-      if (baseTypeLine.includes('helm') || baseTypeLine.includes('crown') ||
-          baseTypeLine.includes('cap') || baseTypeLine.includes('mask') ||
-          baseTypeLine.includes('circlet') || baseTypeLine.includes('headgear') ||
-          baseTypeLine.includes('horns') || baseTypeLine.includes('coif') ||
-          baseTypeLine.includes('hat')) {
-        return 'helm';
-      }
-
-      // Armor
-      if (baseTypeLine.includes('armor') || baseTypeLine.includes('mail') ||
-          baseTypeLine.includes('plate') || baseTypeLine.includes('hide') ||
-          baseTypeLine.includes('leather') || baseTypeLine.includes('robe') ||
-          baseTypeLine.includes('chain') || baseTypeLine.includes('coat') ||
-          baseTypeLine.includes('garb')) {
-        return 'armor';
-      }
-
-      // Shields
-      if (baseTypeLine.includes('shield') || baseTypeLine.includes('buckler') ||
-          baseTypeLine.includes('ward')) {
-        return 'shield';
-      }
-
-      // Rings
-      if (baseTypeLine.includes('ring')) return 'ringsone';
-
-      // Amulets
-      if (baseTypeLine.includes('amulet')) return 'amulets';
-    }
-
-    // Fallback to full description check if base type line didn't match
-    // Weapons - use word boundary regex to avoid false matches (e.g., "absorb" contains "orb")
-    const weaponPattern = /\b(sword|axe|mace|hammer|spear|bow|staff|dagger|wand|claw|orb|javelin|polearm|scepter|scythe)\b/;
-    if (weaponPattern.test(desc)) {
-      return 'weapon';
-    }
-
-    // Helms
-    if (desc.includes('helm') || desc.includes('crown') || desc.includes('cap') ||
-        desc.includes('skull') || desc.includes('mask') || desc.includes('circlet') ||
-        desc.includes('headgear') || desc.includes('horns') || desc.includes('coif') ||
-        desc.includes('hat')) {
-      return 'helm';
-    }
-
-    // Armor
-    if (desc.includes('armor') || desc.includes('mail') || desc.includes('plate') ||
-        desc.includes('hide') || desc.includes('leather') || desc.includes('robe') ||
-        desc.includes('chain') || desc.includes('coat') || desc.includes('garb')) {
-      return 'armor';
-    }
-
-    // Shields
-    if (desc.includes('shield') || desc.includes('buckler') || desc.includes('ward')) {
-      return 'shield';
-    }
-
-    // Gloves
-    if (desc.includes('gloves') || desc.includes('gauntlet') || desc.includes('hand')) {
-      return 'gloves';
-    }
-
-    // Belts
-    if (desc.includes('belt') || desc.includes('sash')) {
-      return 'belts';
-    }
-
-    // Boots
-    if (desc.includes('boots') || desc.includes('greaves') || desc.includes('treads') ||
-        desc.includes('shoes')) {
-      return 'boots';
-    }
-
-    // Rings
-    if (desc.includes('ring')) return 'ringsone';
-
-    // Amulets
-    if (desc.includes('amulet')) return 'amulets';
-  }
-
-  return null;
+  // Use the new category system
+  return getItemCategory(item);
 }
 
 /**
