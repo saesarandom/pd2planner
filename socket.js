@@ -2879,11 +2879,16 @@ this.selectedJewelSuffix3MaxValue = null;
 
    parseStatLine(line) {
   if (!line) return;
-  
+
   const cleanLine = line.replace(/<[^>]*>/g, '').trim();
   if (!cleanLine) return;
-  
-  
+
+  // IMPORTANT: Skip set bonus lines - these are handled by setTracker.js
+  // Set bonuses have patterns like "(2 Items)", "(3 Items)", "(Complete Set)"
+  if (/\(\d+\s+Items?\)|\(Complete Set\)/i.test(cleanLine)) {
+    return; // Skip this line entirely
+  }
+
   try {
     // === RAINBOW FACET PATTERNS FIRST (most specific) ===
     
