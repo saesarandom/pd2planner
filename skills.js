@@ -42,7 +42,7 @@ class SkillSystem {
         { id: 'jabcontainer', name: 'Jab', level: 1 },
         { id: 'poisonjavelincontainer', name: 'Poison Javelin', level: 1 },
         { id: 'powerstrikecontainer', name: 'Power Strike', level: 6 },
-        { id: 'javelinandspearmasterycontainer', name: 'Javelin Mastery', level: 1 },
+        { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 1 },
         { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12 },
         { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12 },
         { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18 },
@@ -148,7 +148,17 @@ class SkillSystem {
         ]
       },
       lightningboltcontainer: {
-        name: "Lightning Bolt", type: "placeholder"
+        name: "Lightning Bolt", type: "lightning_conversion",
+        lightningDamage: {
+          min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+          max: [40, 52, 64, 76, 88, 100, 112, 124, 150, 176, 202, 228, 254, 280, 306, 332, 386, 440, 494, 548, 602, 656, 738, 820, 902, 984, 1066, 1148, 1258, 1368, 1478, 1588, 1698, 1808, 1918, 2028, 2138, 2248, 2358, 2468, 2578, 2688, 2798, 2908, 3018, 3128, 3238, 3348, 3458, 3568, 3678, 3788, 3898, 4008, 4118, 4228, 4338, 4448, 4558, 4668]
+        },
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
+        convertsPhysical: true,
+        synergies: [
+          { skillId: 'powerstrikecontainer', bonusPerLevel: 15, damageType: 'lightning' },
+          { skillId: 'lightningfurycontainer', bonusPerLevel: 15, damageType: 'lightning' }
+        ]
       },
       plaguejavelincontainer: {
         name: "Plague Javelin", type: "poison",
@@ -512,6 +522,34 @@ class SkillSystem {
     if (damageInfo.synergyBonus > 0) {
       html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
     }
+  } else if (skill.type === 'lightning_conversion') {
+    var damageInfo = this.calculateLightningConversionDamage(skill, skillLevel, weaponDamage, dexterity, skillId);
+
+    // Display physical as 0-0 since it's converted
+    html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+    html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+    if (damageInfo.masteryDamageBonus > 0) {
+      html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+    }
+    html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: 0-0 (Converted to Lightning)</div>';
+    html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
+    html += '<div style="margin: 5px 0;">Average Lightning: ' + damageInfo.averageLightning + '</div>';
+    if (damageInfo.synergyBonus > 0) {
+      html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+    }
+    html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
+    html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.averageLightning + '</div>';
+
+    var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+    if (combinedCriticalStrike > 0) {
+      html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
+    }
+    if (damageInfo.deadlyStrike > 0) {
+      html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+    }
+    if (damageInfo.critMultiplier > 1) {
+      html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
+    }
   } else if (skill.type === 'lightning') {
     var damageInfo = this.calculateElementalDamage(skill, skillLevel, skillId);
 
@@ -798,6 +836,60 @@ getDeadlyStrikeChance() {
       max: max,
       average: Math.floor((min + max) / 8),
       synergyBonus: synergyBonus
+    };
+  }
+
+  calculateLightningConversionDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
+    // Calculate physical damage that will be converted
+    var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+    var statBonus = Math.floor(dexterity * 1);
+
+    // Calculate base physical damage (weapon × bonuses)
+    var convertedPhysicalMin = Math.floor((weaponDamage.min) * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    var convertedPhysicalMax = Math.floor((weaponDamage.max) * (1 + masteryDamageBonus / 100 + statBonus / 100));
+
+    // Get skill's base lightning damage
+    var levelIndex = Math.min(skillLevel - 1, 59);
+    var skillLightningMin = skill.lightningDamage.min[levelIndex] || 1;
+    var skillLightningMax = skill.lightningDamage.max[levelIndex] || 1;
+
+    // Total base lightning = converted physical + skill lightning
+    var baseLightningMin = convertedPhysicalMin + skillLightningMin;
+    var baseLightningMax = convertedPhysicalMax + skillLightningMax;
+
+    // Apply synergies to total lightning damage
+    var synergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
+    var lightningMin = Math.floor(baseLightningMin * (1 + synergyBonus / 100));
+    var lightningMax = Math.floor(baseLightningMax * (1 + synergyBonus / 100));
+
+    // Get critical strike chances
+    var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
+    var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
+    var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
+
+    // Calculate total crit chance
+    var totalCritChance = 1 - ((1 - deadlyStrike/100) * (1 - criticalStrike/100) * (1 - weaponMastery/100));
+    totalCritChance = Math.floor(totalCritChance * 100);
+    totalCritChance = Math.min(totalCritChance, 95);
+
+    // Apply crit multiplier (1.5x on crit)
+    var critMultiplier = 1 + (totalCritChance / 100) * 0.5;
+
+    // Apply crit to lightning damage
+    var finalLightningMin = Math.floor(lightningMin * critMultiplier);
+    var finalLightningMax = Math.floor(lightningMax * critMultiplier);
+
+    return {
+      lightningMin: finalLightningMin,
+      lightningMax: finalLightningMax,
+      averageLightning: Math.floor((finalLightningMin + finalLightningMax) / 2),
+      synergyBonus: synergyBonus,
+      masteryDamageBonus: masteryDamageBonus,
+      statBonus: statBonus,
+      criticalStrike: criticalStrike,
+      deadlyStrike: deadlyStrike,
+      weaponMastery: weaponMastery,
+      critMultiplier: critMultiplier.toFixed(2)
     };
   }
 
