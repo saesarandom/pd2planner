@@ -44,6 +44,7 @@ class SkillSystem {
         { id: 'powerstrikecontainer', name: 'Power Strike', level: 6 },
         { id: 'javelinandspearmasterycontainer', name: 'Javelin Mastery', level: 1 },
         { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12 },
+        { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18 },
         { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18 },
         { id: 'fendcontainer', name: 'Fend', level: 24 },
         { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30 }
@@ -78,10 +79,13 @@ class SkillSystem {
         name: "Jab", type: "physical",
         damage: { base: 30, perLevel: 20 },
         attackRating: { base: 25, perLevel: 12 },
-        manaCost: { base: 1.5, perLevel: 0.2 }
+        manaCost: { base: 1.5, perLevel: 0.2 },
+        synergies: [
+          { skillId: 'fendcontainer', bonusPerLevel: 18, damageType: 'physical' }
+        ]
       },
       fendcontainer: {
-        name: "Fend", type: "physical", 
+        name: "Fend", type: "physical",
         damage: { base: 45, perLevel: 25 },
         attackRating: { base: 40, perLevel: 15 },
         manaCost: { base: 3, perLevel: 0.3 }
@@ -92,12 +96,41 @@ class SkillSystem {
           min: [2, 4, 6, 9, 11, 13, 16, 18, 25, 32, 39, 46, 53, 60, 67, 74, 88, 102, 116, 131],
           max: [5, 7, 10, 12, 15, 17, 19, 22, 29, 37, 44, 51, 58, 66, 73, 80, 95, 110, 124, 139]
         },
-        manaCost: { base: 2, perLevel: 0.25 }
+        manaCost: { base: 2, perLevel: 0.25 },
+        synergies: [
+          { skillId: 'plaguejavelincontainer', bonusPerLevel: 24, damageType: 'poison' },
+          { skillId: 'javelinandspearmasterycontainer', bonusPerLevel: 24, damageType: 'poison' }
+        ]
       },
       powerstrikecontainer: {
         name: "Power Strike", type: "lightning",
-        lightningDamage: { base: 1, perLevel: 8 },
-        manaCost: { base: 2, perLevel: 0.2 }
+        lightningDamage: {
+          min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+          max: [1, 4, 7, 10, 13, 16, 19, 22, 27, 32, 37, 42, 47, 52, 57, 62, 75, 88, 101, 114, 127, 140, 162, 184, 206, 228, 250, 272, 304, 336, 368, 400, 432, 464, 496, 528, 560, 592, 624, 656, 688, 720, 752, 784, 816, 848, 880, 912, 944, 976, 1008, 1040, 1072, 1104, 1136, 1168, 1200, 1232, 1264, 1296]
+        },
+        novaDamage: {
+          min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+          max: [3, 7, 11, 15, 19, 23, 27, 31, 39, 47, 55, 63, 71, 79, 87, 95, 123, 151, 179, 207, 235, 263, 308, 353, 398, 443, 488, 533, 595, 657, 719, 781, 843, 905, 967, 1029, 1091, 1153, 1215, 1277, 1339, 1401, 1463, 1525, 1587, 1649, 1711, 1773, 1835, 1897, 1959, 2021, 2083, 2145, 2207, 2269, 2331, 2393, 2455, 2517]
+        },
+        manaCost: [2, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1, 3.3, 3.5, 3.6, 3.8, 4, 4.2, 4.4, 4.6, 4.8, 5, 5.1, 5.3, 5.5, 5.7, 5.9, 6.1, 6.3, 6.5, 6.6, 6.8, 7, 7.2, 7.4, 7.6, 7.8, 8, 8.1, 8.3, 8.5, 8.7, 8.9, 9.1, 9.3, 9.5, 9.6, 9.8, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.1, 11.3, 11.5, 11.7, 11.9, 12.1, 12.3, 12.5, 12.6, 12.8, 13],
+        synergies: [
+          { skillId: 'lightningstrikecontainer', bonusPerLevel: 20, damageType: 'lightning' },
+          { skillId: 'lightningstrikecontainer', bonusPerLevel: 20, damageType: 'nova' },
+          { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'lightning' },
+          { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'nova' }
+        ]
+      },
+      lightningstrikecontainer: {
+        name: "Lightning Strike", type: "placeholder"
+      },
+      lightningboltcontainer: {
+        name: "Lightning Bolt", type: "placeholder"
+      },
+      plaguejavelincontainer: {
+        name: "Plague Javelin", type: "placeholder"
+      },
+      javelinandspearmasterycontainer: {
+        name: "Javelin and Spear Mastery", type: "placeholder"
       }
     };
 
@@ -354,11 +387,14 @@ class SkillSystem {
   var weaponUsable = isWeaponUsable();
 
   if (skill.type === 'physical') {
-    var damageInfo = this.calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity);
-    
+    var damageInfo = this.calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId);
+
     html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
     html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
     html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
+    if (damageInfo.synergyBonus > 0) {
+      html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+    }
     
     // Show elemental damages if they exist
     var elem = damageInfo.elementalDamages;
@@ -392,13 +428,21 @@ class SkillSystem {
       html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
     }
   } else if (skill.type === 'poison') {
-    var damageInfo = this.calculatePoisonDamage(skill, skillLevel);
+    var damageInfo = this.calculatePoisonDamage(skill, skillLevel, skillId);
     html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + damageInfo.min + '-' + damageInfo.max + ' over 4s</div>';
     html += '<div style="margin: 5px 0;">Per Second: ' + damageInfo.average + '</div>';
+    if (damageInfo.synergyBonus > 0) {
+      html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+    }
   } else if (skill.type === 'lightning') {
-    var damageInfo = this.calculateElementalDamage(skill, skillLevel);
-    html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: 1-' + damageInfo.max + '</div>';
-    html += '<div style="margin: 5px 0;">Average: ' + damageInfo.average + '</div>';
+    var damageInfo = this.calculateElementalDamage(skill, skillLevel, skillId);
+    html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
+    html += '<div style="margin: 5px 0; color: #ffff00;">Nova: ' + damageInfo.novaMin + '-' + damageInfo.novaMax + '</div>';
+    html += '<div style="margin: 5px 0;">Average Lightning: ' + damageInfo.averageLightning + '</div>';
+    html += '<div style="margin: 5px 0;">Average Nova: ' + damageInfo.averageNova + '</div>';
+    if (damageInfo.synergyBonus > 0) {
+      html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+    }
   }
   
   if (damageInfo && damageInfo.critMultiplier > 1) {
@@ -425,58 +469,62 @@ class SkillSystem {
     return { min: min, max: max };
   }
 
- calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity) {
+ calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
   // Base skill damage bonus
   var skillDamageBonus = skill.damage.base + (skill.damage.perLevel * (skillLevel - 1));
-  
+
+  // Add synergy bonus
+  var synergyBonus = this.calculateSynergyBonus(skillId, 'physical');
+  skillDamageBonus += synergyBonus;
+
   // Dexterity bonus for Amazon (applies to damage directly)
   var statBonus = Math.floor(dexterity * 1);
-  
+
   // Get weapon elemental damages
   var elementalDamages = this.getWeaponElementalDamages();
-  
+
   // Calculate base physical damage with stat and skill bonuses
   var baseMinDamage = Math.floor((weaponDamage.min) * (1 + skillDamageBonus / 100 + statBonus / 100));
   var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + skillDamageBonus / 100 + statBonus / 100));
-  
+
   // Get individual critical chances (each capped at 75%)
   var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
   var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
   var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
 
 
-  
+
   // NEW CRIT SYSTEM: Calculate total crit chance using multiplicative formula
   // Total Crit Chance = 1 - ((1 - DS) * (1 - CS) * (1 - WM))
   var totalCritChance = 1 - ((1 - deadlyStrike/100) * (1 - criticalStrike/100) * (1 - weaponMastery/100));
-  
+
   // Round down to nearest percent
   totalCritChance = Math.floor(totalCritChance * 100);
-  
+
   // Cap at 95% maximum
   totalCritChance = Math.min(totalCritChance, 95);
-  
+
   // NEW CRIT MULTIPLIER: All crits now multiply by 1.5x instead of 2x
   var critMultiplier = 1 + (totalCritChance / 100) * 0.5; // 50% more damage on crit
-  
+
   // Apply crit multiplier to physical damage only
   var physicalMinWithCrits = Math.floor(baseMinDamage * critMultiplier);
   var physicalMaxWithCrits = Math.floor(baseMaxDamage * critMultiplier);
-  
+
   // Add elemental damages (these don't get crit multiplier)
   var totalMinDamage = physicalMinWithCrits + elementalDamages.fire.min + elementalDamages.cold.min + elementalDamages.lightning.min + elementalDamages.poison.min;
   var totalMaxDamage = physicalMaxWithCrits + elementalDamages.fire.max + elementalDamages.cold.max + elementalDamages.lightning.max + elementalDamages.poison.max;
-  
+
   // Calculate average
   var avgPhysicalDamage = (baseMinDamage + baseMaxDamage) / 2;
   var avgPhysicalWithCrits = Math.floor(avgPhysicalDamage * critMultiplier);
 
   // Total average includes elemental (which doesn't crit)
-  var avgElemental = (elementalDamages.fire.min + elementalDamages.fire.max + 
-                     elementalDamages.cold.min + elementalDamages.cold.max + 
-                     elementalDamages.lightning.min + elementalDamages.lightning.max + 
+  var avgElemental = (elementalDamages.fire.min + elementalDamages.fire.max +
+                     elementalDamages.cold.min + elementalDamages.cold.max +
+                     elementalDamages.lightning.min + elementalDamages.lightning.max +
                      elementalDamages.poison.min + elementalDamages.poison.max) / 2;
-  
+
   var totalAvgDamage = avgPhysicalWithCrits + avgElemental;
 
   return {
@@ -484,6 +532,7 @@ class SkillSystem {
     max: totalMaxDamage,
     average: Math.floor((totalMinDamage + totalMaxDamage) / 2),
     skillBonus: skillDamageBonus,
+    synergyBonus: synergyBonus,
     statBonus: statBonus,
     elementalDamages: elementalDamages,
     criticalStrike: criticalStrike,
@@ -589,23 +638,52 @@ getDeadlyStrikeChance() {
 
 
 
-  calculatePoisonDamage(skill, skillLevel) {
+  calculatePoisonDamage(skill, skillLevel, skillId) {
     var levelIndex = Math.min(skillLevel - 1, skill.poisonDamage.min.length - 1);
-    var min = skill.poisonDamage.min[levelIndex] || 0;
-    var max = skill.poisonDamage.max[levelIndex] || 0;
+    var baseMin = skill.poisonDamage.min[levelIndex] || 0;
+    var baseMax = skill.poisonDamage.max[levelIndex] || 0;
+
+    // Calculate synergy bonus
+    var synergyBonus = this.calculateSynergyBonus(skillId, 'poison');
+
+    // Apply synergy bonus as percentage increase
+    var min = Math.floor(baseMin * (1 + synergyBonus / 100));
+    var max = Math.floor(baseMax * (1 + synergyBonus / 100));
 
     return {
       min: min,
       max: max,
-      average: Math.floor((min + max) / 8)
+      average: Math.floor((min + max) / 8),
+      synergyBonus: synergyBonus
     };
   }
 
-  calculateElementalDamage(skill, skillLevel) {
-    var damage = skill.lightningDamage.base + (skill.lightningDamage.perLevel * (skillLevel - 1));
+  calculateElementalDamage(skill, skillLevel, skillId) {
+    // Get base damages from tables
+    var levelIndex = Math.min(skillLevel - 1, 59);
+    var baseLightningMin = skill.lightningDamage.min[levelIndex] || 1;
+    var baseLightningMax = skill.lightningDamage.max[levelIndex] || 1;
+    var baseNovaMin = skill.novaDamage.min[levelIndex] || 1;
+    var baseNovaMax = skill.novaDamage.max[levelIndex] || 1;
+
+    // Calculate synergy bonuses (separate for lightning and nova)
+    var lightningSynergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
+    var novaSynergyBonus = this.calculateSynergyBonus(skillId, 'nova');
+
+    // Apply synergies
+    var lightningMin = Math.floor(baseLightningMin * (1 + lightningSynergyBonus / 100));
+    var lightningMax = Math.floor(baseLightningMax * (1 + lightningSynergyBonus / 100));
+    var novaMin = Math.floor(baseNovaMin * (1 + novaSynergyBonus / 100));
+    var novaMax = Math.floor(baseNovaMax * (1 + novaSynergyBonus / 100));
+
     return {
-      max: damage,
-      average: Math.floor(damage / 2)
+      lightningMin: lightningMin,
+      lightningMax: lightningMax,
+      novaMin: novaMin,
+      novaMax: novaMax,
+      averageLightning: Math.floor((lightningMin + lightningMax) / 2),
+      averageNova: Math.floor((novaMin + novaMax) / 2),
+      synergyBonus: Math.max(lightningSynergyBonus, novaSynergyBonus)
     };
   }
 
@@ -775,6 +853,26 @@ getDeadlyStrikeChance() {
       input.value = value;
       this.updatePointsDisplay();
     }
+  }
+
+  // Calculate synergy bonus for a skill
+  calculateSynergyBonus(skillId, damageType) {
+    var skill = this.skillData[skillId];
+    if (!skill || !skill.synergies) {
+      return 0;
+    }
+
+    var totalBonus = 0;
+    for (var i = 0; i < skill.synergies.length; i++) {
+      var synergy = skill.synergies[i];
+      // Only apply synergies that match the damage type
+      if (synergy.damageType === damageType) {
+        var synergySkillLevel = this.getSkillValue(synergy.skillId);
+        totalBonus += synergySkillLevel * synergy.bonusPerLevel;
+      }
+    }
+
+    return totalBonus;
   }
 
 
