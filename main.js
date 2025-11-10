@@ -378,8 +378,19 @@ function populateItemDropdowns() {
  * Get the current value of a property (handles both fixed values and ranges)
  */
 function getPropertyValue(prop) {
-  if (typeof prop === 'object' && prop !== null && 'current' in prop) {
-    return prop.current;
+  if (typeof prop === 'object' && prop !== null) {
+    // If it's a variable stat object with min/max
+    if ('max' in prop) {
+      // Return current if valid, otherwise default to max
+      if ('current' in prop && typeof prop.current === 'number') {
+        return prop.current;
+      }
+      return prop.max;
+    }
+    // If current exists but no max, return current
+    if ('current' in prop) {
+      return prop.current;
+    }
   }
   return prop;
 }
@@ -624,8 +635,9 @@ window.updateItemInfo = function updateItemInfo(event) {
     if (item.properties && item.baseType) {
       Object.keys(item.properties).forEach(key => {
         const prop = item.properties[key];
-        if (typeof prop === 'object' && prop !== null && 'current' in prop) {
-          delete prop.current;
+        if (typeof prop === 'object' && prop !== null && 'max' in prop) {
+          // Reset to max value instead of deleting to avoid [object Object] display
+          prop.current = prop.max;
         }
       });
     }
