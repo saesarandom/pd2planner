@@ -634,7 +634,8 @@ window.updateItemInfo = function updateItemInfo(event) {
   if (item) {
     // Reset any .current values for dynamic items to ensure fresh regeneration
     // This prevents values from "sticking" when switching between items
-    if (item.properties && item.baseType) {
+    // BUT skip if we're loading a saved build (to preserve the saved values)
+    if (item.properties && item.baseType && !window._isLoadingCharacterData) {
       Object.keys(item.properties).forEach(key => {
         const prop = item.properties[key];
         if (typeof prop === 'object' && prop !== null && 'max' in prop) {
