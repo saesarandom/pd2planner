@@ -11,6 +11,60 @@ class SetTracker {
       // Add more sets here as needed
     };
 
+    // Define full set names
+    this.SET_FULL_NAMES = {
+      "Arcanna's": "Arcanna's Tricks",
+      "Tal Rasha's": "Tal Rasha's Wrappings",
+      "Arctic": "Arctic Gear",
+      "Hsarus'": "Hsarus' Defense",
+      "Berserker's": "Berserker's Arsenal",
+      "Cleglaw's": "Cleglaw's Brace",
+      "Infernal": "Infernal Tools",
+      "Death's": "Death's Disguise",
+      "Sigon's": "Sigon's Complete Steel",
+      "Isenhart's": "Isenhart's Armory",
+      "Civerb's": "Civerb's Vestments",
+      "Cathan's": "Cathan's Traps",
+      "Angelic": "Angelic Raiment",
+      "Vidala's": "Vidala's Rig",
+      "Iratha's": "Iratha's Finery",
+      "Milabrega's": "Milabrega's Regalia",
+      "Tancred's": "Tancred's Battlegear",
+      "Cow King's": "Cow King's Leathers",
+      "Sander's": "Sander's Folly",
+      "Hwanin's": "Hwanin's Majesty",
+      "Orphan's": "Orphan's Call",
+      "The Disciple": "The Disciple",
+      "Naj's": "Naj's Ancient Vestige",
+      "Sazabi's": "Sazabi's Grand Tribute",
+      "Heaven's": "Heaven's Brethren",
+      "Bul-Kathos'": "Bul-Kathos' Children",
+      "Aldur's": "Aldur's Watchtower",
+      "Griswold's": "Griswold's Legacy",
+      "Immortal King": "Immortal King",
+      "M'avina's": "M'avina's Battle Hymn",
+      "Natalya's": "Natalya's Odium",
+      "Trang-Oul's": "Trang-Oul's Avatar"
+    };
+
+    // Map item names to set names (for items where set name is not in item name)
+    this.ITEM_TO_SET_MAP = {
+      // The Disciple set
+      "Dark Adherent": "The Disciple",
+      "Laying of Hands": "The Disciple",
+      "Rite of Passage": "The Disciple",
+      "Credendum": "The Disciple",
+      "Telling of Beads": "The Disciple",
+
+      // Orphan's Call set
+      "Guillaume's Face": "Orphan's",
+      "Wilhelm's Pride": "Orphan's",
+      "Whitstan's Guard": "Orphan's",
+
+      // Arctic Gear set
+      "Magnus' Skin": "Arctic",
+    };
+
     this.setupItemListeners();
   }
 
@@ -18,9 +72,15 @@ class SetTracker {
    * Extract set name from item name
    * Examples: "Arcanna's Flesh" -> "Arcanna's"
    *           "Angelic Mantle" -> "Angelic"
+   *           "Dark Adherent" -> "The Disciple" (from ITEM_TO_SET_MAP)
    */
   extractSetName(itemName) {
     if (!itemName) return null;
+
+    // First check if this item has an explicit mapping
+    if (this.ITEM_TO_SET_MAP[itemName]) {
+      return this.ITEM_TO_SET_MAP[itemName];
+    }
 
     // Set items typically have pattern: "SetName's ItemType" or "SetName ItemType"
     // Extract everything before the last word (which is usually the item type)
@@ -465,7 +525,8 @@ class SetTracker {
       if (itemCount === 0) return;
 
       // Build tooltip
-      let tooltipHTML = `<strong style="color: #00ff00;">${setName} Set (${itemCount} items)</strong><br><br>`;
+      const fullSetName = this.SET_FULL_NAMES[setName] || `${setName} Set`;
+      let tooltipHTML = `<strong style="color: #00ff00;">${fullSetName} (${itemCount} items)</strong><br><br>`;
 
       // List equipped items
       tooltipHTML += '<span style="color: #8888ff;">Equipped:</span><br>';
