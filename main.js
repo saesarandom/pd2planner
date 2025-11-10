@@ -413,8 +413,10 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   const propertyDisplay = {
     defense: (val) => `Defense: ${val}`,
     onehandmin: (val, prop) => `One-Hand Damage: ${val} to ${props.onehandmax || '?'}, Avg ${Math.round((val + (props.onehandmax || 0)) / 2 * 10) / 10}`,
+    twohandmin: (val, prop) => `Two-Hand Damage: ${val} to ${props.twohandmax || '?'}, Avg ${Math.round((val + (props.twohandmax || 0)) / 2 * 10) / 10}`,
     throwmin: (val, prop) => `Throw Damage: ${val} to ${props.throwmax || '?'}, Avg ${Math.round((val + (props.throwmax || 0)) / 2 * 10) / 10}`,
     onehandmax: () => '', // Skip, handled by onehandmin
+    twohandmax: () => '', // Skip, handled by twohandmin
     throwmax: () => '', // Skip, handled by throwmin
     reqlvl: (val) => `Required Level: ${val}`,
     reqstr: (val) => `Required Strength: ${val}`,
@@ -436,13 +438,18 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     vit: (val, prop) => formatVariableStat('+', val, ' to Vitality', prop, itemName, 'vit', dropdownId),
     enr: (val, prop) => formatVariableStat('+', val, ' to Energy', prop, itemName, 'enr', dropdownId),
     cb: (val, prop) => formatVariableStat('', val, '% Chance of Crushing Blow', prop, itemName, 'cb', dropdownId),
+    deadly: (val, prop) => formatVariableStat('', val, '% Deadly Strike', prop, itemName, 'deadly', dropdownId),
+    dmgtoun: (val, prop) => formatVariableStat('+', val, '% Damage to Undead', prop, itemName, 'dmgtoun', dropdownId),
+    sorsk: (val, prop) => formatVariableStat('+', val, ' to Sorceress Skill Levels', prop, itemName, 'sorsk', dropdownId),
+    fcr: (val, prop) => formatVariableStat('+', val, '% Faster Cast Rate', prop, itemName, 'fcr', dropdownId),
+    ctcbonespearcast: (val, prop) => `${val}% Chance to Cast Level 2 Bone Spear on Cast`,
     magicfind: (val, prop) => formatVariableStat('', val, '% Better Chance of Getting Magic Items', prop, itemName, 'magicfind', dropdownId),
     maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
   };
 
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere
-  const skipProperties = ['javelin', 'speed', 'onehandmax', 'throwmax'];
+  const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax'];
 
   // Iterate through propertyDisplay keys in order to control display order
   // This ensures damage lines appear in the correct position, not at the end
@@ -456,6 +463,13 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     if (displayText) { // Skip empty strings (for properties that are already handled)
       html += displayText + '<br>';
     }
+  }
+
+  // Add set bonuses if this is a dynamic set item
+  if (item.setBonuses && Array.isArray(item.setBonuses)) {
+    item.setBonuses.forEach(bonus => {
+      html += bonus + '<br>';
+    });
   }
 
   return html;

@@ -338,7 +338,7 @@ class SetTracker {
         const itemName = dropdown.value;
         const item = itemList[itemName];
 
-        if (item && this.isSetItem(item)) {
+        if (item && this.isSetItem(item, itemName)) {
           // Check if character meets requirements for this item
           const meetsLevel = this.meetsLevelRequirement(item);
           const meetsStats = this.meetsStatRequirements(item);
