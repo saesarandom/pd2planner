@@ -548,7 +548,7 @@ const itemList = {
       reqlvl: 63,
       shapeshift: 4,
       toattpercent: 120,
-      deadlystrike: 33,
+      deadly: 33,
       openwounds: 33,
       owdmg: 360,
       feralragesk: 2,
@@ -802,7 +802,7 @@ const itemList = {
       reqlvl: 34,
       fhr: 30,
       cb: 35,
-      deadlystrike: 15,
+      deadly: 15,
       edef: 120,
       str: 15,
       targetdefpercent: -20, //3 itemy
@@ -3111,6 +3111,22 @@ const itemList = {
     },
   },
 
+  "Arcanna's Deathwand": {
+    baseType: "War Staff", // this has +75 to Mana (2 Items)	Regenerate Mana 20% (3 Items) +40% Increased Attack Speed (Complete Set)
+    properties: {
+      speed: 20,
+      twohandmin: 21,
+      twohandmax: 49,
+      reqlvl: 15,
+      ctcbonespearcast: (15, 2), //bone spear on casting
+      sorsk: 1,
+      fcr: 10,
+      edmg: { min: 50, max: 75, current: 75 },
+      deadly: { min: 25, max: 50, current: 25 },
+      dmgtoun: 50
+    },
+  },
+
   "Knell Striker": {
     description:
       "Knell Striker<br> Scepter<br> Base Damage: 6 to 11<br> Base Speed Modifier: 0<br> Base Maximum Sockets: 2<br> One-Hand Damage: 10 to 19, Avg 14.5<br> Required Strength: 25<br> Required Level: 5<br> +80% Enhanced Damage<br> +35 to Attack Rating<br> 25% Chance of Crushing Blow<br> +15 to Mana<br> Fire Resist +20%<br> Poison Resist +20%<br> +50% Damage to Undead<br>",
@@ -3260,7 +3276,7 @@ const itemList = {
       edmg: 200, // Enhanced Damage (200%)
       tomindmg: 20, // Additional Damage Min (20)
       tomaxdmg: 30, // Additional Damage Max (30)
-      deadlystrike: 35, // Deadly Strike Chance (35%)
+      deadly: 35, // Deadly Strike Chance (35%)
       openwounds: 25, // Open Wounds Chance (25%)
       openwoundsdps: 120, // Open Wounds Damage per Second (120)
     },
@@ -4097,7 +4113,7 @@ const itemList = {
       summoningsk: 1,
       dmgtoun: 200,
       toatt: 200,
-      deadlystrike: 15,
+      deadly: 15,
       edef: 180,
     },
   },
@@ -4573,7 +4589,7 @@ const itemList = {
       reqlvl: 51,
       ias: 20,
       lleech: 6,
-      deadlystrike: 10,
+      deadly: 10,
       slow: 10,
       str: 15,
       maek: 2,
@@ -4940,7 +4956,7 @@ const itemList = {
       reqlvl: 47,
       frw: 30,
       cb: 15,
-      deadlystrike: 20,
+      deadly: 20,
       openwounds: 10,
       owdmg: 200,
       edef: 200,
@@ -5553,9 +5569,9 @@ const itemList = {
 
   "Arcanna's Sign": {
     description:
-      "Arcanna's Sign<br> Amulet<br> Required Level:13<br> +35 to Mana<br> Regenerate Mana 10%<br> +50% Better Chance of Getting Magic Items% (2 Items)<br> Fire Resist +30% (3 Items)<br>",
+      "Arcanna's Sign<br> Amulet<br> Required Level:13<br> +35 to Mana<br> Regenerate Mana 10%<br> +50% Better Chance of Getting Magic Items (2 Items)<br> Fire Resist +30% (3 Items)<br>",
     properties: {
-      reqlvl: 13,
+      reqlvl: 15,
       tomana: 35,
       regmana: 10
     },
