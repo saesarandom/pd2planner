@@ -442,7 +442,10 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     dmgtoun: (val, prop) => formatVariableStat('+', val, '% Damage to Undead', prop, itemName, 'dmgtoun', dropdownId),
     sorsk: (val, prop) => formatVariableStat('+', val, ' to Sorceress Skill Levels', prop, itemName, 'sorsk', dropdownId),
     fcr: (val, prop) => formatVariableStat('+', val, '% Faster Cast Rate', prop, itemName, 'fcr', dropdownId),
-    ctcbonespearcast: (val, prop) => `${val}% Chance to Cast Level 2 Bone Spear on Cast`,
+    ctcbonespearcast: (val, prop) => {
+      const level = props.ctcbonespearcastlevel || 2;
+      return `${val}% Chance to Cast Level ${level} Bone Spear on Cast`;
+    },
     magicfind: (val, prop) => formatVariableStat('', val, '% Better Chance of Getting Magic Items', prop, itemName, 'magicfind', dropdownId),
     maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
   };
@@ -553,6 +556,11 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     // Notify socket system to update with the new innerHTML
     if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
       window.unifiedSocketSystem.updateAll();
+    }
+
+    // Update crit multiplier display if deadly strike changed
+    if (propKey === 'deadly' && typeof updateCritDisplay === 'function') {
+      updateCritDisplay();
     }
 
     // Update weapon damage display if this is a weapon stat change

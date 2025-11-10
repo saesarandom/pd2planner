@@ -2996,7 +2996,8 @@ const itemList = {
       reqdex: 50,
       reqlvl: 28,
       physpierce: 10,
-      ctcfireball: (45, 12),
+      ctcfireball: 45,
+      ctcfireballlevel: 12,
       amask: 2,
       ias: 30,
       pierce: 35,
@@ -3013,7 +3014,8 @@ const itemList = {
       twohandmin: 1,
       twohandmax: 8,
       reqlvl: 5,
-      ctcfireboltcast: (20, 8),
+      ctcfireboltcast: 20,
+      ctcfireboltcastlevel: 8,
       fireskills: 2,
       ias: 20,
       fcr: 10,
@@ -3033,8 +3035,10 @@ const itemList = {
       twohandmin: 2,
       twohandmax: 11,
       reqlvl: 9,
-      ctcfirestormcast: (30, 15),
-      ctccyclonearmorcast: (5, 3),
+      ctcfirestormcast: 30,
+      ctcfirestormcastlevel: 15,
+      ctccyclonearmorcast: 5,
+      ctccyclonearmorcastlevel: 3,
       fcr: 20,
       edmg: 40,
       targetdef: -50, //tu nevim
@@ -3055,7 +3059,8 @@ const itemList = {
       twohandmin: 4,
       twohandmax: 12,
       reqlvl: 18,
-      ctcstaticfieldcast: (30, 15),
+      ctcstaticfieldcast: 30,
+      ctcstaticfieldcastlevel: 15,
       allsk: 3,
       fcr: 40,
       lightdmgmin: 1,
@@ -3078,7 +3083,8 @@ const itemList = {
       twohandmin: 6,
       twohandmax: 13,
       reqlvl: 21,
-      ctclesserhydracast: (20, 14),
+      ctclesserhydracast: 20,
+      ctclesserhydracastlevel: 14,
       fireskills: 3,
       fcr: 10,
       firedmgmin: 15,
@@ -3099,9 +3105,12 @@ const itemList = {
       twohandmin: 25,
       twohandmax: 56,
       reqlvl: 28,
-      ctcnovacast: (15, 20),
-      ctcblazecast: (15, 24),
-      ctcfrostnova: (15, 24),
+      ctcnovacast: 15,
+      ctcnovacastlevel: 20,
+      ctcblazecast: 15,
+      ctcblazecastlevel: 24,
+      ctcfrostnova: 15,
+      ctcfrostnovalevel: 24,
       allsk: 2,
       fcr: 60,
       edmg: 100,
@@ -3118,7 +3127,8 @@ const itemList = {
       twohandmin: 21,
       twohandmax: 49,
       reqlvl: 15,
-      ctcbonespearcast: (15, 2), //bone spear on casting
+      ctcbonespearcast: 15, //bone spear on casting
+      ctcbonespearcastlevel: 2,
       sorsk: 1,
       fcr: 10,
       edmg: { min: 50, max: 75, current: 75 },
@@ -3236,7 +3246,8 @@ const itemList = {
       onehandmax: 21,
       reqlvl: 25,
       energyshield: 16,
-      ctcfrostnovacast: (8, 12),
+      ctcfrostnovacast: 8,
+      ctcfrostnovacastlevel: 12,
       allsk: 2,
       fcr: 30,
       mana: 145,
@@ -3254,8 +3265,10 @@ const itemList = {
       reqstr: 25, // Required Strength
       reqdex: 25, // Required Dexterity
       reqlvl: 36, // Required Level
-      ctciceblast: (14, 18), // Chance to Cast Ice Blast on Striking (14% chance, level 18)
-      ctcfrostnovastruck: (25, 20), // Chance to Cast Frost Nova when Struck (25% chance, level 20)
+      ctciceblast: 14, // Chance to Cast Ice Blast on Striking (14% chance, level 18)
+      ctciceblastlevel: 18,
+      ctcfrostnovastruck: 25, // Chance to Cast Frost Nova when Struck (25% chance, level 20)
+      ctcfrostnovastrucklevel: 20,
       ias: 30, // Increased Attack Speed (30%)
       edmg: 150, // Enhanced Damage (150%)
       colddmgmin: 160, // Cold Damage Min (160)
@@ -3309,7 +3322,8 @@ const itemList = {
       reqstr: 94, // Required Strength
       reqdex: 70, // Required Dexterity
       reqlvl: 45, // Required Level
-      ctcmoltenboulder: (8, 28), // Chance to Cast Molten Boulder on Striking (8% chance, level 28)
+      ctcmoltenboulder: 8, // Chance to Cast Molten Boulder on Striking (8% chance, level 28)
+      ctcmoltenboulderlevel: 28,
       ias: 40, // Increased Attack Speed (40%)
       edmg: 200, // Enhanced Damage (200%)
       tomindmg: 60, // Fire Damage Min (60)
@@ -3326,7 +3340,8 @@ const itemList = {
       onehandmax: 199, // One-Hand Damage Max
       reqstr: 121, // Required Strength
       reqlvl: 48, // Required Level
-      ctcpoisonnova: (10, 25), // Chance to Cast Poison Nova on Striking (10% chance, level 25)
+      ctcpoisonnova: 10, // Chance to Cast Poison Nova on Striking (10% chance, level 25)
+      ctcpoisonnovalevel: 25,
       edmg: 180, // Enhanced Damage (180%)
       tomindmg: 20, // Additional Maximum Damage (20)
       poisondmgmin: 250, // Poison Damage Min (250)
@@ -3369,8 +3384,10 @@ const itemList = {
       mdr: 15, // Magic Damage Taken Reduced by 15
       amplifydamagecharges: 60, // Level 18 Amplify Damage Charges (60 Charges)
       blinkcharges: 60, // Level 1 Blink Charges (60 Charges)
-      ctcfirestorm: (30, 25), // Chance to Cast Level 25 Firestorm on Striking (30% chance, level 25)
-      ctcholydbolt: (30, 25), // Chance to Cast Level 25 Holy Bolt on Striking (30% chance, level 25)
+      ctcfirestorm: 30, // Chance to Cast Level 25 Firestorm on Striking (30% chance, level 25)
+      ctcfirestormlevel: 25,
+      ctcholydbolt: 30, // Chance to Cast Level 25 Holy Bolt on Striking (30% chance, level 25)
+      ctcholydboltlevel: 25,
       req: -60, // Requirements -60% (this is a flat reduction to the requirements of the item)
     },
   },
@@ -3383,9 +3400,12 @@ const itemList = {
       twohandmax: 273, // Two-Hand Damage Max
       reqstr: 101, // Required Strength
       reqlvl: 41, // Required Level
-      ctcchainlightning: (14, 25), // Chance to Cast Level 25 Chain Lightning on Striking (14% chance, level 25)
-      ctcchargedboltstriking: (30, 27), // Chance to Cast Level 27 Charged Bolt on Striking (30% chance, level 27)
-      ctcchargedboltstruck: (25, 25), // Chance to Cast Level 25 Charged Bolt when Struck (25% chance, level 25)
+      ctcchainlightning: 14, // Chance to Cast Level 25 Chain Lightning on Striking (14% chance, level 25)
+      ctcchainlightninglevel: 25,
+      ctcchargedboltstriking: 30, // Chance to Cast Level 27 Charged Bolt on Striking (30% chance, level 27)
+      ctcchargedboltstrikinglevel: 27,
+      ctcchargedboltstruck: 25, // Chance to Cast Level 25 Charged Bolt when Struck (25% chance, level 25)
+      ctcchargedboltstrucklevel: 25,
       edmg: 100, // Enhanced Damage (100%)
       tomin: 35, // Additional Damage Min (35)
       tomax: 75, // Additional Damage Max (75)
@@ -3402,7 +3422,8 @@ const itemList = {
       reqstr: 115, // Required Strength
       reqdex: 79, // Required Dexterity
       reqlvl: 42, // Required Level
-      ctcholybolt: (20, 30), // Chance to Cast Level 30 Holy Bolt on Striking (20% chance, level 30)
+      ctcholybolt: 20, // Chance to Cast Level 30 Holy Bolt on Striking (20% chance, level 30)
+      ctcholyboltlevel: 30,
       ias: 40, // Increased Attack Speed (40%)
       edmg: 220, // Enhanced Damage (220%)
       toattpercent: 35, // Bonus to Attack Rating (35%)
@@ -3561,7 +3582,8 @@ const itemList = {
       onehandmax: 122, // One-Hand Damage Max
       reqstr: 61, // Required Strength
       reqlvl: 39, // Required Level
-      ctcfrozenorb: (10, 14), // Chance to Cast Frozen Orb on Striking (10% chance, level 14)
+      ctcfrozenorb: 10, // Chance to Cast Frozen Orb on Striking (10% chance, level 14)
+      ctcfrozenorblevel: 14,
       coldsks: 3, // Cold Skills (+3)
       ias: 0, // No IAS bonus in the original description
       edmg: 180, // Enhanced Damage (180%)
@@ -3582,7 +3604,8 @@ const itemList = {
       onehandmax: 136, // One-Hand Damage Max
       reqstr: 74, // Required Strength
       reqlvl: 42, // Required Level
-      ctcmeteor: (12, 26), // Chance to Cast Meteor on Striking (12% chance, level 26)
+      ctcmeteor: 12, // Chance to Cast Meteor on Striking (12% chance, level 26)
+      ctcmeteorlevel: 26,
     },
   },
 
@@ -3696,7 +3719,8 @@ const itemList = {
       onehandmax: 471, // One-Hand Damage Max
       reqstr: 189, // Required Strength
       reqlvl: 79, // Required Level
-      ctcstaticfield: (20, 25), // Chance to Cast Level 25 Static Field on Striking (20% chance, level 25)
+      ctcstaticfield: 20, // Chance to Cast Level 25 Static Field on Striking (20% chance, level 25)
+      ctcstaticfieldlevel: 25,
     },
   },
 
@@ -3717,7 +3741,8 @@ const itemList = {
       twohandmax: 900, // Two-Hand Damage Max (this is a placeholder, it should be a positive number)
       reqstr: 190, // Required Strength
       reqlvl: 69, // Required Level
-      ctcvolcano: (8, 25), // Chance to Cast Level 25 Volcano on Kill (8% chance, level 25)
+      ctcvolcano: 8, // Chance to Cast Level 25 Volcano on Kill (8% chance, level 25)
+      ctcvolcanolevel: 25,
     },
   },
 
@@ -3729,7 +3754,8 @@ const itemList = {
       twohandmax: 835, // Two-Hand Damage Max (this is a placeholder, it should be a positive number)
       reqstr: 253, // Required Strength
       reqlvl: 87, // Required Level
-      ctcampdamage: (8, 33), // Chance to Cast Level 33 Amplify Damage on Striking (8% chance, level 33)
+      ctcampdamage: 8, // Chance to Cast Level 33 Amplify Damage on Striking (8% chance, level 33)
+      ctcampdamagelevel: 33,
     },
   },
 
@@ -4141,7 +4167,8 @@ const itemList = {
       defense: 144,
       reqstr: 88,
       reqlvl: 42,
-      ctcfireenchant: (2, 10), //nevim asi zle
+      ctcfireenchant: 2, //nevim asi zle
+      ctcfireenchantlevel: 10,
       ias: 20,
       firedmgmin: 26,
       firedmgmax: 92,
@@ -4158,8 +4185,10 @@ const itemList = {
       defense: 162,
       reqstr: 110,
       reqlvl: 47,
-      ctcmb: (8, 22), //nevim jak to tu delat
-      ctcmeteor: (4, 34), //nevim jak to tu delat
+      ctcmb: 8, //nevim jak to tu delat
+      ctcmblevel: 22,
+      ctcmeteor: 4, //nevim jak to tu delat
+      ctcmeteorlevel: 34,
       firedmgmin: 30,
       firedmgmax: 144,
       firepierce: 10,
@@ -4348,7 +4377,8 @@ const itemList = {
       defense: 112,
       reqstr: 50,
       reqlvl: 63,
-      ctcholybolt: (10, 13), //nevim jak to tu delat
+      ctcholybolt: 10, //nevim jak to tu delat
+      ctcholyboltlevel: 13,
       ias: 20,
       edmg: 200,
       todef: 50,
@@ -4363,7 +4393,8 @@ const itemList = {
       defense: 143,
       reqstr: 110,
       reqlvl: 30,
-      ctccbolt: (12, 24), //nevim jak to tu delat
+      ctccbolt: 12, //nevim jak to tu delat
+      ctccboltlevel: 24,
       todef: 90,
       str: 20,
       dex: 20,
@@ -4536,7 +4567,8 @@ const itemList = {
       defense: 116,
       reqstr: 88,
       reqlvl: 42,
-      ctcblizzard: (5, 20), //zase zle
+      ctcblizzard: 5, //zase zle
+      ctcblizzardlevel: 20,
       coldsk: 2,
       colddmgmin: 39,
       colddmgmax: 63,
@@ -4553,7 +4585,8 @@ const itemList = {
       defense: 159,
       reqstr: 110,
       reqlvl: 47,
-      ctcfist: (5, 17), //tu vse zle
+      ctcfist: 5, //tu vse zle
+      ctcfistlevel: 17,
       lightsk: 2,
       lightdmgmin: 1,
       lightdmgmax: 250,
@@ -4874,7 +4907,8 @@ const itemList = {
       defense: 105,
       reqstr: 20,
       reqlvl: 29,
-      blazectcstruck: (18, 16),
+      blazectcstruck: 18,
+      blazectcstrucklevel: 16,
       frw: 30,
       firedmgmin: 24,
       firedmgmax: 66,
@@ -5306,7 +5340,8 @@ const itemList = {
       "Carrion Wind<br> Ring<br> Required Level: 60<br> 8% Chance to Cast Level 30 Twister on Striking<br> 6% Life Stolen per Hit<br> +160 Defense vs. Missile<br> Poison Resist +55%<br> Attacker Takes Damage of 300<br> Level 11 Poison Creeper (35 Charges)<br>",
     properties: {
       reqlvl: 60,
-      twisterctcstruck: (8, 30),
+      twisterctcstruck: 8,
+      twisterctcstrucklevel: 30,
       lleech: 6,
       defvsmiss: 160,
       poisres: 55,
@@ -5420,7 +5455,8 @@ const itemList = {
       "Saracen's Chance<br> Amulet<br> Required Level: 47<br> 10% Chance to Cast Level 12 Iron Maiden when Struck<br> +50% Enhanced Damage<br> +12 to All Attributes<br> Curse Resistance +10%<br> All Resistances +25<br>",
     properties: {
       reqlvl: 47,
-      maidenctcstruck: (10, 12),
+      maidenctcstruck: 10,
+      maidenctcstrucklevel: 12,
       edmg: 50,
       allstats: 12,
       curres: 10,
@@ -5461,7 +5497,8 @@ const itemList = {
       "Atma's Scarab<br> Amulet<br> Required Level: 60<br> 8% Chance to Cast Level 15 Amplify Damage on Striking<br> 60% Bonus to Attack Rating<br> 10% Chance of Open Wounds<br> +300 Open Wounds Damage per Second<br> Poison Resist +60%<br> Attacker Takes Damage of 450<br> +3 to Light Radius<br>",
     properties: {
       reqlvl: 60,
-      ampctc: (8, 16),
+      ampctc: 8,
+      ampctclevel: 16,
       toattpercent: 66,
       ow: 10,
       owdmg: 300,
@@ -5491,7 +5528,8 @@ const itemList = {
       "The Rising Sun<br> Amulet<br> Required Level: 65<br> 4% Chance to Cast Level 23 Meteor when Struck<br> +2 to Fire Skills<br> Adds 124 to 248 Fire Damage<br> -8% to Enemy Fire Resistance<br> Replenish Life +10<br> +4 to Light Radius<br>",
     properties: {
       reqlvl: 65,
-      meteorctcstruck: (4, 23),
+      meteorctcstruck: 4,
+      meteorctcstrucklevel: 23,
       firesk: 2,
       firedmgmin: 124,
       firedmgmax: 248,
@@ -5536,7 +5574,8 @@ const itemList = {
       todef: 350,
       allres: 35,
       atdmg: 1000,
-      maidencharges: (12, 20),
+      maidencharges: 12,
+      maidenchargeslevel: 20,
       irongolemoskill: 25,
       golemmasteryoskill: 20,
     },
@@ -5547,7 +5586,8 @@ const itemList = {
       "The Third Eye<br> Amulet<br> Required Level: 90<br> 10% Chance to Cast Level 25 Bone Nova on Casting<br> +1 to All skills<br> +20% Faster Cast Rate<br> +30 to Energy<br> Cannot Be Frozen<br> -4 to Light Radius<br> Socketed (1)<br>",
     properties: {
       reqlvl: 90,
-      bonenovacast: (10, 25),
+      bonenovacast: 10,
+      bonenovacastlevel: 25,
       allsk: 1,
       fcr: 20,
       enr: 30,
@@ -5580,7 +5620,8 @@ const itemList = {
       twohandmin: 21,
       twohandmax: 49,
       reqlvl: 15,
-      ctcbonespearcast: (15, 2), //bone spear on casting
+      ctcbonespearcast: 15, // chance percentage
+      ctcbonespearcastlevel: 2, // skill level
       sorsk: 1,
       fcr: 10,
       edmg: { min: 50, max: 75, current: 75 },
