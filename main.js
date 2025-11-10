@@ -420,20 +420,40 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     html += `${item.baseType}<br>`;
   }
 
-  // Calculate dynamic defense if item has defense + edef
+  // Base defense values for different item types
+  const baseDefenseMap = {
+    'Buckler': 7,
+    'Kite Shield': 19,
+    'Light Plate': 90,
+    'Skull Cap': 8,
+    // Add more as needed
+  };
+
+  // Calculate dynamic defense if item has edef
   let calculatedDefense = null;
-  if (props.defense) {
-    const baseDefense = props.defense;
+  let defenseDisplay = null;
+  if (props.edef && item.baseType && baseDefenseMap[item.baseType]) {
+    const baseItemDefense = baseDefenseMap[item.baseType];
     const edefValue = getPropertyValue(props.edef || 0);
     const todefValue = props.todef || 0;
 
-    // Formula: (base * (1 + edef/100)) + todef
-    calculatedDefense = Math.floor(baseDefense * (1 + edefValue / 100)) + todefValue;
+    // Formula: floor(baseItemDefense * (1 + edef/100)) + todef
+    calculatedDefense = Math.floor(baseItemDefense * (1 + edefValue / 100)) + todefValue;
+
+    // Calculate min and max for display
+    const edefProp = props.edef;
+    if (typeof edefProp === 'object' && edefProp.min && edefProp.max) {
+      const minDef = Math.floor(baseItemDefense * (1 + edefProp.min / 100)) + todefValue;
+      const maxDef = Math.floor(baseItemDefense * (1 + edefProp.max / 100)) + todefValue;
+      defenseDisplay = `Defense: ${calculatedDefense} (${minDef}-${maxDef})`;
+    } else {
+      defenseDisplay = `Defense: ${calculatedDefense}`;
+    }
   }
 
   // Map property keys to display format
   const propertyDisplay = {
-    defense: (val) => calculatedDefense !== null ? `Defense: ${calculatedDefense}` : `Defense: ${val}`,
+    defense: (val) => defenseDisplay !== null ? defenseDisplay : `Defense: ${val}`,
     smitedmgmin: (val, prop) => `Smite Damage: ${val} to ${props.smitedmgmax || '?'}`,
     smitedmgmax: () => '', // Skip, handled by smitedmgmin
     onehandmin: (val, prop) => `One-Hand Damage: ${val} to ${props.onehandmax || '?'}, Avg ${Math.round((val + (props.onehandmax || 0)) / 2 * 10) / 10}`,
