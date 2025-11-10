@@ -4,6 +4,13 @@
 class SetTracker {
   constructor() {
     this.equippedSets = new Map(); // Map of setName -> {items: [], bonuses: []}
+
+    // Define complete set sizes for each set
+    this.SET_SIZES = {
+      "Arcanna's": 4,  // Head, Flesh, Deathwand, Sign
+      // Add more sets here as needed
+    };
+
     this.setupItemListeners();
   }
 
@@ -410,9 +417,19 @@ class SetTracker {
         console.log(`[SetTracker] Checking bonus group: itemCount requirement = ${bonusGroup.itemCount}`);
 
         if (bonusGroup.itemCount === 'complete') {
-          console.log('[SetTracker] Skipping "Complete Set" bonus');
-          // For now, skip "Complete Set" bonuses (would need to know full set size)
-          // TODO: Add complete set detection
+          // Check if we have the complete set
+          const completeSetSize = this.SET_SIZES[setName];
+          if (completeSetSize && itemCount >= completeSetSize) {
+            console.log(`[SetTracker] ✓ Activating Complete Set: ${itemCount} >= ${completeSetSize} (complete)`);
+            activeBonuses.push({
+              setName: setName,
+              itemCount: itemCount,
+              requiredCount: 'complete',
+              bonuses: bonusGroup.bonuses
+            });
+          } else {
+            console.log(`[SetTracker] ✗ Complete Set not activated: ${itemCount} < ${completeSetSize || '?'}`);
+          }
         } else if (typeof bonusGroup.itemCount === 'number' && itemCount >= bonusGroup.itemCount) {
           console.log(`[SetTracker] ✓ Activating: ${itemCount} >= ${bonusGroup.itemCount}`);
           activeBonuses.push({
@@ -472,8 +489,16 @@ class SetTracker {
           byCount[ab.requiredCount].push(...ab.bonuses);
         });
 
-        Object.keys(byCount).sort((a, b) => parseInt(a) - parseInt(b)).forEach(count => {
-          tooltipHTML += `<br><span style="color: #ffff88;">(${count} Items):</span><br>`;
+        // Sort keys - numbers first, then 'complete'
+        const sortedKeys = Object.keys(byCount).sort((a, b) => {
+          if (a === 'complete') return 1;
+          if (b === 'complete') return -1;
+          return parseInt(a) - parseInt(b);
+        });
+
+        sortedKeys.forEach(count => {
+          const label = count === 'complete' ? 'Complete Set' : `${count} Items`;
+          tooltipHTML += `<br><span style="color: #ffff88;">(${label}):</span><br>`;
           byCount[count].forEach(bonus => {
             tooltipHTML += `${bonus.rawText}<br>`;
           });
@@ -530,7 +555,21 @@ class SetTracker {
       console.log(`[SetTracker] Processing set: ${activeBonus.setName}, itemCount: ${activeBonus.itemCount}, requiredCount: ${activeBonus.requiredCount}`);
 
       // Double-check that we meet the requirement (safety check)
-      if (activeBonus.itemCount >= activeBonus.requiredCount) {
+      if (activeBonus.requiredCount === 'complete') {
+        // For complete set, check against SET_SIZES
+        const completeSetSize = this.SET_SIZES[activeBonus.setName];
+        if (completeSetSize && activeBonus.itemCount >= completeSetSize) {
+          activeBonus.bonuses.forEach(bonus => {
+            console.log(`[SetTracker] Applying Complete Set bonus: ${bonus.stat} = ${bonus.value}`);
+
+            if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
+              totalBonuses[bonus.stat] += bonus.value;
+            }
+          });
+        } else {
+          console.warn(`[SetTracker] Skipping Complete Set bonus - not enough items: ${activeBonus.itemCount} < ${completeSetSize || '?'}`);
+        }
+      } else if (activeBonus.itemCount >= activeBonus.requiredCount) {
         activeBonus.bonuses.forEach(bonus => {
           console.log(`[SetTracker] Applying bonus: ${bonus.stat} = ${bonus.value}`);
 
