@@ -422,8 +422,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
   // Base defense values for different item types
   const baseDefenseMap = {
-    'Buckler': 7,
-    'Kite Shield': 19,
+    'Buckler': 6,
+    'Kite Shield': 18,
     'Light Plate': 90,
     'Skull Cap': 8,
     // Add more as needed
@@ -437,14 +437,15 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     const edefValue = getPropertyValue(props.edef || 0);
     const todefValue = props.todef || 0;
 
-    // Formula: floor(baseItemDefense * (1 + edef/100)) + todef
-    calculatedDefense = Math.floor(baseItemDefense * (1 + edefValue / 100)) + todefValue;
+    // Formula: floor((base + 1) * (1 + edef/100)) + todef
+    // The +1 is the same as in damage calculation
+    calculatedDefense = Math.floor((baseItemDefense + 1) * (1 + edefValue / 100)) + todefValue;
 
     // Calculate min and max for display
     const edefProp = props.edef;
     if (typeof edefProp === 'object' && edefProp.min && edefProp.max) {
-      const minDef = Math.floor(baseItemDefense * (1 + edefProp.min / 100)) + todefValue;
-      const maxDef = Math.floor(baseItemDefense * (1 + edefProp.max / 100)) + todefValue;
+      const minDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.min / 100)) + todefValue;
+      const maxDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.max / 100)) + todefValue;
       defenseDisplay = `Defense: ${calculatedDefense} (${minDef}-${maxDef})`;
     } else {
       defenseDisplay = `Defense: ${calculatedDefense}`;
