@@ -3846,7 +3846,7 @@ const itemList = {
     socketCount: 2
     }
 },
-  //shields/
+  // UNIQUE SHIELDS
 
   "Pelta Lunata": {
     description:
@@ -3972,7 +3972,7 @@ const itemList = {
     },
   },
 
-  //gloovs//
+  // UNIQUE GLOVES
   "The Hand of Broc": {
     description:
       "The Hand of Broc<br>Leather Gloves<br>Defense: 14<br>Required Level: 5<br>Melee Attacks Deal Splash Damage<br>+30% Enhanced Damage<br>3% Mana Stolen per Hit<br>3% Life Stolen per Hit<br>+20% Enhanced Defense<br>+10 Defense<br>+20 to Mana<br>Poison Resist +10%<br>",
@@ -4373,7 +4373,7 @@ const itemList = {
       meteorosk: 20,
     },
   },
-  //belts
+  // UNIQUE BELTS
 
   Lenymo: {
     description:
@@ -4743,7 +4743,7 @@ const itemList = {
       pdr5: 20, //5 items
     },
   },
-  //boots
+  // UNIQUE BOOTS
 
   Hotspur: {
     description:
@@ -5194,7 +5194,7 @@ const itemList = {
     },
   },
 
-  // rings
+  // UNIQUE RINGS
 
   Nagelring: {
     description:
@@ -5344,7 +5344,7 @@ const itemList = {
       vendor: 10, //this ring not implemented, needd to come with 3 versions to fix
     },
   },
-  //amulets
+  // UNIQUE AMULETS
 
   "Nokozan Relic": {
     description:

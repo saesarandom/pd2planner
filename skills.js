@@ -42,7 +42,7 @@ class SkillSystem {
         { id: 'jabcontainer', name: 'Jab', level: 1 },
         { id: 'poisonjavelincontainer', name: 'Poison Javelin', level: 1 },
         { id: 'powerstrikecontainer', name: 'Power Strike', level: 6 },
-        { id: 'javelinandspearmasterycontainer', name: 'Javelin Mastery', level: 1 },
+        { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 1 },
         { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12 },
         { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12 },
         { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18 },
@@ -124,7 +124,12 @@ class SkillSystem {
           { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'lightning' },
           { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'nova' }
         ]
+ },
+         lightningboltcontainer: {
+        name: "Lightning Bolt", type: "placeholder"
+        
       },
+      
       chargedstrikecontainer: {
         name: "Charged Strike", type: "lightning",
         chargedBolts: [3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
