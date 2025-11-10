@@ -420,9 +420,22 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     html += `${item.baseType}<br>`;
   }
 
+  // Calculate dynamic defense if item has defense + edef
+  let calculatedDefense = null;
+  if (props.defense) {
+    const baseDefense = props.defense;
+    const edefValue = getPropertyValue(props.edef || 0);
+    const todefValue = props.todef || 0;
+
+    // Formula: (base * (1 + edef/100)) + todef
+    calculatedDefense = Math.floor(baseDefense * (1 + edefValue / 100)) + todefValue;
+  }
+
   // Map property keys to display format
   const propertyDisplay = {
-    defense: (val) => `Defense: ${val}`,
+    defense: (val) => calculatedDefense !== null ? `Defense: ${calculatedDefense}` : `Defense: ${val}`,
+    smitedmgmin: (val, prop) => `Smite Damage: ${val} to ${props.smitedmgmax || '?'}`,
+    smitedmgmax: () => '', // Skip, handled by smitedmgmin
     onehandmin: (val, prop) => `One-Hand Damage: ${val} to ${props.onehandmax || '?'}, Avg ${Math.round((val + (props.onehandmax || 0)) / 2 * 10) / 10}`,
     twohandmin: (val, prop) => `Two-Hand Damage: ${val} to ${props.twohandmax || '?'}, Avg ${Math.round((val + (props.twohandmax || 0)) / 2 * 10) / 10}`,
     throwmin: (val, prop) => `Throw Damage: ${val} to ${props.throwmax || '?'}, Avg ${Math.round((val + (props.throwmax || 0)) / 2 * 10) / 10}`,
@@ -432,12 +445,15 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     reqlvl: (val) => `Required Level: ${val}`,
     reqstr: (val) => `Required Strength: ${val}`,
     reqdex: (val) => `Required Dexterity: ${val}`,
+    dur: (val) => `Durability: ${val}`,
+    block1: (val) => `Chance to Block: ${val}%`,
     edmg: (val, prop) => formatVariableStat('+', val, '% Enhanced Damage', prop, itemName, 'edmg', dropdownId),
     toatt: (val, prop) => formatVariableStat('', val, ' to Attack Rating', prop, itemName, 'toatt', dropdownId),
     todef: (val) => `+${val} Defense`,
     tolife: (val) => `+${val} to Life`,
     tomana: (val) => `+${val} to Mana`,
     ias: (val, prop) => formatVariableStat('+', val, '% Increased Attack Speed', prop, itemName, 'ias', dropdownId),
+    fbr: (val, prop) => formatVariableStat('+', val, '% Faster Block Rate', prop, itemName, 'fbr', dropdownId),
     fhr: (val, prop) => formatVariableStat('+', val, '% Faster Hit Recovery', prop, itemName, 'fhr', dropdownId),
     frw: (val, prop) => formatVariableStat('+', val, '% Faster Run/Walk', prop, itemName, 'frw', dropdownId),
     block: (val, prop) => formatVariableStat('', val, '% Increased Chance of Blocking', prop, itemName, 'block', dropdownId),
@@ -448,11 +464,13 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     dex: (val, prop) => formatVariableStat('+', val, ' to Dexterity', prop, itemName, 'dex', dropdownId),
     vit: (val, prop) => formatVariableStat('+', val, ' to Vitality', prop, itemName, 'vit', dropdownId),
     enr: (val, prop) => formatVariableStat('+', val, ' to Energy', prop, itemName, 'enr', dropdownId),
+    allres: (val, prop) => formatVariableStat('+', val, '% All Resistances', prop, itemName, 'allres', dropdownId),
     cb: (val, prop) => formatVariableStat('', val, '% Chance of Crushing Blow', prop, itemName, 'cb', dropdownId),
     deadly: (val, prop) => formatVariableStat('', val, '% Deadly Strike', prop, itemName, 'deadly', dropdownId),
     dmgtoun: (val, prop) => formatVariableStat('+', val, '% Damage to Undead', prop, itemName, 'dmgtoun', dropdownId),
     sorsk: (val, prop) => formatVariableStat('+', val, ' to Sorceress Skill Levels', prop, itemName, 'sorsk', dropdownId),
     fcr: (val, prop) => formatVariableStat('+', val, '% Faster Cast Rate', prop, itemName, 'fcr', dropdownId),
+    lightrad: (val) => `+${val} to Light Radius`,
     ctcbonespearcast: (val, prop) => {
       const level = props.ctcbonespearcastlevel || 2;
       return `${val}% Chance to Cast Level ${level} Bone Spear on Cast`;
@@ -463,7 +481,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere
-  const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax'];
+  const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax'];
 
   // Iterate through propertyDisplay keys in order to control display order
   // This ensures damage lines appear in the correct position, not at the end
