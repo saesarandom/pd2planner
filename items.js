@@ -3874,8 +3874,7 @@ const itemList = {
   // UNIQUE SHIELDS
 
   "Pelta Lunata": {
-    description:
-      "Pelta Lunata<br>Buckler<br>Base Smite Damage: 1 to 3, Avg 2<br>Base Maximum Sockets: 1 (2 for upgraded elite versions)<br>Defense: 39<br>Block: 40% (Dru/Nec/Sor), 45% (Ama/Ass/Bar), 50% (Pal)<br>Required Strength: 12<br>Required Level: 2<br>+40% Faster Block Rate<br>20% Increased Chance of Blocking<br>+40% Enhanced Defense<br>+30 Defense<br>+2 to Strength<br>+10 to Vitality<br>+10 to Energy<br>",
+    baseType: "Buckler",
     properties: {
       smitedmgmin: 1,
       smitedmgmax: 3,
@@ -3885,12 +3884,12 @@ const itemList = {
       block1: 40,
       fbr: 40,
       block: 20,
-      edef: 40,
+      edef: { min: 30, max: 40, current: 40 },
       todef: 30,
       str: 2,
       vit: 10,
       enr: 10,
-      dur: 12,
+      dur: 12, //tady taky
     },
   },
 
@@ -3930,8 +3929,7 @@ const itemList = {
   },
 
   Steelclash: {
-    description:
-      "Steelclash<br>Kite Shield<br>Base Smite Damage: 4 to 11, Avg 7.5<br>Defense: 58<br>Block: 53% (Dru/Nec/Sor), 58% (Ama/Ass/Bar), 63% (Pal)<br>Required Strength: 47<br>Required Level: 17<br>+1 to All Skills<br>+20% Faster Block Rate<br>25% Increased Chance of Blocking<br>+100% Enhanced Defense<br>+20 Defense<br>All Resistances +10<br>+3 to Light Radius<br>+20 Durability<br>",
+    baseType: "Kite Shield",
     properties: {
       smitedmgmin: 4,
       smitedmgmax: 11,
@@ -3944,7 +3942,7 @@ const itemList = {
       block: 25,
       edef: 100,
       todef: 20,
-      allres: 10, //tu bude 5-10 dynamic
+      allres: { min: 5, max: 10, current: 10 },
       lightrad: 3,
       dur: 20
     },
