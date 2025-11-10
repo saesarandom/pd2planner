@@ -2789,6 +2789,40 @@ this.selectedJewelSuffix3MaxValue = null;
     this.stats.lightResist += window.checkboxResistBonus || 0;
     this.stats.poisonResist += window.checkboxResistBonus || 0;
     // Curse resistance is NOT affected by Anya checkbox bonus
+
+    // Add set bonuses if setTracker is available
+    if (window.setTracker) {
+      const setBonuses = window.setTracker.getAllSetBonuses();
+
+      // Apply set bonuses to stats
+      if (setBonuses.defense) this.stats.defense += setBonuses.defense;
+      if (setBonuses.defensePerLevel) {
+        // Defense per level needs character level
+        const charLevel = this.currentLevel || 1;
+        this.stats.defense += setBonuses.defensePerLevel * charLevel;
+      }
+      if (setBonuses.strength) this.stats.strength += setBonuses.strength;
+      if (setBonuses.dexterity) this.stats.dexterity += setBonuses.dexterity;
+      if (setBonuses.vitality) this.stats.vitality += setBonuses.vitality;
+      if (setBonuses.energy) this.stats.energy += setBonuses.energy;
+      if (setBonuses.life) this.stats.life += setBonuses.life;
+      if (setBonuses.mana) this.stats.mana += setBonuses.mana;
+      if (setBonuses.lightningResist) this.stats.lightResist += setBonuses.lightningResist;
+      if (setBonuses.fireResist) this.stats.fireResist += setBonuses.fireResist;
+      if (setBonuses.coldResist) this.stats.coldResist += setBonuses.coldResist;
+      if (setBonuses.poisonResist) this.stats.poisonResist += setBonuses.poisonResist;
+      if (setBonuses.allResist) {
+        this.stats.fireResist += setBonuses.allResist;
+        this.stats.coldResist += setBonuses.allResist;
+        this.stats.lightResist += setBonuses.allResist;
+        this.stats.poisonResist += setBonuses.allResist;
+      }
+      if (setBonuses.fcr) this.stats.fcr += setBonuses.fcr;
+      if (setBonuses.ias) this.stats.ias += setBonuses.ias;
+      if (setBonuses.fhr) this.stats.fhr += setBonuses.fhr;
+      if (setBonuses.frw) this.stats.frw += setBonuses.frw;
+      if (setBonuses.allSkills) this.stats.allSkills += setBonuses.allSkills;
+    }
   }
 
     parseItemStats(item, section) {
