@@ -157,14 +157,18 @@
 .grouparmor,
 .mercgrouparmors,
 .groupoffhand,
+.mercgroupoffs,
 .groupgloves,
+.mercgroupgloves,
 .groupbelts,
+.mercgroupbelts,
 .groupboots,
+.mercgroupboots,
 .groupringsone,
 .groupringstwo,
 .groupamulets {
   display: flex;
-  margin-top: 11%;
+  margin-top: 7%;
   flex-direction: column;
   gap: 10px;
   background-color: rgba(18, 7, 7, 0.9);
