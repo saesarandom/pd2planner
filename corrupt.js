@@ -8,99 +8,75 @@ window.originalItemDescriptions = window.originalItemDescriptions || {};
 // Corruption definitions by item type
 const CORRUPTIONS = {
   helm: [
-    { mod: "Socketed (1)", type: "socket", sockets: 1 },
-    { mod: "Socketed (2)", type: "socket", sockets: 2 },
-    { mod: "Socketed (3)", type: "socket", sockets: 3 },
-    {
-      mod: "+[20-30]% Faster Hit Recovery<br>Indestructible",
-      type: "double",
-      ranges: [
-        { label: "Faster Hit Recovery", range: [20, 30], type: "numeric" },
-        { label: "Indestructible", type: "fixed" }
-      ]
-    },
-    {
-      mod: "+[50-80]% Enhanced Defense<br>+1 to All Skills",
-      type: "double",
-      ranges: [
-        { label: "Enhanced Defense", range: [50, 80], type: "numeric" },
-        { label: "All Skills", value: 1, type: "fixed" }
-      ]
-    },
-    {
-      mod: "+[50-80]% Enhanced Defense<br>+[150-250] to Attack Rating",
-      type: "double",
-      ranges: [
-        { label: "Enhanced Defense", range: [50, 80], type: "numeric" },
-        { label: "Attack Rating", range: [150, 250], type: "numeric" }
-      ]
-    },
-    {
-      mod: "+[2-4] to Light Radius<br>+10% Curse Resistance",
-      type: "double",
-      ranges: [
-        { label: "Light Radius", range: [2, 4], type: "numeric" },
-        { label: "Curse Resistance", value: 10, type: "fixed" }
-      ]
-    },
-    {
-      mod: "[20-30]% Better Chance of Getting Magic Items<br>[3-5]% Life Stolen per Hit",
-      type: "double",
-      ranges: [
-        { label: "Better Chance of Getting Magic Items", range: [20, 30], type: "numeric" },
-        { label: "Life Stolen per Hit", range: [3, 5], type: "numeric" }
-      ]
-    },
+    { mod: "+[20-30]% Faster Hit Recovery", type: "numeric", range: [20, 30] },
+    { mod: "+[50-80]% Enhanced Defense", type: "numeric", range: [50, 80] },
+    { mod: "[20-30]% Better Chance of Getting Magic Items", type: "numeric", range: [20, 30] },
+    { mod: "Replenish Life +[20-30]", type: "numeric", range: [20, 30] },
+    { mod: "Fire Resist +[30-35]%", type: "numeric", range: [30, 35] },
+    { mod: "Cold Resist +[30-35]%", type: "numeric", range: [30, 35] },
+    { mod: "Lightning Resist +[30-35]%", type: "numeric", range: [30, 35] },
+    { mod: "Poison Resist +[30-35]%", type: "numeric", range: [30, 35] },
+    { mod: "[3-5]% Life Stolen per Hit", type: "numeric", range: [3, 5] },
+    { mod: "[3-5]% Mana Stolen per Hit", type: "numeric", range: [3, 5] },
+    { mod: "Increase Maximum Life [4-6]%", type: "numeric", range: [4, 6] },
+    { mod: "+[3-4] Life after each Kill", type: "numeric", range: [3, 4] },
+    { mod: "+[3-4] to Mana after each Kill", type: "numeric", range: [3, 4] },
+    { mod: "Cannot Be Frozen", type: "fixed" },
+    { mod: "+1 to All Skills", type: "fixed" },
+    { mod: "+10% Curse Resistance", type: "fixed" },
     { mod: "All Resistances +[15-20]", type: "numeric", range: [15, 20] },
-    {
-      mod: "Replenish Life +[20-30]<br>[3-5]% Mana Stolen per Hit",
-      type: "double",
-      ranges: [
-        { label: "Replenish Life", range: [20, 30], type: "numeric" },
-        { label: "Mana Stolen per Hit", range: [3, 5], type: "numeric" }
-      ]
-    },
     { mod: "Physical Damage Taken Reduced by [4-6]%", type: "numeric", range: [4, 6] },
     {
-      mod: "Fire Resist +[30-35]%<br>Increase Maximum Life [4-6]%",
+      mod: "Indestructible<br>+[50-80]% Enhanced Defense",
       type: "double",
       ranges: [
-        { label: "Fire Resist", range: [30, 35], type: "numeric" },
-        { label: "Increase Maximum Life", range: [4, 6], type: "numeric" }
+        { label: "Indestructible", type: "fixed" },
+        { label: "Enhanced Defense", range: [50, 80], type: "numeric" }
       ]
     },
-    { mod: "+[4-5]% to Maximum Fire Resist", type: "numeric", range: [4, 5] },
-    { mod: "Fire Resist +15%", type: "fixed" },
     {
-      mod: "Cold Resist +[30-35]%<br>+[3-4] Life after each Kill",
+      mod: "+[150-250] to Attack Rating<br>+[2-4] to Light Radius",
       type: "double",
       ranges: [
-        { label: "Cold Resist", range: [30, 35], type: "numeric" },
-        { label: "Life after each Kill", range: [3, 4], type: "numeric" }
+        { label: "Attack Rating", range: [150, 250], type: "numeric" },
+        { label: "Light Radius", range: [2, 4], type: "numeric" }
       ]
     },
-    { mod: "+[4-5]% to Maximum Cold Resist", type: "numeric", range: [4, 5] },
-    { mod: "Cold Resist +15%", type: "fixed" },
     {
-      mod: "Lightning Resist +[30-35]%<br>+[3-4] to Mana after each Kill",
+      mod: "+[4-5]% to Maximum Fire Resist<br>Fire Resist +15%",
       type: "double",
       ranges: [
-        { label: "Lightning Resist", range: [30, 35], type: "numeric" },
-        { label: "Mana after each Kill", range: [3, 4], type: "numeric" }
+        { label: "Maximum Fire Resist", range: [4, 5], type: "numeric" },
+        { label: "Fire Resist", value: 15, type: "fixed" }
       ]
     },
-    { mod: "+[4-5]% to Maximum Lightning Resist", type: "numeric", range: [4, 5] },
-    { mod: "Lightning Resist +15%", type: "fixed" },
     {
-      mod: "Poison Resist +[30-35]%<br>Cannot Be Frozen",
+      mod: "+[4-5]% to Maximum Cold Resist<br>Cold Resist +15%",
       type: "double",
       ranges: [
-        { label: "Poison Resist", range: [30, 35], type: "numeric" },
-        { label: "Cannot Be Frozen", type: "fixed" }
+        { label: "Maximum Cold Resist", range: [4, 5], type: "numeric" },
+        { label: "Cold Resist", value: 15, type: "fixed" }
       ]
     },
-    { mod: "+[4-5]% to Maximum Poison Resist", type: "numeric", range: [4, 5] },
-    { mod: "Poison Resist +15%", type: "fixed" }
+    {
+      mod: "+[4-5]% to Maximum Lightning Resist<br>Lightning Resist +15%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Lightning Resist", range: [4, 5], type: "numeric" },
+        { label: "Lightning Resist", value: 15, type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[4-5]% to Maximum Poison Resist<br>Poison Resist +15%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Poison Resist", range: [4, 5], type: "numeric" },
+        { label: "Poison Resist", value: 15, type: "fixed" }
+      ]
+    },
+    { mod: "Socketed (1)", type: "socket", sockets: 1 },
+    { mod: "Socketed (2)", type: "socket", sockets: 2 },
+    { mod: "Socketed (3)", type: "socket", sockets: 3 }
   ],
   armor: [
     { mod: "Socketed (1)", type: "socket", sockets: 1 },
