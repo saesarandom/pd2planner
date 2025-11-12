@@ -970,6 +970,43 @@ async function loadBuildFromURL() {
 }
 
 /**
+ * Setup mercenary level validation
+ * Ensures mercenary level is between 1 and player level
+ */
+function setupMercLevelValidation() {
+  const playerLevelInput = document.getElementById('lvlValue');
+  const mercLevelInput = document.getElementById('merclvlValue');
+
+  if (!playerLevelInput || !mercLevelInput) return;
+
+  // Validate mercenary level when it changes
+  mercLevelInput.addEventListener('input', () => {
+    let mercLevel = parseInt(mercLevelInput.value) || 1;
+    const playerLevel = parseInt(playerLevelInput.value) || 1;
+
+    // Clamp between 1 and player level
+    if (mercLevel < 1) {
+      mercLevel = 1;
+    } else if (mercLevel > playerLevel) {
+      mercLevel = playerLevel;
+    }
+
+    mercLevelInput.value = mercLevel;
+  });
+
+  // Update mercenary max level when player level changes
+  playerLevelInput.addEventListener('input', () => {
+    const playerLevel = parseInt(playerLevelInput.value) || 1;
+    let mercLevel = parseInt(mercLevelInput.value) || 1;
+
+    // If mercenary level exceeds new player level, cap it
+    if (mercLevel > playerLevel) {
+      mercLevelInput.value = playerLevel;
+    }
+  });
+}
+
+/**
  * Main initialization
  */
 document.addEventListener('DOMContentLoaded', () => {
@@ -985,22 +1022,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Setup Anya checkbox listeners (delayed to ensure DOM is ready)
   setTimeout(setupAnyaCheckboxes, 100);
 
-  // 5. Setup crit display listeners
+  // 5. Setup mercenary level validation
+  setupMercLevelValidation();
+
+  // 6. Setup crit display listeners
   setupCritListeners();
 
-  // 6. Initialize crit display
+  // 7. Initialize crit display
   setTimeout(updateCritDisplay, 500);
 
-  // 7. Initialize other systems if available
+  // 8. Initialize other systems if available
   if (typeof updatePolyLife === 'function') updatePolyLife();
 
-  // 8. Create save button
+  // 9. Create save button
   setTimeout(createSaveButton, 500);
 
-  // 9. Load build from URL if present
+  // 10. Load build from URL if present
   setTimeout(loadBuildFromURL, 1000);
 
-  // 10. Check login state (legacy)
+  // 11. Check login state (legacy)
   const username = localStorage.getItem('username');
   if (username && typeof updateUIState === 'function') {
     updateUIState(username);
