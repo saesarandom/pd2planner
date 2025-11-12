@@ -79,30 +79,39 @@ class SkillSystem {
       'Assassin': {
         'martialartscontainer': [
           { id: 'tigerstrikecontainer', name: 'Tiger Strike', level: 1 },
-          { id: 'dragontailcontainer', name: 'Dragon Tail', level: 1 },
-          { id: 'fistsoffirecontainer', name: 'Fists of Fire', level: 6 },
+          { id: 'dragonntaloncontainer', name: 'Dragon Talon', level: 1 },
           { id: 'dragonclawcontainer', name: 'Dragon Claw', level: 1 },
+          { id: 'fistsoffirecontainer', name: 'Fists of Fire', level: 6 },
           { id: 'cobrastrikecontainer', name: 'Cobra Strike', level: 12 },
-          { id: 'cloakofflamescontainer', name: 'Cloak of Flames', level: 24 },
+          { id: 'clawsofthundercontainer', name: 'Claws of Thunder', level: 18 },
+          { id: 'dragontailcontainer', name: 'Dragon Tail', level: 18 },
+          { id: 'dragonflightcontainer', name: 'Dragon Flight', level: 24 },
+          { id: 'bladesoficecontainer', name: 'Blades of Ice', level: 24 },
           { id: 'phoenixstrikecontainer', name: 'Phoenix Strike', level: 30 }
         ],
         'shadowdisciplinescontainer': [
+          { id: 'clawanddaggermasterycontainer', name: 'Claw and Dagger Mastery', level: 1 },
+          { id: 'psychichammcontainer', name: 'Psychic Hammer', level: 1 },
           { id: 'burstofspeedcontainer', name: 'Burst of Speed', level: 6 },
+          { id: 'weaponblockcontainer', name: 'Weapon Block', level: 12 },
+          { id: 'cloakofshadowscontainer', name: 'Cloak of Shadows', level: 12 },
+          { id: 'mindblastcontainer', name: 'Mind Blast', level: 12 },
           { id: 'fadecontainer', name: 'Fade', level: 18 },
           { id: 'shadowwarriorcontainer', name: 'Shadow Warrior', level: 18 },
           { id: 'shadowmastercontainer', name: 'Shadow Master', level: 30 },
-          { id: 'cloakofshadowscontainer', name: 'Cloak of Shadows', level: 12 },
-          { id: 'weaponblockcontainer', name: 'Weapon Block', level: 1 },
-          { id: 'psychichammcontainer', name: 'Psychic Hammer', level: 6 },
-          { id: 'mindblastcontainer', name: 'Mind Blast', level: 24 }
+          { id: 'venomcontainer', name: 'Venom', level: 12 }
         ],
         'trapscontainer': [
           { id: 'fireblastcontainer', name: 'Fire Blast', level: 1 },
           { id: 'shockwebcontainer', name: 'Shock Web', level: 6 },
+          { id: 'bladesentinelcontainer', name: 'Blade Sentinel', level: 12 },
           { id: 'chargedboltssentrycontainer', name: 'Charged Bolt Sentry', level: 12 },
           { id: 'wakeoffirecontainer', name: 'Wake of Fire', level: 12 },
+          { id: 'bladefurycontainer', name: 'Blade Fury', level: 18 },
+          { id: 'bladeshieldcontainer', name: 'Blade Shield', level: 24 },
           { id: 'lightningsentrycontainer', name: 'Lightning Sentry', level: 24 },
-          { id: 'wakeofinferncontainer', name: 'Wake of Inferno', level: 18 },
+          { id: 'wakeofinfernocontainer', name: 'Wake of Inferno', level: 24 },
+          { id: 'chainlightningsentrycontainer', name: 'Chain Lightning Sentry', level: 30 },
           { id: 'deathsentrycontainer', name: 'Death Sentry', level: 30 }
         ]
       },

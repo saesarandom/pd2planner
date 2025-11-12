@@ -772,6 +772,12 @@ getDirectLifeManaFromItems() {
           this.maxSkillPoints = 12;
         }
 
+        // Reset mercenary level to 1 when changing classes
+        const mercLvlInput = document.getElementById('merclvlValue');
+        if (mercLvlInput) {
+          mercLvlInput.value = 1;
+        }
+
         document.getElementById('str').value = baseStats.str;
         document.getElementById('dex').value = baseStats.dex;
         document.getElementById('vit').value = baseStats.vit;
