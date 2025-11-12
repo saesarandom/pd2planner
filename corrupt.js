@@ -254,9 +254,30 @@ const CORRUPTIONS = {
     { mod: "Socketed (3)", type: "socket", sockets: 3 }
   ],
   gloves: [
-    { mod: "+[20-30] to Life", type: "numeric", range: [20, 30] },
+    { mod: "+[50-80]% Enhanced Defense", type: "numeric", range: [50, 80] },
+    { mod: "+[10-15]% Chance to Pierce", type: "numeric", range: [10, 15] },
+    { mod: "+10% Faster Cast Rate", type: "fixed" },
+    { mod: "Regenerate Mana [20-30]%", type: "numeric", range: [20, 30] },
+    { mod: "+[10-20]% Faster Block Rate", type: "numeric", range: [10, 20] },
     { mod: "+10% Increased Attack Speed", type: "fixed" },
-    { mod: "+10% Faster Cast Rate", type: "fixed" }
+    { mod: "[50-100]% Extra Gold from Monsters", type: "numeric", range: [50, 100] },
+    { mod: "+[100-150] to Attack Rating", type: "numeric", range: [100, 150] },
+    { mod: "10% Increased Chance of Blocking", type: "fixed" },
+    { mod: "[10-25]% Better Chance of Getting Magic Items", type: "numeric", range: [10, 25] },
+    { mod: "[2-3]% Life Stolen per Hit", type: "numeric", range: [2, 3] },
+    { mod: "+[30-40]% Enhanced Damage", type: "numeric", range: [30, 40] },
+    { mod: "Fire Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "[2-3]% Mana Stolen per Hit", type: "numeric", range: [2, 3] },
+    { mod: "-[15-25]% Target Defense", type: "numeric", range: [15, 25] },
+    { mod: "Cold Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+[3-6] to All Attributes", type: "numeric", range: [3, 6] },
+    { mod: "10% Deadly Strike", type: "fixed" },
+    { mod: "Lightning Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+[20-40] to Life", type: "numeric", range: [20, 40] },
+    { mod: "+[3-4] to Mana after each Kill", type: "numeric", range: [3, 4] },
+    { mod: "Poison Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "Replenish Life +[15-20]", type: "numeric", range: [15, 20] },
+    { mod: "All Resistances +[5-8]", type: "numeric", range: [5, 8] }
   ],
   belt: [
     { mod: "+[30-50] to Life", type: "numeric", range: [30, 50] },
