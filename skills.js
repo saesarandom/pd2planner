@@ -36,6 +36,7 @@ class SkillSystem {
     this.currentClass = 'Amazon';
     this.currentLevel = 1;
     this.maxSkillPoints = 12;
+    this.skillBonuses = {}; // Store item bonuses per skill (e.g., {'jabcontainer': 1})
     
     // Define all class skill trees
     this.classSkillTrees = {
@@ -636,7 +637,18 @@ class SkillSystem {
         input.style.textAlign = 'center';
         input.style.fontSize = '12px';
 
+        // Create bonus span (green indicator)
+        var bonusSpan = document.createElement('span');
+        bonusSpan.id = skill.id + '_bonus';
+        bonusSpan.style.color = '#00ff00';
+        bonusSpan.style.fontWeight = 'bold';
+        bonusSpan.style.marginRight = '5px';
+        bonusSpan.style.minWidth = '20px';
+        bonusSpan.style.fontSize = '12px';
+        bonusSpan.textContent = ''; // Hidden initially
+
         skillDiv.appendChild(label);
+        skillDiv.appendChild(bonusSpan);
         skillDiv.appendChild(input);
         container.appendChild(skillDiv);
       }
@@ -1701,6 +1713,37 @@ getDeadlyStrikeChance() {
     setTimeout(() => { this.updateSkillDropdown(); }, 100);
   }
 
+  // Update skill bonuses from item equipment
+  updateSkillBonuses(allSkillsBonus) {
+    // Store the bonus
+    this.skillBonuses.allSkills = allSkillsBonus || 0;
+
+    // Update all skill inputs' bonus indicators
+    var currentClassSkills = this.classSkillTrees[this.currentClass] || this.classSkillTrees['Amazon'];
+
+    Object.keys(currentClassSkills).forEach((containerId) => {
+      var skills = currentClassSkills[containerId];
+
+      skills.forEach((skill) => {
+        var bonusSpan = document.getElementById(skill.id + '_bonus');
+        var skillInput = document.getElementById(skill.id);
+
+        if (bonusSpan && skillInput) {
+          var bonus = this.skillBonuses.allSkills || 0;
+          var baseValue = parseInt(skillInput.value) || 0;
+          var totalValue = baseValue + bonus;
+
+          // Only show bonus if there is one
+          if (bonus > 0) {
+            bonusSpan.textContent = totalValue;
+            bonusSpan.style.color = '#00ff00';
+          } else {
+            bonusSpan.textContent = '';
+          }
+        }
+      });
+    });
+  }
 
 
 

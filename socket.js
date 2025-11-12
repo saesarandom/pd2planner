@@ -3938,6 +3938,12 @@ addToStatsMap(statsMap, key, data) {
     
     // Core stats
     this.updateElement('allskillscontainer', this.stats.allSkills);
+
+    // Update skill bonus indicators if skill system is available
+    if (window.skillSystem) {
+      window.skillSystem.updateSkillBonuses(this.stats.allSkills);
+    }
+
     this.updateElement('magicfindcontainer', this.stats.magicFind);
     this.updateElement('goldfindcontainer', this.stats.goldFind);
     this.updateElement('defensecontainer', this.stats.defense);
