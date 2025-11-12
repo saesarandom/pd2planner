@@ -1040,9 +1040,52 @@ body.moody .stat-group h4 {
     font-size: 12px;
     padding: 8px 12px;
   }
-  
+
 .buff-tooltip .buff-name {
     font-size: 14px;
   } */
 
+}
+
+/* Mercenary Stats Display */
+.mercenary-stats-display {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(30, 30, 30, 0.8);
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+}
+
+.mercenary-stats-display h4 {
+  margin: 0 0 15px 0;
+  color: #ffd700;
+  text-align: center;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.merc-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.merc-stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.merc-stat-label {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.merc-stat-value {
+  color: #fff;
+  font-weight: bold;
+  font-size: 13px;
 }
