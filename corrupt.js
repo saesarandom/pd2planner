@@ -958,6 +958,75 @@ function applySocketCorruptionFromModal(corruption) {
   closeCorruptionModal();
 }
 
+// Apply corruption stats to item properties for character stat calculations
+function applyCorruptionToProperties(itemName, corruptionText) {
+  if (!itemList[itemName]) return;
+
+  // Ensure properties object exists
+  if (!itemList[itemName].properties) {
+    itemList[itemName].properties = {};
+  }
+
+  // Restore original properties first (to replace any previous corruption)
+  if (window.originalItemProperties && window.originalItemProperties[itemName]) {
+    itemList[itemName].properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
+  }
+
+  // Parse corruption text to extract stat bonuses
+  const stats = parseCorruptionText(corruptionText);
+
+  // Apply each stat to the properties object
+  stats.forEach(stat => {
+    if (!stat.stackable || !stat.value) return;
+
+    const item = itemList[itemName];
+    const props = item.properties;
+
+    // Map corruption stat types to item property names
+    switch (stat.type) {
+      case 'str':
+        props.str = (props.str || 0) + stat.value;
+        break;
+      case 'dex':
+        props.dex = (props.dex || 0) + stat.value;
+        break;
+      case 'vit':
+        props.vit = (props.vit || 0) + stat.value;
+        break;
+      case 'enr':
+        props.enr = (props.enr || 0) + stat.value;
+        break;
+      case 'allattributes':
+        // Add to all four attributes
+        props.str = (props.str || 0) + stat.value;
+        props.dex = (props.dex || 0) + stat.value;
+        props.vit = (props.vit || 0) + stat.value;
+        props.enr = (props.enr || 0) + stat.value;
+        break;
+      case 'life':
+        // Handle both 'tolife' and 'life' properties
+        if ('tolife' in props) {
+          props.tolife = (props.tolife || 0) + stat.value;
+        } else {
+          props.life = (props.life || 0) + stat.value;
+        }
+        break;
+      case 'mana':
+        // Handle both 'tomana' and 'mana' properties
+        if ('tomana' in props) {
+          props.tomana = (props.tomana || 0) + stat.value;
+        } else {
+          props.mana = (props.mana || 0) + stat.value;
+        }
+        break;
+      // Add other stat types as needed
+      case 'ar':
+        props.tohitrating = (props.tohitrating || 0) + stat.value;
+        break;
+    }
+  });
+}
+
 // Common function to apply corruption to item
 function applyCorruptionToItem(corruptionText) {
   const dropdown = document.getElementById(currentCorruptionSlot);
@@ -988,6 +1057,15 @@ function applyCorruptionToItem(corruptionText) {
     window.originalItemDescriptions[itemName] = description;
   }
 
+  // Store original properties if not already stored
+  if (!window.originalItemProperties) {
+    window.originalItemProperties = {};
+  }
+  if (!window.originalItemProperties[itemName]) {
+    // Deep clone the properties object to preserve originals
+    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(itemList[itemName].properties || {}));
+  }
+
   // Store corruption info
   window.itemCorruptions[currentCorruptionSlot] = {
     text: corruptionText,
@@ -1001,12 +1079,13 @@ function applyCorruptionToItem(corruptionText) {
 
   // Set the corrupted description (will be regenerated for dynamic items anyway)
   itemList[itemName].description = enhancedDescription;
-  
 
-  
+  // Apply corruption stats to item properties
+  applyCorruptionToProperties(itemName, corruptionText);
+
   // Trigger item display update
   triggerItemUpdate(currentCorruptionSlot);
-  
+
   closeCorruptionModal();
 }
 
@@ -1086,6 +1165,9 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\+?\d+)%\s+(Increased Chance of Blocking)/i, type: 'block' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?Life/i, type: 'life' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?Mana/i, type: 'mana' },
+    { pattern: /(\+?\d+)\s+(?:to\s+)?Vitality/i, type: 'vit' },
+    { pattern: /(\+?\d+)\s+(?:to\s+)?Energy/i, type: 'enr' },
+    { pattern: /(\+?\d+)\s+(?:to\s+)?All\s+Attributes/i, type: 'allattributes' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?Strength/i, type: 'str' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?Dexterity/i, type: 'dex' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)/i, type: 'ar' },
@@ -1257,6 +1339,11 @@ function removeCurrentCorruption() {
       if (section && window.unifiedSocketSystem && typeof window.unifiedSocketSystem.setSocketCount === 'function') {
         window.unifiedSocketSystem.setSocketCount(section, corruption.originalSocketCount);
       }
+    }
+
+    // Restore original properties
+    if (window.originalItemProperties && window.originalItemProperties[corruption.itemName]) {
+      itemList[corruption.itemName].properties = JSON.parse(JSON.stringify(window.originalItemProperties[corruption.itemName]));
     }
 
     // Check if item is dynamic (has baseType)
