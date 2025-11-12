@@ -383,9 +383,6 @@ body {
   border-radius: 10px;
   padding: 20px;
   height: fit-content;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
 }
 
 .mercequipment-container {
@@ -1052,11 +1049,15 @@ body.moody .stat-group h4 {
 
 /* Mercenary Stats Display */
 .mercenary-stats-display {
+  position: absolute;
+  left: 345vh;
+  top: 50px;
   padding: 15px;
   background: rgba(30, 30, 30, 0.8);
   border: 2px solid #8B4513;
   border-radius: 8px;
-  width: 100%;
+  width: 400px;
+  max-width: 500px;
 }
 
 .mercenary-stats-display h4 {
@@ -1070,7 +1071,7 @@ body.moody .stat-group h4 {
 
 .merc-stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 }
 
