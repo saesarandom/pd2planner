@@ -508,9 +508,9 @@ class SkillSystem {
   // Define container titles for each class
   var classTitles = {
     'Amazon': [
-      { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear' },
-      { id: 'passiveskillscontainer', title: 'Summons' },
-      { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow' }
+      { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear Skills' },
+      { id: 'passiveskillscontainer', title: 'Passive & Magic Skills' },
+      { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow Skills' }
     ],
     'Assassin': [
       { id: 'martialartscontainer', title: 'Martial Arts' },
@@ -518,14 +518,14 @@ class SkillSystem {
       { id: 'trapscontainer', title: 'Traps' }
     ],
     'Barbarian': [
-      { id: 'warcriescontainer', title: 'War Cries' },
+      { id: 'warcriescontainer', title: 'Warcries' },
       { id: 'combatmasteriescontainer', title: 'Combat Masteries' },
       { id: 'combatskillsbarcontainer', title: 'Combat Skills' }
     ],
     'Druid': [
-      { id: 'elementalskillscontainer', title: 'Elemental' },
-      { id: 'shapeshiftingskillscontainer', title: 'Shapeshifting' },
-      { id: 'summoningskillscontainer', title: 'Summoning' }
+      { id: 'elementalskillscontainer', title: 'Elemental Skills' },
+      { id: 'shapeshiftingskillscontainer', title: 'Shapeshifting Skills' },
+      { id: 'summoningskillscontainer', title: 'Summoning Skills' }
     ],
     'Necromancer': [
       { id: 'summoningspellsneccontainer', title: 'Summoning Spells' },
