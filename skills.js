@@ -794,9 +794,19 @@ class SkillSystem {
       var skillInput = document.getElementById(skillId);
       if (skillInput && parseInt(skillInput.value) > 0) {
         var skill = self.skillData[skillId];
+        var baseValue = parseInt(skillInput.value);
+        var bonus = self.skillBonuses.allSkills || 0;
+        var totalValue = baseValue + bonus;
+
         var option = document.createElement('option');
         option.value = skillId;
-        option.textContent = skill.name + ' (' + skillInput.value + ')';
+
+        // Show total level with bonus, or just base level if no bonus
+        if (bonus > 0) {
+          option.textContent = skill.name + ' (' + totalValue + ')';
+        } else {
+          option.textContent = skill.name + ' (' + baseValue + ')';
+        }
         dropdown.appendChild(option);
       }
     });
@@ -1731,6 +1741,9 @@ getDeadlyStrikeChance() {
         this.updateSingleSkillBonus(skill.id);
       });
     });
+
+    // Update the active skill dropdown to show new bonus values
+    this.updateSkillDropdown();
   }
 
   // Update a single skill's bonus indicator
