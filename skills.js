@@ -119,36 +119,36 @@ class SkillSystem {
         'warcriescontainer': [
           { id: 'howlcontainer', name: 'Howl', level: 1 },
           { id: 'findpotioncontainer', name: 'Find Potion', level: 1 },
-          { id: 'tauncontainer', name: 'Taunt', level: 6 },
           { id: 'shoutcontainer', name: 'Shout', level: 6 },
+          { id: 'warcrycontainer', name: 'War Cry', level: 6 },
           { id: 'finditemcontainer', name: 'Find Item', level: 12 },
-          { id: 'battlecrycontainer', name: 'Battle Cry', level: 18 },
+          { id: 'tauncontainer', name: 'Taunt', level: 18 },
           { id: 'battleorderscontainer', name: 'Battle Orders', level: 24 },
-          { id: 'warcryskilcontainer', name: 'War Cry', level: 30 }
+          { id: 'grimwardcontainer', name: 'Grim Ward', level: 24 },
+          { id: 'battlecommandcontainer', name: 'Battle Command', level: 30 },
+          { id: 'battlecrycontainer', name: 'Battle Cry', level: 30 }
         ],
         'combatmasteriescontainer': [
-          { id: 'swordmasterycontainer', name: 'Sword Mastery', level: 1 },
-          { id: 'axemasterycontainer', name: 'Axe Mastery', level: 1 },
-          { id: 'macemasterycontainer', name: 'Mace Mastery', level: 1 },
-          { id: 'polemarmasterycontainer', name: 'Polearm Mastery', level: 6 },
-          { id: 'throwingmasterycontainer', name: 'Throwing Mastery', level: 6 },
-          { id: 'spearmasterycontainer', name: 'Spear Mastery', level: 12 },
-          { id: 'increasedstaminacontainer', name: 'Increased Stamina', level: 1 },
+          { id: 'generalmasterycontainer', name: 'General Mastery', level: 1 },
+          { id: 'throwingmasterycontainer', name: 'Throwing Mastery', level: 1 },
+          { id: 'polearmandspearmasterycontainer', name: 'Polearm and Spear Mastery', level: 6 },
+          { id: 'combatreflexescontainer', name: 'Combat Reflexes', level: 12 },
           { id: 'ironskinscontainer', name: 'Iron Skin', level: 18 },
-          { id: 'increasedspeedcontainer', name: 'Increased Speed', level: 12 },
-          { id: 'naturalresistancecontainer', name: 'Natural Resistance', level: 24 }
+          { id: 'increasedspeedcontainer', name: 'Increased Speed', level: 24 },
+          { id: 'naturalresistancecontainer', name: 'Natural Resistance', level: 30 },
+          { id: 'deepwoundscontainer', name: 'Deep Wounds', level: 30 }
         ],
         'combatskillsbarcontainer': [
           { id: 'bashcontainer', name: 'Bash', level: 1 },
-          { id: 'leapcontainer', name: 'Leap', level: 6 },
-          { id: 'doubleswingcontainer', name: 'Double Swing', level: 6 },
-          { id: 'stuncontainer', name: 'Stun', level: 12 },
+          { id: 'doubleswingcontainer', name: 'Double Swing', level: 1 },
+          { id: 'frenzycontainer', name: 'Frenzy', level: 6 },
+          { id: 'stuncontainer', name: 'Stun', level: 6 },
+          { id: 'concentratecontainer', name: 'Concentrate', level: 12 },
           { id: 'doublethrowcontainer', name: 'Double Throw', level: 12 },
-          { id: 'leapattackcontainer', name: 'Leap Attack', level: 18 },
-          { id: 'concentratecontainer', name: 'Concentrate', level: 18 },
-          { id: 'frenzycontainer', name: 'Frenzy', level: 24 },
-          { id: 'whirlwindcontainer', name: 'Whirlwind', level: 30 },
-          { id: 'berserkcontainer', name: 'Berserk', level: 30 }
+          { id: 'leapcontainer', name: 'Leap', level: 12 },
+          { id: 'leapattackcontainer', name: 'Leap Attack', level: 24 },
+          { id: 'berserkcontainer', name: 'Berserk', level: 30 },
+          { id: 'whirlwindcontainer', name: 'Whirlwind', level: 30 }
         ]
       },
       'Druid': {
