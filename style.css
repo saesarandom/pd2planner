@@ -349,8 +349,21 @@ body {
   width: 200px;
 }
 
-#str, #dex, #vit, #enr, #lvlValue, #merclvlValue {
+#str, #dex, #vit, #enr, #lvlValue {
   width: 30%;
+  background-color: rgba(0, 0, 0, 0.8);
+  color:rgb(243, 241, 242) ;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  text-align: center;
+}
+
+#merclvlValue {
+  display: flex;
+  position: absolute;
+  left: 11vh;
+  margin: 4px;
+  width: 46px;
   background-color: rgba(0, 0, 0, 0.8);
   color:rgb(243, 241, 242) ;
   font-family: 'Oswald', sans-serif;
