@@ -280,8 +280,30 @@ const CORRUPTIONS = {
     { mod: "All Resistances +[5-8]", type: "numeric", range: [5, 8] }
   ],
   belt: [
-    { mod: "+[30-50] to Life", type: "numeric", range: [30, 50] },
-    { mod: "+10% Faster Hit Recovery", type: "fixed" }
+    { mod: "+[7-10] to Strength", type: "numeric", range: [7, 10] },
+    { mod: "+[10-15]% Chance to Pierce", type: "numeric", range: [10, 15] },
+    { mod: "+10% Faster Cast Rate", type: "fixed" },
+    { mod: "+[7-10] to Dexterity", type: "numeric", range: [7, 10] },
+    { mod: "+10% Faster Hit Recovery", type: "fixed" },
+    { mod: "+10% Increased Attack Speed", type: "fixed" },
+    { mod: "+[7-10] to Vitality", type: "numeric", range: [7, 10] },
+    { mod: "+[3-6] to All Attributes", type: "numeric", range: [3, 6] },
+    { mod: "+10% Faster Run/Walk", type: "fixed" },
+    { mod: "+[7-10] to Energy", type: "numeric", range: [7, 10] },
+    { mod: "Replenish Life +[15-20]", type: "numeric", range: [15, 20] },
+    { mod: "20% Reduced Curse Duration", type: "fixed" },
+    { mod: "Fire Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+[100-150] to Attack Rating", type: "numeric", range: [100, 150] },
+    { mod: "10% Increased Chance of Blocking", type: "fixed" },
+    { mod: "Cold Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "Attacker Takes Damage of [2-396] ([2-4] per Level)", type: "numeric", range: [2, 396] },
+    { mod: "+2% to All Maximum Resistances", type: "fixed" },
+    { mod: "Lightning Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "[60-100]% Extra Gold from Monsters", type: "numeric", range: [60, 100] },
+    { mod: "All Resistances +[5-8]", type: "numeric", range: [5, 8] },
+    { mod: "Poison Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "[20-30]% Better Chance of Getting Magic Items", type: "numeric", range: [20, 30] },
+    { mod: "Physical Damage Taken Reduced by [3-4]%", type: "numeric", range: [3, 4] }
   ],
   boots: [
     { mod: "+[50-80]% Enhanced Defense", type: "numeric", range: [50, 80] },
