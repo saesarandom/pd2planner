@@ -44,24 +44,16 @@ class SkillSystem {
           { id: 'jabcontainer', name: 'Jab', level: 1, prerequisites: [] },
           { id: 'poisonjavelincontainer', name: 'Poison Javelin', level: 1, prerequisites: [] },
           { id: 'powerstrikecontainer', name: 'Power Strike', level: 6, prerequisites: ['jabcontainer'] },
-          { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 1, prerequisites: ['jabcontainer'] },
           { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer'] },
           { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12, prerequisites: ['jabcontainer', 'powerstrikecontainer'] },
           { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18, prerequisites: ['jabcontainer', 'powerstrikecontainer', 'chargedstrikecontainer'] },
           { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer'] },
-          { id: 'fendcontainer', name: 'Fend', level: 24, prerequisites: ['jabcontainer', 'javelinandspearmasterycontainer'] },
+          { id: 'fendcontainer', name: 'Fend', level: 24, prerequisites: ['jabcontainer'] },
           { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer', 'plaguejavelincontainer'] }
         ],
         'passiveskillscontainer': [
-          { id: 'innercontainer', name: 'Inner Sight', level: 1, prerequisites: [] },
-          { id: 'criticalstrikecontainer', name: 'Critical Strike', level: 1, prerequisites: [] },
-          { id: 'evadecontainer', name: 'Evade', level: 6, prerequisites: [] },
-          { id: 'slowmovementcontainer', name: 'Slow Movement', level: 12, prerequisites: ['innercontainer'] },
-          { id: 'piercecontainer', name: 'Pierce', level: 12, prerequisites: ['criticalstrikecontainer'] },
-          { id: 'dodgecontainer', name: 'Dodge', level: 18, prerequisites: ['innercontainer', 'evadecontainer', 'slowmovementcontainer'] },
-          { id: 'decoycontainer', name: 'Decoy', level: 18, prerequisites: ['innercontainer', 'slowmovementcontainer'] },
-          { id: 'penetratecontainer', name: 'Penetrate', level: 24, prerequisites: ['criticalstrikecontainer', 'piercecontainer'] },
-          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30, prerequisites: ['innercontainer', 'slowmovementcontainer', 'decoycontainer'] }
+          { id: 'decoycontainer', name: 'Decoy', level: 18, prerequisites: [] },
+          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30, prerequisites: ['decoycontainer'] }
         ],
         'bowandcrossbowskillscontainer': [
           { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1, prerequisites: [] },
