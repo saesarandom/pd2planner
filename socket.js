@@ -3301,7 +3301,11 @@ if (defMatch) {
     
     const manaMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Mana/i);
     if (manaMatch) { this.stats.mana += parseInt(manaMatch[1]); return; }
-    
+
+    // All Skills
+    const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
+    if (allSkillsMatch) { this.stats.allSkills += parseInt(allSkillsMatch[1]); return; }
+
     // Resistances
     const allResMatch = cleanLine.match(/All\s+Resistances?\s+(?:\+)?(\d+)%?/i);
     if (allResMatch) {
