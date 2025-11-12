@@ -509,7 +509,7 @@ class SkillSystem {
   var classTitles = {
     'Amazon': [
       { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear' },
-      { id: 'passiveskillscontainer', title: 'Passive & Magic' },
+      { id: 'passiveskillscontainer', title: 'Summons' },
       { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow' }
     ],
     'Assassin': [
