@@ -37,43 +37,267 @@ class SkillSystem {
     this.currentLevel = 1;
     this.maxSkillPoints = 12;
     
-    this.amazonSkills = {
-      'javelinandspearskillscontainer': [
-        { id: 'jabcontainer', name: 'Jab', level: 1 },
-        { id: 'poisonjavelincontainer', name: 'Poison Javelin', level: 1 },
-        { id: 'powerstrikecontainer', name: 'Power Strike', level: 6 },
-        { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 1 },
-        { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12 },
-        { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12 },
-        { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18 },
-        { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18 },
-        { id: 'fendcontainer', name: 'Fend', level: 24 },
-        { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30 }
-      ],
-      'passiveskillscontainer': [
-        { id: 'innercontainer', name: 'Inner Sight', level: 1 },
-        { id: 'criticalstrikecontainer', name: 'Critical Strike', level: 1 },
-        { id: 'dodgecontainer', name: 'Dodge', level: 6 },
-        { id: 'slowmissilecontainer', name: 'Slow Missiles', level: 12 },
-        { id: 'avoidcontainer', name: 'Avoid', level: 12 },
-        { id: 'penetratecontainer', name: 'Penetrate', level: 18 },
-        { id: 'decoycontainer', name: 'Decoy', level: 6 },
-        { id: 'evadecontainer', name: 'Evade', level: 18 },
-        { id: 'valkyriecontainer', name: 'Valkyrie', level: 30 }
-      ],
-      'bowandcrossbowskillscontainer': [
-        { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1 },
-        { id: 'firearrowcontainer', name: 'Fire Arrow', level: 1 },
-        { id: 'coldarrowcontainer', name: 'Cold Arrow', level: 6 },
-        { id: 'multipleshotcontainer', name: 'Multiple Shot', level: 6 },
-        { id: 'explodingarrowcontainer', name: 'Exploding Arrow', level: 12 },
-        { id: 'icearrowcontainer', name: 'Ice Arrow', level: 12 },
-        { id: 'guidedarrowcontainer', name: 'Guided Arrow', level: 18 },
-        { id: 'strafecontainer', name: 'Strafe', level: 24 },
-        { id: 'immolationarrowcontainer', name: 'Immolation Arrow', level: 18 },
-        { id: 'freezingarrowcontainer', name: 'Freezing Arrow', level: 30 }
-      ]
+    // Define all class skill trees
+    this.classSkillTrees = {
+      'Amazon': {
+        'javelinandspearskillscontainer': [
+          { id: 'jabcontainer', name: 'Jab', level: 1 },
+          { id: 'poisonjavelincontainer', name: 'Poison Javelin', level: 1 },
+          { id: 'powerstrikecontainer', name: 'Power Strike', level: 6 },
+          { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 1 },
+          { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12 },
+          { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12 },
+          { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18 },
+          { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18 },
+          { id: 'fendcontainer', name: 'Fend', level: 24 },
+          { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30 }
+        ],
+        'passiveskillscontainer': [
+          { id: 'innercontainer', name: 'Inner Sight', level: 1 },
+          { id: 'criticalstrikecontainer', name: 'Critical Strike', level: 1 },
+          { id: 'dodgecontainer', name: 'Dodge', level: 6 },
+          { id: 'slowmissilecontainer', name: 'Slow Missiles', level: 12 },
+          { id: 'avoidcontainer', name: 'Avoid', level: 12 },
+          { id: 'penetratecontainer', name: 'Penetrate', level: 18 },
+          { id: 'decoycontainer', name: 'Decoy', level: 6 },
+          { id: 'evadecontainer', name: 'Evade', level: 18 },
+          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30 }
+        ],
+        'bowandcrossbowskillscontainer': [
+          { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1 },
+          { id: 'firearrowcontainer', name: 'Fire Arrow', level: 1 },
+          { id: 'coldarrowcontainer', name: 'Cold Arrow', level: 6 },
+          { id: 'multipleshotcontainer', name: 'Multiple Shot', level: 6 },
+          { id: 'explodingarrowcontainer', name: 'Exploding Arrow', level: 12 },
+          { id: 'icearrowcontainer', name: 'Ice Arrow', level: 12 },
+          { id: 'guidedarrowcontainer', name: 'Guided Arrow', level: 18 },
+          { id: 'strafecontainer', name: 'Strafe', level: 24 },
+          { id: 'immolationarrowcontainer', name: 'Immolation Arrow', level: 18 },
+          { id: 'freezingarrowcontainer', name: 'Freezing Arrow', level: 30 }
+        ]
+      },
+      'Assassin': {
+        'martialartscontainer': [
+          { id: 'tigerstrikecontainer', name: 'Tiger Strike', level: 1 },
+          { id: 'dragontailcontainer', name: 'Dragon Tail', level: 1 },
+          { id: 'fistsoffirecontainer', name: 'Fists of Fire', level: 6 },
+          { id: 'dragonclawcontainer', name: 'Dragon Claw', level: 1 },
+          { id: 'cobrastrikecontainer', name: 'Cobra Strike', level: 12 },
+          { id: 'cloakofflamescontainer', name: 'Cloak of Flames', level: 24 },
+          { id: 'phoenixstrikecontainer', name: 'Phoenix Strike', level: 30 }
+        ],
+        'shadowdisciplinescontainer': [
+          { id: 'burstofspeedcontainer', name: 'Burst of Speed', level: 6 },
+          { id: 'fadecontainer', name: 'Fade', level: 18 },
+          { id: 'shadowwarriorcontainer', name: 'Shadow Warrior', level: 18 },
+          { id: 'shadowmastercontainer', name: 'Shadow Master', level: 30 },
+          { id: 'cloakofshadowscontainer', name: 'Cloak of Shadows', level: 12 },
+          { id: 'weaponblockcontainer', name: 'Weapon Block', level: 1 },
+          { id: 'psychichammcontainer', name: 'Psychic Hammer', level: 6 },
+          { id: 'mindblastcontainer', name: 'Mind Blast', level: 24 }
+        ],
+        'trapscontainer': [
+          { id: 'fireblastcontainer', name: 'Fire Blast', level: 1 },
+          { id: 'shockwebcontainer', name: 'Shock Web', level: 6 },
+          { id: 'chargedboltssentrycontainer', name: 'Charged Bolt Sentry', level: 12 },
+          { id: 'wakeoffirecontainer', name: 'Wake of Fire', level: 12 },
+          { id: 'lightningsentrycontainer', name: 'Lightning Sentry', level: 24 },
+          { id: 'wakeofinferncontainer', name: 'Wake of Inferno', level: 18 },
+          { id: 'deathsentrycontainer', name: 'Death Sentry', level: 30 }
+        ]
+      },
+      'Barbarian': {
+        'warcriescontainer': [
+          { id: 'howlcontainer', name: 'Howl', level: 1 },
+          { id: 'findpotioncontainer', name: 'Find Potion', level: 1 },
+          { id: 'tauncontainer', name: 'Taunt', level: 6 },
+          { id: 'shoutcontainer', name: 'Shout', level: 6 },
+          { id: 'finditemcontainer', name: 'Find Item', level: 12 },
+          { id: 'battlecrycontainer', name: 'Battle Cry', level: 18 },
+          { id: 'battleorderscontainer', name: 'Battle Orders', level: 24 },
+          { id: 'warcryskilcontainer', name: 'War Cry', level: 30 }
+        ],
+        'combatmasteriescontainer': [
+          { id: 'swordmasterycontainer', name: 'Sword Mastery', level: 1 },
+          { id: 'axemasterycontainer', name: 'Axe Mastery', level: 1 },
+          { id: 'macemasterycontainer', name: 'Mace Mastery', level: 1 },
+          { id: 'polemarmasterycontainer', name: 'Polearm Mastery', level: 6 },
+          { id: 'throwingmasterycontainer', name: 'Throwing Mastery', level: 6 },
+          { id: 'spearmasterycontainer', name: 'Spear Mastery', level: 12 },
+          { id: 'increasedstaminacontainer', name: 'Increased Stamina', level: 1 },
+          { id: 'ironskinscontainer', name: 'Iron Skin', level: 18 },
+          { id: 'increasedspeedcontainer', name: 'Increased Speed', level: 12 },
+          { id: 'naturalresistancecontainer', name: 'Natural Resistance', level: 24 }
+        ],
+        'combatskillsbarcontainer': [
+          { id: 'bashcontainer', name: 'Bash', level: 1 },
+          { id: 'leapcontainer', name: 'Leap', level: 6 },
+          { id: 'doubleswingcontainer', name: 'Double Swing', level: 6 },
+          { id: 'stuncontainer', name: 'Stun', level: 12 },
+          { id: 'doublethrowcontainer', name: 'Double Throw', level: 12 },
+          { id: 'leapattackcontainer', name: 'Leap Attack', level: 18 },
+          { id: 'concentratecontainer', name: 'Concentrate', level: 18 },
+          { id: 'frenzycontainer', name: 'Frenzy', level: 24 },
+          { id: 'whirlwindcontainer', name: 'Whirlwind', level: 30 },
+          { id: 'berserkcontainer', name: 'Berserk', level: 30 }
+        ]
+      },
+      'Druid': {
+        'elementalskillscontainer': [
+          { id: 'firestormcontainer', name: 'Firestorm', level: 1 },
+          { id: 'moltenbouldcontainer', name: 'Molten Boulder', level: 6 },
+          { id: 'arcticblastcontainer', name: 'Arctic Blast', level: 6 },
+          { id: 'fissurecontainer', name: 'Fissure', level: 12 },
+          { id: 'cyclonearmorcontainer', name: 'Cyclone Armor', level: 1 },
+          { id: 'twistercontainer', name: 'Twister', level: 18 },
+          { id: 'volcanocontainer', name: 'Volcano', level: 18 },
+          { id: 'tornadocontainer', name: 'Tornado', level: 24 },
+          { id: 'armageddoncontainer', name: 'Armageddon', level: 24 },
+          { id: 'hurricanecontainer', name: 'Hurricane', level: 30 }
+        ],
+        'shapeshiftingskillscontainer': [
+          { id: 'werewolfcontainer', name: 'Werewolf', level: 1 },
+          { id: 'lycantropycontainer', name: 'Lycanthropy', level: 1 },
+          { id: 'werebearcontainer', name: 'Werebear', level: 6 },
+          { id: 'feralragecontainer', name: 'Feral Rage', level: 12 },
+          { id: 'maulcontainer', name: 'Maul', level: 6 },
+          { id: 'fireclawscontainer', name: 'Fire Claws', level: 18 },
+          { id: 'rabiescontainer', name: 'Rabies', level: 18 },
+          { id: 'shockwavecontainer', name: 'Shock Wave', level: 24 },
+          { id: 'hungercontainer', name: 'Hunger', level: 24 },
+          { id: 'furycontainer', name: 'Fury', level: 30 }
+        ],
+        'summoningskillscontainer': [
+          { id: 'ravencontainer', name: 'Raven', level: 1 },
+          { id: 'poisoncreepercontainer', name: 'Poison Creeper', level: 1 },
+          { id: 'oaksagecontainer', name: 'Oak Sage', level: 6 },
+          { id: 'summonspiritw wolfcontainer', name: 'Summon Spirit Wolf', level: 1 },
+          { id: 'carrionvinecontainer', name: 'Carrion Vine', level: 12 },
+          { id: 'heartofwolverinecontainer', name: 'Heart of Wolverine', level: 18 },
+          { id: 'summondirewolfcontainer', name: 'Summon Dire Wolf', level: 18 },
+          { id: 'solarcreepercontainer', name: 'Solar Creeper', level: 24 },
+          { id: 'spiritofbarbscontainer', name: 'Spirit of Barbs', level: 30 },
+          { id: 'summongrizzlycontainer', name: 'Summon Grizzly', level: 30 }
+        ]
+      },
+      'Necromancer': {
+        'summoningspellsneccontainer': [
+          { id: 'skeletonmasterycontainer', name: 'Skeleton Mastery', level: 1 },
+          { id: 'raiseskeletoncontainer', name: 'Raise Skeleton', level: 1 },
+          { id: 'claygolemneccontainer', name: 'Clay Golem', level: 6 },
+          { id: 'golemmasterneccontainer', name: 'Golem Mastery', level: 12 },
+          { id: 'raiseskeletalmagecontainer', name: 'Raise Skeletal Mage', level: 12 },
+          { id: 'bloodgolemneccontainer', name: 'Blood Golem', level: 18 },
+          { id: 'summonnecroncontainer', name: 'Summon Resist', level: 24 },
+          { id: 'irongolemneccontainer', name: 'Iron Golem', level: 24 },
+          { id: 'firegolemneccontainer', name: 'Fire Golem', level: 30 },
+          { id: 'revivecontainer', name: 'Revive', level: 30 }
+        ],
+        'poisonandbonespellscontainer': [
+          { id: 'teethcontainer', name: 'Teeth', level: 1 },
+          { id: 'bonearmorcontainer', name: 'Bone Armor', level: 1 },
+          { id: 'poisondaggercontainer', name: 'Poison Dagger', level: 6 },
+          { id: 'corpseexplosioncontainer', name: 'Corpse Explosion', level: 6 },
+          { id: 'bonewallcontainer', name: 'Bone Wall', level: 12 },
+          { id: 'poisonexplosioncontainer', name: 'Poison Explosion', level: 18 },
+          { id: 'bonespearcontainer', name: 'Bone Spear', level: 18 },
+          { id: 'boneprisoncontainer', name: 'Bone Prison', level: 24 },
+          { id: 'poisonnovacontainer', name: 'Poison Nova', level: 24 },
+          { id: 'bonespiritcontainer', name: 'Bone Spirit', level: 30 }
+        ],
+        'cursescontainer': [
+          { id: 'amplifycontainer', name: 'Amplify Damage', level: 1 },
+          { id: 'dimvisioncontainer', name: 'Dim Vision', level: 6 },
+          { id: 'weakencontainer', name: 'Weaken', level: 6 },
+          { id: 'ironmaidencontainer', name: 'Iron Maiden', level: 12 },
+          { id: 'terrorcontainer', name: 'Terror', level: 12 },
+          { id: 'confusecontainer', name: 'Confuse', level: 18 },
+          { id: 'lifetapcontainer', name: 'Life Tap', level: 18 },
+          { id: 'attractcontainer', name: 'Attract', level: 24 },
+          { id: 'decrepifycontainer', name: 'Decrepify', level: 24 },
+          { id: 'lowerresistcontainer', name: 'Lower Resist', level: 30 }
+        ]
+      },
+      'Paladin': {
+        'defensiveaurascontainer': [
+          { id: 'prayercontainer', name: 'Prayer', level: 1 },
+          { id: 'resistfirecontainer', name: 'Resist Fire', level: 1 },
+          { id: 'defiancecontainer', name: 'Defiance', level: 6 },
+          { id: 'resistcoldcontainer', name: 'Resist Cold', level: 6 },
+          { id: 'cleansingcontainer', name: 'Cleansing', level: 12 },
+          { id: 'resistlightningcontainer', name: 'Resist Lightning', level: 12 },
+          { id: 'vigorcontainer', name: 'Vigor', level: 18 },
+          { id: 'meditationcontainer', name: 'Meditation', level: 24 },
+          { id: 'redemptioncontainer', name: 'Redemption', level: 30 },
+          { id: 'salvationcontainer', name: 'Salvation', level: 30 }
+        ],
+        'offensiveaurascontainer': [
+          { id: 'mightcontainer', name: 'Might', level: 1 },
+          { id: 'holyfirecontainer', name: 'Holy Fire', level: 6 },
+          { id: 'thornscontainer', name: 'Thorns', level: 6 },
+          { id: 'blessedaimcontainer', name: 'Blessed Aim', level: 12 },
+          { id: 'concentrationcontainer', name: 'Concentration', level: 18 },
+          { id: 'holyfrostcontainer', name: 'Holy Freeze', level: 18 },
+          { id: 'holyshockcontainer', name: 'Holy Shock', level: 24 },
+          { id: 'sanctuarycontainer', name: 'Sanctuary', level: 24 },
+          { id: 'fanatcontainer', name: 'Fanaticism', level: 30 },
+          { id: 'convictioncontainer', name: 'Conviction', level: 30 }
+        ],
+        'combatskillspalcontainer': [
+          { id: 'sacrificecontainer', name: 'Sacrifice', level: 1 },
+          { id: 'smitecontainer', name: 'Smite', level: 1 },
+          { id: 'holyboltcontainer', name: 'Holy Bolt', level: 6 },
+          { id: 'zeal', name: 'Zeal', level: 12 },
+          { id: 'chargecontainer', name: 'Charge', level: 12 },
+          { id: 'vengeancecontainer', name: 'Vengeance', level: 18 },
+          { id: 'blessedhammcontainer', name: 'Blessed Hammer', level: 18 },
+          { id: 'conversioncontainer', name: 'Conversion', level: 24 },
+          { id: 'holyshieldcontainer', name: 'Holy Shield', level: 24 },
+          { id: 'focontainer', name: 'Fist of the Heavens', level: 30 }
+        ]
+      },
+      'Sorceress': {
+        'coldspellscontainer': [
+          { id: 'iceboltcontainer', name: 'Ice Bolt', level: 1 },
+          { id: 'frozenarmorcontainer', name: 'Frozen Armor', level: 1 },
+          { id: 'frostnovacontainer', name: 'Frost Nova', level: 6 },
+          { id: 'iceblastcontainer', name: 'Ice Blast', level: 6 },
+          { id: 'shivercontainer', name: 'Shiver Armor', level: 12 },
+          { id: 'glacialspikecontainer', name: 'Glacial Spike', level: 18 },
+          { id: 'blizzardcontainer', name: 'Blizzard', level: 24 },
+          { id: 'chillingarmorcontainer', name: 'Chilling Armor', level: 18 },
+          { id: 'frozenorbcontainer', name: 'Frozen Orb', level: 30 },
+          { id: 'coldmasterycontainer', name: 'Cold Mastery', level: 30 }
+        ],
+        'lightningspellscontainer': [
+          { id: 'chargedboltcontainer', name: 'Charged Bolt', level: 1 },
+          { id: 'staticfieldcontainer', name: 'Static Field', level: 6 },
+          { id: 'telekinesicontainer', name: 'Telekinesis', level: 6 },
+          { id: 'novcontainer', name: 'Nova', level: 12 },
+          { id: 'lightningcontainer', name: 'Lightning', level: 12 },
+          { id: 'chainlightningcontainer', name: 'Chain Lightning', level: 18 },
+          { id: 'teleportcontainer', name: 'Teleport', level: 18 },
+          { id: 'thunderstormcontainer', name: 'Thunder Storm', level: 24 },
+          { id: 'energyshieldcontainer', name: 'Energy Shield', level: 24 },
+          { id: 'lightningmasterycontainer', name: 'Lightning Mastery', level: 30 }
+        ],
+        'firespellscontainer': [
+          { id: 'fireboltcontainer', name: 'Fire Bolt', level: 1 },
+          { id: 'warmthcontainer', name: 'Warmth', level: 1 },
+          { id: 'inferncontainer', name: 'Inferno', level: 6 },
+          { id: 'blaze', name: 'Blaze', level: 12 },
+          { id: 'fireballcontainer', name: 'Fire Ball', level: 12 },
+          { id: 'firewallcontainer', name: 'Fire Wall', level: 18 },
+          { id: 'enchantcontainer', name: 'Enchant', level: 18 },
+          { id: 'meteorcontainer', name: 'Meteor', level: 24 },
+          { id: 'firemasterycontainer', name: 'Fire Mastery', level: 30 },
+          { id: 'hydracontainer', name: 'Hydra', level: 30 }
+        ]
+      }
     };
+
+    // Backward compatibility - keep amazonSkills as reference to Amazon tree
+    this.amazonSkills = this.classSkillTrees['Amazon'];
 
     this.skillData = {
       jabcontainer: {
@@ -212,38 +436,81 @@ class SkillSystem {
   }
 
   createContainers() {
-  var positions = [
-    { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear' },
-    { id: 'passiveskillscontainer', title: 'Passive & Magic' },
-    { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow' }
-  ];
+  // Define container titles for each class
+  var classTitles = {
+    'Amazon': [
+      { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear' },
+      { id: 'passiveskillscontainer', title: 'Passive & Magic' },
+      { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow' }
+    ],
+    'Assassin': [
+      { id: 'martialartscontainer', title: 'Martial Arts' },
+      { id: 'shadowdisciplinescontainer', title: 'Shadow Disciplines' },
+      { id: 'trapscontainer', title: 'Traps' }
+    ],
+    'Barbarian': [
+      { id: 'warcriescontainer', title: 'War Cries' },
+      { id: 'combatmasteriescontainer', title: 'Combat Masteries' },
+      { id: 'combatskillsbarcontainer', title: 'Combat Skills' }
+    ],
+    'Druid': [
+      { id: 'elementalskillscontainer', title: 'Elemental' },
+      { id: 'shapeshiftingskillscontainer', title: 'Shapeshifting' },
+      { id: 'summoningskillscontainer', title: 'Summoning' }
+    ],
+    'Necromancer': [
+      { id: 'summoningspellsneccontainer', title: 'Summoning Spells' },
+      { id: 'poisonandbonespellscontainer', title: 'Poison & Bone Spells' },
+      { id: 'cursescontainer', title: 'Curses' }
+    ],
+    'Paladin': [
+      { id: 'defensiveaurascontainer', title: 'Defensive Auras' },
+      { id: 'offensiveaurascontainer', title: 'Offensive Auras' },
+      { id: 'combatskillspalcontainer', title: 'Combat Skills' }
+    ],
+    'Sorceress': [
+      { id: 'coldspellscontainer', title: 'Cold Spells' },
+      { id: 'lightningspellscontainer', title: 'Lightning Spells' },
+      { id: 'firespellscontainer', title: 'Fire Spells' }
+    ]
+  };
 
+  // Get current class from character selector
+  var classSelect = document.getElementById('selectClass');
+  var selectedClass = classSelect ? classSelect.value : 'Amazon';
+  this.currentClass = selectedClass;
+
+  // Get positions for current class
+  var positions = classTitles[selectedClass] || classTitles['Amazon'];
+
+  // Remove old skill containers first
+  var oldContainers = document.querySelectorAll('.skill-tree-container');
+  for (var i = 0; i < oldContainers.length; i++) {
+    oldContainers[i].remove();
+  }
+
+  // Create new containers for current class
   for (var i = 0; i < positions.length; i++) {
     var pos = positions[i];
-    var container = document.getElementById(pos.id);
-    if (!container) {
-      container = document.createElement('div');
-      container.id = pos.id;
-      container.className = 'skill-tree-container';
-      
-      var title = document.createElement('h3');
-      title.textContent = pos.title;
-      
-      container.appendChild(title);
-      document.body.appendChild(container);
-      
-      //('Created container:', pos.id);
-    } else {
-      container.className = 'skill-tree-container';
-      //('Updated existing container:', pos.id);
-    }
+    var container = document.createElement('div');
+    container.id = pos.id;
+    container.className = 'skill-tree-container';
+
+    var title = document.createElement('h3');
+    title.textContent = pos.title;
+
+    container.appendChild(title);
+    document.body.appendChild(container);
   }
 }
 
   populateSkills() {
     var self = this;
-    Object.keys(this.amazonSkills).forEach(function(containerId) {
-      var skills = self.amazonSkills[containerId];
+    // Get current class skills
+    var currentClassSkills = this.classSkillTrees[this.currentClass] || this.classSkillTrees['Amazon'];
+
+    Object.keys(currentClassSkills).forEach(function(containerId) {
+      var skills = currentClassSkills[containerId];
       var container = document.getElementById(containerId);
       if (!container) return;
 
@@ -320,6 +587,15 @@ class SkillSystem {
 
   setupEvents() {
     var self = this;
+
+    // Class changes - rebuild skill trees when class changes
+    var classSelect = document.getElementById('selectClass');
+    if (classSelect) {
+      classSelect.addEventListener('change', function(e) {
+        self.currentClass = e.target.value;
+        self.rebuildSkillTrees();
+      });
+    }
 
     // Level changes
     var levelInput = document.getElementById('lvlValue');
@@ -1132,6 +1408,21 @@ getDeadlyStrikeChance() {
     }
 
     return totalBonus;
+  }
+
+  // Rebuild skill trees when class changes
+  rebuildSkillTrees() {
+    // Recreate containers for new class
+    this.createContainers();
+
+    // Populate skills for new class
+    this.populateSkills();
+
+    // Update points display
+    this.updatePointsDisplay();
+
+    // Re-populate skill dropdown
+    setTimeout(() => { this.updateSkillDropdown(); }, 100);
   }
 
 
