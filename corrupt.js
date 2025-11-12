@@ -393,9 +393,30 @@ const CORRUPTIONS = {
     { mod: "Physical Damage Taken Reduced by 3%", type: "fixed" }
   ],
   amulet: [
-    { mod: "+[30-60] to Life", type: "numeric", range: [30, 60] },
+    { mod: "+[6-12] to Strength", type: "numeric", range: [6, 12] },
+    { mod: "+[10-20]% Chance to Pierce", type: "numeric", range: [10, 20] },
     { mod: "+1 to All Skills", type: "fixed" },
-    { mod: "+10% Faster Cast Rate", type: "fixed" }
+    { mod: "+[6-12] to Dexterity", type: "numeric", range: [6, 12] },
+    { mod: "+10% Faster Hit Recovery", type: "fixed" },
+    { mod: "+10% Faster Cast Rate", type: "fixed" },
+    { mod: "+[6-12] to Vitality", type: "numeric", range: [6, 12] },
+    { mod: "10% Increased Chance of Blocking", type: "fixed" },
+    { mod: "+10% Faster Run/Walk", type: "fixed" },
+    { mod: "+[6-12] to Energy", type: "numeric", range: [6, 12] },
+    { mod: "+[2-3] Life after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "+10% Curse Resistance", type: "fixed" },
+    { mod: "Fire Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "+[2-3] to Mana after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "+[30-40]% Enhanced Damage", type: "numeric", range: [30, 40] },
+    { mod: "Cold Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "+[6-8] to All Attributes", type: "numeric", range: [6, 8] },
+    { mod: "Cannot Be Frozen", type: "fixed" },
+    { mod: "Lightning Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "[60-100]% Extra Gold from Monsters", type: "numeric", range: [60, 100] },
+    { mod: "+2% to All Maximum Resistances", type: "fixed" },
+    { mod: "Poison Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "[20-30]% Better Chance of Getting Magic Items", type: "numeric", range: [20, 30] },
+    { mod: "All Resistances +[7-10]", type: "numeric", range: [7, 10] }
   ]
 };
 
