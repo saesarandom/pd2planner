@@ -701,8 +701,25 @@ class SkillSystem {
     var currentValue = dropdown.value;
     dropdown.innerHTML = '<option value="">Select Active Skill...</option>';
 
+    // Skills to exclude from dropdown display
+    var excludedSkills = [
+      'javelinandspearmasterycontainer', // Javelin and Spear Mastery (passive skill)
+      'innercontainer', // Inner Sight
+      'criticalstrikecontainer', // Critical Strike
+      'evadecontainer', // Evade
+      'slowmovementcontainer', // Slow Movement
+      'piercecontainer', // Pierce
+      'dodgecontainer', // Dodge
+      'penetratecontainer' // Penetrate
+    ];
+
     var self = this;
     Object.keys(this.skillData).forEach(function(skillId) {
+      // Skip excluded skills
+      if (excludedSkills.indexOf(skillId) !== -1) {
+        return;
+      }
+
       var skillInput = document.getElementById(skillId);
       if (skillInput && parseInt(skillInput.value) > 0) {
         var skill = self.skillData[skillId];
