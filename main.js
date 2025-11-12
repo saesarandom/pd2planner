@@ -992,6 +992,11 @@ function setupMercLevelValidation() {
     }
 
     mercLevelInput.value = mercLevel;
+
+    // Recalculate mercenary stats when level changes
+    if (window.unifiedSocketSystem) {
+      window.unifiedSocketSystem.updateAll();
+    }
   });
 
   // Update mercenary max level when player level changes
@@ -1002,6 +1007,11 @@ function setupMercLevelValidation() {
     // If mercenary level exceeds new player level, cap it
     if (mercLevel > playerLevel) {
       mercLevelInput.value = playerLevel;
+
+      // Recalculate mercenary stats since level was capped
+      if (window.unifiedSocketSystem) {
+        window.unifiedSocketSystem.updateAll();
+      }
     }
   });
 }
