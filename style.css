@@ -1052,44 +1052,42 @@ body.moody .stat-group h4 {
   position: absolute;
   left: 345vh;
   top: 50px;
-  padding: 15px;
+  padding: 5px;
   background: rgba(30, 30, 30, 0.8);
-  border: 2px solid #8B4513;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 500px;
+  border: 2px solid #63057a;
+  border-radius: 4px;
+  width: 165px;
+  max-width: 400px;
 }
 
 .mercenary-stats-display h4 {
-  margin: 0 0 15px 0;
-  color: #ffd700;
+  margin: 0 0 10px 0;
+  color: #63057a;
   text-align: center;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 14px;
+
 }
 
 .merc-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  display: block;
+ 
 }
 
 .merc-stat-row {
   display: flex;
   justify-content: space-between;
-  padding: 4px 8px;
+  padding: 3px 23px;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 4px;
 }
 
 .merc-stat-label {
   color: #aaa;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .merc-stat-value {
   color: #fff;
-  font-weight: bold;
-  font-size: 13px;
+
+  font-size: 12px;
 }
