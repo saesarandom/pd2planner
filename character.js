@@ -98,12 +98,12 @@ class CharacterManager {
     
     this.classBaseLifeMana = {
       'Amazon': { life: 50, mana: 15 },
-      'Assassin': { life: 81, mana: 25 },
-      'Barbarian': { life: 92, mana: 10 },
-      'Druid': { life: 84, mana: 20 },
-      'Necromancer': { life: 75, mana: 25 },
-      'Paladin': { life: 89, mana: 15 },
-      'Sorceress': { life: 56, mana: 35 }
+      'Assassin': { life: 50, mana: 25 },
+      'Barbarian': { life: 55, mana: 10 },
+      'Druid': { life: 55, mana: 20 },
+      'Necromancer': { life: 45, mana: 25 },
+      'Paladin': { life: 55, mana: 15 },
+      'Sorceress': { life: 40, mana: 35 }
     };
 
     this.init();
