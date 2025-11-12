@@ -35,11 +35,22 @@ class CharmInventory {
       this.createInventoryGrid();
       this.createModal();
       this.setupEventListeners();
+      this.preloadCharmImages();  // Preload all charm images
       this.initialized = true;
       // Fix any existing charms' titles
       this.fixCharmTitles();
 
     }, 100);
+  }
+
+  preloadCharmImages() {
+    // Preload all charm images to avoid delays when placing charms
+    Object.values(this.charmImages).forEach(imageArray => {
+      imageArray.forEach(imagePath => {
+        const img = new Image();
+        img.src = imagePath;
+      });
+    });
   }
 
   createInventoryGrid() {
