@@ -570,7 +570,7 @@ class SkillSystem {
 
     // Set inline positioning to match Amazon layout
     container.style.position = 'absolute';
-    container.style.top = '1300px';
+    container.style.top = '147px';
     container.style.right = rightOffsets[i] + 'px';
     container.style.width = '250px';
     container.style.height = '450px';

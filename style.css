@@ -392,7 +392,7 @@ body {
 /* Mercenary section */
 .mercenary-section {
   position: absolute;
-  left: 200vh;
+  left: 250vh;
   top: 50px;
   min-width: 400px;
   background: rgba(26, 26, 46, 0.9);
@@ -754,7 +754,7 @@ body {
 
   .skill-tree-container {
     position: absolute;
-    top: 1300px;
+    top: 147px;
     width: 250px;
     height: 450px;
     overflow-y: auto;
@@ -765,7 +765,7 @@ body {
     padding: 12px;
     color: white;
     font-family: Oswald, sans-serif;
-    z-index: 1000;
+    z-index: 5;
     display: block;
     box-sizing: border-box;
     margin: 0;
@@ -788,7 +788,7 @@ body {
 
 .skill-points-display {
   position: absolute;
-  top: 1150px;  /* Just above the skill containers at 1500px */
+  top: 595px;  /* Just above the skill containers at 1500px */
   right: 110px;  /* Same left position as first container */
   background: rgba(0,0,0,0.9);
   color: white;
@@ -796,7 +796,7 @@ body {
   border-radius: 8px;
   border: 2px solid #666;
   font-family: Oswald, sans-serif;
-  z-index: 10000;
+  z-index: 4;
   min-width: 150px;
   box-sizing: border-box;
 }
@@ -1067,7 +1067,7 @@ body.moody .stat-group h4 {
 /* Mercenary Stats Display */
 .mercenary-stats-display {
   position: absolute;
-  left: 345vh;
+  left: 235vh;
   top: 50px;
   padding: 5px;
   background: rgba(30, 30, 30, 0.8);
