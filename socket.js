@@ -2766,8 +2766,9 @@ this.selectedJewelSuffix3MaxValue = null;
       const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
       const meetsStatRequirements = this.doesCharacterMeetStatRequirements(dropdown.value);
 
-      // Only apply stats if level and stat requirements (strength/dexterity) are met
-      if (this.currentLevel >= actualLevel && meetsStatRequirements && item.properties) {
+      // Parse item stats if level and stat requirements are met
+      // Check for either properties OR description (description might have corruption stats)
+      if (this.currentLevel >= actualLevel && meetsStatRequirements && (item.properties || item.description)) {
         this.parseItemStats(item, section);
       }
     }
