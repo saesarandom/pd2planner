@@ -1545,6 +1545,20 @@
     }
 
     // Set socket count to exact number (for corruption system)
+    getSocketCount(section) {
+      const container = document.querySelector(`.socket-container[data-section="${section}"]`);
+      if (!container) {
+        return 0;
+      }
+
+      const socketGrid = container.querySelector('.socket-grid');
+      if (!socketGrid) {
+        return 0;
+      }
+
+      return socketGrid.children.length;
+    }
+
     setSocketCount(section, targetCount) {
       const container = document.querySelector(`.socket-container[data-section="${section}"]`);
       if (!container) {

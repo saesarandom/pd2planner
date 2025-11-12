@@ -300,6 +300,41 @@ window.loadCharacterFromData = function(data) {
         // Restore corruptions
         if (data.corruptions?.data) {
             window.itemCorruptions = data.corruptions.data;
+
+            // Reapply corruptions to item descriptions
+            for (const [slotId, corruption] of Object.entries(data.corruptions.data)) {
+                const itemName = corruption.itemName;
+                if (itemName && typeof itemList !== 'undefined' && itemList[itemName]) {
+                    // Store original description if not already stored
+                    if (!window.originalItemDescriptions[itemName]) {
+                        window.originalItemDescriptions[itemName] = itemList[itemName].description;
+                    }
+
+                    const originalDescription = window.originalItemDescriptions[itemName];
+
+                    if (corruption.type === 'socket_corruption') {
+                        // Reapply socket corruption description
+                        const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.text}</span><br>`;
+                        itemList[itemName].description = enhancedDescription;
+
+                        // Restore socket count
+                        const section = window.SECTION_MAP?.[slotId];
+                        if (section && window.unifiedSocketSystem && typeof window.unifiedSocketSystem.setSocketCount === 'function') {
+                            window.unifiedSocketSystem.setSocketCount(section, corruption.socketCount);
+                        }
+                    } else {
+                        // Reapply regular corruption with stacking
+                        if (window.addCorruptionWithStacking) {
+                            const enhancedDescription = window.addCorruptionWithStacking(originalDescription, corruption.text);
+                            itemList[itemName].description = enhancedDescription;
+                        } else {
+                            // Fallback if stacking function not available
+                            const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.text}</span><br>`;
+                            itemList[itemName].description = enhancedDescription;
+                        }
+                    }
+                }
+            }
         }
 
         // Clear and restore charms - always clear inventory when loading a character
