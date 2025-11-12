@@ -269,35 +269,48 @@ class CharacterManager {
   calculateLifeAndMana() {
   const level = parseInt(document.getElementById('lvlValue')?.value) || 1;
   const charClass = document.getElementById('selectClass')?.value || 'Amazon';
-  
+
   const baseLife = this.classBaseLifeMana[charClass].life;
   const baseMana = this.classBaseLifeMana[charClass].mana;
-  
+
   // FIXED: Get base stat values from inputs, not total displays
   const baseVit = parseInt(document.getElementById('vit')?.value) || this.classStats[charClass].vit;
   const baseEnr = parseInt(document.getElementById('enr')?.value) || this.classStats[charClass].enr;
-  
+
   // Get item/socket bonuses for vitality and energy
   const itemBonuses = this.getAllItemBonuses();
   const socketBonuses = this.getSocketBonuses();
   const charmBonuses = this.getCharmBonuses();
-  
+
   // Calculate TOTAL vitality and energy (base + bonuses)
   const totalVit = baseVit + (itemBonuses.vit || 0) + (socketBonuses.vit || 0) + (charmBonuses.vit || 0);
   const totalEnr = baseEnr + (itemBonuses.enr || 0) + (socketBonuses.enr || 0) + (charmBonuses.enr || 0);
-  
+
   // Starting stats for this class
   const startingVit = this.classStats[charClass].vit;
   const startingEnr = this.classStats[charClass].enr;
-  
+
+  // Class-specific life/mana gain per level and stat point
+  const classGains = {
+    'Amazon': { lifePerLevel: 2, lifePerVit: 3, manaPerLevel: 1.5, manaPerEnr: 2 },
+    'Assassin': { lifePerLevel: 2, lifePerVit: 3, manaPerLevel: 1.5, manaPerEnr: 1.75 },
+    'Barbarian': { lifePerLevel: 2, lifePerVit: 4, manaPerLevel: 1.5, manaPerEnr: 1 },
+    'Druid': { lifePerLevel: 1.5, lifePerVit: 2, manaPerLevel: 2, manaPerEnr: 2 },
+    'Necromancer': { lifePerLevel: 1.5, lifePerVit: 2, manaPerLevel: 2, manaPerEnr: 2 },
+    'Paladin': { lifePerLevel: 2, lifePerVit: 3, manaPerLevel: 1.5, manaPerEnr: 1.5 },
+    'Sorceress': { lifePerLevel: 1, lifePerVit: 2, manaPerLevel: 2, manaPerEnr: 2 }
+  };
+
+  const gains = classGains[charClass] || classGains['Amazon'];
+
   // Calculate base life/mana from character level and stats
   let calculatedLife = baseLife;
-  calculatedLife += (level - 1) * 2; // 2 life per level
-  calculatedLife += (totalVit - startingVit) * 3; // 3 life per vitality point (including bonuses)
-  
+  calculatedLife += (level - 1) * gains.lifePerLevel;
+  calculatedLife += (totalVit - startingVit) * gains.lifePerVit;
+
   let calculatedMana = baseMana;
-  calculatedMana += (level - 1) * 1.5; // 1.5 mana per level  
-  calculatedMana += (totalEnr - startingEnr) * 2; // 2 mana per energy point (including bonuses)
+  calculatedMana += (level - 1) * gains.manaPerLevel;
+  calculatedMana += (totalEnr - startingEnr) * gains.manaPerEnr;
   
   // Add direct life/mana bonuses from items/sockets
   const directLifeMana = this.getDirectLifeManaFromItems();
