@@ -420,6 +420,12 @@ window.loadCharacterFromData = function(data) {
                 window.characterManager.calculateLifeAndMana();
             }
 
+            // Ensure skill bonus indicators are updated with current All Skills bonus
+            if (window.skillSystem && window.unifiedSocketSystem) {
+                window.skillSystem.updateSkillBonuses(window.unifiedSocketSystem.stats?.allSkills || 0);
+                window.skillSystem.updateSkillDropdown();
+            }
+
             // Clear loading flag
             window._isLoadingCharacterData = false;
         }, 1500);
