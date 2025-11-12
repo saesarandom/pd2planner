@@ -651,11 +651,6 @@ class SkillSystem {
         skillDiv.appendChild(bonusSpan);
         skillDiv.appendChild(input);
         container.appendChild(skillDiv);
-
-        // Add event listener to update bonus indicator when skill points change
-        input.addEventListener('input', function() {
-          self.updateSingleSkillBonus(skill.id);
-        });
       }
     });
   }
@@ -1447,6 +1442,9 @@ getDeadlyStrikeChance() {
 
     this.updatePointsDisplay();
     this.updateSkillVisuals();
+
+    // Update bonus indicator for this skill (uses existing item bonus)
+    this.updateSingleSkillBonus(input.id);
   }
 
   // Remove points from skills that depend on this skill
