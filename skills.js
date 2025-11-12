@@ -508,9 +508,9 @@ class SkillSystem {
   // Define container titles for each class
   var classTitles = {
     'Amazon': [
-      { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear' },
-      { id: 'passiveskillscontainer', title: 'Passive & Magic' },
-      { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow' }
+      { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear Skills' },
+      { id: 'passiveskillscontainer', title: 'Passive & Magic Skills' },
+      { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow Skills' }
     ],
     'Assassin': [
       { id: 'martialartscontainer', title: 'Martial Arts' },
@@ -518,14 +518,14 @@ class SkillSystem {
       { id: 'trapscontainer', title: 'Traps' }
     ],
     'Barbarian': [
-      { id: 'warcriescontainer', title: 'War Cries' },
+      { id: 'warcriescontainer', title: 'Warcries' },
       { id: 'combatmasteriescontainer', title: 'Combat Masteries' },
       { id: 'combatskillsbarcontainer', title: 'Combat Skills' }
     ],
     'Druid': [
-      { id: 'elementalskillscontainer', title: 'Elemental' },
-      { id: 'shapeshiftingskillscontainer', title: 'Shapeshifting' },
-      { id: 'summoningskillscontainer', title: 'Summoning' }
+      { id: 'elementalskillscontainer', title: 'Elemental Skills' },
+      { id: 'shapeshiftingskillscontainer', title: 'Shapeshifting Skills' },
+      { id: 'summoningskillscontainer', title: 'Summoning Skills' }
     ],
     'Necromancer': [
       { id: 'summoningspellsneccontainer', title: 'Summoning Spells' },
@@ -971,8 +971,43 @@ class SkillSystem {
     if (damageInfo.hits) {
       html += '<div style="margin: 5px 0; color: #cccccc;">Hits: ' + damageInfo.hits + '</div>';
     }
+  } else if (skillId === 'decoycontainer') {
+    // Display Decoy summon information
+    var levelIndex = Math.min(skillLevel - 1, skill.damage.min.length - 1);
+    var damageMin = skill.damage.min[levelIndex] || 0;
+    var damageMax = skill.damage.max[levelIndex] || 0;
+    var life = skill.life[levelIndex] || 0;
+    var attackRating = skill.attackRating[levelIndex] || 0;
+    var allRes = skill.allResistances[levelIndex] || 0;
+    var manaCost = skill.manaCost[levelIndex] || 0;
+    var decoyCount = skill.decoys[Math.min(skillLevel - 1, skill.decoys.length - 1)] || 1;
+
+    html += '<div style="margin: 5px 0;">Damage: ' + damageMin + '-' + damageMax + '</div>';
+    html += '<div style="margin: 5px 0;">Life: ' + life + '%</div>';
+    html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: ' + attackRating + '</div>';
+    html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '%</div>';
+    html += '<div style="margin: 5px 0;">Number of Decoys: ' + decoyCount + '</div>';
+    html += '<div style="margin: 5px 0; color: #ffff00;">Mana Cost: ' + manaCost + '</div>';
+  } else if (skillId === 'valkyriecontainer') {
+    // Display Valkyrie summon information
+    var levelIndex = Math.min(skillLevel - 1, skill.powerStrikeLevel.length - 1);
+    var lifeHell = skill.life.hell[levelIndex] || 0;
+    var powerStrikeLevel = skill.powerStrikeLevel[levelIndex] || 0;
+    var attackRating = skill.attackRating[levelIndex] || 0;
+    var defense = skill.defense[levelIndex] || 0;
+    var allRes = skill.allResistances[levelIndex] || 0;
+    var manaCost = skill.manaCost[levelIndex] || 0;
+
+    html += '<div style="margin: 5px 0;">Life (Hell): ' + lifeHell + '</div>';
+    html += '<div style="margin: 5px 0; color: #cccccc;">Power Strike Level: ' + powerStrikeLevel + '</div>';
+    html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRating + '%</div>';
+    html += '<div style="margin: 5px 0;">Defense: +' + defense + '%</div>';
+    html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '%</div>';
+    html += '<div style="margin: 5px 0; color: #ffff00;">Mana Cost: ' + manaCost + '</div>';
+    html += '<div style="margin: 5px 0;">Cooldown: ' + skill.cooldown + 's</div>';
+    html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Can summon additional Valkyrie at levels 20 and 30</div>';
   }
-  
+
   if (damageInfo && damageInfo.critMultiplier > 1) {
     html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
   }
