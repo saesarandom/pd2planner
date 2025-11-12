@@ -37,71 +37,65 @@ const CORRUPTIONS = {
       ]
     },
     {
-      mod: "+[50-80]% Enhanced Defense<br>+10% Faster Cast Rate<br>+10% Curse Resistance",
-      type: "triple",
+      mod: "+[50-80]% Enhanced Defense<br>+10% Faster Cast Rate",
+      type: "double",
       ranges: [
         { label: "Enhanced Defense", range: [50, 80], type: "numeric" },
-        { label: "Faster Cast Rate", value: 10, type: "fixed" },
-        { label: "Curse Resistance", value: 10, type: "fixed" }
+        { label: "Faster Cast Rate", value: 10, type: "fixed" }
       ]
     },
+    { mod: "+10% Curse Resistance", type: "fixed" },
     {
-      mod: "[20-30]% Better Chance of Getting Magic Items<br>+20% Faster Run/Walk<br>All Resistances +[20-25]",
-      type: "triple",
+      mod: "[20-30]% Better Chance of Getting Magic Items<br>+20% Faster Run/Walk",
+      type: "double",
       ranges: [
         { label: "Better Chance of Getting Magic Items", range: [20, 30], type: "numeric" },
-        { label: "Faster Run/Walk", value: 20, type: "fixed" },
-        { label: "All Resistances", range: [20, 25], type: "numeric" }
+        { label: "Faster Run/Walk", value: 20, type: "fixed" }
       ]
     },
+    { mod: "All Resistances +[20-25]", type: "numeric", range: [20, 25] },
     {
-      mod: "+[30-40] Mana<br>Increase Maximum Life [4-6]%<br>Physical Damage Taken Reduced by [6-8]%",
-      type: "triple",
+      mod: "+[30-40] Mana<br>Increase Maximum Life [4-6]%",
+      type: "double",
       ranges: [
         { label: "Mana", range: [30, 40], type: "numeric" },
-        { label: "Increase Maximum Life", range: [4, 6], type: "numeric" },
-        { label: "Physical Damage Taken Reduced by", range: [6, 8], type: "numeric" }
+        { label: "Increase Maximum Life", range: [4, 6], type: "numeric" }
       ]
     },
+    { mod: "Physical Damage Taken Reduced by [6-8]%", type: "numeric", range: [6, 8] },
     {
-      mod: "Fire Resist +[30-35]%<br>Physical Damage Taken Reduced by [6-10]<br>+[4-5]% to Maximum Fire Resist",
-      type: "triple",
+      mod: "Fire Resist +[30-35]%<br>Physical Damage Taken Reduced by [6-10]",
+      type: "double",
       ranges: [
         { label: "Fire Resist", range: [30, 35], type: "numeric" },
-        { label: "Physical Damage Taken Reduced by", range: [6, 10], type: "numeric" },
-        { label: "Maximum Fire Resist", range: [4, 5], type: "numeric" }
+        { label: "Physical Damage Taken Reduced by", range: [6, 10], type: "numeric" }
       ]
     },
+    { mod: "+[4-5]% to Maximum Fire Resist", type: "numeric", range: [4, 5] },
     { mod: "Fire Resist +15%", type: "fixed" },
     {
-      mod: "Cold Resist +[30-35]%<br>Magic Damage Taken Reduced by [6-10]<br>+[4-5]% to Maximum Cold Resist",
-      type: "triple",
+      mod: "Cold Resist +[30-35]%<br>Magic Damage Taken Reduced by [6-10]",
+      type: "double",
       ranges: [
         { label: "Cold Resist", range: [30, 35], type: "numeric" },
-        { label: "Magic Damage Taken Reduced by", range: [6, 10], type: "numeric" },
-        { label: "Maximum Cold Resist", range: [4, 5], type: "numeric" }
+        { label: "Magic Damage Taken Reduced by", range: [6, 10], type: "numeric" }
       ]
     },
+    { mod: "+[4-5]% to Maximum Cold Resist", type: "numeric", range: [4, 5] },
     { mod: "Cold Resist +15%", type: "fixed" },
     {
-      mod: "Lightning Resist +[30-35]%<br>Attacker Takes Damage of [4-594] ([4-6] per Level)<br>+[4-5]% to Maximum Lightning Resist",
-      type: "triple",
+      mod: "Lightning Resist +[30-35]%<br>Attacker Takes Damage of [4-594] ([4-6] per Level)",
+      type: "double",
       ranges: [
         { label: "Lightning Resist", range: [30, 35], type: "numeric" },
-        { label: "Attacker Takes Damage", range: [4, 594], type: "numeric" },
-        { label: "Maximum Lightning Resist", range: [4, 5], type: "numeric" }
+        { label: "Attacker Takes Damage", range: [4, 594], type: "numeric" }
       ]
     },
+    { mod: "+[4-5]% to Maximum Lightning Resist", type: "numeric", range: [4, 5] },
     { mod: "Lightning Resist +15%", type: "fixed" },
-    {
-      mod: "Poison Resist +[30-35]%<br>Cannot Be Frozen<br>+[4-5]% to Maximum Poison Resist",
-      type: "triple",
-      ranges: [
-        { label: "Poison Resist", range: [30, 35], type: "numeric" },
-        { label: "Cannot Be Frozen", type: "fixed" },
-        { label: "Maximum Poison Resist", range: [4, 5], type: "numeric" }
-      ]
-    },
+    { mod: "Poison Resist +[30-35]%", type: "numeric", range: [30, 35] },
+    { mod: "Cannot Be Frozen", type: "fixed" },
+    { mod: "+[4-5]% to Maximum Poison Resist", type: "numeric", range: [4, 5] },
     { mod: "Poison Resist +15%", type: "fixed" }
   ],
   weapon: [
@@ -513,16 +507,7 @@ function populateCorruptionList(corruptions) {
       transition: background-color 0.2s;
     `;
     
-    if (corruption.type === 'triple' && corruption.ranges) {
-      // Handle triple mods with independent sliders
-      item.innerHTML = createTripleModSliders(corruption, index);
-
-      item.onclick = (e) => {
-        if (!e.target.classList.contains('corruption-slider')) {
-          applyTripleCorruption(corruption, index);
-        }
-      };
-    } else if (corruption.type === 'double' && corruption.ranges) {
+    if (corruption.type === 'double' && corruption.ranges) {
       // Handle double mods with independent sliders
       item.innerHTML = createDoubleModSliders(corruption, index);
 
@@ -616,58 +601,6 @@ function createDoubleModSliders(corruption, index) {
   return html;
 }
 
-// Create sliders for triple mods with independent ranges
-function createTripleModSliders(corruption, index) {
-  let html = `
-    <div class="corruption-slider-container">
-      <div class="corruption-slider-label">${corruption.mod.replace(/<br>/g, ' + ').replace(/\[.*?\]/g, '[Range]')}</div>
-  `;
-
-  corruption.ranges.forEach((range, rangeIndex) => {
-    const sliderId = `corruption_${index}_${rangeIndex}`;
-    const valueId = `value_${index}_${rangeIndex}`;
-
-    if (range.type === 'numeric') {
-      const minVal = range.range[0];
-      const maxVal = range.range[1];
-
-      html += `
-        <div class="corruption-slider-row">
-          <span style="min-width: 120px; color: #ccc; font-size: 11px;">${range.label}:</span>
-          <input type="range"
-                 class="corruption-slider"
-                 id="${sliderId}"
-                 min="${minVal}"
-                 max="${maxVal}"
-                 value="${minVal}"
-                 oninput="updateTripleModPreview(${index})"
-                 onchange="updateTripleModPreview(${index})">
-          <span class="corruption-value-display" id="${valueId}">${minVal}</span>
-        </div>
-      `;
-    } else {
-      // Fixed value
-      html += `
-        <div class="corruption-slider-row">
-          <span style="width: 70px; color: #ccc; font-size: 11px;">${range.label}:</span>
-          <span style="flex: 1; color: #ffd700; text-align: center;">Fixed</span>
-          <span class="corruption-value-display">Fixed</span>
-        </div>
-      `;
-    }
-  });
-
-  html += `
-      <div class="corruption-preview" id="preview_${index}"></div>
-    </div>
-  `;
-
-  // Update preview after creating HTML
-  setTimeout(() => updateTripleModPreview(index), 10);
-
-  return html;
-}
-
 // Create slider for single numeric mods
 function createSingleModSlider(corruption, index) {
   const sliderId = `corruption_single_${index}`;
@@ -729,38 +662,6 @@ function updateDoubleModPreview(index) {
   preview.innerHTML = previewText;
 }
 
-// Update preview for triple mods with independent sliders
-function updateTripleModPreview(index) {
-  const preview = document.getElementById(`preview_${index}`);
-  if (!preview) return;
-
-  // Find the corruption data
-  const corruption = getCurrentCorruptionByIndex(index);
-  if (!corruption || !corruption.ranges) return;
-
-  let previewText = '';
-  let values = [];
-
-  corruption.ranges.forEach((range, rangeIndex) => {
-    if (range.type === 'numeric') {
-      const slider = document.getElementById(`corruption_${index}_${rangeIndex}`);
-      const valueDisplay = document.getElementById(`value_${index}_${rangeIndex}`);
-
-      if (slider && valueDisplay) {
-        const value = parseInt(slider.value);
-        valueDisplay.textContent = value;
-        values.push(value);
-      }
-    } else {
-      values.push(range.value || 'Fixed');
-    }
-  });
-
-  // Generate preview text by replacing placeholders
-  previewText = generateTripleModText(corruption.mod, values);
-  preview.innerHTML = previewText;
-}
-
 // Update preview for single mods
 function updateSingleModPreview(index, modTemplate) {
   const slider = document.getElementById(`corruption_single_${index}`);
@@ -796,21 +697,6 @@ function generateDoubleModText(template, values) {
   return result;
 }
 
-// Generate text for triple mods with multiple values
-function generateTripleModText(template, values) {
-  let result = template;
-  let valueIndex = 0;
-
-  // Replace placeholders with actual values in order
-  result = result.replace(/\[[\d\-]+\]/g, () => {
-    const value = values[valueIndex] || 0;
-    valueIndex++;
-    return value.toString();
-  });
-
-  return result;
-}
-
 // Generate corruption text with single value
 function generateCorruptionText(template, value) {
   return template.replace(/\[[\d\-]+\]/g, value.toString());
@@ -834,25 +720,6 @@ function applyDoubleCorruption(corruption, index) {
   
   
   
-  applyCorruptionToItem(corruptionText);
-}
-
-// Apply triple corruption with multiple values
-function applyTripleCorruption(corruption, index) {
-  let values = [];
-
-  // Collect values from sliders
-  corruption.ranges.forEach((range, rangeIndex) => {
-    if (range.type === 'numeric') {
-      const slider = document.getElementById(`corruption_${index}_${rangeIndex}`);
-      values.push(slider ? parseInt(slider.value) : range.range[0]);
-    } else {
-      values.push(range.value || '');
-    }
-  });
-
-  const corruptionText = generateTripleModText(corruption.mod, values);
-
   applyCorruptionToItem(corruptionText);
 }
 
