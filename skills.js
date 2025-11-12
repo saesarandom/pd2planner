@@ -490,11 +490,22 @@ class SkillSystem {
   }
 
   // Create new containers for current class
+  // Position offsets: first column (right: 10px), second (-260px), third (-530px)
+  var rightOffsets = [10, -260, -530];
+
   for (var i = 0; i < positions.length; i++) {
     var pos = positions[i];
     var container = document.createElement('div');
     container.id = pos.id;
     container.className = 'skill-tree-container';
+
+    // Set inline positioning to match Amazon layout
+    container.style.position = 'absolute';
+    container.style.top = '1300px';
+    container.style.right = rightOffsets[i] + 'px';
+    container.style.width = '250px';
+    container.style.height = '450px';
+    container.style.overflowY = 'auto';
 
     var title = document.createElement('h3');
     title.textContent = pos.title;
