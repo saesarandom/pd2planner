@@ -56,12 +56,12 @@ class SkillSystem {
           { id: 'innercontainer', name: 'Inner Sight', level: 1, prerequisites: [] },
           { id: 'criticalstrikecontainer', name: 'Critical Strike', level: 1, prerequisites: [] },
           { id: 'evadecontainer', name: 'Evade', level: 6, prerequisites: [] },
-          { id: 'slowmissilecontainer', name: 'Slow Movement', level: 12, prerequisites: ['innercontainer'] },
+          { id: 'slowmovementcontainer', name: 'Slow Movement', level: 12, prerequisites: ['innercontainer'] },
           { id: 'piercecontainer', name: 'Pierce', level: 12, prerequisites: ['criticalstrikecontainer'] },
-          { id: 'dodgecontainer', name: 'Dodge', level: 18, prerequisites: ['innercontainer', 'evadecontainer', 'slowmissilecontainer'] },
-          { id: 'decoycontainer', name: 'Decoy', level: 18, prerequisites: ['innercontainer', 'slowmissilecontainer'] },
+          { id: 'dodgecontainer', name: 'Dodge', level: 18, prerequisites: ['innercontainer', 'evadecontainer', 'slowmovementcontainer'] },
+          { id: 'decoycontainer', name: 'Decoy', level: 18, prerequisites: ['innercontainer', 'slowmovementcontainer'] },
           { id: 'penetratecontainer', name: 'Penetrate', level: 24, prerequisites: ['criticalstrikecontainer', 'piercecontainer'] },
-          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30, prerequisites: ['innercontainer', 'slowmissilecontainer', 'decoycontainer'] }
+          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30, prerequisites: ['innercontainer', 'slowmovementcontainer', 'decoycontainer'] }
         ],
         'bowandcrossbowskillscontainer': [
           { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1, prerequisites: [] },
