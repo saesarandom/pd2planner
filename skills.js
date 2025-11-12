@@ -651,6 +651,11 @@ class SkillSystem {
         skillDiv.appendChild(bonusSpan);
         skillDiv.appendChild(input);
         container.appendChild(skillDiv);
+
+        // Add event listener to update bonus indicator when skill points change
+        input.addEventListener('input', function() {
+          self.updateSingleSkillBonus(skill.id);
+        });
       }
     });
   }
@@ -1725,24 +1730,29 @@ getDeadlyStrikeChance() {
       var skills = currentClassSkills[containerId];
 
       skills.forEach((skill) => {
-        var bonusSpan = document.getElementById(skill.id + '_bonus');
-        var skillInput = document.getElementById(skill.id);
-
-        if (bonusSpan && skillInput) {
-          var bonus = this.skillBonuses.allSkills || 0;
-          var baseValue = parseInt(skillInput.value) || 0;
-          var totalValue = baseValue + bonus;
-
-          // Only show bonus if there is one
-          if (bonus > 0) {
-            bonusSpan.textContent = totalValue;
-            bonusSpan.style.color = '#00ff00';
-          } else {
-            bonusSpan.textContent = '';
-          }
-        }
+        this.updateSingleSkillBonus(skill.id);
       });
     });
+  }
+
+  // Update a single skill's bonus indicator
+  updateSingleSkillBonus(skillId) {
+    var bonusSpan = document.getElementById(skillId + '_bonus');
+    var skillInput = document.getElementById(skillId);
+
+    if (bonusSpan && skillInput) {
+      var bonus = this.skillBonuses.allSkills || 0;
+      var baseValue = parseInt(skillInput.value) || 0;
+
+      // Only show bonus if skill has actual points AND there's a bonus
+      if (baseValue > 0 && bonus > 0) {
+        var totalValue = baseValue + bonus;
+        bonusSpan.textContent = totalValue;
+        bonusSpan.style.color = '#00ff00';
+      } else {
+        bonusSpan.textContent = '';
+      }
+    }
   }
 
 
