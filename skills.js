@@ -1344,16 +1344,48 @@ getDeadlyStrikeChance() {
     var self = this;
     var anyChanged = false;
 
+    // First pass: Check individual skill level requirements
     for (var i = 0; i < inputs.length; i++) {
       var input = inputs[i];
       var currentValue = parseInt(input.value) || 0;
       var skillLevel = parseInt(input.getAttribute('data-skill-level')) || 1;
       var maxAllowed = this.getMaxAllowed(skillLevel);
 
-      // If value exceeds new max, reduce it
+      // If value exceeds new max based on level requirement, reduce it
       if (currentValue > maxAllowed) {
         input.value = maxAllowed;
         anyChanged = true;
+      }
+    }
+
+    // Second pass: Check if total points exceed available points
+    var totalUsed = this.getTotalUsed();
+    if (totalUsed > this.maxSkillPoints) {
+      var excess = totalUsed - this.maxSkillPoints;
+
+      // Reduce skills starting from highest values until we're within limit
+      while (excess > 0) {
+        var highestInput = null;
+        var highestValue = 0;
+
+        // Find skill with highest value > 0
+        for (var i = 0; i < inputs.length; i++) {
+          var val = parseInt(inputs[i].value) || 0;
+          if (val > highestValue) {
+            highestValue = val;
+            highestInput = inputs[i];
+          }
+        }
+
+        if (highestInput && highestValue > 0) {
+          // Reduce this skill by 1
+          highestInput.value = highestValue - 1;
+          excess--;
+          anyChanged = true;
+        } else {
+          // Safety break if we can't find any skills to reduce
+          break;
+        }
       }
     }
 
