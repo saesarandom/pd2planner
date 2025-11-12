@@ -971,17 +971,18 @@ createManualCharm() {
   }
 
   // Store charm data as JSON object instead of formatted string
+  const imagePath = this.getRandomCharmImage(this.selectedCharmType);
   const charmData = JSON.stringify({
     name: charmName,
     stats: stats,
-    displayText: `${charmName}\n${stats.join('\n')}`
+    displayText: `${charmName}\n${stats.join('\n')}`,
+    imagePath: imagePath  // Store the exact image path so it can be restored
   });
 
   // Create clean hover text (charm name on first line, then each stat on its own line)
   const hoverText = stats.length > 0 ? `${charmName}\n${stats.join('\n')}` : charmName;
 
-  const backgroundImage = `url('${this.getRandomCharmImage(this.selectedCharmType)}')`;
-
+  const backgroundImage = `url('${imagePath}')`;
   this.placeCharm(position, this.selectedCharmType, backgroundImage, charmData, hoverText);
   this.hideModal();
 }
@@ -1326,16 +1327,26 @@ placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
       return;
     }
 
-    // Get a random background image for this charm type
-    const images = this.charmImages[charmData.type];
-    if (!images) {
-      console.error('Unknown charm type:', charmData.type);
-      return;
+    // Use saved image path if available, otherwise generate random
+    let imagePath;
+    try {
+      const data = typeof charmData.data === 'string' ? JSON.parse(charmData.data) : charmData.data;
+      imagePath = data.imagePath;
+    } catch (e) {
+      // If we can't extract saved image, use random
     }
-    const randomImage = images[Math.floor(Math.random() * images.length)];
-    const backgroundImage = `url('${randomImage}')`;
 
-    
+    // Fall back to random image if no saved path
+    if (!imagePath) {
+      const images = this.charmImages[charmData.type];
+      if (!images) {
+        console.error('Unknown charm type:', charmData.type);
+        return;
+      }
+      imagePath = images[Math.floor(Math.random() * images.length)];
+    }
+
+    const backgroundImage = `url('${imagePath}')`;
 
     // Check if we can place the charm at this position
     if (!this.canPlaceCharm(charmData.position, charmData.type)) {
@@ -1620,15 +1631,26 @@ fixCharmTitles() {
         return;
       }
 
-      // Get random image for this type
-      const images = this.charmImages[charm.type];
-      if (!images) {
-        console.error(`Unknown charm type: ${charm.type}`);
-        return;
+      // Use saved image path if available, otherwise generate random
+      let imagePath;
+      try {
+        const charmData = typeof charm.data === 'string' ? JSON.parse(charm.data) : charm.data;
+        imagePath = charmData.imagePath;
+      } catch (e) {
+        // If we can't extract saved image, use random
       }
 
-      const randomImage = images[Math.floor(Math.random() * images.length)];
-      const backgroundImage = `url('${randomImage}')`;
+      // Fall back to random image if no saved path
+      if (!imagePath) {
+        const images = this.charmImages[charm.type];
+        if (!images) {
+          console.error(`Unknown charm type: ${charm.type}`);
+          return;
+        }
+        imagePath = images[Math.floor(Math.random() * images.length)];
+      }
+
+      const backgroundImage = `url('${imagePath}')`;
 
       try {
         // Check if we can place it
