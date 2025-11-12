@@ -58,17 +58,25 @@
     lightningSkillDamage: 0,
     poisonSkillDamage: 0,
     magicSkillDamage: 0,
-    
+
     // Enemy resistance pierce
     pierceFire: 0,
     pierceCold: 0,
     pierceLightning: 0,
     piercePoison: 0,
     piercePhysical: 0,
-    
+
     // Proc chances (these won't add to totals, just for display)
     levelUpProcs: [],
     deathProcs: []
+      };
+
+      // Mercenary stats tracking (separate from player stats)
+      this.mercenaryStats = {
+        allSkills: 0, magicFind: 0, goldFind: 0, defense: 0,
+        ias: 0, fcr: 0, frw: 0, fhr: 0,
+        fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
+        dr: 0, pdr: 0, mdr: 0, plr: 0, cbf: false
       };
       
       // Jewel system
@@ -2697,7 +2705,7 @@ this.selectedJewelSuffix3MaxValue = null;
       Object.keys(this.stats).forEach(key => {
       this.stats[key] = typeof this.stats[key] === 'boolean' ? false : 0;
     });
-    
+
     // Explicitly reset Rainbow Facet stats to be sure
     this.stats.fireSkillDamage = 0;
     this.stats.coldSkillDamage = 0;
@@ -2709,16 +2717,28 @@ this.selectedJewelSuffix3MaxValue = null;
     this.stats.pierceLightning = 0;
     this.stats.piercePoison = 0;
     this.stats.piercePhysical = 0;
-    
-      
-      // Calculate equipment stats
+
+    // Reset mercenary stats
+    Object.keys(this.mercenaryStats).forEach(key => {
+      this.mercenaryStats[key] = typeof this.mercenaryStats[key] === 'boolean' ? false : 0;
+    });
+
+      // Calculate equipment stats (ONLY player equipment, exclude mercenary)
       Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
+        // Skip mercenary equipment for player stats
+        if (config.section.startsWith('merc')) return;
         this.calculateEquipmentStats(dropdownId, config.section);
       });
-      
+
       // Calculate socket stats
       this.calculateSocketStats();
-      
+
+      // Calculate mercenary equipment stats separately
+      this.calculateMercenaryStats();
+
+      // Update mercenary stats display
+      this.updateMercenaryStatsDisplay();
+
   if (window.characterStatManager) {
     window.characterStatManager.updateAllStatDisplays();
   }
@@ -2804,6 +2824,208 @@ this.selectedJewelSuffix3MaxValue = null;
       if (setBonuses.allSkills) this.stats.allSkills += setBonuses.allSkills;
     }
   }
+
+    // Calculate mercenary equipment stats separately from player stats
+    calculateMercenaryStats() {
+      // Only process mercenary equipment
+      Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
+        if (!config.section.startsWith('merc')) return; // Only mercenary items
+
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
+
+        const item = itemList[dropdown.value];
+        // Note: Mercenary items don't have level/stat requirements checks for now
+        // You can add mercenary level checks here if needed
+        if (item.properties) {
+          this.parseMercenaryItemStats(item, config.section);
+        }
+      });
+
+      // Calculate mercenary socket stats
+      const mercSections = ['mercweapon', 'merchelm', 'mercarmor', 'mercoff', 'mercgloves', 'mercbelts', 'mercboots'];
+      mercSections.forEach(section => {
+        const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+        sockets.forEach((socket) => {
+          const stats = socket.dataset.stats;
+          if (stats) {
+            this.parseMercenarySocketStats(stats);
+          }
+        });
+      });
+    }
+
+    parseMercenaryItemStats(item, section) {
+      let description = item.description;
+
+      // For dynamic items without a static description, generate it
+      if (!description && item.baseType) {
+        const dropdownId = Object.entries(this.equipmentMap).find(
+          ([_, config]) => config.section === section
+        )?.[0];
+
+        if (dropdownId) {
+          const itemName = document.getElementById(dropdownId)?.value;
+          if (itemName) {
+            description = window.generateItemDescription(itemName, item, dropdownId);
+          }
+        }
+      }
+
+      if (!description) return;
+
+      const lines = description.split('<br>');
+      lines.forEach(line => this.parseMercenaryStatLine(line.trim()));
+    }
+
+    parseMercenarySocketStats(statsText) {
+      if (!statsText) return;
+      const statLines = statsText.split(',').map(line => line.trim()).filter(line => line);
+      statLines.forEach(line => {
+        this.parseMercenaryStatLine(line);
+      });
+    }
+
+    parseMercenaryStatLine(line) {
+      if (!line) return;
+
+      const cleanLine = line.replace(/<[^>]*>/g, '').trim();
+      if (!cleanLine) return;
+
+      // Skip set bonus lines
+      if (/\(\d+\s+Items?\)|\(Complete Set\)/i.test(cleanLine)) {
+        return;
+      }
+
+      try {
+        // All Skills
+        const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
+        if (allSkillsMatch) {
+          this.mercenaryStats.allSkills += parseInt(allSkillsMatch[1]);
+          return;
+        }
+
+        // Defense
+        const defMatch = cleanLine.match(/^Defense:\s*(\d+)/i);
+        if (defMatch) {
+          this.mercenaryStats.defense += parseInt(defMatch[1]);
+          return;
+        }
+
+        // Magic Find
+        const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
+        if (mfMatch) {
+          this.mercenaryStats.magicFind += parseInt(mfMatch[1]);
+          return;
+        }
+
+        // Gold Find
+        const gfMatch = cleanLine.match(/([+-]?\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
+        if (gfMatch) {
+          this.mercenaryStats.goldFind += parseInt(gfMatch[1]);
+          return;
+        }
+
+        // Speed stats
+        const iasMatch = cleanLine.match(/(\d+)%\s+Increased\s+Attack\s+Speed/i);
+        if (iasMatch) {
+          this.mercenaryStats.ias += parseInt(iasMatch[1]);
+          return;
+        }
+
+        const fcrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Cast\s+Rate/i);
+        if (fcrMatch) {
+          this.mercenaryStats.fcr += parseInt(fcrMatch[1]);
+          return;
+        }
+
+        const frwMatch = cleanLine.match(/(\d+)%\s+Faster\s+Run\/Walk/i);
+        if (frwMatch) {
+          this.mercenaryStats.frw += parseInt(frwMatch[1]);
+          return;
+        }
+
+        const fhrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Hit\s+Recovery/i);
+        if (fhrMatch) {
+          this.mercenaryStats.fhr += parseInt(fhrMatch[1]);
+          return;
+        }
+
+        // Resistances
+        const allResMatch = cleanLine.match(/All\s+Resistances?\s+(?:\+)?(\d+)%?/i);
+        if (allResMatch) {
+          const value = parseInt(allResMatch[1]);
+          this.mercenaryStats.fireResist += value;
+          this.mercenaryStats.coldResist += value;
+          this.mercenaryStats.lightResist += value;
+          this.mercenaryStats.poisonResist += value;
+          return;
+        }
+
+        const fireResMatch = cleanLine.match(/Fire\s+Resist\s+(?:\+)?(\d+)%?/i);
+        if (fireResMatch) {
+          this.mercenaryStats.fireResist += parseInt(fireResMatch[1]);
+          return;
+        }
+
+        const coldResMatch = cleanLine.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i);
+        if (coldResMatch) {
+          this.mercenaryStats.coldResist += parseInt(coldResMatch[1]);
+          return;
+        }
+
+        const lightResMatch = cleanLine.match(/Lightning\s+Resist\s+(?:\+)?(\d+)%?/i);
+        if (lightResMatch) {
+          this.mercenaryStats.lightResist += parseInt(lightResMatch[1]);
+          return;
+        }
+
+        const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+(?:\+)?(\d+)%?/i);
+        if (poisonResMatch) {
+          this.mercenaryStats.poisonResist += parseInt(poisonResMatch[1]);
+          return;
+        }
+
+        const curseResMatch = cleanLine.match(/Curse\s+Resist\s+(?:\+)?(\d+)%?/i);
+        if (curseResMatch) {
+          this.mercenaryStats.curseResist += parseInt(curseResMatch[1]);
+          return;
+        }
+
+        // Damage Reduction stats
+        const drMatch = cleanLine.match(/Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%?/i);
+        if (drMatch) {
+          this.mercenaryStats.dr += parseInt(drMatch[1]);
+          return;
+        }
+
+        const pdrMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%?/i);
+        if (pdrMatch) {
+          this.mercenaryStats.pdr += parseInt(pdrMatch[1]);
+          return;
+        }
+
+        const mdrMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%?/i);
+        if (mdrMatch) {
+          this.mercenaryStats.mdr += parseInt(mdrMatch[1]);
+          return;
+        }
+
+        const plrMatch = cleanLine.match(/Poison\s+Length\s+Reduced\s+by\s+(\d+)%?/i);
+        if (plrMatch) {
+          this.mercenaryStats.plr += parseInt(plrMatch[1]);
+          return;
+        }
+
+        // Cannot be Frozen
+        if (/Cannot\s+be\s+Frozen/i.test(cleanLine)) {
+          this.mercenaryStats.cbf = true;
+          return;
+        }
+      } catch (error) {
+        // Silently skip unparseable lines
+      }
+    }
 
     parseItemStats(item, section) {
       let description = item.description;
@@ -3705,6 +3927,28 @@ addToStatsMap(statsMap, key, data) {
       if (window.onEquipmentOrSocketChange) {
       window.onEquipmentOrSocketChange();
     }
+  }
+
+  updateMercenaryStatsDisplay() {
+    // Update mercenary stats display with values from mercenaryStats object
+    this.updateElement('merc-allskills', this.mercenaryStats.allSkills);
+    this.updateElement('merc-mf', this.mercenaryStats.magicFind);
+    this.updateElement('merc-gf', this.mercenaryStats.goldFind);
+    this.updateElement('merc-defense', this.mercenaryStats.defense);
+    this.updateElement('merc-dr', this.mercenaryStats.dr);
+    this.updateElement('merc-pdr', this.mercenaryStats.pdr);
+    this.updateElement('merc-mdr', this.mercenaryStats.mdr);
+    this.updateElement('merc-plr', this.mercenaryStats.plr);
+    this.updateElement('merc-cbf', this.mercenaryStats.cbf ? 'Yes' : 'No');
+    this.updateElement('merc-ias', this.mercenaryStats.ias);
+    this.updateElement('merc-fcr', this.mercenaryStats.fcr);
+    this.updateElement('merc-frw', this.mercenaryStats.frw);
+    this.updateElement('merc-fhr', this.mercenaryStats.fhr);
+    this.updateElement('merc-fire-res', this.mercenaryStats.fireResist);
+    this.updateElement('merc-cold-res', this.mercenaryStats.coldResist);
+    this.updateElement('merc-light-res', this.mercenaryStats.lightResist);
+    this.updateElement('merc-poison-res', this.mercenaryStats.poisonResist);
+    this.updateElement('merc-curse-res', this.mercenaryStats.curseResist);
   }
 
 
