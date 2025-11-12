@@ -41,39 +41,40 @@ class SkillSystem {
     this.classSkillTrees = {
       'Amazon': {
         'javelinandspearskillscontainer': [
-          { id: 'jabcontainer', name: 'Jab', level: 1 },
-          { id: 'poisonjavelincontainer', name: 'Poison Javelin', level: 1 },
-          { id: 'powerstrikecontainer', name: 'Power Strike', level: 6 },
-          { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 1 },
-          { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12 },
-          { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12 },
-          { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18 },
-          { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18 },
-          { id: 'fendcontainer', name: 'Fend', level: 24 },
-          { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30 }
+          { id: 'jabcontainer', name: 'Jab', level: 1, prerequisites: [] },
+          { id: 'poisonjavelincontainer', name: 'Poison Javelin', level: 1, prerequisites: [] },
+          { id: 'powerstrikecontainer', name: 'Power Strike', level: 6, prerequisites: ['jabcontainer'] },
+          { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 1, prerequisites: ['jabcontainer'] },
+          { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer'] },
+          { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12, prerequisites: ['jabcontainer', 'powerstrikecontainer'] },
+          { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18, prerequisites: ['jabcontainer', 'powerstrikecontainer', 'chargedstrikecontainer'] },
+          { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer'] },
+          { id: 'fendcontainer', name: 'Fend', level: 24, prerequisites: ['jabcontainer', 'javelinandspearmasterycontainer'] },
+          { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer', 'plaguejavelincontainer'] }
         ],
         'passiveskillscontainer': [
-          { id: 'innercontainer', name: 'Inner Sight', level: 1 },
-          { id: 'criticalstrikecontainer', name: 'Critical Strike', level: 1 },
-          { id: 'dodgecontainer', name: 'Dodge', level: 6 },
-          { id: 'slowmissilecontainer', name: 'Slow Missiles', level: 12 },
-          { id: 'avoidcontainer', name: 'Avoid', level: 12 },
-          { id: 'penetratecontainer', name: 'Penetrate', level: 18 },
-          { id: 'decoycontainer', name: 'Decoy', level: 6 },
-          { id: 'evadecontainer', name: 'Evade', level: 18 },
-          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30 }
+          { id: 'innercontainer', name: 'Inner Sight', level: 1, prerequisites: [] },
+          { id: 'criticalstrikecontainer', name: 'Critical Strike', level: 1, prerequisites: [] },
+          { id: 'evadecontainer', name: 'Evade', level: 18, prerequisites: [] },
+          { id: 'slowmissilecontainer', name: 'Slow Missiles', level: 12, prerequisites: ['innercontainer'] },
+          { id: 'avoidcontainer', name: 'Avoid', level: 12, prerequisites: [] },
+          { id: 'piercecontainer', name: 'Pierce', level: 18, prerequisites: ['criticalstrikecontainer'] },
+          { id: 'dodgecontainer', name: 'Dodge', level: 6, prerequisites: ['innercontainer', 'evadecontainer', 'slowmissilecontainer'] },
+          { id: 'decoycontainer', name: 'Decoy', level: 6, prerequisites: ['innercontainer', 'slowmissilecontainer'] },
+          { id: 'penetratecontainer', name: 'Penetrate', level: 18, prerequisites: ['criticalstrikecontainer', 'piercecontainer'] },
+          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30, prerequisites: ['innercontainer', 'slowmissilecontainer', 'decoycontainer'] }
         ],
         'bowandcrossbowskillscontainer': [
-          { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1 },
-          { id: 'firearrowcontainer', name: 'Fire Arrow', level: 1 },
-          { id: 'coldarrowcontainer', name: 'Cold Arrow', level: 6 },
-          { id: 'multipleshotcontainer', name: 'Multiple Shot', level: 6 },
-          { id: 'explodingarrowcontainer', name: 'Exploding Arrow', level: 12 },
-          { id: 'icearrowcontainer', name: 'Ice Arrow', level: 12 },
-          { id: 'guidedarrowcontainer', name: 'Guided Arrow', level: 18 },
-          { id: 'strafecontainer', name: 'Strafe', level: 24 },
-          { id: 'immolationarrowcontainer', name: 'Immolation Arrow', level: 18 },
-          { id: 'freezingarrowcontainer', name: 'Freezing Arrow', level: 30 }
+          { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1, prerequisites: [] },
+          { id: 'firearrowcontainer', name: 'Fire Arrow', level: 1, prerequisites: ['magicarrowcontainer'] },
+          { id: 'coldarrowcontainer', name: 'Cold Arrow', level: 6, prerequisites: ['magicarrowcontainer'] },
+          { id: 'multipleshotcontainer', name: 'Multiple Shot', level: 6, prerequisites: ['magicarrowcontainer'] },
+          { id: 'explodingarrowcontainer', name: 'Exploding Arrow', level: 12, prerequisites: ['magicarrowcontainer', 'firearrowcontainer'] },
+          { id: 'icearrowcontainer', name: 'Ice Arrow', level: 12, prerequisites: ['magicarrowcontainer', 'coldarrowcontainer'] },
+          { id: 'guidedarrowcontainer', name: 'Guided Arrow', level: 18, prerequisites: ['magicarrowcontainer', 'multipleshotcontainer'] },
+          { id: 'strafecontainer', name: 'Strafe', level: 24, prerequisites: ['magicarrowcontainer', 'multipleshotcontainer', 'guidedarrowcontainer'] },
+          { id: 'immolationarrowcontainer', name: 'Immolation Arrow', level: 18, prerequisites: ['magicarrowcontainer', 'firearrowcontainer', 'explodingarrowcontainer'] },
+          { id: 'freezingarrowcontainer', name: 'Freezing Arrow', level: 30, prerequisites: ['magicarrowcontainer', 'coldarrowcontainer', 'icearrowcontainer'] }
         ]
       },
       'Assassin': {
@@ -441,6 +442,7 @@ class SkillSystem {
     this.createPointsDisplay();
     this.createSkillCalculator();
     this.updateSkillMaxValues();  // Set initial max values based on starting level
+    this.updateSkillVisuals();  // Set initial visual state based on prerequisites
     //('✅ Skills System ready');
   }
 
@@ -1274,8 +1276,22 @@ getDeadlyStrikeChance() {
 
   handleSkillInput(input) {
     var newValue = parseInt(input.value) || 0;
+    var oldValue = parseInt(input.getAttribute('data-old-value')) || 0;
     var skillLevel = parseInt(input.getAttribute('data-skill-level')) || 1;
     var maxAllowed = this.getMaxAllowed(skillLevel);
+
+    // If removing points, check if any skills depend on this one
+    if (newValue < oldValue && newValue === 0) {
+      this.removeDependentSkillPoints(input.id);
+    }
+
+    // Check prerequisites if trying to add points
+    if (newValue > 0 && !this.checkPrerequisites(input.id)) {
+      input.value = 0;
+      this.showWarning('Prerequisites not met for this skill');
+      this.updatePointsDisplay();
+      return;
+    }
 
     // Enforce absolute maximum of 20 points per skill
     if (newValue > 20) {
@@ -1299,7 +1315,102 @@ getDeadlyStrikeChance() {
       this.showWarning('Only ' + this.maxSkillPoints + ' total points available');
     }
 
+    // Store current value for next change detection
+    input.setAttribute('data-old-value', input.value);
+
     this.updatePointsDisplay();
+    this.updateSkillVisuals();
+  }
+
+  // Remove points from skills that depend on this skill
+  removeDependentSkillPoints(skillId) {
+    var currentClassSkills = this.classSkillTrees[this.currentClass];
+    if (!currentClassSkills) return;
+
+    // Find all skills that have this skill as a prerequisite
+    for (var treeName in currentClassSkills) {
+      var skills = currentClassSkills[treeName];
+      for (var i = 0; i < skills.length; i++) {
+        var skill = skills[i];
+        if (skill.prerequisites && skill.prerequisites.indexOf(skillId) !== -1) {
+          var dependentInput = document.getElementById(skill.id);
+          if (dependentInput && parseInt(dependentInput.value) > 0) {
+            dependentInput.value = 0;
+            dependentInput.setAttribute('data-old-value', '0');
+            // Recursively remove dependent skills
+            this.removeDependentSkillPoints(skill.id);
+          }
+        }
+      }
+    }
+  }
+
+  // Check if a skill's prerequisites are met
+  checkPrerequisites(skillId) {
+    // Get current class skills
+    var currentClassSkills = this.classSkillTrees[this.currentClass];
+    if (!currentClassSkills) return true;
+
+    // Find the skill definition
+    var skillDef = null;
+    for (var treeName in currentClassSkills) {
+      var skills = currentClassSkills[treeName];
+      for (var i = 0; i < skills.length; i++) {
+        if (skills[i].id === skillId) {
+          skillDef = skills[i];
+          break;
+        }
+      }
+      if (skillDef) break;
+    }
+
+    if (!skillDef || !skillDef.prerequisites || skillDef.prerequisites.length === 0) {
+      return true; // No prerequisites
+    }
+
+    // Check if all prerequisites have at least 1 point
+    for (var i = 0; i < skillDef.prerequisites.length; i++) {
+      var prereqId = skillDef.prerequisites[i];
+      var prereqInput = document.getElementById(prereqId);
+      if (!prereqInput || parseInt(prereqInput.value) === 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Update visual styling of skills based on prerequisites
+  updateSkillVisuals() {
+    var currentClassSkills = this.classSkillTrees[this.currentClass];
+    if (!currentClassSkills) return;
+
+    // Iterate through all skills
+    for (var treeName in currentClassSkills) {
+      var skills = currentClassSkills[treeName];
+      for (var i = 0; i < skills.length; i++) {
+        var skill = skills[i];
+        var input = document.getElementById(skill.id);
+        if (!input) continue;
+
+        var canAllocate = this.checkPrerequisites(skill.id);
+        var skillDiv = input.parentElement;
+
+        if (canAllocate) {
+          // Skill is available
+          skillDiv.style.opacity = '1';
+          input.disabled = false;
+          input.style.cursor = 'text';
+        } else {
+          // Skill is locked
+          skillDiv.style.opacity = '0.5';
+          if (parseInt(input.value) === 0) {
+            input.disabled = true;
+            input.style.cursor = 'not-allowed';
+          }
+        }
+      }
+    }
   }
 
   getMaxAllowed(skillLevel) {
@@ -1472,6 +1583,9 @@ getDeadlyStrikeChance() {
 
     // Update points display
     this.updatePointsDisplay();
+
+    // Update skill visuals based on prerequisites
+    this.updateSkillVisuals();
 
     // Re-populate skill dropdown
     setTimeout(() => { this.updateSkillDropdown(); }, 100);
