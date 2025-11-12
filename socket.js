@@ -2827,6 +2827,9 @@ this.selectedJewelSuffix3MaxValue = null;
 
     // Calculate mercenary equipment stats separately from player stats
     calculateMercenaryStats() {
+      // Get mercenary level
+      const mercLevel = parseInt(document.getElementById('merclvlValue')?.value) || 1;
+
       // Only process mercenary equipment
       Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
         if (!config.section.startsWith('merc')) return; // Only mercenary items
@@ -2835,23 +2838,49 @@ this.selectedJewelSuffix3MaxValue = null;
         if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
 
         const item = itemList[dropdown.value];
-        // Note: Mercenary items don't have level/stat requirements checks for now
-        // You can add mercenary level checks here if needed
-        if (item.properties) {
+
+        // Check if mercenary meets level requirement for this item
+        const actualLevel = this.calculateActualRequiredLevel(config.section, dropdown.value);
+
+        // TODO: Add mercenary strength/dexterity requirements check here in the future
+        // For now, only check level requirement
+
+        // Only apply stats if mercenary level requirement is met
+        if (mercLevel >= actualLevel && item.properties) {
           this.parseMercenaryItemStats(item, config.section);
         }
       });
 
-      // Calculate mercenary socket stats
+      // Calculate mercenary socket stats (only from items that meet level req)
+      const mercLevel2 = parseInt(document.getElementById('merclvlValue')?.value) || 1;
       const mercSections = ['mercweapon', 'merchelm', 'mercarmor', 'mercoff', 'mercgloves', 'mercbelts', 'mercboots'];
       mercSections.forEach(section => {
-        const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-        sockets.forEach((socket) => {
-          const stats = socket.dataset.stats;
-          if (stats) {
-            this.parseMercenarySocketStats(stats);
+        // Check if the item in this section meets level requirement
+        const dropdownId = Object.entries(this.equipmentMap).find(
+          ([_, config]) => config.section === section
+        )?.[0];
+
+        if (dropdownId) {
+          const dropdown = document.getElementById(dropdownId);
+          if (dropdown && dropdown.value) {
+            const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
+
+            // Only add socket stats if item meets level requirement
+            if (mercLevel2 >= actualLevel) {
+              const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+              sockets.forEach((socket) => {
+                const levelReq = parseInt(socket.dataset.levelReq) || 1;
+                // Also check if mercenary meets the socket item's level requirement
+                if (mercLevel2 >= levelReq) {
+                  const stats = socket.dataset.stats;
+                  if (stats) {
+                    this.parseMercenarySocketStats(stats);
+                  }
+                }
+              });
+            }
           }
-        });
+        }
       });
     }
 
