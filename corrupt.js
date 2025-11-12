@@ -183,99 +183,75 @@ const CORRUPTIONS = {
     { mod: "+10% Faster Cast Rate<br>+5% to Poison Skill Damage", type: "fixed" }
   ],
   shield: [
-    { mod: "Socketed (1)", type: "socket", sockets: 1 },
-    { mod: "Socketed (2)", type: "socket", sockets: 2 },
-    { mod: "Socketed (3)", type: "socket", sockets: 3 },
-    {
-      mod: "+[20-30]% Faster Hit Recovery<br>Indestructible",
-      type: "double",
-      ranges: [
-        { label: "Faster Hit Recovery", range: [20, 30], type: "numeric" },
-        { label: "Indestructible", type: "fixed" }
-      ]
-    },
-    {
-      mod: "+[50-80]% Enhanced Defense<br>+1 to All Skills",
-      type: "double",
-      ranges: [
-        { label: "Enhanced Defense", range: [50, 80], type: "numeric" },
-        { label: "All Skills", value: 1, type: "fixed" }
-      ]
-    },
-    {
-      mod: "+20% Faster Block Rate<br>+10% Faster Cast Rate",
-      type: "double",
-      ranges: [
-        { label: "Faster Block Rate", value: 20, type: "fixed" },
-        { label: "Faster Cast Rate", value: 10, type: "fixed" }
-      ]
-    },
+    { mod: "+[20-30]% Faster Hit Recovery", type: "numeric", range: [20, 30] },
+    { mod: "+20% Faster Block Rate", type: "fixed" },
+    { mod: "[20-30]% Better Chance of Getting Magic Items", type: "numeric", range: [20, 30] },
+    { mod: "+[30-40] Life", type: "numeric", range: [30, 40] },
+    { mod: "Fire Resist +[35-40]%", type: "numeric", range: [35, 40] },
+    { mod: "Cold Resist +[35-40]%", type: "numeric", range: [35, 40] },
+    { mod: "Lightning Resist +[35-40]%", type: "numeric", range: [35, 40] },
+    { mod: "Poison Resist +[35-40]%", type: "numeric", range: [35, 40] },
+    { mod: "+10% Faster Cast Rate", type: "fixed" },
+    { mod: "Increase Maximum Life [4-6]%", type: "numeric", range: [4, 6] },
+    { mod: "Physical Damage Taken Reduced by [6-10]", type: "numeric", range: [6, 10] },
+    { mod: "Magic Damage Taken Reduced by [6-10]", type: "numeric", range: [6, 10] },
+    { mod: "Attacker Takes Damage of [4-594] ([4-6] per Level)", type: "numeric", range: [4, 594] },
+    { mod: "Cannot Be Frozen", type: "fixed" },
+    { mod: "+1 to All Skills", type: "fixed" },
     { mod: "+10% Curse Resistance", type: "fixed" },
-    {
-      mod: "[20-30]% Better Chance of Getting Magic Items<br>+10% Faster Block Rate",
-      type: "double",
-      ranges: [
-        { label: "Better Chance of Getting Magic Items", range: [20, 30], type: "numeric" },
-        { label: "Faster Block Rate", value: 10, type: "fixed" }
-      ]
-    },
-    {
-      mod: "[10-20]% Increased Chance of Blocking<br>All Resistances +[20-25]",
-      type: "double",
-      ranges: [
-        { label: "Increased Chance of Blocking", range: [10, 20], type: "numeric" },
-        { label: "All Resistances", range: [20, 25], type: "numeric" }
-      ]
-    },
-    {
-      mod: "+[30-40] Life<br>Increase Maximum Life [4-6]%",
-      type: "double",
-      ranges: [
-        { label: "Life", range: [30, 40], type: "numeric" },
-        { label: "Increase Maximum Life", range: [4, 6], type: "numeric" }
-      ]
-    },
+    { mod: "All Resistances +[20-25]", type: "numeric", range: [20, 25] },
     { mod: "Physical Damage Taken Reduced by [6-8]%", type: "numeric", range: [6, 8] },
     {
-      mod: "Fire Resist +[35-40]%<br>Physical Damage Taken Reduced by [6-10]",
+      mod: "Indestructible<br>+[50-80]% Enhanced Defense",
       type: "double",
       ranges: [
-        { label: "Fire Resist", range: [35, 40], type: "numeric" },
-        { label: "Physical Damage Taken Reduced by", range: [6, 10], type: "numeric" }
+        { label: "Indestructible", type: "fixed" },
+        { label: "Enhanced Defense", range: [50, 80], type: "numeric" }
       ]
     },
-    { mod: "+[4-5]% to Maximum Fire Resist", type: "numeric", range: [4, 5] },
-    { mod: "Fire Resist +[15-20]%", type: "numeric", range: [15, 20] },
     {
-      mod: "Cold Resist +[35-40]%<br>Magic Damage Taken Reduced by [6-10]",
+      mod: "+10% Faster Block Rate<br>[10-20]% Increased Chance of Blocking",
       type: "double",
       ranges: [
-        { label: "Cold Resist", range: [35, 40], type: "numeric" },
-        { label: "Magic Damage Taken Reduced by", range: [6, 10], type: "numeric" }
+        { label: "Faster Block Rate", value: 10, type: "fixed" },
+        { label: "Increased Chance of Blocking", range: [10, 20], type: "numeric" }
       ]
     },
-    { mod: "+[4-5]% to Maximum Cold Resist", type: "numeric", range: [4, 5] },
-    { mod: "Cold Resist +[15-20]%", type: "numeric", range: [15, 20] },
     {
-      mod: "Lightning Resist +[35-40]%<br>Attacker Takes Damage of [4-594] ([4-6] per Level)",
+      mod: "+[4-5]% to Maximum Fire Resist<br>Fire Resist +[15-20]%",
       type: "double",
       ranges: [
-        { label: "Lightning Resist", range: [35, 40], type: "numeric" },
-        { label: "Attacker Takes Damage", range: [4, 594], type: "numeric" }
+        { label: "Maximum Fire Resist", range: [4, 5], type: "numeric" },
+        { label: "Fire Resist", range: [15, 20], type: "numeric" }
       ]
     },
-    { mod: "+[4-5]% to Maximum Lightning Resist", type: "numeric", range: [4, 5] },
-    { mod: "Lightning Resist +[15-20]%", type: "numeric", range: [15, 20] },
     {
-      mod: "Poison Resist +[35-40]%<br>Cannot Be Frozen",
+      mod: "+[4-5]% to Maximum Cold Resist<br>Cold Resist +[15-20]%",
       type: "double",
       ranges: [
-        { label: "Poison Resist", range: [35, 40], type: "numeric" },
-        { label: "Cannot Be Frozen", type: "fixed" }
+        { label: "Maximum Cold Resist", range: [4, 5], type: "numeric" },
+        { label: "Cold Resist", range: [15, 20], type: "numeric" }
       ]
     },
-    { mod: "+[4-5]% to Maximum Poison Resist", type: "numeric", range: [4, 5] },
-    { mod: "Poison Resist +[15-20]%", type: "numeric", range: [15, 20] }
+    {
+      mod: "+[4-5]% to Maximum Lightning Resist<br>Lightning Resist +[15-20]%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Lightning Resist", range: [4, 5], type: "numeric" },
+        { label: "Lightning Resist", range: [15, 20], type: "numeric" }
+      ]
+    },
+    {
+      mod: "+[4-5]% to Maximum Poison Resist<br>Poison Resist +[15-20]%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Poison Resist", range: [4, 5], type: "numeric" },
+        { label: "Poison Resist", range: [15, 20], type: "numeric" }
+      ]
+    },
+    { mod: "Socketed (1)", type: "socket", sockets: 1 },
+    { mod: "Socketed (2)", type: "socket", sockets: 2 },
+    { mod: "Socketed (3)", type: "socket", sockets: 3 }
   ],
   gloves: [
     { mod: "+[20-30] to Life", type: "numeric", range: [20, 30] },
