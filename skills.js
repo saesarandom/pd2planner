@@ -53,15 +53,15 @@ class SkillSystem {
           { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer', 'plaguejavelincontainer'] }
         ],
         'passiveskillscontainer': [
-          { id: 'innercontainer', name: 'Inner Sight', level: 1, prerequisites: [] },
+          { id: 'innersightcontainer', name: 'Inner Sight', level: 1, prerequisites: [] },
           { id: 'criticalstrikecontainer', name: 'Critical Strike', level: 1, prerequisites: [] },
           { id: 'evadecontainer', name: 'Evade', level: 6, prerequisites: [] },
-          { id: 'slowmovementcontainer', name: 'Slow Movement', level: 12, prerequisites: ['innercontainer'] },
+          { id: 'slowmovementcontainer', name: 'Slow Movement', level: 12, prerequisites: ['innersightcontainer'] },
           { id: 'piercecontainer', name: 'Pierce', level: 12, prerequisites: ['criticalstrikecontainer'] },
-          { id: 'dodgecontainer', name: 'Dodge', level: 18, prerequisites: ['innercontainer', 'evadecontainer', 'slowmovementcontainer'] },
-          { id: 'decoycontainer', name: 'Decoy', level: 18, prerequisites: ['innercontainer', 'slowmovementcontainer'] },
+          { id: 'dodgecontainer', name: 'Dodge', level: 18, prerequisites: ['innersightcontainer', 'evadecontainer', 'slowmovementcontainer'] },
+          { id: 'decoycontainer', name: 'Decoy', level: 18, prerequisites: ['innersightcontainer', 'slowmovementcontainer'] },
           { id: 'penetratecontainer', name: 'Penetrate', level: 24, prerequisites: ['criticalstrikecontainer', 'piercecontainer'] },
-          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30, prerequisites: ['innercontainer', 'slowmovementcontainer', 'decoycontainer'] }
+          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30, prerequisites: ['innersightcontainer', 'slowmovementcontainer', 'decoycontainer'] }
         ],
         'bowandcrossbowskillscontainer': [
           { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1, prerequisites: [] },
@@ -429,7 +429,7 @@ class SkillSystem {
         damage: [40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910, 925],
         criticalStrike: [5, 9, 12, 15, 17, 19, 20, 21, 23, 23, 24, 25, 26, 26, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
       },
-      innercontainer: {
+      innersightcontainer: {
         name: "Inner Sight", type: "passive",
         duration: [8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 244],
         enemyAttackRating: [-10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40],
@@ -763,7 +763,7 @@ class SkillSystem {
     // Skills to exclude from dropdown display
     var excludedSkills = [
       'javelinandspearmasterycontainer', // Javelin and Spear Mastery (passive skill)
-      'innercontainer', // Inner Sight
+      'innersightcontainer', // Inner Sight
       'criticalstrikecontainer', // Critical Strike
       'evadecontainer', // Evade
       'slowmovementcontainer', // Slow Movement
