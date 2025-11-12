@@ -784,12 +784,19 @@ function applySocketCorruptionFromModal(corruption) {
     window.originalItemDescriptions[itemName] = itemList[itemName].description;
   }
 
+  // Get and store the original socket count before changing it
+  let originalSocketCount = 0;
+  if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.getSocketCount === 'function') {
+    originalSocketCount = window.unifiedSocketSystem.getSocketCount(section) || 0;
+  }
+
   // Store corruption info
   window.itemCorruptions[currentCorruptionSlot] = {
     text: corruption.mod,
     type: 'socket_corruption',
     itemName: itemName,
-    socketCount: socketCount
+    socketCount: socketCount,
+    originalSocketCount: originalSocketCount
   };
 
   // Add corruption text to item description
@@ -815,6 +822,15 @@ function applyCorruptionToItem(corruptionText) {
 
   if (!itemName || !itemList[itemName]) {
     return;
+  }
+
+  // Check if there was a previous socket corruption, and restore original socket count
+  const previousCorruption = window.itemCorruptions[currentCorruptionSlot];
+  if (previousCorruption && previousCorruption.type === 'socket_corruption' && previousCorruption.originalSocketCount !== undefined) {
+    const section = SECTION_MAP[currentCorruptionSlot];
+    if (section && window.unifiedSocketSystem && typeof window.unifiedSocketSystem.setSocketCount === 'function') {
+      window.unifiedSocketSystem.setSocketCount(section, previousCorruption.originalSocketCount);
+    }
   }
 
   // Store original description if not already stored
@@ -1039,15 +1055,16 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
   if (match) {
     const originalValue = parseInt(match[1]);
     const newValue = originalValue + corruptionStat.value;
-    
 
-    const newStatText = match[0].replace(match[1], `+${newValue}`);
+    // Replace the old value with new value
+    // The sign is already in the pattern, so we just replace the number
+    const newStatText = match[0].replace(match[1], newValue.toString());
     const redStatText = `<span class="corruption-enhanced-stat">${newStatText}</span>`;
-    
+
     const newDescription = description.replace(match[0], redStatText);
-    
-    return { 
-      found: true, 
+
+    return {
+      found: true,
       description: newDescription,
       originalValue: originalValue,
       newValue: newValue
@@ -1091,6 +1108,14 @@ function removeCurrentCorruption() {
 
   const corruption = window.itemCorruptions[currentCorruptionSlot];
   if (corruption && corruption.itemName) {
+    // If this was a socket corruption, restore the original socket count
+    if (corruption.type === 'socket_corruption' && corruption.originalSocketCount !== undefined) {
+      const section = SECTION_MAP[currentCorruptionSlot];
+      if (section && window.unifiedSocketSystem && typeof window.unifiedSocketSystem.setSocketCount === 'function') {
+        window.unifiedSocketSystem.setSocketCount(section, corruption.originalSocketCount);
+      }
+    }
+
     // Check if item is dynamic (has baseType)
     const isDynamic = itemList[corruption.itemName].baseType;
 
@@ -1105,13 +1130,13 @@ function removeCurrentCorruption() {
       }
     }
   }
-  
+
 
   delete window.itemCorruptions[currentCorruptionSlot];
-  
+
 
   triggerItemUpdate(currentCorruptionSlot);
-  
+
   closeCorruptionModal();
 }
 
