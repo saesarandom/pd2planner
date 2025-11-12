@@ -764,6 +764,14 @@ getDirectLifeManaFromItems() {
 
       // Only reset stats to base values if NOT loading character data
       if (!window._isLoadingCharacterData) {
+        // Reset level to 1 when changing classes
+        const lvlInput = document.getElementById('lvlValue');
+        if (lvlInput) {
+          lvlInput.value = 1;
+          this.currentLevel = 1;
+          this.maxSkillPoints = 12;
+        }
+
         document.getElementById('str').value = baseStats.str;
         document.getElementById('dex').value = baseStats.dex;
         document.getElementById('vit').value = baseStats.vit;
