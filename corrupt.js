@@ -254,26 +254,169 @@ const CORRUPTIONS = {
     { mod: "Socketed (3)", type: "socket", sockets: 3 }
   ],
   gloves: [
-    { mod: "+[20-30] to Life", type: "numeric", range: [20, 30] },
+    { mod: "+[50-80]% Enhanced Defense", type: "numeric", range: [50, 80] },
+    { mod: "+[10-15]% Chance to Pierce", type: "numeric", range: [10, 15] },
+    { mod: "+10% Faster Cast Rate", type: "fixed" },
+    { mod: "Regenerate Mana [20-30]%", type: "numeric", range: [20, 30] },
+    { mod: "+[10-20]% Faster Block Rate", type: "numeric", range: [10, 20] },
     { mod: "+10% Increased Attack Speed", type: "fixed" },
-    { mod: "+10% Faster Cast Rate", type: "fixed" }
+    { mod: "[50-100]% Extra Gold from Monsters", type: "numeric", range: [50, 100] },
+    { mod: "+[100-150] to Attack Rating", type: "numeric", range: [100, 150] },
+    { mod: "10% Increased Chance of Blocking", type: "fixed" },
+    { mod: "[10-25]% Better Chance of Getting Magic Items", type: "numeric", range: [10, 25] },
+    { mod: "[2-3]% Life Stolen per Hit", type: "numeric", range: [2, 3] },
+    { mod: "+[30-40]% Enhanced Damage", type: "numeric", range: [30, 40] },
+    { mod: "Fire Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "[2-3]% Mana Stolen per Hit", type: "numeric", range: [2, 3] },
+    { mod: "-[15-25]% Target Defense", type: "numeric", range: [15, 25] },
+    { mod: "Cold Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+[3-6] to All Attributes", type: "numeric", range: [3, 6] },
+    { mod: "10% Deadly Strike", type: "fixed" },
+    { mod: "Lightning Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+[20-40] to Life", type: "numeric", range: [20, 40] },
+    { mod: "+[3-4] to Mana after each Kill", type: "numeric", range: [3, 4] },
+    { mod: "Poison Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "Replenish Life +[15-20]", type: "numeric", range: [15, 20] },
+    { mod: "All Resistances +[5-8]", type: "numeric", range: [5, 8] }
   ],
   belt: [
-    { mod: "+[30-50] to Life", type: "numeric", range: [30, 50] },
-    { mod: "+10% Faster Hit Recovery", type: "fixed" }
+    { mod: "+[7-10] to Strength", type: "numeric", range: [7, 10] },
+    { mod: "+[10-15]% Chance to Pierce", type: "numeric", range: [10, 15] },
+    { mod: "+10% Faster Cast Rate", type: "fixed" },
+    { mod: "+[7-10] to Dexterity", type: "numeric", range: [7, 10] },
+    { mod: "+10% Faster Hit Recovery", type: "fixed" },
+    { mod: "+10% Increased Attack Speed", type: "fixed" },
+    { mod: "+[7-10] to Vitality", type: "numeric", range: [7, 10] },
+    { mod: "+[3-6] to All Attributes", type: "numeric", range: [3, 6] },
+    { mod: "+10% Faster Run/Walk", type: "fixed" },
+    { mod: "+[7-10] to Energy", type: "numeric", range: [7, 10] },
+    { mod: "Replenish Life +[15-20]", type: "numeric", range: [15, 20] },
+    { mod: "20% Reduced Curse Duration", type: "fixed" },
+    { mod: "Fire Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+[100-150] to Attack Rating", type: "numeric", range: [100, 150] },
+    { mod: "10% Increased Chance of Blocking", type: "fixed" },
+    { mod: "Cold Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "Attacker Takes Damage of [2-396] ([2-4] per Level)", type: "numeric", range: [2, 396] },
+    { mod: "+2% to All Maximum Resistances", type: "fixed" },
+    { mod: "Lightning Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "[60-100]% Extra Gold from Monsters", type: "numeric", range: [60, 100] },
+    { mod: "All Resistances +[5-8]", type: "numeric", range: [5, 8] },
+    { mod: "Poison Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "[20-30]% Better Chance of Getting Magic Items", type: "numeric", range: [20, 30] },
+    { mod: "Physical Damage Taken Reduced by [3-4]%", type: "numeric", range: [3, 4] }
   ],
   boots: [
-    { mod: "+[30-50] to Life", type: "numeric", range: [30, 50] },
-    { mod: "+10% Faster Run/Walk", type: "fixed" }
+    { mod: "+[50-80]% Enhanced Defense", type: "numeric", range: [50, 80] },
+    { mod: "+15% Faster Run/Walk", type: "fixed" },
+    { mod: "Regenerate Mana [10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+10% Faster Block Rate", type: "fixed" },
+    { mod: "20% Reduced Curse Duration", type: "fixed" },
+    { mod: "[50-100]% Extra Gold from Monsters", type: "numeric", range: [50, 100] },
+    { mod: "+10% Faster Hit Recovery", type: "fixed" },
+    { mod: "Physical Damage Taken Reduced by [3-4]%", type: "numeric", range: [3, 4] },
+    { mod: "[10-25]% Better Chance of Getting Magic Items", type: "numeric", range: [10, 25] },
+    { mod: "+[20-40] to Life", type: "numeric", range: [20, 40] },
+    { mod: "10% Increased Chance of Blocking", type: "fixed" },
+    { mod: "Fire Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "All Resistances +[5-8]", type: "numeric", range: [5, 8] },
+    { mod: "Cold Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "+[2-3] Life after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "Lightning Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "+[2-3] to Mana after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "Poison Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "Replenish Life +[15-25]", type: "numeric", range: [15, 25] },
+    {
+      mod: "+[50-80]% Enhanced Defense<br>Indestructible",
+      type: "double",
+      ranges: [
+        { label: "Enhanced Defense", range: [50, 80], type: "numeric" },
+        { label: "Indestructible", type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[2-3]% to Maximum Fire Resist<br>Fire Resist +10%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Fire Resist", range: [2, 3], type: "numeric" },
+        { label: "Fire Resist", value: 10, type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[2-3]% to Maximum Cold Resist<br>Cold Resist +10%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Cold Resist", range: [2, 3], type: "numeric" },
+        { label: "Cold Resist", value: 10, type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[2-3]% to Maximum Lightning Resist<br>Lightning Resist +10%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Lightning Resist", range: [2, 3], type: "numeric" },
+        { label: "Lightning Resist", value: 10, type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[2-3]% to Maximum Poison Resist<br>Poison Resist +10%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Poison Resist", range: [2, 3], type: "numeric" },
+        { label: "Poison Resist", value: 10, type: "fixed" }
+      ]
+    }
   ],
   ring: [
-    { mod: "+[20-40] to Life", type: "numeric", range: [20, 40] },
-    { mod: "+10% Faster Cast Rate", type: "fixed" }
+    { mod: "+[7-10] to Strength", type: "numeric", range: [7, 10] },
+    { mod: "+[100-150] to Attack Rating", type: "numeric", range: [100, 150] },
+    { mod: "+10% Faster Cast Rate", type: "fixed" },
+    { mod: "+[7-10] to Dexterity", type: "numeric", range: [7, 10] },
+    { mod: "+[2-3] Life after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "+10% Faster Run/Walk", type: "fixed" },
+    { mod: "+[7-10] to Vitality", type: "numeric", range: [7, 10] },
+    { mod: "+[2-3] to Mana after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "10% Reduced Curse Duration", type: "fixed" },
+    { mod: "+[7-10] to Energy", type: "numeric", range: [7, 10] },
+    { mod: "Physical Damage Taken Reduced by [4-6]", type: "numeric", range: [4, 6] },
+    { mod: "[3-4]% Mana Stolen per Hit", type: "numeric", range: [3, 4] },
+    { mod: "Fire Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "Magic Damage Taken Reduced by [4-6]", type: "numeric", range: [4, 6] },
+    { mod: "[3-4]% Life Stolen per Hit", type: "numeric", range: [3, 4] },
+    { mod: "Cold Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+[30-40] to Life", type: "numeric", range: [30, 40] },
+    { mod: "+[4-6] to All Attributes", type: "numeric", range: [4, 6] },
+    { mod: "Lightning Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "[40-80]% Extra Gold from Monsters", type: "numeric", range: [40, 80] },
+    { mod: "All Resistances +[4-6]", type: "numeric", range: [4, 6] },
+    { mod: "Poison Resist +[10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "[15-20]% Better Chance of Getting Magic Items", type: "numeric", range: [15, 20] },
+    { mod: "Physical Damage Taken Reduced by 3%", type: "fixed" }
   ],
   amulet: [
-    { mod: "+[30-60] to Life", type: "numeric", range: [30, 60] },
+    { mod: "+[6-12] to Strength", type: "numeric", range: [6, 12] },
+    { mod: "+[10-20]% Chance to Pierce", type: "numeric", range: [10, 20] },
     { mod: "+1 to All Skills", type: "fixed" },
-    { mod: "+10% Faster Cast Rate", type: "fixed" }
+    { mod: "+[6-12] to Dexterity", type: "numeric", range: [6, 12] },
+    { mod: "+10% Faster Hit Recovery", type: "fixed" },
+    { mod: "+10% Faster Cast Rate", type: "fixed" },
+    { mod: "+[6-12] to Vitality", type: "numeric", range: [6, 12] },
+    { mod: "10% Increased Chance of Blocking", type: "fixed" },
+    { mod: "+10% Faster Run/Walk", type: "fixed" },
+    { mod: "+[6-12] to Energy", type: "numeric", range: [6, 12] },
+    { mod: "+[2-3] Life after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "+10% Curse Resistance", type: "fixed" },
+    { mod: "Fire Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "+[2-3] to Mana after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "+[30-40]% Enhanced Damage", type: "numeric", range: [30, 40] },
+    { mod: "Cold Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "+[6-8] to All Attributes", type: "numeric", range: [6, 8] },
+    { mod: "Cannot Be Frozen", type: "fixed" },
+    { mod: "Lightning Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "[60-100]% Extra Gold from Monsters", type: "numeric", range: [60, 100] },
+    { mod: "+2% to All Maximum Resistances", type: "fixed" },
+    { mod: "Poison Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "[20-30]% Better Chance of Getting Magic Items", type: "numeric", range: [20, 30] },
+    { mod: "All Resistances +[7-10]", type: "numeric", range: [7, 10] }
   ]
 };
 
