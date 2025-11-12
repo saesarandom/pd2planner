@@ -284,8 +284,65 @@ const CORRUPTIONS = {
     { mod: "+10% Faster Hit Recovery", type: "fixed" }
   ],
   boots: [
-    { mod: "+[30-50] to Life", type: "numeric", range: [30, 50] },
-    { mod: "+10% Faster Run/Walk", type: "fixed" }
+    { mod: "+[50-80]% Enhanced Defense", type: "numeric", range: [50, 80] },
+    { mod: "+15% Faster Run/Walk", type: "fixed" },
+    { mod: "Regenerate Mana [10-15]%", type: "numeric", range: [10, 15] },
+    { mod: "+10% Faster Block Rate", type: "fixed" },
+    { mod: "20% Reduced Curse Duration", type: "fixed" },
+    { mod: "[50-100]% Extra Gold from Monsters", type: "numeric", range: [50, 100] },
+    { mod: "+10% Faster Hit Recovery", type: "fixed" },
+    { mod: "Physical Damage Taken Reduced by [3-4]%", type: "numeric", range: [3, 4] },
+    { mod: "[10-25]% Better Chance of Getting Magic Items", type: "numeric", range: [10, 25] },
+    { mod: "+[20-40] to Life", type: "numeric", range: [20, 40] },
+    { mod: "10% Increased Chance of Blocking", type: "fixed" },
+    { mod: "Fire Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "All Resistances +[5-8]", type: "numeric", range: [5, 8] },
+    { mod: "Cold Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "+[2-3] Life after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "Lightning Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "+[2-3] to Mana after each Kill", type: "numeric", range: [2, 3] },
+    { mod: "Poison Resist +[15-20]%", type: "numeric", range: [15, 20] },
+    { mod: "Replenish Life +[15-25]", type: "numeric", range: [15, 25] },
+    {
+      mod: "+[50-80]% Enhanced Defense<br>Indestructible",
+      type: "double",
+      ranges: [
+        { label: "Enhanced Defense", range: [50, 80], type: "numeric" },
+        { label: "Indestructible", type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[2-3]% to Maximum Fire Resist<br>Fire Resist +10%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Fire Resist", range: [2, 3], type: "numeric" },
+        { label: "Fire Resist", value: 10, type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[2-3]% to Maximum Cold Resist<br>Cold Resist +10%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Cold Resist", range: [2, 3], type: "numeric" },
+        { label: "Cold Resist", value: 10, type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[2-3]% to Maximum Lightning Resist<br>Lightning Resist +10%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Lightning Resist", range: [2, 3], type: "numeric" },
+        { label: "Lightning Resist", value: 10, type: "fixed" }
+      ]
+    },
+    {
+      mod: "+[2-3]% to Maximum Poison Resist<br>Poison Resist +10%",
+      type: "double",
+      ranges: [
+        { label: "Maximum Poison Resist", range: [2, 3], type: "numeric" },
+        { label: "Poison Resist", value: 10, type: "fixed" }
+      ]
+    }
   ],
   ring: [
     { mod: "+[20-40] to Life", type: "numeric", range: [20, 40] },
