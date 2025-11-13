@@ -1238,10 +1238,15 @@ getWeaponMasteryDamageBonus() {
 }
 
 getDeadlyStrikeChance() {
-  // Check weapon for deadly strike
+  // First, try to get deadly strike from socket system stats (works for both static and dynamic items)
+  if (window.unifiedSocketSystem && window.unifiedSocketSystem.stats) {
+    return Math.min(window.unifiedSocketSystem.stats.deadlyStrike || 0, 75);
+  }
+
+  // Fallback: Check weapon for deadly strike (for static items)
   var weaponDropdown = document.getElementById('weapons-dropdown');
   var deadlyStrike = 0;
-  
+
   if (weaponDropdown && weaponDropdown.value && typeof itemList !== 'undefined') {
     var weapon = itemList[weaponDropdown.value];
     if (weapon && weapon.description) {
@@ -1252,8 +1257,8 @@ getDeadlyStrikeChance() {
     }
   }
 
-  // FIXED: Return deadlyStrike, not weaponMastery
-  return Math.min(deadlyStrike, 75); // Cap at 75%
+  // Return deadlyStrike, capped at 75%
+  return Math.min(deadlyStrike, 75);
 }
 
 
