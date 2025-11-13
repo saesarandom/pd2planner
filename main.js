@@ -451,20 +451,22 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     // The +1 is the same as in damage calculation
     calculatedDefense = Math.floor((baseItemDefense + 1) * (1 + edefValue / 100)) + todefValue;
 
-    // Calculate min and max for display
-    const edefProp = props.edef;
-    if (typeof edefProp === 'object' && edefProp.min && edefProp.max) {
-      const minDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.min / 100)) + todefValue;
-      const maxDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.max / 100)) + todefValue;
-      // Only show range if min and max are different
-      if (minDef !== maxDef) {
-        defenseDisplay = `Defense: ${calculatedDefense} (${minDef}-${maxDef})`;
-      } else {
-        defenseDisplay = `Defense: ${calculatedDefense}`;
-      }
-    } else {
-      defenseDisplay = `Defense: ${calculatedDefense}`;
-    }
+    // TODO: Add min/max defense range display in future
+    // For now, just show the current calculated defense value
+    // const edefProp = props.edef;
+    // if (typeof edefProp === 'object' && edefProp.min && edefProp.max) {
+    //   const minDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.min / 100)) + todefValue;
+    //   const maxDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.max / 100)) + todefValue;
+    //   if (minDef !== maxDef) {
+    //     defenseDisplay = `Defense: ${calculatedDefense} (${minDef}-${maxDef})`;
+    //   } else {
+    //     defenseDisplay = `Defense: ${calculatedDefense}`;
+    //   }
+    // } else {
+    //   defenseDisplay = `Defense: ${calculatedDefense}`;
+    // }
+
+    defenseDisplay = `Defense: ${calculatedDefense}`;
   }
 
   // Map property keys to display format
