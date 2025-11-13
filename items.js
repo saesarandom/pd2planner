@@ -4500,7 +4500,7 @@ const itemList = {
       reqstr: 20,
       reqlvl: 29,
       lleech: { min: 6, max: 8, current: 8 },
-      edef: { min: 120, max: 180, current: 180 },
+      edef: { min: 150, max: 180, current: 180 },
       todef: 15,
       physdr: { min: 10, max: 15, current: 15 },
       mdr: { min: 10, max: 15, current: 15 },

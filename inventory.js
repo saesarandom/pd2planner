@@ -9,7 +9,8 @@ class CharmInventory {
     'img/small1.png',
     'img/small2.png',
     'img/small3.png',
-    'img/small4.png'
+    'img/small4.png',
+    'img/corrannihilus.png',
   ],
   'large-charm': [
     'img/large1.png',
@@ -20,8 +21,8 @@ class CharmInventory {
   'grand-charm': [
     'img/grand1.png',
     'img/grand2.png',
-    'img/grand3.png',
-    'img/grand4.png'
+    'img/grand3.png'
+  
   ]
 };
 
