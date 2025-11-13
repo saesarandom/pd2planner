@@ -103,13 +103,18 @@ class SetTracker {
 
     // Check for explicit setBonuses property (for dynamic items)
     if (item.setBonuses && Array.isArray(item.setBonuses) && item.setBonuses.length > 0) {
+      console.log(`[SetTracker] Detected dynamic set item: ${itemName} (has setBonuses property)`);
       return true;
     }
 
     // For static items, check description
     if (!item.description) return false;
     // Set items have patterns like "(2 Items)", "(3 Items)", "(Complete Set)"
-    return /\(\d+\s+Items?\)|\(Complete Set\)/i.test(item.description);
+    const isSet = /\(\d+\s+Items?\)|\(Complete Set\)/i.test(item.description);
+    if (isSet) {
+      console.log(`[SetTracker] Detected static set item: ${itemName} (has set pattern in description)`);
+    }
+    return isSet;
   }
 
   /**
@@ -387,6 +392,7 @@ class SetTracker {
    * Update set tracking based on currently equipped items
    */
   updateSetTracking() {
+    console.log('[SetTracker] updateSetTracking() called');
     // Clear current tracking
     this.equippedSets.clear();
 
@@ -512,7 +518,11 @@ class SetTracker {
    * Update buff icon display
    */
   updateBuffDisplay() {
-    if (!window.buffSystem) return;
+    console.log('[SetTracker] updateBuffDisplay() called, equippedSets:', Array.from(this.equippedSets.keys()));
+    if (!window.buffSystem) {
+      console.log('[SetTracker] buffSystem not found, skipping buff display');
+      return;
+    }
 
     // Remove old set buffs
     this.equippedSets.forEach((setData, setName) => {
@@ -522,6 +532,7 @@ class SetTracker {
     // Add new set buffs
     this.equippedSets.forEach((setData, setName) => {
       const itemCount = setData.items.length;
+      console.log(`[SetTracker] Adding buff for ${setName}, itemCount: ${itemCount}`);
       if (itemCount === 0) return;
 
       // Build tooltip
