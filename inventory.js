@@ -169,6 +169,10 @@ class CharmInventory {
   // Replace the createModal and createCharm methods with these:
 
 createModal() {
+  // RESET STATE before anything else
+  this.selectedUniqueCharm = null;
+  this.selectedCharmType = null;
+
   const existing = document.getElementById('charmModal');
   if (existing) {
     // Remove old modal AND all its event listeners by cloning and replacing
@@ -381,37 +385,24 @@ checkUniqueCharmAvailability() {
     existingCharms[key] = false;
   }
 
-  // Search all charm slots for existing unique charms
-  const slots = container.querySelectorAll('[data-charm-data]');
-  slots.forEach(slot => {
-    if (slot.dataset.charmData) {
-      try {
-        const data = JSON.parse(slot.dataset.charmData);
-        for (const [key, name] of Object.entries(uniqueCharmNames)) {
-          if (data.name === name) {
-            existingCharms[key] = true;
-          }
-        }
-      } catch (e) {
-        // Ignore parse errors
-      }
-    }
-  });
+  // Search ALL elements with data-charm-data attribute (both slots and overlays)
+  const allCharmElements = container.querySelectorAll('[data-charm-data]');
+  allCharmElements.forEach(element => {
+    try {
+      const charmDataStr = element.dataset.charmData;
+      if (!charmDataStr) return;
 
-  // Also check overlay elements
-  const overlays = container.querySelectorAll('.charm-overlay[data-charm-data]');
-  overlays.forEach(overlay => {
-    if (overlay.dataset.charmData) {
-      try {
-        const data = JSON.parse(overlay.dataset.charmData);
-        for (const [key, name] of Object.entries(uniqueCharmNames)) {
-          if (data.name === name) {
-            existingCharms[key] = true;
-          }
+      const data = JSON.parse(charmDataStr);
+      if (!data || !data.name) return;
+
+      // Check if this charm matches any unique charm
+      for (const [key, uniqueName] of Object.entries(uniqueCharmNames)) {
+        if (data.name.trim() === uniqueName.trim()) {
+          existingCharms[key] = true;
         }
-      } catch (e) {
-        // Ignore parse errors
       }
+    } catch (e) {
+      // Ignore parse errors
     }
   });
 
@@ -424,12 +415,14 @@ checkUniqueCharmAvailability() {
         btn.style.opacity = '0.5';
         btn.style.cursor = 'not-allowed';
         btn.style.background = 'rgba(100, 100, 100, 0.3)';
-        btn.title = 'Already in inventory';
+        btn.style.color = '#999';
+        btn.title = 'Already in inventory (max 1 per charm)';
       } else {
         btn.disabled = false;
         btn.style.opacity = '1';
         btn.style.cursor = 'pointer';
         btn.style.background = 'rgba(164, 19, 19, 0.3)';
+        btn.style.color = '#FFD700';
         btn.title = '';
       }
     }
@@ -438,9 +431,8 @@ checkUniqueCharmAvailability() {
 
 selectUniqueCharm(uniqueCharmKey) {
   this.selectedUniqueCharm = uniqueCharmKey;
+  this.selectedCharmType = null; // Clear regular charm type
   const uniqueCharm = this.uniqueCharms[uniqueCharmKey];
-
-  this.selectedCharmType = uniqueCharm.type;
 
   // Hide regular charm selection, show configuration
   document.getElementById('charmTypeSelection').style.display = 'none';
@@ -461,6 +453,7 @@ selectUniqueCharm(uniqueCharmKey) {
 
 backToCharmSelection() {
   this.selectedUniqueCharm = null;
+  this.selectedCharmType = null;
   document.getElementById('uniqueCharmSelection').style.display = 'block';
   document.getElementById('charmTypeSelection').style.display = 'block';
   document.getElementById('charmConfiguration').style.display = 'none';
@@ -523,6 +516,8 @@ updateUniqueCharmPreview(uniqueCharm = null) {
 }
 
 selectCharmType(type) {
+  // CLEAR unique charm selection when switching to regular charms
+  this.selectedUniqueCharm = null;
   this.selectedCharmType = type;
 
   // Show configuration section
@@ -1211,8 +1206,9 @@ createUniqueCharm() {
 
   const position = parseInt(this.selectedSlot.dataset.index);
   const uniqueCharm = this.uniqueCharms[this.selectedUniqueCharm];
+  const charmType = uniqueCharm.type; // Use the charm type from definition, not selectedCharmType
 
-  if (!this.canPlaceCharm(position, this.selectedCharmType)) {
+  if (!this.canPlaceCharm(position, charmType)) {
     alert('Not enough space!');
     return;
   }
@@ -1243,7 +1239,7 @@ createUniqueCharm() {
   const hoverText = `${uniqueCharm.name}\n${stats.join('\n')}`;
   const backgroundImage = `url('${uniqueCharm.imagePath}')`;
 
-  this.placeCharm(position, this.selectedCharmType, backgroundImage, charmData, hoverText);
+  this.placeCharm(position, charmType, backgroundImage, charmData, hoverText);
   this.hideModal();
 }
 
