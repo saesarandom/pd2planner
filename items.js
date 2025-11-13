@@ -4494,8 +4494,7 @@ const itemList = {
   },
 
   "String of Ears": {
-    description:
-      "String of Ears<br>Demonhide Sash<br>Defense: 113<br>Required Strength: 20<br>Required Level: 29<br>8% Life Stolen per Hit<br>+180% Enhanced Defense<br>+15 Defense<br>Physical Damage Taken Reduced by 15%<br>Magic Damage Taken Reduced by 15<br>+10 Durability<br>",
+    baseType: "Demonhide Sash",
     properties: {
       defense: 113,
       reqstr: 20,
@@ -4503,8 +4502,8 @@ const itemList = {
       lleech: 8,
       edef: 180,
       todef: 15,
-      physdr: 15,
-      mdr: 15,
+      physdr: { min: 10, max: 15, current: 15 },
+      mdr: { min: 10, max: 15, current: 15 },
       dur: 10,
     },
   },

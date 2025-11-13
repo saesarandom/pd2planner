@@ -497,7 +497,16 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       return `${val}% Chance to Cast Level ${level} Bone Spear on Cast`;
     },
     magicfind: (val, prop) => formatVariableStat('', val, '% Better Chance of Getting Magic Items', prop, itemName, 'magicfind', dropdownId),
+    goldfind: (val, prop) => formatVariableStat('', val, '% Better Chance of Getting Gold', prop, itemName, 'goldfind', dropdownId),
     maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
+    lleech: (val, prop) => formatVariableStat('', val, '% Life Stolen per Hit', prop, itemName, 'lleech', dropdownId),
+    mleech: (val, prop) => formatVariableStat('', val, '% Mana Stolen per Hit', prop, itemName, 'mleech', dropdownId),
+    coldres: (val, prop) => formatVariableStat('+', val, '% Cold Resistance', prop, itemName, 'coldres', dropdownId),
+    firres: (val, prop) => formatVariableStat('+', val, '% Fire Resistance', prop, itemName, 'firres', dropdownId),
+    poisres: (val, prop) => formatVariableStat('+', val, '% Poison Resistance', prop, itemName, 'poisres', dropdownId),
+    ligres: (val, prop) => formatVariableStat('+', val, '% Lightning Resistance', prop, itemName, 'ligres', dropdownId),
+    physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
+    mdr: (val, prop) => formatVariableStat('Magic Damage Taken Reduced by ', val, '%', prop, itemName, 'mdr', dropdownId),
   };
 
   // Build description from properties
