@@ -320,30 +320,31 @@ class Auth {
     }
 
     async saveCraftedItem(craftedItem) {
-        if (!this.isLoggedIn()) {
-            throw new Error('Must be logged in to save crafted items');
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/api/crafted-items?userId=${this.user.id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(craftedItem)
-            });
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to save crafted item');
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('Failed to save crafted item:', error);
-            throw error;
-        }
+    if (!this.isLoggedIn()) {
+        throw new Error('Must be logged in to save crafted items');
     }
+
+    try {
+        const response = await fetch(`${API_URL}/api/crafted-items`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${this.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(craftedItem)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to save crafted item');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to save crafted item:', error);
+        throw error;
+    }
+}
 
     async deleteCraftedItem(craftId) {
         if (!this.isLoggedIn()) {
