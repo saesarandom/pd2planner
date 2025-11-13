@@ -90,20 +90,39 @@ class CraftedItemsSystem {
       return null;
     }
 
-    // Get base item to determine category
+    // Get base item to determine category and copy properties
     const baseItem = itemList[baseType];
     const itemType = detectItemType(baseType, baseItem);
 
-    // Create crafted item
+    // Deep copy all properties from base item
+    const copiedProperties = {};
+    if (baseItem.properties) {
+      for (const [key, value] of Object.entries(baseItem.properties)) {
+        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          // Deep copy objects (like {min, max, current})
+          copiedProperties[key] = JSON.parse(JSON.stringify(value));
+        } else {
+          // Copy primitives and arrays directly
+          copiedProperties[key] = value;
+        }
+      }
+    }
+
+    // Create crafted item as a complete item object
+    const fullName = `${name} ${baseType}`;
     const craftedItem = {
       id: `craft_${this.nextId++}`,
-      name: name,
-      baseType: baseType,
-      fullName: `${name} ${baseType}`, // Display name
+      name: name, // Short name (e.g. "myTestWeapon")
+      baseType: baseType, // Base type (e.g. "War Pike")
+      baseItemName: baseType, // Reference to original base item name
+      fullName: fullName, // Full display name (e.g. "myTestWeapon War Pike")
+      isCrafted: true, // Flag to identify crafted items
       craftType: craftType,
       craftTypeLabel: this.craftTypes[craftType],
-      itemType: itemType, // For dropdown categorization
-      affixes: { ...affixes }, // Copy affixes object
+      itemType: itemType, // For dropdown categorization (weapon, armor, etc.)
+      affixes: { ...affixes }, // Selected affixes and their values
+      description: baseItem.description || '', // Copy description from base item
+      properties: copiedProperties, // Copy all base item properties
       createdAt: new Date().toISOString()
     };
 
@@ -129,6 +148,24 @@ class CraftedItemsSystem {
   }
 
   /**
+   * Get a crafted item by its full name
+   * @param {string} fullName - The crafted item's full name (e.g. "myTestWeapon War Pike")
+   * @returns {Object|null} The crafted item or null if not found
+   */
+  getCraftedItemByName(fullName) {
+    return this.craftedItems.find(item => item.fullName === fullName) || null;
+  }
+
+  /**
+   * Check if an item name refers to a crafted item
+   * @param {string} itemName - Item name to check
+   * @returns {boolean} True if it's a crafted item
+   */
+  isCraftedItem(itemName) {
+    return this.craftedItems.some(item => item.fullName === itemName);
+  }
+
+  /**
    * Delete a crafted item by ID
    * @param {string} id - Crafted item ID
    * @returns {boolean} True if deleted, false if not found
@@ -137,6 +174,8 @@ class CraftedItemsSystem {
     const index = this.craftedItems.findIndex(item => item.id === id);
     if (index !== -1) {
       this.craftedItems.splice(index, 1);
+      // Save to localStorage after deleting
+      this.saveToLocalStorage();
       return true;
     }
     return false;
@@ -163,6 +202,35 @@ class CraftedItemsSystem {
    */
   exportToData() {
     return JSON.parse(JSON.stringify(this.craftedItems));
+  }
+
+  /**
+   * Save crafted items to localStorage
+   */
+  saveToLocalStorage() {
+    try {
+      const data = this.exportToData();
+      localStorage.setItem(this.storageKey, JSON.stringify(data));
+    } catch (error) {
+      console.error('Failed to save crafted items to localStorage:', error);
+    }
+  }
+
+  /**
+   * Load crafted items from localStorage
+   */
+  loadFromLocalStorage() {
+    try {
+      const data = localStorage.getItem(this.storageKey);
+      if (data) {
+        const craftedItems = JSON.parse(data);
+        this.loadFromData(craftedItems);
+        return true;
+      }
+    } catch (error) {
+      console.error('Failed to load crafted items from localStorage:', error);
+    }
+    return false;
   }
 
   /**

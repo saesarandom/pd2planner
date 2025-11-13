@@ -373,28 +373,32 @@ function populateItemDropdowns() {
       dropdown.appendChild(option);
     });
 
-    // Add crafted items if user is logged in
+    // Add crafted items if user is logged in (continue naturally after regular items)
     if (window.auth?.isLoggedIn() && window.craftedItemsSystem) {
       const craftedItems = window.craftedItemsSystem.getCraftedItemsByType(itemType);
-      if (craftedItems.length > 0) {
-        // Add separator
-        const separator = document.createElement('option');
-        separator.value = '';
-        separator.textContent = '--- Crafted Items ---';
-        separator.disabled = true;
-        dropdown.appendChild(separator);
-
-        // Add crafted items
-        craftedItems.forEach(craftedItem => {
-          const option = document.createElement('option');
-          option.value = craftedItem.fullName;
-          option.textContent = `[C] ${craftedItem.fullName}`;
-          dropdown.appendChild(option);
-        });
-      }
+      craftedItems.forEach(craftedItem => {
+        const option = document.createElement('option');
+        option.value = craftedItem.fullName;
+        option.textContent = craftedItem.fullName;
+        dropdown.appendChild(option);
+      });
     }
   }
 }
+
+/**
+ * Global item lookup - checks both regular items and crafted items
+ * @param {string} itemName - Item name (full name for crafted items)
+ * @returns {Object|null} Item data or null if not found
+ */
+window.getItemData = function(itemName) {
+  // Check if it's a crafted item first
+  if (window.craftedItemsSystem?.isCraftedItem(itemName)) {
+    return window.craftedItemsSystem.getCraftedItemByName(itemName);
+  }
+  // Otherwise check regular items
+  return itemList[itemName] || null;
+};
 
 /**
  * Get the current value of a property (handles both fixed values and ranges)
@@ -746,8 +750,8 @@ window.updateItemInfo = function updateItemInfo(event) {
     return;
   }
 
-  // Try to get item info from itemList
-  const item = itemList && itemList[selectedItemName];
+  // Try to get item info from itemList or crafted items
+  const item = window.getItemData(selectedItemName);
 
   if (item) {
     // For dynamic items (no static description), delegate to socket system
@@ -1141,17 +1145,38 @@ function createCraftedItem() {
     return;
   }
 
-  // Refresh dropdowns to show the new crafted item
-  refreshItemDropdowns();
+  // Save to backend
+  if (window.auth?.isLoggedIn()) {
+    window.auth.saveCraftedItem(craftedItem)
+      .then(() => {
+        // Refresh dropdowns to show the new crafted item
+        refreshItemDropdowns();
 
-  // Close modal
-  closeCraftingModal();
+        // Close modal
+        closeCraftingModal();
 
-  // Show success message
-  if (window.notificationSystem) {
-    window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created.`, { duration: 4000 });
+        // Show success message
+        if (window.notificationSystem) {
+          window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created and saved.`, { duration: 4000 });
+        } else {
+          alert(`Crafted item created: ${craftedItem.fullName}`);
+        }
+      })
+      .catch(error => {
+        alert(`Failed to save crafted item: ${error.message}`);
+        // Remove from local system if backend save failed
+        window.craftedItemsSystem.deleteCraftedItem(craftedItem.id);
+      });
   } else {
-    alert(`Crafted item created: ${craftedItem.fullName}`);
+    // No login - just update local and close
+    refreshItemDropdowns();
+    closeCraftingModal();
+
+    if (window.notificationSystem) {
+      window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created.`, { duration: 4000 });
+    } else {
+      alert(`Crafted item created: ${craftedItem.fullName}`);
+    }
   }
 }
 
@@ -1222,11 +1247,20 @@ function handleLogout() {
 }
 
 /**
- * Handle login - reload crafted items from auth (if we had them saved)
+ * Handle login - load crafted items from backend
  */
-function handleLogin() {
-  // Refresh dropdowns to show crafted items
-  refreshItemDropdowns();
+async function handleLogin() {
+  // Load crafted items from backend
+  if (window.auth?.isLoggedIn() && window.craftedItemsSystem) {
+    try {
+      const craftedItems = await window.auth.getCraftedItems();
+      window.craftedItemsSystem.loadFromData(craftedItems);
+      // Refresh dropdowns to show crafted items
+      refreshItemDropdowns();
+    } catch (error) {
+      console.error('Failed to load crafted items on login:', error);
+    }
+  }
 }
 
 /**
