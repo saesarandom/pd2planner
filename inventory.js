@@ -170,8 +170,14 @@ class CharmInventory {
 
 createModal() {
   const existing = document.getElementById('charmModal');
-  if (existing) existing.remove();
+  if (existing) {
+    // Remove old modal AND all its event listeners by cloning and replacing
+    const newModal = existing.cloneNode(true);
+    existing.parentNode.replaceChild(newModal, existing);
+    newModal.remove();
+  }
 
+  // Create fresh modal
   const modalHTML = `
     <div id="charmModal" class="modal" style="display: none; position: fixed; z-index: 10000;">
       <div class="modal-content" style="
@@ -197,9 +203,9 @@ createModal() {
         <div id="uniqueCharmSelection">
           <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Unique Charms:</h4>
           <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;">
-            <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
-            <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
-            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
+            <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
+            <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
+            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
           </div>
           <div style="text-align: center; color: #999; font-size: 12px; margin-bottom: 15px;">OR</div>
         </div>
@@ -295,65 +301,136 @@ createModal() {
               font-size: 14px;
               margin-top: 8px;
               transition: all 0.2s ease;
+              display: none;
             " onmouseover="this.style.background='rgb(80, 80, 80)'"
-               onmouseout="this.style.background='rgb(60, 60, 60)'" style="display: none;">Back</button>
+               onmouseout="this.style.background='rgb(60, 60, 60)'">Back</button>
           </div>
         </div>
       </div>
     </div>
   `;
 
-
-
   document.body.insertAdjacentHTML('beforeend', modalHTML);
   this.setupModalEvents();
+  this.checkUniqueCharmAvailability();
 }
 
 setupModalEvents() {
   const modal = document.getElementById('charmModal');
 
   // Close modal
-  document.addEventListener('click', (e) => {
+  modal.addEventListener('click', (e) => {
     if (e.target.classList.contains('close') || e.target.id === 'charmModal') {
       this.hideModal();
     }
   });
 
   // Unique charm selection
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('unique-charm-btn')) {
+  modal.addEventListener('click', (e) => {
+    if (e.target.classList.contains('unique-charm-btn') && !e.target.disabled) {
       this.selectUniqueCharm(e.target.dataset.unique);
     }
   });
 
   // Charm type selection
-  document.addEventListener('click', (e) => {
+  modal.addEventListener('click', (e) => {
     if (e.target.classList.contains('charm-type-btn')) {
       this.selectCharmType(e.target.dataset.type);
     }
   });
 
   // Back button
-  document.addEventListener('click', (e) => {
+  modal.addEventListener('click', (e) => {
     if (e.target.id === 'backCharmBtn') {
       this.backToCharmSelection();
     }
   });
 
   // Prefix/Suffix selection
-  document.addEventListener('change', (e) => {
+  modal.addEventListener('change', (e) => {
     if (e.target.id === 'prefixSelect' || e.target.id === 'suffixSelect') {
       this.updateCharmPreview();
     }
   });
 
   // Create charm button
-  document.addEventListener('click', (e) => {
+  modal.addEventListener('click', (e) => {
     if (e.target.id === 'createCharmBtn') {
       if (this.selectedUniqueCharm) {
         this.createUniqueCharm();
       } else {
         this.createManualCharm();
+      }
+    }
+  });
+}
+
+checkUniqueCharmAvailability() {
+  const uniqueCharmNames = {
+    'annihilus': "Annihilus",
+    'hellfire-torch': "Hellfire Torch",
+    'gheeds-fortune': "Gheed's Fortune"
+  };
+
+  const container = document.querySelector('.inventorycontainer');
+  if (!container) return;
+
+  // Check which unique charms are already in inventory
+  const existingCharms = {};
+  for (const [key, name] of Object.entries(uniqueCharmNames)) {
+    existingCharms[key] = false;
+  }
+
+  // Search all charm slots for existing unique charms
+  const slots = container.querySelectorAll('[data-charm-data]');
+  slots.forEach(slot => {
+    if (slot.dataset.charmData) {
+      try {
+        const data = JSON.parse(slot.dataset.charmData);
+        for (const [key, name] of Object.entries(uniqueCharmNames)) {
+          if (data.name === name) {
+            existingCharms[key] = true;
+          }
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+  });
+
+  // Also check overlay elements
+  const overlays = container.querySelectorAll('.charm-overlay[data-charm-data]');
+  overlays.forEach(overlay => {
+    if (overlay.dataset.charmData) {
+      try {
+        const data = JSON.parse(overlay.dataset.charmData);
+        for (const [key, name] of Object.entries(uniqueCharmNames)) {
+          if (data.name === name) {
+            existingCharms[key] = true;
+          }
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+  });
+
+  // Disable buttons for already-existing unique charms
+  Object.entries(existingCharms).forEach(([key, exists]) => {
+    const btn = document.querySelector(`.unique-charm-btn[data-unique="${key}"]`);
+    if (btn) {
+      if (exists) {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
+        btn.style.background = 'rgba(100, 100, 100, 0.3)';
+        btn.title = 'Already in inventory';
+      } else {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        btn.style.background = 'rgba(164, 19, 19, 0.3)';
+        btn.title = '';
       }
     }
   });
@@ -1516,8 +1593,14 @@ placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
   }
 
   // Recalculate stats after placing ANY charm
+  if (window.unifiedSocketSystem?.calculateAllStats) {
+    setTimeout(() => window.unifiedSocketSystem.calculateAllStats(), 25);
+  }
+  if (window.unifiedSocketSystem?.updateStatsDisplay) {
+    setTimeout(() => window.unifiedSocketSystem.updateStatsDisplay(), 50);
+  }
   if (window.statsCalculator?.updateAll) {
-    setTimeout(() => window.statsCalculator.updateAll(), 50);
+    setTimeout(() => window.statsCalculator.updateAll(), 75);
   }
   if (window.characterStats?.updateTotalStats) {
     setTimeout(() => window.characterStats.updateTotalStats(), 100);
