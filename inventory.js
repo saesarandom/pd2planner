@@ -1804,10 +1804,12 @@ hideTooltip() {
   if (modal) {
     // RESET MODAL STATE
     this.selectedCharmType = null;
+    this.selectedUniqueCharm = null;
 
-    // Show charm type selection, hide configuration
-    document.getElementById('charmTypeSelection').style.display = 'block';
-    document.getElementById('charmConfiguration').style.display = 'none';
+    // Show selection view, hide customization view
+    document.getElementById('charmSelectionView').style.display = 'block';
+    document.getElementById('charmCustomizationView').style.display = 'none';
+    document.getElementById('backCharmBtn').style.display = 'none';
 
     // Reset all form elements
     const prefixSelect = document.getElementById('prefixSelect');
@@ -1827,6 +1829,9 @@ hideTooltip() {
       btn.classList.remove('selected');
       btn.style.backgroundColor = '';
     });
+
+    // Re-check unique charm availability
+    this.checkUniqueCharmAvailability();
 
     // Position and show modal
     let left = this.clickPosition.x + 10;
