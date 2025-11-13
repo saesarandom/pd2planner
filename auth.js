@@ -306,22 +306,11 @@ class Auth {
 
     async getCraftedItems() {
         if (!this.isLoggedIn()) {
-            throw new Error('Must be logged in to fetch crafted items');
+            return [];
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/crafted-items`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${this.token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch crafted items');
-            }
-
+            const response = await fetch(`${API_URL}/api/crafted-items?userId=${this.user.id}`);
             const data = await response.json();
             return data.craftedItems || [];
         } catch (error) {
@@ -336,10 +325,9 @@ class Auth {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/crafted-items`, {
+            const response = await fetch(`${API_URL}/api/crafted-items?userId=${this.user.id}`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${this.token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(craftedItem)
@@ -363,10 +351,9 @@ class Auth {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/crafted-items/${craftId}`, {
+            const response = await fetch(`${API_URL}/api/crafted-items/${craftId}?userId=${this.user.id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${this.token}`,
                     'Content-Type': 'application/json'
                 }
             });
