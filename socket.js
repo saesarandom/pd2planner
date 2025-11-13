@@ -3397,17 +3397,18 @@ if (defMatch) {
     if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
 
     // Damage Reduction stats
+    // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
+    // Check percentage first (more specific) before flat patterns
+    const drPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
+    if (drPercentMatch) {
+      this.stats.dr += parseInt(drPercentMatch[1]);
+      return;
+    }
+
     // Physical Damage Taken Reduced by X (flat -> PDR)
     const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
     if (pdrFlatMatch) {
       this.stats.pdr += parseInt(pdrFlatMatch[1]);
-      return;
-    }
-
-    // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
-    const drPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
-    if (drPercentMatch) {
-      this.stats.dr += parseInt(drPercentMatch[1]);
       return;
     }
 
