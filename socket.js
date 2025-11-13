@@ -3389,7 +3389,41 @@ if (defMatch) {
     const fhrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Hit\s+Recovery/i);
     if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
 
+    // Damage Reduction stats
+    // Physical Damage Taken Reduced by X% (percentage)
+    const pdrPercentMatch = cleanLine.match(/Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)%/i);
+    if (pdrPercentMatch) {
+      this.stats.pdr += parseInt(pdrPercentMatch[1]);
+      return;
+    }
 
+    // Physical Damage Taken Reduced by X (flat)
+    const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)(?!%)/i);
+    if (pdrFlatMatch) {
+      this.stats.pdr += parseInt(pdrFlatMatch[1]);
+      return;
+    }
+
+    // Damage Reduced by X% (percentage)
+    const drPercentMatch = cleanLine.match(/Damage\s+Reduced\s+by\s+(\d+)%/i);
+    if (drPercentMatch) {
+      this.stats.dr += parseInt(drPercentMatch[1]);
+      return;
+    }
+
+    // Damage Reduced by X (flat)
+    const drFlatMatch = cleanLine.match(/Damage\s+Reduced\s+by\s+(\d+)(?!%)/i);
+    if (drFlatMatch) {
+      this.stats.dr += parseInt(drFlatMatch[1]);
+      return;
+    }
+
+    // Magic Damage Taken Reduced by X (flat)
+    const mdrMatch = cleanLine.match(/Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i);
+    if (mdrMatch) {
+      this.stats.mdr += parseInt(mdrMatch[1]);
+      return;
+    }
 
     // If we get here, the stat wasn't recognized
 
