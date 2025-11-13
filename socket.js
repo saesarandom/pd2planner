@@ -3640,7 +3640,23 @@ if (deathProcMatch) {
         this.addToStatsMap(statsMap, 'attack_rating', { value });
         return;
       }
-      
+
+      // Attack Rating Percentage: "20% Bonus to Attack Rating" (Gul rune)
+      const arPercentMatch = cleanLine.match(/(\d+)%\s+(?:Bonus\s+)?to\s+Attack\s+Rating/i);
+      if (arPercentMatch) {
+        const value = parseInt(arPercentMatch[1]);
+        this.addToStatsMap(statsMap, 'attack_rating_percent', { value });
+        return;
+      }
+
+      // Light Radius: +1 Light Radius, +3 to Light Radius
+      const lightRadiusMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Light\s+Radius/i);
+      if (lightRadiusMatch) {
+        const value = parseInt(lightRadiusMatch[1]);
+        this.addToStatsMap(statsMap, 'lightRadius', { value });
+        return;
+      }
+
   const fhrMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Faster\s+Hit\s+Recovery/i);
       if (fhrMatch) {
         const value = parseInt(fhrMatch[1]);
@@ -3913,6 +3929,8 @@ addToStatsMap(statsMap, key, data) {
         return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Energy</span>`;
       case 'attack_rating':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Attack Rating</span>`;
+      case 'attack_rating_percent':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Attack Rating</span>`;
         case 'faster_hit_recovery':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Faster Hit Recovery</span>`;
       case 'faster_block_rate':
@@ -4010,6 +4028,8 @@ addToStatsMap(statsMap, key, data) {
         return /(?:\+)?\d+\s+(?:to\s+)?Energy/gi;
       case 'attack_rating':
         return /(?:\+)?\d+\s+(?:to\s+)?Attack\s+Rating/gi;
+      case 'attack_rating_percent':
+        return /\d+%\s+(?:Bonus\s+)?to\s+Attack\s+Rating/gi;
         case 'faster_hit_recovery':
         return /(?:\+)?\d+%?\s+Faster\s+Hit\s+Recovery/gi;
       case 'faster_block_rate':
