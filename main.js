@@ -663,6 +663,18 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     if (dropdownId === 'weapons-dropdown' && typeof window.updateWeaponDamageDisplay === 'function') {
       window.updateWeaponDamageDisplay();
     }
+
+    // For properties that affect defensive stats, recalculate and update the stat display
+    // This ensures drcontainer, mdrcontainer, pdrcontainer, etc. update immediately
+    const defensiveStatProps = ['physdr', 'mdr', 'pdr', 'dr', 'plr', 'frw', 'fhr', 'cb', 'ow', 'deadly'];
+    if (defensiveStatProps.includes(propKey) && window.unifiedSocketSystem) {
+      if (typeof window.unifiedSocketSystem.calculateAllStats === 'function') {
+        window.unifiedSocketSystem.calculateAllStats();
+      }
+      if (typeof window.unifiedSocketSystem.updateStatsDisplay === 'function') {
+        window.unifiedSocketSystem.updateStatsDisplay();
+      }
+    }
   }
 }
 
