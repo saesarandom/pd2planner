@@ -2907,7 +2907,7 @@ function buildDescriptionWeapon(itemName, baseType, properties, magicalProps) {
 function calculateItemDefense(item, baseType, category = "helm") {
   const baseDefense = baseDefenses[baseType] || 0;
   const { edef, todef } = item.properties || {};
-  const ethMult = item.description.includes("Ethereal") ? 1.5 : 1;
+  const ethMult = item.description && item.description.includes("Ethereal") ? 1.5 : 1;
 
   let socketsEDef = 0;
   document
