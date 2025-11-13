@@ -1208,15 +1208,14 @@ createUniqueCharm() {
   if (container) {
     const allCharmElements = container.querySelectorAll('[data-charm-data]');
     for (const element of allCharmElements) {
-      // Check if it's a text format (newline-separated) or JSON format
       const charmDataStr = element.dataset.charmData;
       let charmName = '';
       try {
         const jsonData = JSON.parse(charmDataStr);
         charmName = jsonData.name;
       } catch (e) {
-        // It's plain text format - get first line as name
-        charmName = charmDataStr.split('\n')[0];
+        // Fallback for malformed data
+        continue;
       }
       if (charmName && charmName.trim() === uniqueCharm.name.trim()) {
         alert(`${uniqueCharm.name} is already in inventory! Max 1 per charm.`);
@@ -1245,12 +1244,18 @@ createUniqueCharm() {
     }
   });
 
-  // Create charm data as NEWLINE-SEPARATED TEXT (getCharmBonuses expects this format!)
-  // This is crucial for getCharmBonuses() to parse "+1 to All Skills" correctly
-  const charmData = `${uniqueCharm.name}\n${stats.join('\n')}`;
-  const backgroundImage = `url('${uniqueCharm.imagePath}')`;
+  // Create charm data as JSON (consistent with regular charms for URL sharing)
+  const displayText = `${uniqueCharm.name}\n${stats.join('\n')}`;
+  const charmData = JSON.stringify({
+    name: uniqueCharm.name,
+    stats: stats,
+    displayText: displayText,
+    imagePath: uniqueCharm.imagePath,
+    isUnique: true  // Mark as unique charm for easier identification
+  });
 
-  this.placeCharm(position, charmType, backgroundImage, charmData, charmData);
+  const backgroundImage = `url('${uniqueCharm.imagePath}')`;
+  this.placeCharm(position, charmType, backgroundImage, charmData, displayText);
 
   // Store the image path in a separate data attribute so we can restore it
   const mainSlot = container.children[position];
@@ -1949,27 +1954,15 @@ fixCharmTitles() {
     smallCharmSlots.forEach((slot, i) => {
       if (slot.dataset.charmData && slot.style.backgroundImage) {
         try {
-          let charmData;
-          // Handle both JSON and text formats
-          try {
-            charmData = JSON.parse(slot.dataset.charmData);
-          } catch (e) {
-            // It's text format - convert to object with name and text
-            const lines = slot.dataset.charmData.split('\n').filter(l => l.trim());
-            charmData = {
-              name: lines[0] || 'Charm',
-              text: lines.join('\n'),
-              imagePath: slot.dataset.imagePath
-            };
-          }
-
+          // Parse JSON format (all charms are now JSON)
+          const charmData = JSON.parse(slot.dataset.charmData);
           const position = parseInt(slot.dataset.index);
 
           let type = 'small-charm';
           if (slot.classList.contains('large-charm')) type = 'large-charm';
           if (slot.classList.contains('grand-charm')) type = 'grand-charm';
 
-          charms.push({ type, position, data: charmData, imagePath: slot.dataset.imagePath || charmData.imagePath });
+          charms.push({ type, position, data: charmData, imagePath: charmData.imagePath });
         } catch (e) {
           console.error('Failed to parse charm in slot', slot.dataset.index, e);
         }
@@ -1981,26 +1974,14 @@ fixCharmTitles() {
 
     overlays.forEach((overlay, i) => {
       try {
-        let charmData;
-        // Handle both JSON and text formats
-        try {
-          charmData = JSON.parse(overlay.dataset.charmData);
-        } catch (e) {
-          // It's text format - convert to object with name and text
-          const lines = overlay.dataset.charmData.split('\n').filter(l => l.trim());
-          charmData = {
-            name: lines[0] || 'Charm',
-            text: lines.join('\n'),
-            imagePath: overlay.dataset.imagePath
-          };
-        }
-
+        // Parse JSON format (all charms are now JSON)
+        const charmData = JSON.parse(overlay.dataset.charmData);
         const position = parseInt(overlay.dataset.position);
 
         let type = 'large-charm';
         if (overlay.classList.contains('grand-charm')) type = 'grand-charm';
 
-        charms.push({ type, position, data: charmData, imagePath: overlay.dataset.imagePath || charmData.imagePath });
+        charms.push({ type, position, data: charmData, imagePath: charmData.imagePath });
       } catch (e) {
         console.error('Failed to parse charm in overlay', overlay.dataset.position, e);
       }
@@ -2024,61 +2005,46 @@ fixCharmTitles() {
     this.occupiedSlots.clear();
 
     // Place each charm
-    let successCount = 0;
     charmsArray.forEach((charm, idx) => {
       if (!charm || !charm.type || charm.position === undefined) {
         console.error(`Invalid charm at index ${idx}:`, charm);
         return;
       }
 
-      // Use saved image path if available, otherwise generate random
-      let imagePath = charm.imagePath; // Try the direct imagePath property first
-
-      if (!imagePath) {
-        try {
-          // Try to extract from charm.data (either text or JSON format)
-          if (typeof charm.data === 'string') {
-            try {
-              // Try JSON format first
-              const charmData = JSON.parse(charm.data);
-              imagePath = charmData.imagePath;
-            } catch (e) {
-              // It's text format - extract imagePath if it was stored
-              // For text format charms, imagePath should be in charm.imagePath or we generate random
-            }
-          } else if (charm.data && charm.data.imagePath) {
-            imagePath = charm.data.imagePath;
-          }
-        } catch (e) {
-          // If we can't extract saved image, use random
-        }
-      }
-
-      // Fall back to random image if no saved path
-      if (!imagePath) {
-        const images = this.charmImages[charm.type];
-        if (!images) {
-          console.error(`Unknown charm type: ${charm.type}`);
+      try {
+        // Convert charm.data to string if it's an object
+        let charmDataStr;
+        if (typeof charm.data === 'string') {
+          charmDataStr = charm.data;
+        } else if (typeof charm.data === 'object') {
+          charmDataStr = JSON.stringify(charm.data);
+        } else {
+          console.error(`Invalid charm data format at index ${idx}`);
           return;
         }
-        imagePath = images[Math.floor(Math.random() * images.length)];
-      }
 
-      const backgroundImage = `url('${imagePath}')`;
+        // Parse to get imagePath and displayText
+        const charmData = JSON.parse(charmDataStr);
+        const imagePath = charmData.imagePath || charm.imagePath;
+        const displayText = charmData.displayText;
 
-      try {
+        // Fall back to random image if no saved path
+        let finalImagePath = imagePath;
+        if (!finalImagePath) {
+          const images = this.charmImages[charm.type];
+          if (!images) {
+            console.error(`Unknown charm type: ${charm.type}`);
+            return;
+          }
+          finalImagePath = images[Math.floor(Math.random() * images.length)];
+        }
+
+        const backgroundImage = `url('${finalImagePath}')`;
+
         // Check if we can place it
         if (!this.canPlaceCharm(charm.position, charm.type)) {
           console.warn(`Cannot place ${charm.type} at position ${charm.position}`);
           return;
-        }
-
-        // Prepare charm data - keep as text if it's text format, JSON if it's JSON
-        let charmDataStr;
-        if (typeof charm.data === 'string') {
-          charmDataStr = charm.data; // Already a string (either JSON or text)
-        } else {
-          charmDataStr = JSON.stringify(charm.data); // Convert object to JSON
         }
 
         // Place the charm
@@ -2086,26 +2052,23 @@ fixCharmTitles() {
           charm.position,
           charm.type,
           backgroundImage,
-          charmDataStr
+          charmDataStr,
+          displayText
         );
 
         // Store the imagePath for later restoration
         const container = document.querySelector('.inventorycontainer');
         if (container) {
           const mainSlot = container.children[charm.position];
-          if (mainSlot) mainSlot.dataset.imagePath = imagePath;
+          if (mainSlot) mainSlot.dataset.imagePath = finalImagePath;
 
           const overlay = container.querySelector(`.charm-overlay[data-position="${charm.position}"]`);
-          if (overlay) overlay.dataset.imagePath = imagePath;
+          if (overlay) overlay.dataset.imagePath = finalImagePath;
         }
-
-        successCount++;
       } catch (e) {
         console.error(`Failed to restore charm at index ${idx}:`, e);
       }
     });
-
-    
 
     // Fix titles on all restored charms
     setTimeout(() => this.fixCharmTitles(), 50);
@@ -2204,7 +2167,18 @@ function getCharmBonuses() {
     const data = charm.dataset.charmData;
     if (!data) return;
 
-    data.split('\n').forEach(line => {
+    // Parse charm data - handle both JSON and plain text formats
+    let linesToParse = [];
+    try {
+      const jsonData = JSON.parse(data);
+      // If JSON, use displayText field which contains the parsed stat strings
+      linesToParse = jsonData.displayText ? jsonData.displayText.split('\n') : [];
+    } catch (e) {
+      // If not JSON, treat as plain text (legacy format)
+      linesToParse = data.split('\n');
+    }
+
+    linesToParse.forEach(line => {
       let match;
 
       // Defense
