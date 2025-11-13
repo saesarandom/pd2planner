@@ -207,9 +207,9 @@ createModal() {
         <div id="charmSelectionView">
           <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Unique Charms:</h4>
           <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px;">
-            <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
-            <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
-            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
+            <button data-unique="annihilus" class="unique-charm-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
+            <button data-unique="hellfire-torch" class="unique-charm-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
+            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
           </div>
           <div style="text-align: center; color: #888; font-size: 12px; margin: 15px 0; border-top: 1px solid rgb(80, 80, 80); border-bottom: 1px solid rgb(80, 80, 80); padding: 10px 0;">Regular Charms</div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -325,28 +325,12 @@ setupModalEvents() {
     }
   });
 
-  // Unique charm selection - with explicit cursor handling
+  // Unique charm selection
   modal.addEventListener('click', (e) => {
     if (e.target.classList.contains('unique-charm-btn') && !e.target.disabled) {
       e.stopPropagation();
       this.selectUniqueCharm(e.target.dataset.unique);
     }
-  });
-
-  // EXPLICIT CURSOR HANDLING for unique charm buttons
-  const uniqueCharmButtons = modal.querySelectorAll('.unique-charm-btn');
-  uniqueCharmButtons.forEach(btn => {
-    btn.addEventListener('mouseover', () => {
-      btn.style.cursor = 'pointer';
-      btn.style.cursor = 'pointer !important';
-    });
-    btn.addEventListener('mouseout', () => {
-      btn.style.cursor = 'pointer';
-      btn.style.cursor = 'pointer !important';
-    });
-    btn.addEventListener('mousemove', () => {
-      btn.style.cursor = 'pointer';
-    });
   });
 
   // Charm type selection
