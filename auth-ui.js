@@ -212,17 +212,29 @@ function showLoginForm() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById('login-form').classList.add('active');
     document.getElementById('login-error').textContent = '';
+
+    // Show auth tabs when not logged in
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'flex';
 }
 
 function showRegisterForm() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById('register-form').classList.add('active');
     document.getElementById('register-error').textContent = '';
+
+    // Show auth tabs when not logged in
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'flex';
 }
 
 function showLoggedInView() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById('logged-in-view').classList.add('active');
+
+    // Hide auth tabs when logged in (no need for Login/Register buttons)
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'none';
 
     if (auth.user) {
         document.getElementById('user-display-name').textContent = auth.user.username;
@@ -239,6 +251,10 @@ function showLoggedInView() {
 async function showBuildsView() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById('builds-list-view').classList.add('active');
+
+    // Hide auth tabs when viewing builds
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'none';
 
     const buildsList = document.getElementById('builds-list');
     buildsList.innerHTML = '<p class="loading">Loading builds...</p>';
