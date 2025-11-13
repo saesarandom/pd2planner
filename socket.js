@@ -2496,8 +2496,10 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       });
 
-      // Generate final description with stacked stats
-      let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
+      // For dynamic items with variable stats, keep the original description with inputs intact
+      // Don't do socket stat replacement since it would break the input boxes
+      // Socket items will be added as separate lines below
+      let finalDescription = baseDescription;
 
       // Update Required Level display - only check level requirement
       const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
@@ -2509,6 +2511,17 @@ this.selectedJewelSuffix3MaxValue = null;
 
       // Update Required Strength and Dexterity colors - check individually
       finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
+
+      // Add unusable socket items in gray (usable ones show their item's variable stats via inputs)
+      const unusableEffects = socketItems.filter(item => !item.usable);
+      unusableEffects.forEach(item => {
+        const lines = item.stats.split(',');
+        lines.forEach(line => {
+          if (line.trim()) {
+            finalDescription += `<br><span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span>`;
+          }
+        });
+      });
 
       // Update display
       infoDiv.innerHTML = finalDescription;
@@ -2614,16 +2627,7 @@ this.selectedJewelSuffix3MaxValue = null;
           const pattern = this.getStatPattern(key);
           if (pattern && !data.fromSocket) {
             // Replace existing stat line with stacked version
-            // BUT preserve any stat-input elements that are in the original line
-            finalDescription = finalDescription.replace(pattern, (match) => {
-              // Check if the matched text contains a stat-input element
-              const inputMatch = match.match(/<input[^>]*class="stat-input"[^>]*>/);
-              if (inputMatch) {
-                // Keep the input element and append it to the replacement
-                return replacement + ' ' + inputMatch[0];
-              }
-              return replacement;
-            });
+            finalDescription = finalDescription.replace(pattern, replacement);
           } else if (data.fromSocket) {
             // Add new socket-only stats in blue
             finalDescription += `${replacement}<br>`;
