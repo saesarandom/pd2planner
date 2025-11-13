@@ -207,15 +207,15 @@ createModal() {
         <div id="charmSelectionView">
           <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Unique Charms:</h4>
           <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px;">
-            <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
-            <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
-            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
+            <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
+            <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
+            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
           </div>
           <div style="text-align: center; color: #888; font-size: 12px; margin: 15px 0; border-top: 1px solid rgb(80, 80, 80); border-bottom: 1px solid rgb(80, 80, 80); padding: 10px 0;">Regular Charms</div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button data-type="small-charm" class="charm-type-btn">Small Charm (1x1)</button>
-            <button data-type="large-charm" class="charm-type-btn">Large Charm (1x2)</button>
-            <button data-type="grand-charm" class="charm-type-btn">Grand Charm (1x3)</button>
+            <button data-type="small-charm" class="charm-type-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Small Charm (1x1)</button>
+            <button data-type="large-charm" class="charm-type-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Large Charm (1x2)</button>
+            <button data-type="grand-charm" class="charm-type-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Grand Charm (1x3)</button>
           </div>
         </div>
 
@@ -239,7 +239,7 @@ createModal() {
             <div id="regularCharmCustomization" style="display: none;">
               <div style="margin-bottom: 15px;">
                 <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Prefix:</h4>
-                <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+                <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19); cursor: pointer !important;">
                   <option value="">None</option>
                 </select>
                 <div id="prefixStats" style="margin-top: 10px; color: #87CEEB;"></div>
@@ -247,7 +247,7 @@ createModal() {
 
               <div style="margin-bottom: 15px;">
                 <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Suffix:</h4>
-                <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+                <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19); cursor: pointer !important;">
                   <option value="">None</option>
                 </select>
                 <div id="suffixStats" style="margin-top: 10px; color: #87CEEB;"></div>
@@ -282,27 +282,27 @@ createModal() {
               border: none;
               padding: 12px 24px;
               border-radius: 4px;
-              cursor: pointer;
+              cursor: pointer !important;
               width: 100%;
               font-size: 16px;
               font-weight: bold;
               transition: all 0.2s ease;
-            " onmouseover="this.style.background='rgb(200, 30, 30)'"
-               onmouseout="this.style.background='rgb(164, 19, 19)'">Create Charm</button>
+            " onmouseover="this.style.background='rgb(200, 30, 30)'; this.style.cursor='pointer';"
+               onmouseout="this.style.background='rgb(164, 19, 19)'; this.style.cursor='pointer';">Create Charm</button>
             <button id="backCharmBtn" style="
               background: rgb(60, 60, 60);
               color: white;
               border: none;
               padding: 10px 24px;
               border-radius: 4px;
-              cursor: pointer;
+              cursor: pointer !important;
               width: 100%;
               font-size: 14px;
               margin-top: 8px;
               transition: all 0.2s ease;
               display: none;
-            " onmouseover="this.style.background='rgb(80, 80, 80)'"
-               onmouseout="this.style.background='rgb(60, 60, 60)'">Back</button>
+            " onmouseover="this.style.background='rgb(80, 80, 80)'; this.style.cursor='pointer';"
+               onmouseout="this.style.background='rgb(60, 60, 60)'; this.style.cursor='pointer';">Back</button>
           </div>
         </div>
       </div>
@@ -480,7 +480,7 @@ populateUniqueCharmStats(uniqueCharm) {
         <div style="margin-bottom: 10px;">
           <div style="color: #FFD700; margin-bottom: 3px;">${stat.label.replace('{value}', '')}</div>
           <input type="range" id="${sliderId}" min="${stat.min}" max="${stat.max}" value="${stat.value}"
-                 style="width: 100%; margin-bottom: 5px;"
+                 style="width: 100%; margin-bottom: 5px; cursor: pointer !important;"
                  oninput="window.charmInventory.updateUniqueCharmPreview(); document.getElementById('${valueId}').textContent = this.value;">
           <div style="text-align: center; color: white; font-size: 12px;">
             <span id="${valueId}">${stat.value}</span> / ${stat.max}
