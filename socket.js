@@ -2462,7 +2462,16 @@ this.selectedJewelSuffix3MaxValue = null;
     if (!item.description) {
       // Always regenerate description for dynamic items to re-attach event listeners
       // (This is critical for items like Arcanna's Deathwand with variable stats)
-      const baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
+      let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
+
+      // Check if item has corruption applied
+      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+        const corruption = window.itemCorruptions[dropdownId];
+        if (corruption.text && typeof window.addCorruptionWithStacking === 'function') {
+          // Apply corruption to the dynamically generated description
+          baseDescription = window.addCorruptionWithStacking(baseDescription, corruption.text);
+        }
+      }
 
       // Parse base stats from the generated description (strip input elements first)
       const tempDiv = document.createElement('div');
