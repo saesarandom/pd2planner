@@ -4210,9 +4210,9 @@ addToStatsMap(statsMap, key, data) {
     // Core stats
     this.updateElement('allskillscontainer', this.stats.allSkills);
 
-    // Update skill bonus indicators if skill system is available
+    // Update skill bonus indicators if skill system is available (include both all skills and class skills)
     if (window.skillSystem) {
-      window.skillSystem.updateSkillBonuses(this.stats.allSkills);
+      window.skillSystem.updateSkillBonuses(this.stats.allSkills, this.stats.classSkills);
     }
 
     this.updateElement('magicfindcontainer', this.stats.magicFind);

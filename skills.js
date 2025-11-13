@@ -1736,9 +1736,10 @@ getDeadlyStrikeChance() {
   }
 
   // Update skill bonuses from item equipment
-  updateSkillBonuses(allSkillsBonus) {
-    // Store the bonus
+  updateSkillBonuses(allSkillsBonus, classSkillsBonus) {
+    // Store both types of bonuses separately
     this.skillBonuses.allSkills = allSkillsBonus || 0;
+    this.skillBonuses.classSkills = classSkillsBonus || 0;
 
     // Update all skill inputs' bonus indicators
     var currentClassSkills = this.classSkillTrees[this.currentClass] || this.classSkillTrees['Amazon'];
@@ -1761,12 +1762,15 @@ getDeadlyStrikeChance() {
     var skillInput = document.getElementById(skillId);
 
     if (bonusSpan && skillInput) {
-      var bonus = this.skillBonuses.allSkills || 0;
+      // Combine both all skills and class skills bonuses
+      var allSkillsBonus = this.skillBonuses.allSkills || 0;
+      var classSkillsBonus = this.skillBonuses.classSkills || 0;
+      var totalBonus = allSkillsBonus + classSkillsBonus;
       var baseValue = parseInt(skillInput.value) || 0;
 
       // Only show bonus if skill has actual points AND there's a bonus
-      if (baseValue > 0 && bonus > 0) {
-        var totalValue = baseValue + bonus;
+      if (baseValue > 0 && totalBonus > 0) {
+        var totalValue = baseValue + totalBonus;
         bonusSpan.textContent = totalValue;
         bonusSpan.style.color = '#00ff00';
       } else {
