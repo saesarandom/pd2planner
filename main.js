@@ -424,9 +424,19 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   const baseDefenseMap = {
     'Buckler': 6,
     'Kite Shield': 18,
-    'Light Plate': 90,
-    'Skull Cap': 8,
-    // Add more as needed
+    'Light Plate': 99,
+    'Skull Cap': 11,
+    'Demonhide Sash': 34,
+    'Small Shield': 10,
+    'Large Shield': 14,
+    'Spiked Shield': 25,
+    'Bone Shield': 30,
+    'Tower Shield': 25,
+    'Gothic Shield': 35,
+    'Defender': 49,
+    'Demonhide Gloves': 35,
+    'Sharkskin Belt': 36,
+    'Mesh Belt': 40,
   };
 
   // Calculate dynamic defense if item has edef
