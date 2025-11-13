@@ -2461,7 +2461,7 @@ this.selectedJewelSuffix3MaxValue = null;
     // Handle dynamic items (no static description)
     if (!item.description) {
       // Always regenerate description for dynamic items to re-attach event listeners
-      // (This is critical for items like Arcanna's Deathweb with variable stats)
+      // (This is critical for items like Arcanna's Deathwand with variable stats)
       const baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
 
       // Parse base stats from the generated description (strip input elements first)
@@ -2605,7 +2605,7 @@ this.selectedJewelSuffix3MaxValue = null;
   // Generate final description with stacked properties and visual indicators
   generateStackedDescription(originalDescription, mergedStats, socketItems) {
     let finalDescription = originalDescription;
-    
+
     // Replace stacked stats in original description with blue colored versions
     mergedStats.forEach((data, key) => {
       if (data.stacked || data.fromSocket) {
@@ -2614,7 +2614,16 @@ this.selectedJewelSuffix3MaxValue = null;
           const pattern = this.getStatPattern(key);
           if (pattern && !data.fromSocket) {
             // Replace existing stat line with stacked version
-            finalDescription = finalDescription.replace(pattern, replacement);
+            // BUT preserve any stat-input elements that are in the original line
+            finalDescription = finalDescription.replace(pattern, (match) => {
+              // Check if the matched text contains a stat-input element
+              const inputMatch = match.match(/<input[^>]*class="stat-input"[^>]*>/);
+              if (inputMatch) {
+                // Keep the input element and append it to the replacement
+                return replacement + ' ' + inputMatch[0];
+              }
+              return replacement;
+            });
           } else if (data.fromSocket) {
             // Add new socket-only stats in blue
             finalDescription += `${replacement}<br>`;
@@ -2622,7 +2631,7 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       }
     });
-    
+
     // Add unusable socket items in gray
     const unusableEffects = socketItems.filter(item => !item.usable);
     unusableEffects.forEach(item => {
@@ -2633,7 +2642,7 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       });
     });
-    
+
     return finalDescription;
   }
 
