@@ -466,7 +466,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     reqlvl: (val) => `Required Level: ${val}`,
     reqstr: (val) => `Required Strength: ${val}`,
     reqdex: (val) => `Required Dexterity: ${val}`,
-    dur: (val) => `Durability: ${val}`,
+    dur: (val) => ` +${val} Durability`,
     block1: (val) => `Chance to Block: ${val}%`,
     edmg: (val, prop) => formatVariableStat('+', val, '% Enhanced Damage', prop, itemName, 'edmg', dropdownId),
     toatt: (val, prop) => formatVariableStat('', val, ' to Attack Rating', prop, itemName, 'toatt', dropdownId),
@@ -505,6 +505,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     firres: (val, prop) => formatVariableStat('+', val, '% Fire Resistance', prop, itemName, 'firres', dropdownId),
     poisres: (val, prop) => formatVariableStat('+', val, '% Poison Resistance', prop, itemName, 'poisres', dropdownId),
     ligres: (val, prop) => formatVariableStat('+', val, '% Lightning Resistance', prop, itemName, 'ligres', dropdownId),
+    curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
     physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
     mdr: (val, prop) => formatVariableStat('Magic Damage Taken Reduced by ', val, '%', prop, itemName, 'mdr', dropdownId),
   };
