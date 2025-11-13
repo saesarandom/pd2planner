@@ -52,7 +52,7 @@
         fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
         allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0,
         life: 0, mana: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
-        toatt: 0, toattPercent: 0,
+        toatt: 0, toattPercent: 0, lightRadius: 0,
         lightDmgMin: 0, lightDmgMax: 0, fireDmgMin: 0, fireDmgMax: 0,
         coldDmgMin: 0, coldDmgMax: 0, poisonDmgMin: 0, poisonDmgMax: 0,   fireSkillDamage: 0,
     coldSkillDamage: 0,
@@ -3333,6 +3333,10 @@ if (defMatch) {
     const manaMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Mana/i);
     if (manaMatch) { this.stats.mana += parseInt(manaMatch[1]); return; }
 
+    // Light Radius
+    const lightRadiusMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Light\s+Radius/i);
+    if (lightRadiusMatch) { this.stats.lightRadius += parseInt(lightRadiusMatch[1]); return; }
+
     // All Skills
     const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
     if (allSkillsMatch) { this.stats.allSkills += parseInt(allSkillsMatch[1]); return; }
@@ -3969,7 +3973,9 @@ addToStatsMap(statsMap, key, data) {
         return `<span style="color: ${color}; font-weight: bold;">-${data.value}% to Enemy Lightning Resistance</span>`;
       case 'poison_resist_pierce':
         return `<span style="color: ${color}; font-weight: bold;">-${data.value}% to Enemy Poison Resistance</span>`;
-      
+      case 'lightRadius':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Light Radius</span>`;
+
       default:
         return data.text || '';
     }
@@ -4067,7 +4073,9 @@ addToStatsMap(statsMap, key, data) {
       case 'level_up_proc':
         return /(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+?)\s+when\s+you\s+Level\s+Up/gi;
       case 'death_proc':
-        return /(\d+)%\s+Chance\s+to\s+Cast\s+(.+?)\s+when\s+you\s+Die/gi;  
+        return /(\d+)%\s+Chance\s+to\s+Cast\s+(.+?)\s+when\s+you\s+Die/gi;
+      case 'lightRadius':
+        return /(?:\+)?\d+\s+(?:to\s+)?Light\s+Radius/gi;
       default:
         return null;
     }
