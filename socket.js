@@ -2496,10 +2496,38 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       });
 
-      // For dynamic items with variable stats, keep the original description with inputs intact
-      // Don't do socket stat replacement since it would break the input boxes
-      // Socket items will be added as separate lines below
-      let finalDescription = baseDescription;
+      // Check if this dynamic item has variable stats (input boxes)
+      const hasVariableStats = baseDescription.includes('stat-input');
+
+      let finalDescription;
+      if (hasVariableStats) {
+        // For dynamic items with variable stats (like Arcanna's Deathwand),
+        // keep the original description with inputs intact to prevent breaking input boxes
+        //
+        // TODO: Future enhancement needed for items with BOTH variable stats AND socketed items
+        // that affect the same stats. Currently socket bonuses to variable stats are not combined.
+        // Will need to:
+        // 1. Detect which socket stats overlap with variable stat properties
+        // 2. Add socket bonuses to item.properties before generateItemDescription
+        // 3. Track socket vs base values separately for proper save/load
+        // 4. Update input box ranges if needed
+        finalDescription = baseDescription;
+
+        // Only add unusable socket items in gray (usable ones keep their variable stat inputs)
+        const unusableEffects = socketItems.filter(item => !item.usable);
+        unusableEffects.forEach(item => {
+          const lines = item.stats.split(',');
+          lines.forEach(line => {
+            if (line.trim()) {
+              finalDescription += `<br><span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span>`;
+            }
+          });
+        });
+      } else {
+        // For dynamic items without variable stats (like Biggin's Bonnet),
+        // generate stacked description to properly combine socket stats
+        finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
+      }
 
       // Update Required Level display - only check level requirement
       const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
@@ -2511,17 +2539,6 @@ this.selectedJewelSuffix3MaxValue = null;
 
       // Update Required Strength and Dexterity colors - check individually
       finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
-
-      // Add unusable socket items in gray (usable ones show their item's variable stats via inputs)
-      const unusableEffects = socketItems.filter(item => !item.usable);
-      unusableEffects.forEach(item => {
-        const lines = item.stats.split(',');
-        lines.forEach(line => {
-          if (line.trim()) {
-            finalDescription += `<br><span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span>`;
-          }
-        });
-      });
 
       // Update display
       infoDiv.innerHTML = finalDescription;
