@@ -3366,7 +3366,7 @@ if (defMatch) {
     const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (poisonResMatch) { this.stats.poisonResist += parseInt(poisonResMatch[1]); return; }
 
-    const curseResMatch = cleanLine.match(/Curse\s+Resist\s+(?:\+)?(\d+)%?/i);
+    const curseResMatch = cleanLine.match(/Curse\s+Resist(?:ance)?\s+(?:\+)?(\d+)%?/i);
     if (curseResMatch) { this.stats.curseResist += parseInt(curseResMatch[1]); return; }
 
     // Life Steal
