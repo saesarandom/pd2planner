@@ -602,6 +602,14 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       if (infoDivId) {
         const infoDiv = document.getElementById(infoDivId);
         if (infoDiv) {
+          // Save focus state before regenerating
+          const activeElement = document.activeElement;
+          const isFocusedInput = activeElement &&
+                                 activeElement.classList.contains('stat-input') &&
+                                 activeElement.dataset.item === itemName &&
+                                 activeElement.dataset.prop === propKey;
+          const cursorPosition = isFocusedInput ? activeElement.selectionStart : null;
+
           let description = generateItemDescription(itemName, item, dropdownId);
 
           // If item has corruption, we need to reapply it to the regenerated description
@@ -621,6 +629,17 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
 
           // Re-attach event listeners to the new input boxes
           attachStatInputListeners();
+
+          // Restore focus and cursor position if we were focused on this input
+          if (isFocusedInput) {
+            const newInput = infoDiv.querySelector(`.stat-input[data-item="${itemName}"][data-prop="${propKey}"]`);
+            if (newInput) {
+              newInput.focus();
+              if (cursorPosition !== null) {
+                newInput.setSelectionRange(cursorPosition, cursorPosition);
+              }
+            }
+          }
         }
       }
     }
