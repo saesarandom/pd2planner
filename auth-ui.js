@@ -140,6 +140,10 @@ function setupAuthListeners() {
             updateProfileButton();
             showLoggedInView();
             errorEl.textContent = '';
+            // Refresh item dropdowns to show crafted items
+            if (typeof refreshItemDropdowns === 'function') {
+                refreshItemDropdowns();
+            }
         } else {
             errorEl.textContent = result.error;
         }
@@ -172,6 +176,10 @@ function setupAuthListeners() {
             updateProfileButton();
             showLoggedInView();
             errorEl.textContent = '';
+            // Refresh item dropdowns to show crafted items
+            if (typeof refreshItemDropdowns === 'function') {
+                refreshItemDropdowns();
+            }
         } else {
             errorEl.textContent = result.error;
         }
