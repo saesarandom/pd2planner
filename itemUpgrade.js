@@ -3237,9 +3237,11 @@ function handleUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -3254,11 +3256,13 @@ function handleUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
@@ -3285,9 +3289,11 @@ function handleUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -3302,11 +3308,13 @@ function handleUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
@@ -3367,9 +3375,11 @@ function handleArmorUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -3384,11 +3394,13 @@ function handleArmorUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
@@ -3415,9 +3427,11 @@ function handleArmorUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -3432,11 +3446,13 @@ function handleArmorUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
@@ -3522,9 +3538,11 @@ function handleWeaponUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -3541,11 +3559,13 @@ function handleWeaponUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
@@ -3592,9 +3612,11 @@ function handleWeaponUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -3815,9 +3837,11 @@ function handleGloveUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -3832,11 +3856,13 @@ function handleGloveUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
@@ -3864,9 +3890,11 @@ function handleGloveUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -3881,11 +3909,13 @@ function handleGloveUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
@@ -3967,11 +3997,13 @@ function handleBeltUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
@@ -3999,9 +4031,11 @@ function handleBeltUpgrade() {
         };
 
         // Trigger update manually via socket system to ensure input boxes work
-        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -4016,11 +4050,13 @@ function handleBeltUpgrade() {
         };
       }
 
-      select.dispatchEvent(new Event("change"));
-      // For dynamic items, the change event already triggers full update via socket system
-      // Calling updateAll again would interfere with input listeners
-      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
+      // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
       }
       return;
     }
