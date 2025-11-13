@@ -2906,7 +2906,16 @@ function buildDescriptionWeapon(itemName, baseType, properties, magicalProps) {
 
 function calculateItemDefense(item, baseType, category = "helm") {
   const baseDefense = baseDefenses[baseType] || 0;
-  const { edef, todef } = item.properties || {};
+
+  // Extract edef and todef, handling variable stats (objects with current property)
+  let { edef, todef } = item.properties || {};
+  if (typeof edef === 'object' && edef !== null && 'current' in edef) {
+    edef = edef.current;
+  }
+  if (typeof todef === 'object' && todef !== null && 'current' in todef) {
+    todef = todef.current;
+  }
+
   const ethMult = item.description && item.description.includes("Ethereal") ? 1.5 : 1;
 
   let socketsEDef = 0;
@@ -3239,7 +3248,11 @@ function handleUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   } else {
@@ -3277,7 +3290,11 @@ function handleUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   }
@@ -3349,7 +3366,11 @@ function handleArmorUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   } else {
@@ -3387,7 +3408,11 @@ function handleArmorUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   }
@@ -3486,7 +3511,11 @@ function handleWeaponUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   } else {
@@ -3761,7 +3790,11 @@ function handleGloveUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   } else {
@@ -3800,7 +3833,11 @@ function handleGloveUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   }
@@ -3876,7 +3913,11 @@ function handleBeltUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   } else {
@@ -3915,7 +3956,11 @@ function handleBeltUpgrade() {
       }
 
       select.dispatchEvent(new Event("change"));
-      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      // For dynamic items, the change event already triggers full update via socket system
+      // Calling updateAll again would interfere with input listeners
+      if (!isDynamic && window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
       return;
     }
   }
