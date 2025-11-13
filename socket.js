@@ -2496,10 +2496,30 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       });
 
-      // For dynamic items with variable stats, keep the original description with inputs intact
-      // Don't do socket stat replacement since it would break the input boxes
-      // Socket items will be added as separate lines below
-      let finalDescription = baseDescription;
+      // Check if this dynamic item has variable stats (input boxes)
+      const hasVariableStats = baseDescription.includes('stat-input');
+
+      let finalDescription;
+      if (hasVariableStats) {
+        // For dynamic items with variable stats (like Arcanna's Deathwand),
+        // keep the original description with inputs intact to prevent breaking input boxes
+        finalDescription = baseDescription;
+
+        // Only add unusable socket items in gray (usable ones keep their variable stat inputs)
+        const unusableEffects = socketItems.filter(item => !item.usable);
+        unusableEffects.forEach(item => {
+          const lines = item.stats.split(',');
+          lines.forEach(line => {
+            if (line.trim()) {
+              finalDescription += `<br><span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span>`;
+            }
+          });
+        });
+      } else {
+        // For dynamic items without variable stats (like Biggin's Bonnet),
+        // generate stacked description to properly combine socket stats
+        finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
+      }
 
       // Update Required Level display - only check level requirement
       const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
@@ -2511,17 +2531,6 @@ this.selectedJewelSuffix3MaxValue = null;
 
       // Update Required Strength and Dexterity colors - check individually
       finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
-
-      // Add unusable socket items in gray (usable ones show their item's variable stats via inputs)
-      const unusableEffects = socketItems.filter(item => !item.usable);
-      unusableEffects.forEach(item => {
-        const lines = item.stats.split(',');
-        lines.forEach(line => {
-          if (line.trim()) {
-            finalDescription += `<br><span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span>`;
-          }
-        });
-      });
 
       // Update display
       infoDiv.innerHTML = finalDescription;
