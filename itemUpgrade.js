@@ -3794,15 +3794,14 @@ function handleGloveUpgrade() {
             upgrades.exceptional.base,
             newProperties,
             magicalProperties
-        ),
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-          select.dispatchEvent(new Event("change"));
-    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
-      
     }
   }
 
