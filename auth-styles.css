@@ -340,6 +340,77 @@
     background: rgba(0, 255, 136, 0.5);
 }
 
+/* Achievements View */
+#achievements-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.achievement-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(0, 255, 136, 0.1);
+    transition: all 0.3s;
+}
+
+.achievement-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 255, 136, 0.3);
+    transform: translateX(5px);
+}
+
+.achievement-icon {
+    font-size: 32px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-info h3 {
+    color: #00ff88;
+    margin: 0 0 5px 0;
+    font-size: 16px;
+}
+
+.achievement-description {
+    color: #ccc;
+    font-size: 13px;
+    margin: 0 0 5px 0;
+}
+
+.achievement-date {
+    color: #888;
+    font-size: 11px;
+    margin: 0;
+}
+
+/* Scrollbar for achievements list */
+#achievements-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#achievements-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+#achievements-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 136, 0.3);
+    border-radius: 4px;
+}
+
+#achievements-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 136, 0.5);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     #profile-btn {
