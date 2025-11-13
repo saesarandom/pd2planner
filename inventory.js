@@ -207,15 +207,15 @@ createModal() {
         <div id="charmSelectionView">
           <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Unique Charms:</h4>
           <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px;">
-            <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
-            <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
-            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
+            <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
+            <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
+            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer !important; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer'; }" onmouseout="if(!this.disabled) { this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer'; }"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
           </div>
           <div style="text-align: center; color: #888; font-size: 12px; margin: 15px 0; border-top: 1px solid rgb(80, 80, 80); border-bottom: 1px solid rgb(80, 80, 80); padding: 10px 0;">Regular Charms</div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button data-type="small-charm" class="charm-type-btn">Small Charm (1x1)</button>
-            <button data-type="large-charm" class="charm-type-btn">Large Charm (1x2)</button>
-            <button data-type="grand-charm" class="charm-type-btn">Grand Charm (1x3)</button>
+            <button data-type="small-charm" class="charm-type-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Small Charm (1x1)</button>
+            <button data-type="large-charm" class="charm-type-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Large Charm (1x2)</button>
+            <button data-type="grand-charm" class="charm-type-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Grand Charm (1x3)</button>
           </div>
         </div>
 
@@ -239,7 +239,7 @@ createModal() {
             <div id="regularCharmCustomization" style="display: none;">
               <div style="margin-bottom: 15px;">
                 <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Prefix:</h4>
-                <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+                <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19); cursor: pointer !important;">
                   <option value="">None</option>
                 </select>
                 <div id="prefixStats" style="margin-top: 10px; color: #87CEEB;"></div>
@@ -247,7 +247,7 @@ createModal() {
 
               <div style="margin-bottom: 15px;">
                 <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Suffix:</h4>
-                <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+                <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19); cursor: pointer !important;">
                   <option value="">None</option>
                 </select>
                 <div id="suffixStats" style="margin-top: 10px; color: #87CEEB;"></div>
@@ -282,27 +282,27 @@ createModal() {
               border: none;
               padding: 12px 24px;
               border-radius: 4px;
-              cursor: pointer;
+              cursor: pointer !important;
               width: 100%;
               font-size: 16px;
               font-weight: bold;
               transition: all 0.2s ease;
-            " onmouseover="this.style.background='rgb(200, 30, 30)'"
-               onmouseout="this.style.background='rgb(164, 19, 19)'">Create Charm</button>
+            " onmouseover="this.style.background='rgb(200, 30, 30)'; this.style.cursor='pointer';"
+               onmouseout="this.style.background='rgb(164, 19, 19)'; this.style.cursor='pointer';">Create Charm</button>
             <button id="backCharmBtn" style="
               background: rgb(60, 60, 60);
               color: white;
               border: none;
               padding: 10px 24px;
               border-radius: 4px;
-              cursor: pointer;
+              cursor: pointer !important;
               width: 100%;
               font-size: 14px;
               margin-top: 8px;
               transition: all 0.2s ease;
               display: none;
-            " onmouseover="this.style.background='rgb(80, 80, 80)'"
-               onmouseout="this.style.background='rgb(60, 60, 60)'">Back</button>
+            " onmouseover="this.style.background='rgb(80, 80, 80)'; this.style.cursor='pointer';"
+               onmouseout="this.style.background='rgb(60, 60, 60)'; this.style.cursor='pointer';">Back</button>
           </div>
         </div>
       </div>
@@ -325,12 +325,28 @@ setupModalEvents() {
     }
   });
 
-  // Unique charm selection
+  // Unique charm selection - with explicit cursor handling
   modal.addEventListener('click', (e) => {
     if (e.target.classList.contains('unique-charm-btn') && !e.target.disabled) {
       e.stopPropagation();
       this.selectUniqueCharm(e.target.dataset.unique);
     }
+  });
+
+  // EXPLICIT CURSOR HANDLING for unique charm buttons
+  const uniqueCharmButtons = modal.querySelectorAll('.unique-charm-btn');
+  uniqueCharmButtons.forEach(btn => {
+    btn.addEventListener('mouseover', () => {
+      btn.style.cursor = 'pointer';
+      btn.style.cursor = 'pointer !important';
+    });
+    btn.addEventListener('mouseout', () => {
+      btn.style.cursor = 'pointer';
+      btn.style.cursor = 'pointer !important';
+    });
+    btn.addEventListener('mousemove', () => {
+      btn.style.cursor = 'pointer';
+    });
   });
 
   // Charm type selection
@@ -480,7 +496,7 @@ populateUniqueCharmStats(uniqueCharm) {
         <div style="margin-bottom: 10px;">
           <div style="color: #FFD700; margin-bottom: 3px;">${stat.label.replace('{value}', '')}</div>
           <input type="range" id="${sliderId}" min="${stat.min}" max="${stat.max}" value="${stat.value}"
-                 style="width: 100%; margin-bottom: 5px;"
+                 style="width: 100%; margin-bottom: 5px; cursor: pointer !important;"
                  oninput="window.charmInventory.updateUniqueCharmPreview(); document.getElementById('${valueId}').textContent = this.value;">
           <div style="text-align: center; color: white; font-size: 12px;">
             <span id="${valueId}">${stat.value}</span> / ${stat.max}
@@ -1208,15 +1224,14 @@ createUniqueCharm() {
   if (container) {
     const allCharmElements = container.querySelectorAll('[data-charm-data]');
     for (const element of allCharmElements) {
-      // Check if it's a text format (newline-separated) or JSON format
       const charmDataStr = element.dataset.charmData;
       let charmName = '';
       try {
         const jsonData = JSON.parse(charmDataStr);
         charmName = jsonData.name;
       } catch (e) {
-        // It's plain text format - get first line as name
-        charmName = charmDataStr.split('\n')[0];
+        // Fallback for malformed data
+        continue;
       }
       if (charmName && charmName.trim() === uniqueCharm.name.trim()) {
         alert(`${uniqueCharm.name} is already in inventory! Max 1 per charm.`);
@@ -1245,12 +1260,18 @@ createUniqueCharm() {
     }
   });
 
-  // Create charm data as NEWLINE-SEPARATED TEXT (getCharmBonuses expects this format!)
-  // This is crucial for getCharmBonuses() to parse "+1 to All Skills" correctly
-  const charmData = `${uniqueCharm.name}\n${stats.join('\n')}`;
-  const backgroundImage = `url('${uniqueCharm.imagePath}')`;
+  // Create charm data as JSON (consistent with regular charms for URL sharing)
+  const displayText = `${uniqueCharm.name}\n${stats.join('\n')}`;
+  const charmData = JSON.stringify({
+    name: uniqueCharm.name,
+    stats: stats,
+    displayText: displayText,
+    imagePath: uniqueCharm.imagePath,
+    isUnique: true  // Mark as unique charm for easier identification
+  });
 
-  this.placeCharm(position, charmType, backgroundImage, charmData, charmData);
+  const backgroundImage = `url('${uniqueCharm.imagePath}')`;
+  this.placeCharm(position, charmType, backgroundImage, charmData, displayText);
 
   // Store the image path in a separate data attribute so we can restore it
   const mainSlot = container.children[position];
@@ -1949,27 +1970,15 @@ fixCharmTitles() {
     smallCharmSlots.forEach((slot, i) => {
       if (slot.dataset.charmData && slot.style.backgroundImage) {
         try {
-          let charmData;
-          // Handle both JSON and text formats
-          try {
-            charmData = JSON.parse(slot.dataset.charmData);
-          } catch (e) {
-            // It's text format - convert to object with name and text
-            const lines = slot.dataset.charmData.split('\n').filter(l => l.trim());
-            charmData = {
-              name: lines[0] || 'Charm',
-              text: lines.join('\n'),
-              imagePath: slot.dataset.imagePath
-            };
-          }
-
+          // Parse JSON format (all charms are now JSON)
+          const charmData = JSON.parse(slot.dataset.charmData);
           const position = parseInt(slot.dataset.index);
 
           let type = 'small-charm';
           if (slot.classList.contains('large-charm')) type = 'large-charm';
           if (slot.classList.contains('grand-charm')) type = 'grand-charm';
 
-          charms.push({ type, position, data: charmData, imagePath: slot.dataset.imagePath || charmData.imagePath });
+          charms.push({ type, position, data: charmData, imagePath: charmData.imagePath });
         } catch (e) {
           console.error('Failed to parse charm in slot', slot.dataset.index, e);
         }
@@ -1981,26 +1990,14 @@ fixCharmTitles() {
 
     overlays.forEach((overlay, i) => {
       try {
-        let charmData;
-        // Handle both JSON and text formats
-        try {
-          charmData = JSON.parse(overlay.dataset.charmData);
-        } catch (e) {
-          // It's text format - convert to object with name and text
-          const lines = overlay.dataset.charmData.split('\n').filter(l => l.trim());
-          charmData = {
-            name: lines[0] || 'Charm',
-            text: lines.join('\n'),
-            imagePath: overlay.dataset.imagePath
-          };
-        }
-
+        // Parse JSON format (all charms are now JSON)
+        const charmData = JSON.parse(overlay.dataset.charmData);
         const position = parseInt(overlay.dataset.position);
 
         let type = 'large-charm';
         if (overlay.classList.contains('grand-charm')) type = 'grand-charm';
 
-        charms.push({ type, position, data: charmData, imagePath: overlay.dataset.imagePath || charmData.imagePath });
+        charms.push({ type, position, data: charmData, imagePath: charmData.imagePath });
       } catch (e) {
         console.error('Failed to parse charm in overlay', overlay.dataset.position, e);
       }
@@ -2024,61 +2021,46 @@ fixCharmTitles() {
     this.occupiedSlots.clear();
 
     // Place each charm
-    let successCount = 0;
     charmsArray.forEach((charm, idx) => {
       if (!charm || !charm.type || charm.position === undefined) {
         console.error(`Invalid charm at index ${idx}:`, charm);
         return;
       }
 
-      // Use saved image path if available, otherwise generate random
-      let imagePath = charm.imagePath; // Try the direct imagePath property first
-
-      if (!imagePath) {
-        try {
-          // Try to extract from charm.data (either text or JSON format)
-          if (typeof charm.data === 'string') {
-            try {
-              // Try JSON format first
-              const charmData = JSON.parse(charm.data);
-              imagePath = charmData.imagePath;
-            } catch (e) {
-              // It's text format - extract imagePath if it was stored
-              // For text format charms, imagePath should be in charm.imagePath or we generate random
-            }
-          } else if (charm.data && charm.data.imagePath) {
-            imagePath = charm.data.imagePath;
-          }
-        } catch (e) {
-          // If we can't extract saved image, use random
-        }
-      }
-
-      // Fall back to random image if no saved path
-      if (!imagePath) {
-        const images = this.charmImages[charm.type];
-        if (!images) {
-          console.error(`Unknown charm type: ${charm.type}`);
+      try {
+        // Convert charm.data to string if it's an object
+        let charmDataStr;
+        if (typeof charm.data === 'string') {
+          charmDataStr = charm.data;
+        } else if (typeof charm.data === 'object') {
+          charmDataStr = JSON.stringify(charm.data);
+        } else {
+          console.error(`Invalid charm data format at index ${idx}`);
           return;
         }
-        imagePath = images[Math.floor(Math.random() * images.length)];
-      }
 
-      const backgroundImage = `url('${imagePath}')`;
+        // Parse to get imagePath and displayText
+        const charmData = JSON.parse(charmDataStr);
+        const imagePath = charmData.imagePath || charm.imagePath;
+        const displayText = charmData.displayText;
 
-      try {
+        // Fall back to random image if no saved path
+        let finalImagePath = imagePath;
+        if (!finalImagePath) {
+          const images = this.charmImages[charm.type];
+          if (!images) {
+            console.error(`Unknown charm type: ${charm.type}`);
+            return;
+          }
+          finalImagePath = images[Math.floor(Math.random() * images.length)];
+        }
+
+        const backgroundImage = `url('${finalImagePath}')`;
+
         // Check if we can place it
         if (!this.canPlaceCharm(charm.position, charm.type)) {
           console.warn(`Cannot place ${charm.type} at position ${charm.position}`);
           return;
-        }
-
-        // Prepare charm data - keep as text if it's text format, JSON if it's JSON
-        let charmDataStr;
-        if (typeof charm.data === 'string') {
-          charmDataStr = charm.data; // Already a string (either JSON or text)
-        } else {
-          charmDataStr = JSON.stringify(charm.data); // Convert object to JSON
         }
 
         // Place the charm
@@ -2086,26 +2068,23 @@ fixCharmTitles() {
           charm.position,
           charm.type,
           backgroundImage,
-          charmDataStr
+          charmDataStr,
+          displayText
         );
 
         // Store the imagePath for later restoration
         const container = document.querySelector('.inventorycontainer');
         if (container) {
           const mainSlot = container.children[charm.position];
-          if (mainSlot) mainSlot.dataset.imagePath = imagePath;
+          if (mainSlot) mainSlot.dataset.imagePath = finalImagePath;
 
           const overlay = container.querySelector(`.charm-overlay[data-position="${charm.position}"]`);
-          if (overlay) overlay.dataset.imagePath = imagePath;
+          if (overlay) overlay.dataset.imagePath = finalImagePath;
         }
-
-        successCount++;
       } catch (e) {
         console.error(`Failed to restore charm at index ${idx}:`, e);
       }
     });
-
-    
 
     // Fix titles on all restored charms
     setTimeout(() => this.fixCharmTitles(), 50);
@@ -2204,7 +2183,18 @@ function getCharmBonuses() {
     const data = charm.dataset.charmData;
     if (!data) return;
 
-    data.split('\n').forEach(line => {
+    // Parse charm data - handle both JSON and plain text formats
+    let linesToParse = [];
+    try {
+      const jsonData = JSON.parse(data);
+      // If JSON, use displayText field which contains the parsed stat strings
+      linesToParse = jsonData.displayText ? jsonData.displayText.split('\n') : [];
+    } catch (e) {
+      // If not JSON, treat as plain text (legacy format)
+      linesToParse = data.split('\n');
+    }
+
+    linesToParse.forEach(line => {
       let match;
 
       // Defense
