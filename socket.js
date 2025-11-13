@@ -3605,8 +3605,8 @@ if (deathProcMatch) {
         return;
       }
       
-      // Resistances: Fire Resist +30%, Lightning Resist +30%
-      const resMatch = cleanLine.match(/(Fire|Cold|Lightning|Poison)\s+Resist\s+\+?(\d+)%?/i);
+      // Resistances: Fire Resist +30%, Lightning Resist +30%, Curse Resistance +10%
+      const resMatch = cleanLine.match(/(Fire|Cold|Lightning|Poison|Curse)\s+Resist(?:ance)?\s+\+?(\d+)%?/i);
       if (resMatch) {
         const type = resMatch[1].toLowerCase();
         const value = parseInt(resMatch[2]);
@@ -3623,7 +3623,16 @@ if (deathProcMatch) {
         });
         return;
       }
-      
+
+      // Maximum Resistances: "+4% to Maximum Fire Resist", etc. (Vex, Ohm, Lo, Gul runes)
+      const maxResMatch = cleanLine.match(/\+?(\d+)%\s+to\s+Maximum\s+(Fire|Cold|Lightning|Poison)\s+Resist/i);
+      if (maxResMatch) {
+        const value = parseInt(maxResMatch[1]);
+        const type = maxResMatch[2].toLowerCase();
+        this.addToStatsMap(statsMap, `max_${type}_resist`, { value });
+        return;
+      }
+
       // Attributes: +10 to Strength, +15 Dexterity, 20 to Vitality
       const attrMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(Strength|Dexterity|Vitality|Energy)/i);
       if (attrMatch) {
@@ -3919,6 +3928,14 @@ addToStatsMap(statsMap, key, data) {
         return `<span style="color: ${color}; font-weight: bold;">Lightning Resist +${data.value}%</span>`;
       case 'poison_resist':
         return `<span style="color: ${color}; font-weight: bold;">Poison Resist +${data.value}%</span>`;
+      case 'max_fire_resist':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Maximum Fire Resist</span>`;
+      case 'max_cold_resist':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Maximum Cold Resist</span>`;
+      case 'max_lightning_resist':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Maximum Lightning Resist</span>`;
+      case 'max_poison_resist':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Maximum Poison Resist</span>`;
       case 'strength':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Strength</span>`;
       case 'dexterity':
@@ -4018,6 +4035,14 @@ addToStatsMap(statsMap, key, data) {
         return /Lightning\s+Resist\s+\+?\d+%?/gi;
       case 'poison_resist':
         return /Poison\s+Resist\s+\+?\d+%?/gi;
+      case 'max_fire_resist':
+        return /\+?\d+%\s+to\s+Maximum\s+Fire\s+Resist/gi;
+      case 'max_cold_resist':
+        return /\+?\d+%\s+to\s+Maximum\s+Cold\s+Resist/gi;
+      case 'max_lightning_resist':
+        return /\+?\d+%\s+to\s+Maximum\s+Lightning\s+Resist/gi;
+      case 'max_poison_resist':
+        return /\+?\d+%\s+to\s+Maximum\s+Poison\s+Resist/gi;
       case 'strength':
         return /(?:\+)?\d+\s+(?:to\s+)?Strength/gi;
       case 'dexterity':
