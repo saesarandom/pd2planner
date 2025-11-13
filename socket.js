@@ -3605,8 +3605,8 @@ if (deathProcMatch) {
         return;
       }
       
-      // Resistances: Fire Resist +30%, Lightning Resist +30%
-      const resMatch = cleanLine.match(/(Fire|Cold|Lightning|Poison)\s+Resist\s+\+?(\d+)%?/i);
+      // Resistances: Fire Resist +30%, Lightning Resist +30%, Curse Resistance +10%
+      const resMatch = cleanLine.match(/(Fire|Cold|Lightning|Poison|Curse)\s+Resist(?:ance)?\s+\+?(\d+)%?/i);
       if (resMatch) {
         const type = resMatch[1].toLowerCase();
         const value = parseInt(resMatch[2]);
