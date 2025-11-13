@@ -51,8 +51,10 @@ function createAuthUI() {
                 <div class="auth-stats">
                     <p>Member since: <span id="user-created"></span></p>
                     <p>Saved builds: <span id="user-builds-count">0</span></p>
+                    <p>Achievements: <span id="user-achievements-count">0</span></p>
                 </div>
                 <button id="view-builds-btn" class="auth-button">My Builds</button>
+                <button id="view-achievements-btn" class="auth-button">🏆 Achievements</button>
                 <button id="logout-btn" class="auth-button logout">Logout</button>
             </div>
 
@@ -63,6 +65,15 @@ function createAuthUI() {
                     <button id="back-to-profile" class="auth-back">← Back</button>
                 </div>
                 <div id="builds-list"></div>
+            </div>
+
+            <!-- Achievements View -->
+            <div id="achievements-view" class="auth-form">
+                <div class="builds-header">
+                    <h2>🏆 Achievements</h2>
+                    <button id="back-to-profile-from-achievements" class="auth-back">← Back</button>
+                </div>
+                <div id="achievements-list"></div>
             </div>
         </div>
     `;
@@ -176,8 +187,17 @@ function setupAuthListeners() {
         await showBuildsView();
     });
 
+    // View achievements
+    document.getElementById('view-achievements-btn').addEventListener('click', async () => {
+        await showAchievementsView();
+    });
+
     // Back to profile
     document.getElementById('back-to-profile').addEventListener('click', () => {
+        showLoggedInView();
+    });
+
+    document.getElementById('back-to-profile-from-achievements').addEventListener('click', () => {
         showLoggedInView();
     });
 
@@ -212,17 +232,29 @@ function showLoginForm() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById('login-form').classList.add('active');
     document.getElementById('login-error').textContent = '';
+
+    // Show auth tabs when not logged in
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'flex';
 }
 
 function showRegisterForm() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById('register-form').classList.add('active');
     document.getElementById('register-error').textContent = '';
+
+    // Show auth tabs when not logged in
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'flex';
 }
 
 function showLoggedInView() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById('logged-in-view').classList.add('active');
+
+    // Hide auth tabs when logged in (no need for Login/Register buttons)
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'none';
 
     if (auth.user) {
         document.getElementById('user-display-name').textContent = auth.user.username;
@@ -233,12 +265,21 @@ function showLoggedInView() {
         auth.getCharacters().then(builds => {
             document.getElementById('user-builds-count').textContent = builds.length;
         });
+
+        // Load achievements count
+        auth.getAchievements().then(achievements => {
+            document.getElementById('user-achievements-count').textContent = achievements.length;
+        });
     }
 }
 
 async function showBuildsView() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
     document.getElementById('builds-list-view').classList.add('active');
+
+    // Hide auth tabs when viewing builds
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'none';
 
     const buildsList = document.getElementById('builds-list');
     buildsList.innerHTML = '<p class="loading">Loading builds...</p>';
@@ -298,6 +339,59 @@ async function showBuildsView() {
             }
         });
     });
+}
+
+async function showAchievementsView() {
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.getElementById('achievements-view').classList.add('active');
+
+    // Hide auth tabs when viewing achievements
+    const authTabs = document.getElementById('auth-tabs');
+    if (authTabs) authTabs.style.display = 'none';
+
+    const achievementsList = document.getElementById('achievements-list');
+    achievementsList.innerHTML = '<p class="loading">Loading achievements...</p>';
+
+    const achievements = await auth.getAchievements();
+
+    if (achievements.length === 0) {
+        achievementsList.innerHTML = '<p class="no-builds">No achievements unlocked yet. Keep building!</p>';
+        return;
+    }
+
+    // Define achievement details (icon, name, description)
+    const achievementDetails = {
+        'first_build': { icon: '🎯', name: 'First Build', description: 'Created your first character build' },
+        'build_collector': { icon: '📚', name: 'Build Collector', description: 'Saved 10 character builds' },
+        'build_master': { icon: '👑', name: 'Build Master', description: 'Saved 50 character builds' },
+        'popular_build': { icon: '🌟', name: 'Popular Build', description: 'A build reached 100 views' },
+        'viral_build': { icon: '🔥', name: 'Viral Build', description: 'A build reached 1000 views' },
+        'level_99': { icon: '💯', name: 'Level 99', description: 'Created a level 99 character' },
+        'perfect_gear': { icon: '⚔️', name: 'Perfect Gear', description: 'Equipped a fully optimized character' },
+        'rune_master': { icon: '🔮', name: 'Rune Master', description: 'Used a high-level runeword' },
+        'skill_master': { icon: '🎓', name: 'Skill Master', description: 'Maxed out multiple skills' },
+        'early_adopter': { icon: '🚀', name: 'Early Adopter', description: 'Joined during beta' }
+    };
+
+    achievementsList.innerHTML = achievements.map(achievement => {
+        const details = achievementDetails[achievement.achievement_id] || {
+            icon: '🏆',
+            name: achievement.achievement_id,
+            description: 'Achievement unlocked!'
+        };
+        const unlockedDate = new Date(achievement.unlocked_at).toLocaleDateString();
+
+        return `
+            <div class="achievement-item">
+                <div class="achievement-icon">${details.icon}</div>
+                <div class="achievement-info">
+                    <h3>${details.name}</h3>
+                    <p class="achievement-description">${details.description}</p>
+                    <p class="achievement-date">Unlocked: ${unlockedDate}</p>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function updateProfileButton() {
