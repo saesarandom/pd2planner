@@ -4,6 +4,7 @@
 class SetTracker {
   constructor() {
     this.equippedSets = new Map(); // Map of setName -> {items: [], bonuses: []}
+    this.activeBuffs = new Set(); // Track which set buffs are currently displayed
 
     // Define complete set sizes for each set
     this.SET_SIZES = {
@@ -524,10 +525,12 @@ class SetTracker {
       return;
     }
 
-    // Remove old set buffs
-    this.equippedSets.forEach((setData, setName) => {
+    // Remove ALL previously active set buffs (not just current ones!)
+    console.log('[SetTracker] Removing old buffs:', Array.from(this.activeBuffs));
+    this.activeBuffs.forEach(setName => {
       window.buffSystem.removeBuff(`set-${setName}`);
     });
+    this.activeBuffs.clear();
 
     // Add new set buffs
     this.equippedSets.forEach((setData, setName) => {
@@ -587,6 +590,9 @@ class SetTracker {
         description: tooltipHTML,
         tooltipType: 'set'
       });
+
+      // Track this buff so we can remove it later
+      this.activeBuffs.add(setName);
     });
   }
 
