@@ -52,6 +52,7 @@
         fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
         allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0,
         life: 0, mana: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
+        toatt: 0, toattPercent: 0,
         lightDmgMin: 0, lightDmgMax: 0, fireDmgMin: 0, fireDmgMax: 0,
         coldDmgMin: 0, coldDmgMax: 0, poisonDmgMin: 0, poisonDmgMax: 0,   fireSkillDamage: 0,
     coldSkillDamage: 0,
@@ -3403,6 +3404,20 @@ if (defMatch) {
     
     const fhrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Hit\s+Recovery/i);
     if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
+
+    // Attack Rating (multiple formats for rune compatibility)
+    // Percentage: "20% Bonus to Attack Rating"
+    const toattPercentMatch = cleanLine.match(/(\d+)%\s+(?:Bonus\s+)?to\s+Attack\s+Rating/i);
+    if (toattPercentMatch) { this.stats.toattPercent += parseInt(toattPercentMatch[1]); return; }
+
+    // Flat: "+50 to Attack Rating" or "+50 Attack Rating"
+    const toattFlatMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Attack\s+Rating/i);
+    if (toattFlatMatch) { this.stats.toatt += parseInt(toattFlatMatch[1]); return; }
+
+    // Target Defense modification (Eth rune: "-25% Target Defense")
+    // Note: This is parsed but not currently used in calculations
+    const targetDefMatch = cleanLine.match(/([+-]?\d+)%\s+Target\s+Defense/i);
+    if (targetDefMatch) { return; } // Recognized but not tracked (special effect)
 
     // Damage Reduction stats
     // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
