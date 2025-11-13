@@ -2496,38 +2496,13 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       });
 
-      // Check if this dynamic item has variable stats (input boxes)
-      const hasVariableStats = baseDescription.includes('stat-input');
-
-      let finalDescription;
-      if (hasVariableStats) {
-        // For dynamic items with variable stats (like Arcanna's Deathwand),
-        // keep the original description with inputs intact to prevent breaking input boxes
-        //
-        // TODO: Future enhancement needed for items with BOTH variable stats AND socketed items
-        // that affect the same stats. Currently socket bonuses to variable stats are not combined.
-        // Will need to:
-        // 1. Detect which socket stats overlap with variable stat properties
-        // 2. Add socket bonuses to item.properties before generateItemDescription
-        // 3. Track socket vs base values separately for proper save/load
-        // 4. Update input box ranges if needed
-        finalDescription = baseDescription;
-
-        // Only add unusable socket items in gray (usable ones keep their variable stat inputs)
-        const unusableEffects = socketItems.filter(item => !item.usable);
-        unusableEffects.forEach(item => {
-          const lines = item.stats.split(',');
-          lines.forEach(line => {
-            if (line.trim()) {
-              finalDescription += `<br><span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span>`;
-            }
-          });
-        });
-      } else {
-        // For dynamic items without variable stats (like Biggin's Bonnet),
-        // generate stacked description to properly combine socket stats
-        finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
-      }
+      // For ALL dynamic items, use generateStackedDescription to show merged stats
+      // This function now preserves input boxes while stacking non-variable stats
+      // For example, Biggin's Bonnet will keep edmg/toatt inputs but stack +life from rubies
+      //
+      // TODO: Future enhancement for items where socket bonuses affect the SAME variable stats
+      // (e.g., weapon with variable edmg + jewel with +edmg%). Currently those don't combine.
+      let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
 
       // Update Required Level display - only check level requirement
       const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
@@ -2644,7 +2619,16 @@ this.selectedJewelSuffix3MaxValue = null;
           const pattern = this.getStatPattern(key);
           if (pattern && !data.fromSocket) {
             // Replace existing stat line with stacked version
-            finalDescription = finalDescription.replace(pattern, replacement);
+            // BUT preserve any stat-input elements that are in the original line
+            finalDescription = finalDescription.replace(pattern, (match) => {
+              // Check if the matched text contains a stat-input element
+              const inputMatch = match.match(/<input[^>]*class="stat-input"[^>]*>/);
+              if (inputMatch) {
+                // Keep the input element and append it to the replacement
+                return replacement + ' ' + inputMatch[0];
+              }
+              return replacement;
+            });
           } else if (data.fromSocket) {
             // Add new socket-only stats in blue
             finalDescription += `${replacement}<br>`;
