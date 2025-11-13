@@ -3064,19 +3064,22 @@ this.selectedJewelSuffix3MaxValue = null;
         }
 
         // Damage Reduction stats
-        const drMatch = cleanLine.match(/Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%?/i);
-        if (drMatch) {
-          this.mercenaryStats.dr += parseInt(drMatch[1]);
-          return;
-        }
-
-        const pdrMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%?/i);
+        // Physical Damage Taken Reduced by X (flat -> PDR)
+        const pdrMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
         if (pdrMatch) {
           this.mercenaryStats.pdr += parseInt(pdrMatch[1]);
           return;
         }
 
-        const mdrMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%?/i);
+        // Physical Damage Reduced by X% (percentage -> DR)
+        const drMatch = cleanLine.match(/(?:Physical\s+)?Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
+        if (drMatch) {
+          this.mercenaryStats.dr += parseInt(drMatch[1]);
+          return;
+        }
+
+        // Magic Damage Reduced by X (flat -> MDR)
+        const mdrMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
         if (mdrMatch) {
           this.mercenaryStats.mdr += parseInt(mdrMatch[1]);
           return;
