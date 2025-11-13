@@ -885,10 +885,26 @@ async function saveCurrentBuild() {
       });
     }
 
-    alert(`Build saved successfully!\n\nShare URL: https://pd2planner.net/?build=${result.character.build_id}\n\nClick "Share" in My Builds to copy the link.`);
+    if (window.notificationSystem) {
+      const shareUrl = `https://pd2planner.net/?build=${result.character.build_id}`;
+      window.notificationSystem.success(
+        'Build Saved!',
+        'Your build has been saved successfully.',
+        {
+          url: shareUrl,
+          duration: 8000
+        }
+      );
+    } else {
+      alert(`Build saved successfully!\n\nShare URL: https://pd2planner.net/?build=${result.character.build_id}\n\nClick "Share" in My Builds to copy the link.`);
+    }
   } catch (error) {
     console.error('Failed to save build:', error);
-    alert('Failed to save build: ' + error.message);
+    if (window.notificationSystem) {
+      window.notificationSystem.error('Save Failed', 'Failed to save build: ' + error.message, { duration: 6000 });
+    } else {
+      alert('Failed to save build: ' + error.message);
+    }
   }
 }
 
@@ -897,7 +913,11 @@ async function saveCurrentBuild() {
  */
 async function quickSaveBuild() {
   if (!window.auth?.isLoggedIn()) {
-    alert('Please login to save builds!');
+    if (window.notificationSystem) {
+      window.notificationSystem.info('Login Required', 'Please login to save builds!', { duration: 4000 });
+    } else {
+      alert('Please login to save builds!');
+    }
     return;
   }
 

@@ -433,11 +433,19 @@ window.loadCharacterFromData = function(data) {
         
 
         // Show success message
-        alert('Character build loaded successfully!');
+        if (window.notificationSystem) {
+            window.notificationSystem.success('Success!', 'Character build loaded successfully!', { duration: 4000 });
+        } else {
+            alert('Character build loaded successfully!');
+        }
 
     } catch (error) {
         console.error('Error loading character data:', error);
-        alert('Failed to load character build. See console for details.');
+        if (window.notificationSystem) {
+            window.notificationSystem.error('Load Failed', 'Failed to load character build. See console for details.', { duration: 6000 });
+        } else {
+            alert('Failed to load character build. See console for details.');
+        }
     }
 };
 
