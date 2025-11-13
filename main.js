@@ -1024,25 +1024,34 @@ function openCraftingModal() {
       affixDiv.className = 'affix-control';
       affixDiv.style.cssText = `
         margin-bottom: 12px;
-        padding: 8px;
-        background: rgba(0,0,0,0.3);
+        padding: 10px;
+        background: rgba(15, 52, 96, 0.4);
+        border: 1px solid #0f9eff;
         border-radius: 4px;
       `;
 
       const label = document.createElement('label');
-      label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 5px;';
-      label.innerHTML = `${affixData.label} <span id="val_${affixKey}">0</span>`;
+      label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
+      label.innerHTML = `${affixData.label} <span id="val_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[${affixData.min}]</span>`;
 
       const slider = document.createElement('input');
       slider.type = 'range';
       slider.min = affixData.min;
       slider.max = affixData.max;
       slider.value = affixData.min;
-      slider.style.width = '100%';
+      slider.style.cssText = `
+        width: 100%;
+        height: 6px;
+        background: #0f3460;
+        border: 1px solid #0f9eff;
+        border-radius: 3px;
+        outline: none;
+        cursor: pointer;
+      `;
       slider.id = `affix_${affixKey}`;
 
       slider.addEventListener('input', (e) => {
-        document.getElementById(`val_${affixKey}`).textContent = e.target.value;
+        document.getElementById(`val_${affixKey}`).textContent = `[${e.target.value}]`;
       });
 
       affixDiv.appendChild(label);
@@ -1055,8 +1064,12 @@ function openCraftingModal() {
   document.getElementById('craftName').value = '';
   document.getElementById('craftType').value = 'blood';
 
-  // Show modal
+  // Show modal and backdrop
   modal.style.display = 'block';
+  const backdrop = document.getElementById('craftingModalBackdrop');
+  if (backdrop) {
+    backdrop.style.display = 'block';
+  }
 }
 
 /**
@@ -1064,8 +1077,12 @@ function openCraftingModal() {
  */
 function closeCraftingModal() {
   const modal = document.getElementById('craftingModal');
+  const backdrop = document.getElementById('craftingModalBackdrop');
   if (modal) {
     modal.style.display = 'none';
+  }
+  if (backdrop) {
+    backdrop.style.display = 'none';
   }
 }
 
@@ -1073,14 +1090,12 @@ function closeCraftingModal() {
  * Setup modal event listeners (click outside to close)
  */
 function setupCraftingModalHandlers() {
-  const modal = document.getElementById('craftingModal');
-  if (!modal) return;
+  const backdrop = document.getElementById('craftingModalBackdrop');
+  if (!backdrop) return;
 
-  // Close when clicking outside the modal
-  window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-      closeCraftingModal();
-    }
+  // Close when clicking backdrop
+  backdrop.addEventListener('click', () => {
+    closeCraftingModal();
   });
 }
 
