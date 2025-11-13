@@ -2781,6 +2781,28 @@ this.selectedJewelSuffix3MaxValue = null;
       // Update mercenary stats display
       this.updateMercenaryStatsDisplay();
 
+      // INTEGRATION: Add charm bonuses if charm system is available
+      if (typeof getCharmBonuses === 'function') {
+        const charmBonuses = getCharmBonuses();
+        // Merge charm bonuses into socket stats
+        this.stats.allSkills = (this.stats.allSkills || 0) + (charmBonuses.allSkills || 0);
+        this.stats.str = (this.stats.str || 0) + (charmBonuses.str || 0);
+        this.stats.dex = (this.stats.dex || 0) + (charmBonuses.dex || 0);
+        this.stats.vit = (this.stats.vit || 0) + (charmBonuses.vit || 0);
+        this.stats.enr = (this.stats.enr || 0) + (charmBonuses.enr || 0);
+        this.stats.life = (this.stats.life || 0) + (charmBonuses.life || 0);
+        this.stats.mana = (this.stats.mana || 0) + (charmBonuses.mana || 0);
+        this.stats.defense = (this.stats.defense || 0) + (charmBonuses.defense || 0);
+        this.stats.magicFind = (this.stats.magicFind || 0) + (charmBonuses.magicFind || 0);
+        this.stats.goldFind = (this.stats.goldFind || 0) + (charmBonuses.goldFind || 0);
+        this.stats.frw = (this.stats.frw || 0) + (charmBonuses.frw || 0);
+        this.stats.fhr = (this.stats.fhr || 0) + (charmBonuses.fhr || 0);
+        this.stats.coldResist = (this.stats.coldResist || 0) + (charmBonuses.coldResist || 0);
+        this.stats.fireResist = (this.stats.fireResist || 0) + (charmBonuses.fireResist || 0);
+        this.stats.lightResist = (this.stats.lightResist || 0) + (charmBonuses.lightResist || 0);
+        this.stats.poisonResist = (this.stats.poisonResist || 0) + (charmBonuses.poisonResist || 0);
+      }
+
   if (window.characterStatManager) {
     window.characterStatManager.updateAllStatDisplays();
   }
