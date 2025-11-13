@@ -703,7 +703,22 @@ window.updateItemInfo = function updateItemInfo(event) {
   const item = itemList && itemList[selectedItemName];
 
   if (item) {
-    // Generate description (handles both static and dynamic with variable stats)
+    // For dynamic items (no static description), delegate to socket system
+    // This ensures proper handling of corruptions, upgrades, and socket stats
+    if (!item.description && window.unifiedSocketSystem) {
+      const section = window.SECTION_MAP && window.SECTION_MAP[dropdown.id];
+      if (section) {
+        // Adjust socket count for new item if needed
+        if (typeof window.unifiedSocketSystem.adjustSocketsForItem === 'function') {
+          window.unifiedSocketSystem.adjustSocketsForItem(section);
+        }
+        // Update display with full socket system integration
+        window.unifiedSocketSystem.updateItemDisplay(section);
+        return; // Socket system handles everything for dynamic items
+      }
+    }
+
+    // For static items, generate description normally
     const description = generateItemDescription(selectedItemName, item, dropdown.id);
     infoDiv.innerHTML = description;
 
@@ -714,7 +729,7 @@ window.updateItemInfo = function updateItemInfo(event) {
     infoDiv.innerHTML = selectedItemName;
   }
 
-  // Adjust socket count for new item if needed, then update socket system
+  // For static items, adjust socket count and update socket system
   const section = window.SECTION_MAP && window.SECTION_MAP[dropdown.id];
   if (section && window.unifiedSocketSystem) {
     try {
