@@ -119,7 +119,8 @@ window.exportCharacterData = function() {
         poison: parseInt(document.getElementById('poisonresistcontainer')?.textContent) || 0
     };
 
-   
+    // Get crafted items if available
+    const craftedItems = window.craftedItemsSystem ? window.craftedItemsSystem.exportToData() : [];
 
     return {
         version: '1.1',
@@ -141,7 +142,8 @@ window.exportCharacterData = function() {
         variableStats,
         charms,
         skills,
-        resistances
+        resistances,
+        crafted_items: craftedItems
     };
 };
 
@@ -235,6 +237,11 @@ window.loadCharacterFromData = function(data) {
                 }
             }
             
+        }
+
+        // Load crafted items
+        if (data.crafted_items && window.craftedItemsSystem) {
+            window.craftedItemsSystem.loadFromData(data.crafted_items);
         }
 
         // Set equipment

@@ -372,6 +372,27 @@ function populateItemDropdowns() {
       option.textContent = itemName;
       dropdown.appendChild(option);
     });
+
+    // Add crafted items if user is logged in
+    if (window.auth?.isLoggedIn() && window.craftedItemsSystem) {
+      const craftedItems = window.craftedItemsSystem.getCraftedItemsByType(itemType);
+      if (craftedItems.length > 0) {
+        // Add separator
+        const separator = document.createElement('option');
+        separator.value = '';
+        separator.textContent = '--- Crafted Items ---';
+        separator.disabled = true;
+        dropdown.appendChild(separator);
+
+        // Add crafted items
+        craftedItems.forEach(craftedItem => {
+          const option = document.createElement('option');
+          option.value = craftedItem.fullName;
+          option.textContent = `[C] ${craftedItem.fullName}`;
+          dropdown.appendChild(option);
+        });
+      }
+    }
   }
 }
 
@@ -952,6 +973,248 @@ async function quickSaveBuild() {
 }
 
 /**
+ * Refresh all dropdowns (used when logging in/out to add/remove crafted items)
+ */
+function refreshItemDropdowns() {
+  populateItemDropdowns();
+}
+
+/**
+ * Open the crafting modal and populate base items list
+ */
+function openCraftingModal() {
+  if (!window.auth?.isLoggedIn()) {
+    alert('You must be logged in to create crafted items!');
+    return;
+  }
+
+  const modal = document.getElementById('craftingModal');
+  if (!modal) return;
+
+  // Populate base items dropdown
+  const baseTypeSelect = document.getElementById('craftBaseType');
+  if (baseTypeSelect) {
+    baseTypeSelect.innerHTML = '<option value="">Select base item...</option>';
+
+    // Get all unique base types from itemList
+    const baseTypes = new Set();
+    for (const itemName in itemList) {
+      const item = itemList[itemName];
+      if (item.baseType) {
+        baseTypes.add(itemName); // Use item name as it is the base type
+      }
+    }
+
+    // Add them sorted
+    Array.from(baseTypes).sort().forEach(itemName => {
+      const option = document.createElement('option');
+      option.value = itemName;
+      option.textContent = itemName;
+      baseTypeSelect.appendChild(option);
+    });
+  }
+
+  // Populate affixes sliders
+  const affixesContainer = document.getElementById('affixesContainer');
+  if (affixesContainer && window.craftedItemsSystem) {
+    affixesContainer.innerHTML = '';
+
+    for (const [affixKey, affixData] of Object.entries(window.craftedItemsSystem.affixesPool)) {
+      const affixDiv = document.createElement('div');
+      affixDiv.className = 'affix-control';
+      affixDiv.style.cssText = `
+        margin-bottom: 12px;
+        padding: 8px;
+        background: rgba(0,0,0,0.3);
+        border-radius: 4px;
+      `;
+
+      const label = document.createElement('label');
+      label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 5px;';
+      label.innerHTML = `${affixData.label} <span id="val_${affixKey}">0</span>`;
+
+      const slider = document.createElement('input');
+      slider.type = 'range';
+      slider.min = affixData.min;
+      slider.max = affixData.max;
+      slider.value = affixData.min;
+      slider.style.width = '100%';
+      slider.id = `affix_${affixKey}`;
+
+      slider.addEventListener('input', (e) => {
+        document.getElementById(`val_${affixKey}`).textContent = e.target.value;
+      });
+
+      affixDiv.appendChild(label);
+      affixDiv.appendChild(slider);
+      affixesContainer.appendChild(affixDiv);
+    }
+  }
+
+  // Clear form fields
+  document.getElementById('craftName').value = '';
+  document.getElementById('craftType').value = 'blood';
+
+  // Show modal
+  modal.style.display = 'block';
+}
+
+/**
+ * Close the crafting modal
+ */
+function closeCraftingModal() {
+  const modal = document.getElementById('craftingModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+/**
+ * Setup modal event listeners (click outside to close)
+ */
+function setupCraftingModalHandlers() {
+  const modal = document.getElementById('craftingModal');
+  if (!modal) return;
+
+  // Close when clicking outside the modal
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeCraftingModal();
+    }
+  });
+}
+
+/**
+ * Create a crafted item from the modal form
+ */
+function createCraftedItem() {
+  if (!window.craftedItemsSystem) {
+    alert('Crafted items system not initialized!');
+    return;
+  }
+
+  const name = document.getElementById('craftName').value.trim();
+  const baseType = document.getElementById('craftBaseType').value;
+  const craftType = document.getElementById('craftType').value;
+
+  if (!name) {
+    alert('Please enter an item name');
+    return;
+  }
+
+  if (!baseType) {
+    alert('Please select a base item type');
+    return;
+  }
+
+  // Collect selected affixes
+  const affixes = {};
+  const affixSliders = document.querySelectorAll('input[id^="affix_"]');
+  affixSliders.forEach(slider => {
+    const affixKey = slider.id.replace('affix_', '');
+    const value = parseInt(slider.value);
+    if (value > 0) {
+      affixes[affixKey] = value;
+    }
+  });
+
+  // Create the crafted item
+  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes);
+
+  if (!craftedItem) {
+    alert('Failed to create crafted item. Check your inputs and try again.');
+    return;
+  }
+
+  // Refresh dropdowns to show the new crafted item
+  refreshItemDropdowns();
+
+  // Close modal
+  closeCraftingModal();
+
+  // Show success message
+  if (window.notificationSystem) {
+    window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created.`, { duration: 4000 });
+  } else {
+    alert(`Crafted item created: ${craftedItem.fullName}`);
+  }
+}
+
+/**
+ * Create craft item button and add to UI
+ */
+function createCraftingButton() {
+  // Find save button container
+  const saveContainer = document.getElementById('save-build-container');
+  if (!saveContainer) return;
+
+  // Create craft button
+  const craftBtn = document.createElement('button');
+  craftBtn.id = 'craft-item-btn';
+  craftBtn.innerHTML = '⚒️ Craft Item';
+  craftBtn.style.cssText = `
+    background: linear-gradient(135deg, #1a5c1a, #0d3a0d);
+    color: #ffffff;
+    padding: 5px 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(26, 92, 26, 0.8);
+    transition: all 0.3s ease;
+    width: 66%;
+    white-space: normal;
+    word-wrap: break-word;
+  `;
+
+  craftBtn.addEventListener('click', () => {
+    if (!window.auth?.isLoggedIn()) {
+      alert('You must be logged in to craft items!');
+      document.getElementById('profile-btn')?.click();
+      return;
+    }
+    openCraftingModal();
+  });
+
+  craftBtn.addEventListener('mouseenter', () => {
+    craftBtn.style.transform = 'translateY(-2px)';
+    craftBtn.style.boxShadow = '0 6px 20px rgba(34, 139, 34, 0.6)';
+    craftBtn.style.background = 'linear-gradient(135deg, #2a8c2a, #1d5c1d)';
+  });
+
+  craftBtn.addEventListener('mouseleave', () => {
+    craftBtn.style.transform = 'translateY(0)';
+    craftBtn.style.boxShadow = '0 4px 15px rgba(26, 92, 26, 0.8)';
+    craftBtn.style.background = 'linear-gradient(135deg, #1a5c1a, #0d3a0d)';
+  });
+
+  // Add craft button below save button
+  saveContainer.appendChild(craftBtn);
+}
+
+/**
+ * Handle logout - refresh dropdowns to remove crafted items
+ */
+function handleLogout() {
+  // Clear crafted items system
+  if (window.craftedItemsSystem) {
+    window.craftedItemsSystem.clear();
+  }
+
+  // Refresh dropdowns
+  refreshItemDropdowns();
+}
+
+/**
+ * Handle login - reload crafted items from auth (if we had them saved)
+ */
+function handleLogin() {
+  // Refresh dropdowns to show crafted items
+  refreshItemDropdowns();
+}
+
+/**
  * Create save button and add to UI
  */
 function createSaveButton() {
@@ -1126,6 +1389,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 9. Create save button
   setTimeout(createSaveButton, 500);
+
+  // 9.5. Create crafting button
+  setTimeout(createCraftingButton, 600);
+
+  // 9.7. Setup crafting modal handlers
+  setTimeout(setupCraftingModalHandlers, 700);
 
   // 10. Load build from URL if present
   setTimeout(loadBuildFromURL, 1000);

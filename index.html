@@ -687,9 +687,57 @@
 
 
 
-   
+
+
+        <!-- Crafting Modal -->
+        <div id="craftingModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeCraftingModal()">&times;</span>
+                <h2>Create Crafted Item</h2>
+
+                <div class="craft-form">
+                    <div class="form-group">
+                        <label for="craftName">Item Name (max 11 chars):</label>
+                        <input type="text" id="craftName" maxlength="11" placeholder="e.g. myTestWeapon">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="craftBaseType">Base Item Type:</label>
+                        <select id="craftBaseType">
+                            <option value="">Select base item...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="craftType">Craft Type:</label>
+                        <select id="craftType">
+                            <option value="blood">Blood Craft</option>
+                            <option value="caster">Caster Craft</option>
+                            <option value="hitpower">Hit Power Craft</option>
+                            <option value="safety">Safety Craft</option>
+                            <option value="vampiric">Vampiric Craft</option>
+                            <option value="bountiful">Bountiful Craft</option>
+                            <option value="brilliant">Brilliant Craft</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Affixes (adjust sliders):</label>
+                        <div id="affixesContainer" class="affixes-grid">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button onclick="createCraftedItem()">Create Crafted Item</button>
+                        <button onclick="closeCraftingModal()" class="cancel-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 <script src="items.js"></script>
+<script src="craftedItems.js"></script>
 <script src="character.js"></script>
 <script src="socket.js"></script>
 <script src="corrupt.js"></script>
