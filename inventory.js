@@ -203,29 +203,24 @@ createModal() {
         <span class="close">&times;</span>
         <h3 style="margin: 0 0 20px 0; color: rgb(164, 19, 19);">Create Charm</h3>
 
-        <!-- Unique Charms Section -->
-        <div id="uniqueCharmSelection">
+        <!-- Selection View: UNIFIED, shown at start -->
+        <div id="charmSelectionView">
           <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Unique Charms:</h4>
-          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px;">
             <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
             <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
             <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
           </div>
-          <div style="text-align: center; color: #999; font-size: 12px; margin-bottom: 15px;">OR</div>
-        </div>
-
-        <!-- Regular Charm Type Selection -->
-        <div id="charmTypeSelection">
-          <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Regular Charm:</h4>
-          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+          <div style="text-align: center; color: #888; font-size: 12px; margin: 15px 0; border-top: 1px solid rgb(80, 80, 80); border-bottom: 1px solid rgb(80, 80, 80); padding: 10px 0;">Regular Charms</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
             <button data-type="small-charm" class="charm-type-btn">Small Charm (1x1)</button>
             <button data-type="large-charm" class="charm-type-btn">Large Charm (1x2)</button>
             <button data-type="grand-charm" class="charm-type-btn">Grand Charm (1x3)</button>
           </div>
         </div>
 
-        <!-- Charm Configuration (hidden initially) -->
-        <div id="charmConfiguration" style="display: none; flex: 1; display: flex; flex-direction: column;">
+        <!-- Customization View: hidden initially -->
+        <div id="charmCustomizationView" style="display: none; flex: 1; display: flex; flex-direction: column;">
           <div style="flex: 1; overflow-y: auto; padding-right: 10px;">
             <!-- Unique charm customization -->
             <div id="uniqueCharmCustomization" style="display: none;">
@@ -431,22 +426,19 @@ checkUniqueCharmAvailability() {
 
 selectUniqueCharm(uniqueCharmKey) {
   this.selectedUniqueCharm = uniqueCharmKey;
-  this.selectedCharmType = null; // Clear regular charm type
+  this.selectedCharmType = null;
   const uniqueCharm = this.uniqueCharms[uniqueCharmKey];
 
-  // Hide regular charm selection, show configuration
-  document.getElementById('charmTypeSelection').style.display = 'none';
-  document.getElementById('uniqueCharmSelection').style.display = 'none';
-  document.getElementById('charmConfiguration').style.display = 'block';
+  // Switch to customization view
+  document.getElementById('charmSelectionView').style.display = 'none';
+  document.getElementById('charmCustomizationView').style.display = 'flex';
+  document.getElementById('backCharmBtn').style.display = 'block';
 
-  // Show unique charm customization, hide regular charm customization
+  // Show only unique charm customization
   document.getElementById('uniqueCharmCustomization').style.display = 'block';
   document.getElementById('regularCharmCustomization').style.display = 'none';
 
-  // Show back button
-  document.getElementById('backCharmBtn').style.display = 'block';
-
-  // Populate unique charm stats
+  // Populate and show stats
   this.populateUniqueCharmStats(uniqueCharm);
   this.updateUniqueCharmPreview(uniqueCharm);
 }
@@ -454,10 +446,11 @@ selectUniqueCharm(uniqueCharmKey) {
 backToCharmSelection() {
   this.selectedUniqueCharm = null;
   this.selectedCharmType = null;
-  document.getElementById('uniqueCharmSelection').style.display = 'block';
-  document.getElementById('charmTypeSelection').style.display = 'block';
-  document.getElementById('charmConfiguration').style.display = 'none';
+  document.getElementById('charmSelectionView').style.display = 'block';
+  document.getElementById('charmCustomizationView').style.display = 'none';
   document.getElementById('backCharmBtn').style.display = 'none';
+  // Re-check availability when going back to selection
+  this.checkUniqueCharmAvailability();
 }
 
 populateUniqueCharmStats(uniqueCharm) {
@@ -516,21 +509,17 @@ updateUniqueCharmPreview(uniqueCharm = null) {
 }
 
 selectCharmType(type) {
-  // CLEAR unique charm selection when switching to regular charms
   this.selectedUniqueCharm = null;
   this.selectedCharmType = type;
 
-  // Show configuration section
-  document.getElementById('charmTypeSelection').style.display = 'none';
-  document.getElementById('uniqueCharmSelection').style.display = 'none';
-  document.getElementById('charmConfiguration').style.display = 'block';
+  // Switch to customization view
+  document.getElementById('charmSelectionView').style.display = 'none';
+  document.getElementById('charmCustomizationView').style.display = 'flex';
+  document.getElementById('backCharmBtn').style.display = 'block';
 
-  // Show regular charm customization, hide unique charm customization
+  // Show only regular charm customization
   document.getElementById('uniqueCharmCustomization').style.display = 'none';
   document.getElementById('regularCharmCustomization').style.display = 'block';
-
-  // Show back button
-  document.getElementById('backCharmBtn').style.display = 'block';
 
   // Populate prefix and suffix options
   this.populateAffixOptions(type);
@@ -1206,7 +1195,29 @@ createUniqueCharm() {
 
   const position = parseInt(this.selectedSlot.dataset.index);
   const uniqueCharm = this.uniqueCharms[this.selectedUniqueCharm];
-  const charmType = uniqueCharm.type; // Use the charm type from definition, not selectedCharmType
+  const charmType = uniqueCharm.type;
+
+  // VALIDATION: Check if this unique charm already exists in inventory
+  const container = document.querySelector('.inventorycontainer');
+  if (container) {
+    const allCharmElements = container.querySelectorAll('[data-charm-data]');
+    for (const element of allCharmElements) {
+      // Check if it's a text format (newline-separated) or JSON format
+      const charmDataStr = element.dataset.charmData;
+      let charmName = '';
+      try {
+        const jsonData = JSON.parse(charmDataStr);
+        charmName = jsonData.name;
+      } catch (e) {
+        // It's plain text format - get first line as name
+        charmName = charmDataStr.split('\n')[0];
+      }
+      if (charmName && charmName.trim() === uniqueCharm.name.trim()) {
+        alert(`${uniqueCharm.name} is already in inventory! Max 1 per charm.`);
+        return;
+      }
+    }
+  }
 
   if (!this.canPlaceCharm(position, charmType)) {
     alert('Not enough space!');
@@ -1228,18 +1239,21 @@ createUniqueCharm() {
     }
   });
 
-  // Create charm data
-  const charmData = JSON.stringify({
-    name: uniqueCharm.name,
-    stats: stats,
-    displayText: `${uniqueCharm.name}\n${stats.join('\n')}`,
-    imagePath: uniqueCharm.imagePath
-  });
-
-  const hoverText = `${uniqueCharm.name}\n${stats.join('\n')}`;
+  // Create charm data as NEWLINE-SEPARATED TEXT (getCharmBonuses expects this format!)
+  // This is crucial for getCharmBonuses() to parse "+1 to All Skills" correctly
+  const charmData = `${uniqueCharm.name}\n${stats.join('\n')}`;
   const backgroundImage = `url('${uniqueCharm.imagePath}')`;
 
-  this.placeCharm(position, charmType, backgroundImage, charmData, hoverText);
+  this.placeCharm(position, charmType, backgroundImage, charmData, charmData);
+
+  // Store the image path in a separate data attribute so we can restore it
+  const mainSlot = container.children[position];
+  if (mainSlot) mainSlot.dataset.imagePath = uniqueCharm.imagePath;
+
+  // Also set on overlays if it's a large/grand charm
+  const overlay = container.querySelector(`.charm-overlay[data-position="${position}"]`);
+  if (overlay) overlay.dataset.imagePath = uniqueCharm.imagePath;
+
   this.hideModal();
 }
 
@@ -1872,29 +1886,33 @@ fixCharmTitles() {
       return charms;
     }
 
-    // Debug: Check what slots exist
-    const allSlots = container.querySelectorAll('.charm1');
-    
-
     // Get small charms from regular slots
     const smallCharmSlots = container.querySelectorAll('.charm1:not([data-has-overlay])');
-    
 
     smallCharmSlots.forEach((slot, i) => {
-      const hasCharmData = !!slot.dataset.charmData;
-      const hasBackgroundImage = !!slot.style.backgroundImage;
-      
-
       if (slot.dataset.charmData && slot.style.backgroundImage) {
         try {
-          const charmData = JSON.parse(slot.dataset.charmData);
+          let charmData;
+          // Handle both JSON and text formats
+          try {
+            charmData = JSON.parse(slot.dataset.charmData);
+          } catch (e) {
+            // It's text format - convert to object with name and text
+            const lines = slot.dataset.charmData.split('\n').filter(l => l.trim());
+            charmData = {
+              name: lines[0] || 'Charm',
+              text: lines.join('\n'),
+              imagePath: slot.dataset.imagePath
+            };
+          }
+
           const position = parseInt(slot.dataset.index);
 
           let type = 'small-charm';
           if (slot.classList.contains('large-charm')) type = 'large-charm';
           if (slot.classList.contains('grand-charm')) type = 'grand-charm';
 
-          charms.push({ type, position, data: charmData });
+          charms.push({ type, position, data: charmData, imagePath: slot.dataset.imagePath || charmData.imagePath });
         } catch (e) {
           console.error('Failed to parse charm in slot', slot.dataset.index, e);
         }
@@ -1903,25 +1921,34 @@ fixCharmTitles() {
 
     // Get large/grand charms from overlay elements
     const overlays = container.querySelectorAll('.charm-overlay');
-    
 
     overlays.forEach((overlay, i) => {
-      
-
       try {
-        const charmData = JSON.parse(overlay.dataset.charmData);
+        let charmData;
+        // Handle both JSON and text formats
+        try {
+          charmData = JSON.parse(overlay.dataset.charmData);
+        } catch (e) {
+          // It's text format - convert to object with name and text
+          const lines = overlay.dataset.charmData.split('\n').filter(l => l.trim());
+          charmData = {
+            name: lines[0] || 'Charm',
+            text: lines.join('\n'),
+            imagePath: overlay.dataset.imagePath
+          };
+        }
+
         const position = parseInt(overlay.dataset.position);
 
         let type = 'large-charm';
         if (overlay.classList.contains('grand-charm')) type = 'grand-charm';
 
-        charms.push({ type, position, data: charmData });
+        charms.push({ type, position, data: charmData, imagePath: overlay.dataset.imagePath || charmData.imagePath });
       } catch (e) {
         console.error('Failed to parse charm in overlay', overlay.dataset.position, e);
       }
     });
 
-    
     return charms;
   }
 
@@ -1934,7 +1961,6 @@ fixCharmTitles() {
       console.error('Invalid charms array:', charmsArray);
       return;
     }
-
 
     // Clear existing charms first
     this.clearInventory();
@@ -1949,12 +1975,26 @@ fixCharmTitles() {
       }
 
       // Use saved image path if available, otherwise generate random
-      let imagePath;
-      try {
-        const charmData = typeof charm.data === 'string' ? JSON.parse(charm.data) : charm.data;
-        imagePath = charmData.imagePath;
-      } catch (e) {
-        // If we can't extract saved image, use random
+      let imagePath = charm.imagePath; // Try the direct imagePath property first
+
+      if (!imagePath) {
+        try {
+          // Try to extract from charm.data (either text or JSON format)
+          if (typeof charm.data === 'string') {
+            try {
+              // Try JSON format first
+              const charmData = JSON.parse(charm.data);
+              imagePath = charmData.imagePath;
+            } catch (e) {
+              // It's text format - extract imagePath if it was stored
+              // For text format charms, imagePath should be in charm.imagePath or we generate random
+            }
+          } else if (charm.data && charm.data.imagePath) {
+            imagePath = charm.data.imagePath;
+          }
+        } catch (e) {
+          // If we can't extract saved image, use random
+        }
       }
 
       // Fall back to random image if no saved path
@@ -1976,13 +2016,32 @@ fixCharmTitles() {
           return;
         }
 
+        // Prepare charm data - keep as text if it's text format, JSON if it's JSON
+        let charmDataStr;
+        if (typeof charm.data === 'string') {
+          charmDataStr = charm.data; // Already a string (either JSON or text)
+        } else {
+          charmDataStr = JSON.stringify(charm.data); // Convert object to JSON
+        }
+
         // Place the charm
         this.placeCharm(
           charm.position,
           charm.type,
           backgroundImage,
-          JSON.stringify(charm.data)
+          charmDataStr
         );
+
+        // Store the imagePath for later restoration
+        const container = document.querySelector('.inventorycontainer');
+        if (container) {
+          const mainSlot = container.children[charm.position];
+          if (mainSlot) mainSlot.dataset.imagePath = imagePath;
+
+          const overlay = container.querySelector(`.charm-overlay[data-position="${charm.position}"]`);
+          if (overlay) overlay.dataset.imagePath = imagePath;
+        }
+
         successCount++;
       } catch (e) {
         console.error(`Failed to restore charm at index ${idx}:`, e);
@@ -2176,6 +2235,11 @@ if (match = line.match(/\+?(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
   bonuses.lightResist = (bonuses.lightResist || 0) + val;
   bonuses.poisonResist = (bonuses.poisonResist || 0) + val;
 }
+
+      // All Skills (for unique charms like Annihilus)
+      if (match = line.match(/\+(\d+)\s+to\s+All\s+Skills/i)) {
+        bonuses.allSkills = (bonuses.allSkills || 0) + parseInt(match[1]);
+      }
 
       // Life
       if (match = line.match(/\+(\d+)\s+to\s+Life/i)) {
@@ -2471,7 +2535,8 @@ function onCharmChange() {
     vit: newCharmBonuses.vit || 0,
     enr: newCharmBonuses.enr || 0,
     life: newCharmBonuses.life || 0,
-    mana: newCharmBonuses.mana || 0
+    mana: newCharmBonuses.mana || 0,
+    allSkills: newCharmBonuses.allSkills || 0
   };
 
   // Update non-attribute stats directly
