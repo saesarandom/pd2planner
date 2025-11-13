@@ -3183,6 +3183,8 @@ function handleUpgrade() {
 
   if (!upgrades) return;
 
+  const isDynamic = currentItemData.baseType && !currentItemData.description;
+
   // Get description (generate if dynamic item)
   let description = currentItemData.description;
   if (!description && currentItemData.baseType) {
@@ -3216,21 +3218,29 @@ function handleUpgrade() {
         reqstr: baseStrengths[upgrades.elite.base],
       };
 
-      itemList[currentItem] = {
-        description: buildDescription(
-          currentItem,
-          upgrades.elite.base,
-          newProperties,
-          magicalProperties
-        ),
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.elite.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.elite.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-        select.dispatchEvent(new Event("change"));
-  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
-      
     }
   } else {
     if (
@@ -3246,21 +3256,29 @@ function handleUpgrade() {
         reqstr: baseStrengths[upgrades.exceptional.base],
       };
 
-      itemList[currentItem] = {
-        description: buildDescription(
-          currentItem,
-          upgrades.exceptional.base,
-          newProperties,
-          magicalProperties
-        ),
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.exceptional.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.exceptional.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-          select.dispatchEvent(new Event("change"));
-    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
-      
     }
   }
 
@@ -3367,6 +3385,8 @@ function handleWeaponUpgrade() {
 
   if (!upgrades) return;
 
+  const isDynamic = currentItemData.baseType && !currentItemData.description;
+
   // Get description (generate if dynamic item)
   let description = currentItemData.description;
   if (!description && currentItemData.baseType) {
@@ -3425,28 +3445,31 @@ function handleWeaponUpgrade() {
         );
       }
 
-      // DEBUG: Log the new damage values
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.elite.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        const newDescription = buildDescriptionWeapon(
+          currentItem,
+          upgrades.elite.base,
+          newProperties,
+          magicalProperties
+        );
 
-      // Create a new description with updated damage
-      const newDescription = buildDescriptionWeapon(
-        currentItem,
-        upgrades.elite.base,
-        newProperties,
-        magicalProperties
-      );
+        itemList[currentItem] = {
+          description: newDescription,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-      // DEBUG: Log the new description
-
-      // Update the item in itemList with new properties and description
-      itemList[currentItem] = {
-        description: newDescription,
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
-
-        select.dispatchEvent(new Event("change"));
-  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
     }
   } else {
     if (
@@ -3482,23 +3505,27 @@ function handleWeaponUpgrade() {
         );
       }
 
-      // DEBUG: Log the new damage values
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.exceptional.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        const newDescription = buildDescriptionWeapon(
+          currentItem,
+          upgrades.exceptional.base,
+          newProperties,
+          magicalProperties
+        );
 
-      // Create a new description with updated damage
-      const newDescription = buildDescriptionWeapon(
-        currentItem,
-        upgrades.exceptional.base,
-        newProperties,
-        magicalProperties
-      );
-
-      // DEBUG: Log the new description
-
-      // Update the item in itemList with new properties and description
-      itemList[currentItem] = {
-        description: newDescription,
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+        itemList[currentItem] = {
+          description: newDescription,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
           select.dispatchEvent(new Event("change"));
     if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
@@ -3753,6 +3780,8 @@ function handleBeltUpgrade() {
 
   if (!upgrades) return;
 
+  const isDynamic = currentItemData.baseType && !currentItemData.description;
+
   // Get description (generate if dynamic item)
   let description = currentItemData.description;
   if (!description && currentItemData.baseType) {
@@ -3769,7 +3798,7 @@ function handleBeltUpgrade() {
     return;
   }
 
-  const magicalProperties = currentItemData.description
+  const magicalProperties = description
     .split("<br>")
     .slice(3)
     .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
@@ -3790,20 +3819,28 @@ function handleBeltUpgrade() {
         reqstr: baseStrengths[upgrades.elite.base],
       };
 
-      itemList[currentItem] = {
-        description: buildDescription(
-          currentItem,
-          upgrades.elite.base,
-          newProperties,
-          magicalProperties
-        ),
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.elite.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.elite.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-        select.dispatchEvent(new Event("change"));
-  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
-      return;
-      
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
     }
   } else {
@@ -3821,21 +3858,29 @@ function handleBeltUpgrade() {
         reqstr: baseStrengths[upgrades.exceptional.base],
       };
 
-      itemList[currentItem] = {
-        description: buildDescription(
-          currentItem,
-          upgrades.exceptional.base,
-          newProperties,
-          magicalProperties
-        ),
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.exceptional.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.exceptional.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-          select.dispatchEvent(new Event("change"));
-    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
-      
     }
   }
 
