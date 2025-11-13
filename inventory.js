@@ -53,7 +53,7 @@ class CharmInventory {
       },
       'gheeds-fortune': {
         name: "Gheed's Fortune",
-        type: 'small-charm',
+        type: 'grand-charm',
         imagePath: 'img/gheedsfortune.png',
         stats: [
           { label: '+{value}% Extra Gold from Monsters', key: 'gold', min: 80, max: 160, value: 80 },
@@ -320,6 +320,7 @@ setupModalEvents() {
   // Close modal
   modal.addEventListener('click', (e) => {
     if (e.target.classList.contains('close') || e.target.id === 'charmModal') {
+      e.stopPropagation();
       this.hideModal();
     }
   });
@@ -327,6 +328,7 @@ setupModalEvents() {
   // Unique charm selection
   modal.addEventListener('click', (e) => {
     if (e.target.classList.contains('unique-charm-btn') && !e.target.disabled) {
+      e.stopPropagation();
       this.selectUniqueCharm(e.target.dataset.unique);
     }
   });
@@ -334,6 +336,7 @@ setupModalEvents() {
   // Charm type selection
   modal.addEventListener('click', (e) => {
     if (e.target.classList.contains('charm-type-btn')) {
+      e.stopPropagation();
       this.selectCharmType(e.target.dataset.type);
     }
   });
@@ -341,6 +344,7 @@ setupModalEvents() {
   // Back button
   modal.addEventListener('click', (e) => {
     if (e.target.id === 'backCharmBtn') {
+      e.stopPropagation();
       this.backToCharmSelection();
     }
   });
@@ -348,6 +352,7 @@ setupModalEvents() {
   // Prefix/Suffix selection
   modal.addEventListener('change', (e) => {
     if (e.target.id === 'prefixSelect' || e.target.id === 'suffixSelect') {
+      e.stopPropagation();
       this.updateCharmPreview();
     }
   });
@@ -355,6 +360,7 @@ setupModalEvents() {
   // Create charm button
   modal.addEventListener('click', (e) => {
     if (e.target.id === 'createCharmBtn') {
+      e.stopPropagation();
       if (this.selectedUniqueCharm) {
         this.createUniqueCharm();
       } else {
@@ -1448,6 +1454,52 @@ setupEventListeners() {
     }
 
     if (targetPosition !== null && this.canPlaceCharm(targetPosition, this.draggedCharm.charmType)) {
+      // VALIDATION: Prevent duplicating unique charms via right-click drag
+      const charmDataStr = this.draggedCharm.charmData;
+      if (charmDataStr) {
+        const uniqueCharmNames = {
+          'Annihilus': true,
+          'Hellfire Torch': true,
+          "Gheed's Fortune": true
+        };
+
+        let charmName = '';
+        try {
+          const jsonData = JSON.parse(charmDataStr);
+          charmName = jsonData.name;
+        } catch (e) {
+          // Text format - get first line as name
+          charmName = charmDataStr.split('\n')[0];
+        }
+
+        // Check if this is a unique charm being dragged
+        if (charmName && uniqueCharmNames[charmName.trim()]) {
+          // Check if it already exists in inventory
+          const allCharmElements = container.querySelectorAll('[data-charm-data]');
+          let countExisting = 0;
+          for (const element of allCharmElements) {
+            const elementDataStr = element.dataset.charmData;
+            let elementName = '';
+            try {
+              const jsonData = JSON.parse(elementDataStr);
+              elementName = jsonData.name;
+            } catch (e) {
+              elementName = elementDataStr.split('\n')[0];
+            }
+            if (elementName && elementName.trim() === charmName.trim()) {
+              countExisting++;
+            }
+          }
+
+          // If already exists (countExisting >= 1 means it already exists once), prevent duplication
+          if (countExisting >= 1) {
+            alert(`${charmName} is already in inventory! Max 1 per charm.`);
+            this.draggedCharm = null;
+            return;
+          }
+        }
+      }
+
       this.placeCharm(targetPosition, this.draggedCharm.charmType, this.draggedCharm.backgroundImage, this.draggedCharm.charmData);
 
     } else {
