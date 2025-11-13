@@ -424,9 +424,19 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   const baseDefenseMap = {
     'Buckler': 6,
     'Kite Shield': 18,
-    'Light Plate': 90,
-    'Skull Cap': 8,
-    // Add more as needed
+    'Light Plate': 99,
+    'Skull Cap': 11,
+    'Demonhide Sash': 34,
+    'Small Shield': 10,
+    'Large Shield': 14,
+    'Spiked Shield': 25,
+    'Bone Shield': 30,
+    'Tower Shield': 25,
+    'Gothic Shield': 35,
+    'Defender': 49,
+    'Demonhide Gloves': 35,
+    'Sharkskin Belt': 36,
+    'Mesh Belt': 40,
   };
 
   // Calculate dynamic defense if item has edef
@@ -446,7 +456,12 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     if (typeof edefProp === 'object' && edefProp.min && edefProp.max) {
       const minDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.min / 100)) + todefValue;
       const maxDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.max / 100)) + todefValue;
-      defenseDisplay = `Defense: ${calculatedDefense} (${minDef}-${maxDef})`;
+      // Only show range if min and max are different
+      if (minDef !== maxDef) {
+        defenseDisplay = `Defense: ${calculatedDefense} (${minDef}-${maxDef})`;
+      } else {
+        defenseDisplay = `Defense: ${calculatedDefense}`;
+      }
     } else {
       defenseDisplay = `Defense: ${calculatedDefense}`;
     }
@@ -513,6 +528,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere
   const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax'];
+
+  // Skip static defense value if we're calculating defense dynamically from edef
+  if (props.edef && item.baseType && baseDefenseMap[item.baseType]) {
+    skipProperties.push('defense');
+  }
 
   // Iterate through propertyDisplay keys in order to control display order
   // This ensures damage lines appear in the correct position, not at the end
