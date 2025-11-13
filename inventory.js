@@ -325,12 +325,28 @@ setupModalEvents() {
     }
   });
 
-  // Unique charm selection
+  // Unique charm selection - with explicit cursor handling
   modal.addEventListener('click', (e) => {
     if (e.target.classList.contains('unique-charm-btn') && !e.target.disabled) {
       e.stopPropagation();
       this.selectUniqueCharm(e.target.dataset.unique);
     }
+  });
+
+  // EXPLICIT CURSOR HANDLING for unique charm buttons
+  const uniqueCharmButtons = modal.querySelectorAll('.unique-charm-btn');
+  uniqueCharmButtons.forEach(btn => {
+    btn.addEventListener('mouseover', () => {
+      btn.style.cursor = 'pointer';
+      btn.style.cursor = 'pointer !important';
+    });
+    btn.addEventListener('mouseout', () => {
+      btn.style.cursor = 'pointer';
+      btn.style.cursor = 'pointer !important';
+    });
+    btn.addEventListener('mousemove', () => {
+      btn.style.cursor = 'pointer';
+    });
   });
 
   // Charm type selection
