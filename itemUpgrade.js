@@ -3293,6 +3293,8 @@ function handleArmorUpgrade() {
 
   if (!upgrades) return;
 
+  const isDynamic = currentItemData.baseType && !currentItemData.description;
+
   // Get description (generate if dynamic item)
   let description = currentItemData.description;
   if (!description && currentItemData.baseType) {
@@ -3309,7 +3311,7 @@ function handleArmorUpgrade() {
     return;
   }
 
-  const magicalProperties = currentItemData.description
+  const magicalProperties = description
     .split("<br>")
     .slice(3)
     .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
@@ -3326,21 +3328,29 @@ function handleArmorUpgrade() {
         reqstr: baseStrengths[upgrades.elite.base],
       };
 
-      itemList[currentItem] = {
-        description: buildDescription(
-          currentItem,
-          upgrades.elite.base,
-          newProperties,
-          magicalProperties
-        ),
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.elite.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.elite.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-        select.dispatchEvent(new Event("change"));
-  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
-      
     }
   } else {
     if (
@@ -3356,21 +3366,29 @@ function handleArmorUpgrade() {
         reqstr: baseStrengths[upgrades.exceptional.base],
       };
 
-      itemList[currentItem] = {
-        description: buildDescription(
-          currentItem,
-          upgrades.exceptional.base,
-          newProperties,
-          magicalProperties
-        ),
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.exceptional.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.exceptional.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-          select.dispatchEvent(new Event("change"));
-    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
-      
     }
   }
 
@@ -3683,6 +3701,8 @@ function handleGloveUpgrade() {
 
   if (!upgrades) return;
 
+  const isDynamic = currentItemData.baseType && !currentItemData.description;
+
   // Get description (generate if dynamic item)
   let description = currentItemData.description;
   if (!description && currentItemData.baseType) {
@@ -3720,21 +3740,29 @@ function handleGloveUpgrade() {
         reqstr: baseStrengths[upgrades.elite.base],
       };
 
-      itemList[currentItem] = {
-        description: buildDescription(
-          currentItem,
-          upgrades.elite.base,
-          newProperties,
-          magicalProperties
-        ),
-        properties: { ...currentItemData.properties, ...newProperties },
-      };
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.elite.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.elite.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
 
-        select.dispatchEvent(new Event("change"));
-  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
-      
     }
   } else {
     if (
@@ -3751,12 +3779,21 @@ function handleGloveUpgrade() {
         reqstr: baseStrengths[upgrades.exceptional.base],
       };
 
-      itemList[currentItem] = {
-        description: buildDescription(
-          currentItem,
-          upgrades.exceptional.base,
-          newProperties,
-          magicalProperties
+      if (isDynamic) {
+        // For dynamic items, update baseType and properties only (no description)
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.exceptional.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      } else {
+        // For static items, build new description
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.exceptional.base,
+            newProperties,
+            magicalProperties
         ),
         properties: { ...currentItemData.properties, ...newProperties },
       };
