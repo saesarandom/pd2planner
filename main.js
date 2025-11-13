@@ -456,7 +456,12 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     if (typeof edefProp === 'object' && edefProp.min && edefProp.max) {
       const minDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.min / 100)) + todefValue;
       const maxDef = Math.floor((baseItemDefense + 1) * (1 + edefProp.max / 100)) + todefValue;
-      defenseDisplay = `Defense: ${calculatedDefense} (${minDef}-${maxDef})`;
+      // Only show range if min and max are different
+      if (minDef !== maxDef) {
+        defenseDisplay = `Defense: ${calculatedDefense} (${minDef}-${maxDef})`;
+      } else {
+        defenseDisplay = `Defense: ${calculatedDefense}`;
+      }
     } else {
       defenseDisplay = `Defense: ${calculatedDefense}`;
     }
