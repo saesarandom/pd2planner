@@ -288,7 +288,7 @@ createModal() {
               font-weight: bold;
               transition: all 0.2s ease;
             " onmouseover="this.style.background='rgb(200, 30, 30)'; this.style.cursor='pointer';"
-               onmouseout="this.style.background='rgb(164, 19, 19)'; this.style.cursor='pointer';">Create Charm</button>
+               onmouseout="this.style.background='rgb(164, 20, 19)'; this.style.cursor='pointer';">Create Charm</button>
             <button id="backCharmBtn" style="
               background: rgb(60, 60, 60);
               color: white;
