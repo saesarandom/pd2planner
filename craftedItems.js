@@ -174,8 +174,6 @@ class CraftedItemsSystem {
     const index = this.craftedItems.findIndex(item => item.id === id);
     if (index !== -1) {
       this.craftedItems.splice(index, 1);
-      // Save to localStorage after deleting
-      this.saveToLocalStorage();
       return true;
     }
     return false;
@@ -183,7 +181,7 @@ class CraftedItemsSystem {
 
   /**
    * Load crafted items from saved data
-   * @param {Array} data - Array of crafted items from character_data.crafted_items
+   * @param {Array} data - Array of crafted items from backend or character_data
    */
   loadFromData(data) {
     if (!Array.isArray(data)) return;
@@ -197,40 +195,11 @@ class CraftedItemsSystem {
   }
 
   /**
-   * Export crafted items for saving
+   * Export crafted items for saving to character_data
    * @returns {Array} Serialized crafted items
    */
   exportToData() {
     return JSON.parse(JSON.stringify(this.craftedItems));
-  }
-
-  /**
-   * Save crafted items to localStorage
-   */
-  saveToLocalStorage() {
-    try {
-      const data = this.exportToData();
-      localStorage.setItem(this.storageKey, JSON.stringify(data));
-    } catch (error) {
-      console.error('Failed to save crafted items to localStorage:', error);
-    }
-  }
-
-  /**
-   * Load crafted items from localStorage
-   */
-  loadFromLocalStorage() {
-    try {
-      const data = localStorage.getItem(this.storageKey);
-      if (data) {
-        const craftedItems = JSON.parse(data);
-        this.loadFromData(craftedItems);
-        return true;
-      }
-    } catch (error) {
-      console.error('Failed to load crafted items from localStorage:', error);
-    }
-    return false;
   }
 
   /**
