@@ -2904,7 +2904,8 @@ function buildDescriptionWeapon(itemName, baseType, properties, magicalProps) {
   ].join("<br>");
 }
 
-function calculateItemDefense(item, baseType, category = "helm") {
+// Expose globally for use by main.js when edef/todef changes
+window.calculateItemDefense = function calculateItemDefense(item, baseType, category = "helm") {
   const baseDefense = baseDefenses[baseType] || 0;
 
   // Extract edef and todef, handling variable stats (objects with current property)
@@ -3234,6 +3235,12 @@ function handleUpgrade() {
           baseType: upgrades.elite.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         itemList[currentItem] = {
@@ -3276,6 +3283,12 @@ function handleUpgrade() {
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         itemList[currentItem] = {
@@ -3352,6 +3365,12 @@ function handleArmorUpgrade() {
           baseType: upgrades.elite.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         itemList[currentItem] = {
@@ -3394,6 +3413,12 @@ function handleArmorUpgrade() {
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         itemList[currentItem] = {
@@ -3495,6 +3520,12 @@ function handleWeaponUpgrade() {
           baseType: upgrades.elite.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         const newDescription = buildDescriptionWeapon(
@@ -3559,6 +3590,12 @@ function handleWeaponUpgrade() {
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         const newDescription = buildDescriptionWeapon(
@@ -3776,6 +3813,12 @@ function handleGloveUpgrade() {
           baseType: upgrades.elite.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         itemList[currentItem] = {
@@ -3819,6 +3862,12 @@ function handleGloveUpgrade() {
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         itemList[currentItem] = {
@@ -3899,6 +3948,12 @@ function handleBeltUpgrade() {
           baseType: upgrades.elite.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP['belts-dropdown'];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         itemList[currentItem] = {
@@ -3942,6 +3997,12 @@ function handleBeltUpgrade() {
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+
+        // Trigger update manually via socket system to ensure input boxes work
+        const section = window.SECTION_MAP && window.SECTION_MAP[select.id];
+        if (section && window.unifiedSocketSystem) {
+          window.unifiedSocketSystem.updateItemDisplay(section);
+        }
       } else {
         // For static items, build new description
         itemList[currentItem] = {
