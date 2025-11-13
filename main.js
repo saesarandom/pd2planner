@@ -525,7 +525,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     ligres: (val, prop) => formatVariableStat('+', val, '% Lightning Resistance', prop, itemName, 'ligres', dropdownId),
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
     physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
-    mdr: (val, prop) => formatVariableStat('Magic Damage Taken Reduced by ', val, '%', prop, itemName, 'mdr', dropdownId),
+    mdr: (val, prop) => formatVariableStat('Magic Damage Reduced by ', val, '', prop, itemName, 'mdr', dropdownId),
   };
 
   // Build description from properties
