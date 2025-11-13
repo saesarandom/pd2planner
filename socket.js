@@ -3390,36 +3390,29 @@ if (defMatch) {
     if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
 
     // Damage Reduction stats
-    // Physical Damage Taken Reduced by X% (percentage)
-    const pdrPercentMatch = cleanLine.match(/Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)%/i);
+    // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> PDR)
+    const pdrPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
     if (pdrPercentMatch) {
       this.stats.pdr += parseInt(pdrPercentMatch[1]);
       return;
     }
 
-    // Physical Damage Taken Reduced by X (flat)
+    // Physical Damage Taken Reduced by X (flat -> DR)
     const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)(?!%)/i);
     if (pdrFlatMatch) {
-      this.stats.pdr += parseInt(pdrFlatMatch[1]);
+      this.stats.dr += parseInt(pdrFlatMatch[1]);
       return;
     }
 
-    // Damage Reduced by X% (percentage)
-    const drPercentMatch = cleanLine.match(/Damage\s+Reduced\s+by\s+(\d+)%/i);
-    if (drPercentMatch) {
-      this.stats.dr += parseInt(drPercentMatch[1]);
-      return;
-    }
-
-    // Damage Reduced by X (flat)
-    const drFlatMatch = cleanLine.match(/Damage\s+Reduced\s+by\s+(\d+)(?!%)/i);
+    // Damage Reduced by X (flat -> DR)
+    const drFlatMatch = cleanLine.match(/^Damage\s+Reduced\s+by\s+(\d+)(?!%)/i);
     if (drFlatMatch) {
       this.stats.dr += parseInt(drFlatMatch[1]);
       return;
     }
 
-    // Magic Damage Taken Reduced by X (flat)
-    const mdrMatch = cleanLine.match(/Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i);
+    // Magic Damage Reduced by X (flat -> MDR)
+    const mdrMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)/i);
     if (mdrMatch) {
       this.stats.mdr += parseInt(mdrMatch[1]);
       return;
@@ -3716,7 +3709,55 @@ if (deathProcMatch) {
         return;
       }
 
-     
+      // Minimum Damage: +X to Minimum Damage (Sol rune, jewels)
+      const minDmgMatch = cleanLine.match(/\+(\d+)\s+to\s+Minimum\s+Damage/i);
+      if (minDmgMatch) {
+        const value = parseInt(minDmgMatch[1]);
+        this.addToStatsMap(statsMap, 'minimum_damage', { value });
+        return;
+      }
+
+      // Maximum Damage: +X to Maximum Damage (jewels)
+      const maxDmgMatch = cleanLine.match(/\+(\d+)\s+to\s+Maximum\s+Damage/i);
+      if (maxDmgMatch) {
+        const value = parseInt(maxDmgMatch[1]);
+        this.addToStatsMap(statsMap, 'maximum_damage', { value });
+        return;
+      }
+
+      // Mana after each Kill: +X to Mana after each Kill (Tir rune)
+      const manaKillMatch = cleanLine.match(/\+(\d+)\s+to\s+Mana\s+after\s+each\s+Kill/i);
+      if (manaKillMatch) {
+        const value = parseInt(manaKillMatch[1]);
+        this.addToStatsMap(statsMap, 'mana_after_kill', { value });
+        return;
+      }
+
+      // Replenish Life: Replenish Life +X (Dol rune)
+      const replenishLifeMatch = cleanLine.match(/Replenish\s+Life\s+\+(\d+)/i);
+      if (replenishLifeMatch) {
+        const value = parseInt(replenishLifeMatch[1]);
+        this.addToStatsMap(statsMap, 'replenish_life', { value });
+        return;
+      }
+
+      // Damage vs Undead: +X% Damage vs Undead (Eld rune)
+      const dmgUndeadMatch = cleanLine.match(/\+(\d+)%\s+Damage\s+vs\s+Undead/i);
+      if (dmgUndeadMatch) {
+        const value = parseInt(dmgUndeadMatch[1]);
+        this.addToStatsMap(statsMap, 'damage_vs_undead', { value });
+        return;
+      }
+
+      // Attack Rating vs Undead: +X Attack Rating vs Undead (Eld rune)
+      const arUndeadMatch = cleanLine.match(/\+(\d+)\s+Attack\s+Rating\s+vs\s+Undead/i);
+      if (arUndeadMatch) {
+        const value = parseInt(arUndeadMatch[1]);
+        this.addToStatsMap(statsMap, 'ar_vs_undead', { value });
+        return;
+      }
+
+
 
       // Store other stats as non-stackable
       statsMap.set(`other_${Date.now()}_${Math.random()}`, { text: cleanLine, stackable: false });
@@ -3839,6 +3880,18 @@ addToStatsMap(statsMap, key, data) {
         return `<span style="color: ${color}; font-weight: bold;">${data.value}% Deadly Strike</span>`;
       case 'open_wounds':
         return `<span style="color: ${color}; font-weight: bold;">${data.value}% Chance of Open Wounds</span>`;
+      case 'minimum_damage':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Minimum Damage</span>`;
+      case 'maximum_damage':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Maximum Damage</span>`;
+      case 'mana_after_kill':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Mana after each Kill</span>`;
+      case 'replenish_life':
+        return `<span style="color: ${color}; font-weight: bold;">Replenish Life +${data.value}</span>`;
+      case 'damage_vs_undead':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Damage vs Undead</span>`;
+      case 'ar_vs_undead':
+        return `<span style="color: ${color}; font-weight: bold;">+${data.value} Attack Rating vs Undead</span>`;
       case 'fire_skill_damage':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Fire Skill Damage</span>`;
       case 'cold_skill_damage':
@@ -3916,6 +3969,18 @@ addToStatsMap(statsMap, key, data) {
         return /\d+%\s+Deadly\s+Strike/gi;
       case 'open_wounds':
         return /\d+%\s+Chance\s+of\s+Open\s+Wounds/gi;
+      case 'minimum_damage':
+        return /\+\d+\s+to\s+Minimum\s+Damage/gi;
+      case 'maximum_damage':
+        return /\+\d+\s+to\s+Maximum\s+Damage/gi;
+      case 'mana_after_kill':
+        return /\+\d+\s+to\s+Mana\s+after\s+each\s+Kill/gi;
+      case 'replenish_life':
+        return /Replenish\s+Life\s+\+\d+/gi;
+      case 'damage_vs_undead':
+        return /\+\d+%\s+Damage\s+vs\s+Undead/gi;
+      case 'ar_vs_undead':
+        return /\+\d+\s+Attack\s+Rating\s+vs\s+Undead/gi;
       case 'fire_skill_damage':
         return /\+(\d+)%\s+to\s+Fire\s+Skill\s+Damage/gi;
       case 'cold_skill_damage':
