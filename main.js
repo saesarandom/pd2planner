@@ -697,19 +697,6 @@ window.updateItemInfo = function updateItemInfo(event) {
   const item = itemList && itemList[selectedItemName];
 
   if (item) {
-    // Reset any .current values for dynamic items to ensure fresh regeneration
-    // This prevents values from "sticking" when switching between items
-    // BUT skip if we're loading a saved build (to preserve the saved values)
-    if (item.properties && item.baseType && !window._isLoadingCharacterData) {
-      Object.keys(item.properties).forEach(key => {
-        const prop = item.properties[key];
-        if (typeof prop === 'object' && prop !== null && 'max' in prop) {
-          // Reset to max value instead of deleting to avoid [object Object] display
-          prop.current = prop.max;
-        }
-      });
-    }
-
     // Generate description (handles both static and dynamic with variable stats)
     const description = generateItemDescription(selectedItemName, item, dropdown.id);
     infoDiv.innerHTML = description;
