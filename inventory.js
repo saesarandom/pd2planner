@@ -203,29 +203,24 @@ createModal() {
         <span class="close">&times;</span>
         <h3 style="margin: 0 0 20px 0; color: rgb(164, 19, 19);">Create Charm</h3>
 
-        <!-- Unique Charms Section -->
-        <div id="uniqueCharmSelection">
+        <!-- Selection View: UNIFIED, shown at start -->
+        <div id="charmSelectionView">
           <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Unique Charms:</h4>
-          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px;">
             <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
             <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
             <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="if(!this.disabled) this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
           </div>
-          <div style="text-align: center; color: #999; font-size: 12px; margin-bottom: 15px;">OR</div>
-        </div>
-
-        <!-- Regular Charm Type Selection -->
-        <div id="charmTypeSelection">
-          <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Regular Charm:</h4>
-          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+          <div style="text-align: center; color: #888; font-size: 12px; margin: 15px 0; border-top: 1px solid rgb(80, 80, 80); border-bottom: 1px solid rgb(80, 80, 80); padding: 10px 0;">Regular Charms</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
             <button data-type="small-charm" class="charm-type-btn">Small Charm (1x1)</button>
             <button data-type="large-charm" class="charm-type-btn">Large Charm (1x2)</button>
             <button data-type="grand-charm" class="charm-type-btn">Grand Charm (1x3)</button>
           </div>
         </div>
 
-        <!-- Charm Configuration (hidden initially) -->
-        <div id="charmConfiguration" style="display: none; flex: 1; display: flex; flex-direction: column;">
+        <!-- Customization View: hidden initially -->
+        <div id="charmCustomizationView" style="display: none; flex: 1; display: flex; flex-direction: column;">
           <div style="flex: 1; overflow-y: auto; padding-right: 10px;">
             <!-- Unique charm customization -->
             <div id="uniqueCharmCustomization" style="display: none;">
@@ -431,22 +426,19 @@ checkUniqueCharmAvailability() {
 
 selectUniqueCharm(uniqueCharmKey) {
   this.selectedUniqueCharm = uniqueCharmKey;
-  this.selectedCharmType = null; // Clear regular charm type
+  this.selectedCharmType = null;
   const uniqueCharm = this.uniqueCharms[uniqueCharmKey];
 
-  // Hide regular charm selection, show configuration
-  document.getElementById('charmTypeSelection').style.display = 'none';
-  document.getElementById('uniqueCharmSelection').style.display = 'none';
-  document.getElementById('charmConfiguration').style.display = 'block';
+  // Switch to customization view
+  document.getElementById('charmSelectionView').style.display = 'none';
+  document.getElementById('charmCustomizationView').style.display = 'flex';
+  document.getElementById('backCharmBtn').style.display = 'block';
 
-  // Show unique charm customization, hide regular charm customization
+  // Show only unique charm customization
   document.getElementById('uniqueCharmCustomization').style.display = 'block';
   document.getElementById('regularCharmCustomization').style.display = 'none';
 
-  // Show back button
-  document.getElementById('backCharmBtn').style.display = 'block';
-
-  // Populate unique charm stats
+  // Populate and show stats
   this.populateUniqueCharmStats(uniqueCharm);
   this.updateUniqueCharmPreview(uniqueCharm);
 }
@@ -454,10 +446,11 @@ selectUniqueCharm(uniqueCharmKey) {
 backToCharmSelection() {
   this.selectedUniqueCharm = null;
   this.selectedCharmType = null;
-  document.getElementById('uniqueCharmSelection').style.display = 'block';
-  document.getElementById('charmTypeSelection').style.display = 'block';
-  document.getElementById('charmConfiguration').style.display = 'none';
+  document.getElementById('charmSelectionView').style.display = 'block';
+  document.getElementById('charmCustomizationView').style.display = 'none';
   document.getElementById('backCharmBtn').style.display = 'none';
+  // Re-check availability when going back to selection
+  this.checkUniqueCharmAvailability();
 }
 
 populateUniqueCharmStats(uniqueCharm) {
@@ -516,21 +509,17 @@ updateUniqueCharmPreview(uniqueCharm = null) {
 }
 
 selectCharmType(type) {
-  // CLEAR unique charm selection when switching to regular charms
   this.selectedUniqueCharm = null;
   this.selectedCharmType = type;
 
-  // Show configuration section
-  document.getElementById('charmTypeSelection').style.display = 'none';
-  document.getElementById('uniqueCharmSelection').style.display = 'none';
-  document.getElementById('charmConfiguration').style.display = 'block';
+  // Switch to customization view
+  document.getElementById('charmSelectionView').style.display = 'none';
+  document.getElementById('charmCustomizationView').style.display = 'flex';
+  document.getElementById('backCharmBtn').style.display = 'block';
 
-  // Show regular charm customization, hide unique charm customization
+  // Show only regular charm customization
   document.getElementById('uniqueCharmCustomization').style.display = 'none';
   document.getElementById('regularCharmCustomization').style.display = 'block';
-
-  // Show back button
-  document.getElementById('backCharmBtn').style.display = 'block';
 
   // Populate prefix and suffix options
   this.populateAffixOptions(type);
@@ -1206,7 +1195,24 @@ createUniqueCharm() {
 
   const position = parseInt(this.selectedSlot.dataset.index);
   const uniqueCharm = this.uniqueCharms[this.selectedUniqueCharm];
-  const charmType = uniqueCharm.type; // Use the charm type from definition, not selectedCharmType
+  const charmType = uniqueCharm.type;
+
+  // VALIDATION: Check if this unique charm already exists in inventory
+  const container = document.querySelector('.inventorycontainer');
+  if (container) {
+    const allCharmElements = container.querySelectorAll('[data-charm-data]');
+    for (const element of allCharmElements) {
+      try {
+        const data = JSON.parse(element.dataset.charmData);
+        if (data.name && data.name.trim() === uniqueCharm.name.trim()) {
+          alert(`${uniqueCharm.name} is already in inventory! Max 1 per charm.`);
+          return;
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+  }
 
   if (!this.canPlaceCharm(position, charmType)) {
     alert('Not enough space!');
