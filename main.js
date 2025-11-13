@@ -1145,17 +1145,38 @@ function createCraftedItem() {
     return;
   }
 
-  // Refresh dropdowns to show the new crafted item
-  refreshItemDropdowns();
+  // Save to backend
+  if (window.auth?.isLoggedIn()) {
+    window.auth.saveCraftedItem(craftedItem)
+      .then(() => {
+        // Refresh dropdowns to show the new crafted item
+        refreshItemDropdowns();
 
-  // Close modal
-  closeCraftingModal();
+        // Close modal
+        closeCraftingModal();
 
-  // Show success message
-  if (window.notificationSystem) {
-    window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created.`, { duration: 4000 });
+        // Show success message
+        if (window.notificationSystem) {
+          window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created and saved.`, { duration: 4000 });
+        } else {
+          alert(`Crafted item created: ${craftedItem.fullName}`);
+        }
+      })
+      .catch(error => {
+        alert(`Failed to save crafted item: ${error.message}`);
+        // Remove from local system if backend save failed
+        window.craftedItemsSystem.deleteCraftedItem(craftedItem.id);
+      });
   } else {
-    alert(`Crafted item created: ${craftedItem.fullName}`);
+    // No login - just update local and close
+    refreshItemDropdowns();
+    closeCraftingModal();
+
+    if (window.notificationSystem) {
+      window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created.`, { duration: 4000 });
+    } else {
+      alert(`Crafted item created: ${craftedItem.fullName}`);
+    }
   }
 }
 
@@ -1226,11 +1247,20 @@ function handleLogout() {
 }
 
 /**
- * Handle login - reload crafted items from auth (if we had them saved)
+ * Handle login - load crafted items from backend
  */
-function handleLogin() {
-  // Refresh dropdowns to show crafted items
-  refreshItemDropdowns();
+async function handleLogin() {
+  // Load crafted items from backend
+  if (window.auth?.isLoggedIn() && window.craftedItemsSystem) {
+    try {
+      const craftedItems = await window.auth.getCraftedItems();
+      window.craftedItemsSystem.loadFromData(craftedItems);
+      // Refresh dropdowns to show crafted items
+      refreshItemDropdowns();
+    } catch (error) {
+      console.error('Failed to load crafted items on login:', error);
+    }
+  }
 }
 
 /**

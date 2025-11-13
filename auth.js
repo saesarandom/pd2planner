@@ -301,6 +301,86 @@ class Auth {
             console.error('Failed to save settings:', error);
         }
     }
+
+    // === CRAFTED ITEMS API ===
+
+    async getCraftedItems() {
+        if (!this.isLoggedIn()) {
+            throw new Error('Must be logged in to fetch crafted items');
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/api/crafted-items`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch crafted items');
+            }
+
+            const data = await response.json();
+            return data.craftedItems || [];
+        } catch (error) {
+            console.error('Failed to get crafted items:', error);
+            return [];
+        }
+    }
+
+    async saveCraftedItem(craftedItem) {
+        if (!this.isLoggedIn()) {
+            throw new Error('Must be logged in to save crafted items');
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/api/crafted-items`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(craftedItem)
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to save crafted item');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Failed to save crafted item:', error);
+            throw error;
+        }
+    }
+
+    async deleteCraftedItem(craftId) {
+        if (!this.isLoggedIn()) {
+            throw new Error('Must be logged in to delete crafted items');
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/api/crafted-items/${craftId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete crafted item');
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Failed to delete crafted item:', error);
+            throw error;
+        }
+    }
 }
 
 // Initialize auth globally

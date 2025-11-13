@@ -53,9 +53,20 @@ CREATE TABLE IF NOT EXISTS session_tokens (
   expires_at TIMESTAMP NOT NULL
 );
 
+-- Crafted items table (per-user, account-level)
+CREATE TABLE IF NOT EXISTS crafted_items (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  craft_id VARCHAR(50) UNIQUE NOT NULL,
+  item_data JSONB NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_characters_user_id ON characters(user_id);
 CREATE INDEX IF NOT EXISTS idx_characters_build_id ON characters(build_id);
 CREATE INDEX IF NOT EXISTS idx_achievements_user_id ON achievements(user_id);
 CREATE INDEX IF NOT EXISTS idx_session_tokens_user_id ON session_tokens(user_id);
 CREATE INDEX IF NOT EXISTS idx_session_tokens_token ON session_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_crafted_items_user_id ON crafted_items(user_id);
