@@ -463,12 +463,21 @@ populateUniqueCharmStats(uniqueCharm) {
   const statsContainer = document.getElementById('uniqueCharmStats');
   let html = '';
 
+  // Get the current selected class for stat labels
+  const classSelect = document.getElementById('selectClass');
+  const currentClass = classSelect ? classSelect.value : 'Amazon';
+
   uniqueCharm.stats.forEach((stat, index) => {
     if (stat.fixed !== undefined) {
       // Fixed value - no slider
+      let statLabel = stat.label;
+      // Replace [Random Class] with actual class name for Hellfire Torch
+      if (statLabel.includes('[Random Class]')) {
+        statLabel = statLabel.replace('[Random Class]', currentClass);
+      }
       html += `
         <div style="margin-bottom: 10px;">
-          <div style="color: #FFD700; margin-bottom: 3px;">${stat.label}</div>
+          <div style="color: #FFD700; margin-bottom: 3px;">${statLabel}</div>
           <div style="color: #999; font-size: 12px;">${stat.fixed}</div>
         </div>
       `;
@@ -498,12 +507,21 @@ updateUniqueCharmPreview(uniqueCharm = null) {
     uniqueCharm = this.uniqueCharms[this.selectedUniqueCharm];
   }
 
+  // Get the current selected class for preview
+  const classSelect = document.getElementById('selectClass');
+  const currentClass = classSelect ? classSelect.value : 'Amazon';
+
   const preview = document.getElementById('uniqueCharmPreview');
   let previewHTML = `<div style="color: #FFD700; font-weight: bold; margin-bottom: 8px;">${uniqueCharm.name}</div>`;
 
   uniqueCharm.stats.forEach((stat, index) => {
     if (stat.fixed !== undefined) {
-      previewHTML += `<div style="color: #87CEEB;">${stat.label}</div>`;
+      let statLabel = stat.label;
+      // Replace [Random Class] with actual class name for Hellfire Torch preview
+      if (statLabel.includes('[Random Class]')) {
+        statLabel = statLabel.replace('[Random Class]', currentClass);
+      }
+      previewHTML += `<div style="color: #87CEEB;">${statLabel}</div>`;
     } else {
       const slider = document.getElementById(`uniqueStat${index}`);
       const value = slider ? slider.value : stat.value;
@@ -1231,11 +1249,20 @@ createUniqueCharm() {
 
   let stats = [];
 
+  // Get the current selected class for Hellfire Torch
+  const classSelect = document.getElementById('selectClass');
+  const currentClass = classSelect ? classSelect.value : 'Amazon';
+
   // Build stats from unique charm definition with current slider values
   uniqueCharm.stats.forEach((stat, index) => {
     if (stat.fixed !== undefined) {
       // Fixed value
-      stats.push(stat.label);
+      let statLabel = stat.label;
+      // Replace [Random Class] with actual class name for Hellfire Torch
+      if (statLabel.includes('[Random Class]')) {
+        statLabel = statLabel.replace('[Random Class]', currentClass);
+      }
+      stats.push(statLabel);
     } else {
       // Variable value - get from slider
       const slider = document.getElementById(`uniqueStat${index}`);
@@ -2272,6 +2299,12 @@ if (match = line.match(/\+?(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
         bonuses.allSkills = (bonuses.allSkills || 0) + parseInt(match[1]);
       }
 
+      // Class-specific Skills (for Hellfire Torch: "+2 to Amazon Skills", "+2 to Sorceress Skills", etc.)
+      // Track separately from all skills - to be displayed in a dedicated container later
+      if (match = line.match(/\+(\d+)\s+to\s+(Amazon|Sorceress|Necromancer|Druid|Paladin|Barbarian)\s+Skills/i)) {
+        bonuses.classSkills = (bonuses.classSkills || 0) + parseInt(match[1]);
+      }
+
       // Life
       if (match = line.match(/\+(\d+)\s+to\s+Life/i)) {
         bonuses.life = (bonuses.life || 0) + parseInt(match[1]);
@@ -2567,7 +2600,8 @@ function onCharmChange() {
     enr: newCharmBonuses.enr || 0,
     life: newCharmBonuses.life || 0,
     mana: newCharmBonuses.mana || 0,
-    allSkills: newCharmBonuses.allSkills || 0
+    allSkills: newCharmBonuses.allSkills || 0,
+    classSkills: newCharmBonuses.classSkills || 0  // Class-specific skill bonuses (tracked separately)
   };
 
   // Update non-attribute stats directly

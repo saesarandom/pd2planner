@@ -420,9 +420,12 @@ window.loadCharacterFromData = function(data) {
                 window.characterManager.calculateLifeAndMana();
             }
 
-            // Ensure skill bonus indicators are updated with current All Skills bonus
+            // Ensure skill bonus indicators are updated with current All Skills and Class Skills bonuses
             if (window.skillSystem && window.unifiedSocketSystem) {
-                window.skillSystem.updateSkillBonuses(window.unifiedSocketSystem.stats?.allSkills || 0);
+                window.skillSystem.updateSkillBonuses(
+                    window.unifiedSocketSystem.stats?.allSkills || 0,
+                    window.unifiedSocketSystem.stats?.classSkills || 0
+                );
                 window.skillSystem.updateSkillDropdown();
             }
 

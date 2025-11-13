@@ -2786,6 +2786,7 @@ this.selectedJewelSuffix3MaxValue = null;
         const charmBonuses = getCharmBonuses();
         // Merge charm bonuses into socket stats
         this.stats.allSkills = (this.stats.allSkills || 0) + (charmBonuses.allSkills || 0);
+        this.stats.classSkills = (this.stats.classSkills || 0) + (charmBonuses.classSkills || 0);
         this.stats.str = (this.stats.str || 0) + (charmBonuses.str || 0);
         this.stats.dex = (this.stats.dex || 0) + (charmBonuses.dex || 0);
         this.stats.vit = (this.stats.vit || 0) + (charmBonuses.vit || 0);
@@ -4209,9 +4210,9 @@ addToStatsMap(statsMap, key, data) {
     // Core stats
     this.updateElement('allskillscontainer', this.stats.allSkills);
 
-    // Update skill bonus indicators if skill system is available
+    // Update skill bonus indicators if skill system is available (include both all skills and class skills)
     if (window.skillSystem) {
-      window.skillSystem.updateSkillBonuses(this.stats.allSkills);
+      window.skillSystem.updateSkillBonuses(this.stats.allSkills, this.stats.classSkills);
     }
 
     this.updateElement('magicfindcontainer', this.stats.magicFind);
