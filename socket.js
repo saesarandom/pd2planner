@@ -51,7 +51,7 @@
         ias: 0, fcr: 0, frw: 0, fhr: 0,
         fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
         allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0,
-        life: 0, mana: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
+        life: 0, mana: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
         lightDmgMin: 0, lightDmgMax: 0, fireDmgMin: 0, fireDmgMax: 0,
         coldDmgMin: 0, coldDmgMax: 0, poisonDmgMin: 0, poisonDmgMax: 0,   fireSkillDamage: 0,
     coldSkillDamage: 0,
@@ -3363,7 +3363,15 @@ if (defMatch) {
 
     const curseResMatch = cleanLine.match(/Curse\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (curseResMatch) { this.stats.curseResist += parseInt(curseResMatch[1]); return; }
-    
+
+    // Life Steal
+    const lifeStealMatch = cleanLine.match(/(\d+)%\s+Life\s+Stolen\s+per\s+Hit/i);
+    if (lifeStealMatch) { this.stats.lifeSteal += parseInt(lifeStealMatch[1]); return; }
+
+    // Mana Steal
+    const manaStealMatch = cleanLine.match(/(\d+)%\s+Mana\s+Stolen\s+per\s+Hit/i);
+    if (manaStealMatch) { this.stats.manaSteal += parseInt(manaStealMatch[1]); return; }
+
     // Magic Find
     const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
     if (mfMatch) { this.stats.magicFind += parseInt(mfMatch[1]); return; }
@@ -4098,6 +4106,8 @@ addToStatsMap(statsMap, key, data) {
     this.updateElement('cbdmgcontainer', this.stats.crushingBlow);
     this.updateElement('deadlystrikecontainer', this.stats.deadlyStrike);
     this.updateElement('criticalhitcontainer', this.stats.criticalHit || 0);
+    this.updateElement('lifestealcontainer', this.stats.lifeSteal);
+    this.updateElement('manastealcontainer', this.stats.manaSteal);
     
     // Defensive stats - using correct HTML IDs
     this.updateElement('drcontainer', this.stats.dr);
@@ -4143,7 +4153,12 @@ addToStatsMap(statsMap, key, data) {
     this.updateElement('piercelightningcontainer', this.stats.pierceLightning);
     this.updateElement('piercepoisoncontainer', this.stats.piercePoison);
     this.updateElement('piercephyscontainer', this.stats.piercePhysical);
-    
+
+    // Update crit multiplier when stats change (including deadly strike)
+    if (typeof window.updateCritDisplay === 'function') {
+      window.updateCritDisplay();
+    }
+
       if (window.onEquipmentOrSocketChange) {
       window.onEquipmentOrSocketChange();
     }
