@@ -2300,9 +2300,9 @@ if (match = line.match(/\+?(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
       }
 
       // Class-specific Skills (for Hellfire Torch: "+2 to Amazon Skills", "+2 to Sorceress Skills", etc.)
-      // This also counts as a bonus to all skills since it's a fixed skill bonus
+      // Track separately from all skills - to be displayed in a dedicated container later
       if (match = line.match(/\+(\d+)\s+to\s+(Amazon|Sorceress|Necromancer|Druid|Paladin|Barbarian)\s+Skills/i)) {
-        bonuses.allSkills = (bonuses.allSkills || 0) + parseInt(match[1]);
+        bonuses.classSkills = (bonuses.classSkills || 0) + parseInt(match[1]);
       }
 
       // Life
@@ -2600,7 +2600,8 @@ function onCharmChange() {
     enr: newCharmBonuses.enr || 0,
     life: newCharmBonuses.life || 0,
     mana: newCharmBonuses.mana || 0,
-    allSkills: newCharmBonuses.allSkills || 0
+    allSkills: newCharmBonuses.allSkills || 0,
+    classSkills: newCharmBonuses.classSkills || 0  // Class-specific skill bonuses (tracked separately)
   };
 
   // Update non-attribute stats directly

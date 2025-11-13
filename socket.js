@@ -2786,6 +2786,7 @@ this.selectedJewelSuffix3MaxValue = null;
         const charmBonuses = getCharmBonuses();
         // Merge charm bonuses into socket stats
         this.stats.allSkills = (this.stats.allSkills || 0) + (charmBonuses.allSkills || 0);
+        this.stats.classSkills = (this.stats.classSkills || 0) + (charmBonuses.classSkills || 0);
         this.stats.str = (this.stats.str || 0) + (charmBonuses.str || 0);
         this.stats.dex = (this.stats.dex || 0) + (charmBonuses.dex || 0);
         this.stats.vit = (this.stats.vit || 0) + (charmBonuses.vit || 0);
