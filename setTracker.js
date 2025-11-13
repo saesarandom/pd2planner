@@ -4,6 +4,7 @@
 class SetTracker {
   constructor() {
     this.equippedSets = new Map(); // Map of setName -> {items: [], bonuses: []}
+    this.activeBuffs = new Set(); // Track which set buffs are currently displayed
 
     // Define complete set sizes for each set
     this.SET_SIZES = {
@@ -321,10 +322,10 @@ class SetTracker {
     });
 
     // Listen to level changes
-    const levelSlider = document.getElementById('lvl');
-    if (levelSlider) {
-      levelSlider.addEventListener('input', () => this.updateSetTracking());
-      levelSlider.addEventListener('change', () => this.updateSetTracking());
+    const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+      levelInput.addEventListener('input', () => this.updateSetTracking());
+      levelInput.addEventListener('change', () => this.updateSetTracking());
     }
 
     // Listen to stat changes (strength/dexterity)
@@ -379,10 +380,10 @@ class SetTracker {
       return window.unifiedSocketSystem.currentLevel;
     }
 
-    // Fallback to level slider
-    const levelSlider = document.getElementById('lvl');
-    if (levelSlider) {
-      return parseInt(levelSlider.value) || 1;
+    // Fallback to level input
+    const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+      return parseInt(levelInput.value) || 1;
     }
 
     return 1;
@@ -524,10 +525,12 @@ class SetTracker {
       return;
     }
 
-    // Remove old set buffs
-    this.equippedSets.forEach((setData, setName) => {
+    // Remove ALL previously active set buffs (not just current ones!)
+    console.log('[SetTracker] Removing old buffs:', Array.from(this.activeBuffs));
+    this.activeBuffs.forEach(setName => {
       window.buffSystem.removeBuff(`set-${setName}`);
     });
+    this.activeBuffs.clear();
 
     // Add new set buffs
     this.equippedSets.forEach((setData, setName) => {
@@ -587,6 +590,9 @@ class SetTracker {
         description: tooltipHTML,
         tooltipType: 'set'
       });
+
+      // Track this buff so we can remove it later
+      this.activeBuffs.add(setName);
     });
   }
 
@@ -660,6 +666,10 @@ class SetTracker {
     this.currentBonuses = totalBonuses;
 
     // Trigger character stats recalculation
+    if (window.characterManager) {
+      window.characterManager.updateTotalStats();
+    }
+
     if (window.unifiedSocketSystem) {
       window.unifiedSocketSystem.calculateAllStats();
       window.unifiedSocketSystem.updateStatsDisplay();
