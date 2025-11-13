@@ -523,6 +523,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Skip certain properties that are metadata or handled elsewhere
   const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax'];
 
+  // Skip static defense value if we're calculating defense dynamically from edef
+  if (props.edef && item.baseType && baseDefenseMap[item.baseType]) {
+    skipProperties.push('defense');
+  }
+
   // Iterate through propertyDisplay keys in order to control display order
   // This ensures damage lines appear in the correct position, not at the end
   for (const key of Object.keys(propertyDisplay)) {
