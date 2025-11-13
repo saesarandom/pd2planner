@@ -2503,6 +2503,14 @@ this.selectedJewelSuffix3MaxValue = null;
       if (hasVariableStats) {
         // For dynamic items with variable stats (like Arcanna's Deathwand),
         // keep the original description with inputs intact to prevent breaking input boxes
+        //
+        // TODO: Future enhancement needed for items with BOTH variable stats AND socketed items
+        // that affect the same stats. Currently socket bonuses to variable stats are not combined.
+        // Will need to:
+        // 1. Detect which socket stats overlap with variable stat properties
+        // 2. Add socket bonuses to item.properties before generateItemDescription
+        // 3. Track socket vs base values separately for proper save/load
+        // 4. Update input box ranges if needed
         finalDescription = baseDescription;
 
         // Only add unusable socket items in gray (usable ones keep their variable stat inputs)
