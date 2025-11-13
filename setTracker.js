@@ -321,10 +321,10 @@ class SetTracker {
     });
 
     // Listen to level changes
-    const levelSlider = document.getElementById('lvl');
-    if (levelSlider) {
-      levelSlider.addEventListener('input', () => this.updateSetTracking());
-      levelSlider.addEventListener('change', () => this.updateSetTracking());
+    const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+      levelInput.addEventListener('input', () => this.updateSetTracking());
+      levelInput.addEventListener('change', () => this.updateSetTracking());
     }
 
     // Listen to stat changes (strength/dexterity)
@@ -379,10 +379,10 @@ class SetTracker {
       return window.unifiedSocketSystem.currentLevel;
     }
 
-    // Fallback to level slider
-    const levelSlider = document.getElementById('lvl');
-    if (levelSlider) {
-      return parseInt(levelSlider.value) || 1;
+    // Fallback to level input
+    const levelInput = document.getElementById('lvlValue');
+    if (levelInput) {
+      return parseInt(levelInput.value) || 1;
     }
 
     return 1;
