@@ -597,50 +597,35 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     prop.current = clampedValue;
 
     if (!skipRegeneration) {
-      // Update the description display
-      const infoDivId = INFO_DIV_MAP[dropdownId];
-      if (infoDivId) {
-        const infoDiv = document.getElementById(infoDivId);
-        if (infoDiv) {
-          // Save focus state before regenerating
-          const activeElement = document.activeElement;
-          const isFocusedInput = activeElement &&
-                                 activeElement.classList.contains('stat-input') &&
-                                 activeElement.dataset.item === itemName &&
-                                 activeElement.dataset.prop === propKey;
-          const cursorPosition = isFocusedInput ? activeElement.selectionStart : null;
+      // Save focus state before regenerating
+      const activeElement = document.activeElement;
+      const isFocusedInput = activeElement &&
+                             activeElement.classList.contains('stat-input') &&
+                             activeElement.dataset.item === itemName &&
+                             activeElement.dataset.prop === propKey;
+      const cursorPosition = isFocusedInput ? activeElement.selectionStart : null;
 
-          let description = generateItemDescription(itemName, item, dropdownId);
-
-          // If item has corruption, we need to reapply it to the regenerated description
-          if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-            const corruption = window.itemCorruptions[dropdownId];
-            if (corruption.text) {
-              // Get the original description (dynamic, without corruption)
-              const originalDynamic = description;
-              // Add corruption back to the regenerated description
-              if (typeof window.addCorruptionWithStacking === 'function') {
-                description = window.addCorruptionWithStacking(originalDynamic, corruption.text);
-              }
-            }
-          }
-
-          infoDiv.innerHTML = description;
-
-          // Re-attach event listeners to the new input boxes
-          attachStatInputListeners();
-
-          // Restore focus and cursor position if we were focused on this input
-          if (isFocusedInput) {
-            const newInput = infoDiv.querySelector(`.stat-input[data-item="${itemName}"][data-prop="${propKey}"]`);
-            if (newInput) {
-              newInput.focus();
-              if (cursorPosition !== null) {
-                newInput.setSelectionRange(cursorPosition, cursorPosition);
-              }
-            }
-          }
+      // Let the socket system handle the update - it will regenerate the description
+      // AND include socket stats, preserving input boxes correctly
+      if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+        const config = window.unifiedSocketSystem.equipmentMap[dropdownId];
+        if (config && config.section) {
+          window.unifiedSocketSystem.updateItemDisplay(config.section);
         }
+      }
+
+      // Restore focus and cursor position if we were focused on this input
+      if (isFocusedInput) {
+        // Need to wait for the display update to complete
+        setTimeout(() => {
+          const newInput = document.querySelector(`.stat-input[data-item="${itemName}"][data-prop="${propKey}"]`);
+          if (newInput) {
+            newInput.focus();
+            if (cursorPosition !== null) {
+              newInput.setSelectionRange(cursorPosition, cursorPosition);
+            }
+          }
+        }, 0);
       }
     }
 
@@ -649,8 +634,8 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       window.characterManager.updateTotalStats();
     }
 
-    // Notify socket system to update with the new innerHTML
-    // (but skip for dynamic items to avoid re-regenerating and breaking input focus)
+    // For static items with description, notify socket system to update
+    // (Dynamic items are already handled by updateItemDisplay above)
     if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function' && item.description) {
       window.unifiedSocketSystem.updateAll();
     }
