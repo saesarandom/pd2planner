@@ -76,6 +76,7 @@ const BASE_TYPE_CATEGORIES = {
   'Blood Spirit': 'helm', 'Sun Spirit': 'helm', 'Earth Spirit': 'helm',
   'Lion Helm': 'helm', 'Rage Mask': 'helm', 'Fury Visor': 'helm', 'Destroyer Helm': 'helm',
   'Conqueror Crown': 'helm', 'Guardian Crown': 'helm', 'Sacred Mask': 'helm',
+  'Shako': 'helm', 'Corona': 'helm', 'Hydraskull': 'helm',
 
   // Armors
   'Quilted Armor': 'armor', 'Leather Armor': 'armor', 'Hard Leather Armor': 'armor',
