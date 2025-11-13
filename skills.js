@@ -47,10 +47,10 @@ class SkillSystem {
           { id: 'powerstrikecontainer', name: 'Power Strike', level: 6, prerequisites: ['jabcontainer'] },
           { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 6, prerequisites: ['jabcontainer'] },
           { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer'] },
-          { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 12, prerequisites: ['jabcontainer', 'powerstrikecontainer'] },
-          { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 18, prerequisites: ['jabcontainer', 'powerstrikecontainer', 'chargedstrikecontainer'] },
+          { id: 'fendcontainer', name: 'Fend', level: 18, prerequisites: ['jabcontainer', 'javelinandspearmasterycontainer'] },
+          { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 18, prerequisites: ['jabcontainer', 'powerstrikecontainer'] },
           { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer'] },
-          { id: 'fendcontainer', name: 'Fend', level: 24, prerequisites: ['jabcontainer', 'javelinandspearmasterycontainer'] },
+          { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 30, prerequisites: ['jabcontainer', 'powerstrikecontainer', 'chargedstrikecontainer'] },
           { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer', 'plaguejavelincontainer'] }
         ],
         'passiveskillscontainer': [
@@ -371,7 +371,11 @@ class SkillSystem {
           min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
           max: [40, 52, 64, 76, 88, 100, 112, 124, 140, 156, 172, 188, 204, 220, 236, 252, 272, 292, 312, 332, 352, 372, 396, 420, 444, 468, 492, 516, 544, 572, 600, 628, 656, 684, 712, 740, 768, 796, 824, 852, 880, 908, 936, 964, 992, 1020, 1048, 1076, 1104, 1132, 1160, 1188, 1216, 1244, 1272, 1300, 1328, 1356, 1384, 1412]
         },
-        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7]
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
+        synergies: [
+          { skillId: 'powerstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' },
+          { skillId: 'lightningstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' },
+     ]
       },
       lightningstrikecontainer: {
         name: "Lightning Strike", type: "lightning",
