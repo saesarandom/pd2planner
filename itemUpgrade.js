@@ -4427,19 +4427,24 @@ function updateWeaponDamageDisplay() {
       }
     }
 
-    // Now regenerate description for dynamic items after damage is calculated
-    // This ensures damage lines are included in the generated description
+    // For dynamic items, let the socket system handle the display
+    // (Don't set description property or call updateWeaponTooltip - that would destroy input boxes!)
     if (isDynamic) {
-      description = window.generateItemDescription(currentItem, currentItemData, 'weapons-dropdown');
-      currentItemData.description = description;
-    }
+      // Just trigger a display update via socket system
+      if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+        const config = window.unifiedSocketSystem.equipmentMap['weapons-dropdown'];
+        if (config && config.section) {
+          window.unifiedSocketSystem.updateItemDisplay(config.section);
+        }
+      }
+    } else {
+      // For static items, update the tooltip normally
+      updateWeaponTooltip(currentItemData, baseType, isTwoHanded);
 
-    // Update the tooltip/description
-    updateWeaponTooltip(currentItemData, baseType, isTwoHanded);
-
-    // Re-attach event listeners to stat input boxes in the weapon info
-    if (typeof window.attachStatInputListeners === 'function') {
-      window.attachStatInputListeners();
+      // Re-attach event listeners to stat input boxes in the weapon info
+      if (typeof window.attachStatInputListeners === 'function') {
+        window.attachStatInputListeners();
+      }
     }
   }
 }
