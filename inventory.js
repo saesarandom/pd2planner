@@ -22,12 +22,50 @@ class CharmInventory {
     'img/grand1.png',
     'img/grand2.png',
     'img/grand3.png'
-  
   ]
 };
 
+    // Unique charms with fixed stats and customizable ranges
+    this.uniqueCharms = {
+      'annihilus': {
+        name: 'Annihilus',
+        type: 'small-charm',
+        imagePath: 'img/annihilus.png',
+        stats: [
+          { label: '+1 to All Skills', key: 'skills', fixed: 1 },
+          { label: '+{value} to Vitality', key: 'vitality', min: 30, max: 60, value: 30 },
+          { label: '+{value} to Energy', key: 'energy', min: 10, max: 20, value: 10 },
+          { label: 'All Resistances +{value}%', key: 'allres', min: 10, max: 20, value: 10 },
+          { label: '+{value}% to Experience Gained', key: 'expgain', min: 5, max: 10, value: 5 }
+        ]
+      },
+      'hellfire-torch': {
+        name: 'Hellfire Torch',
+        type: 'large-charm',
+        imagePath: 'img/hellfiretorch.png',
+        stats: [
+          { label: '+2 to [Random Class] Skills', key: 'classskills', fixed: 2 },
+          { label: '+{value} to Vitality', key: 'vitality', min: 30, max: 60, value: 30 },
+          { label: '+{value} to Energy', key: 'energy', min: 10, max: 20, value: 10 },
+          { label: 'All Resistances +{value}%', key: 'allres', min: 10, max: 20, value: 10 },
+          { label: '+{value} to Light Radius', key: 'lightradius', min: 4, max: 8, value: 4 }
+        ]
+      },
+      'gheeds-fortune': {
+        name: "Gheed's Fortune",
+        type: 'small-charm',
+        imagePath: 'img/gheedsfortune.png',
+        stats: [
+          { label: '+{value}% Extra Gold from Monsters', key: 'gold', min: 80, max: 160, value: 80 },
+          { label: '+{value}% Better Chance of Getting Magic Items', key: 'mf', min: 20, max: 40, value: 20 },
+          { label: 'Reduces All Vendor Prices {value}%', key: 'vendorprice', min: 10, max: 15, value: 10 }
+        ]
+      }
+    };
+
     this.occupiedSlots = new Set(); // Track occupied slots
     this.charmElements = new Map(); // Track charm elements and their occupied slots
+    this.selectedUniqueCharm = null; // Track selected unique charm
     this.initialized = false;
   }
 
@@ -51,6 +89,12 @@ class CharmInventory {
         const img = new Image();
         img.src = imagePath;
       });
+    });
+
+    // Preload unique charm images
+    Object.values(this.uniqueCharms).forEach(charm => {
+      const img = new Image();
+      img.src = charm.imagePath;
     });
   }
 
@@ -149,9 +193,20 @@ createModal() {
         <span class="close">&times;</span>
         <h3 style="margin: 0 0 20px 0; color: rgb(164, 19, 19);">Create Charm</h3>
 
-        <!-- Charm Type Selection -->
+        <!-- Unique Charms Section -->
+        <div id="uniqueCharmSelection">
+          <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Unique Charms:</h4>
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px;">
+            <button data-unique="annihilus" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Annihilus</span> (Small)</button>
+            <button data-unique="hellfire-torch" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Hellfire Torch</span> (Large)</button>
+            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="padding: 10px; text-align: left; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; cursor: pointer; border-radius: 3px; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'"><span style="font-weight: bold;">Gheed's Fortune</span> (Small)</button>
+          </div>
+          <div style="text-align: center; color: #999; font-size: 12px; margin-bottom: 15px;">OR</div>
+        </div>
+
+        <!-- Regular Charm Type Selection -->
         <div id="charmTypeSelection">
-          <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Choose Charm Type:</h4>
+          <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Regular Charm:</h4>
           <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
             <button data-type="small-charm" class="charm-type-btn">Small Charm (1x1)</button>
             <button data-type="large-charm" class="charm-type-btn">Large Charm (1x2)</button>
@@ -162,32 +217,48 @@ createModal() {
         <!-- Charm Configuration (hidden initially) -->
         <div id="charmConfiguration" style="display: none; flex: 1; display: flex; flex-direction: column;">
           <div style="flex: 1; overflow-y: auto; padding-right: 10px;">
-            <div style="margin-bottom: 15px;">
-              <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Prefix:</h4>
-              <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
-                <option value="">None</option>
-              </select>
-              <div id="prefixStats" style="margin-top: 10px; color: #87CEEB;"></div>
-            </div>
-
-            <div style="margin-bottom: 15px;">
-              <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Suffix:</h4>
-              <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
-                <option value="">None</option>
-              </select>
-              <div id="suffixStats" style="margin-top: 10px; color: #87CEEB;"></div>
-            </div>
-
-            <div style="margin-bottom: 20px;">
-              <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Preview:</h4>
-              <div id="charmPreview" style="
+            <!-- Unique charm customization -->
+            <div id="uniqueCharmCustomization" style="display: none;">
+              <div id="uniqueCharmStats" style="margin-bottom: 15px;"></div>
+              <div id="uniqueCharmPreview" style="
                 background: rgba(42, 42, 78, 0.5);
                 border: 1px solid rgb(164, 19, 19);
                 border-radius: 4px;
                 padding: 10px;
-                min-height: 60px;
+                min-height: 80px;
                 color: #FFD700;
-              ">Select charm type to begin</div>
+              "></div>
+            </div>
+
+            <!-- Regular charm customization -->
+            <div id="regularCharmCustomization" style="display: none;">
+              <div style="margin-bottom: 15px;">
+                <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Prefix:</h4>
+                <select id="prefixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+                  <option value="">None</option>
+                </select>
+                <div id="prefixStats" style="margin-top: 10px; color: #87CEEB;"></div>
+              </div>
+
+              <div style="margin-bottom: 15px;">
+                <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Suffix:</h4>
+                <select id="suffixSelect" style="width: 80%; padding: 5px; background: rgb(20, 20, 20); color: white; border: 1px solid rgb(164, 19, 19);">
+                  <option value="">None</option>
+                </select>
+                <div id="suffixStats" style="margin-top: 10px; color: #87CEEB;"></div>
+              </div>
+
+              <div style="margin-bottom: 20px;">
+                <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Preview:</h4>
+                <div id="charmPreview" style="
+                  background: rgba(42, 42, 78, 0.5);
+                  border: 1px solid rgb(164, 19, 19);
+                  border-radius: 4px;
+                  padding: 10px;
+                  min-height: 60px;
+                  color: #FFD700;
+                ">Select charm type to begin</div>
+              </div>
             </div>
           </div>
 
@@ -213,6 +284,19 @@ createModal() {
               transition: all 0.2s ease;
             " onmouseover="this.style.background='rgb(200, 30, 30)'"
                onmouseout="this.style.background='rgb(164, 19, 19)'">Create Charm</button>
+            <button id="backCharmBtn" style="
+              background: rgb(60, 60, 60);
+              color: white;
+              border: none;
+              padding: 10px 24px;
+              border-radius: 4px;
+              cursor: pointer;
+              width: 100%;
+              font-size: 14px;
+              margin-top: 8px;
+              transition: all 0.2s ease;
+            " onmouseover="this.style.background='rgb(80, 80, 80)'"
+               onmouseout="this.style.background='rgb(60, 60, 60)'" style="display: none;">Back</button>
           </div>
         </div>
       </div>
@@ -235,10 +319,24 @@ setupModalEvents() {
     }
   });
 
+  // Unique charm selection
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('unique-charm-btn')) {
+      this.selectUniqueCharm(e.target.dataset.unique);
+    }
+  });
+
   // Charm type selection
   document.addEventListener('click', (e) => {
     if (e.target.classList.contains('charm-type-btn')) {
       this.selectCharmType(e.target.dataset.type);
+    }
+  });
+
+  // Back button
+  document.addEventListener('click', (e) => {
+    if (e.target.id === 'backCharmBtn') {
+      this.backToCharmSelection();
     }
   });
 
@@ -252,9 +350,99 @@ setupModalEvents() {
   // Create charm button
   document.addEventListener('click', (e) => {
     if (e.target.id === 'createCharmBtn') {
-      this.createManualCharm();
+      if (this.selectedUniqueCharm) {
+        this.createUniqueCharm();
+      } else {
+        this.createManualCharm();
+      }
     }
   });
+}
+
+selectUniqueCharm(uniqueCharmKey) {
+  this.selectedUniqueCharm = uniqueCharmKey;
+  const uniqueCharm = this.uniqueCharms[uniqueCharmKey];
+
+  this.selectedCharmType = uniqueCharm.type;
+
+  // Hide regular charm selection, show configuration
+  document.getElementById('charmTypeSelection').style.display = 'none';
+  document.getElementById('uniqueCharmSelection').style.display = 'none';
+  document.getElementById('charmConfiguration').style.display = 'block';
+
+  // Show unique charm customization, hide regular charm customization
+  document.getElementById('uniqueCharmCustomization').style.display = 'block';
+  document.getElementById('regularCharmCustomization').style.display = 'none';
+
+  // Show back button
+  document.getElementById('backCharmBtn').style.display = 'block';
+
+  // Populate unique charm stats
+  this.populateUniqueCharmStats(uniqueCharm);
+  this.updateUniqueCharmPreview(uniqueCharm);
+}
+
+backToCharmSelection() {
+  this.selectedUniqueCharm = null;
+  document.getElementById('uniqueCharmSelection').style.display = 'block';
+  document.getElementById('charmTypeSelection').style.display = 'block';
+  document.getElementById('charmConfiguration').style.display = 'none';
+  document.getElementById('backCharmBtn').style.display = 'none';
+}
+
+populateUniqueCharmStats(uniqueCharm) {
+  const statsContainer = document.getElementById('uniqueCharmStats');
+  let html = '';
+
+  uniqueCharm.stats.forEach((stat, index) => {
+    if (stat.fixed !== undefined) {
+      // Fixed value - no slider
+      html += `
+        <div style="margin-bottom: 10px;">
+          <div style="color: #FFD700; margin-bottom: 3px;">${stat.label}</div>
+          <div style="color: #999; font-size: 12px;">${stat.fixed}</div>
+        </div>
+      `;
+    } else {
+      // Variable value - add slider
+      const sliderId = `uniqueStat${index}`;
+      const valueId = `uniqueStatValue${index}`;
+      html += `
+        <div style="margin-bottom: 10px;">
+          <div style="color: #FFD700; margin-bottom: 3px;">${stat.label.replace('{value}', '')}</div>
+          <input type="range" id="${sliderId}" min="${stat.min}" max="${stat.max}" value="${stat.value}"
+                 style="width: 100%; margin-bottom: 5px;"
+                 oninput="window.charmInventory.updateUniqueCharmPreview(); document.getElementById('${valueId}').textContent = this.value;">
+          <div style="text-align: center; color: white; font-size: 12px;">
+            <span id="${valueId}">${stat.value}</span> / ${stat.max}
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  statsContainer.innerHTML = html;
+}
+
+updateUniqueCharmPreview(uniqueCharm = null) {
+  if (!uniqueCharm) {
+    uniqueCharm = this.uniqueCharms[this.selectedUniqueCharm];
+  }
+
+  const preview = document.getElementById('uniqueCharmPreview');
+  let previewHTML = `<div style="color: #FFD700; font-weight: bold; margin-bottom: 8px;">${uniqueCharm.name}</div>`;
+
+  uniqueCharm.stats.forEach((stat, index) => {
+    if (stat.fixed !== undefined) {
+      previewHTML += `<div style="color: #87CEEB;">${stat.label}</div>`;
+    } else {
+      const slider = document.getElementById(`uniqueStat${index}`);
+      const value = slider ? slider.value : stat.value;
+      previewHTML += `<div style="color: #87CEEB;">${stat.label.replace('{value}', value)}</div>`;
+    }
+  });
+
+  preview.innerHTML = previewHTML;
 }
 
 selectCharmType(type) {
@@ -262,7 +450,15 @@ selectCharmType(type) {
 
   // Show configuration section
   document.getElementById('charmTypeSelection').style.display = 'none';
+  document.getElementById('uniqueCharmSelection').style.display = 'none';
   document.getElementById('charmConfiguration').style.display = 'block';
+
+  // Show regular charm customization, hide unique charm customization
+  document.getElementById('uniqueCharmCustomization').style.display = 'none';
+  document.getElementById('regularCharmCustomization').style.display = 'block';
+
+  // Show back button
+  document.getElementById('backCharmBtn').style.display = 'block';
 
   // Populate prefix and suffix options
   this.populateAffixOptions(type);
@@ -931,6 +1127,47 @@ cleanAffixName(affix) {
   }
 
   return cleaned;
+}
+
+createUniqueCharm() {
+  if (!this.selectedSlot || !this.selectedUniqueCharm) return;
+
+  const position = parseInt(this.selectedSlot.dataset.index);
+  const uniqueCharm = this.uniqueCharms[this.selectedUniqueCharm];
+
+  if (!this.canPlaceCharm(position, this.selectedCharmType)) {
+    alert('Not enough space!');
+    return;
+  }
+
+  let stats = [];
+
+  // Build stats from unique charm definition with current slider values
+  uniqueCharm.stats.forEach((stat, index) => {
+    if (stat.fixed !== undefined) {
+      // Fixed value
+      stats.push(stat.label);
+    } else {
+      // Variable value - get from slider
+      const slider = document.getElementById(`uniqueStat${index}`);
+      const value = slider ? slider.value : stat.value;
+      stats.push(stat.label.replace('{value}', value));
+    }
+  });
+
+  // Create charm data
+  const charmData = JSON.stringify({
+    name: uniqueCharm.name,
+    stats: stats,
+    displayText: `${uniqueCharm.name}\n${stats.join('\n')}`,
+    imagePath: uniqueCharm.imagePath
+  });
+
+  const hoverText = `${uniqueCharm.name}\n${stats.join('\n')}`;
+  const backgroundImage = `url('${uniqueCharm.imagePath}')`;
+
+  this.placeCharm(position, this.selectedCharmType, backgroundImage, charmData, hoverText);
+  this.hideModal();
 }
 
 // Replace the createManualCharm method with this updated version:
