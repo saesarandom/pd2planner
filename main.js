@@ -596,6 +596,19 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     const clampedValue = Math.max(prop.min, Math.min(prop.max, parseInt(newValue) || prop.max));
     prop.current = clampedValue;
 
+    // If changing edef or todef, recalculate defense property
+    if ((propKey === 'edef' || propKey === 'todef') && item.baseType && typeof window.calculateItemDefense === 'function') {
+      // Determine category from dropdownId
+      let category = 'helm';
+      if (dropdownId.includes('armor')) category = 'armor';
+      else if (dropdownId.includes('belt')) category = 'belts';
+      else if (dropdownId.includes('glove')) category = 'gloves';
+      else if (dropdownId.includes('boot')) category = 'boots';
+      else if (dropdownId.includes('off') || dropdownId.includes('shield')) category = 'shield';
+
+      item.properties.defense = window.calculateItemDefense(item, item.baseType, category);
+    }
+
     if (!skipRegeneration) {
       // Save focus state before regenerating
       const activeElement = document.activeElement;
