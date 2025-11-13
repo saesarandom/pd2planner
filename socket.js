@@ -1395,6 +1395,10 @@
                 this.adjustSocketsForItem(section);
               }
             }
+            // Immediately recalculate stats when item changes
+            this.calculateAllStats();
+            this.updateStatsDisplay();
+            // Also trigger full update after a short delay to ensure everything syncs
             setTimeout(() => this.updateAll(), 50);
           });
         }
@@ -3390,24 +3394,24 @@ if (defMatch) {
     if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
 
     // Damage Reduction stats
-    // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> PDR)
-    const pdrPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
-    if (pdrPercentMatch) {
-      this.stats.pdr += parseInt(pdrPercentMatch[1]);
-      return;
-    }
-
-    // Physical Damage Taken Reduced by X (flat -> DR)
-    const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)(?!%)/i);
+    // Physical Damage Taken Reduced by X (flat -> PDR)
+    const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
     if (pdrFlatMatch) {
-      this.stats.dr += parseInt(pdrFlatMatch[1]);
+      this.stats.pdr += parseInt(pdrFlatMatch[1]);
       return;
     }
 
-    // Damage Reduced by X (flat -> DR)
+    // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
+    const drPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
+    if (drPercentMatch) {
+      this.stats.dr += parseInt(drPercentMatch[1]);
+      return;
+    }
+
+    // Damage Reduced by X (flat -> PDR, general damage reduction)
     const drFlatMatch = cleanLine.match(/^Damage\s+Reduced\s+by\s+(\d+)(?!%)/i);
     if (drFlatMatch) {
-      this.stats.dr += parseInt(drFlatMatch[1]);
+      this.stats.pdr += parseInt(drFlatMatch[1]);
       return;
     }
 
@@ -3757,6 +3761,30 @@ if (deathProcMatch) {
         return;
       }
 
+      // Physical Damage Taken Reduced by X (flat - Sol rune in helm/armor/shield)
+      const pdrFlatMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
+      if (pdrFlatMapMatch) {
+        const value = parseInt(pdrFlatMapMatch[1]);
+        this.addToStatsMap(statsMap, 'physical_damage_reduced', { value });
+        return;
+      }
+
+      // Physical Damage Reduced by X% (percentage - String of Ears)
+      const drPercentMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
+      if (drPercentMapMatch) {
+        const value = parseInt(drPercentMapMatch[1]);
+        this.addToStatsMap(statsMap, 'physical_damage_reduced_percent', { value });
+        return;
+      }
+
+      // Magic Damage Reduced by X (flat - String of Ears MDR)
+      const mdrMapMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)/i);
+      if (mdrMapMatch) {
+        const value = parseInt(mdrMapMatch[1]);
+        this.addToStatsMap(statsMap, 'magic_damage_reduced', { value });
+        return;
+      }
+
 
 
       // Store other stats as non-stackable
@@ -3892,6 +3920,12 @@ addToStatsMap(statsMap, key, data) {
         return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Damage vs Undead</span>`;
       case 'ar_vs_undead':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value} Attack Rating vs Undead</span>`;
+      case 'physical_damage_reduced':
+        return `<span style="color: ${color}; font-weight: bold;">Physical Damage Taken Reduced by ${data.value}</span>`;
+      case 'physical_damage_reduced_percent':
+        return `<span style="color: ${color}; font-weight: bold;">Physical Damage Taken Reduced by ${data.value}%</span>`;
+      case 'magic_damage_reduced':
+        return `<span style="color: ${color}; font-weight: bold;">Magic Damage Reduced by ${data.value}</span>`;
       case 'fire_skill_damage':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Fire Skill Damage</span>`;
       case 'cold_skill_damage':
@@ -3981,6 +4015,12 @@ addToStatsMap(statsMap, key, data) {
         return /\+\d+%\s+Damage\s+vs\s+Undead/gi;
       case 'ar_vs_undead':
         return /\+\d+\s+Attack\s+Rating\s+vs\s+Undead/gi;
+      case 'physical_damage_reduced':
+        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+(?!%)/gi;
+      case 'physical_damage_reduced_percent':
+        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+%/gi;
+      case 'magic_damage_reduced':
+        return /Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+/gi;
       case 'fire_skill_damage':
         return /\+(\d+)%\s+to\s+Fire\s+Skill\s+Damage/gi;
       case 'cold_skill_damage':
