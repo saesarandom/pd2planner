@@ -1202,14 +1202,19 @@ createUniqueCharm() {
   if (container) {
     const allCharmElements = container.querySelectorAll('[data-charm-data]');
     for (const element of allCharmElements) {
+      // Check if it's a text format (newline-separated) or JSON format
+      const charmDataStr = element.dataset.charmData;
+      let charmName = '';
       try {
-        const data = JSON.parse(element.dataset.charmData);
-        if (data.name && data.name.trim() === uniqueCharm.name.trim()) {
-          alert(`${uniqueCharm.name} is already in inventory! Max 1 per charm.`);
-          return;
-        }
+        const jsonData = JSON.parse(charmDataStr);
+        charmName = jsonData.name;
       } catch (e) {
-        // Ignore parse errors
+        // It's plain text format - get first line as name
+        charmName = charmDataStr.split('\n')[0];
+      }
+      if (charmName && charmName.trim() === uniqueCharm.name.trim()) {
+        alert(`${uniqueCharm.name} is already in inventory! Max 1 per charm.`);
+        return;
       }
     }
   }
@@ -1234,18 +1239,21 @@ createUniqueCharm() {
     }
   });
 
-  // Create charm data
-  const charmData = JSON.stringify({
-    name: uniqueCharm.name,
-    stats: stats,
-    displayText: `${uniqueCharm.name}\n${stats.join('\n')}`,
-    imagePath: uniqueCharm.imagePath
-  });
-
-  const hoverText = `${uniqueCharm.name}\n${stats.join('\n')}`;
+  // Create charm data as NEWLINE-SEPARATED TEXT (getCharmBonuses expects this format!)
+  // This is crucial for getCharmBonuses() to parse "+1 to All Skills" correctly
+  const charmData = `${uniqueCharm.name}\n${stats.join('\n')}`;
   const backgroundImage = `url('${uniqueCharm.imagePath}')`;
 
-  this.placeCharm(position, charmType, backgroundImage, charmData, hoverText);
+  this.placeCharm(position, charmType, backgroundImage, charmData, charmData);
+
+  // Store the image path in a separate data attribute so we can restore it
+  const mainSlot = container.children[position];
+  if (mainSlot) mainSlot.dataset.imagePath = uniqueCharm.imagePath;
+
+  // Also set on overlays if it's a large/grand charm
+  const overlay = container.querySelector(`.charm-overlay[data-position="${position}"]`);
+  if (overlay) overlay.dataset.imagePath = uniqueCharm.imagePath;
+
   this.hideModal();
 }
 
@@ -2183,6 +2191,11 @@ if (match = line.match(/\+?(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
   bonuses.poisonResist = (bonuses.poisonResist || 0) + val;
 }
 
+      // All Skills (for unique charms like Annihilus)
+      if (match = line.match(/\+(\d+)\s+to\s+All\s+Skills/i)) {
+        bonuses.allSkills = (bonuses.allSkills || 0) + parseInt(match[1]);
+      }
+
       // Life
       if (match = line.match(/\+(\d+)\s+to\s+Life/i)) {
         bonuses.life = (bonuses.life || 0) + parseInt(match[1]);
@@ -2477,7 +2490,8 @@ function onCharmChange() {
     vit: newCharmBonuses.vit || 0,
     enr: newCharmBonuses.enr || 0,
     life: newCharmBonuses.life || 0,
-    mana: newCharmBonuses.mana || 0
+    mana: newCharmBonuses.mana || 0,
+    allSkills: newCharmBonuses.allSkills || 0
   };
 
   // Update non-attribute stats directly
