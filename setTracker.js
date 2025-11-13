@@ -666,6 +666,10 @@ class SetTracker {
     this.currentBonuses = totalBonuses;
 
     // Trigger character stats recalculation
+    if (window.characterManager) {
+      window.characterManager.updateTotalStats();
+    }
+
     if (window.unifiedSocketSystem) {
       window.unifiedSocketSystem.calculateAllStats();
       window.unifiedSocketSystem.updateStatsDisplay();
