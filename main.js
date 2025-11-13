@@ -630,7 +630,8 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     }
 
     // Notify socket system to update with the new innerHTML
-    if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function') {
+    // (but skip for dynamic items to avoid re-regenerating and breaking input focus)
+    if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function' && item.description) {
       window.unifiedSocketSystem.updateAll();
     }
 
