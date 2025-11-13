@@ -3354,19 +3354,19 @@ if (defMatch) {
       return;
     }
 
-    const fireResMatch = cleanLine.match(/Fire\s+Resist(?:ance)?\s+(?:\+)?(\d+)%?/i);
+    const fireResMatch = cleanLine.match(/Fire\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (fireResMatch) { this.stats.fireResist += parseInt(fireResMatch[1]); return; }
 
-    const coldResMatch = cleanLine.match(/Cold\s+Resist(?:ance)?\s+(?:\+)?(\d+)%?/i);
+    const coldResMatch = cleanLine.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (coldResMatch) { this.stats.coldResist += parseInt(coldResMatch[1]); return; }
 
-    const lightResMatch = cleanLine.match(/Lightning\s+Resist(?:ance)?\s+(?:\+)?(\d+)%?/i);
+    const lightResMatch = cleanLine.match(/Lightning\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (lightResMatch) { this.stats.lightResist += parseInt(lightResMatch[1]); return; }
 
-    const poisonResMatch = cleanLine.match(/Poison\s+Resist(?:ance)?\s+(?:\+)?(\d+)%?/i);
+    const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (poisonResMatch) { this.stats.poisonResist += parseInt(poisonResMatch[1]); return; }
 
-    const curseResMatch = cleanLine.match(/Curse\s+Resist(?:ance)?\s+(?:\+)?(\d+)%?/i);
+    const curseResMatch = cleanLine.match(/Curse\s+Resist\s+(?:\+)?(\d+)%?/i);
     if (curseResMatch) { this.stats.curseResist += parseInt(curseResMatch[1]); return; }
 
     // Life Steal
