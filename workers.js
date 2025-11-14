@@ -206,10 +206,10 @@ async function createCraftedItem(request, sql, userId) {
       // Continue anyway - might be first item or table schema issue
     }
 
-    // Insert the item (item_data is JSONB - neon handles conversion automatically)
+    // Insert the item (neon handles JSONB conversion automatically)
     const result = await sql`
       INSERT INTO crafted_items (user_id, craft_id, item_data, created_at, updated_at)
-      VALUES (${userId}, ${itemData.id}, ${sql.json(itemData)}, NOW(), NOW())
+      VALUES (${userId}, ${itemData.id}, ${itemData}, NOW(), NOW())
       RETURNING id, craft_id, item_data
     `;
 
