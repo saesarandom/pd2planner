@@ -1218,7 +1218,7 @@ class CraftedItemsSystem {
    * @param {Object} affixes - Selected affixes {prefixes: {propKey: value}, suffixes: {propKey: value}}
    * @returns {Object} Created crafted item or null if validation fails
    */
-  createCraftedItem(name, baseType, craftType, affixes = { prefixes: {}, suffixes: {} }) {
+  createCraftedItem(name, baseType, craftType, affixes = { prefixes: {}, suffixes: {} }, fixedProperties = {}) {
     // Validate name
     if (!name || name.length > 21) {
       console.error('Crafted item name must be 1-21 characters');
@@ -1289,10 +1289,16 @@ class CraftedItemsSystem {
       properties.reqlvl = baseRequiredLevels[baseType];
     }
 
-    // Get fixed properties from craft type and roll their values
+    // Get fixed properties from craft type and use user-selected values or roll random ones
     for (const [propKey, propData] of Object.entries(craftConfig.fixedProperties)) {
-      // Roll a random value within the range
-      const value = Math.floor(Math.random() * (propData.max - propData.min + 1)) + propData.min;
+      // Use user-selected value if provided, otherwise roll a random value
+      let value;
+      if (fixedProperties && fixedProperties[propKey] !== undefined) {
+        value = fixedProperties[propKey];
+      } else {
+        // Roll a random value within the range if not provided
+        value = Math.floor(Math.random() * (propData.max - propData.min + 1)) + propData.min;
+      }
       // If property already exists, add to it; otherwise set it
       properties[propKey] = (properties[propKey] || 0) + value;
     }

@@ -1062,6 +1062,82 @@ function refreshItemDropdowns() {
 }
 
 /**
+ * Populate fixed property sliders based on craft type
+ */
+function populateFixedProperties(craftType) {
+  const container = document.getElementById('fixedPropertiesContainer');
+  if (!container || !window.craftedItemsSystem) return;
+
+  container.innerHTML = '';
+
+  // Get craft config
+  const craftConfig = window.craftedItemsSystem.craftTypes[craftType];
+  if (!craftConfig || !craftConfig.fixedProperties) return;
+
+  // Property key to label mapping
+  const propLabels = {
+    edmg: 'Enhanced Damage',
+    lleech: 'Life Stolen per Hit',
+    tolife: '+to Life',
+    repl: 'Life after each Kill',
+    cb: 'Chance of Crushing Blow',
+    edef: 'Enhanced Defense'
+  };
+
+  // Create header
+  const header = document.createElement('h4');
+  header.textContent = 'Fixed Properties';
+  header.style.cssText = 'color: #ffd700; margin: 12px 0 10px 0; font-size: 14px;';
+  container.appendChild(header);
+
+  // Create slider for each fixed property
+  for (const [propKey, propData] of Object.entries(craftConfig.fixedProperties)) {
+    const propDiv = document.createElement('div');
+    propDiv.className = 'fixed-property-control';
+    propDiv.style.cssText = `
+      margin-bottom: 12px;
+      padding: 10px;
+      background: rgba(15, 52, 96, 0.4);
+      border: 1px solid #0f3460;
+      border-radius: 4px;
+    `;
+
+    const label = document.createElement('label');
+    label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
+    const displayLabel = `${propLabels[propKey] || propKey}`;
+    label.innerHTML = `${displayLabel} <span id="val_fixed_${propKey}" style="color: #0f9eff; margin-left: 5px;">[${propData.min}]</span>`;
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.id = `fixed_${propKey}`;
+    slider.min = propData.min;
+    slider.max = propData.max;
+    slider.value = propData.min;
+    slider.style.cssText = `
+      width: 100%;
+      height: 6px;
+      background: #0f3460;
+      border: 1px solid #0f9eff;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      margin: 8px 0;
+    `;
+    slider.dataset.propKey = propKey;
+    slider.dataset.min = propData.min;
+    slider.dataset.max = propData.max;
+
+    slider.addEventListener('input', (e) => {
+      document.getElementById(`val_fixed_${propKey}`).textContent = `[${e.target.value}]`;
+    });
+
+    propDiv.appendChild(label);
+    propDiv.appendChild(slider);
+    container.appendChild(propDiv);
+  }
+}
+
+/**
  * Populate base items dropdown based on craft type
  */
 function populateBaseItemsByType(craftType) {
@@ -1128,6 +1204,7 @@ function openCraftingModal() {
   if (craftTypeSelect) {
     craftTypeSelect.addEventListener('change', function() {
       populateBaseItemsByType(this.value);
+      populateFixedProperties(this.value); // Populate fixed property sliders
       refreshAffixesForBaseType(''); // Clear affixes initially
     });
   }
@@ -1142,6 +1219,7 @@ function openCraftingModal() {
 
   // Initially populate with blood weapon items
   populateBaseItemsByType('blood');
+  populateFixedProperties('blood'); // Populate fixed properties for blood craft
 
   // Initially show message to select a base type
   const affixesContainer = document.getElementById('affixesContainer');
@@ -1512,8 +1590,17 @@ function createCraftedItem() {
     }
   });
 
-  // Create the crafted item
-  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes);
+  // Collect fixed property values from sliders
+  const fixedProperties = {};
+  const fixedSliders = document.querySelectorAll('input[id^="fixed_"]');
+  fixedSliders.forEach(slider => {
+    const propKey = slider.dataset.propKey;
+    const value = parseInt(slider.value);
+    fixedProperties[propKey] = value;
+  });
+
+  // Create the crafted item with fixed properties
+  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes, fixedProperties);
 
   if (!craftedItem) {
     alert('Failed to create crafted item. Check your inputs and try again.');
