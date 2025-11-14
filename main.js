@@ -995,35 +995,38 @@ function openCraftingModal() {
   const modal = document.getElementById('craftingModal');
   if (!modal) return;
 
-  // Populate base items dropdown
+  // Populate base items dropdown (weapons only for now)
   const baseTypeSelect = document.getElementById('craftBaseType');
   if (baseTypeSelect) {
-    baseTypeSelect.innerHTML = '<option value="">Select base item...</option>';
+    baseTypeSelect.innerHTML = '<option value="">Select base weapon...</option>';
 
-    // Get all unique base types from itemList
-    const baseTypes = new Set();
-    for (const itemName in itemList) {
-      const item = itemList[itemName];
-      if (item.baseType) {
-        baseTypes.add(itemName); // Use item name as it is the base type
+    // Get all base weapons from baseDamages (defined in itemUpgrade.js)
+    const baseWeapons = [];
+    if (typeof baseDamages !== 'undefined') {
+      for (const weaponName in baseDamages) {
+        // Skip melee versions of throwing weapons
+        if (!weaponName.includes('(melee)')) {
+          baseWeapons.push(weaponName);
+        }
       }
     }
 
     // Add them sorted
-    Array.from(baseTypes).sort().forEach(itemName => {
+    baseWeapons.sort().forEach(weaponName => {
       const option = document.createElement('option');
-      option.value = itemName;
-      option.textContent = itemName;
+      option.value = weaponName;
+      option.textContent = weaponName;
       baseTypeSelect.appendChild(option);
     });
   }
 
-  // Populate affixes sliders
+  // Populate affixes sliders (prefixes and suffixes)
   const affixesContainer = document.getElementById('affixesContainer');
   if (affixesContainer && window.craftedItemsSystem) {
     affixesContainer.innerHTML = '';
 
-    for (const [affixKey, affixData] of Object.entries(window.craftedItemsSystem.affixesPool)) {
+    // Helper function to create affix slider
+    const createAffixSlider = (affixKey, affixData, affixType) => {
       const affixDiv = document.createElement('div');
       affixDiv.className = 'affix-control';
       affixDiv.style.cssText = `
@@ -1036,31 +1039,72 @@ function openCraftingModal() {
 
       const label = document.createElement('label');
       label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
-      label.innerHTML = `${affixData.label} <span id="val_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[${affixData.min}]</span>`;
+      label.innerHTML = `${affixData.label} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span>`;
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `check_${affixType}_${affixKey}`;
+      checkbox.style.cssText = 'margin-right: 8px;';
 
       const slider = document.createElement('input');
       slider.type = 'range';
       slider.min = affixData.min;
       slider.max = affixData.max;
       slider.value = affixData.min;
+      slider.disabled = true;
       slider.style.cssText = `
-        width: 100%;
+        width: calc(100% - 30px);
         height: 6px;
         background: #0f3460;
         border: 1px solid #0f9eff;
         border-radius: 3px;
         outline: none;
         cursor: pointer;
+        margin-left: 8px;
       `;
-      slider.id = `affix_${affixKey}`;
+      slider.id = `affix_${affixType}_${affixKey}`;
 
-      slider.addEventListener('input', (e) => {
-        document.getElementById(`val_${affixKey}`).textContent = `[${e.target.value}]`;
+      checkbox.addEventListener('change', (e) => {
+        slider.disabled = !e.target.checked;
+        if (e.target.checked) {
+          document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[${slider.value}]`;
+        } else {
+          document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[0]`;
+        }
       });
 
+      slider.addEventListener('input', (e) => {
+        document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[${e.target.value}]`;
+      });
+
+      const controlWrapper = document.createElement('div');
+      controlWrapper.style.cssText = 'display: flex; align-items: center;';
+      controlWrapper.appendChild(checkbox);
+      controlWrapper.appendChild(slider);
+
       affixDiv.appendChild(label);
-      affixDiv.appendChild(slider);
-      affixesContainer.appendChild(affixDiv);
+      affixDiv.appendChild(controlWrapper);
+      return affixDiv;
+    };
+
+    // Add Prefixes section
+    const prefixHeader = document.createElement('h4');
+    prefixHeader.textContent = 'Prefixes (select 1-3)';
+    prefixHeader.style.cssText = 'color: #ffd700; margin: 10px 0; font-size: 14px;';
+    affixesContainer.appendChild(prefixHeader);
+
+    for (const [affixKey, affixData] of Object.entries(window.craftedItemsSystem.affixesPool.prefixes)) {
+      affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'prefix'));
+    }
+
+    // Add Suffixes section
+    const suffixHeader = document.createElement('h4');
+    suffixHeader.textContent = 'Suffixes (select 1-3)';
+    suffixHeader.style.cssText = 'color: #ffd700; margin: 15px 0 10px 0; font-size: 14px;';
+    affixesContainer.appendChild(suffixHeader);
+
+    for (const [affixKey, affixData] of Object.entries(window.craftedItemsSystem.affixesPool.suffixes)) {
+      affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'suffix'));
     }
   }
 
@@ -1126,14 +1170,33 @@ function createCraftedItem() {
     return;
   }
 
-  // Collect selected affixes
-  const affixes = {};
-  const affixSliders = document.querySelectorAll('input[id^="affix_"]');
-  affixSliders.forEach(slider => {
-    const affixKey = slider.id.replace('affix_', '');
-    const value = parseInt(slider.value);
-    if (value > 0) {
-      affixes[affixKey] = value;
+  // Collect selected affixes (prefixes and suffixes separately)
+  const affixes = {
+    prefixes: {},
+    suffixes: {}
+  };
+
+  // Collect prefixes
+  const prefixCheckboxes = document.querySelectorAll('input[id^="check_prefix_"]');
+  prefixCheckboxes.forEach(checkbox => {
+    if (checkbox.checked) {
+      const affixKey = checkbox.id.replace('check_prefix_', '');
+      const slider = document.getElementById(`affix_prefix_${affixKey}`);
+      if (slider) {
+        affixes.prefixes[affixKey] = parseInt(slider.value);
+      }
+    }
+  });
+
+  // Collect suffixes
+  const suffixCheckboxes = document.querySelectorAll('input[id^="check_suffix_"]');
+  suffixCheckboxes.forEach(checkbox => {
+    if (checkbox.checked) {
+      const affixKey = checkbox.id.replace('check_suffix_', '');
+      const slider = document.getElementById(`affix_suffix_${affixKey}`);
+      if (slider) {
+        affixes.suffixes[affixKey] = parseInt(slider.value);
+      }
     }
   });
 

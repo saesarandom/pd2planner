@@ -6,71 +6,65 @@ class CraftedItemsSystem {
     this.craftedItems = []; // Array of crafted items
     this.nextId = 1;
 
-    // Craft types with their benefits
+    // Craft types with their fixed properties
     this.craftTypes = {
-      blood: 'Blood Craft',
-      caster: 'Caster Craft',
-      hitpower: 'Hit Power Craft',
-      safety: 'Safety Craft',
-      vampiric: 'Vampiric Craft',
-      bountiful: 'Bountiful Craft',
-      brilliant: 'Brilliant Craft'
+      blood: {
+        label: 'Blood Craft',
+        fixedProperties: {
+          'Enhanced Damage': { min: 50, max: 80, type: 'percentage' },
+          'Life Stolen per Hit': { min: 3, max: 6, type: 'percentage' },
+          '+Life': { min: 10, max: 20, type: 'flat' }
+        }
+      }
+      // More craft types can be added here later
     };
 
     // Possible affixes that can spawn on crafted items (with value ranges)
+    // Categorized by prefix/suffix
     this.affixesPool = {
-      // Combat
-      enhancedDamage: { min: 50, max: 80, label: 'Enhanced Damage' },
-      lifeSteal: { min: 3, max: 6, label: 'Life Steal %' },
-      attackRating: { min: 50, max: 150, label: 'Attack Rating' },
+      // PREFIXES (damage, attack rating, defense, skills)
+      prefixes: {
+        enhancedDamage: { min: 50, max: 80, label: '+Enhanced Damage %' },
+        attackRating: { min: 50, max: 150, label: '+Attack Rating' },
+        enhancedDefense: { min: 25, max: 50, label: '+Enhanced Defense %' },
+        allSkills: { min: 1, max: 2, label: '+All Skills' }
+      },
 
-      // Defense
-      enhancedDefense: { min: 25, max: 50, label: 'Enhanced Defense' },
-      blockChance: { min: 10, max: 20, label: 'Block Chance %' },
-
-      // Stats
-      strength: { min: 5, max: 10, label: '+Strength' },
-      dexterity: { min: 5, max: 10, label: '+Dexterity' },
-      vitality: { min: 5, max: 10, label: '+Vitality' },
-      energy: { min: 5, max: 10, label: '+Energy' },
-
-      // Resistances
-      allResist: { min: 5, max: 10, label: 'All Resistances' },
-      fireResist: { min: 10, max: 20, label: 'Fire Resist' },
-      coldResist: { min: 10, max: 20, label: 'Cold Resist' },
-      lightningResist: { min: 10, max: 20, label: 'Lightning Resist' },
-      poisonResist: { min: 10, max: 20, label: 'Poison Resist' },
-
-      // Utility
-      magicFind: { min: 10, max: 20, label: 'Magic Find %' },
-      goldFind: { min: 10, max: 20, label: 'Gold Find %' },
-      fastCastRate: { min: 10, max: 20, label: 'FCR' },
-      fasterHitRecovery: { min: 10, max: 20, label: 'FHR' },
-      fasterRunWalk: { min: 5, max: 10, label: 'FRW %' },
-      increasedAttackSpeed: { min: 5, max: 10, label: 'IAS %' },
-
-      // Life/Mana
-      life: { min: 10, max: 30, label: '+Life' },
-      mana: { min: 10, max: 30, label: '+Mana' },
-
-      // Special
-      allSkills: { min: 1, max: 3, label: '+All Skills' },
-      curseResist: { min: 10, max: 20, label: 'Curse Resist' }
+      // SUFFIXES (life, mana, stats, resistances, utility)
+      suffixes: {
+        life: { min: 10, max: 30, label: '+Life' },
+        mana: { min: 10, max: 30, label: '+Mana' },
+        strength: { min: 5, max: 10, label: '+Strength' },
+        dexterity: { min: 5, max: 10, label: '+Dexterity' },
+        vitality: { min: 5, max: 10, label: '+Vitality' },
+        energy: { min: 5, max: 10, label: '+Energy' },
+        allResist: { min: 5, max: 10, label: '+All Resistances' },
+        fireResist: { min: 10, max: 20, label: '+Fire Resist' },
+        coldResist: { min: 10, max: 20, label: '+Cold Resist' },
+        lightningResist: { min: 10, max: 20, label: '+Lightning Resist' },
+        poisonResist: { min: 10, max: 20, label: '+Poison Resist' },
+        magicFind: { min: 10, max: 20, label: '+Magic Find %' },
+        goldFind: { min: 10, max: 20, label: '+Gold Find %' },
+        fastCastRate: { min: 10, max: 20, label: '+FCR' },
+        fasterHitRecovery: { min: 10, max: 20, label: '+FHR' },
+        fasterRunWalk: { min: 5, max: 10, label: '+FRW %' },
+        increasedAttackSpeed: { min: 5, max: 10, label: '+IAS %' }
+      }
     };
   }
 
   /**
    * Create a new crafted item
    * @param {string} name - Item name (up to 11 chars, alphanumeric + space)
-   * @param {string} baseType - Base item type (e.g., "War Pike", "Archon Plate")
-   * @param {string} craftType - Craft type (blood, caster, hitpower, safety, vampiric, bountiful, brilliant)
-   * @param {Object} affixes - Selected affixes with their values {affixKey: value}
+   * @param {string} baseType - Base item type (e.g., "War Pike", "Hand Axe")
+   * @param {string} craftType - Craft type (blood, etc.)
+   * @param {Object} affixes - Selected affixes {prefixes: {key: value}, suffixes: {key: value}}
    * @returns {Object} Created crafted item or null if validation fails
    */
-  createCraftedItem(name, baseType, craftType, affixes = {}) {
+  createCraftedItem(name, baseType, craftType, affixes = { prefixes: {}, suffixes: {} }) {
     // Validate name
-    if (!name || name.length > 11) {
-      console.error('Crafted item name must be 1-11 characters');
+    if (!name || name.length > 21) {
+      console.error('Crafted item name must be 1-21 characters');
       return null;
     }
     if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
@@ -78,9 +72,9 @@ class CraftedItemsSystem {
       return null;
     }
 
-    // Validate base type exists
-    if (!baseType || typeof itemList === 'undefined' || !itemList[baseType]) {
-      console.error(`Invalid base item type: ${baseType}`);
+    // Validate base type exists in baseDamages (for weapons)
+    if (!baseType || typeof baseDamages === 'undefined' || !baseDamages[baseType]) {
+      console.error(`Invalid base weapon type: ${baseType}`);
       return null;
     }
 
@@ -90,22 +84,41 @@ class CraftedItemsSystem {
       return null;
     }
 
-    // Get base item to determine category and copy properties
-    const baseItem = itemList[baseType];
-    const itemType = detectItemType(baseType, baseItem);
+    // Validate affixes
+    const prefixCount = Object.keys(affixes.prefixes || {}).length;
+    const suffixCount = Object.keys(affixes.suffixes || {}).length;
+    const totalAffixes = prefixCount + suffixCount;
 
-    // Deep copy all properties from base item
-    const copiedProperties = {};
-    if (baseItem.properties) {
-      for (const [key, value] of Object.entries(baseItem.properties)) {
-        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-          // Deep copy objects (like {min, max, current})
-          copiedProperties[key] = JSON.parse(JSON.stringify(value));
-        } else {
-          // Copy primitives and arrays directly
-          copiedProperties[key] = value;
-        }
-      }
+    if (totalAffixes < 3 || totalAffixes > 6) {
+      console.error(`Total affixes must be between 3-6 (got ${totalAffixes})`);
+      return null;
+    }
+
+    if (prefixCount > 3 || suffixCount > 3) {
+      console.error(`Maximum 3 prefixes and 3 suffixes (got ${prefixCount} prefixes, ${suffixCount} suffixes)`);
+      return null;
+    }
+
+    // Build base weapon properties from lookup tables
+    const baseProperties = {};
+
+    // Add damage from baseDamages
+    if (baseDamages[baseType]) {
+      baseProperties.damage = { ...baseDamages[baseType] };
+    }
+
+    // Add strength requirement from baseStrengths (if defined)
+    if (typeof baseStrengths !== 'undefined' && baseStrengths[baseType]) {
+      baseProperties.reqstr = baseStrengths[baseType];
+    }
+
+    // Get fixed properties from craft type
+    const craftConfig = this.craftTypes[craftType];
+    const fixedProperties = {};
+    for (const [propName, propData] of Object.entries(craftConfig.fixedProperties)) {
+      // Roll a random value within the range
+      const value = Math.floor(Math.random() * (propData.max - propData.min + 1)) + propData.min;
+      fixedProperties[propName] = { value, type: propData.type };
     }
 
     // Create crafted item as a complete item object
@@ -118,11 +131,12 @@ class CraftedItemsSystem {
       fullName: fullName, // Full display name (e.g. "myTestWeapon War Pike")
       isCrafted: true, // Flag to identify crafted items
       craftType: craftType,
-      craftTypeLabel: this.craftTypes[craftType],
-      itemType: itemType, // For dropdown categorization (weapon, armor, etc.)
-      affixes: { ...affixes }, // Selected affixes and their values
-      description: baseItem.description || '', // Copy description from base item
-      properties: copiedProperties, // Copy all base item properties
+      craftTypeLabel: craftConfig.label,
+      itemType: 'weapon', // Weapons only for now
+      baseProperties: baseProperties, // Base weapon properties (damage, requirements)
+      fixedProperties: fixedProperties, // Fixed craft properties
+      affixes: affixes, // Selected affixes with their values
+      description: '', // Will be built dynamically
       createdAt: new Date().toISOString()
     };
 
