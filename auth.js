@@ -310,7 +310,11 @@ class Auth {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/crafted-items?userId=${this.user.id}`);
+            const response = await fetch(`${API_URL}/api/crafted-items?userId=${this.user.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
             const data = await response.json();
             return data.craftedItems || [];
         } catch (error) {

@@ -1112,11 +1112,67 @@ function openCraftingModal() {
   document.getElementById('craftName').value = '';
   document.getElementById('craftType').value = 'blood';
 
+  // Populate existing items list
+  populateCraftedItemsList();
+
   // Show modal and backdrop
   modal.style.display = 'block';
   const backdrop = document.getElementById('craftingModalBackdrop');
   if (backdrop) {
     backdrop.style.display = 'block';
+  }
+}
+
+/**
+ * Populate the list of existing crafted items with delete buttons
+ */
+function populateCraftedItemsList() {
+  const listContainer = document.getElementById('craftedItemsList');
+  if (!listContainer || !window.craftedItemsSystem) return;
+
+  const items = window.craftedItemsSystem.getAllCraftedItems();
+
+  if (items.length === 0) {
+    listContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No crafted items yet</p>';
+    return;
+  }
+
+  listContainer.innerHTML = items.map(item => `
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(15, 52, 96, 0.3); border: 1px solid #0f9eff; border-radius: 4px; margin-bottom: 8px;">
+      <span style="color: #ffd700; font-size: 13px;">${item.fullName}</span>
+      <button onclick="deleteCraftedItemConfirm('${item.id}')" style="background: #e74c3c; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; transition: all 0.2s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">DELETE</button>
+    </div>
+  `).join('');
+}
+
+/**
+ * Delete a crafted item with confirmation
+ */
+async function deleteCraftedItemConfirm(craftId) {
+  const item = window.craftedItemsSystem.getAllCraftedItems().find(i => i.id === craftId);
+  if (!item) return;
+
+  if (!confirm(`Delete "${item.fullName}"? This cannot be undone.`)) {
+    return;
+  }
+
+  try {
+    // Delete from backend
+    if (window.auth?.isLoggedIn()) {
+      await window.auth.deleteCraftedItem(craftId);
+    }
+
+    // Delete from local system
+    window.craftedItemsSystem.deleteCraftedItem(craftId);
+
+    // Refresh UI
+    populateCraftedItemsList();
+    refreshItemDropdowns();
+
+    alert(`Deleted "${item.fullName}"`);
+  } catch (error) {
+    console.error('Failed to delete crafted item:', error);
+    alert('Failed to delete item: ' + error.message);
   }
 }
 
@@ -1215,8 +1271,8 @@ function createCraftedItem() {
         // Refresh dropdowns to show the new crafted item
         refreshItemDropdowns();
 
-        // Close modal
-        closeCraftingModal();
+        // Refresh items list in modal
+        populateCraftedItemsList();
 
         // Show success message
         if (window.notificationSystem) {
@@ -1231,9 +1287,9 @@ function createCraftedItem() {
         window.craftedItemsSystem.deleteCraftedItem(craftedItem.id);
       });
   } else {
-    // No login - just update local and close
+    // No login - just update local
     refreshItemDropdowns();
-    closeCraftingModal();
+    populateCraftedItemsList();
 
     if (window.notificationSystem) {
       window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created.`, { duration: 4000 });
