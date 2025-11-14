@@ -144,14 +144,14 @@ const affixDatabase = {
 function itemMatchesCategories(baseType, categories) {
   if (!categories || !baseType) return false;
 
-  const categoryList = categories.split(',').map(c => c.trim());
+  // Handle both comma-separated strings and single category strings
+  const categoryList = Array.isArray(categories)
+    ? categories
+    : categories.split(',').map(c => c.trim());
 
   for (const category of categoryList) {
     // Check if the category exists in our mapping
-    const categorySet = itemTypeCategories[category];
-    const hasMatch = categorySet?.has(baseType);
-
-    if (hasMatch) {
+    if (itemTypeCategories[category]?.has(baseType)) {
       return true;
     }
 
@@ -195,14 +195,6 @@ class CraftedItemsSystem {
     const affixes = [];
     const affixPool = affixDatabase[affixType];
 
-    console.log('DEBUG getAvailableAffixes:', {
-      baseType,
-      affixType,
-      hasAffixPool: !!affixPool,
-      affixPoolSize: Object.keys(affixPool || {}).length,
-      itemTypeCategories: itemTypeCategories ? Object.keys(itemTypeCategories) : 'undefined'
-    });
-
     if (!affixPool) return affixes;
 
     for (const [name, data] of Object.entries(affixPool)) {
@@ -223,8 +215,6 @@ class CraftedItemsSystem {
         });
       }
     }
-
-    console.log('DEBUG getAvailableAffixes result:', { baseType, affixType, foundCount: affixes.length });
 
     return affixes;
   }
