@@ -473,3 +473,7 @@ class CraftedItemsSystem {
 
 // Initialize global crafted items system
 window.craftedItemsSystem = new CraftedItemsSystem();
+
+// Expose affix database and item type categories globally for UI access
+window.affixDatabase = affixDatabase;
+window.itemTypeCategories = itemTypeCategories;
