@@ -152,8 +152,8 @@ async function getCraftedItems(sql, userId) {
       SELECT item_data FROM crafted_items WHERE user_id = ${userId} ORDER BY created_at
     `;
     console.log('Found', result.length, 'crafted items');
-    // item_data is JSONB stored as JSON string - parse it like character_data
-    const craftedItems = result.map(row => JSON.parse(row.item_data));
+    // item_data is JSONB - Neon auto-parses it (just like character_data)
+    const craftedItems = result.map(row => row.item_data);
     return new Response(JSON.stringify({ craftedItems }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
