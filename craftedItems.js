@@ -463,7 +463,338 @@ const affixDatabase = {
   },
 
   suffixes: {
-    // To be added later
+    // === GROUP 1: Physical Damage Reduction ===
+    'Protection': { stats: { pdmgred: { min: 1, max: 1 } }, itemTypes: ['Chest', 'Shield', 'Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 5, group: 1 },
+    'Protection': { stats: { pdmgred: { min: 2, max: 2 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 13, group: 1 },
+    'Protection': { stats: { pdmgred: { min: 2, max: 2 } }, itemTypes: ['Chest', 'Shield', 'Circlet'], reqLvl: 18, group: 1 },
+    'Absorption': { stats: { pdmgred: { min: 3, max: 3 } }, itemTypes: ['Amulet', 'Circlet', 'Quiver'], reqLvl: 19, group: 1 },
+    'Absorption': { stats: { pdmgred: { min: 3, max: 3 } }, itemTypes: ['Chest', 'Shield', 'Circlet', 'Ring'], reqLvl: 24, group: 1 },
+    'Life': { stats: { pdmgred: { min: 4, max: 4 } }, itemTypes: ['Amulet', 'Circlet', 'Quiver'], reqLvl: 26, group: 1 },
+    'Life': { stats: { pdmgred: { min: 4, max: 7 } }, itemTypes: ['Chest', 'Shield', 'Circlet', 'Ring'], reqLvl: 33, group: 1 },
+    'Amicae': { stats: { pdmgred: { min: 8, max: 15 } }, itemTypes: ['Chest', 'Shield', 'Circlet', 'Amulet'], reqLvl: 43, group: 1 },
+    'Life Everlasting': { stats: { pdmgred: { min: 10, max: 25 } }, itemTypes: ['Amulet', 'Circlet'], reqLvl: 37, group: 1 },
+    'Life Everlasting': { stats: { pdmgred: { min: 10, max: 25 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 37, group: 1 },
+
+    // === GROUP 2: Magic Damage Reduction ===
+    'Warding': { stats: { mdmgred: { min: 1, max: 2 } }, itemTypes: ['Chest', 'Shield', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Quiver'], reqLvl: 5, group: 2 },
+    'Sentinel': { stats: { mdmgred: { min: 2, max: 4 } }, itemTypes: ['Ring', 'Amulet', 'Orb', 'Circlet', 'Quiver'], reqLvl: 12, group: 2 },
+    'Sentinel': { stats: { mdmgred: { min: 2, max: 4 } }, itemTypes: ['Chest', 'Shield', 'Circlet'], reqLvl: 18, group: 2 },
+    'Guarding': { stats: { mdmgred: { min: 3, max: 6 } }, itemTypes: ['Amulet', 'Orb', 'Circlet', 'Quiver'], reqLvl: 19, group: 2 },
+    'Guarding': { stats: { mdmgred: { min: 3, max: 6 } }, itemTypes: ['Chest', 'Shield', 'Circlet', 'Ring'], reqLvl: 24, group: 2 },
+    'Negation': { stats: { mdmgred: { min: 8, max: 12 } }, itemTypes: ['Chest', 'Shield', 'Circlet'], reqLvl: 33, group: 2 },
+    'Negation': { stats: { mdmgred: { min: 8, max: 12 } }, itemTypes: ['Amulet', 'Orb', 'Circlet', 'Quiver'], reqLvl: 35, group: 2 },
+    'Fortification': { stats: { mdmgred: { min: 12, max: 16 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 53, group: 2 },
+
+    // === GROUP 4: Ignore Target's Defense ===
+    'Piercing': { stats: { itd: { min: 1, max: 1 } }, itemTypes: ['Rod', 'Knife', 'Claw'], reqLvl: 18, group: 4 },
+
+    // === GROUP 6: Attacker Takes Damage (Thorns) ===
+    'Thorns': { stats: { thorns: { min: 1, max: 1 } }, itemTypes: ['Chest', 'Belt', 'Shield'], reqLvl: 1, group: 6 },
+    'Thorns': { stats: { thorns: { min: 3, max: 6 } }, itemTypes: ['Chest', 'Shield', 'Belt', 'Circlet'], reqLvl: 10, group: 6 },
+    'Spikes': { stats: { thorns: { min: 8, max: 12 } }, itemTypes: ['Chest', 'Shield', 'Belt', 'Circlet'], reqLvl: 15, group: 6 },
+    'Razors': { stats: { thorns: { min: 31, max: 40 } }, itemTypes: ['Chest', 'Shield', 'Circlet'], reqLvl: 26, group: 6 },
+    'Swords': { stats: { thorns: { min: 80, max: 160 } }, itemTypes: ['Chest', 'Shield', 'Circlet'], reqLvl: 39, group: 6 },
+    'Swords': { stats: { thorns: { min: 200, max: 400 } }, itemTypes: ['Chest', 'Shield', 'Circlet'], reqLvl: 50, group: 6 },
+
+    // === GROUP 7: Increased Attack Speed ===
+    'Readiness': { stats: { ias: { min: 10, max: 10 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 3, group: 7 },
+    'Alacrity': { stats: { ias: { min: 20, max: 20 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 17, group: 7 },
+    'Swiftness': { stats: { ias: { min: 30, max: 30 } }, itemTypes: ['WeaponP', 'Missile Weapon'], reqLvl: 26, group: 7 },
+    'Quickness': { stats: { ias: { min: 40, max: 40 } }, itemTypes: ['WeaponP', 'Missile Weapon'], reqLvl: 38, group: 7 },
+
+    // === GROUP 8: Blocking/Block Rate ===
+    'Blocking': { stats: { blockcr: { min: 10, max: 10 } }, itemTypes: ['Shield'], reqLvl: 1, group: 8 },
+    'Deflecting': { stats: { blockcr: { min: 20, max: 20 } }, itemTypes: ['Shield'], reqLvl: 8, group: 8 },
+
+    // === GROUP 9: IAS/Faster Cast Rate ===
+    'Readiness': { stats: { ias: { min: 10, max: 10 } }, itemTypes: ['Gloves'], reqLvl: 15, group: 9 },
+    'Alacrity': { stats: { ias: { min: 20, max: 20 } }, itemTypes: ['Gloves'], reqLvl: 35, group: 9 },
+    'Apprentice': { stats: { fcr: { min: 10, max: 10 } }, itemTypes: ['Rod', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Club'], reqLvl: 3, group: 9 },
+    'Apprentice': { stats: { fcr: { min: 10, max: 10 } }, itemTypes: ['Chest', 'Shield', 'Paladin Shield'], reqLvl: 20, group: 9 },
+    'Apprentice': { stats: { fcr: { min: 10, max: 10 } }, itemTypes: ['Gloves', 'Belt'], reqLvl: 29, group: 9 },
+    'Magus': { stats: { fcr: { min: 20, max: 20 } }, itemTypes: ['Rod', 'Orb', 'Circlet', 'Club'], reqLvl: 21, group: 9 },
+    'Magus': { stats: { fcr: { min: 20, max: 20 } }, itemTypes: ['Chest', 'Shield', 'Paladin Shield'], reqLvl: 29, group: 9 },
+    'Archmage': { stats: { fcr: { min: 30, max: 30 } }, itemTypes: ['Rod', 'Orb', 'Club'], reqLvl: 41, group: 9 },
+    'Archmage': { stats: { fcr: { min: 40, max: 40 } }, itemTypes: ['Rod'], reqLvl: 41, group: 9 },
+
+    // === GROUP 10: Cold Damage ===
+    'Frost': { stats: { cold: { min: 1, max: 1 } }, itemTypes: ['WeaponP'], reqLvl: 1, group: 10 },
+    'Frost': { stats: { cold: { min: 1, max: 2 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 3, group: 10 },
+    'Frost': { stats: { cold: { min: 1, max: 6 } }, itemTypes: ['Belt', 'Amulet'], reqLvl: 37, group: 10 },
+    'Icicle': { stats: { cold: { min: 3, max: 16 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 9, group: 10 },
+    'Glacier': { stats: { cold: { min: 14, max: 71 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 20, group: 10 },
+    'Winter': { stats: { cold: { min: 44, max: 246 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 37, group: 10 },
+    'Hypothermia': { stats: { cold: { min: 63, max: 365 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 53, group: 10 },
+
+    // === GROUP 11: Warmth (Half Freeze Duration) ===
+    'Warmth': { stats: { warmth: { min: 1, max: 1 } }, itemTypes: ['Shield', 'Boots', 'Gloves', 'Ring', 'Amulet', 'Circlet', 'Orb'], reqLvl: 7, group: 11 },
+
+    // === GROUP 12: Fire Damage ===
+    'Flame': { stats: { fire: { min: 1, max: 2 } }, itemTypes: ['WeaponP'], reqLvl: 1, group: 12 },
+    'Flame': { stats: { fire: { min: 1, max: 5 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 3, group: 12 },
+    'Flame': { stats: { fire: { min: 1, max: 6 } }, itemTypes: ['Gloves', 'Ring', 'Amulet'], reqLvl: 30, group: 12 },
+    'Fire': { stats: { fire: { min: 2, max: 22 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 11, group: 12 },
+    'Burning': { stats: { fire: { min: 20, max: 72 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 18, group: 12 },
+    'Incineration': { stats: { fire: { min: 57, max: 146 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 35, group: 12 },
+    'Ashes': { stats: { fire: { min: 152, max: 302 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 53, group: 12 },
+
+    // === GROUP 13: Lightning Damage ===
+    'Shock': { stats: { lightning: { min: 1, max: 3 } }, itemTypes: ['WeaponP'], reqLvl: 1, group: 13 },
+    'Shock': { stats: { lightning: { min: 1, max: 8 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 3, group: 13 },
+    'Shock': { stats: { lightning: { min: 1, max: 23 } }, itemTypes: ['Boots', 'Ring', 'Amulet'], reqLvl: 37, group: 13 },
+    'Lightning': { stats: { lightning: { min: 1, max: 24 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 11, group: 13 },
+    'Thunder': { stats: { lightning: { min: 1, max: 84 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 18, group: 13 },
+    'Storms': { stats: { lightning: { min: 1, max: 126 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 26, group: 13 },
+    'Maelstrom': { stats: { lightning: { min: 1, max: 403 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 53, group: 13 },
+
+    // === GROUP 14: Maximum Damage ===
+    'Craftsmanship': { stats: { maxdmg: { min: 1, max: 1 } }, itemTypes: ['WeaponP', 'Ring', 'Amulet'], reqLvl: 1, group: 14 },
+    'Craftsmanship': { stats: { maxdmg: { min: 1, max: 2 } }, itemTypes: ['Circlet', 'Helm'], reqLvl: 1, group: 14 },
+    'Craftsmanship': { stats: { maxdmg: { min: 2, max: 3 } }, itemTypes: ['Circlet', 'Helm'], reqLvl: 6, group: 14 },
+    'Craftsmanship': { stats: { maxdmg: { min: 4, max: 5 } }, itemTypes: ['Circlet', 'Helm'], reqLvl: 11, group: 14 },
+    'Quality': { stats: { maxdmg: { min: 2, max: 2 } }, itemTypes: ['WeaponP'], reqLvl: 3, group: 14 },
+    'Quality': { stats: { maxdmg: { min: 6, max: 7 } }, itemTypes: ['Circlet', 'Helm'], reqLvl: 17, group: 14 },
+    'Quality': { stats: { maxdmg: { min: 7, max: 8 } }, itemTypes: ['Circlet', 'Helm'], reqLvl: 22, group: 14 },
+    'Maiming': { stats: { maxdmg: { min: 3, max: 4 } }, itemTypes: ['WeaponP'], reqLvl: 5, group: 14 },
+    'Maiming': { stats: { maxdmg: { min: 3, max: 4 } }, itemTypes: ['Shield', 'Ring', 'Amulet'], reqLvl: 34, group: 14 },
+    'Maiming': { stats: { maxdmg: { min: 9, max: 10 } }, itemTypes: ['Circlet', 'Helm'], reqLvl: 29, group: 14 },
+    'Maiming': { stats: { maxdmg: { min: 11, max: 12 } }, itemTypes: ['Circlet', 'Helm'], reqLvl: 37, group: 14 },
+    'Slaying': { stats: { maxdmg: { min: 5, max: 7 } }, itemTypes: ['WeaponP'], reqLvl: 8, group: 14 },
+    'Gore': { stats: { maxdmg: { min: 8, max: 10 } }, itemTypes: ['WeaponP'], reqLvl: 10, group: 14 },
+    'Carnage': { stats: { maxdmg: { min: 11, max: 14 } }, itemTypes: ['WeaponP'], reqLvl: 14, group: 14 },
+    'Carnage': { stats: { maxdmg: { min: 11, max: 14 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Helm'], reqLvl: 58, group: 14 },
+    'Slaughter': { stats: { maxdmg: { min: 15, max: 20 } }, itemTypes: ['WeaponP'], reqLvl: 18, group: 14 },
+    'Butchery': { stats: { maxdmg: { min: 21, max: 40 } }, itemTypes: ['WeaponP'], reqLvl: 27, group: 14 },
+    'Evisceration': { stats: { maxdmg: { min: 41, max: 63 } }, itemTypes: ['WeaponP'], reqLvl: 37, group: 14 },
+    'Evisceration': { stats: { maxdmg: { min: 41, max: 63 } }, itemTypes: ['Missile Weapon'], reqLvl: 37, group: 14 },
+
+    // === GROUP 15: Minimum Damage ===
+    'Worth': { stats: { mindmg: { min: 1, max: 2 } }, itemTypes: ['WeaponP'], reqLvl: 1, group: 15 },
+    'Worth': { stats: { mindmg: { min: 2, max: 3 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Helm'], reqLvl: 11, group: 15 },
+    'Measure': { stats: { mindmg: { min: 3, max: 4 } }, itemTypes: ['WeaponP'], reqLvl: 9, group: 15 },
+    'Measure': { stats: { mindmg: { min: 4, max: 5 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Helm'], reqLvl: 29, group: 15 },
+    'Excellence': { stats: { mindmg: { min: 5, max: 8 } }, itemTypes: ['WeaponP'], reqLvl: 18, group: 15 },
+    'Excellence': { stats: { mindmg: { min: 6, max: 9 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Helm'], reqLvl: 51, group: 15 },
+    'Performance': { stats: { mindmg: { min: 9, max: 14 } }, itemTypes: ['WeaponP'], reqLvl: 40, group: 15 },
+    'Performance': { stats: { mindmg: { min: 10, max: 13 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Helm'], reqLvl: 63, group: 15 },
+    'Transcendence': { stats: { mindmg: { min: 15, max: 20 } }, itemTypes: ['WeaponP'], reqLvl: 68, group: 15 },
+
+    // === GROUP 16: Poison Damage ===
+    'Blight': { stats: { poison: { min: 1, max: 1 } }, itemTypes: ['WeaponP', 'Wand'], reqLvl: 1, group: 16 },
+    'Blight': { stats: { poison: { min: 7, max: 7 } }, itemTypes: ['WeaponP', 'Circlet', 'Quiver'], reqLvl: 3, group: 16 },
+    'Blight': { stats: { poison: { min: 50, max: 50 } }, itemTypes: ['Ring', 'Amulet'], reqLvl: 33, group: 16 },
+    'Venom': { stats: { poison: { min: 21, max: 21 } }, itemTypes: ['WeaponP', 'Circlet', 'Quiver'], reqLvl: 11, group: 16 },
+    'Pestilence': { stats: { poison: { min: 50, max: 50 } }, itemTypes: ['WeaponP', 'Circlet', 'Quiver'], reqLvl: 18, group: 16 },
+    'Anthrax': { stats: { poison: { min: 100, max: 100 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 25, group: 16 },
+
+    // === GROUP 17: Dexterity ===
+    'Dexterity': { stats: { dex: { min: 1, max: 1 } }, itemTypes: ['Boots', 'Gloves'], reqLvl: 1, group: 17 },
+    'Dexterity': { stats: { dex: { min: 1, max: 1 } }, itemTypes: ['Ring'], reqLvl: 1, group: 17 },
+    'Dexterity': { stats: { dex: { min: 1, max: 2 } }, itemTypes: ['Amulet', 'Missile Weapon', 'Circlet', 'Helm'], reqLvl: 1, group: 17 },
+    'Dexterity': { stats: { dex: { min: 1, max: 2 } }, itemTypes: ['Ring', 'Gloves'], reqLvl: 4, group: 17 },
+    'Dexterity': { stats: { dex: { min: 2, max: 3 } }, itemTypes: ['Chest', 'Boots'], reqLvl: 9, group: 17 },
+    'Skill': { stats: { dex: { min: 3, max: 5 } }, itemTypes: ['Amulet', 'Missile Weapon', 'Circlet', 'Quiver', 'Helm'], reqLvl: 8, group: 17 },
+    'Skill': { stats: { dex: { min: 3, max: 5 } }, itemTypes: ['Ring', 'Gloves', 'Boots'], reqLvl: 16, group: 17 },
+    'Skill': { stats: { dex: { min: 4, max: 5 } }, itemTypes: ['Chest'], reqLvl: 26, group: 17 },
+    'Accuracy': { stats: { dex: { min: 6, max: 9 } }, itemTypes: ['Amulet', 'Missile Weapon', 'Circlet', 'Quiver', 'Helm'], reqLvl: 20, group: 17 },
+    'Accuracy': { stats: { dex: { min: 6, max: 9 } }, itemTypes: ['Ring', 'Gloves'], reqLvl: 31, group: 17 },
+    'Accuracy': { stats: { dex: { min: 6, max: 9 } }, itemTypes: ['Chest', 'Boots'], reqLvl: 38, group: 17 },
+    'Precision': { stats: { dex: { min: 10, max: 15 } }, itemTypes: ['Amulet', 'Missile Weapon', 'Circlet', 'Quiver', 'Helm'], reqLvl: 35, group: 17 },
+    'Precision': { stats: { dex: { min: 10, max: 15 } }, itemTypes: ['Ring', 'Gloves'], reqLvl: 48, group: 17 },
+    'Precision': { stats: { dex: { min: 10, max: 15 } }, itemTypes: ['Chest', 'Boots', 'Shield'], reqLvl: 52, group: 17 },
+    'Perfection': { stats: { dex: { min: 16, max: 20 } }, itemTypes: ['Amulet', 'Missile Weapon', 'Circlet', 'Chest', 'Shield', 'Helm'], reqLvl: 51, group: 17 },
+    'Perfection': { stats: { dex: { min: 16, max: 20 } }, itemTypes: ['Ring', 'Gloves'], reqLvl: 67, group: 17 },
+    'Nirvana': { stats: { dex: { min: 21, max: 30 } }, itemTypes: ['Amulet', 'Missile Weapon', 'Circlet', 'Helm', 'Shield', 'Chest'], reqLvl: 64, group: 17 },
+
+    // === GROUP 18: Faster Hit Recovery ===
+    'Balance': { stats: { fhr: { min: 10, max: 10 } }, itemTypes: ['Armor', 'Helm', 'Shield'], reqLvl: 3, group: 18 },
+    'Equilibrium': { stats: { fhr: { min: 17, max: 17 } }, itemTypes: ['Chest', 'Belt', 'Shield', 'Helm'], reqLvl: 6, group: 18 },
+    'Stability': { stats: { fhr: { min: 24, max: 24 } }, itemTypes: ['Chest', 'Belt', 'Helm', 'Shield'], reqLvl: 13, group: 18 },
+
+    // === GROUP 19: Life Replenish ===
+    'Regeneration': { stats: { regen: { min: 4, max: 10 } }, itemTypes: ['Scepter', 'Belt', 'Ring', 'Amulet', 'Circlet'], reqLvl: 7, group: 19 },
+    'Regeneration': { stats: { regen: { min: 6, max: 10 } }, itemTypes: ['Shield', 'Gloves'], reqLvl: 30, group: 19 },
+    'Regeneration': { stats: { regen: { min: 6, max: 10 } }, itemTypes: ['Chest', 'WeaponP', 'Boots'], reqLvl: 52, group: 19 },
+    'Regrowth': { stats: { regen: { min: 12, max: 20 } }, itemTypes: ['Scepter', 'Amulet', 'Circlet'], reqLvl: 12, group: 19 },
+    'Regrowth': { stats: { regen: { min: 12, max: 18 } }, itemTypes: ['Belt', 'Ring'], reqLvl: 41, group: 19 },
+    'Revivification': { stats: { regen: { min: 22, max: 30 } }, itemTypes: ['Scepter', 'Amulet', 'Circlet'], reqLvl: 30, group: 19 },
+
+    // === GROUP 20: Prevent Monster Heal ===
+    'Vileness': { stats: { preventheal: { min: 1, max: 1 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 6, group: 20 },
+
+    // === GROUP 21: Gold Find ===
+    'Greed': { stats: { goldfind: { min: 25, max: 40 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 1, group: 21 },
+    'Wealth': { stats: { goldfind: { min: 41, max: 80 } }, itemTypes: ['Boots', 'Gloves', 'Belt', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 12, group: 21 },
+
+    // === GROUP 22: Magic Find ===
+    'Chance': { stats: { magicfind: { min: 5, max: 15 } }, itemTypes: ['Boots', 'Gloves', 'Ring', 'Amulet', 'Circlet', 'Helm', 'Quiver'], reqLvl: 9, group: 22 },
+    'Fortune': { stats: { magicfind: { min: 16, max: 25 } }, itemTypes: ['Boots', 'Gloves', 'Amulet', 'Circlet', 'Helm', 'Quiver'], reqLvl: 12, group: 22 },
+    'Fortune': { stats: { magicfind: { min: 16, max: 25 } }, itemTypes: ['Ring'], reqLvl: 31, group: 22 },
+    'Luck': { stats: { magicfind: { min: 26, max: 35 } }, itemTypes: ['Boots', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 19, group: 22 },
+
+    // === GROUP 23: Energy ===
+    'Energy': { stats: { energy: { min: 1, max: 1 } }, itemTypes: ['Amulet', 'Orb', 'Circlet', 'Wand', 'Staff', 'Helm', 'Ring'], reqLvl: 1, group: 23 },
+    'Energy': { stats: { energy: { min: 1, max: 3 } }, itemTypes: ['Amulet', 'Orb', 'Circlet', 'Wand', 'Staff', 'Helm', 'Chest'], reqLvl: 1, group: 23 },
+    'Energy': { stats: { energy: { min: 1, max: 3 } }, itemTypes: ['Shield'], reqLvl: 1, group: 23 },
+    'Energy': { stats: { energy: { min: 1, max: 3 } }, itemTypes: ['Ring'], reqLvl: 5, group: 23 },
+    'Energy': { stats: { energy: { min: 1, max: 3 } }, itemTypes: ['Helm', 'Scepter'], reqLvl: 3, group: 23 },
+    'Mind': { stats: { energy: { min: 4, max: 6 } }, itemTypes: ['Orb', 'Circlet', 'Wand', 'Staff', 'Quiver', 'Helm', 'Chest'], reqLvl: 3, group: 23 },
+    'Mind': { stats: { energy: { min: 4, max: 6 } }, itemTypes: ['Shield'], reqLvl: 3, group: 23 },
+    'Mind': { stats: { energy: { min: 4, max: 6 } }, itemTypes: ['Ring', 'Amulet'], reqLvl: 9, group: 23 },
+    'Mind': { stats: { energy: { min: 4, max: 6 } }, itemTypes: ['Helm', 'Scepter'], reqLvl: 7, group: 23 },
+    'Brilliance': { stats: { energy: { min: 7, max: 10 } }, itemTypes: ['Amulet', 'Orb', 'Circlet', 'Wand', 'Staff', 'Quiver', 'Helm'], reqLvl: 9, group: 23 },
+    'Brilliance': { stats: { energy: { min: 7, max: 10 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 9, group: 23 },
+    'Brilliance': { stats: { energy: { min: 7, max: 10 } }, itemTypes: ['Ring'], reqLvl: 16, group: 23 },
+    'Brilliance': { stats: { energy: { min: 7, max: 10 } }, itemTypes: ['Helm', 'Scepter'], reqLvl: 12, group: 23 },
+    'Sorcery': { stats: { energy: { min: 11, max: 15 } }, itemTypes: ['Amulet', 'Orb', 'Circlet', 'Wand', 'Staff', 'Quiver', 'Helm'], reqLvl: 16, group: 23 },
+    'Sorcery': { stats: { energy: { min: 11, max: 15 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 16, group: 23 },
+    'Sorcery': { stats: { energy: { min: 11, max: 15 } }, itemTypes: ['Ring'], reqLvl: 23, group: 23 },
+    'Sorcery': { stats: { energy: { min: 11, max: 15 } }, itemTypes: ['Helm', 'Scepter'], reqLvl: 21, group: 23 },
+    'Wizardry': { stats: { energy: { min: 16, max: 20 } }, itemTypes: ['Amulet', 'Orb', 'Circlet', 'Wand', 'Staff', 'Helm', 'Chest'], reqLvl: 23, group: 23 },
+    'Wizardry': { stats: { energy: { min: 16, max: 20 } }, itemTypes: ['Shield'], reqLvl: 23, group: 23 },
+    'Wizardry': { stats: { energy: { min: 16, max: 20 } }, itemTypes: ['Ring'], reqLvl: 33, group: 23 },
+    'Enlightenment': { stats: { energy: { min: 21, max: 30 } }, itemTypes: ['Amulet', 'Orb', 'Circlet', 'Wand', 'Staff', 'Helm', 'Chest'], reqLvl: 33, group: 23 },
+    'Enlightenment': { stats: { energy: { min: 21, max: 30 } }, itemTypes: ['Shield'], reqLvl: 33, group: 23 },
+
+    // === GROUP 24: Knockback ===
+    'Bear': { stats: { knockback: { min: 1, max: 1 } }, itemTypes: ['Melee Weapon'], reqLvl: 6, group: 24 },
+    'Bear': { stats: { knockback: { min: 1, max: 1 } }, itemTypes: ['Quiver'], reqLvl: 24, group: 24 },
+
+    // === GROUP 25: Light Radius + Attack Rating ===
+    'Light': { stats: { lightrad: { min: 1, max: 1 }, toatt: { min: 10, max: 10 } }, itemTypes: ['Ring', 'Amulet'], reqLvl: 1, group: 25 },
+    'Light': { stats: { lightrad: { min: 1, max: 1 }, toatt: { min: 15, max: 30 } }, itemTypes: ['Armor', 'Rod', 'Ring', 'Amulet', 'Quiver'], reqLvl: 4, group: 25 },
+    'Radiance': { stats: { lightrad: { min: 3, max: 3 }, toatt: { min: 30, max: 60 } }, itemTypes: ['Rod', 'Missile Weapon', 'Helm', 'Chest', 'Quiver'], reqLvl: 11, group: 25 },
+    'Radiance': { stats: { lightrad: { min: 3, max: 3 }, toatt: { min: 30, max: 60 } }, itemTypes: ['Ring', 'Amulet'], reqLvl: 11, group: 25 },
+    'Clarity': { stats: { lightrad: { min: 4, max: 4 }, toatt: { min: 60, max: 120 } }, itemTypes: ['Rod', 'Missile Weapon', 'Amulet', 'Helm', 'Chest', 'Ring'], reqLvl: 21, group: 25 },
+    'Divinity': { stats: { lightrad: { min: 5, max: 5 }, toatt: { min: 120, max: 240 } }, itemTypes: ['Rod', 'Missile Weapon', 'Amulet', 'Chest'], reqLvl: 42, group: 25 },
+    'Sun': { stats: { lightrad: { min: 5, max: 5 }, toatt: { min: 10, max: 20 } }, itemTypes: ['Rod', 'Missile Weapon', 'Gloves', 'Ring', 'Amulet', 'Helm', 'Chest'], reqLvl: 12, group: 25 },
+    'Sunset': { stats: { lightrad: { min: 5, max: 5 }, toatt: { min: 10, max: 10 } }, itemTypes: ['Rod', 'Missile Weapon', 'Gloves', 'Ring', 'Amulet', 'Helm', 'Chest'], reqLvl: 22, group: 25 },
+    'Sunset': { stats: { lightrad: { min: 5, max: 8 }, toatt: { min: 10, max: 10 } }, itemTypes: ['Rod', 'Missile Weapon', 'Gloves', 'Ring', 'Amulet', 'Helm', 'Chest'], reqLvl: 26, group: 25 },
+    'Jackal': { stats: { tolife: { min: 1, max: 5 } }, itemTypes: ['Chest', 'Belt', 'Amulet', 'Barbarian Helm', 'Circlet'], reqLvl: 1, group: 26 },
+    'Jackal': { stats: { tolife: { min: 1, max: 5 } }, itemTypes: ['Shield', 'Druid Helm'], reqLvl: 3, group: 26 },
+    'Jackal': { stats: { tolife: { min: 1, max: 5 } }, itemTypes: ['Mace', 'Ring', 'Helm'], reqLvl: 6, group: 26 },
+
+    // === GROUP 26: Life ===
+    'Fox': { stats: { tolife: { min: 6, max: 10 } }, itemTypes: ['Chest', 'Belt', 'Amulet', 'Barbarian Helm', 'Circlet', 'Quiver'], reqLvl: 5, group: 26 },
+    'Fox': { stats: { tolife: { min: 6, max: 10 } }, itemTypes: ['Shield', 'Druid Helm'], reqLvl: 8, group: 26 },
+    'Fox': { stats: { tolife: { min: 6, max: 10 } }, itemTypes: ['Mace', 'Helm'], reqLvl: 13, group: 26 },
+    'Fox': { stats: { tolife: { min: 6, max: 10 } }, itemTypes: ['Ring'], reqLvl: 13, group: 26 },
+    'Wolf': { stats: { tolife: { min: 11, max: 20 } }, itemTypes: ['Chest', 'Barbarian Helm', 'Circlet', 'Quiver'], reqLvl: 11, group: 26 },
+    'Wolf': { stats: { tolife: { min: 11, max: 20 } }, itemTypes: ['Amulet', 'Belt'], reqLvl: 11, group: 26 },
+    'Wolf': { stats: { tolife: { min: 11, max: 20 } }, itemTypes: ['Shield', 'Druid Helm'], reqLvl: 20, group: 26 },
+    'Wolf': { stats: { tolife: { min: 11, max: 20 } }, itemTypes: ['Mace', 'Helm'], reqLvl: 26, group: 26 },
+    'Wolf': { stats: { tolife: { min: 11, max: 20 } }, itemTypes: ['Ring'], reqLvl: 26, group: 26 },
+    'Tiger': { stats: { tolife: { min: 21, max: 30 } }, itemTypes: ['Chest', 'Belt', 'Amulet', 'Barbarian Helm', 'Circlet', 'Quiver'], reqLvl: 15, group: 26 },
+    'Tiger': { stats: { tolife: { min: 21, max: 30 } }, itemTypes: ['Shield', 'Druid Helm'], reqLvl: 35, group: 26 },
+    'Tiger': { stats: { tolife: { min: 21, max: 30 } }, itemTypes: ['Mace', 'Ring', 'Helm'], reqLvl: 43, group: 26 },
+    'Mammoth': { stats: { tolife: { min: 31, max: 40 } }, itemTypes: ['Chest', 'Belt', 'Amulet', 'Barbarian Helm', 'Circlet', 'Quiver'], reqLvl: 18, group: 26 },
+    'Mammoth': { stats: { tolife: { min: 31, max: 40 } }, itemTypes: ['Shield', 'Druid Helm'], reqLvl: 51, group: 26 },
+    'Mammoth': { stats: { tolife: { min: 31, max: 40 } }, itemTypes: ['Mace', 'Ring', 'Helm'], reqLvl: 60, group: 26 },
+    'Colossus': { stats: { tolife: { min: 41, max: 60 } }, itemTypes: ['Chest', 'Belt', 'Amulet', 'Barbarian Helm', 'Circlet'], reqLvl: 22, group: 26 },
+    'Colossus': { stats: { tolife: { min: 41, max: 60 } }, itemTypes: ['Shield', 'Druid Helm'], reqLvl: 67, group: 26 },
+    'Squid': { stats: { tolife: { min: 61, max: 80 } }, itemTypes: ['Chest', 'Belt', 'Barbarian Helm', 'Circlet', 'Shield'], reqLvl: 30, group: 26 },
+    'Squid': { stats: { tolife: { min: 61, max: 80 } }, itemTypes: ['Amulet'], reqLvl: 30, group: 26 },
+    'Whale': { stats: { tolife: { min: 81, max: 100 } }, itemTypes: ['Chest', 'Belt', 'Barbarian Helm', 'Circlet', 'Shield'], reqLvl: 37, group: 26 },
+    'Whale': { stats: { tolife: { min: 81, max: 100 } }, itemTypes: ['Amulet'], reqLvl: 37, group: 26 },
+
+    // === GROUP 27: Life Leech ===
+    'Leech': { stats: { lifesteal: { min: 2, max: 3 } }, itemTypes: ['Amulet'], reqLvl: 20, group: 27 },
+    'Leech': { stats: { lifesteal: { min: 3, max: 3 } }, itemTypes: ['Gloves'], reqLvl: 26, group: 27 },
+    'Leech': { stats: { lifesteal: { min: 3, max: 4 } }, itemTypes: ['Ring', 'Circlet', 'Helm'], reqLvl: 10, group: 27 },
+    'Leech': { stats: { lifesteal: { min: 4, max: 5 } }, itemTypes: ['Melee Weapon', 'Missile Weapon', 'Quiver'], reqLvl: 4, group: 27 },
+    'Locust': { stats: { lifesteal: { min: 4, max: 5 } }, itemTypes: ['Amulet'], reqLvl: 45, group: 27 },
+    'Locust': { stats: { lifesteal: { min: 5, max: 6 } }, itemTypes: ['Ring', 'Circlet', 'Helm'], reqLvl: 35, group: 27 },
+    'Locust': { stats: { lifesteal: { min: 6, max: 7 } }, itemTypes: ['Melee Weapon', 'Quiver'], reqLvl: 15, group: 27 },
+    'Lamprey': { stats: { lifesteal: { min: 6, max: 6 } }, itemTypes: ['Amulet'], reqLvl: 63, group: 27 },
+    'Lamprey': { stats: { lifesteal: { min: 6, max: 9 } }, itemTypes: ['Quiver'], reqLvl: 43, group: 27 },
+    'Lamprey': { stats: { lifesteal: { min: 7, max: 8 } }, itemTypes: ['Ring', 'Circlet'], reqLvl: 65, group: 27 },
+    'Lamprey': { stats: { lifesteal: { min: 8, max: 9 } }, itemTypes: ['Melee Weapon'], reqLvl: 43, group: 27 },
+
+    // === GROUP 28: Mana Leech ===
+    'Bat': { stats: { manasteal: { min: 2, max: 3 } }, itemTypes: ['Ring'], reqLvl: 21, group: 28 },
+    'Bat': { stats: { manasteal: { min: 3, max: 3 } }, itemTypes: ['Gloves'], reqLvl: 27, group: 28 },
+    'Bat': { stats: { manasteal: { min: 3, max: 4 } }, itemTypes: ['Amulet', 'Circlet', 'Helm'], reqLvl: 11, group: 28 },
+    'Bat': { stats: { manasteal: { min: 4, max: 5 } }, itemTypes: ['Melee Weapon', 'Missile Weapon', 'Quiver'], reqLvl: 4, group: 28 },
+    'Wraith': { stats: { manasteal: { min: 4, max: 5 } }, itemTypes: ['Ring'], reqLvl: 46, group: 28 },
+    'Wraith': { stats: { manasteal: { min: 5, max: 6 } }, itemTypes: ['Amulet', 'Circlet', 'Helm'], reqLvl: 40, group: 28 },
+    'Wraith': { stats: { manasteal: { min: 6, max: 7 } }, itemTypes: ['Melee Weapon', 'Quiver'], reqLvl: 16, group: 28 },
+    'Vampire': { stats: { manasteal: { min: 6, max: 6 } }, itemTypes: ['Ring'], reqLvl: 64, group: 28 },
+    'Vampire': { stats: { manasteal: { min: 6, max: 9 } }, itemTypes: ['Quiver'], reqLvl: 48, group: 28 },
+    'Vampire': { stats: { manasteal: { min: 7, max: 8 } }, itemTypes: ['Amulet', 'Circlet'], reqLvl: 66, group: 28 },
+    'Vampire': { stats: { manasteal: { min: 8, max: 9 } }, itemTypes: ['Melee Weapon'], reqLvl: 48, group: 28 },
+
+    // === GROUP 29: Poison Resist ===
+    'Remedy': { stats: { poisonres: { min: 25, max: 25 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 5, group: 29 },
+    'Amelioration': { stats: { poisonres: { min: 50, max: 50 } }, itemTypes: ['Chest', 'Shield', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 13, group: 29 },
+    'Defiance': { stats: { poisonres: { min: 75, max: 75 } }, itemTypes: ['Chest', 'Shield', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 18, group: 29 },
+
+    // === GROUP 30: Requirements ===
+    'Ease': { stats: { reqred: { min: 20, max: 20 } }, itemTypes: ['Chest', 'WeaponPS', 'Shield'], reqLvl: 11, group: 30 },
+    'Simplicity': { stats: { reqred: { min: 30, max: 30 } }, itemTypes: ['Chest', 'WeaponPS', 'Shield'], reqLvl: 18, group: 30 },
+
+    // === GROUP 31: Strength ===
+    'Strength': { stats: { str: { min: 1, max: 1 } }, itemTypes: ['Gloves'], reqLvl: 1, group: 31 },
+    'Strength': { stats: { str: { min: 1, max: 1 } }, itemTypes: ['Ring'], reqLvl: 1, group: 31 },
+    'Strength': { stats: { str: { min: 1, max: 2 } }, itemTypes: ['Amulet', 'Belt', 'Club', 'Hammer', 'Circlet', 'Helm'], reqLvl: 1, group: 31 },
+    'Strength': { stats: { str: { min: 1, max: 2 } }, itemTypes: ['Ring', 'Scepter', 'Mace'], reqLvl: 3, group: 31 },
+    'Strength': { stats: { str: { min: 1, max: 2 } }, itemTypes: ['WeaponP', 'Gloves', 'Shield', 'Chest'], reqLvl: 8, group: 31 },
+    'Might': { stats: { str: { min: 3, max: 5 } }, itemTypes: ['Belt', 'Club', 'Hammer', 'Circlet', 'Quiver', 'Helm'], reqLvl: 8, group: 31 },
+    'Might': { stats: { str: { min: 3, max: 5 } }, itemTypes: ['Amulet', 'Ring', 'Gloves'], reqLvl: 8, group: 31 },
+    'Might': { stats: { str: { min: 3, max: 5 } }, itemTypes: ['Scepter', 'Mace', 'Chest'], reqLvl: 15, group: 31 },
+    'Might': { stats: { str: { min: 3, max: 5 } }, itemTypes: ['WeaponP', 'Shield', 'Chest'], reqLvl: 25, group: 31 },
+    'Ox': { stats: { str: { min: 6, max: 9 } }, itemTypes: ['Amulet', 'Belt', 'Club', 'Hammer', 'Circlet', 'Quiver', 'Helm'], reqLvl: 19, group: 31 },
+    'Ox': { stats: { str: { min: 6, max: 9 } }, itemTypes: ['Ring', 'Scepter', 'Mace', 'Chest'], reqLvl: 30, group: 31 },
+    'Ox': { stats: { str: { min: 6, max: 9 } }, itemTypes: ['WeaponP', 'Gloves', 'Shield', 'Chest'], reqLvl: 37, group: 31 },
+    'Giant': { stats: { str: { min: 10, max: 15 } }, itemTypes: ['Amulet', 'Belt', 'Club', 'Hammer', 'Circlet', 'Quiver', 'Helm'], reqLvl: 34, group: 31 },
+    'Giant': { stats: { str: { min: 10, max: 15 } }, itemTypes: ['Ring', 'Scepter', 'Mace', 'Chest', 'Shield'], reqLvl: 47, group: 31 },
+    'Giant': { stats: { str: { min: 10, max: 15 } }, itemTypes: ['WeaponP', 'Gloves'], reqLvl: 51, group: 31 },
+    'Titan': { stats: { str: { min: 16, max: 20 } }, itemTypes: ['Amulet', 'Belt', 'Club', 'Hammer', 'Circlet', 'Helm'], reqLvl: 50, group: 31 },
+    'Titan': { stats: { str: { min: 16, max: 20 } }, itemTypes: ['Ring', 'Scepter', 'Mace', 'Chest', 'Shield'], reqLvl: 66, group: 31 },
+    'Atlas': { stats: { str: { min: 21, max: 30 } }, itemTypes: ['Amulet', 'Belt', 'Club', 'Hammer', 'Circlet', 'Helmet', 'Shield'], reqLvl: 63, group: 31 },
+    'Atlas': { stats: { str: { min: 21, max: 30 } }, itemTypes: ['Chest'], reqLvl: 63, group: 31 },
+
+    // === GROUP 35: Run/Walk ===
+    'Pacing': { stats: { frw: { min: 10, max: 10 } }, itemTypes: ['Boots', 'Circlet'], reqLvl: 8, group: 35 },
+    'Pacing': { stats: { frw: { min: 10, max: 10 } }, itemTypes: ['Amazon Weapon', 'Quiver'], reqLvl: 8, group: 35 },
+    'Haste': { stats: { frw: { min: 20, max: 20 } }, itemTypes: ['Boots', 'Circlet'], reqLvl: 16, group: 35 },
+    'Haste': { stats: { frw: { min: 20, max: 20 } }, itemTypes: ['Amazon Weapon', 'Quiver'], reqLvl: 16, group: 35 },
+    'Speed': { stats: { frw: { min: 30, max: 30 } }, itemTypes: ['Boots', 'Circlet'], reqLvl: 29, group: 35 },
+    'Transportation': { stats: { frw: { min: 30, max: 30 }, stamdrainred: { min: 80, max: 90 } }, itemTypes: ['Boots'], reqLvl: 57, group: 35 },
+    'Acceleration': { stats: { frw: { min: 40, max: 40 } }, itemTypes: ['Boots'], reqLvl: 43, group: 35 },
+
+    // === GROUP 37: Durability ===
+    'Self-Repair': { stats: { repair: { min: 1, max: 1 } }, itemTypes: ['WeaponP', 'Orb', 'Armor'], reqLvl: 1, group: 37 },
+    'Fast Repair': { stats: { repair: { min: 1, max: 1 } }, itemTypes: ['WeaponP', 'Orb', 'Armor'], reqLvl: 12, group: 37 },
+    'Ages': { stats: { indestructible: { min: 1, max: 1 } }, itemTypes: ['WeaponP', 'Orb', 'Armor'], reqLvl: 42, group: 39 },
+
+    // === GROUP 41: Scaling Life/Mana ===
+    'Centaur': { stats: { scalinglife: { min: 0, max: 74 } }, itemTypes: ['Chest', 'Druid Helm', 'Barbarian Helm', 'Shield'], reqLvl: 1, group: 41 },
+    'Centaur': { stats: { scalinglife: { min: 0, max: 74 } }, itemTypes: ['Amulet'], reqLvl: 1, group: 41 },
+    'Mnemonic': { stats: { scalingmana: { min: 0, max: 74 } }, itemTypes: ['Circlet', 'Amulet', 'Druid Helm'], reqLvl: 1, group: 41 },
+    'Elephant': { stats: { scalinglife: { min: 0, max: 49 }, scalingmana: { min: 0, max: 24 } }, itemTypes: ['Circlet', 'Druid Helm'], reqLvl: 7, group: 41 },
+
+    // === GROUP 251: Defending ===
+    'Defending': { stats: { pdmgred: { min: 5, max: 10 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 20, group: 251 },
+    'Defending': { stats: { pdmgred: { min: 5, max: 10 } }, itemTypes: ['Belt'], reqLvl: 40, group: 251 },
+    'Protecting': { stats: { pdmgred: { min: 10, max: 15 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 40, group: 251 },
+    'Guardianship': { stats: { pdmgred: { min: 15, max: 20 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 60, group: 251 },
+
+    // === GROUP 252: Deadly Strike / Open Wounds / Crushing Blow ===
+    'Savagery': { stats: { deadlystrike: { min: 5, max: 10 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 15, group: 252 },
+    'Devastation': { stats: { deadlystrike: { min: 10, max: 15 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 25, group: 252 },
+    'Havoc': { stats: { deadlystrike: { min: 15, max: 20 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 35, group: 252 },
+    'Destruction': { stats: { deadlystrike: { min: 20, max: 25 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 45, group: 252 },
+    'Desolation': { stats: { deadlystrike: { min: 25, max: 30 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 55, group: 252 },
+    'Bleeding': { stats: { openwounds: { min: 10, max: 10 }, owdps: { min: 8, max: 12 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 15, group: 252 },
+    'Siphoning': { stats: { openwounds: { min: 10, max: 10 }, owdps: { min: 15, max: 20 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 25, group: 252 },
+    'Gory': { stats: { openwounds: { min: 10, max: 10 }, owdps: { min: 33, max: 46 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 35, group: 252 },
+    'Sanguinary': { stats: { openwounds: { min: 10, max: 10 }, owdps: { min: 122, max: 172 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 45, group: 252 },
+    'Hematic': { stats: { openwounds: { min: 10, max: 10 }, owdps: { min: 235, max: 325 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 55, group: 252 },
+    'Chipping': { stats: { crushblow: { min: 5, max: 10 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 15, group: 252 },
+    'Crumbling': { stats: { crushblow: { min: 10, max: 15 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 25, group: 252 },
+    'Breaking': { stats: { crushblow: { min: 15, max: 20 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 35, group: 252 },
+    'Crushing': { stats: { crushblow: { min: 20, max: 25 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 45, group: 252 },
+    'Pulverizing': { stats: { crushblow: { min: 25, max: 30 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 55, group: 252 }
   }
 };
 
