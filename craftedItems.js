@@ -144,7 +144,10 @@ const affixDatabase = {
 function itemMatchesCategories(baseType, categories) {
   if (!categories || !baseType) return false;
 
-  const categoryList = categories.split(',').map(c => c.trim());
+  // Handle both comma-separated strings and single category strings
+  const categoryList = Array.isArray(categories)
+    ? categories
+    : categories.split(',').map(c => c.trim());
 
   for (const category of categoryList) {
     // Check if the category exists in our mapping
