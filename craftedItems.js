@@ -412,7 +412,7 @@ const itemTypeCategories = {
 // Affix database - Prefixes only (suffixes to be added later)
 const affixDatabase = {
   prefixes: {
-    // Enhanced Defense
+    // === GROUP 101: Enhanced Defense ===
     'Sturdy': { stats: { edef: { min: 20, max: 30 } }, itemTypes: ['Armor'], reqLvl: 3, group: 101 },
     'Strong': { stats: { edef: { min: 31, max: 40 } }, itemTypes: ['Armor'], reqLvl: 6, group: 101 },
     'Glorious': { stats: { edef: { min: 41, max: 50 } }, itemTypes: ['Armor'], reqLvl: 14, group: 101 },
@@ -420,30 +420,58 @@ const affixDatabase = {
     'Saintly': { stats: { edef: { min: 66, max: 80 } }, itemTypes: ['Armor'], reqLvl: 23, group: 101 },
     'Holy': { stats: { edef: { min: 81, max: 100 } }, itemTypes: ['Armor'], reqLvl: 27, group: 101 },
     'Godly': { stats: { edef: { min: 101, max: 200 } }, itemTypes: ['Armor'], reqLvl: 38, group: 101 },
+    'Faithful': { stats: { todef: { min: 0, max: 49 } }, itemTypes: ['Gloves', 'Boots', 'Belt', 'Shield'], reqLvl: 22, group: 101 },
 
-    // Enhanced Damage
-    'Jagged': { stats: { edmg: { min: 10, max: 20 } }, itemTypes: ['WeaponP', 'Circlet'], reqLvl: 1, group: 105 },
-    'Deadly': { stats: { edmg: { min: 21, max: 30 } }, itemTypes: ['WeaponP', 'Circlet'], reqLvl: 3, group: 105 },
-    'Vicious': { stats: { edmg: { min: 31, max: 40 } }, itemTypes: ['WeaponP'], reqLvl: 6, group: 105 },
-    'Brutal': { stats: { edmg: { min: 41, max: 50 } }, itemTypes: ['WeaponP'], reqLvl: 10, group: 105 },
-    'Massive': { stats: { edmg: { min: 51, max: 65 } }, itemTypes: ['WeaponP'], reqLvl: 15, group: 105 },
-    'Savage': { stats: { edmg: { min: 66, max: 80 } }, itemTypes: ['WeaponP'], reqLvl: 19, group: 105 },
+    // === GROUP 103: Minimum Damage (Quiver) ===
+    'Scarlet': { stats: { mindmg: { min: 1, max: 4 } }, itemTypes: ['Quiver'], reqLvl: 6, group: 103 },
+    'Crimson': { stats: { mindmg: { min: 5, max: 8 } }, itemTypes: ['Quiver'], reqLvl: 30, group: 103 },
+    'Cardinal': { stats: { mindmg: { min: 10, max: 14 } }, itemTypes: ['Quiver'], reqLvl: 30, group: 103 },
+
+    // === GROUP 104: Maximum Damage (Quiver) ===
+    'Carbuncle': { stats: { maxdmg: { min: 1, max: 5 } }, itemTypes: ['Quiver'], reqLvl: 9, group: 104 },
+    'Carmine': { stats: { maxdmg: { min: 6, max: 9 } }, itemTypes: ['Quiver'], reqLvl: 27, group: 104 },
+    'Vermillion': { stats: { maxdmg: { min: 11, max: 15 } }, itemTypes: ['Quiver'], reqLvl: 50, group: 104 },
+
+    // === GROUP 105: Enhanced Damage ===
+    'Jagged': { stats: { edmg: { min: 10, max: 20 } }, itemTypes: ['WeaponP', 'Circlet', 'Quiver'], reqLvl: 1, group: 105 },
+    'Deadly': { stats: { edmg: { min: 21, max: 30 } }, itemTypes: ['WeaponP', 'Circlet', 'Quiver'], reqLvl: 3, group: 105 },
+    'Vicious': { stats: { edmg: { min: 31, max: 40 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 6, group: 105 },
+    'Brutal': { stats: { edmg: { min: 41, max: 50 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 10, group: 105 },
+    'Massive': { stats: { edmg: { min: 51, max: 65 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 15, group: 105 },
+    'Savage': { stats: { edmg: { min: 66, max: 80 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 19, group: 105 },
     'Merciless': { stats: { edmg: { min: 81, max: 100 } }, itemTypes: ['WeaponP'], reqLvl: 24, group: 105 },
     'Ferocious': { stats: { edmg: { min: 101, max: 200 } }, itemTypes: ['WeaponP'], reqLvl: 33, group: 105 },
     'Cruel': { stats: { edmg: { min: 201, max: 300 } }, itemTypes: ['WeaponP'], reqLvl: 43, group: 105 },
+    'Gritty': { stats: { maxdmg: { min: 0, max: 74 } }, itemTypes: ['WeaponP'], reqLvl: 37, group: 105 },
+    'Visceral': { stats: { edmg: { min: 301, max: 400 } }, itemTypes: ['Missile Weapon', 'Amazon Javelin', 'Knife', 'Club', 'Tipped Mace', 'Throwing Axe'], reqLvl: 69, group: 105 },
+    'Supporting': { stats: { edmg: { min: 10, max: 20 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 18, group: 105 },
+    'Reinforcing': { stats: { edmg: { min: 20, max: 40 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 28, group: 105 },
+    'Empowering': { stats: { edmg: { min: 40, max: 60 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 38, group: 105 },
+    'Bolstering': { stats: { edmg: { min: 60, max: 80 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 48, group: 105 },
+    'Fortifying': { stats: { edmg: { min: 80, max: 120 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 58, group: 105 },
+    'Embattled': { stats: { edmg: { min: 120, max: 160 } }, itemTypes: ['Chest', 'Shield'], reqLvl: 68, group: 105 },
+    'Rampaging': { stats: { edmg: { min: 160, max: 200 } }, itemTypes: ['Chest'], reqLvl: 78, group: 105 },
 
-    // Attack Rating
-    'Bronze': { stats: { toatt: { min: 10, max: 20 } }, itemTypes: ['WeaponP', 'Circlet'], reqLvl: 1, group: 110 },
-    'Iron': { stats: { toatt: { min: 21, max: 40 } }, itemTypes: ['WeaponP', 'Circlet'], reqLvl: 3, group: 110 },
-    'Steel': { stats: { toatt: { min: 41, max: 60 } }, itemTypes: ['WeaponP', 'Circlet'], reqLvl: 6, group: 110 },
-    'Silver': { stats: { toatt: { min: 61, max: 80 } }, itemTypes: ['WeaponP', 'Circlet'], reqLvl: 9, group: 110 },
-    'Gold': { stats: { toatt: { min: 81, max: 100 } }, itemTypes: ['WeaponP', 'Circlet'], reqLvl: 12, group: 110 },
-    'Platinum': { stats: { toatt: { min: 101, max: 120 } }, itemTypes: ['WeaponP', 'Circlet'], reqLvl: 16, group: 110 },
-    'Meteoric': { stats: { toatt: { min: 121, max: 150 } }, itemTypes: ['WeaponP'], reqLvl: 20, group: 110 },
-    'Strange': { stats: { toatt: { min: 151, max: 300 } }, itemTypes: ['WeaponP'], reqLvl: 24, group: 110 },
+    // === GROUP 107: Damage Taken Gained as Mana ===
+    'Vulpine': { stats: { dmgmana: { min: 7, max: 12 } }, itemTypes: ['Shield', 'Amulet', 'Orb', 'Staff'], reqLvl: 6, group: 107 },
+    'Tricky': { stats: { dmgmana: { min: 13, max: 20 } }, itemTypes: ['Orb', 'Staff', 'Shield', 'Amulet'], reqLvl: 21, group: 107 },
+    'Devious': { stats: { dmgmana: { min: 21, max: 30 } }, itemTypes: ['Orb', 'Staff', 'Shield', 'Amulet'], reqLvl: 41, group: 107 },
+
+    // === GROUP 108: Heal Stamina ===
+    'Tireless': { stats: { healstamina: { min: 10, max: 50 } }, itemTypes: ['Boots'], reqLvl: 1, group: 108 },
+
+    // === GROUP 110: Attack Rating ===
+    'Bronze': { stats: { toatt: { min: 10, max: 20 } }, itemTypes: ['WeaponP', 'Ring', 'Circlet', 'Helm', 'Chest', 'Gloves', 'Amulet'], reqLvl: 1, group: 110 },
+    'Iron': { stats: { toatt: { min: 21, max: 40 } }, itemTypes: ['WeaponP', 'Ring', 'Circlet', 'Helm', 'Chest', 'Gloves'], reqLvl: 3, group: 110 },
+    'Steel': { stats: { toatt: { min: 41, max: 60 } }, itemTypes: ['WeaponP', 'Ring', 'Circlet', 'Helm', 'Chest', 'Gloves'], reqLvl: 6, group: 110 },
+    'Silver': { stats: { toatt: { min: 61, max: 80 } }, itemTypes: ['WeaponP', 'Ring', 'Circlet', 'Helm', 'Chest', 'Gloves', 'Quiver'], reqLvl: 9, group: 110 },
+    'Gold': { stats: { toatt: { min: 81, max: 100 } }, itemTypes: ['WeaponP', 'Ring', 'Circlet', 'Helm', 'Chest', 'Gloves', 'Quiver'], reqLvl: 12, group: 110 },
+    'Platinum': { stats: { toatt: { min: 101, max: 120 } }, itemTypes: ['WeaponP', 'Ring', 'Circlet', 'Helm', 'Chest', 'Gloves', 'Quiver'], reqLvl: 16, group: 110 },
+    'Meteoric': { stats: { toatt: { min: 121, max: 150 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 20, group: 110 },
+    'Strange': { stats: { toatt: { min: 151, max: 300 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 24, group: 110 },
     'Weird': { stats: { toatt: { min: 301, max: 450 } }, itemTypes: ['WeaponP'], reqLvl: 27, group: 110 },
 
-    // Attack Rating + Enhanced Damage (hybrid)
+    // === GROUP 111: Attack Rating + Enhanced Damage ===
     'Sharp': { stats: { toatt: { min: 10, max: 20 }, edmg: { min: 10, max: 20 } }, itemTypes: ['WeaponP'], reqLvl: 3, group: 111 },
     'Fine': { stats: { toatt: { min: 21, max: 40 }, edmg: { min: 21, max: 30 } }, itemTypes: ['WeaponP'], reqLvl: 9, group: 111 },
     "Warrior's": { stats: { toatt: { min: 41, max: 60 }, edmg: { min: 31, max: 40 } }, itemTypes: ['WeaponP'], reqLvl: 13, group: 111 },
@@ -453,13 +481,174 @@ const affixDatabase = {
     "King's": { stats: { toatt: { min: 121, max: 150 }, edmg: { min: 81, max: 100 } }, itemTypes: ['WeaponP'], reqLvl: 48, group: 111 },
     "Master's": { stats: { toatt: { min: 151, max: 250 }, edmg: { min: 101, max: 150 } }, itemTypes: ['WeaponP'], reqLvl: 48, group: 111 },
     "Grandmaster's": { stats: { toatt: { min: 251, max: 300 }, edmg: { min: 151, max: 200 } }, itemTypes: ['WeaponP', 'Missile Weapon'], reqLvl: 61, group: 111 },
+    'Fool\'s': { stats: { maxdmg: { min: 0, max: 49 }, toatt: { min: 16, max: 1633 } }, itemTypes: ['WeaponP'], reqLvl: 37, group: 111 },
+    'Hawkeye': { stats: { toatt: { min: 6, max: 594 } }, itemTypes: ['WeaponP'], reqLvl: 26, group: 111 },
+    'Visionary': { stats: { toattbonus: { min: 1, max: 99 } }, itemTypes: ['Helm', 'Missile Weapon'], reqLvl: 18, group: 111 },
 
-    // Damage to Undead + Attack Rating vs Undead
+    // === GROUP 112: Light Radius ===
+    'Glimmering': { stats: { lightrad: { min: 1, max: 1 } }, itemTypes: ['Armor', 'Wand', 'Staff', 'Ring', 'Amulet', 'Orb'], reqLvl: 1, group: 112 },
+    'Glowing': { stats: { lightrad: { min: 2, max: 2 } }, itemTypes: ['Armor', 'Wand', 'Staff', 'Ring', 'Amulet', 'Orb'], reqLvl: 4, group: 112 },
+
+    // === GROUP 113: Monster Flee ===
+    'Screaming': { stats: { monsterlee: { min: 12, max: 25 } }, itemTypes: ['Missile Weapon', 'Blunt Weapon', 'Knife', 'Claw', 'Orb'], reqLvl: 7, group: 113 },
+    'Howling': { stats: { monsterlee: { min: 18, max: 50 } }, itemTypes: ['Missile Weapon', 'Blunt Weapon', 'Knife', 'Claw', 'Orb'], reqLvl: 12, group: 113 },
+    'Wailing': { stats: { monsterlee: { min: 25, max: 100 } }, itemTypes: ['Missile Weapon', 'Blunt Weapon', 'Knife', 'Claw', 'Orb'], reqLvl: 13, group: 113 },
+
+    // === GROUP 114: Magic Find ===
+    'Felicitous': { stats: { magicfind: { min: 5, max: 10 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Helm'], reqLvl: 3, group: 114 },
+    'Fortuitous': { stats: { magicfind: { min: 11, max: 15 } }, itemTypes: ['Ring', 'Amulet', 'Circlet', 'Helm'], reqLvl: 8, group: 114 },
+
+    // === GROUP 115: Mana ===
+    "Lizard's": { stats: { tomana: { min: 1, max: 5 } }, itemTypes: ['Chest', 'Helm', 'Shield', 'Belt', 'Ring', 'Amulet', 'Rod', 'Orb'], reqLvl: 1, group: 115 },
+    "Snake's": { stats: { tomana: { min: 5, max: 20 } }, itemTypes: ['Shield', 'Rod', 'Belt', 'Ring', 'Amulet', 'Circlet', 'Chest', 'Gloves', 'Boots', 'Quiver'], reqLvl: 4, group: 115 },
+    "Serpent's": { stats: { tomana: { min: 11, max: 20 } }, itemTypes: ['Shield', 'Rod', 'Circlet', 'Quiver', 'Belt', 'Ring', 'Amulet', 'Chest', 'Boots', 'Gloves'], reqLvl: 10, group: 115 },
+    "Drake's": { stats: { tomana: { min: 21, max: 30 } }, itemTypes: ['Rod', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Quiver'], reqLvl: 15, group: 115 },
+    "Dragon's": { stats: { tomana: { min: 31, max: 40 } }, itemTypes: ['Rod', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Chest', 'Boots', 'Gloves', 'Quiver'], reqLvl: 18, group: 115 },
+    "Wyrm's": { stats: { tomana: { min: 41, max: 60 } }, itemTypes: ['Rod', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Chest', 'Shield'], reqLvl: 22, group: 115 },
+    "Great Wyrm's": { stats: { tomana: { min: 61, max: 90 } }, itemTypes: ['Rod', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Chest', 'Shield'], reqLvl: 29, group: 115 },
+    "Bahamut's": { stats: { tomana: { min: 91, max: 120 } }, itemTypes: ['Rod', 'Ring', 'Amulet', 'Orb', 'Circlet'], reqLvl: 37, group: 115 },
+    'Mnemonic': { stats: { tomana: { min: 0, max: 74 } }, itemTypes: ['Helm'], reqLvl: 18, group: 115 },
+
+    // === GROUP 116: All Resistances ===
+    'Shimmering': { stats: { allres: { min: 3, max: 7 } }, itemTypes: ['Shield', 'Chest', 'Amulet', 'Circlet', 'Helm', 'Ring', 'Quiver'], reqLvl: 4, group: 116 },
+    'Rainbow': { stats: { allres: { min: 8, max: 11 } }, itemTypes: ['Shield', 'Chest', 'Amulet', 'Circlet', 'Helm', 'Ring'], reqLvl: 13, group: 116 },
+    'Scintillating': { stats: { allres: { min: 12, max: 15 } }, itemTypes: ['Shield', 'Chest', 'Amulet', 'Circlet', 'Helm', 'Ring', 'Quiver'], reqLvl: 21, group: 116 },
+    'Prismatic': { stats: { allres: { min: 16, max: 20 } }, itemTypes: ['Shield', 'Chest', 'Amulet', 'Circlet', 'Helm'], reqLvl: 31, group: 116 },
+    'Chromatic': { stats: { allres: { min: 21, max: 30 } }, itemTypes: ['Shield', 'Chest', 'Helm', 'Amulet', 'Circlet'], reqLvl: 42, group: 116 },
+
+    // === GROUP 117: Cold Resistance ===
+    'Azure': { stats: { coldres: { min: 5, max: 10 } }, itemTypes: ['Armor', 'Weapon', 'Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 3, group: 117 },
+    'Lapis': { stats: { coldres: { min: 11, max: 20 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Non-Orb Weapon', 'Quiver'], reqLvl: 9, group: 117 },
+    'Cobalt': { stats: { coldres: { min: 21, max: 30 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Non-Orb Weapon', 'Quiver'], reqLvl: 13, group: 117 },
+    'Sapphire': { stats: { coldres: { min: 31, max: 40 } }, itemTypes: ['Rod', 'Boots', 'Amulet', 'Orb', 'Circlet', 'Chest', 'Helm', 'Shield'], reqLvl: 18, group: 117 },
+
+    // === GROUP 118: Fire Resistance ===
+    'Crimson': { stats: { firres: { min: 5, max: 10 } }, itemTypes: ['Armor', 'Weapon', 'Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 3, group: 118 },
+    'Russet': { stats: { firres: { min: 11, max: 20 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Non-Orb Weapon'], reqLvl: 9, group: 118 },
+    'Garnet': { stats: { firres: { min: 21, max: 30 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Non-Orb Weapon'], reqLvl: 13, group: 118 },
+    'Ruby': { stats: { firres: { min: 31, max: 40 } }, itemTypes: ['Rod', 'Boots', 'Amulet', 'Orb', 'Circlet', 'Chest', 'Helm', 'Shield'], reqLvl: 18, group: 118 },
+
+    // === GROUP 119: Lightning Resistance ===
+    'Tangerine': { stats: { ligres: { min: 5, max: 10 } }, itemTypes: ['Armor', 'Weapon', 'Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 3, group: 119 },
+    'Ocher': { stats: { ligres: { min: 11, max: 20 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Non-Orb Weapon'], reqLvl: 9, group: 119 },
+    'Coral': { stats: { ligres: { min: 21, max: 30 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Non-Orb Weapon'], reqLvl: 13, group: 119 },
+    'Amber': { stats: { ligres: { min: 31, max: 40 } }, itemTypes: ['Rod', 'Boots', 'Amulet', 'Orb', 'Circlet', 'Chest', 'Helm', 'Shield'], reqLvl: 18, group: 119 },
+
+    // === GROUP 120: Poison Resistance ===
+    'Beryl': { stats: { poisres: { min: 5, max: 10 } }, itemTypes: ['Armor', 'Weapon', 'Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 3, group: 120 },
+    'Viridian': { stats: { poisres: { min: 11, max: 20 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Non-Orb Weapon'], reqLvl: 9, group: 120 },
+    'Jade': { stats: { poisres: { min: 21, max: 30 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Orb', 'Circlet', 'Non-Orb Weapon'], reqLvl: 13, group: 120 },
+    'Emerald': { stats: { poisres: { min: 31, max: 40 } }, itemTypes: ['Rod', 'Boots', 'Amulet', 'Orb', 'Circlet', 'Chest', 'Helm', 'Shield'], reqLvl: 18, group: 120 },
+
+    // === GROUP 121: Mana After Each Kill ===
+    'Triumphant': { stats: { manaafter: { min: 1, max: 1 } }, itemTypes: ['Weapon', 'Ring', 'Circlet', 'Chest', 'Helm', 'Shield', 'Quiver'], reqLvl: 2, group: 121 },
+    'Aureolic': { stats: { manaafter: { min: 1, max: 3 } }, itemTypes: ['Chest', 'Helm', 'Shield', 'Quiver'], reqLvl: 9, group: 121 },
+    'Victorious': { stats: { manaafter: { min: 2, max: 5 } }, itemTypes: ['Weapon', 'Circlet', 'Chest', 'Helm', 'Shield', 'Quiver'], reqLvl: 12, group: 121 },
+
+    // === GROUP 122: Sockets ===
+    "Mechanist's": { stats: { sockets: { min: 1, max: 2 } }, itemTypes: ['Weapon', 'Shield', 'Helm', 'Chest', 'Circlet'], reqLvl: 7, group: 122 },
+    "Artisan's": { stats: { sockets: { min: 3, max: 3 } }, itemTypes: ['Weapon', 'Shield', 'Helm', 'Chest'], reqLvl: 25, group: 122 },
+    "Jeweler's": { stats: { sockets: { min: 4, max: 4 } }, itemTypes: ['Weapon', 'Shield', 'Helm', 'Chest'], reqLvl: 47, group: 122 },
+
+    // === GROUP 123: Demon Bonuses ===
+    'Lunar': { stats: { dmgtodemon: { min: 10, max: 25 }, toattdemon: { min: 25, max: 50 } }, itemTypes: ['WeaponPS', 'Circlet', 'Quiver'], reqLvl: 1, group: 123 },
+    'Arcadian': { stats: { dmgtodemon: { min: 26, max: 50 }, toattdemon: { min: 51, max: 100 } }, itemTypes: ['WeaponPS', 'Circlet', 'Helm', 'Quiver'], reqLvl: 11, group: 123 },
+    'Unearthly': { stats: { dmgtodemon: { min: 51, max: 100 }, toattdemon: { min: 101, max: 150 } }, itemTypes: ['WeaponPS', 'Quiver'], reqLvl: 18, group: 123 },
+    'Astral': { stats: { dmgtodemon: { min: 101, max: 150 }, toattdemon: { min: 151, max: 200 } }, itemTypes: ['WeaponPS'], reqLvl: 26, group: 123 },
+    'Elysian': { stats: { dmgtodemon: { min: 151, max: 200 }, toattdemon: { min: 201, max: 300 } }, itemTypes: ['WeaponPS'], reqLvl: 33, group: 123 },
+    'Celestial': { stats: { dmgtodemon: { min: 201, max: 300 }, toattdemon: { min: 301, max: 400 } }, itemTypes: ['WeaponPS', 'Missile Weapon'], reqLvl: 41, group: 123 },
+
+    // === GROUP 125: Class-Specific Skills ===
+    "Maiden's": { stats: { amazonskills: { min: 1, max: 1 } }, itemTypes: ['Chest', 'ShieldNC', 'HelmNC', 'Amulet', 'Circlet', 'Missile Weapon', 'Spear'], reqLvl: 27, group: 125 },
+    "Valkyrie's": { stats: { amazonskills: { min: 2, max: 2 } }, itemTypes: ['Missile Weapon', 'Spear', 'Amulet', 'Circlet'], reqLvl: 42, group: 125 },
+    "Fletcher's": { stats: { bowskills: { min: 1, max: 1 } }, itemTypes: ['Missile Weapon', 'Gloves', 'Circlet', 'Quiver', 'Amulet'], reqLvl: 15, group: 125 },
+    "Bowyer's": { stats: { bowskills: { min: 2, max: 2 } }, itemTypes: ['Missile Weapon', 'Gloves', 'Circlet', 'Quiver', 'Amulet'], reqLvl: 30, group: 125 },
+    "Archer's": { stats: { bowskills: { min: 3, max: 3 } }, itemTypes: ['Missile Weapon', 'Gloves', 'Circlet', 'Quiver', 'Amulet', 'Missile WeaponNC'], reqLvl: 45, group: 125 },
+    "Acrobat's": { stats: { amazonmagic: { min: 1, max: 1 } }, itemTypes: ['Gloves', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 15, group: 125 },
+    "Gymnast's": { stats: { amazonmagic: { min: 2, max: 2 } }, itemTypes: ['Gloves', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 30, group: 125 },
+    "Athlete's": { stats: { amazonmagic: { min: 3, max: 3 } }, itemTypes: ['Gloves', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 45, group: 125 },
+    "Angel's": { stats: { sorceressskills: { min: 1, max: 1 } }, itemTypes: ['Chest', 'ShieldNC', 'HelmNC', 'Amulet', 'Circlet', 'Staff', 'Orb'], reqLvl: 27, group: 125 },
+    "Arch-Angel's": { stats: { sorceressskills: { min: 2, max: 2 } }, itemTypes: ['Staff', 'Orb', 'Amulet', 'Circlet'], reqLvl: 42, group: 125 },
+    "Burning": { stats: { firespells: { min: 1, max: 1 } }, itemTypes: ['Staff', 'Orb', 'Amulet', 'Circlet'], reqLvl: 15, group: 125 },
+    "Blazing": { stats: { firespells: { min: 2, max: 2 } }, itemTypes: ['Staff', 'Orb', 'Amulet', 'Circlet'], reqLvl: 30, group: 125 },
+    "Volcanic": { stats: { firespells: { min: 3, max: 3 } }, itemTypes: ['Staff', 'Orb', 'Amulet', 'Circlet'], reqLvl: 45, group: 125 },
+    "Summoner's": { stats: { necromancerskills: { min: 1, max: 1 } }, itemTypes: ['Chest', 'Non-Paladin Shield', 'HelmNC', 'Amulet', 'Circlet', 'Wand', 'Dagger', 'Necromancer Shield'], reqLvl: 27, group: 125 },
+    "Necromancer's": { stats: { necromancerskills: { min: 2, max: 2 } }, itemTypes: ['Wand', 'Dagger', 'Necromancer Shield', 'Amulet', 'Circlet'], reqLvl: 42, group: 125 },
+    "Monk's": { stats: { paladinskills: { min: 1, max: 1 } }, itemTypes: ['Chest', 'Non-Necromancer Shield', 'HelmNC', 'Amulet', 'Circlet', 'Scepter', 'Paladin Shield', 'Sword', 'Tipped Mace', 'Hammer'], reqLvl: 27, group: 125 },
+    "Priest's": { stats: { paladinskills: { min: 2, max: 2 } }, itemTypes: ['Scepter', 'Paladin Shield', 'Sword', 'Tipped Mace', 'Hammer', 'Non-Necromancer Shield', 'Amulet', 'Circlet'], reqLvl: 42, group: 125 },
+    "Slayer's": { stats: { barbarianskills: { min: 1, max: 1 } }, itemTypes: ['Chest', 'ShieldNC', 'Non-Druid Helm', 'Amulet', 'Circlet', 'Barbarian Helm', 'Axe', 'Any Mace', 'Sword', 'Throwing Knife', 'Two-Handed SpearNC'], reqLvl: 27, group: 125 },
+    "Berserker's": { stats: { barbarianskills: { min: 2, max: 2 } }, itemTypes: ['Axe', 'Any Mace', 'Sword', 'Throwing Knife', 'Two-Handed SpearNC', 'Barbarian Helm', 'Amulet', 'Circlet'], reqLvl: 42, group: 125 },
+    "Shaman's": { stats: { druidskills: { min: 1, max: 1 } }, itemTypes: ['Chest', 'ShieldNC', 'Non-Barbarian Helm', 'Amulet', 'Circlet', 'Club', 'Druid Helm'], reqLvl: 27, group: 125 },
+    "Hierophant's": { stats: { druidskills: { min: 2, max: 2 } }, itemTypes: ['Club', 'Druid Helm', 'Amulet', 'Circlet'], reqLvl: 42, group: 125 },
+    "Magekiller's": { stats: { assassinskills: { min: 1, max: 1 } }, itemTypes: ['Chest', 'ShieldNC', 'HelmNC', 'Amulet', 'Circlet', 'Claw', 'Dagger'], reqLvl: 27, group: 125 },
+    "Witch-hunter's": { stats: { assassinskills: { min: 2, max: 2 } }, itemTypes: ['Claw', 'Dagger', 'Amulet', 'Circlet'], reqLvl: 42, group: 125 },
+
+    // === GROUP 137: Cold Damage ===
+    'Snowy': { stats: { cold: { min: 20, max: 101 } }, itemTypes: ['Weapon', 'Circlet', 'Quiver'], reqLvl: 18, group: 137 },
+    'Shivering': { stats: { cold: { min: 37, max: 166 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 26, group: 137 },
+    'Boreal': { stats: { cold: { min: 46, max: 256 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 40, group: 137 },
+    'Hibernal': { stats: { cold: { min: 60, max: 348 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 60, group: 137 },
+
+    // === GROUP 138: Fire Damage ===
+    'Fiery': { stats: { fire: { min: 28, max: 103 } }, itemTypes: ['Weapon', 'Circlet', 'Quiver'], reqLvl: 18, group: 138 },
+    'Smoldering': { stats: { fire: { min: 47, max: 161 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 26, group: 138 },
+    'Smoking': { stats: { fire: { min: 81, max: 208 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 37, group: 138 },
+    'Flaming': { stats: { fire: { min: 138, max: 306 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 51, group: 138 },
+    'Scorching': { stats: { fire: { min: 217, max: 432 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 67, group: 138 },
+
+    // === GROUP 139: Lightning Damage ===
+    'Static': { stats: { lightning: { min: 1, max: 120 } }, itemTypes: ['Weapon', 'Circlet', 'Quiver'], reqLvl: 18, group: 139 },
+    'Glowing': { stats: { lightning: { min: 1, max: 180 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 25, group: 139 },
+    'Buzzing': { stats: { lightning: { min: 1, max: 260 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 36, group: 139 },
+    'Arcing': { stats: { lightning: { min: 1, max: 396 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 50, group: 139 },
+    'Shocking': { stats: { lightning: { min: 1, max: 576 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 66, group: 139 },
+
+    // === GROUP 140: Poison Damage ===
+    'Septic': { stats: { poison: { min: 6, max: 6 } }, itemTypes: ['Weapon', 'Circlet', 'Quiver'], reqLvl: 1, group: 140 },
+    'Foul': { stats: { poison: { min: 24, max: 24 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 7, group: 140 },
+    'Corrosive': { stats: { poison: { min: 78, max: 78 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 15, group: 140 },
+    'Toxic': { stats: { poison: { min: 226, max: 226 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 26, group: 140 },
+    'Pestilent': { stats: { poison: { min: 384, max: 384 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 37, group: 140 },
+    'Plague': { stats: { poison: { min: 366, max: 366 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 37, group: 140 },
+    'Virulent': { stats: { poison: { min: 738, max: 738 } }, itemTypes: ['Weapon', 'Quiver'], reqLvl: 66, group: 140 },
+    'Infectious': { stats: { poison: { min: 885, max: 885 } }, itemTypes: ['Dagger', 'Scythe'], reqLvl: 66, group: 140 },
+
+    // === GROUP 142: Undead Bonuses ===
     'Consecrated': { stats: { dmgtoun: { min: 25, max: 75 }, toattun: { min: 25, max: 75 } }, itemTypes: ['WeaponPS'], reqLvl: 1, group: 142 },
     'Pure': { stats: { dmgtoun: { min: 76, max: 125 }, toattun: { min: 76, max: 175 } }, itemTypes: ['WeaponPS'], reqLvl: 11, group: 142 },
     'Sacred': { stats: { dmgtoun: { min: 126, max: 200 }, toattun: { min: 175, max: 250 } }, itemTypes: ['WeaponPS'], reqLvl: 18, group: 142 },
     'Hallowed': { stats: { dmgtoun: { min: 201, max: 275 }, toattun: { min: 251, max: 325 } }, itemTypes: ['WeaponPS'], reqLvl: 27, group: 142 },
     'Divine': { stats: { dmgtoun: { min: 276, max: 350 }, toattun: { min: 326, max: 450 } }, itemTypes: ['WeaponPS', 'Missile Weapon'], reqLvl: 37, group: 142 },
+
+    // === GROUP 143: Pierce Chance (Quiver) ===
+    'Penetrating': { stats: { pierce: { min: 5, max: 10 } }, itemTypes: ['Quiver'], reqLvl: 10, group: 143 },
+    'Puncturing': { stats: { pierce: { min: 11, max: 20 } }, itemTypes: ['Quiver'], reqLvl: 25, group: 143 },
+    'Piercing': { stats: { pierce: { min: 21, max: 30 } }, itemTypes: ['Quiver'], reqLvl: 40, group: 143 },
+    'Impaling': { stats: { pierce: { min: 31, max: 40 } }, itemTypes: ['Quiver'], reqLvl: 55, group: 143 },
+
+    // === GROUP 170: Open Wounds Damage ===
+    "Cultist's": { stats: { openwounds: { min: 30, max: 40 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 25, group: 170 },
+    "Bloodthirster's": { stats: { openwounds: { min: 204, max: 285 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 45, group: 170 },
+    "Gorelust's": { stats: { openwounds: { min: 407, max: 563 } }, itemTypes: ['WeaponP', 'Quiver'], reqLvl: 65, group: 170 },
+
+    // === GROUP 171: Resistance Lowering ===
+    'Sizzling': { stats: { lowerfires: { min: 2, max: 6 } }, itemTypes: ['Missile Weapon', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Druid Helm', 'Staff'], reqLvl: 8, group: 171 },
+    'Singeing': { stats: { lowerfires: { min: 4, max: 10 } }, itemTypes: ['Missile Weapon', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Druid Helm', 'Staff'], reqLvl: 26, group: 171 },
+    'Infernal': { stats: { lowerfires: { min: 6, max: 15 } }, itemTypes: ['Missile Weapon', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Druid Helm', 'Staff'], reqLvl: 53, group: 171 },
+    'Frigid': { stats: { lowercold: { min: 2, max: 6 } }, itemTypes: ['Missile Weapon', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Druid Helm', 'Staff'], reqLvl: 8, group: 171 },
+    'Frostbitten': { stats: { lowercold: { min: 4, max: 10 } }, itemTypes: ['Missile Weapon', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Druid Helm', 'Staff'], reqLvl: 26, group: 171 },
+    'Subzero': { stats: { lowercold: { min: 6, max: 15 } }, itemTypes: ['Missile Weapon', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Druid Helm', 'Staff'], reqLvl: 53, group: 171 },
+    'Crackling': { stats: { lowerlightning: { min: 2, max: 6 } }, itemTypes: ['Amazon Javelin', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Staff', 'Amazon Spear'], reqLvl: 8, group: 171 },
+    'Jolting': { stats: { lowerlightning: { min: 4, max: 10 } }, itemTypes: ['Amazon Javelin', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Staff', 'Amazon Spear'], reqLvl: 26, group: 171 },
+    'Surging': { stats: { lowerlightning: { min: 6, max: 15 } }, itemTypes: ['Amazon Javelin', 'Scepter', 'Crystal Sword', 'Orb', 'Claw', 'Staff', 'Amazon Spear'], reqLvl: 53, group: 171 },
+    'Decaying': { stats: { lowerpoison: { min: 2, max: 6 } }, itemTypes: ['Amazon Javelin', 'Wand', 'Claw'], reqLvl: 9, group: 171 },
+    'Festering': { stats: { lowerpoison: { min: 4, max: 6 } }, itemTypes: ['Amazon Javelin', 'Wand', 'Claw'], reqLvl: 26, group: 171 },
+    'Necrotic': { stats: { lowerpoison: { min: 6, max: 10 } }, itemTypes: ['Amazon Javelin', 'Wand', 'Claw'], reqLvl: 53, group: 171 },
+
+    // === GROUP 200: Life After Kill ===
+    'Blood Letting': { stats: { lifeafter: { min: 1, max: 1 } }, itemTypes: ['Weapon', 'Ring', 'Circlet', 'Chest', 'Helm', 'Shield', 'Quiver'], reqLvl: 12, group: 200 },
+    'Murderous': { stats: { lifeafter: { min: 2, max: 5 } }, itemTypes: ['Weapon', 'Circlet', 'Chest', 'Helm', 'Shield', 'Quiver'], reqLvl: 44, group: 200 },
+    'Blood Sucking': { stats: { lifeafter: { min: 1, max: 3 } }, itemTypes: ['Chest', 'Helm', 'Shield', 'Weapon', 'Ring', 'Quiver'], reqLvl: 26, group: 200 },
   },
 
   suffixes: {
