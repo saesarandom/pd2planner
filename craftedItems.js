@@ -131,19 +131,19 @@ class CraftedItemsSystem {
     }
 
     // Add required level from baseRequiredLevels lookup table
-    if (typeof baseRequiredLevels !== 'undefined' && baseRequiredLevels[baseType]) {
-      properties.reqlvl = baseRequiredLevels[baseType];
-    } else {
-      // Fallback: if not in lookup table, estimate based on strength requirement
-      const baseStrReq = properties.reqstr || 0;
-      if (baseStrReq >= 125) {
-        properties.reqlvl = 40; // Elite weapons
-      } else if (baseStrReq >= 80) {
-        properties.reqlvl = 30; // Exceptional weapons
-      } else {
-        properties.reqlvl = 20; // Normal weapons
-      }
-    }
+    // if (typeof baseRequiredLevels !== 'undefined' && baseRequiredLevels[baseType]) {
+    //   properties.reqlvl = baseRequiredLevels[baseType];
+    // } else {
+    //   // Fallback: if not in lookup table, estimate based on strength requirement
+    //   const baseStrReq = properties.reqstr || 0;
+    //   if (baseStrReq >= 125) {
+    //     properties.reqlvl = 40; // Elite weapons
+    //   } else if (baseStrReq >= 80) {
+    //     properties.reqlvl = 30; // Exceptional weapons
+    //   } else {
+    //     properties.reqlvl = 20; // Normal weapons
+    //   }
+    // }
 
     // Get fixed properties from craft type and roll their values
     const craftConfig = this.craftTypes[craftType];
