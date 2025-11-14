@@ -20,9 +20,9 @@ CREATE TABLE crafted_items (
   UNIQUE(user_id, craft_id)
 );
 
--- 3. Create index for better performance
+-- 3. Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_crafted_items_user_id ON crafted_items(user_id);
-CREATE INDEX IF NOT EXISTS idx_crafted_items_fullname ON crafted_items USING GIN ((item_data->>'fullName'));
+CREATE INDEX IF NOT EXISTS idx_crafted_items_fullname ON crafted_items ((item_data->>'fullName'));
 
 -- 4. Verify table was created
 SELECT * FROM crafted_items LIMIT 5;
