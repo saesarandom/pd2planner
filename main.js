@@ -1068,6 +1068,40 @@ function openCraftingModal() {
 
     // Helper function to create affix slider
     const createAffixSlider = (affixKey, affixData, affixType) => {
+      // Extract the first stat from affixData.stats
+      const statEntries = Object.entries(affixData.stats || {});
+      if (statEntries.length === 0) return null;
+
+      const [propKey, propData] = statEntries[0];
+      const minVal = propData.min;
+      const maxVal = propData.max;
+
+      // Property key to label mapping
+      const propLabels = {
+        edmg: '+% Enhanced Damage',
+        edef: '+% Enhanced Defense',
+        toatt: '+ to Attack Rating',
+        tolife: '+ to Life',
+        tomana: '+ to Mana',
+        str: '+ to Strength',
+        dex: '+ to Dexterity',
+        coldres: '+% Cold Resist',
+        fireres: '+% Fire Resist',
+        lightres: '+% Lightning Resist',
+        poisonres: '+% Poison Resist',
+        allres: '+% All Resistances',
+        magicdmg: '+ Magic Damage',
+        regen: '+ Regenerate',
+        manasteal: '+% Mana Steal',
+        lifesteal: '+% Life Steal',
+        openwounds: '+% Chance of Open Wounds',
+        crushblow: '+% Chance of Crushing Blow',
+        deadly: '+% Deadly Strike',
+        ias: '+% Increased Attack Speed',
+        fcr: '+% Faster Cast Rate',
+        frw: '+% Faster Run/Walk'
+      };
+
       const affixDiv = document.createElement('div');
       affixDiv.className = 'affix-control';
       affixDiv.style.cssText = `
@@ -1080,7 +1114,8 @@ function openCraftingModal() {
 
       const label = document.createElement('label');
       label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
-      label.innerHTML = `${affixData.label} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span>`;
+      const displayLabel = `${affixKey} (${propLabels[propKey] || propKey})`;
+      label.innerHTML = `${displayLabel} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span>`;
 
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -1089,9 +1124,9 @@ function openCraftingModal() {
 
       const slider = document.createElement('input');
       slider.type = 'range';
-      slider.min = affixData.min;
-      slider.max = affixData.max;
-      slider.value = affixData.min;
+      slider.min = minVal;
+      slider.max = maxVal;
+      slider.value = minVal;
       slider.disabled = true;
       slider.style.cssText = `
         width: calc(100% - 30px);
@@ -1104,6 +1139,7 @@ function openCraftingModal() {
         margin-left: 8px;
       `;
       slider.id = `affix_${affixType}_${affixKey}`;
+      slider.dataset.propKey = propKey; // Store the property key for later retrieval
 
       checkbox.addEventListener('change', (e) => {
         slider.disabled = !e.target.checked;
@@ -1143,7 +1179,8 @@ function openCraftingModal() {
       affixesContainer.appendChild(prefixHeader);
 
       for (const [affixKey, affixData] of Object.entries(window.affixDatabase.prefixes)) {
-        affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'prefix'));
+        const sliderElement = createAffixSlider(affixKey, affixData, 'prefix');
+        if (sliderElement) affixesContainer.appendChild(sliderElement);
       }
 
       // Add Suffixes section
@@ -1153,7 +1190,8 @@ function openCraftingModal() {
       affixesContainer.appendChild(suffixHeader);
 
       for (const [affixKey, affixData] of Object.entries(window.affixDatabase.suffixes)) {
-        affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'suffix'));
+        const sliderElement = createAffixSlider(affixKey, affixData, 'suffix');
+        if (sliderElement) affixesContainer.appendChild(sliderElement);
       }
     }
   }
