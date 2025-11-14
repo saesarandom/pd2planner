@@ -694,14 +694,14 @@
         <div id="craftingModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; max-height: 90vh; overflow-y: auto; width: 90%; max-width: 600px;">
             <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); border: 2px solid #0f3460; border-radius: 8px; padding: 25px; box-shadow: 0 0 40px rgba(15, 52, 96, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="color: #ffd700; margin: 0; font-size: 24px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">⚒️ CREATE CRAFTED ITEM</h2>
+                    <h2 style="color: #ffd700; margin: 0; font-size: 24px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">Craft</h2>
                     <button onclick="closeCraftingModal()" style="background: #e74c3c; border: none; color: white; font-size: 28px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;" onmouseover="this.style.background='#c0392b'; this.style.boxShadow='0 0 20px rgba(231, 76, 60, 0.8)';" onmouseout="this.style.background='#e74c3c'; this.style.boxShadow='none';">×</button>
                 </div>
 
                 <div class="craft-form">
                     <div class="form-group" style="margin-bottom: 15px;">
                         <label for="craftName" style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 8px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Item Name (max 11 chars):</label>
-                        <input type="text" id="craftName" maxlength="11" placeholder="e.g. myTestWeapon" style="width: 100%; padding: 10px; background: #0f3460; border: 1px solid #0f9eff; color: #ffd700; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+                        <input type="text" id="craftName" maxlength="21" placeholder="e.g. myTestWeapon" style="width: 100%; padding: 10px; background: #0f3460; border: 1px solid #0f9eff; color: #ffd700; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
                     </div>
 
                     <div class="form-group" style="margin-bottom: 15px;">

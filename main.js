@@ -1191,7 +1191,7 @@ function createCraftingButton() {
   // Create craft button
   const craftBtn = document.createElement('button');
   craftBtn.id = 'craft-item-btn';
-  craftBtn.innerHTML = '⚒️ Craft Item';
+  craftBtn.innerHTML = 'Craft Item';
   craftBtn.style.cssText = `
     background: linear-gradient(135deg, #1a5c1a, #0d3a0d);
     color: #ffffff;
