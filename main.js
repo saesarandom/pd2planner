@@ -487,7 +487,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     }
   }
 
-  if (item.isCrafted && item.baseType && item.itemType !== 'weapon') {
+    if (item.isCrafted && item.baseType && item.itemType !== 'weapon') {
     // Check if this is armor or helm
     if (typeof baseDefenses !== 'undefined' && baseDefenses[item.baseType]) {
       const baseDef = baseDefenses[item.baseType];
@@ -497,13 +497,9 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       // Formula: floor(base * (1 + edef/100))
       const finalDef = Math.floor(baseDef * (1 + edefValue / 100));
       
-      // Add to properties so it gets displayed
-      if (!props.defense) {
-        props.defense = finalDef;
-      }
-      
-      // Display defense in description
-      html += `Defense: ${finalDef}<br>`;
+      // Just set the property - DON'T add html here
+      // The propertyDisplay loop will handle displaying it
+      props.defense = finalDef;
     }
   }
 
