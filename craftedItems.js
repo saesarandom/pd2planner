@@ -123,6 +123,47 @@ class CraftedItemsSystem {
 
     // Create crafted item as a complete item object
     const fullName = `${name} ${baseType}`;
+
+    // Build description dynamically
+    let description = `<span style="color: #ffd700; font-weight: bold;">${fullName}</span><br>`;
+    description += `<span style="color: #8888ff;">${craftConfig.label}</span><br>`;
+    description += `${baseType}<br>`;
+
+    // Base properties
+    if (baseProperties.damage) {
+      description += `Damage: ${baseProperties.damage.min}-${baseProperties.damage.max}<br>`;
+    }
+    if (baseProperties.reqstr) {
+      description += `Required Strength: ${baseProperties.reqstr}<br>`;
+    }
+    description += '<br>';
+
+    // Fixed properties (from craft type)
+    for (const [propName, propData] of Object.entries(fixedProperties)) {
+      const sign = propData.value > 0 ? '+' : '';
+      const suffix = propData.type === 'percentage' ? '%' : '';
+      description += `<span style="color: #0f9eff;">${sign}${propData.value}${suffix} ${propName}</span><br>`;
+    }
+
+    // Prefixes
+    if (affixes.prefixes && Object.keys(affixes.prefixes).length > 0) {
+      for (const [affixKey, affixValue] of Object.entries(affixes.prefixes)) {
+        const affixDef = this.affixesPool.prefixes[affixKey];
+        if (affixDef) {
+          description += `<span style="color: #8888ff;">${affixDef.label.replace('+', '')}: ${affixValue}</span><br>`;
+        }
+      }
+    }
+
+    // Suffixes
+    if (affixes.suffixes && Object.keys(affixes.suffixes).length > 0) {
+      for (const [affixKey, affixValue] of Object.entries(affixes.suffixes)) {
+        const affixDef = this.affixesPool.suffixes[affixKey];
+        if (affixDef) {
+          description += `<span style="color: #8888ff;">${affixDef.label.replace('+', '')}: ${affixValue}</span><br>`;
+        }
+      }
+    }
     const craftedItem = {
       id: `craft_${this.nextId++}`,
       name: name, // Short name (e.g. "myTestWeapon")
@@ -136,7 +177,7 @@ class CraftedItemsSystem {
       baseProperties: baseProperties, // Base weapon properties (damage, requirements)
       fixedProperties: fixedProperties, // Fixed craft properties
       affixes: affixes, // Selected affixes with their values
-      description: '', // Will be built dynamically
+      description: description, // Dynamically built description
       createdAt: new Date().toISOString()
     };
 

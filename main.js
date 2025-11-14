@@ -1516,4 +1516,20 @@ document.addEventListener('DOMContentLoaded', () => {
   if (username && typeof updateUIState === 'function') {
     updateUIState(username);
   }
+
+  // 12. Load crafted items if user is already logged in
+  setTimeout(async () => {
+    if (window.auth?.isLoggedIn() && window.craftedItemsSystem) {
+      try {
+        const craftedItems = await window.auth.getCraftedItems();
+        window.craftedItemsSystem.loadFromData(craftedItems);
+        // Refresh dropdowns to show crafted items
+        if (typeof populateItemDropdowns === 'function') {
+          populateItemDropdowns();
+        }
+      } catch (error) {
+        console.error('Failed to load crafted items on page load:', error);
+      }
+    }
+  }, 800);
 });
