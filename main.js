@@ -1134,7 +1134,7 @@ function openCraftingModal() {
     prefixHeader.style.cssText = 'color: #ffd700; margin: 10px 0; font-size: 14px;';
     affixesContainer.appendChild(prefixHeader);
 
-    for (const [affixKey, affixData] of Object.entries(window.craftedItemsSystem.affixesPool.prefixes)) {
+    for (const [affixKey, affixData] of Object.entries(window.affixDatabase.prefixes)) {
       affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'prefix'));
     }
 
@@ -1144,7 +1144,7 @@ function openCraftingModal() {
     suffixHeader.style.cssText = 'color: #ffd700; margin: 15px 0 10px 0; font-size: 14px;';
     affixesContainer.appendChild(suffixHeader);
 
-    for (const [affixKey, affixData] of Object.entries(window.craftedItemsSystem.affixesPool.suffixes)) {
+    for (const [affixKey, affixData] of Object.entries(window.affixDatabase.suffixes)) {
       affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'suffix'));
     }
   }
