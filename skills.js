@@ -1047,7 +1047,8 @@ class SkillSystem {
       return { min: 1, max: 2 };
     }
 
-    var weapon = itemList[weaponDropdown.value];
+    // Use window.getItemData to support both regular and crafted items
+    var weapon = window.getItemData ? window.getItemData(weaponDropdown.value) : itemList[weaponDropdown.value];
     if (!weapon || !weapon.properties) {
       return { min: 1, max: 2 };
     }
