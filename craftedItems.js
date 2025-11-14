@@ -477,3 +477,11 @@ window.craftedItemsSystem = new CraftedItemsSystem();
 // Expose affix database and item type categories globally for UI access
 window.affixDatabase = affixDatabase;
 window.itemTypeCategories = itemTypeCategories;
+
+// Debug: Confirm exposure
+console.log('craftedItems.js loaded - affixDatabase exposed:', {
+  hasPrefixes: !!window.affixDatabase?.prefixes,
+  prefixCount: Object.keys(window.affixDatabase?.prefixes || {}).length,
+  hasSuffixes: !!window.affixDatabase?.suffixes,
+  suffixCount: Object.keys(window.affixDatabase?.suffixes || {}).length
+});
