@@ -836,12 +836,34 @@ class CraftedItemsSystem {
     // IMPORTANT: Use the same property keys as regular items (edmg, lleech, tolife, etc.)
     this.craftTypes = {
       blood: {
-        label: 'Blood Craft',
+        label: 'Blood Weapon',
+        itemType: 'weapon',
         fixedProperties: {
           edmg: { min: 50, max: 80 },      // Enhanced Damage
           lleech: { min: 3, max: 6 },      // Life Stolen per Hit
           tolife: { min: 10, max: 20 }     // +Life
-        }
+        },
+        requiresAffixes: true
+      },
+      bloodarmor: {
+        label: 'Blood Armor',
+        itemType: 'armor',
+        fixedProperties: {
+          repl: { min: 3, max: 6 },        // Life after each Kill (Replenish Life)
+          lleech: { min: 3, max: 6 },      // Life Stolen per Hit
+          tolife: { min: 20, max: 40 }     // +Life
+        },
+        requiresAffixes: true
+      },
+      bloodhelm: {
+        label: 'Blood Helm',
+        itemType: 'helm',
+        fixedProperties: {
+          cb: { min: 10, max: 20 },        // Chance of Crushing Blow
+          lleech: { min: 2, max: 4 },      // Life Stolen per Hit
+          tolife: { min: 10, max: 20 }     // +Life
+        },
+        requiresAffixes: true
       }
       // More craft types can be added here later
     };
@@ -969,31 +991,51 @@ class CraftedItemsSystem {
       return null;
     }
 
-    // Validate base type exists in baseDamages (for weapons)
-    if (!baseType || typeof baseDamages === 'undefined' || !baseDamages[baseType]) {
-      console.error(`Invalid base weapon type: ${baseType}`);
-      return null;
-    }
-
     // Validate craft type
     if (!this.craftTypes[craftType]) {
       console.error(`Invalid craft type: ${craftType}`);
       return null;
     }
 
-    // Validate affixes
-    const prefixCount = Object.keys(affixes.prefixes || {}).length;
-    const suffixCount = Object.keys(affixes.suffixes || {}).length;
-    const totalAffixes = prefixCount + suffixCount;
+    const craftConfig = this.craftTypes[craftType];
 
-    if (totalAffixes < 3 || totalAffixes > 6) {
-      console.error(`Total affixes must be between 3-6 (got ${totalAffixes})`);
-      return null;
+    // Validate base type based on craft type
+    if (craftConfig.itemType === 'weapon') {
+      // Weapons must have baseType in baseDamages
+      if (!baseType || typeof baseDamages === 'undefined' || !baseDamages[baseType]) {
+        console.error(`Invalid base weapon type: ${baseType}`);
+        return null;
+      }
+    } else if (craftConfig.itemType === 'armor') {
+      // Armor items must have baseType in armor category
+      if (!baseType || !itemTypeCategories['Armor']?.has(baseType)) {
+        console.error(`Invalid base armor type: ${baseType}`);
+        return null;
+      }
+    } else if (craftConfig.itemType === 'helm') {
+      // Helms must have baseType in helm category (checking base type categories from main.js)
+      if (!baseType) {
+        console.error(`Invalid base helm type: ${baseType}`);
+        return null;
+      }
+      // For helms, we'll accept any helm-like type for now
     }
 
-    if (prefixCount > 3 || suffixCount > 3) {
-      console.error(`Maximum 3 prefixes and 3 suffixes (got ${prefixCount} prefixes, ${suffixCount} suffixes)`);
-      return null;
+    // Validate affixes only if this craft type requires them
+    if (craftConfig.requiresAffixes) {
+      const prefixCount = Object.keys(affixes.prefixes || {}).length;
+      const suffixCount = Object.keys(affixes.suffixes || {}).length;
+      const totalAffixes = prefixCount + suffixCount;
+
+      if (totalAffixes < 3 || totalAffixes > 6) {
+        console.error(`Total affixes must be between 3-6 (got ${totalAffixes})`);
+        return null;
+      }
+
+      if (prefixCount > 3 || suffixCount > 3) {
+        console.error(`Maximum 3 prefixes and 3 suffixes (got ${prefixCount} prefixes, ${suffixCount} suffixes)`);
+        return null;
+      }
     }
 
     // Build properties object (same structure as regular items)
@@ -1010,7 +1052,6 @@ class CraftedItemsSystem {
     }
 
     // Get fixed properties from craft type and roll their values
-    const craftConfig = this.craftTypes[craftType];
     for (const [propKey, propData] of Object.entries(craftConfig.fixedProperties)) {
       // Roll a random value within the range
       const value = Math.floor(Math.random() * (propData.max - propData.min + 1)) + propData.min;
@@ -1045,7 +1086,7 @@ class CraftedItemsSystem {
       isCrafted: true, // Flag to identify crafted items
       craftType: craftType,
       craftTypeLabel: craftConfig.label,
-      itemType: 'weapon', // Weapons only for now
+      itemType: craftConfig.itemType, // Item type from craft config (weapon, armor, helm)
       properties: properties, // Properties using same keys as regular items
       // NO description property - let generateItemDescription() handle it
       createdAt: new Date().toISOString()
