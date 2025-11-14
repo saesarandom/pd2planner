@@ -1092,7 +1092,19 @@ function openCraftingModal() {
  */
 function refreshAffixesForBaseType(baseType) {
   const affixesContainer = document.getElementById('affixesContainer');
-  if (!affixesContainer || !window.craftedItemsSystem) return;
+
+  // Debug checks
+  console.log('refreshAffixesForBaseType called:', {
+    baseType,
+    hasContainer: !!affixesContainer,
+    hasSystem: !!window.craftedItemsSystem,
+    hasGetAvailable: !!window.craftedItemsSystem?.getAvailableAffixes
+  });
+
+  if (!affixesContainer || !window.craftedItemsSystem) {
+    console.error('Missing container or system', { hasContainer: !!affixesContainer, hasSystem: !!window.craftedItemsSystem });
+    return;
+  }
 
   if (!baseType) {
     affixesContainer.innerHTML = '<p style="color: #999; padding: 10px;">Select a base weapon to see available affixes</p>';
@@ -1202,6 +1214,15 @@ function refreshAffixesForBaseType(baseType) {
   // Get available affixes using the system method
   const availablePrefixes = window.craftedItemsSystem.getAvailableAffixes(baseType, 'prefixes', []);
   const availableSuffixes = window.craftedItemsSystem.getAvailableAffixes(baseType, 'suffixes', []);
+
+  // Debug logging
+  console.log('DEBUG refreshAffixesForBaseType:', {
+    baseType,
+    availablePrefixes: availablePrefixes.length,
+    availableSuffixes: availableSuffixes.length,
+    affixDatabase: window.affixDatabase,
+    itemTypeCategories: window.itemTypeCategories
+  });
 
   // Add Prefixes section
   const prefixHeader = document.createElement('h4');

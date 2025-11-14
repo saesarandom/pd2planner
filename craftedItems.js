@@ -148,7 +148,10 @@ function itemMatchesCategories(baseType, categories) {
 
   for (const category of categoryList) {
     // Check if the category exists in our mapping
-    if (itemTypeCategories[category]?.has(baseType)) {
+    const categorySet = itemTypeCategories[category];
+    const hasMatch = categorySet?.has(baseType);
+
+    if (hasMatch) {
       return true;
     }
 
@@ -192,6 +195,14 @@ class CraftedItemsSystem {
     const affixes = [];
     const affixPool = affixDatabase[affixType];
 
+    console.log('DEBUG getAvailableAffixes:', {
+      baseType,
+      affixType,
+      hasAffixPool: !!affixPool,
+      affixPoolSize: Object.keys(affixPool || {}).length,
+      itemTypeCategories: itemTypeCategories ? Object.keys(itemTypeCategories) : 'undefined'
+    });
+
     if (!affixPool) return affixes;
 
     for (const [name, data] of Object.entries(affixPool)) {
@@ -212,6 +223,8 @@ class CraftedItemsSystem {
         });
       }
     }
+
+    console.log('DEBUG getAvailableAffixes result:', { baseType, affixType, foundCount: affixes.length });
 
     return affixes;
   }
