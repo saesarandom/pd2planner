@@ -427,13 +427,8 @@ function getPropertyValue(prop) {
 window.generateItemDescription = function generateItemDescription(itemName, item, dropdownId) {
   if (!item) return '';
 
-  // Crafted items have complete descriptions - always use them
-  if (item.isCrafted && item.description) {
-    return item.description;
-  }
-
-  // Items with baseType are dynamic - always regenerate them
-  const isDynamic = item.baseType;
+  // Items with baseType are dynamic - always regenerate them (includes crafted items)
+  const isDynamic = item.baseType || item.isCrafted;
 
   // If item has a static description AND is not dynamic, use it
   // (Dynamic items always regenerate, even if description was set by corruption)
@@ -449,6 +444,22 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Add base type if available
   if (item.baseType) {
     html += `${item.baseType}<br>`;
+  }
+
+  // Calculate weapon damage for crafted items
+  if (item.isCrafted && item.baseType && typeof baseDamages !== 'undefined' && baseDamages[item.baseType]) {
+    const baseDmg = baseDamages[item.baseType];
+    const edmgValue = getPropertyValue(props.edmg || 0);
+
+    // Calculate damage with enhanced damage modifier
+    // Formula: floor(base * (1 + edmg/100))
+    const minDmg = Math.floor(baseDmg.min * (1 + edmgValue / 100));
+    const maxDmg = Math.floor(baseDmg.max * (1 + edmgValue / 100));
+
+    // Add to properties so it gets displayed
+    // Most crafted weapons are one-handed, but we can check weapon type later if needed
+    props.onehandmin = minDmg;
+    props.onehandmax = maxDmg;
   }
 
   // Base defense values for different item types

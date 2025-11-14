@@ -7,13 +7,14 @@ class CraftedItemsSystem {
     this.nextId = 1;
 
     // Craft types with their fixed properties
+    // IMPORTANT: Use the same property keys as regular items (edmg, lleech, tolife, etc.)
     this.craftTypes = {
       blood: {
         label: 'Blood Craft',
         fixedProperties: {
-          'Enhanced Damage': { min: 50, max: 80, type: 'percentage' },
-          'Life Stolen per Hit': { min: 3, max: 6, type: 'percentage' },
-          '+Life': { min: 10, max: 20, type: 'flat' }
+          edmg: { min: 50, max: 80 },      // Enhanced Damage
+          lleech: { min: 3, max: 6 },      // Life Stolen per Hit
+          tolife: { min: 10, max: 20 }     // +Life
         }
       }
       // More craft types can be added here later
@@ -21,34 +22,35 @@ class CraftedItemsSystem {
 
     // Possible affixes that can spawn on crafted items (with value ranges)
     // Categorized by prefix/suffix
+    // IMPORTANT: propKey must match the property keys used in items.js and main.js propertyDisplay
     this.affixesPool = {
       // PREFIXES (damage, attack rating, defense, skills)
       prefixes: {
-        enhancedDamage: { min: 50, max: 80, label: '+Enhanced Damage %' },
-        attackRating: { min: 50, max: 150, label: '+Attack Rating' },
-        enhancedDefense: { min: 25, max: 50, label: '+Enhanced Defense %' },
-        allSkills: { min: 1, max: 2, label: '+All Skills' }
+        edmg: { min: 50, max: 80, label: '+% Enhanced Damage', propKey: 'edmg' },
+        toatt: { min: 50, max: 150, label: 'to Attack Rating', propKey: 'toatt' },
+        edef: { min: 25, max: 50, label: '+% Enhanced Defense', propKey: 'edef' },
+        allsk: { min: 1, max: 2, label: 'to All Skills', propKey: 'allsk' }
       },
 
       // SUFFIXES (life, mana, stats, resistances, utility)
       suffixes: {
-        life: { min: 10, max: 30, label: '+Life' },
-        mana: { min: 10, max: 30, label: '+Mana' },
-        strength: { min: 5, max: 10, label: '+Strength' },
-        dexterity: { min: 5, max: 10, label: '+Dexterity' },
-        vitality: { min: 5, max: 10, label: '+Vitality' },
-        energy: { min: 5, max: 10, label: '+Energy' },
-        allResist: { min: 5, max: 10, label: '+All Resistances' },
-        fireResist: { min: 10, max: 20, label: '+Fire Resist' },
-        coldResist: { min: 10, max: 20, label: '+Cold Resist' },
-        lightningResist: { min: 10, max: 20, label: '+Lightning Resist' },
-        poisonResist: { min: 10, max: 20, label: '+Poison Resist' },
-        magicFind: { min: 10, max: 20, label: '+Magic Find %' },
-        goldFind: { min: 10, max: 20, label: '+Gold Find %' },
-        fastCastRate: { min: 10, max: 20, label: '+FCR' },
-        fasterHitRecovery: { min: 10, max: 20, label: '+FHR' },
-        fasterRunWalk: { min: 5, max: 10, label: '+FRW %' },
-        increasedAttackSpeed: { min: 5, max: 10, label: '+IAS %' }
+        tolife: { min: 10, max: 30, label: 'to Life', propKey: 'tolife' },
+        tomana: { min: 10, max: 30, label: 'to Mana', propKey: 'tomana' },
+        str: { min: 5, max: 10, label: 'to Strength', propKey: 'str' },
+        dex: { min: 5, max: 10, label: 'to Dexterity', propKey: 'dex' },
+        vit: { min: 5, max: 10, label: 'to Vitality', propKey: 'vit' },
+        enr: { min: 5, max: 10, label: 'to Energy', propKey: 'enr' },
+        allres: { min: 5, max: 10, label: 'All Resistances', propKey: 'allres' },
+        firres: { min: 10, max: 20, label: 'Fire Resist', propKey: 'firres' },
+        coldres: { min: 10, max: 20, label: 'Cold Resist', propKey: 'coldres' },
+        ligres: { min: 10, max: 20, label: 'Lightning Resist', propKey: 'ligres' },
+        poisres: { min: 10, max: 20, label: 'Poison Resist', propKey: 'poisres' },
+        magicfind: { min: 10, max: 20, label: 'Better Chance of Getting Magic Items', propKey: 'magicfind' },
+        goldfind: { min: 10, max: 20, label: 'Better Chance of Getting Gold', propKey: 'goldfind' },
+        fcr: { min: 10, max: 20, label: 'Faster Cast Rate', propKey: 'fcr' },
+        fhr: { min: 10, max: 20, label: 'Faster Hit Recovery', propKey: 'fhr' },
+        frw: { min: 5, max: 10, label: 'Faster Run/Walk', propKey: 'frw' },
+        ias: { min: 5, max: 10, label: 'Increased Attack Speed', propKey: 'ias' }
       }
     };
   }
@@ -58,7 +60,7 @@ class CraftedItemsSystem {
    * @param {string} name - Item name (up to 11 chars, alphanumeric + space)
    * @param {string} baseType - Base item type (e.g., "War Pike", "Hand Axe")
    * @param {string} craftType - Craft type (blood, etc.)
-   * @param {Object} affixes - Selected affixes {prefixes: {key: value}, suffixes: {key: value}}
+   * @param {Object} affixes - Selected affixes {prefixes: {propKey: value}, suffixes: {propKey: value}}
    * @returns {Object} Created crafted item or null if validation fails
    */
   createCraftedItem(name, baseType, craftType, affixes = { prefixes: {}, suffixes: {} }) {
@@ -99,85 +101,53 @@ class CraftedItemsSystem {
       return null;
     }
 
-    // Build base weapon properties from lookup tables
-    const baseProperties = {};
-
-    // Add damage from baseDamages
-    if (baseDamages[baseType]) {
-      baseProperties.damage = { ...baseDamages[baseType] };
-    }
+    // Build properties object (same structure as regular items)
+    const properties = {};
 
     // Add strength requirement from baseStrengths (if defined)
     if (typeof baseStrengths !== 'undefined' && baseStrengths[baseType]) {
-      baseProperties.reqstr = baseStrengths[baseType];
+      properties.reqstr = baseStrengths[baseType];
     }
 
-    // Get fixed properties from craft type
+    // Get fixed properties from craft type and roll their values
     const craftConfig = this.craftTypes[craftType];
-    const fixedProperties = {};
-    for (const [propName, propData] of Object.entries(craftConfig.fixedProperties)) {
+    for (const [propKey, propData] of Object.entries(craftConfig.fixedProperties)) {
       // Roll a random value within the range
       const value = Math.floor(Math.random() * (propData.max - propData.min + 1)) + propData.min;
-      fixedProperties[propName] = { value, type: propData.type };
+      // If property already exists, add to it; otherwise set it
+      properties[propKey] = (properties[propKey] || 0) + value;
+    }
+
+    // Add affix properties using their correct property keys
+    if (affixes.prefixes) {
+      for (const [propKey, value] of Object.entries(affixes.prefixes)) {
+        // If property already exists, add to it; otherwise set it
+        properties[propKey] = (properties[propKey] || 0) + value;
+      }
+    }
+
+    if (affixes.suffixes) {
+      for (const [propKey, value] of Object.entries(affixes.suffixes)) {
+        // If property already exists, add to it; otherwise set it
+        properties[propKey] = (properties[propKey] || 0) + value;
+      }
     }
 
     // Create crafted item as a complete item object
     const fullName = `${name} ${baseType}`;
 
-    // Build description dynamically
-    let description = `<span style="color: #ffd700; font-weight: bold;">${fullName}</span><br>`;
-    description += `<span style="color: #8888ff;">${craftConfig.label}</span><br>`;
-    description += `${baseType}<br>`;
-
-    // Base properties
-    if (baseProperties.damage) {
-      description += `Damage: ${baseProperties.damage.min}-${baseProperties.damage.max}<br>`;
-    }
-    if (baseProperties.reqstr) {
-      description += `Required Strength: ${baseProperties.reqstr}<br>`;
-    }
-    description += '<br>';
-
-    // Fixed properties (from craft type)
-    for (const [propName, propData] of Object.entries(fixedProperties)) {
-      const sign = propData.value > 0 ? '+' : '';
-      const suffix = propData.type === 'percentage' ? '%' : '';
-      description += `<span style="color: #0f9eff;">${sign}${propData.value}${suffix} ${propName}</span><br>`;
-    }
-
-    // Prefixes
-    if (affixes.prefixes && Object.keys(affixes.prefixes).length > 0) {
-      for (const [affixKey, affixValue] of Object.entries(affixes.prefixes)) {
-        const affixDef = this.affixesPool.prefixes[affixKey];
-        if (affixDef) {
-          description += `<span style="color: #8888ff;">${affixDef.label.replace('+', '')}: ${affixValue}</span><br>`;
-        }
-      }
-    }
-
-    // Suffixes
-    if (affixes.suffixes && Object.keys(affixes.suffixes).length > 0) {
-      for (const [affixKey, affixValue] of Object.entries(affixes.suffixes)) {
-        const affixDef = this.affixesPool.suffixes[affixKey];
-        if (affixDef) {
-          description += `<span style="color: #8888ff;">${affixDef.label.replace('+', '')}: ${affixValue}</span><br>`;
-        }
-      }
-    }
     const craftedItem = {
       id: `craft_${this.nextId++}`,
       name: name, // Short name (e.g. "myTestWeapon")
-      baseType: baseType, // Base type (e.g. "War Pike")
+      baseType: baseType, // Base type (e.g. "War Pike") - needed for dynamic generation
       baseItemName: baseType, // Reference to original base item name
       fullName: fullName, // Full display name (e.g. "myTestWeapon War Pike")
       isCrafted: true, // Flag to identify crafted items
       craftType: craftType,
       craftTypeLabel: craftConfig.label,
       itemType: 'weapon', // Weapons only for now
-      baseProperties: baseProperties, // Base weapon properties (damage, requirements)
-      fixedProperties: fixedProperties, // Fixed craft properties
-      affixes: affixes, // Selected affixes with their values
-      description: description, // Dynamically built description
+      properties: properties, // Properties using same keys as regular items
+      // NO description property - let generateItemDescription() handle it
       createdAt: new Date().toISOString()
     };
 
@@ -235,61 +205,6 @@ class CraftedItemsSystem {
   }
 
   /**
-   * Rebuild description for an item (for items loaded from backend without descriptions)
-   */
-  rebuildDescription(item) {
-    if (!item || item.description) return; // Skip if already has description
-
-    const craftConfig = this.craftTypes[item.craftType];
-    if (!craftConfig) return;
-
-    // Build description dynamically
-    let description = `<span style="color: #ffd700; font-weight: bold;">${item.fullName}</span><br>`;
-    description += `<span style="color: #8888ff;">${craftConfig.label}</span><br>`;
-    description += `${item.baseType}<br>`;
-
-    // Base properties
-    if (item.baseProperties?.damage) {
-      description += `Damage: ${item.baseProperties.damage.min}-${item.baseProperties.damage.max}<br>`;
-    }
-    if (item.baseProperties?.reqstr) {
-      description += `Required Strength: ${item.baseProperties.reqstr}<br>`;
-    }
-    description += '<br>';
-
-    // Fixed properties (from craft type)
-    if (item.fixedProperties) {
-      for (const [propName, propData] of Object.entries(item.fixedProperties)) {
-        const sign = propData.value > 0 ? '+' : '';
-        const suffix = propData.type === 'percentage' ? '%' : '';
-        description += `<span style="color: #0f9eff;">${sign}${propData.value}${suffix} ${propName}</span><br>`;
-      }
-    }
-
-    // Prefixes
-    if (item.affixes?.prefixes && Object.keys(item.affixes.prefixes).length > 0) {
-      for (const [affixKey, affixValue] of Object.entries(item.affixes.prefixes)) {
-        const affixDef = this.affixesPool.prefixes[affixKey];
-        if (affixDef) {
-          description += `<span style="color: #8888ff;">${affixDef.label.replace('+', '')}: ${affixValue}</span><br>`;
-        }
-      }
-    }
-
-    // Suffixes
-    if (item.affixes?.suffixes && Object.keys(item.affixes.suffixes).length > 0) {
-      for (const [affixKey, affixValue] of Object.entries(item.affixes.suffixes)) {
-        const affixDef = this.affixesPool.suffixes[affixKey];
-        if (affixDef) {
-          description += `<span style="color: #8888ff;">${affixDef.label.replace('+', '')}: ${affixValue}</span><br>`;
-        }
-      }
-    }
-
-    item.description = description;
-  }
-
-  /**
    * Load crafted items from saved data
    * @param {Array} data - Array of crafted items from backend or character_data
    */
@@ -297,11 +212,6 @@ class CraftedItemsSystem {
     if (!Array.isArray(data)) return;
 
     this.craftedItems = [...data];
-
-    // Rebuild descriptions for items that don't have them
-    this.craftedItems.forEach(item => {
-      this.rebuildDescription(item);
-    });
 
     // Update nextId to ensure no conflicts
     if (data.length > 0) {
