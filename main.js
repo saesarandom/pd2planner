@@ -1355,8 +1355,12 @@ function createCraftedItem() {
     if (checkbox.checked) {
       const affixKey = checkbox.id.replace('check_prefix_', '');
       const slider = document.getElementById(`affix_prefix_${affixKey}`);
-      if (slider) {
-        affixes.prefixes[affixKey] = parseInt(slider.value);
+      if (slider && slider.dataset.propKey) {
+        // Use the property key (e.g., 'edmg') instead of affix name (e.g., 'Jagged')
+        const propKey = slider.dataset.propKey;
+        const value = parseInt(slider.value);
+        // Add to existing value if property already exists (multiple affixes with same property)
+        affixes.prefixes[propKey] = (affixes.prefixes[propKey] || 0) + value;
       }
     }
   });
@@ -1367,8 +1371,12 @@ function createCraftedItem() {
     if (checkbox.checked) {
       const affixKey = checkbox.id.replace('check_suffix_', '');
       const slider = document.getElementById(`affix_suffix_${affixKey}`);
-      if (slider) {
-        affixes.suffixes[affixKey] = parseInt(slider.value);
+      if (slider && slider.dataset.propKey) {
+        // Use the property key instead of affix name
+        const propKey = slider.dataset.propKey;
+        const value = parseInt(slider.value);
+        // Add to existing value if property already exists
+        affixes.suffixes[propKey] = (affixes.suffixes[propKey] || 0) + value;
       }
     }
   });
