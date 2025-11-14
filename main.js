@@ -1133,16 +1133,45 @@ function populateCraftedItemsList() {
   const items = window.craftedItemsSystem.getAllCraftedItems();
 
   if (items.length === 0) {
-    listContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No crafted items yet</p>';
+    listContainer.innerHTML = `
+      <p style="color: #888; text-align: center; padding: 10px;">No crafted items yet</p>
+      <button onclick="reloadCraftedItemsFromBackend()" style="width: 100%; padding: 8px; background: #3498db; border: 1px solid #0f9eff; color: white; border-radius: 3px; cursor: pointer; font-size: 12px; margin-top: 10px;" onmouseover="this.style.background='#2980b9'" onmouseout="this.style.background='#3498db'">🔄 RELOAD FROM SERVER</button>
+    `;
     return;
   }
 
-  listContainer.innerHTML = items.map(item => `
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(15, 52, 96, 0.3); border: 1px solid #0f9eff; border-radius: 4px; margin-bottom: 8px;">
-      <span style="color: #ffd700; font-size: 13px;">${item.fullName}</span>
-      <button onclick="deleteCraftedItemConfirm('${item.id}')" style="background: #e74c3c; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; transition: all 0.2s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">DELETE</button>
+  listContainer.innerHTML = `
+    <div style="margin-bottom: 10px;">
+      ${items.map(item => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(15, 52, 96, 0.3); border: 1px solid #0f9eff; border-radius: 4px; margin-bottom: 8px;">
+          <span style="color: #ffd700; font-size: 13px;">${item.fullName}</span>
+          <button onclick="deleteCraftedItemConfirm('${item.id}')" style="background: #e74c3c; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; transition: all 0.2s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">DELETE</button>
+        </div>
+      `).join('')}
     </div>
-  `).join('');
+    <button onclick="reloadCraftedItemsFromBackend()" style="width: 100%; padding: 8px; background: #3498db; border: 1px solid #0f9eff; color: white; border-radius: 3px; cursor: pointer; font-size: 12px;" onmouseover="this.style.background='#2980b9'" onmouseout="this.style.background='#3498db'">🔄 RELOAD FROM SERVER</button>
+  `;
+}
+
+/**
+ * Reload crafted items from backend
+ */
+async function reloadCraftedItemsFromBackend() {
+  if (!window.auth?.isLoggedIn() || !window.craftedItemsSystem) {
+    alert('Must be logged in to reload items');
+    return;
+  }
+
+  try {
+    const craftedItems = await window.auth.getCraftedItems();
+    window.craftedItemsSystem.loadFromData(craftedItems);
+    populateCraftedItemsList();
+    refreshItemDropdowns();
+    alert(`Reloaded ${craftedItems.length} items from server`);
+  } catch (error) {
+    console.error('Failed to reload crafted items:', error);
+    alert('Failed to reload items: ' + error.message);
+  }
 }
 
 /**
