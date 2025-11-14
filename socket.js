@@ -2448,12 +2448,18 @@ this.selectedJewelSuffix3MaxValue = null;
 
     const dropdownId = this.getSectionDropdownId(section);
     const dropdown = document.getElementById(dropdownId);
-    if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
-      infoDiv.innerHTML = '';
-      return;
-    }
+    // if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
+    //   infoDiv.innerHTML = '';
+    //   return;
+    // }
     
-    const item = itemList[dropdown.value];
+    // const item = itemList[dropdown.value];
+    const item = dropdown?.value ? window.getItemData(dropdown.value) : null;
+
+    if (!dropdown || !dropdown.value || !item) {
+    infoDiv.innerHTML = '';
+      return;
+}
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
     const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
     const meetsRequirement = currentLevel >= actualRequiredLevel;
