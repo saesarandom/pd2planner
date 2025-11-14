@@ -1439,7 +1439,8 @@
       }
 
       const itemName = dropdown.value;
-      const item = itemList[itemName];
+      // Use window.getItemData to support both regular and crafted items
+      const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
 
       if (!item) {
         return 1; // Default to 1 socket if item not found
@@ -2356,9 +2357,10 @@ this.selectedJewelSuffix3MaxValue = null;
 }
     // === STATS CALCULATION ===
     calculateActualRequiredLevel(section, itemName) {
-      if (!itemList[itemName]) return 1;
+      // Use window.getItemData to support both regular and crafted items
+      const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
+      if (!item) return 1;
 
-      const item = itemList[itemName];
       let actualLevel = item.properties?.reqlvl || 1;
 
       // Check socket requirements
@@ -2374,9 +2376,13 @@ this.selectedJewelSuffix3MaxValue = null;
     }
 
     isItemUsableByCharacterClass(itemName) {
-      if (!itemList[itemName]) return true;
+      // Use window.getItemData to support both regular and crafted items
+      const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
+      if (!item) return true;
 
-      const item = itemList[itemName];
+      // Crafted items have no class restrictions
+      if (item.isCrafted) return true;
+
       if (!item.description) return true;
 
       // Look for class restriction pattern: "(ClassName Only)"
@@ -2393,9 +2399,9 @@ this.selectedJewelSuffix3MaxValue = null;
     }
 
     doesCharacterMeetStatRequirements(itemName) {
-      if (!itemList[itemName]) return true;
-
-      const item = itemList[itemName];
+      // Use window.getItemData to support both regular and crafted items
+      const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
+      if (!item) return true;
       if (!item.properties) return true;
 
       const requiredStr = item.properties.reqstr || 0;
@@ -2412,9 +2418,9 @@ this.selectedJewelSuffix3MaxValue = null;
     }
 
     getItemRequiredStats(itemName) {
-      if (!itemList[itemName]) return { str: 0, dex: 0 };
-
-      const item = itemList[itemName];
+      // Use window.getItemData to support both regular and crafted items
+      const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
+      if (!item) return { str: 0, dex: 0 };
       if (!item.properties) return { str: 0, dex: 0 };
 
       return {
@@ -2817,9 +2823,12 @@ this.selectedJewelSuffix3MaxValue = null;
 
     calculateEquipmentStats(dropdownId, section) {
       const dropdown = document.getElementById(dropdownId);
-      if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
+      if (!dropdown || !dropdown.value) return;
 
-      const item = itemList[dropdown.value];
+      // Use window.getItemData to support both regular and crafted items
+      const item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
+      if (!item) return;
+
       const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
       const meetsStatRequirements = this.doesCharacterMeetStatRequirements(dropdown.value);
 
@@ -2907,9 +2916,11 @@ this.selectedJewelSuffix3MaxValue = null;
         if (!config.section.startsWith('merc')) return; // Only mercenary items
 
         const dropdown = document.getElementById(dropdownId);
-        if (!dropdown || !dropdown.value || !itemList[dropdown.value]) return;
+        if (!dropdown || !dropdown.value) return;
 
-        const item = itemList[dropdown.value];
+        // Use window.getItemData to support both regular and crafted items
+        const item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
+        if (!item) return;
 
         // Check if mercenary meets level requirement for this item
         const actualLevel = this.calculateActualRequiredLevel(config.section, dropdown.value);
