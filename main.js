@@ -592,6 +592,43 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
     physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
     mdr: (val, prop) => formatVariableStat('Magic Damage Reduced by ', val, '', prop, itemName, 'mdr', dropdownId),
+
+    // === Class-Specific Skill Trees ===
+    // Amazon
+    amazonskills: (val, prop) => formatVariableStat('+', val, ' to Amazon Skill Levels', prop, itemName, 'amazonskills', dropdownId),
+    bowskills: (val, prop) => formatVariableStat('+', val, ' to Bow and Crossbow Skills (Amazon Only)', prop, itemName, 'bowskills', dropdownId),
+    amazonmagic: (val, prop) => formatVariableStat('+', val, ' to Passive and Magic Skills (Amazon Only)', prop, itemName, 'amazonmagic', dropdownId),
+    javskills: (val, prop) => formatVariableStat('+', val, ' to Javelin and Spear Skills (Amazon Only)', prop, itemName, 'javskills', dropdownId),
+
+    // Sorceress
+    firespells: (val, prop) => formatVariableStat('+', val, ' to Fire Skills (Sorceress Only)', prop, itemName, 'firespells', dropdownId),
+    lightspells: (val, prop) => formatVariableStat('+', val, ' to Lightning Skills (Sorceress Only)', prop, itemName, 'lightspells', dropdownId),
+    coldspells: (val, prop) => formatVariableStat('+', val, ' to Cold Skills (Sorceress Only)', prop, itemName, 'coldspells', dropdownId),
+
+    // Necromancer
+    curses: (val, prop) => formatVariableStat('+', val, ' to Curses (Necromancer Only)', prop, itemName, 'curses', dropdownId),
+    necromancersummoning: (val, prop) => formatVariableStat('+', val, ' to Summoning Skills (Necromancer Only)', prop, itemName, 'necromancersummoning', dropdownId),
+    poisonandbone: (val, prop) => formatVariableStat('+', val, ' to Poison and Bone Skills (Necromancer Only)', prop, itemName, 'poisonandbone', dropdownId),
+
+    // Paladin
+    paladinoffensive: (val, prop) => formatVariableStat('+', val, ' to Offensive Auras (Paladin Only)', prop, itemName, 'paladinoffensive', dropdownId),
+    paladindefensive: (val, prop) => formatVariableStat('+', val, ' to Defensive Auras (Paladin Only)', prop, itemName, 'paladindefensive', dropdownId),
+    paladincombat: (val, prop) => formatVariableStat('+', val, ' to Combat Skills (Paladin Only)', prop, itemName, 'paladincombat', dropdownId),
+
+    // Barbarian
+    barbariancombat: (val, prop) => formatVariableStat('+', val, ' to Combat Skills (Barbarian Only)', prop, itemName, 'barbariancombat', dropdownId),
+    barbarianmasteries: (val, prop) => formatVariableStat('+', val, ' to Combat Masteries (Barbarian Only)', prop, itemName, 'barbarianmasteries', dropdownId),
+    warcries: (val, prop) => formatVariableStat('+', val, ' to Warcries (Barbarian Only)', prop, itemName, 'warcries', dropdownId),
+
+    // Druid
+    druidsummoning: (val, prop) => formatVariableStat('+', val, ' to Summoning Skills (Druid Only)', prop, itemName, 'druidsummoning', dropdownId),
+    shapeshifting: (val, prop) => formatVariableStat('+', val, ' to Shape Shifting Skills (Druid Only)', prop, itemName, 'shapeshifting', dropdownId),
+    druidelemental: (val, prop) => formatVariableStat('+', val, ' to Elemental Skills (Druid Only)', prop, itemName, 'druidelemental', dropdownId),
+
+    // Assassin
+    traps: (val, prop) => formatVariableStat('+', val, ' to Trap Skills (Assassin Only)', prop, itemName, 'traps', dropdownId),
+    martialarts: (val, prop) => formatVariableStat('+', val, ' to Martial Arts (Assassin Only)', prop, itemName, 'martialarts', dropdownId),
+    shadowdisciplines: (val, prop) => formatVariableStat('+', val, ' to Shadow Disciplines (Assassin Only)', prop, itemName, 'shadowdisciplines', dropdownId),
   };
 
   // Build description from properties
