@@ -221,8 +221,192 @@ const itemTypeCategories = {
   ]),
 
   'Armor': new Set([
-    // Add armor types here when we add armor crafts
+    // Normal/Light
+    'Quilted Armor', 'Leather Armor', 'Hard Leather Armor', 'Studded Leather', 'Ring Mail', 'Scale Mail',
+    'Chain Mail', 'Breast Plate', 'Splint Mail', 'Plate Mail', 'Field Plate', 'Gothic Plate',
+    'Full Plate Mail', 'Ancient Armor', 'Light Plate',
+    // Exceptional
+    'Ghost Armor', 'Serpentskin Armor', 'Demonhide Armor', 'Trellised Armor',
+    'Linked Mail', 'Tigulated Mail', 'Mesh Armor', 'Cuirass', 'Russet Armor',
+    'Templar Coat', 'Sharktooth Armor', 'Embossed Plate', 'Mage Plate', 'Chaos Armor', 'Ornate Plate',
+    // Elite
+    'Dusk Shroud', 'Wyrmhide', 'Scarab Husk', 'Wire Fleece', 'Diamond Mail',
+    'Loricated Mail', 'Boneweave', 'Great Hauberk', 'Balrog Skin', 'Hellforge Plate',
+    'Kraken Shell', 'Lacquered Plate', 'Archon Plate', 'Shadow Plate', 'Sacred Armor'
   ]),
+
+  'Chest': new Set([
+    // Normal/Light
+    'Quilted Armor', 'Leather Armor', 'Hard Leather Armor', 'Studded Leather', 'Ring Mail', 'Scale Mail',
+    'Chain Mail', 'Breast Plate', 'Splint Mail', 'Plate Mail', 'Field Plate', 'Gothic Plate',
+    'Full Plate Mail', 'Ancient Armor', 'Light Plate',
+    // Exceptional
+    'Ghost Armor', 'Serpentskin Armor', 'Demonhide Armor', 'Trellised Armor',
+    'Linked Mail', 'Tigulated Mail', 'Mesh Armor', 'Cuirass', 'Russet Armor',
+    'Templar Coat', 'Sharktooth Armor', 'Embossed Plate', 'Mage Plate', 'Chaos Armor', 'Ornate Plate',
+    // Elite
+    'Dusk Shroud', 'Wyrmhide', 'Scarab Husk', 'Wire Fleece', 'Diamond Mail',
+    'Loricated Mail', 'Boneweave', 'Great Hauberk', 'Balrog Skin', 'Hellforge Plate',
+    'Kraken Shell', 'Lacquered Plate', 'Archon Plate', 'Shadow Plate', 'Sacred Armor'
+  ]),
+
+  'Helm': new Set([
+    // Normal helms
+    'Cap', 'Skull Cap', 'Helm', 'Full Helm', 'Great Helm', 'Crown', 'Mask', 'Bone Helm',
+    // Exceptional helms
+    'War Hat', 'Sallet', 'Casque', 'Basinet', 'Winged Helm', 'Grand Crown',
+    'Death Mask', 'Grim Helm',
+    // Elite helms
+    'Bone Visage', 'Shako', 'Hydraskull', 'Armet', 'Giant Conch', 'Spired Helm',
+    'Corona', 'Demonhead',
+    // Circlets (all tiers)
+    'Circlet', 'Coronet', 'Tiara', 'Diadem',
+    // Druid Helms (all tiers)
+    'Wolf Head', 'Hawk Helm', 'Antlers', 'Falcon Mask', 'Spirit Mask',
+    'Jawbone Cap', 'Fanged Helm', 'Horned Helm', 'Assault Helmet', 'Avenger Guard',
+    'Alpha Helm', 'Jaw Bone', 'Totemic Mask', 'Sky Spirit', 'Blood Spirit',
+    'Sun Spirit', 'Earth Spirit', 'Slayer Guard', 'Guardian Crown', 'Sacred Mask',
+    // Barbarian Helms (all tiers)
+    'Jawbone Visor', 'Lion Helm', 'Rage Mask', 'Carnage Helm', 'Fury Visor',
+    'Destroyer Helm', 'Conqueror Crown', 'Targe Helm'
+  ]),
+
+  'Circlet': new Set(['Circlet', 'Coronet', 'Tiara', 'Diadem']),
+
+  'Shield': new Set([
+    // Normal shields
+    'Buckler', 'Small Shield', 'Large Shield', 'Kite Shield', 'Tower Shield', 'Gothic Shield', 'Bone Shield', 'Spiked Shield',
+    // Exceptional shields
+    'Defender', 'Round Shield', 'Scutum', 'Dragon Shield', 'Pavilion Shield',
+    'Ancient Shield', 'Grim Shield', 'Barbed Shield', 'Blade Barrier',
+    // Elite shields
+    'Troll Nest', 'Ward', 'Aegis', 'Monarch',
+    // Paladin Shields (all tiers)
+    'Targe', 'Rondache', 'Heraldic Shield', 'Aerin Shield', 'Crown Shield',
+    'Akaran Targe', 'Akaran Rondache', 'Protector Shield', 'Gilded Shield',
+    'Royal Shield', 'Sacred Targe', 'Sacred Rondache', 'Kurast Shield',
+    'Zakarum Shield', 'Vortex Shield',
+    // Necromancer Shields (all tiers)
+    'Preserved Head', 'Zombie Head', 'Unraveller Head', 'Gargoyle Head',
+    'Demon Head', 'Mummified Trophy', 'Fetish Trophy', 'Sexton Trophy',
+    'Cantor Trophy', 'Hierophant Trophy', 'Minion Skull', 'Hellspawn Skull',
+    'Overseer Skull', 'Succubus Skull', 'Bloodlord Skull'
+  ]),
+
+  'Gloves': new Set([
+    // Normal
+    'Leather Gloves', 'Heavy Gloves', 'Chain Gloves', 'Light Gauntlets', 'Gauntlets',
+    // Exceptional
+    'Demonhide Gloves', 'Sharkskin Gloves', 'Heavy Bracers', 'Battle Gauntlets', 'War Gauntlets',
+    // Elite
+    'Bramble Mitts', 'Vampirebone Gloves', 'Vambraces', 'Crusader Gauntlets', 'Ogre Gauntlets'
+  ]),
+
+  'Boots': new Set([
+    // Normal
+    'Boots', 'Heavy Boots', 'Chain Boots', 'Light Plated Boots', 'Greaves',
+    // Exceptional
+    'Demonhide Boots', 'Sharkskin Boots', 'Mesh Boots', 'Battle Boots', 'War Boots',
+    // Elite
+    'Wyrmhide Boots', 'Scarabshell Boots', 'Boneweave Boots', 'Mirrored Boots', 'Myrmidon Greaves'
+  ]),
+
+  'Belt': new Set([
+    // Normal
+    'Sash', 'Light Belt', 'Belt', 'Heavy Belt', 'Plated Belt',
+    // Exceptional
+    'Demonhide Sash', 'Sharkskin Belt', 'Mesh Belt', 'Battle Belt', 'War Belt',
+    // Elite
+    'Spiderweb Sash', 'Vampirefang Belt', 'Mithril Coil', 'Troll Belt', 'Colossus Girdle'
+  ]),
+
+  'Paladin Shield': new Set([
+    'Targe', 'Rondache', 'Heraldic Shield', 'Aerin Shield', 'Crown Shield',
+    'Akaran Targe', 'Akaran Rondache', 'Protector Shield', 'Gilded Shield',
+    'Royal Shield', 'Sacred Targe', 'Sacred Rondache', 'Kurast Shield',
+    'Zakarum Shield', 'Vortex Shield'
+  ]),
+
+  'Necromancer Shield': new Set([
+    'Preserved Head', 'Zombie Head', 'Unraveller Head', 'Gargoyle Head',
+    'Demon Head', 'Mummified Trophy', 'Fetish Trophy', 'Sexton Trophy',
+    'Cantor Trophy', 'Hierophant Trophy', 'Minion Skull', 'Hellspawn Skull',
+    'Overseer Skull', 'Succubus Skull', 'Bloodlord Skull'
+  ]),
+
+  'Non-Necromancer Shield': new Set([
+    'Buckler', 'Small Shield', 'Large Shield', 'Kite Shield', 'Tower Shield', 'Gothic Shield', 'Bone Shield', 'Spiked Shield',
+    'Defender', 'Round Shield', 'Scutum', 'Dragon Shield', 'Pavilion Shield',
+    'Ancient Shield', 'Grim Shield', 'Barbed Shield', 'Blade Barrier',
+    'Troll Nest', 'Ward', 'Aegis', 'Monarch',
+    'Targe', 'Rondache', 'Heraldic Shield', 'Aerin Shield', 'Crown Shield',
+    'Akaran Targe', 'Akaran Rondache', 'Protector Shield', 'Gilded Shield',
+    'Royal Shield', 'Sacred Targe', 'Sacred Rondache', 'Kurast Shield',
+    'Zakarum Shield', 'Vortex Shield'
+  ]),
+
+  'Non-Paladin Shield': new Set([
+    'Buckler', 'Small Shield', 'Large Shield', 'Kite Shield', 'Tower Shield', 'Gothic Shield', 'Bone Shield', 'Spiked Shield',
+    'Defender', 'Round Shield', 'Scutum', 'Dragon Shield', 'Pavilion Shield',
+    'Ancient Shield', 'Grim Shield', 'Barbed Shield', 'Blade Barrier',
+    'Troll Nest', 'Ward', 'Aegis', 'Monarch',
+    'Preserved Head', 'Zombie Head', 'Unraveller Head', 'Gargoyle Head',
+    'Demon Head', 'Mummified Trophy', 'Fetish Trophy', 'Sexton Trophy',
+    'Cantor Trophy', 'Hierophant Trophy', 'Minion Skull', 'Hellspawn Skull',
+    'Overseer Skull', 'Succubus Skull', 'Bloodlord Skull'
+  ]),
+
+  'ShieldNC': new Set([
+    'Buckler', 'Small Shield', 'Large Shield', 'Kite Shield', 'Tower Shield', 'Gothic Shield', 'Bone Shield', 'Spiked Shield',
+    'Defender', 'Round Shield', 'Scutum', 'Dragon Shield', 'Pavilion Shield',
+    'Ancient Shield', 'Grim Shield', 'Barbed Shield', 'Blade Barrier',
+    'Troll Nest', 'Ward', 'Aegis', 'Monarch'
+  ]),
+
+  'HelmNC': new Set([
+    'Cap', 'Skull Cap', 'Helm', 'Full Helm', 'Great Helm', 'Crown', 'Mask', 'Bone Helm',
+    'War Hat', 'Sallet', 'Casque', 'Basinet', 'Winged Helm', 'Grand Crown',
+    'Death Mask', 'Grim Helm', 'Bone Visage', 'Shako', 'Hydraskull', 'Armet',
+    'Giant Conch', 'Spired Helm', 'Corona', 'Demonhead',
+    'Circlet', 'Coronet', 'Tiara', 'Diadem'
+  ]),
+
+  'Non-Druid Helm': new Set([
+    'Cap', 'Skull Cap', 'Helm', 'Full Helm', 'Great Helm', 'Crown', 'Mask', 'Bone Helm',
+    'War Hat', 'Sallet', 'Casque', 'Basinet', 'Winged Helm', 'Grand Crown',
+    'Death Mask', 'Grim Helm', 'Bone Visage', 'Shako', 'Hydraskull', 'Armet',
+    'Giant Conch', 'Spired Helm', 'Corona', 'Demonhead',
+    'Circlet', 'Coronet', 'Tiara', 'Diadem',
+    'Jawbone Visor', 'Lion Helm', 'Rage Mask', 'Carnage Helm', 'Fury Visor',
+    'Destroyer Helm', 'Conqueror Crown', 'Targe Helm'
+  ]),
+
+  'Non-Barbarian Helm': new Set([
+    'Cap', 'Skull Cap', 'Helm', 'Full Helm', 'Great Helm', 'Crown', 'Mask', 'Bone Helm',
+    'War Hat', 'Sallet', 'Casque', 'Basinet', 'Winged Helm', 'Grand Crown',
+    'Death Mask', 'Grim Helm', 'Bone Visage', 'Shako', 'Hydraskull', 'Armet',
+    'Giant Conch', 'Spired Helm', 'Corona', 'Demonhead',
+    'Circlet', 'Coronet', 'Tiara', 'Diadem',
+    'Wolf Head', 'Hawk Helm', 'Antlers', 'Falcon Mask', 'Spirit Mask',
+    'Jawbone Cap', 'Fanged Helm', 'Horned Helm', 'Assault Helmet', 'Avenger Guard',
+    'Alpha Helm', 'Jaw Bone', 'Totemic Mask', 'Sky Spirit', 'Blood Spirit',
+    'Sun Spirit', 'Earth Spirit', 'Slayer Guard', 'Guardian Crown', 'Sacred Mask'
+  ]),
+
+  'Barbarian Helm': new Set([
+    'Jawbone Visor', 'Lion Helm', 'Rage Mask', 'Carnage Helm', 'Fury Visor',
+    'Destroyer Helm', 'Conqueror Crown', 'Targe Helm'
+  ]),
+
+  'Druid Helm': new Set([
+    'Wolf Head', 'Hawk Helm', 'Antlers', 'Falcon Mask', 'Spirit Mask',
+    'Jawbone Cap', 'Fanged Helm', 'Horned Helm', 'Assault Helmet', 'Avenger Guard',
+    'Alpha Helm', 'Jaw Bone', 'Totemic Mask', 'Sky Spirit', 'Blood Spirit',
+    'Sun Spirit', 'Earth Spirit', 'Slayer Guard', 'Guardian Crown', 'Sacred Mask'
+  ]),
+
+  'Ring': new Set([]),
+  'Amulet': new Set([]),
 };
 
 // Affix database - Prefixes only (suffixes to be added later)
