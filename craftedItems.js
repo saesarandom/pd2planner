@@ -836,7 +836,7 @@ class CraftedItemsSystem {
     // IMPORTANT: Use the same property keys as regular items (edmg, lleech, tolife, etc.)
     this.craftTypes = {
       blood: {
-        label: 'Blood Craft',
+        label: 'Blood Weapon',
         itemType: 'weapon',
         fixedProperties: {
           edmg: { min: 50, max: 80 },      // Enhanced Damage
