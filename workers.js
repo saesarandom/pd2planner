@@ -147,9 +147,11 @@ async function checkAndAwardAchievements(userId, characterData, sql) {
 
 async function getCraftedItems(sql, userId) {
   try {
+    console.log('Fetching crafted items for user:', userId);
     const result = await sql`
       SELECT item_data FROM crafted_items WHERE user_id = ${userId} ORDER BY created_at
     `;
+    console.log('Found', result.length, 'crafted items');
     const craftedItems = result.map(row => JSON.parse(row.item_data));
     return new Response(JSON.stringify({ craftedItems }), {
       status: 200,
@@ -157,7 +159,11 @@ async function getCraftedItems(sql, userId) {
     });
   } catch (error) {
     console.error('Error fetching crafted items:', error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch crafted items' }), {
+    console.error('Error details:', error.message);
+    return new Response(JSON.stringify({
+      error: 'Failed to fetch crafted items',
+      details: error.message
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -167,42 +173,57 @@ async function getCraftedItems(sql, userId) {
 async function createCraftedItem(request, sql, userId) {
   try {
     const itemData = await request.json();
+    console.log('Creating crafted item for user:', userId, 'item:', itemData.fullName);
+
     if (!itemData?.id || !itemData?.fullName) {
+      console.error('Invalid item data:', itemData);
       return new Response(JSON.stringify({ error: 'Invalid item data' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Check if user already has an item with this name (simpler check)
-    const existing = await sql`
-      SELECT id FROM crafted_items
-      WHERE user_id = ${userId}
-      AND item_data->>'fullName' = ${itemData.fullName}
-    `;
+    // Check if user already has an item with this name
+    try {
+      const existing = await sql`
+        SELECT id FROM crafted_items
+        WHERE user_id = ${userId}
+        AND item_data->>'fullName' = ${itemData.fullName}
+      `;
 
-    if (existing.length > 0) {
-      return new Response(JSON.stringify({
-        error: `You already have an item named "${itemData.fullName}". Please use a different name or delete the old item from the list below.`
-      }), {
-        status: 409,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      if (existing.length > 0) {
+        console.log('Duplicate item name:', itemData.fullName);
+        return new Response(JSON.stringify({
+          error: `You already have an item named "${itemData.fullName}". Please use a different name or delete the old item from the list below.`
+        }), {
+          status: 409,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    } catch (checkError) {
+      console.error('Error checking for existing item:', checkError);
+      // Continue anyway - might be first item or table schema issue
     }
 
+    // Insert the item
     const result = await sql`
       INSERT INTO crafted_items (user_id, craft_id, item_data, created_at, updated_at)
       VALUES (${userId}, ${itemData.id}, ${JSON.stringify(itemData)}, NOW(), NOW())
       RETURNING id, craft_id, item_data
     `;
 
+    console.log('Successfully created crafted item:', result[0].craft_id);
     return new Response(JSON.stringify(result[0]), {
       status: 201,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error creating crafted item:', error);
-    return new Response(JSON.stringify({ error: 'Failed to create crafted item' }), {
+    console.error('Error details:', error.message, error.stack);
+    return new Response(JSON.stringify({
+      error: 'Failed to create crafted item',
+      details: error.message
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
