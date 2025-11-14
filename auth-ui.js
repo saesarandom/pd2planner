@@ -140,6 +140,10 @@ function setupAuthListeners() {
             updateProfileButton();
             showLoggedInView();
             errorEl.textContent = '';
+            // Load crafted items from backend
+            if (typeof handleLogin === 'function') {
+                await handleLogin();
+            }
             // Refresh item dropdowns to show crafted items
             if (typeof refreshItemDropdowns === 'function') {
                 refreshItemDropdowns();
@@ -176,6 +180,10 @@ function setupAuthListeners() {
             updateProfileButton();
             showLoggedInView();
             errorEl.textContent = '';
+            // Load crafted items from backend
+            if (typeof handleLogin === 'function') {
+                await handleLogin();
+            }
             // Refresh item dropdowns to show crafted items
             if (typeof refreshItemDropdowns === 'function') {
                 refreshItemDropdowns();
