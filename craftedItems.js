@@ -24,57 +24,205 @@ const versatileWeapons = new Set([
 
 // Item type category definitions for affix matching
 const itemTypeCategories = {
-  // Weapon categories
+  // WeaponP: ALL physical weapons (melee + bows/crossbows)
   'WeaponP': new Set([
-    // Axes
+    // Axes - ALL tiers
     'Hand Axe', 'Axe', 'Double Axe', 'Military Pick', 'War Axe', 'Large Axe', 'Broad Axe',
     'Battle Axe', 'Great Axe', 'Giant Axe', 'Ancient Axe',
-    // Swords
+    'Hatchet', 'Cleaver', 'Twin Axe', 'Crowbill', 'Naga', 'Military Axe', 'Bearded Axe',
+    'Tabar', 'Gothic Axe',
+    'Tomahawk', 'Small Crescent', 'Ettin Axe', 'War Spike', 'Berserker Axe', 'Feral Axe',
+    'Silver-Edged Axe', 'Decapitator', 'Champion Axe', 'Glorious Axe',
+
+    // Swords - ALL tiers
     'Short Sword', 'Scimitar', 'Sabre', 'Falchion', 'Crystal Sword', 'Broad Sword', 'Long Sword',
     'War Sword', 'Two-Handed Sword', 'Claymore', 'Giant Sword', 'Bastard Sword', 'Flamberge', 'Great Sword',
-    // Daggers/Knives
-    'Dagger', 'Dirk', 'Kris', 'Blade',
-    // Maces/Clubs/Hammers
+    'Gladius', 'Cutlass', 'Shamshir', 'Tulwar', 'Dimensional Blade', 'Battle Sword', 'Rune Sword', 'Ancient Sword',
+    'Espandon', 'Dacian Falx', 'Tusk Sword', 'Gothic Sword', 'Zweihander', 'Executioner Sword',
+    'Blade', 'Falcata', 'Ataghan', 'Elegant Blade', 'Hydra Edge', 'Phase Blade', 'Conquest Sword',
+    'Cryptic Sword', 'Mythical Sword', 'Legend Sword', 'Highland Blade', 'Balrog Blade', 'Champion Sword',
+    'Colossus Sword', 'Colossus Blade',
+
+    // Daggers/Knives - ALL tiers
+    'Dagger', 'Dirk', 'Kris', 'Blade', 'Poignard', 'Rondel', 'Cinquedeas', 'Stiletto',
+    'Bone Knife', 'Mithril Point', 'Fanged Knife', 'Legend Spike',
+
+    // Maces/Clubs/Hammers - ALL tiers
     'Club', 'Spiked Club', 'Mace', 'Morning Star', 'Flail', 'War Hammer', 'Maul', 'Great Maul',
-    // Spears/Polearms
-    'Spear', 'Trident', 'Brandistock', 'Spetum', 'Pike', 'Bardiche', 'Voulge', 'Scythe', 'Poleaxe', 'Halberd', 'War Scythe',
-    // Javelins/Throwing
+    'Cudgel', 'Barbed Club', 'Flanged Mace', 'Jagged Star', 'Knout', 'Battle Hammer', 'War Club', 'Martel de Fer',
+    'Truncheon', 'Tyrant Club', 'Reinforced Mace', 'Devil Star', 'Scourge', 'Legendary Mallet',
+    'Ogre Maul', 'Thunder Maul',
+
+    // Spears/Polearms - ALL tiers
+    'Spear', 'Trident', 'Brandistock', 'Spetum', 'Pike', 'Bardiche', 'Voulge', 'Scythe',
+    'Poleaxe', 'Halberd', 'War Scythe',
+    'War Spear', 'Fuscina', 'War Fork', 'Yari', 'Lance', 'Lochaber Axe', 'Bill',
+    'Battle Scythe', 'Partizan', 'Bec-de-Corbin', 'Grim Scythe',
+    'Hyperion Spear', 'Stygian Pike', 'Mancatcher', 'Ghost Spear', 'War Pike', 'Ogre Axe',
+    'Colossus Voulge', 'Thresher', 'Cryptic Axe', 'Great Poleaxe', 'Giant Thresher',
+
+    // Javelins/Throwing - ALL tiers
     'Javelin', 'Pilum', 'Short Spear', 'Glaive', 'Throwing Spear', 'Throwing Knife', 'Throwing Axe',
-    // Bows/Crossbows
+    'War Javelin', 'Great Pilum', 'Simbilan', 'Spiculum', 'Harpoon',
+    'Hyperion Javelin', 'Stygian Pilum', 'Balrog Spear', 'Ghost Glaive', 'Winged Harpoon',
+    'Battle Dart', 'Francisca', 'War Dart', 'Hurlbat', 'Flying Knife', 'Flying Axe',
+    'Winged Knife', 'Winged Axe', 'Balanced Knife', 'Balanced Axe',
+
+    // Bows - ALL tiers
     'Short Bow', 'Hunter\'s Bow', 'Long Bow', 'Composite Bow', 'Short Battle Bow', 'Long Battle Bow',
-    'Short War Bow', 'Long War Bow', 'Light Crossbow', 'Crossbow', 'Heavy Crossbow', 'Repeating Crossbow',
-    // Scepters
-    'Scepter',
-    // Claws
-    'Katar', 'Wrist Blade', 'Hatchet Hands', 'Cestus', 'Claws'
+    'Short War Bow', 'Long War Bow',
+    'Edge Bow', 'Razor Bow', 'Cedar Bow', 'Double Bow', 'Short Siege Bow', 'Large Siege Bow',
+    'Rune Bow', 'Gothic Bow',
+    'Spider Bow', 'Blade Bow', 'Shadow Bow', 'Great Bow', 'Diamond Bow', 'Crusader Bow',
+    'Ward Bow', 'Hydra Bow',
+    'Stag Bow', 'Reflex Bow', 'Maiden Bow', 'Ashwood Bow', 'Ceremonial Bow', 'Matriarchal Bow',
+    'Grand Matron Bow',
+
+    // Crossbows - ALL tiers
+    'Light Crossbow', 'Crossbow', 'Heavy Crossbow', 'Repeating Crossbow',
+    'Arbalest', 'Siege Crossbow', 'Ballista', 'Chu-Ko-Nu',
+    'Pellet Bow', 'Gorgon Crossbow', 'Colossus Crossbow', 'Demon Crossbow',
+
+    // Scepters - ALL tiers
+    'Scepter', 'Grand Scepter', 'War Scepter', 'Rune Scepter', 'Holy Water Sprinkler',
+    'Divine Scepter', 'Mighty Scepter', 'Seraph Rod', 'Caduceus',
+
+    // Claws - ALL tiers
+    'Katar', 'Wrist Blade', 'Hatchet Hands', 'Cestus', 'Claws', 'Blade Talons', 'Scissors Katar',
+    'Quhab', 'Wrist Spike', 'Fascia', 'Hand Scythe', 'Greater Claws', 'Greater Talons',
+    'Scissors Quhab', 'Suwayyah', 'Wrist Sword', 'War Fist', 'Battle Cestus', 'Feral Claws',
+    'Runic Talons', 'Scissors Suwayyah',
+
+    // Amazon-specific
+    'Maiden Javelin', 'Maiden Spear', 'Maiden Pike', 'Ceremonial Javelin', 'Ceremonial Spear',
+    'Ceremonial Pike', 'Matriarchal Javelin', 'Matriarchal Spear', 'Matriarchal Pike',
   ]),
 
+  // WeaponPS: All WeaponP + Staves (excludes Orb & Wand)
   'WeaponPS': new Set([
-    // All WeaponP items plus Staff (excludes only Orb & Wand)
+    // All from WeaponP
     'Hand Axe', 'Axe', 'Double Axe', 'Military Pick', 'War Axe', 'Large Axe', 'Broad Axe',
     'Battle Axe', 'Great Axe', 'Giant Axe', 'Ancient Axe',
+    'Hatchet', 'Cleaver', 'Twin Axe', 'Crowbill', 'Naga', 'Military Axe', 'Bearded Axe',
+    'Tabar', 'Gothic Axe',
+    'Tomahawk', 'Small Crescent', 'Ettin Axe', 'War Spike', 'Berserker Axe', 'Feral Axe',
+    'Silver-Edged Axe', 'Decapitator', 'Champion Axe', 'Glorious Axe',
     'Short Sword', 'Scimitar', 'Sabre', 'Falchion', 'Crystal Sword', 'Broad Sword', 'Long Sword',
     'War Sword', 'Two-Handed Sword', 'Claymore', 'Giant Sword', 'Bastard Sword', 'Flamberge', 'Great Sword',
-    'Dagger', 'Dirk', 'Kris', 'Blade',
+    'Gladius', 'Cutlass', 'Shamshir', 'Tulwar', 'Dimensional Blade', 'Battle Sword', 'Rune Sword', 'Ancient Sword',
+    'Espandon', 'Dacian Falx', 'Tusk Sword', 'Gothic Sword', 'Zweihander', 'Executioner Sword',
+    'Blade', 'Falcata', 'Ataghan', 'Elegant Blade', 'Hydra Edge', 'Phase Blade', 'Conquest Sword',
+    'Cryptic Sword', 'Mythical Sword', 'Legend Sword', 'Highland Blade', 'Balrog Blade', 'Champion Sword',
+    'Colossus Sword', 'Colossus Blade',
+    'Dagger', 'Dirk', 'Kris', 'Poignard', 'Rondel', 'Cinquedeas', 'Stiletto',
+    'Bone Knife', 'Mithril Point', 'Fanged Knife', 'Legend Spike',
     'Club', 'Spiked Club', 'Mace', 'Morning Star', 'Flail', 'War Hammer', 'Maul', 'Great Maul',
-    'Spear', 'Trident', 'Brandistock', 'Spetum', 'Pike', 'Bardiche', 'Voulge', 'Scythe', 'Poleaxe', 'Halberd', 'War Scythe',
+    'Cudgel', 'Barbed Club', 'Flanged Mace', 'Jagged Star', 'Knout', 'Battle Hammer', 'War Club', 'Martel de Fer',
+    'Truncheon', 'Tyrant Club', 'Reinforced Mace', 'Devil Star', 'Scourge', 'Legendary Mallet',
+    'Ogre Maul', 'Thunder Maul',
+    'Spear', 'Trident', 'Brandistock', 'Spetum', 'Pike', 'Bardiche', 'Voulge', 'Scythe',
+    'Poleaxe', 'Halberd', 'War Scythe',
+    'War Spear', 'Fuscina', 'War Fork', 'Yari', 'Lance', 'Lochaber Axe', 'Bill',
+    'Battle Scythe', 'Partizan', 'Bec-de-Corbin', 'Grim Scythe',
+    'Hyperion Spear', 'Stygian Pike', 'Mancatcher', 'Ghost Spear', 'War Pike', 'Ogre Axe',
+    'Colossus Voulge', 'Thresher', 'Cryptic Axe', 'Great Poleaxe', 'Giant Thresher',
     'Javelin', 'Pilum', 'Short Spear', 'Glaive', 'Throwing Spear', 'Throwing Knife', 'Throwing Axe',
+    'War Javelin', 'Great Pilum', 'Simbilan', 'Spiculum', 'Harpoon',
+    'Hyperion Javelin', 'Stygian Pilum', 'Balrog Spear', 'Ghost Glaive', 'Winged Harpoon',
+    'Battle Dart', 'Francisca', 'War Dart', 'Hurlbat', 'Flying Knife', 'Flying Axe',
+    'Winged Knife', 'Winged Axe', 'Balanced Knife', 'Balanced Axe',
     'Short Bow', 'Hunter\'s Bow', 'Long Bow', 'Composite Bow', 'Short Battle Bow', 'Long Battle Bow',
-    'Short War Bow', 'Long War Bow', 'Light Crossbow', 'Crossbow', 'Heavy Crossbow', 'Repeating Crossbow',
-    'Scepter', 'Katar', 'Wrist Blade', 'Hatchet Hands', 'Cestus', 'Claws',
-    // Staff
-    'Short Staff', 'Long Staff', 'Gnarled Staff', 'Battle Staff', 'War Staff'
+    'Short War Bow', 'Long War Bow',
+    'Edge Bow', 'Razor Bow', 'Cedar Bow', 'Double Bow', 'Short Siege Bow', 'Large Siege Bow',
+    'Rune Bow', 'Gothic Bow',
+    'Spider Bow', 'Blade Bow', 'Shadow Bow', 'Great Bow', 'Diamond Bow', 'Crusader Bow',
+    'Ward Bow', 'Hydra Bow',
+    'Stag Bow', 'Reflex Bow', 'Maiden Bow', 'Ashwood Bow', 'Ceremonial Bow', 'Matriarchal Bow',
+    'Grand Matron Bow',
+    'Light Crossbow', 'Crossbow', 'Heavy Crossbow', 'Repeating Crossbow',
+    'Arbalest', 'Siege Crossbow', 'Ballista', 'Chu-Ko-Nu',
+    'Pellet Bow', 'Gorgon Crossbow', 'Colossus Crossbow', 'Demon Crossbow',
+    'Scepter', 'Grand Scepter', 'War Scepter', 'Rune Scepter', 'Holy Water Sprinkler',
+    'Divine Scepter', 'Mighty Scepter', 'Seraph Rod', 'Caduceus',
+    'Katar', 'Wrist Blade', 'Hatchet Hands', 'Cestus', 'Claws', 'Blade Talons', 'Scissors Katar',
+    'Quhab', 'Wrist Spike', 'Fascia', 'Hand Scythe', 'Greater Claws', 'Greater Talons',
+    'Scissors Quhab', 'Suwayyah', 'Wrist Sword', 'War Fist', 'Battle Cestus', 'Feral Claws',
+    'Runic Talons', 'Scissors Suwayyah',
+    'Maiden Javelin', 'Maiden Spear', 'Maiden Pike', 'Ceremonial Javelin', 'Ceremonial Spear',
+    'Ceremonial Pike', 'Matriarchal Javelin', 'Matriarchal Spear', 'Matriarchal Pike',
+
+    // + Staves (ALL tiers)
+    'Short Staff', 'Long Staff', 'Gnarled Staff', 'Battle Staff', 'War Staff',
+    'Jo Staff', 'Quarterstaff', 'Cedar Staff', 'Gothic Staff', 'Rune Staff',
+    'Walking Stick', 'Stalagmite', 'Elder Staff', 'Shillelagh', 'Archon Staff',
   ]),
 
-  'Axe': new Set(['Hand Axe', 'Axe', 'Double Axe', 'Military Pick', 'War Axe', 'Large Axe', 'Broad Axe', 'Battle Axe', 'Great Axe', 'Giant Axe', 'Ancient Axe']),
-  'Sword': new Set(['Short Sword', 'Scimitar', 'Sabre', 'Falchion', 'Crystal Sword', 'Broad Sword', 'Long Sword', 'War Sword', 'Two-Handed Sword', 'Claymore', 'Giant Sword', 'Bastard Sword', 'Flamberge', 'Great Sword']),
-  'Mace': new Set(['Mace', 'Morning Star', 'Flail', 'War Hammer']),
-  'Club': new Set(['Club', 'Spiked Club']),
-  'Hammer': new Set(['War Hammer', 'Maul', 'Great Maul']),
-  'Spear': new Set(['Spear', 'Trident', 'Brandistock', 'Spetum', 'Pike']),
-  'Polearm': new Set(['Pike', 'Bardiche', 'Voulge', 'Scythe', 'Poleaxe', 'Halberd', 'War Scythe']),
-  'Knife': new Set(['Dagger', 'Dirk', 'Kris', 'Blade', 'Throwing Knife']),
-  'Missile Weapon': new Set(['Short Bow', 'Hunter\'s Bow', 'Long Bow', 'Composite Bow', 'Short Battle Bow', 'Long Battle Bow', 'Short War Bow', 'Long War Bow', 'Light Crossbow', 'Crossbow', 'Heavy Crossbow', 'Repeating Crossbow']),
+  // Specific weapon subcategories
+  'Axe': new Set([
+    'Hand Axe', 'Axe', 'Double Axe', 'Military Pick', 'War Axe', 'Large Axe', 'Broad Axe',
+    'Battle Axe', 'Great Axe', 'Giant Axe', 'Ancient Axe',
+    'Hatchet', 'Cleaver', 'Twin Axe', 'Crowbill', 'Naga', 'Military Axe', 'Bearded Axe',
+    'Tabar', 'Gothic Axe',
+    'Tomahawk', 'Small Crescent', 'Ettin Axe', 'War Spike', 'Berserker Axe', 'Feral Axe',
+    'Silver-Edged Axe', 'Decapitator', 'Champion Axe', 'Glorious Axe'
+  ]),
+
+  'Sword': new Set([
+    'Short Sword', 'Scimitar', 'Sabre', 'Falchion', 'Crystal Sword', 'Broad Sword', 'Long Sword',
+    'War Sword', 'Two-Handed Sword', 'Claymore', 'Giant Sword', 'Bastard Sword', 'Flamberge', 'Great Sword',
+    'Gladius', 'Cutlass', 'Shamshir', 'Tulwar', 'Dimensional Blade', 'Battle Sword', 'Rune Sword', 'Ancient Sword',
+    'Espandon', 'Dacian Falx', 'Tusk Sword', 'Gothic Sword', 'Zweihander', 'Executioner Sword',
+    'Blade', 'Falcata', 'Ataghan', 'Elegant Blade', 'Hydra Edge', 'Phase Blade', 'Conquest Sword',
+    'Cryptic Sword', 'Mythical Sword', 'Legend Sword', 'Highland Blade', 'Balrog Blade', 'Champion Sword',
+    'Colossus Sword', 'Colossus Blade'
+  ]),
+
+  'Mace': new Set([
+    'Mace', 'Morning Star', 'Flail', 'War Hammer', 'Flanged Mace', 'Jagged Star', 'Knout',
+    'Battle Hammer', 'Reinforced Mace', 'Devil Star', 'Scourge'
+  ]),
+
+  'Club': new Set([
+    'Club', 'Spiked Club', 'Cudgel', 'Barbed Club', 'War Club', 'Truncheon', 'Tyrant Club'
+  ]),
+
+  'Hammer': new Set([
+    'War Hammer', 'Maul', 'Great Maul', 'Battle Hammer', 'Martel de Fer', 'Legendary Mallet',
+    'Ogre Maul', 'Thunder Maul'
+  ]),
+
+  'Spear': new Set([
+    'Spear', 'Trident', 'Brandistock', 'Spetum', 'Pike', 'War Spear', 'Fuscina', 'War Fork',
+    'Yari', 'Lance', 'Hyperion Spear', 'Stygian Pike', 'Mancatcher', 'Ghost Spear', 'War Pike',
+    'Maiden Spear', 'Maiden Pike', 'Ceremonial Spear', 'Ceremonial Pike', 'Matriarchal Spear',
+    'Matriarchal Pike'
+  ]),
+
+  'Polearm': new Set([
+    'Pike', 'Bardiche', 'Voulge', 'Scythe', 'Poleaxe', 'Halberd', 'War Scythe',
+    'Lochaber Axe', 'Bill', 'Battle Scythe', 'Partizan', 'Bec-de-Corbin', 'Grim Scythe',
+    'Ogre Axe', 'Colossus Voulge', 'Thresher', 'Cryptic Axe', 'Great Poleaxe', 'Giant Thresher'
+  ]),
+
+  'Knife': new Set([
+    'Dagger', 'Dirk', 'Kris', 'Blade', 'Throwing Knife', 'Poignard', 'Rondel', 'Cinquedeas',
+    'Stiletto', 'Bone Knife', 'Mithril Point', 'Fanged Knife', 'Legend Spike'
+  ]),
+
+  'Missile Weapon': new Set([
+    'Short Bow', 'Hunter\'s Bow', 'Long Bow', 'Composite Bow', 'Short Battle Bow', 'Long Battle Bow',
+    'Short War Bow', 'Long War Bow', 'Light Crossbow', 'Crossbow', 'Heavy Crossbow', 'Repeating Crossbow',
+    'Edge Bow', 'Razor Bow', 'Cedar Bow', 'Double Bow', 'Short Siege Bow', 'Large Siege Bow',
+    'Rune Bow', 'Gothic Bow', 'Arbalest', 'Siege Crossbow', 'Ballista', 'Chu-Ko-Nu',
+    'Spider Bow', 'Blade Bow', 'Shadow Bow', 'Great Bow', 'Diamond Bow', 'Crusader Bow',
+    'Ward Bow', 'Hydra Bow', 'Pellet Bow', 'Gorgon Crossbow', 'Colossus Crossbow', 'Demon Crossbow',
+    'Stag Bow', 'Reflex Bow', 'Maiden Bow', 'Ashwood Bow', 'Ceremonial Bow', 'Matriarchal Bow',
+    'Grand Matron Bow'
+  ]),
+
+  'Armor': new Set([
+    // Add armor types here when we add armor crafts
+  ]),
 };
 
 // Affix database - Prefixes only (suffixes to be added later)
