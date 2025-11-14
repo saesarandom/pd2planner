@@ -167,19 +167,22 @@ async function getCraftedItems(sql, userId) {
 async function createCraftedItem(request, sql, userId) {
   try {
     const itemData = await request.json();
-    if (!itemData?.id || !itemData?.fullName) { // Use optional chaining
+    if (!itemData?.id || !itemData?.fullName) {
       return new Response(JSON.stringify({ error: 'Invalid item data' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
+    // Check if user already has an item with this name (simpler check)
     const existing = await sql`
-      SELECT id FROM crafted_items WHERE craft_id = ${itemData.id}
+      SELECT id FROM crafted_items
+      WHERE user_id = ${userId}
+      AND item_data->>'fullName' = ${itemData.fullName}
     `;
 
     if (existing.length > 0) {
-      return new Response(JSON.stringify({ error: 'Item already exists' }), {
+      return new Response(JSON.stringify({ error: 'You already have an item with this name' }), {
         status: 409,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
