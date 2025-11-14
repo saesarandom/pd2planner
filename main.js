@@ -427,6 +427,11 @@ function getPropertyValue(prop) {
 window.generateItemDescription = function generateItemDescription(itemName, item, dropdownId) {
   if (!item) return '';
 
+  // Crafted items have complete descriptions - always use them
+  if (item.isCrafted && item.description) {
+    return item.description;
+  }
+
   // Items with baseType are dynamic - always regenerate them
   const isDynamic = item.baseType;
 
