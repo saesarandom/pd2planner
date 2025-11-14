@@ -359,6 +359,7 @@ class Auth {
             const response = await fetch(`${API_URL}/api/crafted-items/${craftId}?userId=${this.user.id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': `Bearer ${this.token}`,  // ADD THIS LINE
                     'Content-Type': 'application/json'
                 }
             });

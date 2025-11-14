@@ -487,6 +487,26 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     }
   }
 
+  if (item.isCrafted && item.baseType && item.itemType !== 'weapon') {
+    // Check if this is armor or helm
+    if (typeof baseDefenses !== 'undefined' && baseDefenses[item.baseType]) {
+      const baseDef = baseDefenses[item.baseType];
+      const edefValue = getPropertyValue(props.edef || 0);
+      
+      // Calculate defense with enhanced defense modifier
+      // Formula: floor(base * (1 + edef/100))
+      const finalDef = Math.floor(baseDef * (1 + edefValue / 100));
+      
+      // Add to properties so it gets displayed
+      if (!props.defense) {
+        props.defense = finalDef;
+      }
+      
+      // Display defense in description
+      html += `Defense: ${finalDef}<br>`;
+    }
+  }
+
   // Base defense values for different item types
   const baseDefenseMap = {
     'Buckler': 6,
