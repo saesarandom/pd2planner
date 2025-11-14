@@ -1025,6 +1025,56 @@ function refreshItemDropdowns() {
 }
 
 /**
+ * Populate base items dropdown based on craft type
+ */
+function populateBaseItemsByType(craftType) {
+  const baseTypeSelect = document.getElementById('craftBaseType');
+  if (!baseTypeSelect) return;
+
+  let baseItems = [];
+  let placeholder = 'Select base item...';
+
+  // Get craft config to determine item type
+  if (window.craftedItemsSystem && window.craftedItemsSystem.craftTypes[craftType]) {
+    const craftConfig = window.craftedItemsSystem.craftTypes[craftType];
+    const itemType = craftConfig.itemType;
+
+    if (itemType === 'weapon') {
+      placeholder = 'Select base weapon...';
+      // Get all base weapons from baseDamages
+      if (typeof baseDamages !== 'undefined') {
+        for (const weaponName in baseDamages) {
+          if (!weaponName.includes('(melee)')) {
+            baseItems.push(weaponName);
+          }
+        }
+      }
+    } else if (itemType === 'armor') {
+      placeholder = 'Select base armor...';
+      // Get all armor items from itemTypeCategories
+      if (itemTypeCategories['Armor']) {
+        baseItems = Array.from(itemTypeCategories['Armor']).sort();
+      }
+    } else if (itemType === 'helm') {
+      placeholder = 'Select base helm...';
+      // Get all helms from itemTypeCategories
+      if (itemTypeCategories['Helm']) {
+        baseItems = Array.from(itemTypeCategories['Helm']).sort();
+      }
+    }
+  }
+
+  // Populate dropdown
+  baseTypeSelect.innerHTML = `<option value="">${placeholder}</option>`;
+  baseItems.sort().forEach(itemName => {
+    const option = document.createElement('option');
+    option.value = itemName;
+    option.textContent = itemName;
+    baseTypeSelect.appendChild(option);
+  });
+}
+
+/**
  * Open the crafting modal and populate base items list
  */
 function openCraftingModal() {
@@ -1036,40 +1086,30 @@ function openCraftingModal() {
   const modal = document.getElementById('craftingModal');
   if (!modal) return;
 
-  // Populate base items dropdown (weapons only for now)
+  // Setup craft type change listener
+  const craftTypeSelect = document.getElementById('craftType');
+  if (craftTypeSelect) {
+    craftTypeSelect.addEventListener('change', function() {
+      populateBaseItemsByType(this.value);
+      refreshAffixesForBaseType(''); // Clear affixes initially
+    });
+  }
+
+  // Setup base type change listener
   const baseTypeSelect = document.getElementById('craftBaseType');
   if (baseTypeSelect) {
-    baseTypeSelect.innerHTML = '<option value="">Select base weapon...</option>';
-
-    // Get all base weapons from baseDamages (defined in itemUpgrade.js)
-    const baseWeapons = [];
-    if (typeof baseDamages !== 'undefined') {
-      for (const weaponName in baseDamages) {
-        // Skip melee versions of throwing weapons
-        if (!weaponName.includes('(melee)')) {
-          baseWeapons.push(weaponName);
-        }
-      }
-    }
-
-    // Add them sorted
-    baseWeapons.sort().forEach(weaponName => {
-      const option = document.createElement('option');
-      option.value = weaponName;
-      option.textContent = weaponName;
-      baseTypeSelect.appendChild(option);
-    });
-
-    // Add event listener to refresh affixes when base type changes
     baseTypeSelect.addEventListener('change', function() {
       refreshAffixesForBaseType(this.value);
     });
   }
 
+  // Initially populate with blood weapon items
+  populateBaseItemsByType('blood');
+
   // Initially show message to select a base type
   const affixesContainer = document.getElementById('affixesContainer');
   if (affixesContainer) {
-    affixesContainer.innerHTML = '<p style="color: #999; padding: 10px;">Select a base weapon to see available affixes</p>';
+    affixesContainer.innerHTML = '<p style="color: #999; padding: 10px;">Select a base item to see available affixes</p>';
   }
 
   // Clear form fields
@@ -1095,7 +1135,7 @@ function refreshAffixesForBaseType(baseType) {
   if (!affixesContainer || !window.craftedItemsSystem) return;
 
   if (!baseType) {
-    affixesContainer.innerHTML = '<p style="color: #999; padding: 10px;">Select a base weapon to see available affixes</p>';
+    affixesContainer.innerHTML = '<p style="color: #999; padding: 10px;">Select a base item to see available affixes</p>';
     return;
   }
 
@@ -1236,7 +1276,7 @@ function refreshAffixesForBaseType(baseType) {
 
   if (availablePrefixes.length === 0) {
     const noPrefixes = document.createElement('p');
-    noPrefixes.textContent = 'No prefixes available for this weapon type';
+    noPrefixes.textContent = 'No prefixes available for this item type';
     noPrefixes.style.cssText = 'color: #999; font-size: 12px; margin: 5px 0;';
     affixesContainer.appendChild(noPrefixes);
   } else {
@@ -1254,7 +1294,7 @@ function refreshAffixesForBaseType(baseType) {
 
   if (availableSuffixes.length === 0) {
     const noSuffixes = document.createElement('p');
-    noSuffixes.textContent = 'No suffixes available for this weapon type';
+    noSuffixes.textContent = 'No suffixes available for this item type';
     noSuffixes.style.cssText = 'color: #999; font-size: 12px; margin: 5px 0;';
     affixesContainer.appendChild(noSuffixes);
   } else {
