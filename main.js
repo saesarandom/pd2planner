@@ -1190,7 +1190,52 @@ function refreshAffixesForBaseType(baseType) {
       deadly: '+% Deadly Strike',
       ias: '+% Increased Attack Speed',
       fcr: '+% Faster Cast Rate',
-      frw: '+% Faster Run/Walk'
+      frw: '+% Faster Run/Walk',
+      amazonskills: '+ to Amazon Skill Levels',
+      sorceressskills: '+ to Sorceress Skill Levels',
+      necromancerskills: '+ to Necromancer Skill Levels',
+      paladinskills: '+ to Paladin Skill Levels',
+      barbarianskills: '+ to Barbarian Skill Levels',
+      druidskills: '+ to Druid Skill Levels',
+      assassinskills: '+ to Assassin Skill Levels',
+  
+  // Amazon skill trees
+      bowskills: '+ to Bow and Crossbow Skills (Amazon Only)',
+      amazonmagic: '+ to Passive and Magic Skills (Amazon Only)',
+      javskills: '+ to Javelin and Spear Skills (Amazon Only)',
+  
+  // Sorceress skill trees
+      firespells: '+ to Fire Skills (Sorceress Only)',
+      lightspells: '+ to Lightning Skills (Sorceress Only)',
+      coldspells: '+ to Cold Skills (Sorceress Only)',
+  
+  // Necromancer skill trees
+      curses: '+ to Curses (Necromancer Only)',
+      necromancersummoning: '+ to Summoning Skills (Necromancer Only)',
+      poisonandbone: '+ to Poison and Bone Skills (Necromancer Only)',
+  
+  // Paladin skill trees
+      paladinoffensive: '+ to Offensive Auras (Paladin Only)',
+      paladindefensive: '+ to Defensive Auras (Paladin Only)',
+      paladincombat: '+ to Combat Skills (Paladin Only)',
+  
+  // Barbarian skill trees  
+      barbariancombat: '+ to Combat Skills (Barbarian Only)',
+      barbarianmasteries: '+ to Combat Masteries (Barbarian Only)',
+      warcries: '+ to Warcries (Barbarian Only)',
+  
+  // Druid skill trees
+      druidsummoning: '+ to Summoning Skills (Druid Only)',
+      shapeshifting: '+ to Shape Shifting Skills (Druid Only)',
+      druidelemental: '+ to Elemental Skills (Druid Only)',
+  
+  // Assassin skill trees
+      traps: '+ to Trap Skills (Assassin Only)',
+      martialarts: '+ to Martial Arts (Assassin Only)',
+      shadowdisciplines: '+ to Shadow Disciplines (Assassin Only)',
+  
+  // All skills (generic)
+      allskills: '+ to All Skills'
     };
 
     const affixDiv = document.createElement('div');
