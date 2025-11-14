@@ -1128,24 +1128,33 @@ function openCraftingModal() {
       return affixDiv;
     };
 
-    // Add Prefixes section
-    const prefixHeader = document.createElement('h4');
-    prefixHeader.textContent = 'Prefixes (select 1-3)';
-    prefixHeader.style.cssText = 'color: #ffd700; margin: 10px 0; font-size: 14px;';
-    affixesContainer.appendChild(prefixHeader);
+    // Check if affixDatabase is loaded
+    if (!window.affixDatabase) {
+      console.error('affixDatabase not loaded! Make sure craftedItems.js is loaded before main.js');
+      const errorMsg = document.createElement('p');
+      errorMsg.textContent = 'Error: Affix database not loaded. Please refresh the page.';
+      errorMsg.style.cssText = 'color: red; padding: 10px;';
+      affixesContainer.appendChild(errorMsg);
+    } else {
+      // Add Prefixes section
+      const prefixHeader = document.createElement('h4');
+      prefixHeader.textContent = 'Prefixes (select 1-3)';
+      prefixHeader.style.cssText = 'color: #ffd700; margin: 10px 0; font-size: 14px;';
+      affixesContainer.appendChild(prefixHeader);
 
-    for (const [affixKey, affixData] of Object.entries(window.affixDatabase.prefixes)) {
-      affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'prefix'));
-    }
+      for (const [affixKey, affixData] of Object.entries(window.affixDatabase.prefixes)) {
+        affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'prefix'));
+      }
 
-    // Add Suffixes section
-    const suffixHeader = document.createElement('h4');
-    suffixHeader.textContent = 'Suffixes (select 1-3)';
-    suffixHeader.style.cssText = 'color: #ffd700; margin: 15px 0 10px 0; font-size: 14px;';
-    affixesContainer.appendChild(suffixHeader);
+      // Add Suffixes section
+      const suffixHeader = document.createElement('h4');
+      suffixHeader.textContent = 'Suffixes (select 1-3)';
+      suffixHeader.style.cssText = 'color: #ffd700; margin: 15px 0 10px 0; font-size: 14px;';
+      affixesContainer.appendChild(suffixHeader);
 
-    for (const [affixKey, affixData] of Object.entries(window.affixDatabase.suffixes)) {
-      affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'suffix'));
+      for (const [affixKey, affixData] of Object.entries(window.affixDatabase.suffixes)) {
+        affixesContainer.appendChild(createAffixSlider(affixKey, affixData, 'suffix'));
+      }
     }
   }
 
