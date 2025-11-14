@@ -152,7 +152,8 @@ async function getCraftedItems(sql, userId) {
       SELECT item_data FROM crafted_items WHERE user_id = ${userId} ORDER BY created_at
     `;
     console.log('Found', result.length, 'crafted items');
-    const craftedItems = result.map(row => JSON.parse(row.item_data));
+    // item_data is JSONB - already parsed by neon
+    const craftedItems = result.map(row => row.item_data);
     return new Response(JSON.stringify({ craftedItems }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -205,10 +206,10 @@ async function createCraftedItem(request, sql, userId) {
       // Continue anyway - might be first item or table schema issue
     }
 
-    // Insert the item
+    // Insert the item (item_data is JSONB - neon handles conversion automatically)
     const result = await sql`
       INSERT INTO crafted_items (user_id, craft_id, item_data, created_at, updated_at)
-      VALUES (${userId}, ${itemData.id}, ${JSON.stringify(itemData)}, NOW(), NOW())
+      VALUES (${userId}, ${itemData.id}, ${sql.json(itemData)}, NOW(), NOW())
       RETURNING id, craft_id, item_data
     `;
 
