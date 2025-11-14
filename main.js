@@ -1059,141 +1059,17 @@ function openCraftingModal() {
       option.textContent = weaponName;
       baseTypeSelect.appendChild(option);
     });
+
+    // Add event listener to refresh affixes when base type changes
+    baseTypeSelect.addEventListener('change', function() {
+      refreshAffixesForBaseType(this.value);
+    });
   }
 
-  // Populate affixes sliders (prefixes and suffixes)
+  // Initially show message to select a base type
   const affixesContainer = document.getElementById('affixesContainer');
-  if (affixesContainer && window.craftedItemsSystem) {
-    affixesContainer.innerHTML = '';
-
-    // Helper function to create affix slider
-    const createAffixSlider = (affixKey, affixData, affixType) => {
-      // Extract the first stat from affixData.stats
-      const statEntries = Object.entries(affixData.stats || {});
-      if (statEntries.length === 0) return null;
-
-      const [propKey, propData] = statEntries[0];
-      const minVal = propData.min;
-      const maxVal = propData.max;
-
-      // Property key to label mapping
-      const propLabels = {
-        edmg: '+% Enhanced Damage',
-        edef: '+% Enhanced Defense',
-        toatt: '+ to Attack Rating',
-        tolife: '+ to Life',
-        tomana: '+ to Mana',
-        str: '+ to Strength',
-        dex: '+ to Dexterity',
-        coldres: '+% Cold Resist',
-        fireres: '+% Fire Resist',
-        lightres: '+% Lightning Resist',
-        poisonres: '+% Poison Resist',
-        allres: '+% All Resistances',
-        magicdmg: '+ Magic Damage',
-        regen: '+ Regenerate',
-        manasteal: '+% Mana Steal',
-        lifesteal: '+% Life Steal',
-        openwounds: '+% Chance of Open Wounds',
-        crushblow: '+% Chance of Crushing Blow',
-        deadly: '+% Deadly Strike',
-        ias: '+% Increased Attack Speed',
-        fcr: '+% Faster Cast Rate',
-        frw: '+% Faster Run/Walk'
-      };
-
-      const affixDiv = document.createElement('div');
-      affixDiv.className = 'affix-control';
-      affixDiv.style.cssText = `
-        margin-bottom: 12px;
-        padding: 10px;
-        background: rgba(15, 52, 96, 0.4);
-        border: 1px solid #0f9eff;
-        border-radius: 4px;
-      `;
-
-      const label = document.createElement('label');
-      label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
-      const displayLabel = `${affixKey} (${propLabels[propKey] || propKey})`;
-      label.innerHTML = `${displayLabel} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span>`;
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = `check_${affixType}_${affixKey}`;
-      checkbox.style.cssText = 'margin-right: 8px;';
-
-      const slider = document.createElement('input');
-      slider.type = 'range';
-      slider.min = minVal;
-      slider.max = maxVal;
-      slider.value = minVal;
-      slider.disabled = true;
-      slider.style.cssText = `
-        width: calc(100% - 30px);
-        height: 6px;
-        background: #0f3460;
-        border: 1px solid #0f9eff;
-        border-radius: 3px;
-        outline: none;
-        cursor: pointer;
-        margin-left: 8px;
-      `;
-      slider.id = `affix_${affixType}_${affixKey}`;
-      slider.dataset.propKey = propKey; // Store the property key for later retrieval
-
-      checkbox.addEventListener('change', (e) => {
-        slider.disabled = !e.target.checked;
-        if (e.target.checked) {
-          document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[${slider.value}]`;
-        } else {
-          document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[0]`;
-        }
-      });
-
-      slider.addEventListener('input', (e) => {
-        document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[${e.target.value}]`;
-      });
-
-      const controlWrapper = document.createElement('div');
-      controlWrapper.style.cssText = 'display: flex; align-items: center;';
-      controlWrapper.appendChild(checkbox);
-      controlWrapper.appendChild(slider);
-
-      affixDiv.appendChild(label);
-      affixDiv.appendChild(controlWrapper);
-      return affixDiv;
-    };
-
-    // Check if affixDatabase is loaded
-    if (!window.affixDatabase) {
-      console.error('affixDatabase not loaded! Make sure craftedItems.js is loaded before main.js');
-      const errorMsg = document.createElement('p');
-      errorMsg.textContent = 'Error: Affix database not loaded. Please refresh the page.';
-      errorMsg.style.cssText = 'color: red; padding: 10px;';
-      affixesContainer.appendChild(errorMsg);
-    } else {
-      // Add Prefixes section
-      const prefixHeader = document.createElement('h4');
-      prefixHeader.textContent = 'Prefixes (select 1-3)';
-      prefixHeader.style.cssText = 'color: #ffd700; margin: 10px 0; font-size: 14px;';
-      affixesContainer.appendChild(prefixHeader);
-
-      for (const [affixKey, affixData] of Object.entries(window.affixDatabase.prefixes)) {
-        const sliderElement = createAffixSlider(affixKey, affixData, 'prefix');
-        if (sliderElement) affixesContainer.appendChild(sliderElement);
-      }
-
-      // Add Suffixes section
-      const suffixHeader = document.createElement('h4');
-      suffixHeader.textContent = 'Suffixes (select 1-3)';
-      suffixHeader.style.cssText = 'color: #ffd700; margin: 15px 0 10px 0; font-size: 14px;';
-      affixesContainer.appendChild(suffixHeader);
-
-      for (const [affixKey, affixData] of Object.entries(window.affixDatabase.suffixes)) {
-        const sliderElement = createAffixSlider(affixKey, affixData, 'suffix');
-        if (sliderElement) affixesContainer.appendChild(sliderElement);
-      }
-    }
+  if (affixesContainer) {
+    affixesContainer.innerHTML = '<p style="color: #999; padding: 10px;">Select a base weapon to see available affixes</p>';
   }
 
   // Clear form fields
@@ -1208,6 +1084,159 @@ function openCraftingModal() {
   const backdrop = document.getElementById('craftingModalBackdrop');
   if (backdrop) {
     backdrop.style.display = 'block';
+  }
+}
+
+/**
+ * Refresh affixes based on selected base type
+ */
+function refreshAffixesForBaseType(baseType) {
+  const affixesContainer = document.getElementById('affixesContainer');
+  if (!affixesContainer || !window.craftedItemsSystem) return;
+
+  if (!baseType) {
+    affixesContainer.innerHTML = '<p style="color: #999; padding: 10px;">Select a base weapon to see available affixes</p>';
+    return;
+  }
+
+  affixesContainer.innerHTML = '';
+
+  // Helper function to create affix slider
+  const createAffixSlider = (affixKey, affixData, affixType) => {
+    // Extract the first stat from affixData.stats
+    const statEntries = Object.entries(affixData.stats || {});
+    if (statEntries.length === 0) return null;
+
+    const [propKey, propData] = statEntries[0];
+    const minVal = propData.min;
+    const maxVal = propData.max;
+
+    // Property key to label mapping
+    const propLabels = {
+      edmg: '+% Enhanced Damage',
+      edef: '+% Enhanced Defense',
+      toatt: '+ to Attack Rating',
+      tolife: '+ to Life',
+      tomana: '+ to Mana',
+      str: '+ to Strength',
+      dex: '+ to Dexterity',
+      coldres: '+% Cold Resist',
+      fireres: '+% Fire Resist',
+      lightres: '+% Lightning Resist',
+      poisonres: '+% Poison Resist',
+      allres: '+% All Resistances',
+      magicdmg: '+ Magic Damage',
+      regen: '+ Regenerate',
+      manasteal: '+% Mana Steal',
+      lifesteal: '+% Life Steal',
+      openwounds: '+% Chance of Open Wounds',
+      crushblow: '+% Chance of Crushing Blow',
+      deadly: '+% Deadly Strike',
+      ias: '+% Increased Attack Speed',
+      fcr: '+% Faster Cast Rate',
+      frw: '+% Faster Run/Walk'
+    };
+
+    const affixDiv = document.createElement('div');
+    affixDiv.className = 'affix-control';
+    affixDiv.style.cssText = `
+      margin-bottom: 12px;
+      padding: 10px;
+      background: rgba(15, 52, 96, 0.4);
+      border: 1px solid #0f9eff;
+      border-radius: 4px;
+    `;
+
+    const label = document.createElement('label');
+    label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
+    const displayLabel = `${affixKey} (${propLabels[propKey] || propKey})`;
+    label.innerHTML = `${displayLabel} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span>`;
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `check_${affixType}_${affixKey}`;
+    checkbox.style.cssText = 'margin-right: 8px;';
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = minVal;
+    slider.max = maxVal;
+    slider.value = minVal;
+    slider.disabled = true;
+    slider.style.cssText = `
+      width: calc(100% - 30px);
+      height: 6px;
+      background: #0f3460;
+      border: 1px solid #0f9eff;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      margin-left: 8px;
+    `;
+    slider.id = `affix_${affixType}_${affixKey}`;
+    slider.dataset.propKey = propKey; // Store the property key for later retrieval
+
+    checkbox.addEventListener('change', (e) => {
+      slider.disabled = !e.target.checked;
+      if (e.target.checked) {
+        document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[${slider.value}]`;
+      } else {
+        document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[0]`;
+      }
+    });
+
+    slider.addEventListener('input', (e) => {
+      document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[${e.target.value}]`;
+    });
+
+    const controlWrapper = document.createElement('div');
+    controlWrapper.style.cssText = 'display: flex; align-items: center;';
+    controlWrapper.appendChild(checkbox);
+    controlWrapper.appendChild(slider);
+
+    affixDiv.appendChild(label);
+    affixDiv.appendChild(controlWrapper);
+    return affixDiv;
+  };
+
+  // Get available affixes using the system method
+  const availablePrefixes = window.craftedItemsSystem.getAvailableAffixes(baseType, 'prefixes', []);
+  const availableSuffixes = window.craftedItemsSystem.getAvailableAffixes(baseType, 'suffixes', []);
+
+  // Add Prefixes section
+  const prefixHeader = document.createElement('h4');
+  prefixHeader.textContent = 'Prefixes (select 1-3)';
+  prefixHeader.style.cssText = 'color: #ffd700; margin: 10px 0; font-size: 14px;';
+  affixesContainer.appendChild(prefixHeader);
+
+  if (availablePrefixes.length === 0) {
+    const noPrefixes = document.createElement('p');
+    noPrefixes.textContent = 'No prefixes available for this weapon type';
+    noPrefixes.style.cssText = 'color: #999; font-size: 12px; margin: 5px 0;';
+    affixesContainer.appendChild(noPrefixes);
+  } else {
+    availablePrefixes.forEach(affix => {
+      const sliderElement = createAffixSlider(affix.name, affix, 'prefix');
+      if (sliderElement) affixesContainer.appendChild(sliderElement);
+    });
+  }
+
+  // Add Suffixes section
+  const suffixHeader = document.createElement('h4');
+  suffixHeader.textContent = 'Suffixes (select 1-3)';
+  suffixHeader.style.cssText = 'color: #ffd700; margin: 15px 0 10px 0; font-size: 14px;';
+  affixesContainer.appendChild(suffixHeader);
+
+  if (availableSuffixes.length === 0) {
+    const noSuffixes = document.createElement('p');
+    noSuffixes.textContent = 'No suffixes available for this weapon type';
+    noSuffixes.style.cssText = 'color: #999; font-size: 12px; margin: 5px 0;';
+    affixesContainer.appendChild(noSuffixes);
+  } else {
+    availableSuffixes.forEach(affix => {
+      const sliderElement = createAffixSlider(affix.name, affix, 'suffix');
+      if (sliderElement) affixesContainer.appendChild(sliderElement);
+    });
   }
 }
 
