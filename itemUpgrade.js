@@ -2829,6 +2829,13 @@ const baseDamages = {
   "Dimensional Shard": { min: 30, max: 53 },
 };
 
+// Base item required levels (for non-unique items)
+const baseRequiredLevels = {
+  // Axes
+  "Ancient Axe": 25,
+  // Add more as needed
+};
+
 function buildDescription(itemName, baseType, properties, magicalProps) {
   return [
     itemName,
