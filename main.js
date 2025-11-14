@@ -439,7 +439,14 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Generate dynamic description for items with variable stats
   const props = item.properties || {};
 
-  let html = `${itemName}<br>`;
+  let html = '';
+
+  // Special display for crafted items: show name + craft type label
+  if (item.isCrafted && item.craftTypeLabel) {
+    html += `<span style="color: #ffd700; font-weight: bold;">${item.name} ${item.craftTypeLabel}</span><br>`;
+  } else {
+    html += `${itemName}<br>`;
+  }
 
   // Add base type if available
   if (item.baseType) {
@@ -456,10 +463,28 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     const minDmg = Math.floor(baseDmg.min * (1 + edmgValue / 100));
     const maxDmg = Math.floor(baseDmg.max * (1 + edmgValue / 100));
 
+    // Determine weapon type
+    const isTwoHandedOnly = typeof twoHandedOnlyWeapons !== 'undefined' && twoHandedOnlyWeapons.has(item.baseType);
+    const isVersatile = typeof versatileWeapons !== 'undefined' && versatileWeapons.has(item.baseType);
+
     // Add to properties so it gets displayed
-    // Most crafted weapons are one-handed, but we can check weapon type later if needed
-    props.onehandmin = minDmg;
-    props.onehandmax = maxDmg;
+    if (isTwoHandedOnly) {
+      // Two-handed only: show only two-hand damage
+      props.twohandmin = minDmg;
+      props.twohandmax = maxDmg;
+    } else if (isVersatile) {
+      // Versatile weapons: show both one-hand and two-hand damage
+      // One-hand is weaker (about 60% of base)
+      props.onehandmin = Math.floor(baseDmg.min * 0.6 * (1 + edmgValue / 100));
+      props.onehandmax = Math.floor(baseDmg.max * 0.6 * (1 + edmgValue / 100));
+      // Two-hand is full damage
+      props.twohandmin = minDmg;
+      props.twohandmax = maxDmg;
+    } else {
+      // One-handed only
+      props.onehandmin = minDmg;
+      props.onehandmax = maxDmg;
+    }
   }
 
   // Base defense values for different item types

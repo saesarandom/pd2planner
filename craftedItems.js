@@ -1,6 +1,27 @@
 // Crafted Items System
 // Manages creation, storage, and retrieval of player-crafted items
 
+// Weapon classification for damage display
+const twoHandedOnlyWeapons = new Set([
+  // Axes (two-handed only)
+  'Large Axe', 'Broad Axe', 'Battle Axe', 'Great Axe', 'Giant Axe', 'Ancient Axe',
+  // Maces/Hammers (two-handed only)
+  'Maul', 'Great Maul',
+  // Spears & Polearms (two-handed only)
+  'Spear', 'Trident', 'Brandistock', 'Spetum', 'Pike', 'Bardiche', 'Voulge', 'Scythe',
+  'Poleaxe', 'Halberd', 'War Scythe',
+  // Staves (two-handed only)
+  'Short Staff', 'Long Staff', 'Gnarled Staff', 'Battle Staff', 'War Staff',
+  // Bows/Crossbows (all two-handed only)
+  'Short Bow', 'Hunter\'s Bow', 'Long Bow', 'Composite Bow', 'Short Battle Bow', 'Long Battle Bow',
+  'Short War Bow', 'Long War Bow', 'Light Crossbow', 'Crossbow', 'Heavy Crossbow', 'Repeating Crossbow'
+]);
+
+// Weapons that can be wielded both one-handed and two-handed
+const versatileWeapons = new Set([
+  'Two-Handed Sword', 'Claymore', 'Giant Sword', 'Bastard Sword', 'Flamberge', 'Great Sword'
+]);
+
 class CraftedItemsSystem {
   constructor() {
     this.craftedItems = []; // Array of crafted items
@@ -107,6 +128,18 @@ class CraftedItemsSystem {
     // Add strength requirement from baseStrengths (if defined)
     if (typeof baseStrengths !== 'undefined' && baseStrengths[baseType]) {
       properties.reqstr = baseStrengths[baseType];
+    }
+
+    // Add required level based on craft type and base item
+    // Blood crafts typically require moderate levels (25-35 for most items)
+    // Higher for elite bases
+    const baseStrReq = properties.reqstr || 0;
+    if (baseStrReq >= 125) {
+      properties.reqlvl = 40; // Elite weapons
+    } else if (baseStrReq >= 80) {
+      properties.reqlvl = 30; // Exceptional weapons
+    } else {
+      properties.reqlvl = 20; // Normal weapons
     }
 
     // Get fixed properties from craft type and roll their values
