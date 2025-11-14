@@ -1156,6 +1156,9 @@ function refreshAffixesForBaseType(baseType) {
     checkbox.type = 'checkbox';
     checkbox.id = `check_${affixType}_${affixKey}`;
     checkbox.style.cssText = 'margin-right: 8px;';
+    checkbox.dataset.group = affixData.group; // Store the affix group
+    checkbox.dataset.affixType = affixType; // Store affix type
+    checkbox.dataset.affixKey = affixKey; // Store affix key
 
     const slider = document.createElement('input');
     slider.type = 'range';
@@ -1177,6 +1180,28 @@ function refreshAffixesForBaseType(baseType) {
     slider.dataset.propKey = propKey; // Store the property key for later retrieval
 
     checkbox.addEventListener('change', (e) => {
+      const affixGroup = e.target.dataset.group;
+      const currentAffixType = e.target.dataset.affixType;
+
+      if (e.target.checked) {
+        // Check if another affix from the same group is already checked
+        const allCheckboxes = document.querySelectorAll('input[type="checkbox"][data-group]');
+        const conflictingAffix = Array.from(allCheckboxes).find(cb =>
+          cb !== e.target &&
+          cb.checked &&
+          cb.dataset.group === affixGroup &&
+          cb.dataset.affixType === currentAffixType
+        );
+
+        if (conflictingAffix) {
+          // Show error message and uncheck
+          alert(`Cannot select this affix! Another affix from group ${affixGroup} is already selected (${conflictingAffix.dataset.affixKey})`);
+          e.target.checked = false;
+          return;
+        }
+      }
+
+      // Toggle slider enabled state
       slider.disabled = !e.target.checked;
       if (e.target.checked) {
         document.getElementById(`val_${affixType}_${affixKey}`).textContent = `[${slider.value}]`;
