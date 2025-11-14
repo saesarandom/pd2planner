@@ -182,7 +182,9 @@ async function createCraftedItem(request, sql, userId) {
     `;
 
     if (existing.length > 0) {
-      return new Response(JSON.stringify({ error: 'You already have an item with this name' }), {
+      return new Response(JSON.stringify({
+        error: `You already have an item named "${itemData.fullName}". Please use a different name or delete the old item from the list below.`
+      }), {
         status: 409,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });

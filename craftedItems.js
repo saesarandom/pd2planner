@@ -235,6 +235,61 @@ class CraftedItemsSystem {
   }
 
   /**
+   * Rebuild description for an item (for items loaded from backend without descriptions)
+   */
+  rebuildDescription(item) {
+    if (!item || item.description) return; // Skip if already has description
+
+    const craftConfig = this.craftTypes[item.craftType];
+    if (!craftConfig) return;
+
+    // Build description dynamically
+    let description = `<span style="color: #ffd700; font-weight: bold;">${item.fullName}</span><br>`;
+    description += `<span style="color: #8888ff;">${craftConfig.label}</span><br>`;
+    description += `${item.baseType}<br>`;
+
+    // Base properties
+    if (item.baseProperties?.damage) {
+      description += `Damage: ${item.baseProperties.damage.min}-${item.baseProperties.damage.max}<br>`;
+    }
+    if (item.baseProperties?.reqstr) {
+      description += `Required Strength: ${item.baseProperties.reqstr}<br>`;
+    }
+    description += '<br>';
+
+    // Fixed properties (from craft type)
+    if (item.fixedProperties) {
+      for (const [propName, propData] of Object.entries(item.fixedProperties)) {
+        const sign = propData.value > 0 ? '+' : '';
+        const suffix = propData.type === 'percentage' ? '%' : '';
+        description += `<span style="color: #0f9eff;">${sign}${propData.value}${suffix} ${propName}</span><br>`;
+      }
+    }
+
+    // Prefixes
+    if (item.affixes?.prefixes && Object.keys(item.affixes.prefixes).length > 0) {
+      for (const [affixKey, affixValue] of Object.entries(item.affixes.prefixes)) {
+        const affixDef = this.affixesPool.prefixes[affixKey];
+        if (affixDef) {
+          description += `<span style="color: #8888ff;">${affixDef.label.replace('+', '')}: ${affixValue}</span><br>`;
+        }
+      }
+    }
+
+    // Suffixes
+    if (item.affixes?.suffixes && Object.keys(item.affixes.suffixes).length > 0) {
+      for (const [affixKey, affixValue] of Object.entries(item.affixes.suffixes)) {
+        const affixDef = this.affixesPool.suffixes[affixKey];
+        if (affixDef) {
+          description += `<span style="color: #8888ff;">${affixDef.label.replace('+', '')}: ${affixValue}</span><br>`;
+        }
+      }
+    }
+
+    item.description = description;
+  }
+
+  /**
    * Load crafted items from saved data
    * @param {Array} data - Array of crafted items from backend or character_data
    */
@@ -242,6 +297,12 @@ class CraftedItemsSystem {
     if (!Array.isArray(data)) return;
 
     this.craftedItems = [...data];
+
+    // Rebuild descriptions for items that don't have them
+    this.craftedItems.forEach(item => {
+      this.rebuildDescription(item);
+    });
+
     // Update nextId to ensure no conflicts
     if (data.length > 0) {
       const maxId = Math.max(...data.map(item => parseInt(item.id.split('_')[1]) || 0));
