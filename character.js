@@ -384,13 +384,8 @@ getDirectLifeManaFromItems() {
       return;
     }
 
-    const itemData = window.itemList || itemList;
-    if (!itemData) {
-      //(`  ❌ ${section}: No itemList found`);
-      return;
-    }
-
-    const item = itemData[dropdownElement.value];
+    // Use global item lookup to support both regular and crafted items
+    const item = window.getItemData(dropdownElement.value);
     if (!item) {
       //(`  ❌ ${section}: Item not found in itemList`);
       return;
@@ -523,10 +518,8 @@ getDirectLifeManaFromItems() {
       const dropdownElement = document.getElementById(dropdown);
       if (!dropdownElement || !dropdownElement.value) return;
 
-      const itemData = window.itemList || itemList;
-      if (!itemData) return;
-
-      const item = itemData[dropdownElement.value];
+      // Use global item lookup to support both regular and crafted items
+      const item = window.getItemData(dropdownElement.value);
       if (!item) return;
 
       const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
