@@ -1077,6 +1077,36 @@ function populateBaseItemsByType(craftType) {
       if (itemTypeCategories['Helm']) {
         baseItems = Array.from(itemTypeCategories['Helm']).sort();
       }
+    } else if (itemType === 'shield') {
+      placeholder = 'Select base shield...';
+      // Get all shields from itemTypeCategories
+      if (itemTypeCategories['Shield']) {
+        baseItems = Array.from(itemTypeCategories['Shield']).sort();
+      }
+    } else if (itemType === 'boots') {
+      placeholder = 'Select base boots...';
+      // Get all boots from itemTypeCategories
+      if (itemTypeCategories['Boots']) {
+        baseItems = Array.from(itemTypeCategories['Boots']).sort();
+      }
+    } else if (itemType === 'gloves') {
+      placeholder = 'Select base gloves...';
+      // Get all gloves from itemTypeCategories
+      if (itemTypeCategories['Gloves']) {
+        baseItems = Array.from(itemTypeCategories['Gloves']).sort();
+      }
+    } else if (itemType === 'belt') {
+      placeholder = 'Select base belt...';
+      // Get all belts from itemTypeCategories
+      if (itemTypeCategories['Belt']) {
+        baseItems = Array.from(itemTypeCategories['Belt']).sort();
+      }
+    } else if (itemType === 'ring') {
+      placeholder = 'Ring';
+      baseItems = ['Ring'];
+    } else if (itemType === 'amulet') {
+      placeholder = 'Amulet';
+      baseItems = ['Amulet'];
     }
   }
 
