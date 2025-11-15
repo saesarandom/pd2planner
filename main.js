@@ -1091,6 +1091,88 @@ function populateBaseItemsByType(craftType) {
 }
 
 /**
+ * Populate fixed properties sliders based on craft type
+ */
+function populateFixedProperties(craftType) {
+  const container = document.getElementById('fixedPropertiesContainer');
+  if (!container || !window.craftedItemsSystem) return;
+
+  // Get craft config
+  const craftConfig = window.craftedItemsSystem.craftTypes[craftType];
+  if (!craftConfig || !craftConfig.fixedProperties) {
+    container.innerHTML = '<p style="color: #999; padding: 10px;">No fixed properties for this craft type</p>';
+    return;
+  }
+
+  container.innerHTML = '';
+
+  // Property labels matching the ones used in createAffixSlider
+  const propLabels = {
+    edmg: '+% Enhanced Damage',
+    edef: '+% Enhanced Defense',
+    tolife: '+ to Life',
+    tomana: '+ to Mana',
+    repl: 'Replenish Life +',
+    lleech: '+% Life Stolen per Hit',
+    mleech: '+% Mana Stolen per Hit',
+    cb: '+% Chance of Crushing Blow',
+    str: '+ to Strength',
+    dex: '+ to Dexterity',
+    vit: '+ to Vitality',
+    enr: '+ to Energy'
+  };
+
+  // Create a slider for each fixed property
+  Object.entries(craftConfig.fixedProperties).forEach(([propKey, propData]) => {
+    const label = propLabels[propKey] || propKey;
+    const minVal = propData.min;
+    const maxVal = propData.max;
+
+    const propDiv = document.createElement('div');
+    propDiv.className = 'fixed-property-control';
+    propDiv.style.cssText = `
+      margin-bottom: 12px;
+      padding: 10px;
+      background: rgba(15, 52, 96, 0.4);
+      border: 1px solid #ffd700;
+      border-radius: 4px;
+    `;
+
+    const labelDiv = document.createElement('div');
+    labelDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;';
+
+    const labelText = document.createElement('span');
+    labelText.textContent = label;
+    labelText.style.cssText = 'color: #ffd700; font-weight: bold; font-size: 12px;';
+
+    const valueSpan = document.createElement('span');
+    valueSpan.id = `fixed-${propKey}-value`;
+    valueSpan.textContent = maxVal; // Default to max value
+    valueSpan.style.cssText = 'color: #00ff00; font-weight: bold; font-size: 12px;';
+
+    labelDiv.appendChild(labelText);
+    labelDiv.appendChild(valueSpan);
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = minVal;
+    slider.max = maxVal;
+    slider.value = maxVal; // Default to max value
+    slider.id = `fixed-${propKey}`;
+    slider.dataset.propKey = propKey;
+    slider.style.cssText = 'width: 100%; cursor: pointer;';
+
+    slider.addEventListener('input', function() {
+      valueSpan.textContent = this.value;
+    });
+
+    propDiv.appendChild(labelDiv);
+    propDiv.appendChild(slider);
+    container.appendChild(propDiv);
+  });
+}
+
+/**
  * Open the crafting modal and populate base items list
  */
 function openCraftingModal() {
@@ -1107,6 +1189,7 @@ function openCraftingModal() {
   if (craftTypeSelect) {
     craftTypeSelect.addEventListener('change', function() {
       populateBaseItemsByType(this.value);
+      populateFixedProperties(this.value);
       refreshAffixesForBaseType(''); // Clear affixes initially
     });
   }
@@ -1121,6 +1204,7 @@ function openCraftingModal() {
 
   // Initially populate with blood weapon items
   populateBaseItemsByType('blood');
+  populateFixedProperties('blood');
 
   // Initially show message to select a base type
   const affixesContainer = document.getElementById('affixesContainer');
@@ -1183,8 +1267,12 @@ function refreshAffixesForBaseType(baseType) {
       allres: '+% All Resistances',
       magicdmg: '+ Magic Damage',
       regen: '+ Regenerate',
+      repl: 'Replenish Life +',
       manasteal: '+% Mana Steal',
       lifesteal: '+% Life Steal',
+      lleech: '+% Life Stolen per Hit',
+      mleech: '+% Mana Stolen per Hit',
+      cb: '+% Chance of Crushing Blow',
       openwounds: '+% Chance of Open Wounds',
       crushblow: '+% Chance of Crushing Blow',
       deadly: '+% Deadly Strike',
@@ -1553,8 +1641,18 @@ function createCraftedItem() {
     }
   });
 
+  // Collect fixed properties from sliders
+  const fixedProperties = {};
+  const fixedSliders = document.querySelectorAll('input[id^="fixed-"]');
+  fixedSliders.forEach(slider => {
+    const propKey = slider.dataset.propKey;
+    if (propKey) {
+      fixedProperties[propKey] = parseInt(slider.value);
+    }
+  });
+
   // Create the crafted item
-  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes);
+  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes, fixedProperties);
 
   if (!craftedItem) {
     alert('Failed to create crafted item. Check your inputs and try again.');
