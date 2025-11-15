@@ -3143,6 +3143,43 @@ this.selectedJewelSuffix3MaxValue = null;
     }
 
     parseItemStats(item, section) {
+      // For crafted items, add properties directly instead of parsing description
+      if (item.isCrafted && item.properties) {
+        const propertyMapping = {
+          str: 'strength',
+          dex: 'dexterity',
+          vit: 'vitality',
+          energy: 'energy',
+          enr: 'energy',
+          life: 'life',
+          mana: 'mana',
+          allres: 'allResistances',
+          fireres: 'fireResist',
+          coldres: 'coldResist',
+          lightres: 'lightResist',
+          poisonres: 'poisonResist',
+          curseres: 'curseResist',
+          cb: 'crushingBlow',
+          deadly: 'deadlyStrike',
+          ias: 'ias',
+          fcr: 'fcr',
+          fhr: 'fhr',
+          frw: 'frw',
+          def: 'defense',
+          edmg: 'elementalDamage',
+          mf: 'magicFind'
+        };
+
+        // Add each property directly to stats
+        for (const [propKey, propValue] of Object.entries(item.properties)) {
+          const statKey = propertyMapping[propKey];
+          if (statKey) {
+            this.stats[statKey] += propValue;
+          }
+        }
+        return;
+      }
+
       let description = item.description;
 
       // For dynamic items without a static description, generate it
@@ -3156,22 +3193,11 @@ this.selectedJewelSuffix3MaxValue = null;
           const itemName = document.getElementById(dropdownId)?.value;
           if (itemName) {
             description = window.generateItemDescription(itemName, item, dropdownId);
-            // DEBUG: Log crafted item description generation
-            if (item.isCrafted) {
-              console.log(`[CRAFTED ITEM] Generating description for ${itemName}:`, {
-                baseType: item.baseType,
-                properties: item.properties,
-                description: description
-              });
-            }
           }
         }
       }
 
       if (!description) {
-        if (item.isCrafted) {
-          console.log(`[CRAFTED ITEM] No description generated for ${item.fullName}`);
-        }
         return;
       }
 
