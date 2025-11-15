@@ -1592,7 +1592,7 @@ function createCraftingButton() {
   craftBtn.id = 'craft-item-btn';
   craftBtn.innerHTML = 'Craft Item';
   craftBtn.style.cssText = `
-    background: linear-gradient(135deg, #1a5c1a, #0d3a0d);
+    background: linear-gradient(135deg, #963a16ff, #da7400ff);
     color: #ffffff;
     padding: 5px 5px;
     border: none;
@@ -1684,7 +1684,7 @@ function createSaveButton() {
   // Save button
   const saveBtn = document.createElement('button');
   saveBtn.id = 'save-build-btn';
-  saveBtn.innerHTML = '💾 Save Build';
+  saveBtn.innerHTML = 'Save Build';
   saveBtn.style.cssText = `
     background: linear-gradient(135deg, black, #000447);
     color: #ffffff;
