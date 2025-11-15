@@ -443,7 +443,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
   // Special display for crafted items: show name + craft type label
   if (item.isCrafted && item.craftTypeLabel) {
-    html += `<span style="color: #ffd700; font-weight: bold;">${item.name} ${item.craftTypeLabel}</span><br>`;
+    html += `<span style="color: FF9900;">${item.name} ${item.craftTypeLabel}</span><br>`;
   } else {
     html += `${itemName}<br>`;
   }
@@ -608,43 +608,6 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
     physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
     mdr: (val, prop) => formatVariableStat('Magic Damage Reduced by ', val, '', prop, itemName, 'mdr', dropdownId),
-
-    // === Class-Specific Skill Trees ===
-    // Amazon
-    amazonskills: (val, prop) => formatVariableStat('+', val, ' to Amazon Skill Levels', prop, itemName, 'amazonskills', dropdownId),
-    bowskills: (val, prop) => formatVariableStat('+', val, ' to Bow and Crossbow Skills (Amazon Only)', prop, itemName, 'bowskills', dropdownId),
-    amazonmagic: (val, prop) => formatVariableStat('+', val, ' to Passive and Magic Skills (Amazon Only)', prop, itemName, 'amazonmagic', dropdownId),
-    javskills: (val, prop) => formatVariableStat('+', val, ' to Javelin and Spear Skills (Amazon Only)', prop, itemName, 'javskills', dropdownId),
-
-    // Sorceress
-    firespells: (val, prop) => formatVariableStat('+', val, ' to Fire Skills (Sorceress Only)', prop, itemName, 'firespells', dropdownId),
-    lightspells: (val, prop) => formatVariableStat('+', val, ' to Lightning Skills (Sorceress Only)', prop, itemName, 'lightspells', dropdownId),
-    coldspells: (val, prop) => formatVariableStat('+', val, ' to Cold Skills (Sorceress Only)', prop, itemName, 'coldspells', dropdownId),
-
-    // Necromancer
-    curses: (val, prop) => formatVariableStat('+', val, ' to Curses (Necromancer Only)', prop, itemName, 'curses', dropdownId),
-    necromancersummoning: (val, prop) => formatVariableStat('+', val, ' to Summoning Skills (Necromancer Only)', prop, itemName, 'necromancersummoning', dropdownId),
-    poisonandbone: (val, prop) => formatVariableStat('+', val, ' to Poison and Bone Skills (Necromancer Only)', prop, itemName, 'poisonandbone', dropdownId),
-
-    // Paladin
-    paladinoffensive: (val, prop) => formatVariableStat('+', val, ' to Offensive Auras (Paladin Only)', prop, itemName, 'paladinoffensive', dropdownId),
-    paladindefensive: (val, prop) => formatVariableStat('+', val, ' to Defensive Auras (Paladin Only)', prop, itemName, 'paladindefensive', dropdownId),
-    paladincombat: (val, prop) => formatVariableStat('+', val, ' to Combat Skills (Paladin Only)', prop, itemName, 'paladincombat', dropdownId),
-
-    // Barbarian
-    barbariancombat: (val, prop) => formatVariableStat('+', val, ' to Combat Skills (Barbarian Only)', prop, itemName, 'barbariancombat', dropdownId),
-    barbarianmasteries: (val, prop) => formatVariableStat('+', val, ' to Combat Masteries (Barbarian Only)', prop, itemName, 'barbarianmasteries', dropdownId),
-    warcries: (val, prop) => formatVariableStat('+', val, ' to Warcries (Barbarian Only)', prop, itemName, 'warcries', dropdownId),
-
-    // Druid
-    druidsummoning: (val, prop) => formatVariableStat('+', val, ' to Summoning Skills (Druid Only)', prop, itemName, 'druidsummoning', dropdownId),
-    shapeshifting: (val, prop) => formatVariableStat('+', val, ' to Shape Shifting Skills (Druid Only)', prop, itemName, 'shapeshifting', dropdownId),
-    druidelemental: (val, prop) => formatVariableStat('+', val, ' to Elemental Skills (Druid Only)', prop, itemName, 'druidelemental', dropdownId),
-
-    // Assassin
-    traps: (val, prop) => formatVariableStat('+', val, ' to Trap Skills (Assassin Only)', prop, itemName, 'traps', dropdownId),
-    martialarts: (val, prop) => formatVariableStat('+', val, ' to Martial Arts (Assassin Only)', prop, itemName, 'martialarts', dropdownId),
-    shadowdisciplines: (val, prop) => formatVariableStat('+', val, ' to Shadow Disciplines (Assassin Only)', prop, itemName, 'shadowdisciplines', dropdownId),
   };
 
   // Build description from properties
@@ -1078,82 +1041,6 @@ function refreshItemDropdowns() {
 }
 
 /**
- * Populate fixed property sliders based on craft type
- */
-function populateFixedProperties(craftType) {
-  const container = document.getElementById('fixedPropertiesContainer');
-  if (!container || !window.craftedItemsSystem) return;
-
-  container.innerHTML = '';
-
-  // Get craft config
-  const craftConfig = window.craftedItemsSystem.craftTypes[craftType];
-  if (!craftConfig || !craftConfig.fixedProperties) return;
-
-  // Property key to label mapping
-  const propLabels = {
-    edmg: 'Enhanced Damage',
-    lleech: 'Life Stolen per Hit',
-    tolife: '+to Life',
-    repl: 'Life after each Kill',
-    cb: 'Chance of Crushing Blow',
-    edef: 'Enhanced Defense'
-  };
-
-  // Create header
-  const header = document.createElement('h4');
-  header.textContent = 'Fixed Properties';
-  header.style.cssText = 'color: #ffd700; margin: 12px 0 10px 0; font-size: 14px;';
-  container.appendChild(header);
-
-  // Create slider for each fixed property
-  for (const [propKey, propData] of Object.entries(craftConfig.fixedProperties)) {
-    const propDiv = document.createElement('div');
-    propDiv.className = 'fixed-property-control';
-    propDiv.style.cssText = `
-      margin-bottom: 12px;
-      padding: 10px;
-      background: rgba(15, 52, 96, 0.4);
-      border: 1px solid #0f3460;
-      border-radius: 4px;
-    `;
-
-    const label = document.createElement('label');
-    label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
-    const displayLabel = `${propLabels[propKey] || propKey}`;
-    label.innerHTML = `${displayLabel} <span id="val_fixed_${propKey}" style="color: #0f9eff; margin-left: 5px;">[${propData.min}]</span>`;
-
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.id = `fixed_${propKey}`;
-    slider.min = propData.min;
-    slider.max = propData.max;
-    slider.value = propData.min;
-    slider.style.cssText = `
-      width: 100%;
-      height: 6px;
-      background: #0f3460;
-      border: 1px solid #0f9eff;
-      border-radius: 3px;
-      outline: none;
-      cursor: pointer;
-      margin: 8px 0;
-    `;
-    slider.dataset.propKey = propKey;
-    slider.dataset.min = propData.min;
-    slider.dataset.max = propData.max;
-
-    slider.addEventListener('input', (e) => {
-      document.getElementById(`val_fixed_${propKey}`).textContent = `[${e.target.value}]`;
-    });
-
-    propDiv.appendChild(label);
-    propDiv.appendChild(slider);
-    container.appendChild(propDiv);
-  }
-}
-
-/**
  * Populate base items dropdown based on craft type
  */
 function populateBaseItemsByType(craftType) {
@@ -1220,7 +1107,6 @@ function openCraftingModal() {
   if (craftTypeSelect) {
     craftTypeSelect.addEventListener('change', function() {
       populateBaseItemsByType(this.value);
-      populateFixedProperties(this.value); // Populate fixed property sliders
       refreshAffixesForBaseType(''); // Clear affixes initially
     });
   }
@@ -1235,7 +1121,6 @@ function openCraftingModal() {
 
   // Initially populate with blood weapon items
   populateBaseItemsByType('blood');
-  populateFixedProperties('blood'); // Populate fixed properties for blood craft
 
   // Initially show message to select a base type
   const affixesContainer = document.getElementById('affixesContainer');
@@ -1311,7 +1196,7 @@ function refreshAffixesForBaseType(baseType) {
       necromancerskills: '+ to Necromancer Skill Levels',
       paladinskills: '+ to Paladin Skill Levels',
       barbarianskills: '+ to Barbarian Skill Levels',
-      druidskills: '+ to Druid Skill Levels',
+      drusk: '+ to Druid Skill Levels',
       assassinskills: '+ to Assassin Skill Levels',
   
   // Amazon skill trees
@@ -1364,9 +1249,8 @@ function refreshAffixesForBaseType(baseType) {
     `;
 
     const label = document.createElement('label');
-    label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
-    const reqLvlText = affixData.reqLvl ? ` | Required Level: ${affixData.reqLvl}` : '';
-    const displayLabel = `${affixKey} (${propLabels[propKey] || propKey})${reqLvlText}`;
+    label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #FF9900; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
+    const displayLabel = `${affixKey} (${propLabels[propKey] || propKey})`;
     label.innerHTML = `${displayLabel} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span>`;
 
     const checkbox = document.createElement('input');
@@ -1503,7 +1387,7 @@ function populateCraftedItemsList() {
     <div style="margin-bottom: 10px;">
       ${items.map(item => `
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(15, 52, 96, 0.3); border: 1px solid #0f9eff; border-radius: 4px; margin-bottom: 8px;">
-          <span style="color: #ffd700; font-size: 13px;">${item.fullName}</span>
+          <span style="color: #FF9900; font-size: 13px;">${item.fullName}</span>
           <button onclick="deleteCraftedItemConfirm('${item.id}')" style="background: #e74c3c; border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px; transition: all 0.2s;" onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">DELETE</button>
         </div>
       `).join('')}
@@ -1620,12 +1504,6 @@ function createCraftedItem() {
     suffixes: {}
   };
 
-  // Also collect affix names for required level calculation
-  const affixSelection = {
-    prefixes: {},
-    suffixes: {}
-  };
-
   // Collect prefixes
   const prefixCheckboxes = document.querySelectorAll('input[id^="check_prefix_"]');
   prefixCheckboxes.forEach(checkbox => {
@@ -1638,8 +1516,6 @@ function createCraftedItem() {
         const value = parseInt(slider.value);
         // Add to existing value if property already exists (multiple affixes with same property)
         affixes.prefixes[propKey] = (affixes.prefixes[propKey] || 0) + value;
-        // Track selected prefix name for required level calculation
-        affixSelection.prefixes[affixKey] = true;
       }
     }
   });
@@ -1656,23 +1532,12 @@ function createCraftedItem() {
         const value = parseInt(slider.value);
         // Add to existing value if property already exists
         affixes.suffixes[propKey] = (affixes.suffixes[propKey] || 0) + value;
-        // Track selected suffix name for required level calculation
-        affixSelection.suffixes[affixKey] = true;
       }
     }
   });
 
-  // Collect fixed property values from sliders
-  const fixedProperties = {};
-  const fixedSliders = document.querySelectorAll('input[id^="fixed_"]');
-  fixedSliders.forEach(slider => {
-    const propKey = slider.dataset.propKey;
-    const value = parseInt(slider.value);
-    fixedProperties[propKey] = value;
-  });
-
-  // Create the crafted item with fixed properties and affix selection for required level calculation
-  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes, fixedProperties, affixSelection);
+  // Create the crafted item
+  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes);
 
   if (!craftedItem) {
     alert('Failed to create crafted item. Check your inputs and try again.');
