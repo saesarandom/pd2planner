@@ -4702,7 +4702,7 @@ const itemList = {
       reqstr: 60,
       reqlvl: 6,
       tolife: 20,
-      fireres: 20,
+      firres: 20,
       defensex: 198, //checkitout
     },
   },
@@ -4776,8 +4776,8 @@ const itemList = {
       reqlvl: 29,
       todef: 56,
       str: 25,
-      lightres: 33,
-      fireres: 28,
+      ligres: 33,
+      firres: 28,
       defensex2: 105, //2 items
       fhr3: 25, //3 items
       edef4: 100, //4 items
@@ -5198,7 +5198,7 @@ const itemList = {
       todef: 125,
       healstamina: 24,
       coldres: 25,
-      lightres: 25,
+      ligres: 25,
     },
   },
 
@@ -5372,9 +5372,9 @@ const itemList = {
       coldres: 40,
       lightningsk: 1,
       poisres: -20,
-      lightres: 40,
+      ligres: 40,
       poisonsk: 1,
-      lightres: -20,
+      ligres: -20,
       poisres: 40,
       magicsk: 1,
       allres: -5,

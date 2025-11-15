@@ -962,9 +962,9 @@ const affixDatabase = {
     'Vampire4': { stats: { manasteal: { min: 8, max: 9 } }, itemTypes: ['Melee Weapon'], reqLvl: 48, group: 28 },
 
     // === GROUP 29: Poison Resist ===
-    'Remedy': { stats: { poisonres: { min: 25, max: 25 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 5, group: 29 },
-    'Amelioration': { stats: { poisonres: { min: 50, max: 50 } }, itemTypes: ['Chest', 'Shield', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 13, group: 29 },
-    'Defiance': { stats: { poisonres: { min: 75, max: 75 } }, itemTypes: ['Chest', 'Shield', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 18, group: 29 },
+    'Remedy': { stats: { poisres: { min: 25, max: 25 } }, itemTypes: ['Armor', 'Ring', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 5, group: 29 },
+    'Amelioration': { stats: { poisres: { min: 50, max: 50 } }, itemTypes: ['Chest', 'Shield', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 13, group: 29 },
+    'Defiance': { stats: { poisres: { min: 75, max: 75 } }, itemTypes: ['Chest', 'Shield', 'Amulet', 'Circlet', 'Quiver'], reqLvl: 18, group: 29 },
 
     // === GROUP 30: Requirements ===
     'Ease': { stats: { reqred: { min: 20, max: 20 } }, itemTypes: ['Chest', 'WeaponPS', 'Shield'], reqLvl: 11, group: 30 },
