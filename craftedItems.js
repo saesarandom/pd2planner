@@ -1216,9 +1216,11 @@ class CraftedItemsSystem {
    * @param {string} baseType - Base item type (e.g., "War Pike", "Hand Axe")
    * @param {string} craftType - Craft type (blood, etc.)
    * @param {Object} affixes - Selected affixes {prefixes: {propKey: value}, suffixes: {propKey: value}}
+   * @param {Object} fixedProperties - Fixed property values for the craft type
+   * @param {Object} affixSelection - Selected affix names {prefixes: {name: true}, suffixes: {name: true}} (for calculating required level)
    * @returns {Object} Created crafted item or null if validation fails
    */
-  createCraftedItem(name, baseType, craftType, affixes = { prefixes: {}, suffixes: {} }, fixedProperties = {}) {
+  createCraftedItem(name, baseType, craftType, affixes = { prefixes: {}, suffixes: {} }, fixedProperties = {}, affixSelection = { prefixes: {}, suffixes: {} }) {
     // Validate name
     if (!name || name.length > 21) {
       console.error('Crafted item name must be 1-21 characters');
@@ -1285,8 +1287,34 @@ class CraftedItemsSystem {
     }
 
     // Add required level from baseRequiredLevels lookup table
+    let baseReqLevel = 0;
     if (typeof baseRequiredLevels !== 'undefined' && baseRequiredLevels[baseType]) {
-      properties.reqlvl = baseRequiredLevels[baseType];
+      baseReqLevel = baseRequiredLevels[baseType];
+      properties.reqlvl = baseReqLevel;
+    }
+
+    // Calculate the highest affix required level
+    let maxAffixReqLevel = 0;
+
+    // Check prefixes
+    for (const affixName of Object.keys(affixSelection.prefixes || {})) {
+      const affix = affixDatabase?.prefixes?.[affixName];
+      if (affix && affix.reqLvl) {
+        maxAffixReqLevel = Math.max(maxAffixReqLevel, affix.reqLvl);
+      }
+    }
+
+    // Check suffixes
+    for (const affixName of Object.keys(affixSelection.suffixes || {})) {
+      const affix = affixDatabase?.suffixes?.[affixName];
+      if (affix && affix.reqLvl) {
+        maxAffixReqLevel = Math.max(maxAffixReqLevel, affix.reqLvl);
+      }
+    }
+
+    // Use the higher of base required level and max affix required level
+    if (maxAffixReqLevel > 0) {
+      properties.reqlvl = Math.max(baseReqLevel, maxAffixReqLevel);
     }
 
     // Get fixed properties from craft type and use user-selected values or roll random ones
