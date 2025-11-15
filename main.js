@@ -375,7 +375,24 @@ function populateItemDropdowns() {
 
     // Add crafted items (from user's account or loaded from shared build)
     if (window.craftedItemsSystem) {
-      const craftedItems = window.craftedItemsSystem.getCraftedItemsByType(itemType);
+      // Normalize dropdown type to crafted item type
+      // Dropdown uses 'belts'/'ringsone'/'ringstwo'/'amulets'/'mercbelts'/etc
+      // Crafted uses 'belt'/'ring'/'amulet'/'weapon'/'armor'/etc
+      let craftedItemType = itemType;
+
+      // Remove 'merc' prefix if present (mercweapon -> weapon, mercbelts -> belts)
+      if (craftedItemType.startsWith('merc')) {
+        craftedItemType = craftedItemType.replace(/^merc/, '');
+        // mercoff -> shield
+        if (craftedItemType === 'off') craftedItemType = 'shield';
+      }
+
+      // Convert plural/numbered types to singular
+      if (craftedItemType === 'belts') craftedItemType = 'belt';
+      if (craftedItemType === 'ringsone' || craftedItemType === 'ringstwo') craftedItemType = 'ring';
+      if (craftedItemType === 'amulets') craftedItemType = 'amulet';
+
+      const craftedItems = window.craftedItemsSystem.getCraftedItemsByType(craftedItemType);
       craftedItems.forEach(craftedItem => {
         const option = document.createElement('option');
         option.value = craftedItem.fullName;
@@ -385,6 +402,9 @@ function populateItemDropdowns() {
     }
   }
 }
+
+// Expose for use from character-data.js when loading builds
+window.populateItemDropdowns = populateItemDropdowns;
 
 /**
  * Global item lookup - checks both regular items and crafted items

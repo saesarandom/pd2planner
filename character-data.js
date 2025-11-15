@@ -243,8 +243,8 @@ window.loadCharacterFromData = function(data) {
         if (data.crafted_items && window.craftedItemsSystem) {
             window.craftedItemsSystem.loadFromData(data.crafted_items);
             // Refresh dropdowns to include the loaded crafted items
-            if (typeof populateItemDropdowns === 'function') {
-                populateItemDropdowns();
+            if (typeof window.populateItemDropdowns === 'function') {
+                window.populateItemDropdowns();
             }
         }
 
