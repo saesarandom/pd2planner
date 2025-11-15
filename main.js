@@ -584,6 +584,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     str: (val, prop) => formatVariableStat('+', val, ' to Strength', prop, itemName, 'str', dropdownId),
     dex: (val, prop) => formatVariableStat('+', val, ' to Dexterity', prop, itemName, 'dex', dropdownId),
     vit: (val, prop) => formatVariableStat('+', val, ' to Vitality', prop, itemName, 'vit', dropdownId),
+    energy: (val, prop) => formatVariableStat('+', val, ' to Energy', prop, itemName, 'energy', dropdownId),
     enr: (val, prop) => formatVariableStat('+', val, ' to Energy', prop, itemName, 'enr', dropdownId),
     allres: (val, prop) => formatVariableStat('All Resistances +', val, '', prop, itemName, 'allres', dropdownId),
     cb: (val, prop) => formatVariableStat('', val, '% Chance of Crushing Blow', prop, itemName, 'cb', dropdownId),
