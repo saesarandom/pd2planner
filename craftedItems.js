@@ -1135,7 +1135,7 @@ class CraftedItemsSystem {
       },
       bloodbelt: {
         label: 'Blood Belt',
-        itemType: 'belt',
+        itemType: 'belts',
         fixedProperties: {
           ow: { min: 10, max: 20 },        // Chance of Open Wounds
           lleech: { min: 3, max: 6 },      // Life Stolen per Hit
@@ -1145,7 +1145,7 @@ class CraftedItemsSystem {
       },
       bloodring: {
         label: 'Blood Ring',
-        itemType: 'ring',
+        itemType: 'ringsone',
         fixedProperties: {
           str: { min: 5, max: 10 },        // +Strength
           lleech: { min: 1, max: 3 },      // Life Stolen per Hit
@@ -1155,7 +1155,7 @@ class CraftedItemsSystem {
       },
       bloodamulet: {
         label: 'Blood Amulet',
-        itemType: 'amulet',
+        itemType: 'amulets',
         fixedProperties: {
           frw: { min: 10, max: 10 },       // +10% Faster Run/Walk
           laek: { min: 3, max: 6 },        // Life after each Kill
@@ -1366,19 +1366,19 @@ class CraftedItemsSystem {
         console.error(`Invalid base gloves type: ${baseType}`);
         return null;
       }
-    } else if (craftConfig.itemType === 'belt') {
+    } else if (craftConfig.itemType === 'belts') {
       // Belts must have baseType in belt category
       if (!baseType || !itemTypeCategories['Belt']?.has(baseType)) {
         console.error(`Invalid base belt type: ${baseType}`);
         return null;
       }
-    } else if (craftConfig.itemType === 'ring') {
+    } else if (craftConfig.itemType === 'ringsone') {
       // Rings don't have different base types - just accept 'Ring'
       if (!baseType || baseType !== 'Ring') {
         console.error(`Invalid base ring type: ${baseType}`);
         return null;
       }
-    } else if (craftConfig.itemType === 'amulet') {
+    } else if (craftConfig.itemType === 'amulets') {
       // Amulets don't have different base types - just accept 'Amulet'
       if (!baseType || baseType !== 'Amulet') {
         console.error(`Invalid base amulet type: ${baseType}`);
