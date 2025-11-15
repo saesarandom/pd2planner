@@ -608,6 +608,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
     physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
     mdr: (val, prop) => formatVariableStat('Magic Damage Reduced by ', val, '', prop, itemName, 'mdr', dropdownId),
+    todefmiss: (val, prop) => formatVariableStat('+', val, ' Defense vs. Melee', prop, itemName, 'todefmiss', dropdownId),
+    attpercent: (val, prop) => formatVariableStat('+', val, '% Bonus to Attack Rating', prop, itemName, 'attpercent', dropdownId),
   };
 
   // Build description from properties
@@ -1151,6 +1153,7 @@ function populateFixedProperties(craftType) {
     block: '+% Increased Chance of Blocking',
     block2: '+% Increased Chance of Blocking',
     frw: '+% Faster Run/Walk',
+    ias: '+% Increased Attack Speed',
     str: '+ to Strength',
     dex: '+ to Dexterity',
     vit: '+ to Vitality',
@@ -1158,7 +1161,10 @@ function populateFixedProperties(craftType) {
     coldres: 'Cold Resist +%',
     firres: 'Fire Resist +%',
     ligres: 'Lightning Resist +%',
-    poisres: 'Poison Resist +%'
+    poisres: 'Poison Resist +%',
+    todefmiss: '+ Defense vs. Melee',
+    physdr: 'Physical Damage Taken Reduced by +%',
+    attpercent: '+% Bonus to Attack Rating'
   };
 
   // Create a slider for each fixed property
@@ -1321,6 +1327,9 @@ function refreshAffixesForBaseType(baseType) {
       ias: '+% Increased Attack Speed',
       fcr: '+% Faster Cast Rate',
       frw: '+% Faster Run/Walk',
+      todefmiss: '+ Defense vs. Melee',
+      physdr: 'Physical Damage Taken Reduced by +%',
+      attpercent: '+% Bonus to Attack Rating',
       amazonskills: '+ to Amazon Skill Levels',
       sorceressskills: '+ to Sorceress Skill Levels',
       necromancerskills: '+ to Necromancer Skill Levels',
