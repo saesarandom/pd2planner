@@ -2831,122 +2831,207 @@ const baseDamages = {
 
 // Base item required levels (for non-unique items)
 const baseRequiredLevels = {
-  // Helms
-  "Cap": 1,
-  "Skull Cap": 2,
-  "Helm": 4,
-  "Full Helm": 7,
-  "Mask": 8,
-  "Bone Helm": 11,
-  "Great Helm": 11,
-  "Crown": 13,
-  "War Hat": 14,
-  "Shako": 23,
-  "Sallet": 17,
-  "Hydraskull": 23,
-  "Casque": 18,
-  "Basinet": 20,
-  "Giant Conch": 26,
-  "Armet": 23,
-  "Death Mask": 21,
-  "Demonhead": 26,
-  "Grim Helm": 24,
-  "Bone Visage": 26,
-  "Winged Helm": 22,
-  "Spired Helm": 26,
-  "Grand Crown": 25,
-  "Corona": 26,
-  "Jawbone Visor": 18,
-  "Carnage Helm": 24,
-
-  // Circlets
-  "Circlet": 6,
-  "Tiara": 12,
-  "Diadem": 16,
-  "Coronet": 8,
-
-  // Armors
-  "Quilted Armor": 3,
-  "Leather Armor": 4,
-  "Hard Leather Armor": 6,
-  "Studded Leather": 9,
-  "Ring Mail": 12,
-  "Scale Mail": 15,
-  "Chain Mail": 17,
-  "Breast Plate": 13,
-  "Splint Mail": 20,
-  "Plate Mail": 24,
-  "Field Plate": 23,
-  "Gothic Plate": 25,
-  "Ghost Armor": 23,
-  "Light Plate": 22,
-  "Full Plate Mail": 23,
-  "Ancient Armor": 26,
-
-  // Unique/Superior Armors
+  // === ARMORS ===
+  // Tier 2 Armors
+  "Ghost Armor": 22,
   "Serpentskin Armor": 24,
-  "Trellised Armor": 26,
   "Demonhide Armor": 25,
-  "Linked Mail": 26,
-  "Tigulated Mail": 26,
-  "Mesh Armor": 26,
-  "Cuirass": 26,
-  "Russet Armor": 26,
-  "Templar Coat": 26,
-  "Sharktooth Armor": 26,
-  "Embossed Plate": 26,
-  "Mage Plate": 26,
-  "Chaos Armor": 26,
-  "Ornate Plate": 26,
-  "Dusk Shroud": 26,
-  "Wyrmhide": 26,
-  "Scarab Husk": 26,
-  "Wire Fleece": 26,
-  "Diamond Mail": 26,
-  "Loricated Mail": 26,
-  "Boneweave": 26,
-  "Great Hauberk": 26,
-  "Balrog Skin": 26,
-  "Hellforge Plate": 26,
-  "Kraken Shell": 26,
-  "Lacquered Plate": 26,
-  "Archon Plate": 26,
-  "Shadow Plate": 26,
-  "Sacred Armor": 26,
+  "Trellised Armor": 25,
+  "Linked Mail": 25,
+  "Tigulated Mail": 25,
+  "Mesh Armor": 25,
+  "Cuirass": 25,
+  "Russet Armor": 25,
+  "Templar Coat": 25,
+  "Sharktooth Armor": 25,
+  "Embossed Plate": 25,
+  "Mage Plate": 25,
+  "Chaos Armor": 25,
+  "Ornate Plate": 25,
 
-  // Shields & Misc
-  "Small Shield": 1,
-  "Large Shield": 4,
-  "Kite Shield": 8,
-  "Tower Shield": 13,
-  "Heater Shield": 17,
-  "Pavise": 26,
-  "Gothic Shield": 26,
+  // Tier 3 Armors (Exceptional)
+  "Dusk Shroud": 49,
+  "Wyrmhide": 50,
+  "Scarab Husk": 51,
+  "Wire Fleece": 53,
+  "Diamond Mail": 54,
+  "Loricated Mail": 55,
+  "Boneweave": 47,
+  "Great Hauberk": 56,
+  "Balrog Skin": 57,
+  "Hellforge Plate": 59,
+  "Kraken Shell": 61,
+  "Lacquered Plate": 62,
+  "Archon Plate": 63,
+  "Shadow Plate": 64,
+  "Sacred Armor": 66,
 
-  // Weapons (axes for now)
-  "Ancient Axe": 25,
+  // === SHIELDS & BUCKLERS ===
+  // Tier 2 Shields
+  "Defender": 22,
+  "Round Shield": 25,
+  "Scutum": 25,
+  "Barbed Shield": 25,
+  "Dragon Shield": 25,
+  "Grim Shield": 25,
+  "Pavise": 25,
+  "Ancient Shield": 25,
+  "Akaran Targe": 26,
+  "Akaran Rondache": 30,
+  "Protector Shield": 34,
+  "Gilded Shield": 38,
+  "Royal Shield": 41,
 
-  // Gloves, Belts, Boots
-  "Leather Gloves": 1,
-  "Heavy Gloves": 4,
-  "Chain Gloves": 9,
-  "Light Gauntlets": 12,
-  "Gauntlets": 17,
-  "War Gauntlets": 23,
+  // Tier 3 Shields (Exceptional)
+  "Heater": 43,
+  "Luna": 45,
+  "Hyperion": 48,
+  "Blade Barrier": 51,
+  "Monarch": 54,
+  "Troll Nest": 57,
+  "Aegis": 59,
+  "Ward": 63,
+  "Sacred Targe": 47,
+  "Sacred Rondache": 52,
+  "Kurast Shield": 55,
+  "Zakarum Shield": 61,
+  "Vortex Shield": 66,
 
-  "Cloth Belt": 1,
-  "Leather Belt": 4,
-  "Studded Belt": 9,
-  "Heavy Belt": 12,
-  "Battle Belt": 17,
-  "Plated Belt": 23,
+  // === NECROMANCER SHIELDS (HEADS) ===
+  // Tier 1 Heads (non-zero base)
+  "Preserved Head": 3,
+  "Zombie Head": 6,
+  "Unraveller Head": 12,
+  "Gargoyle Head": 15,
+  "Demon Head": 18,
 
-  "Soft Shoes": 1,
-  "Hard Leather Boots": 4,
-  "Blade Boots": 9,
-  "Battle Boots": 12,
-  "War Boots": 17,
-  "Mirrored Boots": 23,
+  // Tier 2 Heads
+  "Mummified Trophy": 24,
+  "Fetish Trophy": 29,
+  "Sexton Trophy": 33,
+  "Cantor Trophy": 36,
+  "Heirophant Trophy": 40,
+
+  // Tier 3 Heads (Exceptional)
+  "Minion Skull": 44,
+  "Hellspawn Skull": 50,
+  "Overseer Skull": 49,
+  "Succubus Skull": 60,
+  "Bloodlord Skull": 65,
+
+  // === NORMAL HELMS ===
+  // Tier 2 Helms
+  "War Hat": 22,
+  "Sallet": 25,
+  "Casque": 25,
+  "Basinet": 25,
+  "Death Mask": 25,
+  "Grim Helm": 25,
+  "Winged Helm": 25,
+  "Grand Crown": 25,
+
+  // Tier 3 Helms (Exceptional)
+  "Shako": 43,
+  "Hydraskull": 47,
+  "Armet": 51,
+  "Giant Conch": 40,
+  "Demonhead": 55,
+  "Bone Visage": 63,
+  "Spired Helm": 59,
+  "Corona": 66,
+
+  // === CIRCLETS ===
+  "Tiara": 52,
+  "Diadem": 64,
+
+  // === DRUID HELMS ===
+  // Tier 1 Druid Helms (non-zero base)
+  "Wolf Head": 3,
+  "Hawk Helm": 6,
+  "Antlers": 12,
+  "Falcon Mask": 15,
+  "Spirit Mask": 18,
+
+  // Tier 2 Druid Helms
+  "Alpha Helm": 26,
+  "Griffon Headress": 30,
+  "Hunter's Guise": 29,
+  "Sacred Feathers": 32,
+  "Totemic Mask": 41,
+
+  // Tier 3 Druid Helms (Exceptional)
+  "Blood Spirit": 46,
+  "Sun Spirit": 51,
+  "Earth Spirit": 57,
+  "Sky Spirit": 62,
+  "Dream Spirit": 66,
+
+  // === BARBARIAN HELMS ===
+  // Tier 1 Barbarian Helms (non-zero base)
+  "Jawbone Cap": 3,
+  "Fanged Helm": 6,
+  "Horned Helm": 12,
+  "Assault Helmet": 15,
+  "Avenger Guard": 18,
+
+  // Tier 2 Barbarian Helms
+  "Jawbone Visor": 25,
+  "Lion Helm": 29,
+  "Rage Mask": 29,
+  "Savage Helmet": 32,
+  "Slayer Guard": 40,
+
+  // Tier 3 Barbarian Helms (Exceptional)
+  "Carnage Helm": 45,
+  "Fury Visor": 49,
+  "Destroyer Helm": 54,
+  "Conquerer Crown": 60,
+  "Guardian Crown": 65,
+
+  // === BELTS ===
+  // Tier 2 Belts
+  "Demonhide Sash": 24,
+  "Sharkskin Belt": 25,
+  "Mesh Belt": 25,
+  "Battle Belt": 25,
+  "War Belt": 25,
+
+  // Tier 3 Belts (Exceptional)
+  "Spiderweb Sash": 46,
+  "Vampirefang Belt": 51,
+  "Mithril Coil": 56,
+  "Troll Belt": 62,
+  "Colossus Girdle": 67,
+
+  // === GLOVES ===
+  // Tier 2 Gloves
+  "Demonhide Gloves": 21,
+  "Sharkskin Gloves": 25,
+  "Heavy Bracers": 25,
+  "Battle Gauntlets": 25,
+  "War Gauntlets": 25,
+
+  // Tier 3 Gloves (Exceptional)
+  "Bramble Mitts": 42,
+  "Vampirebone Gloves": 47,
+  "Vambraces": 51,
+  "Crusader Gauntlets": 57,
+  "Ogre Gauntlets": 64,
+
+  // === BOOTS ===
+  // Tier 2 Boots
+  "Demonhide Boots": 24,
+  "Sharkskin Boots": 25,
+  "Mesh Boots": 25,
+  "Battle Boots": 25,
+  "War Boots": 25,
+
+  // Tier 3 Boots (Exceptional)
+  "Wyrmhide Boots": 45,
+  "Scarabshell Boots": 49,
+  "Boneweave Boots": 54,
+  "Mirrored Boots": 60,
+  "Myrmidon Greaves": 65,
 };
 
 function buildDescription(itemName, baseType, properties, magicalProps) {
