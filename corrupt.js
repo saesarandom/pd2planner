@@ -911,7 +911,9 @@ function applySocketCorruptionFromModal(corruption) {
   }
 
   const itemName = dropdown.value;
-  if (!itemName || !itemList[itemName]) {
+  // Use global item lookup to support both regular and crafted items
+  const item = window.getItemData(itemName);
+  if (!itemName || !item) {
     return;
   }
 
@@ -924,7 +926,7 @@ function applySocketCorruptionFromModal(corruption) {
 
   // Store original description if not already stored
   if (!window.originalItemDescriptions[itemName]) {
-    window.originalItemDescriptions[itemName] = itemList[itemName].description;
+    window.originalItemDescriptions[itemName] = item.description;
   }
 
   // Get and store the original socket count before changing it
@@ -945,7 +947,7 @@ function applySocketCorruptionFromModal(corruption) {
   // Add corruption text to item description
   const originalDescription = window.originalItemDescriptions[itemName];
   const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.mod}</span><br>`;
-  itemList[itemName].description = enhancedDescription;
+  item.description = enhancedDescription;
 
   // Set the socket count to the specified number
   if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.setSocketCount === 'function') {
@@ -960,16 +962,18 @@ function applySocketCorruptionFromModal(corruption) {
 
 // Apply corruption stats to item properties for character stat calculations
 function applyCorruptionToProperties(itemName, corruptionText) {
-  if (!itemList[itemName]) return;
+  // Use global item lookup to support both regular and crafted items
+  const item = window.getItemData(itemName);
+  if (!item) return;
 
   // Ensure properties object exists
-  if (!itemList[itemName].properties) {
-    itemList[itemName].properties = {};
+  if (!item.properties) {
+    item.properties = {};
   }
 
   // Restore original properties first (to replace any previous corruption)
   if (window.originalItemProperties && window.originalItemProperties[itemName]) {
-    itemList[itemName].properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
+    item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
   }
 
   // Parse corruption text to extract stat bonuses
@@ -979,7 +983,6 @@ function applyCorruptionToProperties(itemName, corruptionText) {
   stats.forEach(stat => {
     if (!stat.stackable || !stat.value) return;
 
-    const item = itemList[itemName];
     const props = item.properties;
 
     // Map corruption stat types to item property names
@@ -1032,7 +1035,9 @@ function applyCorruptionToItem(corruptionText) {
   const dropdown = document.getElementById(currentCorruptionSlot);
   const itemName = dropdown.value;
 
-  if (!itemName || !itemList[itemName]) {
+  // Use global item lookup to support both regular and crafted items
+  const item = window.getItemData(itemName);
+  if (!itemName || !item) {
     return;
   }
 
@@ -1047,11 +1052,11 @@ function applyCorruptionToItem(corruptionText) {
 
   // Store original description if not already stored
   if (!window.originalItemDescriptions[itemName]) {
-    let description = itemList[itemName].description;
+    let description = item.description;
 
     // For dynamic items without a static description, generate it
     if (!description) {
-      description = window.generateItemDescription(itemName, itemList[itemName], currentCorruptionSlot);
+      description = window.generateItemDescription(itemName, item, currentCorruptionSlot);
     }
 
     window.originalItemDescriptions[itemName] = description;
@@ -1063,7 +1068,7 @@ function applyCorruptionToItem(corruptionText) {
   }
   if (!window.originalItemProperties[itemName]) {
     // Deep clone the properties object to preserve originals
-    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(itemList[itemName].properties || {}));
+    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
   }
 
   // Store corruption info
@@ -1078,7 +1083,7 @@ function applyCorruptionToItem(corruptionText) {
   const enhancedDescription = addCorruptionWithStacking(originalDescription, corruptionText);
 
   // Set the corrupted description (will be regenerated for dynamic items anyway)
-  itemList[itemName].description = enhancedDescription;
+  item.description = enhancedDescription;
 
   // Apply corruption stats to item properties
   applyCorruptionToProperties(itemName, corruptionText);
@@ -1384,13 +1389,15 @@ window.applySocketCorruption = function(dropdownId, socketCount) {
   }
 
   const itemName = dropdown.value;
-  if (!itemName || !itemList[itemName]) {
+  // Use global item lookup to support both regular and crafted items
+  const item = window.getItemData(itemName);
+  if (!itemName || !item) {
     return;
   }
 
   // Store original description if not already stored
   if (!window.originalItemDescriptions[itemName]) {
-    window.originalItemDescriptions[itemName] = itemList[itemName].description;
+    window.originalItemDescriptions[itemName] = item.description;
   }
 
   // Create corruption text based on socket count
@@ -1408,7 +1415,7 @@ window.applySocketCorruption = function(dropdownId, socketCount) {
   // Add corruption text to item description
   const originalDescription = window.originalItemDescriptions[itemName];
   const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruptionText}</span><br>`;
-  itemList[itemName].description = enhancedDescription;
+  item.description = enhancedDescription;
 
   // Trigger item display update
   triggerItemUpdate(dropdownId);
