@@ -1365,7 +1365,8 @@ function refreshAffixesForBaseType(baseType) {
 
     const label = document.createElement('label');
     label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #ffd700; font-weight: bold; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
-    const displayLabel = `${affixKey} (${propLabels[propKey] || propKey})`;
+    const reqLvlText = affixData.reqLvl ? ` | Required Level: ${affixData.reqLvl}` : '';
+    const displayLabel = `${affixKey} (${propLabels[propKey] || propKey})${reqLvlText}`;
     label.innerHTML = `${displayLabel} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span>`;
 
     const checkbox = document.createElement('input');
