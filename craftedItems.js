@@ -1087,7 +1087,7 @@ class CraftedItemsSystem {
         label: 'Blood Armor',
         itemType: 'armor',
         fixedProperties: {
-          repl: { min: 3, max: 6 },        // Life after each Kill (Replenish Life)
+          repl: { min: 3, max: 6 },        // Replenish Life
           lleech: { min: 3, max: 6 },      // Life Stolen per Hit
           tolife: { min: 20, max: 40 }     // +Life
         },
@@ -1099,6 +1099,66 @@ class CraftedItemsSystem {
         fixedProperties: {
           cb: { min: 10, max: 20 },        // Chance of Crushing Blow
           lleech: { min: 2, max: 4 },      // Life Stolen per Hit
+          tolife: { min: 10, max: 20 }     // +Life
+        },
+        requiresAffixes: true
+      },
+      bloodshield: {
+        label: 'Blood Shield',
+        itemType: 'shield',
+        fixedProperties: {
+          block2: { min: 10, max: 20 },     // Increased Chance of Blocking
+          lleech: { min: 3, max: 6 },       // Life Stolen per Hit
+          tolife: { min: 10, max: 20 }      // +Life
+        },
+        requiresAffixes: true
+      },
+      bloodboots: {
+        label: 'Blood Boots',
+        itemType: 'boots',
+        fixedProperties: {
+          repl: { min: 15, max: 30 },      // Replenish Life
+          lleech: { min: 2, max: 4 },      // Life Stolen per Hit
+          tolife: { min: 10, max: 20 }     // +Life
+        },
+        requiresAffixes: true
+      },
+      bloodgloves: {
+        label: 'Blood Gloves',
+        itemType: 'gloves',
+        fixedProperties: {
+          cb: { min: 5, max: 10 },         // Chance of Crushing Blow
+          lleech: { min: 2, max: 4 },      // Life Stolen per Hit
+          tolife: { min: 10, max: 20 }     // +Life
+        },
+        requiresAffixes: true
+      },
+      bloodbelt: {
+        label: 'Blood Belt',
+        itemType: 'belt',
+        fixedProperties: {
+          ow: { min: 10, max: 20 },        // Chance of Open Wounds
+          lleech: { min: 3, max: 6 },      // Life Stolen per Hit
+          tolife: { min: 10, max: 20 }     // +Life
+        },
+        requiresAffixes: true
+      },
+      bloodring: {
+        label: 'Blood Ring',
+        itemType: 'ring',
+        fixedProperties: {
+          str: { min: 5, max: 10 },        // +Strength
+          lleech: { min: 1, max: 3 },      // Life Stolen per Hit
+          tolife: { min: 10, max: 20 }     // +Life
+        },
+        requiresAffixes: true
+      },
+      bloodamulet: {
+        label: 'Blood Amulet',
+        itemType: 'amulet',
+        fixedProperties: {
+          frw: { min: 10, max: 10 },       // +10% Faster Run/Walk
+          laek: { min: 3, max: 6 },        // Life after each Kill
           tolife: { min: 10, max: 20 }     // +Life
         },
         requiresAffixes: true
@@ -1253,12 +1313,47 @@ class CraftedItemsSystem {
         return null;
       }
     } else if (craftConfig.itemType === 'helm') {
-      // Helms must have baseType in helm category (checking base type categories from main.js)
-      if (!baseType) {
+      // Helms must have baseType in helm category
+      if (!baseType || !itemTypeCategories['Helm']?.has(baseType)) {
         console.error(`Invalid base helm type: ${baseType}`);
         return null;
       }
-      // For helms, we'll accept any helm-like type for now
+    } else if (craftConfig.itemType === 'shield') {
+      // Shields must have baseType in shield category
+      if (!baseType || !itemTypeCategories['Shield']?.has(baseType)) {
+        console.error(`Invalid base shield type: ${baseType}`);
+        return null;
+      }
+    } else if (craftConfig.itemType === 'boots') {
+      // Boots must have baseType in boots category
+      if (!baseType || !itemTypeCategories['Boots']?.has(baseType)) {
+        console.error(`Invalid base boots type: ${baseType}`);
+        return null;
+      }
+    } else if (craftConfig.itemType === 'gloves') {
+      // Gloves must have baseType in gloves category
+      if (!baseType || !itemTypeCategories['Gloves']?.has(baseType)) {
+        console.error(`Invalid base gloves type: ${baseType}`);
+        return null;
+      }
+    } else if (craftConfig.itemType === 'belt') {
+      // Belts must have baseType in belt category
+      if (!baseType || !itemTypeCategories['Belt']?.has(baseType)) {
+        console.error(`Invalid base belt type: ${baseType}`);
+        return null;
+      }
+    } else if (craftConfig.itemType === 'ring') {
+      // Rings don't have different base types - just accept 'Ring'
+      if (!baseType || baseType !== 'Ring') {
+        console.error(`Invalid base ring type: ${baseType}`);
+        return null;
+      }
+    } else if (craftConfig.itemType === 'amulet') {
+      // Amulets don't have different base types - just accept 'Amulet'
+      if (!baseType || baseType !== 'Amulet') {
+        console.error(`Invalid base amulet type: ${baseType}`);
+        return null;
+      }
     }
 
     // Validate affixes only if this craft type requires them
