@@ -603,10 +603,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     mleech: (val, prop) => formatVariableStat('', val, '% Mana Stolen per Hit', prop, itemName, 'mleech', dropdownId),
     coldres: (val, prop) => formatVariableStat('Cold Resist +', val, '%', prop, itemName, 'coldres', dropdownId),
     firres: (val, prop) => formatVariableStat('Fire Resist +', val, '%', prop, itemName, 'firres', dropdownId),
-    fireres: (val, prop) => formatVariableStat('Fire Resist +', val, '%', prop, itemName, 'fireres', dropdownId), // Alias for regular items
     ligres: (val, prop) => formatVariableStat('Lightning Resist +', val, '%', prop, itemName, 'ligres', dropdownId),
-    lightres: (val, prop) => formatVariableStat('Lightning Resist +', val, '%', prop, itemName, 'lightres', dropdownId), // Alias for regular items
-    poisonres: (val, prop) => formatVariableStat('Poison Resist +', val, '%', prop, itemName, 'poisonres', dropdownId),
+    poisres: (val, prop) => formatVariableStat('Poison Resist +', val, '%', prop, itemName, 'poisres', dropdownId),
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
     physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
     mdr: (val, prop) => formatVariableStat('Magic Damage Reduced by ', val, '', prop, itemName, 'mdr', dropdownId),
@@ -1124,10 +1122,8 @@ function populateFixedProperties(craftType) {
     enr: '+ to Energy',
     coldres: 'Cold Resist +%',
     firres: 'Fire Resist +%',
-    fireres: 'Fire Resist +%',
     ligres: 'Lightning Resist +%',
-    lightres: 'Lightning Resist +%',
-    poisonres: 'Poison Resist +%'
+    poisres: 'Poison Resist +%'
   };
 
   // Create a slider for each fixed property
@@ -1270,10 +1266,8 @@ function refreshAffixesForBaseType(baseType) {
       dex: '+ to Dexterity',
       coldres: 'Cold Resist +%',
       firres: 'Fire Resist +%',
-      fireres: 'Fire Resist +%',
       ligres: 'Lightning Resist +%',
-      lightres: 'Lightning Resist +%',
-      poisonres: 'Poison Resist +%',
+      poisres: 'Poison Resist +%',
       allres: 'All Resistances +%',
       magicdmg: '+ Magic Damage',
       regen: '+ Regenerate',
