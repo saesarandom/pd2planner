@@ -375,7 +375,19 @@ function populateItemDropdowns() {
 
     // Add crafted items (from user's account or loaded from shared build)
     if (window.craftedItemsSystem) {
-      const craftedItems = window.craftedItemsSystem.getCraftedItemsByType(itemType);
+      let craftedItemType = itemType;
+
+      // Handle mercenary dropdowns: remove 'merc' prefix
+      if (craftedItemType.startsWith('merc')) {
+        craftedItemType = craftedItemType.replace(/^merc/, '');
+        // mercoff -> shield
+        if (craftedItemType === 'off') craftedItemType = 'shield';
+      }
+
+      // Both ring slots should get the same ring items
+      if (craftedItemType === 'ringstwo') craftedItemType = 'ringsone';
+
+      const craftedItems = window.craftedItemsSystem.getCraftedItemsByType(craftedItemType);
       craftedItems.forEach(craftedItem => {
         const option = document.createElement('option');
         option.value = craftedItem.fullName;
@@ -385,6 +397,9 @@ function populateItemDropdowns() {
     }
   }
 }
+
+// Expose for use from character-data.js when loading builds
+window.populateItemDropdowns = populateItemDropdowns;
 
 /**
  * Global item lookup - checks both regular items and crafted items
@@ -1097,16 +1112,16 @@ function populateBaseItemsByType(craftType) {
       if (window.itemTypeCategories && window.itemTypeCategories['Gloves']) {
         baseItems = Array.from(window.itemTypeCategories['Gloves']).sort();
       }
-    } else if (itemType === 'belt') {
+    } else if (itemType === 'belts') {
       placeholder = 'Select base belt...';
       // Get all belts from itemTypeCategories
       if (window.itemTypeCategories && window.itemTypeCategories['Belt']) {
         baseItems = Array.from(window.itemTypeCategories['Belt']).sort();
       }
-    } else if (itemType === 'ring') {
+    } else if (itemType === 'ringsone') {
       placeholder = 'Ring';
       baseItems = ['Ring'];
-    } else if (itemType === 'amulet') {
+    } else if (itemType === 'amulets') {
       placeholder = 'Amulet';
       baseItems = ['Amulet'];
     }
