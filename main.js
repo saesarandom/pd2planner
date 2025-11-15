@@ -601,12 +601,12 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
     lleech: (val, prop) => formatVariableStat('', val, '% Life Stolen per Hit', prop, itemName, 'lleech', dropdownId),
     mleech: (val, prop) => formatVariableStat('', val, '% Mana Stolen per Hit', prop, itemName, 'mleech', dropdownId),
-    coldres: (val, prop) => formatVariableStat('+', val, '% Cold Resistance', prop, itemName, 'coldres', dropdownId),
-    firres: (val, prop) => formatVariableStat('+', val, '% Fire Resistance', prop, itemName, 'firres', dropdownId),
-    fireres: (val, prop) => formatVariableStat('+', val, '% Fire Resistance', prop, itemName, 'fireres', dropdownId), // Alias for regular items
-    ligres: (val, prop) => formatVariableStat('+', val, '% Lightning Resistance', prop, itemName, 'ligres', dropdownId),
-    lightres: (val, prop) => formatVariableStat('+', val, '% Lightning Resistance', prop, itemName, 'lightres', dropdownId), // Alias for regular items
-    poisonres: (val, prop) => formatVariableStat('+', val, '% Poison Resistance', prop, itemName, 'poisonres', dropdownId),
+    coldres: (val, prop) => formatVariableStat('Cold Resist +', val, '%', prop, itemName, 'coldres', dropdownId),
+    firres: (val, prop) => formatVariableStat('Fire Resist +', val, '%', prop, itemName, 'firres', dropdownId),
+    fireres: (val, prop) => formatVariableStat('Fire Resist +', val, '%', prop, itemName, 'fireres', dropdownId), // Alias for regular items
+    ligres: (val, prop) => formatVariableStat('Lightning Resist +', val, '%', prop, itemName, 'ligres', dropdownId),
+    lightres: (val, prop) => formatVariableStat('Lightning Resist +', val, '%', prop, itemName, 'lightres', dropdownId), // Alias for regular items
+    poisonres: (val, prop) => formatVariableStat('Poison Resist +', val, '%', prop, itemName, 'poisonres', dropdownId),
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
     physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
     mdr: (val, prop) => formatVariableStat('Magic Damage Reduced by ', val, '', prop, itemName, 'mdr', dropdownId),
@@ -1122,12 +1122,12 @@ function populateFixedProperties(craftType) {
     dex: '+ to Dexterity',
     vit: '+ to Vitality',
     enr: '+ to Energy',
-    coldres: '+% Cold Resistance',
-    firres: '+% Fire Resistance',
-    fireres: '+% Fire Resistance',
-    ligres: '+% Lightning Resistance',
-    lightres: '+% Lightning Resistance',
-    poisonres: '+% Poison Resistance'
+    coldres: 'Cold Resist +%',
+    firres: 'Fire Resist +%',
+    fireres: 'Fire Resist +%',
+    ligres: 'Lightning Resist +%',
+    lightres: 'Lightning Resist +%',
+    poisonres: 'Poison Resist +%'
   };
 
   // Create a slider for each fixed property
@@ -1268,13 +1268,13 @@ function refreshAffixesForBaseType(baseType) {
       tomana: '+ to Mana',
       str: '+ to Strength',
       dex: '+ to Dexterity',
-      coldres: '+% Cold Resistance',
-      firres: '+% Fire Resistance',
-      fireres: '+% Fire Resistance',
-      ligres: '+% Lightning Resistance',
-      lightres: '+% Lightning Resistance',
-      poisonres: '+% Poison Resistance',
-      allres: '+% All Resistances',
+      coldres: 'Cold Resist +%',
+      firres: 'Fire Resist +%',
+      fireres: 'Fire Resist +%',
+      ligres: 'Lightning Resist +%',
+      lightres: 'Lightning Resist +%',
+      poisonres: 'Poison Resist +%',
+      allres: 'All Resistances +%',
       magicdmg: '+ Magic Damage',
       regen: '+ Regenerate',
       repl: 'Replenish Life +',
