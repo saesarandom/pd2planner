@@ -443,7 +443,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
   // Special display for crafted items: show name + craft type label
   if (item.isCrafted && item.craftTypeLabel) {
-    html += `<span style="color: FF9900;">${item.name} ${item.craftTypeLabel}</span><br>`;
+    html += `<span style="color: #FF9900;">${item.name} ${item.craftTypeLabel}</span><br>`;
   } else {
     html += `${itemName}<br>`;
   }
@@ -1618,14 +1618,14 @@ function createCraftingButton() {
 
   craftBtn.addEventListener('mouseenter', () => {
     craftBtn.style.transform = 'translateY(-2px)';
-    craftBtn.style.boxShadow = '0 6px 20px rgba(34, 139, 34, 0.6)';
-    craftBtn.style.background = 'linear-gradient(135deg, #2a8c2a, #1d5c1d)';
+    craftBtn.style.boxShadow = '0 6px 20px rgba(201, 96, 11, 0.6)';
+    craftBtn.style.background = 'linear-gradient(135deg, #c55d34ff, #da7400ff)';
   });
 
   craftBtn.addEventListener('mouseleave', () => {
     craftBtn.style.transform = 'translateY(0)';
-    craftBtn.style.boxShadow = '0 4px 15px rgba(26, 92, 26, 0.8)';
-    craftBtn.style.background = 'linear-gradient(135deg, #1a5c1a, #0d3a0d)';
+    craftBtn.style.boxShadow = '0 4px 15px rgba(216, 105, 2, 0.8)';
+    craftBtn.style.background = 'linear-gradient(135deg, #745042ff, #d84d23ff))';
   });
 
   // Add craft button below save button
