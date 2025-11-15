@@ -3156,11 +3156,24 @@ this.selectedJewelSuffix3MaxValue = null;
           const itemName = document.getElementById(dropdownId)?.value;
           if (itemName) {
             description = window.generateItemDescription(itemName, item, dropdownId);
+            // DEBUG: Log crafted item description generation
+            if (item.isCrafted) {
+              console.log(`[CRAFTED ITEM] Generating description for ${itemName}:`, {
+                baseType: item.baseType,
+                properties: item.properties,
+                description: description
+              });
+            }
           }
         }
       }
 
-      if (!description) return;
+      if (!description) {
+        if (item.isCrafted) {
+          console.log(`[CRAFTED ITEM] No description generated for ${item.fullName}`);
+        }
+        return;
+      }
 
       const lines = description.split('<br>');
       lines.forEach(line => this.parseStatLine(line.trim()));
