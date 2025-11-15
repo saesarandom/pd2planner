@@ -1652,6 +1652,12 @@ function createCraftedItem() {
     suffixes: {}
   };
 
+  // Collect affix names for required level calculation
+  const affixSelection = {
+    prefixes: {},
+    suffixes: {}
+  };
+
   // Collect prefixes
   const prefixCheckboxes = document.querySelectorAll('input[id^="check_prefix_"]');
   prefixCheckboxes.forEach(checkbox => {
@@ -1664,6 +1670,8 @@ function createCraftedItem() {
         const value = parseInt(slider.value);
         // Add to existing value if property already exists (multiple affixes with same property)
         affixes.prefixes[propKey] = (affixes.prefixes[propKey] || 0) + value;
+        // Store affix name for required level calculation
+        affixSelection.prefixes[affixKey] = true;
       }
     }
   });
@@ -1680,6 +1688,8 @@ function createCraftedItem() {
         const value = parseInt(slider.value);
         // Add to existing value if property already exists
         affixes.suffixes[propKey] = (affixes.suffixes[propKey] || 0) + value;
+        // Store affix name for required level calculation
+        affixSelection.suffixes[affixKey] = true;
       }
     }
   });
@@ -1695,7 +1705,7 @@ function createCraftedItem() {
   });
 
   // Create the crafted item
-  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes, fixedProperties);
+  const craftedItem = window.craftedItemsSystem.createCraftedItem(name, baseType, craftType, affixes, fixedProperties, affixSelection);
 
   if (!craftedItem) {
     alert('Failed to create crafted item. Check your inputs and try again.');
