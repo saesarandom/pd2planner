@@ -5468,4 +5468,126 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // Setup ethereal button event listeners
+  const etherealButtons = {
+    'makeetherealweapon': 'weapons-dropdown',
+    'makeethereal': 'helms-dropdown',
+    'makeetherealarmor': 'armors-dropdown',
+    'makeetherealshield': 'offs-dropdown',
+    'makeetherealglove': 'gloves-dropdown',
+    'makeetherealbelt': 'belts-dropdown',
+    'makeetherealboot': 'boots-dropdown'
+  };
+
+  Object.entries(etherealButtons).forEach(([buttonId, dropdownId]) => {
+    const button = document.getElementById(buttonId);
+    if (button) {
+      button.addEventListener('click', () => makeItemEthereal(dropdownId));
+    }
+  });
+
 });
+
+/**
+ * Universal function to make any item ethereal
+ * Works for both regular items and crafted items
+ * @param {string} dropdownId - The ID of the dropdown (e.g., 'weapons-dropdown')
+ */
+function makeItemEthereal(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  const itemName = dropdown.value;
+  if (!itemName) return;
+
+  // Use window.getItemData to support both regular and crafted items
+  const itemData = window.getItemData(itemName);
+  if (!itemData) return;
+
+  // Get or generate description
+  let description = itemData.description;
+  if (!description && itemData.baseType) {
+    description = window.generateItemDescription(itemName, itemData, dropdownId);
+  }
+  if (!description) return;
+
+  // Check if already ethereal
+  if (description.includes("Ethereal")) return;
+
+  // Mark as ethereal in properties
+  itemData.properties.ethereal = true;
+
+  // Add ethereal text to description
+  let lines = description.split("<br>");
+  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+  itemData.description = lines.join("<br>");
+
+  // Determine item category and apply appropriate bonuses
+  const isWeapon = dropdownId === 'weapons-dropdown';
+  const isShield = dropdownId === 'offs-dropdown';
+  const isArmor = ['armors-dropdown', 'helms-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown'].includes(dropdownId);
+
+  if (isWeapon) {
+    // Handle weapon ethereal (50% damage bonus)
+    const baseType = description.split("<br>")[1];
+    const isTwoHanded = itemData.properties.twohandmin !== undefined;
+
+    if (isTwoHanded) {
+      itemData.properties.twohandmin = calculateItemDamage(itemData, baseType, false);
+      itemData.properties.twohandmax = calculateItemDamage(itemData, baseType, true);
+    } else {
+      itemData.properties.onehandmin = calculateItemDamage(itemData, baseType, false);
+      itemData.properties.onehandmax = calculateItemDamage(itemData, baseType, true);
+    }
+
+    // Update weapon display
+    dropdown.dispatchEvent(new Event("change"));
+    if (typeof updateWeaponDamageDisplay === 'function') {
+      updateWeaponDamageDisplay();
+    }
+    if (typeof updateWeaponDescription === 'function') {
+      updateWeaponDescription();
+    }
+  } else if (isShield || isArmor) {
+    // Handle armor/shield ethereal (50% defense bonus)
+    const baseType = description.split("<br>")[1];
+    const baseDefense = baseDefenses[baseType] || 0;
+    const edef = itemData.properties.edef || 0;
+    const todef = itemData.properties.todef || 0;
+
+    // Apply 50% ethereal bonus to base defense
+    const baseWithEth = Math.floor(baseDefense * 1.5);
+
+    // Calculate final defense
+    let newDefense;
+    if (edef > 0) {
+      newDefense = Math.floor(baseWithEth * (1 + edef / 100));
+      if (todef > 0) {
+        newDefense += todef;
+      }
+    } else if (todef > 0) {
+      newDefense = baseWithEth + todef;
+    } else {
+      newDefense = baseWithEth;
+    }
+
+    // Update defense in properties and description
+    itemData.properties.defense = newDefense;
+    const defenseIndex = lines.findIndex(line => line.startsWith("Defense:"));
+    if (defenseIndex !== -1) {
+      lines[defenseIndex] = `Defense: ${newDefense}`;
+      itemData.description = lines.join("<br>");
+    }
+
+    // Update display
+    dropdown.dispatchEvent(new Event("change"));
+    if (typeof updateDefense === 'function') {
+      updateDefense();
+    }
+  }
+
+  // Update stats display
+  if (window.unifiedSocketSystem?.updateAll) {
+    window.unifiedSocketSystem.updateAll();
+  }
+}
