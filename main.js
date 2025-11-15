@@ -1337,9 +1337,10 @@ function refreshAffixesForBaseType(baseType) {
     `;
 
     const label = document.createElement('label');
-    label.style.cssText = 'display: block; font-size: 12px; margin-bottom: 8px; color: #FF9900; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
+    label.style.cssText = 'display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 8px; color: #FF9900; text-shadow: 0 0 3px rgba(255, 215, 0, 0.3);';
     const displayLabel = `${affixKey} (${propLabels[propKey] || propKey})`;
-    label.innerHTML = `${displayLabel} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span>`;
+    const reqLvlText = affixData.reqLvl ? `<span style="color: #888; font-size: 11px; margin-left: 10px;">Req Lvl: ${affixData.reqLvl}</span>` : '';
+    label.innerHTML = `<span>${displayLabel} <span id="val_${affixType}_${affixKey}" style="color: #0f9eff; margin-left: 5px;">[0]</span></span>${reqLvlText}`;
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
