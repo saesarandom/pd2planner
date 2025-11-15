@@ -242,6 +242,10 @@ window.loadCharacterFromData = function(data) {
         // Load crafted items
         if (data.crafted_items && window.craftedItemsSystem) {
             window.craftedItemsSystem.loadFromData(data.crafted_items);
+            // Refresh dropdowns to include the loaded crafted items
+            if (typeof populateItemDropdowns === 'function') {
+                populateItemDropdowns();
+            }
         }
 
         // Set equipment
