@@ -239,8 +239,9 @@ window.loadCharacterFromData = function(data) {
             
         }
 
-        // Load crafted items
-        if (data.crafted_items && window.craftedItemsSystem) {
+        // Load crafted items (only for visitors viewing shared builds)
+        // Logged-in users already have their crafted items loaded from the database
+        if (data.crafted_items && window.craftedItemsSystem && !window.auth?.isLoggedIn()) {
             // Filter to only include crafted items that are actually equipped in this build
             // This prevents showing all user's crafted items in shared builds
             const equippedItemNames = new Set(Object.values(data.equipment || {}));
