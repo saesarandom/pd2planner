@@ -241,7 +241,14 @@ window.loadCharacterFromData = function(data) {
 
         // Load crafted items
         if (data.crafted_items && window.craftedItemsSystem) {
-            window.craftedItemsSystem.loadFromData(data.crafted_items);
+            // Filter to only include crafted items that are actually equipped in this build
+            // This prevents showing all user's crafted items in shared builds
+            const equippedItemNames = new Set(Object.values(data.equipment || {}));
+            const equippedCraftedItems = data.crafted_items.filter(item =>
+                equippedItemNames.has(item.fullName)
+            );
+
+            window.craftedItemsSystem.loadFromData(equippedCraftedItems);
             // Refresh dropdowns to include the loaded crafted items
             if (typeof window.populateItemDropdowns === 'function') {
                 window.populateItemDropdowns();
