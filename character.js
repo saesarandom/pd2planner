@@ -28,10 +28,9 @@ function getPropertyValue(prop) {
  * Returns the restricted class name or null if item has no class restriction
  */
 function getItemClassRestriction(itemName) {
-  const itemData = window.itemList || itemList;
-  if (!itemData || !itemData[itemName]) return null;
-
-  const item = itemData[itemName];
+  // Use global item lookup to support both regular and crafted items
+  const item = window.getItemData(itemName);
+  if (!item) return null;
   if (!item.description) return null;
 
   // Look for class-only pattern at the start of a line (after <br>)
@@ -67,11 +66,9 @@ function isItemUsableByClass(itemName, characterClass) {
  * Returns true if character has enough strength and dexterity, false otherwise
  */
 function doesCharacterMeetStatRequirements(itemName, characterStrength, characterDexterity) {
-  const itemData = window.itemList || itemList;
-  if (!itemData || !itemData[itemName]) return true;
-
-  const item = itemData[itemName];
-  if (!item.properties) return true;
+  // Use global item lookup to support both regular and crafted items
+  const item = window.getItemData(itemName);
+  if (!item || !item.properties) return true;
 
   const requiredStr = item.properties.reqstr || 0;
   const requiredDex = item.properties.reqdex || 0;
@@ -611,10 +608,11 @@ getDirectLifeManaFromItems() {
 }
 
   getActualRequiredLevel(section, itemName) {
-    const itemData = window.itemList || itemList;
-    if (!itemData || !itemData[itemName]) return 1;
+    // Use global item lookup to support both regular and crafted items
+    const item = window.getItemData(itemName);
+    if (!item) return 1;
 
-    const baseLevel = getPropertyValue(itemData[itemName].properties?.reqlvl) || 1;
+    const baseLevel = getPropertyValue(item.properties?.reqlvl) || 1;
     
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
     let highestLevel = baseLevel;
