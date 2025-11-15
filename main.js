@@ -373,8 +373,8 @@ function populateItemDropdowns() {
       dropdown.appendChild(option);
     });
 
-    // Add crafted items if user is logged in (continue naturally after regular items)
-    if (window.auth?.isLoggedIn() && window.craftedItemsSystem) {
+    // Add crafted items (from user's account or loaded from shared build)
+    if (window.craftedItemsSystem) {
       const craftedItems = window.craftedItemsSystem.getCraftedItemsByType(itemType);
       craftedItems.forEach(craftedItem => {
         const option = document.createElement('option');
