@@ -1162,6 +1162,36 @@ class CraftedItemsSystem {
           tolife: { min: 10, max: 20 }     // +Life
         },
         requiresAffixes: true
+      },
+      safetyarmor: {
+        label: 'Safety Armor',
+        itemType: 'armor',
+        fixedProperties: {
+          edef: { min: 20, max: 60 },      // +% Enhanced Defense
+          todefmiss: { min: 100, max: 150 }, // Defense vs. Melee
+          physdr: { min: 5, max: 10 }      // Physical Damage Taken Reduced by %
+        },
+        requiresAffixes: true
+      },
+      safetyshield: {
+        label: 'Safety Shield',
+        itemType: 'shield',
+        fixedProperties: {
+          edef: { min: 20, max: 60 },      // +% Enhanced Defense
+          todefmiss: { min: 100, max: 150 }, // Defense vs. Melee
+          physdr: { min: 5, max: 10 }      // Physical Damage Taken Reduced by %
+        },
+        requiresAffixes: true
+      },
+      brilliantgloves: {
+        label: 'Brilliant Gloves',
+        itemType: 'gloves',
+        fixedProperties: {
+          ias: { min: 5, max: 10 },        // +% Increased Attack Speed
+          attpercent: { min: 10, max: 20 }, // % Bonus to Attack Rating
+          edef: { min: 25, max: 50 }       // +% Enhanced Defense
+        },
+        requiresAffixes: true
       }
       // More craft types can be added here later
     };
