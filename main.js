@@ -1068,15 +1068,45 @@ function populateBaseItemsByType(craftType) {
     } else if (itemType === 'armor') {
       placeholder = 'Select base armor...';
       // Get all armor items from itemTypeCategories
-      if (itemTypeCategories['Armor']) {
-        baseItems = Array.from(itemTypeCategories['Armor']).sort();
+      if (window.itemTypeCategories && window.itemTypeCategories['Armor']) {
+        baseItems = Array.from(window.itemTypeCategories['Armor']).sort();
       }
     } else if (itemType === 'helm') {
       placeholder = 'Select base helm...';
       // Get all helms from itemTypeCategories
-      if (itemTypeCategories['Helm']) {
-        baseItems = Array.from(itemTypeCategories['Helm']).sort();
+      if (window.itemTypeCategories && window.itemTypeCategories['Helm']) {
+        baseItems = Array.from(window.itemTypeCategories['Helm']).sort();
       }
+    } else if (itemType === 'shield') {
+      placeholder = 'Select base shield...';
+      // Get all shields from itemTypeCategories
+      if (window.itemTypeCategories && window.itemTypeCategories['Shield']) {
+        baseItems = Array.from(window.itemTypeCategories['Shield']).sort();
+      }
+    } else if (itemType === 'boots') {
+      placeholder = 'Select base boots...';
+      // Get all boots from itemTypeCategories
+      if (window.itemTypeCategories && window.itemTypeCategories['Boots']) {
+        baseItems = Array.from(window.itemTypeCategories['Boots']).sort();
+      }
+    } else if (itemType === 'gloves') {
+      placeholder = 'Select base gloves...';
+      // Get all gloves from itemTypeCategories
+      if (window.itemTypeCategories && window.itemTypeCategories['Gloves']) {
+        baseItems = Array.from(window.itemTypeCategories['Gloves']).sort();
+      }
+    } else if (itemType === 'belt') {
+      placeholder = 'Select base belt...';
+      // Get all belts from itemTypeCategories
+      if (window.itemTypeCategories && window.itemTypeCategories['Belt']) {
+        baseItems = Array.from(window.itemTypeCategories['Belt']).sort();
+      }
+    } else if (itemType === 'ring') {
+      placeholder = 'Ring';
+      baseItems = ['Ring'];
+    } else if (itemType === 'amulet') {
+      placeholder = 'Amulet';
+      baseItems = ['Amulet'];
     }
   }
 
