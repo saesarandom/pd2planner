@@ -1410,6 +1410,15 @@ async function reloadCraftedItemsFromBackend() {
     window.craftedItemsSystem.loadFromData(craftedItems);
     populateCraftedItemsList();
     refreshItemDropdowns();
+
+    // Update stats display
+    if (typeof window.unifiedSocketSystem?.calculateAllStats === 'function') {
+      window.unifiedSocketSystem.calculateAllStats();
+    }
+    if (typeof window.unifiedSocketSystem?.updateStatsDisplay === 'function') {
+      window.unifiedSocketSystem.updateStatsDisplay();
+    }
+
     alert(`Reloaded ${craftedItems.length} items from server`);
   } catch (error) {
     console.error('Failed to reload crafted items:', error);
@@ -1440,6 +1449,14 @@ async function deleteCraftedItemConfirm(craftId) {
     // Refresh UI
     populateCraftedItemsList();
     refreshItemDropdowns();
+
+    // Update stats display to reflect deletion of crafted item
+    if (typeof window.unifiedSocketSystem?.calculateAllStats === 'function') {
+      window.unifiedSocketSystem.calculateAllStats();
+    }
+    if (typeof window.unifiedSocketSystem?.updateStatsDisplay === 'function') {
+      window.unifiedSocketSystem.updateStatsDisplay();
+    }
 
     alert(`Deleted "${item.fullName}"`);
   } catch (error) {
@@ -1554,6 +1571,14 @@ function createCraftedItem() {
         // Refresh items list in modal
         populateCraftedItemsList();
 
+        // Update stats display to reflect crafted item properties
+        if (typeof window.unifiedSocketSystem?.calculateAllStats === 'function') {
+          window.unifiedSocketSystem.calculateAllStats();
+        }
+        if (typeof window.unifiedSocketSystem?.updateStatsDisplay === 'function') {
+          window.unifiedSocketSystem.updateStatsDisplay();
+        }
+
         // Show success message
         if (window.notificationSystem) {
           window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created and saved.`, { duration: 4000 });
@@ -1570,6 +1595,14 @@ function createCraftedItem() {
     // No login - just update local
     refreshItemDropdowns();
     populateCraftedItemsList();
+
+    // Update stats display to reflect crafted item properties
+    if (typeof window.unifiedSocketSystem?.calculateAllStats === 'function') {
+      window.unifiedSocketSystem.calculateAllStats();
+    }
+    if (typeof window.unifiedSocketSystem?.updateStatsDisplay === 'function') {
+      window.unifiedSocketSystem.updateStatsDisplay();
+    }
 
     if (window.notificationSystem) {
       window.notificationSystem.success('Crafted Item Created!', `${craftedItem.fullName} has been created.`, { duration: 4000 });
