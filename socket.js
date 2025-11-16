@@ -53,6 +53,7 @@
         allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0,
         life: 0, mana: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
         toatt: 0, toattPercent: 0, lightRadius: 0,
+        toMinDmg: 0, toMaxDmg: 0,
         lightDmgMin: 0, lightDmgMax: 0, fireDmgMin: 0, fireDmgMax: 0,
         coldDmgMin: 0, coldDmgMax: 0, poisonDmgMin: 0, poisonDmgMax: 0,   fireSkillDamage: 0,
     coldSkillDamage: 0,
@@ -3520,6 +3521,15 @@ if (defMatch) {
     const targetDefMatch = cleanLine.match(/([+-]?\d+)%\s+Target\s+Defense/i);
     if (targetDefMatch) { return; } // Recognized but not tracked (special effect)
 
+    // Flat Physical Damage bonuses (jewels, runes, gems, items)
+    // Minimum Damage: "+X to Minimum Damage"
+    const toMinDmgMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Minimum\s+Damage/i);
+    if (toMinDmgMatch) { this.stats.toMinDmg += parseInt(toMinDmgMatch[1]); return; }
+
+    // Maximum Damage: "+X to Maximum Damage"
+    const toMaxDmgMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Maximum\s+Damage/i);
+    if (toMaxDmgMatch) { this.stats.toMaxDmg += parseInt(toMaxDmgMatch[1]); return; }
+
     // Damage Reduction stats
     // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
     // Check percentage first (more specific) before flat patterns
@@ -4305,6 +4315,10 @@ addToStatsMap(statsMap, key, data) {
     this.updateElement('flatlightmaxcontainer', this.stats.lightDmgMax);
     this.updateElement('flatpoisonmincontainer', this.stats.poisonDmgMin);
     this.updateElement('flatpoisonmaxcontainer', this.stats.poisonDmgMax);
+
+    // Physical damage bonuses (for skill tooltips)
+    this.updateElement('tomindmgcontainer', this.stats.toMinDmg);
+    this.updateElement('tomaxdmgcontainer', this.stats.toMaxDmg);
 
     this.updateElement('fireskilldmgcontainer', this.stats.fireSkillDamage);
     this.updateElement('coldskilldmgcontainer', this.stats.coldSkillDamage);
