@@ -4422,7 +4422,7 @@ function makeEtherealItem(category) {
     const isDynamic = currentItemData.baseType;
 
     if (isDynamic) {
-      // For dynamic items: toggle ethereal property and recalculate damage
+      // For dynamic items: toggle ethereal property
       if (isCurrentlyEthereal) {
         // Remove ethereal
         currentItemData.properties.ethereal = false;
@@ -4431,9 +4431,10 @@ function makeEtherealItem(category) {
         currentItemData.properties.ethereal = true;
       }
 
-      // Recalculate weapon damage (with or without ethereal multiplier)
-      if (typeof updateWeaponDamageDisplay === 'function') {
-        updateWeaponDamageDisplay();
+      // For non-crafted dynamic weapons (like True Silver), we need to recalculate damage
+      // because calculateItemDamage is used, not the crafted item formula
+      if (typeof window.updateWeaponDamageDisplay === 'function') {
+        window.updateWeaponDamageDisplay();
       }
     } else {
       // For static items
@@ -4544,7 +4545,7 @@ function makeEtherealItem(category) {
     const isDynamic = currentItemData.baseType;
 
     if (isDynamic) {
-      // For dynamic items: toggle ethereal property and recalculate defense
+      // For dynamic items: toggle ethereal property
       if (isCurrentlyEthereal) {
         // Remove ethereal
         currentItemData.properties.ethereal = false;
@@ -4553,21 +4554,8 @@ function makeEtherealItem(category) {
         currentItemData.properties.ethereal = true;
       }
 
-      // Recalculate defense (with or without ethereal multiplier)
-      let tempDesc = window.generateItemDescription(currentItem, currentItemData, `${category}-dropdown`);
-      if (tempDesc) {
-        const baseType = tempDesc.split("<br>")[1];
-        if (baseType) {
-          const newDefense = calculateItemDefense(currentItemData, baseType, category);
-
-          // Store defense in properties (handling variable stats)
-          if (typeof currentItemData.properties.defense === 'object' && 'current' in currentItemData.properties.defense) {
-            currentItemData.properties.defense.current = newDefense;
-          } else {
-            currentItemData.properties.defense = newDefense;
-          }
-        }
-      }
+      // DON'T recalculate defense here - let the socket system handle everything
+      // The socket system will regenerate the description with correct defense and input boxes
     } else {
       // For static items
       let lines = currentItemData.description.split("<br>");
