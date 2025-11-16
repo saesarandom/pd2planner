@@ -5646,17 +5646,18 @@ function makeItemEthereal(dropdownId) {
     itemData.properties = {};
   }
 
-  // Check if already ethereal
-  const isCurrentlyEthereal = itemData.properties.ethereal ||
-    (itemData.description && itemData.description.includes("Ethereal"));
-
   // For dynamic items (has baseType), just toggle the ethereal flag
   // and let the socket system regenerate everything
   if (itemData.baseType) {
     console.log('makeItemEthereal: toggling ethereal for dynamic item', itemName);
-    if (isCurrentlyEthereal) {
+
+    // For dynamic items, ONLY check properties.ethereal (not description)
+    // because description is regenerated each time
+    if (itemData.properties.ethereal) {
+      console.log('Removing ethereal');
       itemData.properties.ethereal = false;
     } else {
+      console.log('Adding ethereal');
       itemData.properties.ethereal = true;
     }
 
@@ -5667,6 +5668,10 @@ function makeItemEthereal(dropdownId) {
     }
     return;
   }
+
+  // For static items, check both
+  const isCurrentlyEthereal = itemData.properties.ethereal ||
+    (itemData.description && itemData.description.includes("Ethereal"));
 
   // For static items, use the old method
   // Get or generate description

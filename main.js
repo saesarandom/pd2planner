@@ -778,10 +778,10 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       window.updateWeaponDamageDisplay();
     }
 
-    // For properties that affect defensive stats, recalculate and update the stat display
-    // This ensures drcontainer, mdrcontainer, pdrcontainer, etc. update immediately
-    const defensiveStatProps = ['physdr', 'mdr', 'pdr', 'dr', 'plr', 'frw', 'fhr', 'cb', 'ow', 'deadly'];
-    if (defensiveStatProps.includes(propKey) && window.unifiedSocketSystem) {
+    // For properties that affect defensive stats and other displayed stats, recalculate and update immediately
+    // This ensures drcontainer, mdrcontainer, pdrcontainer, magicfind, goldfind, etc. update immediately
+    const immediateUpdateProps = ['physdr', 'mdr', 'pdr', 'dr', 'plr', 'frw', 'fhr', 'cb', 'ow', 'deadly', 'magicfind', 'goldfind'];
+    if (immediateUpdateProps.includes(propKey) && window.unifiedSocketSystem) {
       if (typeof window.unifiedSocketSystem.calculateAllStats === 'function') {
         window.unifiedSocketSystem.calculateAllStats();
       }
