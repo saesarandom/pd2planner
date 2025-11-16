@@ -652,6 +652,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     });
   }
 
+  // Add ethereal text if the item is ethereal
+  if (props.ethereal) {
+    html += ' <span style="color: #C0C0C0">Ethereal</span>';
+  }
+
   return html;
 }
 
