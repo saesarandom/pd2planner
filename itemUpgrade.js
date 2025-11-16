@@ -3251,24 +3251,66 @@ function calculateItemDamage(item, baseType, isMax = false) {
   });
 
   // Get base min or max damage value and add flat jewel damage to it
-  const base = isMax ? baseDamage.max : baseDamage.min;
-  const baseWithFlatBonus = base + flatDamageBonus;
+   // Get base min or max damage value
+  // Get +min/max damage from OTHER EQUIPMENT sockets (NOT weapon sockets)
+  // These should be added to base BEFORE ED% is applied
+  let nonWeaponSocketFlatDmg = 0;
+  const allSections = ['helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
+  
+  allSections.forEach(section => {
+    const sectionSockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+    
+    sectionSockets.forEach(socket => {
+      if (!socket.dataset.stats) return;
+      
+      let stats = [];
+      if (socket.dataset.itemName === "jewel") {
+        try {
+          stats = JSON.parse(socket.dataset.stats);
+        } catch (e) {
+          return;
+        }
+      } else {
+        // For runes/gems, parse the stats string
+        stats = socket.dataset.stats.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      
+      stats.forEach(stat => {
+        if (isMax) {
+          const maxDmgMatch = stat.match(/\+(\d+) to (Maximum|Max) Damage/i);
+          if (maxDmgMatch) {
+            nonWeaponSocketFlatDmg += parseInt(maxDmgMatch[1]);
+          }
+        } else {
+          const minDmgMatch = stat.match(/\+(\d+) to (Minimum|Min) Damage/i);
+          if (minDmgMatch) {
+            nonWeaponSocketFlatDmg += parseInt(minDmgMatch[1]);
+          }
+        }
+      });
+    });
+  });
 
-  // Apply ethereal bonus to base damage (including flat bonus)
-  const ethBase = Math.floor(baseWithFlatBonus * ethMult);
+  // Get base min or max damage value and add NON-weapon socket damage
+  const base = isMax ? baseDamage.max : baseDamage.min;
+  const baseWithOtherEquipmentFlat = base + nonWeaponSocketFlatDmg;
+
+  // Apply ethereal bonus to base damage (including other equipment socket damage)
+  const ethBase = Math.floor(baseWithOtherEquipmentFlat * ethMult);
 
   // Sum up all enhanced damage sources
   const totalEnhancedDamage = itemEdmg + socketEnhancedDamage;
 
-  // Calculate final damage with all bonuses (ED% now multiplies the flat damage too!)
+  // Calculate final damage with all percentage bonuses (now other equipment sockets get multiplied!)
   let finalDamage = Math.floor(ethBase * (1 + totalEnhancedDamage / 100));
 
-  // tomindmg/tomaxdmg from item properties still added at the end (these are from item itself, not jewels)
+  // Add item's own tomindmg/tomaxdmg AFTER ED% (like "Adds 8-25 Damage" on items)
   if (isMax && item.properties.tomaxdmg) {
     finalDamage += item.properties.tomaxdmg;
   } else if (!isMax && item.properties.tomindmg) {
     finalDamage += item.properties.tomindmg;
   }
+
 
   // Add per-level damage bonus to max damage only as the LAST step
   if (isMax && item.properties.maxdmgperlvl) {
