@@ -94,7 +94,7 @@ window.restoreItemState = function(dropdownId, itemName, section) {
       window.unifiedSocketSystem.setSocketCount(section, savedState.socketCount);
     }
 
-    // First: Restore socket data (without images) at 80ms
+    // Restore socket data early so updateAll() can merge stats
     setTimeout(() => {
       savedState.sockets.forEach(socketInfo => {
         const socketSlot = document.querySelector(
@@ -113,21 +113,21 @@ window.restoreItemState = function(dropdownId, itemName, section) {
       if (window.unifiedSocketSystem.updateAll) {
         window.unifiedSocketSystem.updateAll();
       }
+    }, 60);
 
-      // THEN: Add socket images after updateAll() completes (at 150ms total)
-      setTimeout(() => {
-        savedState.sockets.forEach(socketInfo => {
-          const socketSlot = document.querySelector(
-            `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
-          );
+    // Add socket images MUCH later to ensure all updates are completely finished
+    setTimeout(() => {
+      savedState.sockets.forEach(socketInfo => {
+        const socketSlot = document.querySelector(
+          `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
+        );
 
-          if (socketSlot && !socketSlot.querySelector('img')) {
-            // Add image only if it doesn't already exist
-            socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
-          }
-        });
-      }, 70);
-    }, 80);
+        if (socketSlot) {
+          // Force add the image
+          socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
+        }
+      });
+    }, 300);
   } else {
     // No sockets to restore - call updateAll() immediately to update ethereal/corruption
     if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
