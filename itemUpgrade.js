@@ -4404,8 +4404,13 @@ function makeEtherealItem(category) {
 
   if (!currentItemData) return;
 
+  // Ensure properties object exists
+  if (!currentItemData.properties) {
+    currentItemData.properties = {};
+  }
+
   // Check if ethereal is currently applied
-  const isCurrentlyEthereal = currentItemData.properties?.ethereal ||
+  const isCurrentlyEthereal = currentItemData.properties.ethereal ||
     (currentItemData.description && currentItemData.description.includes("Ethereal"));
 
   // Check if there's a socket corruption to preserve
@@ -4425,15 +4430,18 @@ function makeEtherealItem(category) {
       // For dynamic items: toggle ethereal property
       if (isCurrentlyEthereal) {
         // Remove ethereal
+        console.log('Removing ethereal from', currentItem);
         currentItemData.properties.ethereal = false;
       } else {
         // Add ethereal
+        console.log('Adding ethereal to', currentItem);
         currentItemData.properties.ethereal = true;
       }
 
       // For non-crafted dynamic weapons (like True Silver), we need to recalculate damage
       // because calculateItemDamage is used, not the crafted item formula
       if (typeof window.updateWeaponDamageDisplay === 'function') {
+        console.log('Calling updateWeaponDamageDisplay for', currentItem);
         window.updateWeaponDamageDisplay();
       }
     } else {
@@ -4548,14 +4556,16 @@ function makeEtherealItem(category) {
       // For dynamic items: toggle ethereal property
       if (isCurrentlyEthereal) {
         // Remove ethereal
+        console.log('Removing ethereal from', currentItem, '(armor/helm)');
         currentItemData.properties.ethereal = false;
       } else {
         // Add ethereal
+        console.log('Adding ethereal to', currentItem, '(armor/helm)');
         currentItemData.properties.ethereal = true;
       }
 
-      // DON'T recalculate defense here - let the socket system handle everything
-      // The socket system will regenerate the description with correct defense and input boxes
+      // Let the socket system handle regeneration
+      console.log('Ethereal flag set, letting socket system regenerate');
     } else {
       // For static items
       let lines = currentItemData.description.split("<br>");
