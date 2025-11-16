@@ -494,11 +494,9 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       props.twohandmax = maxDmg;
     } else if (isVersatile) {
       // Versatile weapons: show both one-hand and two-hand damage
-      // One-hand is weaker (about 60% of base) - apply ethereal to the 60% base
-      const ethBase60Min = Math.floor(baseDmg.min * 0.6 * ethMult);
-      const ethBase60Max = Math.floor(baseDmg.max * 0.6 * ethMult);
-      props.onehandmin = Math.floor(ethBase60Min * (1 + edmgValue / 100));
-      props.onehandmax = Math.floor(ethBase60Max * (1 + edmgValue / 100));
+      // One-hand is weaker (about 60% of two-hand damage)
+      props.onehandmin = Math.floor(minDmg * 0.6);
+      props.onehandmax = Math.floor(maxDmg * 0.6);
       // Two-hand is full damage
       props.twohandmin = minDmg;
       props.twohandmax = maxDmg;
