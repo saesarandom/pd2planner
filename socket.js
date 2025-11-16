@@ -2635,7 +2635,10 @@ this.selectedJewelSuffix3MaxValue = null;
 
   // Generate final description with stacked properties and visual indicators
   generateStackedDescription(originalDescription, mergedStats, socketItems) {
-    let finalDescription = originalDescription;
+    // Extract ethereal text if present, to re-add at the very end
+    const etherealMatch = originalDescription.match(/\s*<span[^>]*>Ethereal<\/span>/i);
+    const etherealText = etherealMatch ? etherealMatch[0] : '';
+    let finalDescription = etherealText ? originalDescription.replace(/\s*<span[^>]*>Ethereal<\/span>/i, '') : originalDescription;
 
     // Replace stacked stats in original description with blue colored versions
     mergedStats.forEach((data, key) => {
@@ -2673,6 +2676,11 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       });
     });
+
+    // Re-add ethereal at the very end if it was present
+    if (etherealText) {
+      finalDescription += etherealText;
+    }
 
     return finalDescription;
   }
