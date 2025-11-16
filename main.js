@@ -507,8 +507,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
     if (item.isCrafted && item.baseType && item.itemType !== 'weapon') {
     // Check if this is armor or helm
-    if (typeof baseDefenses !== 'undefined' && baseDefenses[item.baseType]) {
-      const baseDef = baseDefenses[item.baseType];
+    if (window.baseDefenses && window.baseDefenses[item.baseType]) {
+      const baseDef = window.baseDefenses[item.baseType];
       const edefValue = getPropertyValue(props.edef || 0);
 
       // Apply ethereal multiplier to base defense if ethereal
@@ -583,10 +583,21 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       // If defenseDisplay is set (from edef calculation), use it
       if (defenseDisplay !== null) return defenseDisplay;
 
-      // For static defense values, apply ethereal multiplier if item is ethereal
-      if (props.ethereal && val) {
-        const ethDefense = Math.floor(val * 1.5);
-        return `Defense: ${ethDefense}`;
+      // For static defense values with ethereal, recalculate from base defense
+      if (props.ethereal && val && item.baseType) {
+        // Look up base defense from baseDefenses table (defined in itemUpgrade.js)
+        const baseDefense = window.baseDefenses ? window.baseDefenses[item.baseType] : null;
+
+        if (baseDefense !== null && baseDefense !== undefined) {
+          // Apply ethereal to base: floor(base * 1.5)
+          const ethBase = Math.floor(baseDefense * 1.5);
+
+          // Add todef if it exists
+          const todefValue = props.todef || 0;
+          const finalDefense = ethBase + todefValue;
+
+          return `Defense: ${finalDefense}`;
+        }
       }
 
       return `Defense: ${val}`;
