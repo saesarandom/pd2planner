@@ -1098,9 +1098,15 @@ class SkillSystem {
   // Get weapon elemental damages
   var elementalDamages = this.getWeaponElementalDamages();
 
-  // Calculate base physical damage with all bonuses
-  var baseMinDamage = Math.floor((weaponDamage.min) * (1 + totalDamageBonus / 100 + statBonus / 100));
-  var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + totalDamageBonus / 100 + statBonus / 100));
+  // Get flat damage bonuses from socketed items (jewels, runes, gems)
+  var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+  var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+  var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+  var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+  // Calculate base physical damage with all bonuses (percentage bonuses applied first, then flat bonuses)
+  var baseMinDamage = Math.floor((weaponDamage.min) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMinDmg;
+  var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMaxDmg;
 
   // Get individual critical chances (each capped at 75%)
   var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
@@ -1302,9 +1308,15 @@ getDeadlyStrikeChance() {
     var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
     var statBonus = Math.floor(dexterity * 1);
 
-    // Calculate base physical damage (weapon × bonuses)
-    var convertedPhysicalMin = Math.floor((weaponDamage.min) * (1 + masteryDamageBonus / 100 + statBonus / 100));
-    var convertedPhysicalMax = Math.floor((weaponDamage.max) * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    // Get flat damage bonuses from socketed items (jewels, runes, gems)
+    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+    var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+    var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+    // Calculate base physical damage (weapon × bonuses + flat bonuses)
+    var convertedPhysicalMin = Math.floor((weaponDamage.min) * (1 + masteryDamageBonus / 100 + statBonus / 100)) + toMinDmg;
+    var convertedPhysicalMax = Math.floor((weaponDamage.max) * (1 + masteryDamageBonus / 100 + statBonus / 100)) + toMaxDmg;
 
     // Get skill's base lightning damage
     var levelIndex = Math.min(skillLevel - 1, 59);

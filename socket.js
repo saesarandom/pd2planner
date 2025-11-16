@@ -3222,16 +3222,6 @@ this.selectedJewelSuffix3MaxValue = null;
 
       const lines = description.split('<br>');
       lines.forEach(line => this.parseStatLine(line.trim()));
-
-      // Also accumulate tomindmg and tomaxdmg from item properties (for jewels, runes, gems)
-      if (item.properties) {
-        if (item.properties.tomindmg) {
-          this.stats.toMinDmg += item.properties.tomindmg;
-        }
-        if (item.properties.tomaxdmg) {
-          this.stats.toMaxDmg += item.properties.tomaxdmg;
-        }
-      }
     }
 
     // parseSocketStats(statsText, section) {
