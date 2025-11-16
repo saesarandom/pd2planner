@@ -4438,12 +4438,9 @@ function makeEtherealItem(category) {
         currentItemData.properties.ethereal = true;
       }
 
-      // For non-crafted dynamic weapons (like True Silver), we need to recalculate damage
-      // because calculateItemDamage is used, not the crafted item formula
-      if (typeof window.updateWeaponDamageDisplay === 'function') {
-        console.log('Calling updateWeaponDamageDisplay for', currentItem);
-        window.updateWeaponDamageDisplay();
-      }
+      // DON'T call updateWeaponDamageDisplay - it causes errors for dynamic items
+      // Just let the socket system regenerate everything at the end via updateAll()
+      console.log('Ethereal flag toggled, will regenerate via socket system');
     } else {
       // For static items
       let description = currentItemData.description;
