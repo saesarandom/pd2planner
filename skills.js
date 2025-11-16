@@ -875,6 +875,19 @@ class SkillSystem {
       html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
     }
 
+    // Show +Min/Max Damage from items (jewels, runes, gems, etc.)
+    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+    var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+    var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+    if (toMinDmg > 0) {
+      html += '<div style="margin: 5px 0; color: #ffcc99;">to Min Dmg: +' + toMinDmg + '</div>';
+    }
+    if (toMaxDmg > 0) {
+      html += '<div style="margin: 5px 0; color: #ffcc99;">to Max Dmg: +' + toMaxDmg + '</div>';
+    }
+
     // Show elemental damages if they exist
     var elem = damageInfo.elementalDamages;
     if (elem.fire.max > 0) {
