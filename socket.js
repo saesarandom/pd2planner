@@ -1655,13 +1655,13 @@
 
       this.updateAll();
 
-      // Refresh saved state after socket cleared
+      // Refresh saved state AFTER updateAll completes
       const container = socket.closest('.socket-container');
       const section = container?.dataset.section;
       if (section && typeof window.refreshSavedState === 'function') {
         const dropdownId = this.getSectionDropdownId(section);
         if (dropdownId) {
-          window.refreshSavedState(dropdownId, section);
+          setTimeout(() => window.refreshSavedState(dropdownId, section), 100);
         }
       }
     }
@@ -1695,17 +1695,16 @@
     }
     
     this.hideSocketModal();
+    this.currentSocket = null;
     this.updateAll();
 
-    // Refresh saved state after socket filled
+    // Refresh saved state AFTER updateAll completes
     if (section && typeof window.refreshSavedState === 'function') {
       const dropdownId = this.getSectionDropdownId(section);
       if (dropdownId) {
-        window.refreshSavedState(dropdownId, section);
+        setTimeout(() => window.refreshSavedState(dropdownId, section), 100);
       }
     }
-
-    this.currentSocket = null;
   }
     // === MODAL CREATION ===
     createSocketModal() {

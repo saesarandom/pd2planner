@@ -954,13 +954,13 @@ function applySocketCorruptionFromModal(corruption) {
     window.unifiedSocketSystem.setSocketCount(section, socketCount);
   }
 
-  // Refresh saved state to capture socket corruption + ethereal + sockets
-  if (section && typeof window.refreshSavedState === 'function') {
-    window.refreshSavedState(currentCorruptionSlot, section);
-  }
-
   // Trigger item display update
   triggerItemUpdate(currentCorruptionSlot);
+
+  // Refresh saved state AFTER triggerItemUpdate completes (so description and properties are in sync)
+  if (section && typeof window.refreshSavedState === 'function') {
+    setTimeout(() => window.refreshSavedState(currentCorruptionSlot, section), 150);
+  }
 
   closeCorruptionModal();
 }
@@ -1154,14 +1154,14 @@ function applyCorruptionToItem(corruptionText) {
     }
   }
 
-  // Refresh saved state to capture current corruption + ethereal + sockets
-  const section = SECTION_MAP[currentCorruptionSlot];
-  if (section && typeof window.refreshSavedState === 'function') {
-    window.refreshSavedState(currentCorruptionSlot, section);
-  }
-
   // Trigger item display update
   triggerItemUpdate(currentCorruptionSlot);
+
+  // Refresh saved state AFTER triggerItemUpdate completes (so description and properties are in sync)
+  const section = SECTION_MAP[currentCorruptionSlot];
+  if (section && typeof window.refreshSavedState === 'function') {
+    setTimeout(() => window.refreshSavedState(currentCorruptionSlot, section), 150);
+  }
 
   closeCorruptionModal();
 }
