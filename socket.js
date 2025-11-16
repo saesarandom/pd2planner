@@ -1361,6 +1361,15 @@
             const oldItemName = dropdown.dataset.previousValue;
             const newItemName = dropdown.value;
 
+            // Only save/restore if actually switching to a different item
+            if (oldItemName === newItemName) {
+              // Same item - just update display, don't save/restore
+              this.calculateAllStats();
+              this.updateStatsDisplay();
+              setTimeout(() => this.updateAll(), 50);
+              return;
+            }
+
             // SAVE current item state BEFORE switching
             if (oldItemName && typeof window.saveItemState === 'function') {
               window.saveItemState(dropdownId, oldItemName, section);
