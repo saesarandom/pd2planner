@@ -1388,46 +1388,34 @@
               }
             }
 
-            // Track if we're clearing a socket corruption on armor/helm/shield
-            let clearedSocketCorruption = false;
+            // RESTORE item state AFTER switching (or clear if no saved state)
+            if (newItemName) {
+              const stateKey = `${dropdownId}_${newItemName}`;
+              const hasSavedState = window.itemStates && window.itemStates[stateKey];
 
-            // Clear corruption if switching to a different item (OLD BEHAVIOR - only if not restoring state)
-            if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-              const corruption = window.itemCorruptions[dropdownId];
-              // If the corrupted item is different from the newly selected item, clear corruption
-              if (corruption.itemName && corruption.itemName !== newItemName) {
-
-                // Check if this was a socket corruption on armor, helm, or shield
-                if (corruption.type === 'socket_corruption' &&
-                    (section === 'armor' || section === 'helm' || section === 'shield')) {
-                  clearedSocketCorruption = true;
+              if (hasSavedState && typeof window.restoreItemState === 'function') {
+                // Restore saved state
+                window.restoreItemState(dropdownId, newItemName, section);
+              } else {
+                // No saved state - clear corruption and reset to default
+                if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+                  delete window.itemCorruptions[dropdownId];
                 }
 
-                delete window.itemCorruptions[dropdownId];
+                // Reset ethereal button to default state
+                const category = section;
+                const etherealBtn = document.querySelector(`button[onclick*="makeEtherealItem('${category}')"]`);
+                if (etherealBtn) {
+                  etherealBtn.classList.remove('active');
+                  etherealBtn.textContent = 'Make Ethereal';
+                }
 
-                // Restore original description if available
-                if (window.originalItemDescriptions && window.originalItemDescriptions[corruption.itemName]) {
-                  if (itemList[corruption.itemName]) {
-                    itemList[corruption.itemName].description = window.originalItemDescriptions[corruption.itemName];
-                  }
+                // Adjust sockets for new item
+                const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
+                if (socketableSections.includes(section)) {
+                  this.adjustSocketsForItem(section);
                 }
               }
-            }
-
-            // If we cleared a socket corruption on armor/helm/shield, reset sockets to 1 (base Larzuk amount)
-            if (clearedSocketCorruption && newItemName) {
-              this.setSocketCount(section, 1);
-            } else {
-              // Only adjust sockets for socketable items (remove excess)
-              const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
-              if (socketableSections.includes(section)) {
-                this.adjustSocketsForItem(section);
-              }
-            }
-
-            // RESTORE item state AFTER switching
-            if (newItemName && typeof window.restoreItemState === 'function') {
-              window.restoreItemState(dropdownId, newItemName, section);
             }
 
             // Immediately recalculate stats when item changes

@@ -69,6 +69,20 @@ window.restoreItemState = function(dropdownId, itemName, section) {
     }
   }
 
+  // Update ethereal button state based on restored ethereal flag
+  const category = section; // helm, armor, weapon, shield, etc.
+  const etherealBtn = document.querySelector(`button[onclick*="makeEtherealItem('${category}')"]`);
+  if (etherealBtn) {
+    const isEthereal = savedState.ethereal || (savedState.properties && savedState.properties.ethereal);
+    if (isEthereal) {
+      etherealBtn.classList.add('active');
+      etherealBtn.textContent = 'Remove Ethereal';
+    } else {
+      etherealBtn.classList.remove('active');
+      etherealBtn.textContent = 'Make Ethereal';
+    }
+  }
+
   // Restore sockets
   if (savedState.sockets && window.unifiedSocketSystem) {
     // Set socket count first
@@ -94,11 +108,9 @@ window.restoreItemState = function(dropdownId, itemName, section) {
         }
       });
 
-      // Trigger update after restoring sockets
-      if (window.unifiedSocketSystem.updateAll) {
-        window.unifiedSocketSystem.updateAll();
-      }
-    }, 50);
+      // Don't call updateAll() here - let socket.js handle it after restoration completes
+      // This avoids timing conflicts where updateAll() might run before sockets are restored
+    }, 10);
   }
 };
 
