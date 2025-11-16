@@ -1026,6 +1026,23 @@ function applyCorruptionToProperties(itemName, corruptionText) {
       case 'ar':
         props.tohitrating = (props.tohitrating || 0) + stat.value;
         break;
+      case 'edmg':
+        // Enhanced damage - add to edmg property
+        // For dynamic items with variable edmg, update the current value
+        if (typeof props.edmg === 'object' && 'current' in props.edmg) {
+          props.edmg.current = (props.edmg.current || 0) + stat.value;
+        } else {
+          props.edmg = (props.edmg || 0) + stat.value;
+        }
+        break;
+      case 'edef':
+        // Enhanced defense - add to edef property
+        if (typeof props.edef === 'object' && 'current' in props.edef) {
+          props.edef.current = (props.edef.current || 0) + stat.value;
+        } else {
+          props.edef = (props.edef || 0) + stat.value;
+        }
+        break;
     }
   });
 }
@@ -1082,10 +1099,14 @@ function applyCorruptionToItem(corruptionText) {
   const originalDescription = window.originalItemDescriptions[itemName];
   const enhancedDescription = addCorruptionWithStacking(originalDescription, corruptionText);
 
-  // Set the corrupted description (will be regenerated for dynamic items anyway)
-  item.description = enhancedDescription;
+  // For dynamic items (has baseType), DON'T set static description - it breaks input boxes
+  // The socket system will regenerate the description with input boxes intact
+  if (!item.baseType) {
+    // Only set description for static items
+    item.description = enhancedDescription;
+  }
 
-  // Apply corruption stats to item properties
+  // Apply corruption stats to item properties (this is what matters for dynamic items)
   applyCorruptionToProperties(itemName, corruptionText);
 
   // Trigger item display update
