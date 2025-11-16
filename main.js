@@ -473,10 +473,15 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     const baseDmg = baseDamages[item.baseType];
     const edmgValue = getPropertyValue(props.edmg || 0);
 
+    // Apply ethereal multiplier to base damage if ethereal
+    const ethMult = props.ethereal ? 1.5 : 1;
+    const ethBaseMin = Math.floor(baseDmg.min * ethMult);
+    const ethBaseMax = Math.floor(baseDmg.max * ethMult);
+
     // Calculate damage with enhanced damage modifier
     // Formula: floor(base * (1 + edmg/100))
-    const minDmg = Math.floor(baseDmg.min * (1 + edmgValue / 100));
-    const maxDmg = Math.floor(baseDmg.max * (1 + edmgValue / 100));
+    const minDmg = Math.floor(ethBaseMin * (1 + edmgValue / 100));
+    const maxDmg = Math.floor(ethBaseMax * (1 + edmgValue / 100));
 
     // Determine weapon type
     const isTwoHandedOnly = typeof twoHandedOnlyWeapons !== 'undefined' && twoHandedOnlyWeapons.has(item.baseType);
@@ -489,9 +494,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       props.twohandmax = maxDmg;
     } else if (isVersatile) {
       // Versatile weapons: show both one-hand and two-hand damage
-      // One-hand is weaker (about 60% of base)
-      props.onehandmin = Math.floor(baseDmg.min * 0.6 * (1 + edmgValue / 100));
-      props.onehandmax = Math.floor(baseDmg.max * 0.6 * (1 + edmgValue / 100));
+      // One-hand is weaker (about 60% of base) - apply ethereal to the 60% base
+      const ethBase60Min = Math.floor(baseDmg.min * 0.6 * ethMult);
+      const ethBase60Max = Math.floor(baseDmg.max * 0.6 * ethMult);
+      props.onehandmin = Math.floor(ethBase60Min * (1 + edmgValue / 100));
+      props.onehandmax = Math.floor(ethBase60Max * (1 + edmgValue / 100));
       // Two-hand is full damage
       props.twohandmin = minDmg;
       props.twohandmax = maxDmg;
@@ -507,11 +514,15 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     if (typeof baseDefenses !== 'undefined' && baseDefenses[item.baseType]) {
       const baseDef = baseDefenses[item.baseType];
       const edefValue = getPropertyValue(props.edef || 0);
-      
+
+      // Apply ethereal multiplier to base defense if ethereal
+      const ethMult = props.ethereal ? 1.5 : 1;
+      const ethBaseDef = Math.floor(baseDef * ethMult);
+
       // Calculate defense with enhanced defense modifier
       // Formula: floor(base * (1 + edef/100))
-      const finalDef = Math.floor(baseDef * (1 + edefValue / 100));
-      
+      const finalDef = Math.floor(ethBaseDef * (1 + edefValue / 100));
+
       // Just set the property - DON'T add html here
       // The propertyDisplay loop will handle displaying it
       props.defense = finalDef;
@@ -545,9 +556,12 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     const edefValue = getPropertyValue(props.edef || 0);
     const todefValue = props.todef || 0;
 
+    // Apply ethereal multiplier to base defense if ethereal
+    const ethMult = props.ethereal ? 1.5 : 1;
+    const ethBaseDef = Math.floor(baseItemDefense * ethMult);
+
     // Formula: floor((base + 1) * (1 + edef/100)) + todef
-    // The +1 is the same as in damage calculation
-    calculatedDefense = Math.floor((baseItemDefense + 1) * (1 + edefValue / 100)) + todefValue;
+    calculatedDefense = Math.floor((ethBaseDef + 1) * (1 + edefValue / 100)) + todefValue;
 
     // TODO: Add min/max defense range display in future
     // For now, just show the current calculated defense value
