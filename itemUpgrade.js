@@ -1746,7 +1746,8 @@ const upgradeDefinitions = {
   },
 };
 
-const baseDefenses = {
+// Make baseDefenses globally accessible for ethereal calculations in main.js
+window.baseDefenses = {
   Cap: 5,
   "Skull Cap": 11,
   Helm: 18,
