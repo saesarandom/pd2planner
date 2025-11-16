@@ -69,6 +69,11 @@ window.restoreItemState = function(dropdownId, itemName, section) {
     }
   }
 
+  // Trigger immediate description update to sync ethereal text with properties
+  if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
+    window.unifiedSocketSystem.updateAll();
+  }
+
   // Update ethereal button state based on restored ethereal flag
   const category = section; // helm, armor, weapon, shield, etc.
   const etherealBtn = document.querySelector(`button[onclick*="makeEtherealItem('${category}')"]`);
@@ -90,7 +95,7 @@ window.restoreItemState = function(dropdownId, itemName, section) {
       window.unifiedSocketSystem.setSocketCount(section, savedState.socketCount);
     }
 
-    // Restore socket items after a small delay to ensure sockets exist
+    // Restore socket items at the very end after all other updates complete
     setTimeout(() => {
       savedState.sockets.forEach(socketInfo => {
         const socketSlot = document.querySelector(
@@ -103,14 +108,11 @@ window.restoreItemState = function(dropdownId, itemName, section) {
           socketSlot.dataset.stats = socketInfo.stats;
           socketSlot.dataset.levelReq = socketInfo.levelReq;
 
-          // Add image
+          // Add image - load at the very end
           socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
         }
       });
-
-      // Don't call updateAll() here - let socket.js handle it after restoration completes
-      // This avoids timing conflicts where updateAll() might run before sockets are restored
-    }, 10);
+    }, 100);
   }
 };
 
