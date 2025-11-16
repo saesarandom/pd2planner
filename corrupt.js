@@ -1109,6 +1109,46 @@ function applyCorruptionToItem(corruptionText) {
   // Apply corruption stats to item properties (this is what matters for dynamic items)
   applyCorruptionToProperties(itemName, corruptionText);
 
+  // For static weapons with edmg corruption, recalculate damage
+  if (!item.baseType && currentCorruptionSlot === 'weapons-dropdown') {
+    const stats = parseCorruptionText(corruptionText);
+    const hasEdmg = stats.some(stat => stat.type === 'edmg');
+
+    if (hasEdmg) {
+      // Get the base type from description
+      const lines = enhancedDescription.split('<br>');
+      const baseType = lines.length > 1 ? lines[1].trim() : null;
+
+      if (baseType && typeof calculateItemDamage === 'function') {
+        const isTwoHanded = item.properties.twohandmin !== undefined;
+
+        // Recalculate damage with corruption edmg
+        if (isTwoHanded) {
+          item.properties.twohandmin = calculateItemDamage(item, baseType, false);
+          item.properties.twohandmax = calculateItemDamage(item, baseType, true);
+        } else {
+          item.properties.onehandmin = calculateItemDamage(item, baseType, false);
+          item.properties.onehandmax = calculateItemDamage(item, baseType, true);
+        }
+
+        // Update the damage line in the description
+        const damageLine = isTwoHanded
+          ? `Two-Hand Damage: ${item.properties.twohandmin} to ${item.properties.twohandmax}, Avg ${Math.round((item.properties.twohandmin + item.properties.twohandmax) / 2 * 10) / 10}`
+          : `One-Hand Damage: ${item.properties.onehandmin} to ${item.properties.onehandmax}, Avg ${Math.round((item.properties.onehandmin + item.properties.onehandmax) / 2 * 10) / 10}`;
+
+        // Find and replace the damage line
+        const updatedLines = lines.map(line => {
+          if (line.includes('Damage:')) {
+            return damageLine;
+          }
+          return line;
+        });
+
+        item.description = updatedLines.join('<br>');
+      }
+    }
+  }
+
   // Trigger item display update
   triggerItemUpdate(currentCorruptionSlot);
 
