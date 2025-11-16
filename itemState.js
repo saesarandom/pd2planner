@@ -89,10 +89,13 @@ window.restoreItemState = function(dropdownId, itemName, section) {
   const hasSockets = savedState.sockets && savedState.sockets.length > 0;
 
   if (hasSockets && window.unifiedSocketSystem) {
-    // DON'T call setSocketCount - it removes all sockets and recreates them, clearing our images!
-    // The socket count should already be correct from the previous item state
+    // First: Create the socket slots by calling setSocketCount
+    // This will remove existing sockets and create new empty ones
+    if (savedState.socketCount) {
+      window.unifiedSocketSystem.setSocketCount(section, savedState.socketCount);
+    }
 
-    // Restore socket data AND images together at same time
+    // Wait for setSocketCount and its updateAll() to complete, THEN restore data and images
     setTimeout(() => {
       savedState.sockets.forEach(socketInfo => {
         const socketSlot = document.querySelector(
@@ -107,7 +110,7 @@ window.restoreItemState = function(dropdownId, itemName, section) {
           socketSlot.dataset.stats = socketInfo.stats;
           socketSlot.dataset.levelReq = socketInfo.levelReq;
 
-          // Add image immediately
+          // Add image
           socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
         }
       });
@@ -116,7 +119,7 @@ window.restoreItemState = function(dropdownId, itemName, section) {
       if (window.unifiedSocketSystem.updateAll) {
         window.unifiedSocketSystem.updateAll();
       }
-    }, 80);
+    }, 200);
   } else {
     // No sockets to restore - call updateAll() immediately to update ethereal/corruption
     if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
