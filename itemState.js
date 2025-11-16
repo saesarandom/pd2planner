@@ -85,52 +85,34 @@ window.restoreItemState = function(dropdownId, itemName, section) {
     }
   }
 
-  // Restore sockets
+  // Restore sockets - simple direct approach
   const hasSockets = savedState.sockets && savedState.sockets.length > 0;
 
-  if (hasSockets && window.unifiedSocketSystem) {
-    // First: Create the socket slots by calling setSocketCount
-    // This will remove existing sockets and create new empty ones
-    if (savedState.socketCount) {
-      window.unifiedSocketSystem.setSocketCount(section, savedState.socketCount);
-    }
+  if (hasSockets) {
+    // Directly restore socket data and images - socket slots should already exist
+    savedState.sockets.forEach(socketInfo => {
+      const socketSlot = document.querySelector(
+        `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
+      );
 
-    // Step 1: Wait for setSocketCount to complete, then restore socket DATA (without images)
-    setTimeout(() => {
-      savedState.sockets.forEach(socketInfo => {
-        const socketSlot = document.querySelector(
-          `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
-        );
-
-        if (socketSlot) {
-          // Add filled class and data (but NO image yet)
-          socketSlot.classList.remove('empty');
-          socketSlot.classList.add('filled');
-          socketSlot.dataset.itemName = socketInfo.itemName;
-          socketSlot.dataset.stats = socketInfo.stats;
-          socketSlot.dataset.levelReq = socketInfo.levelReq;
-        }
-      });
-
-      // Step 2: Call updateAll() to merge socket stats into description
-      if (window.unifiedSocketSystem.updateAll) {
-        window.unifiedSocketSystem.updateAll();
+      if (socketSlot) {
+        console.log('Restoring socket:', socketInfo.itemName, 'to slot', socketInfo.index + 1);
+        // Restore everything at once
+        socketSlot.classList.remove('empty');
+        socketSlot.classList.add('filled');
+        socketSlot.dataset.itemName = socketInfo.itemName;
+        socketSlot.dataset.stats = socketInfo.stats;
+        socketSlot.dataset.levelReq = socketInfo.levelReq;
+        socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
+      } else {
+        console.log('Socket slot not found for index', socketInfo.index + 1, 'in section', section);
       }
+    });
 
-      // Step 3: Add images AFTER updateAll() completes
-      setTimeout(() => {
-        savedState.sockets.forEach(socketInfo => {
-          const socketSlot = document.querySelector(
-            `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
-          );
-
-          if (socketSlot) {
-            // Now add the image
-            socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
-          }
-        });
-      }, 100);
-    }, 150);
+    // Call updateAll() after a tiny delay to merge socket stats
+    if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
+      setTimeout(() => window.unifiedSocketSystem.updateAll(), 20);
+    }
   } else {
     // No sockets to restore - call updateAll() immediately to update ethereal/corruption
     if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
