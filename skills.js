@@ -817,7 +817,17 @@ class SkillSystem {
 
     if (currentValue && dropdown.querySelector('option[value="' + currentValue + '"]')) {
       dropdown.value = currentValue;
+    } else {
+      // If no previous selection, select the first available skill
+      var options = dropdown.querySelectorAll('option');
+      if (options.length > 1) {
+        // options[0] is the "Select Active Skill..." placeholder
+        dropdown.value = options[1].value;
+      }
     }
+
+    // Trigger skill damage calculation to show tooltip
+    this.calculateSkillDamage();
   }
 
   calculateSkillDamage() {

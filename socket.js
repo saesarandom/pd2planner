@@ -5117,7 +5117,21 @@ const statsArray = [
 
         // Skip empty socket data
         if (!socketData.itemKey || !socketData.category) {
-       
+
+          return;
+        }
+
+        // Handle custom jewels specially (they're not in the static database)
+        if (socketData.itemKey === 'custom-jewel') {
+          slot.className = 'socket-slot filled';
+          // Extract color from jewel name (e.g., "White Jewel" -> "white")
+          const color = socketData.itemName.split(' ')[0].toLowerCase();
+          slot.innerHTML = `<img src="img/jewel${color}.png" alt="${socketData.itemName}">`;
+          slot.dataset.itemKey = socketData.itemKey;
+          slot.dataset.category = socketData.category;
+          slot.dataset.itemName = socketData.itemName;
+          slot.dataset.stats = socketData.stats;
+          slot.dataset.levelReq = socketData.levelReq || '1';
           return;
         }
 
@@ -5143,7 +5157,7 @@ const statsArray = [
           slot.dataset.stats = stats;
         }
 
-        
+
       });
     }
 
