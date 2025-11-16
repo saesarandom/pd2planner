@@ -4340,8 +4340,13 @@ addToStatsMap(statsMap, key, data) {
       window.updateCritDisplay();
     }
 
-      if (window.onEquipmentOrSocketChange) {
+    if (window.onEquipmentOrSocketChange) {
       window.onEquipmentOrSocketChange();
+    }
+
+    // Recalculate skill damage whenever stats change (including when jewels are inserted)
+    if (window.skillsCalculator && typeof window.skillsCalculator.calculateSkillDamage === 'function') {
+      window.skillsCalculator.calculateSkillDamage();
     }
   }
 
@@ -5200,32 +5205,3 @@ const statsArray = [
 
   };
 
-  // Setup mutation observers for damage containers - store in window to prevent garbage collection
-  const setupDamageContainerObservers = () => {
-    const toMinDmgContainer = document.getElementById('tomindmgcontainer');
-    const toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
-
-    if (toMinDmgContainer && toMaxDmgContainer) {
-      // Only create observer if not already created
-      if (!window.damageContainerObserver) {
-        window.damageContainerObserver = new MutationObserver(() => {
-          if (window.skillsCalculator && typeof window.skillsCalculator.calculateSkillDamage === 'function') {
-            window.skillsCalculator.calculateSkillDamage();
-          }
-        });
-      }
-
-      // Use childList to detect text content changes (when textContent is set, it replaces child nodes)
-      const config = { childList: true, subtree: false };
-      window.damageContainerObserver.observe(toMinDmgContainer, config);
-      window.damageContainerObserver.observe(toMaxDmgContainer, config);
-    }
-  };
-
-  // Try to set up immediately
-  setupDamageContainerObservers();
-
-  // Also set up after DOM is fully loaded (in case elements weren't ready yet)
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupDamageContainerObservers);
-  }
