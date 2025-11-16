@@ -4403,8 +4403,13 @@ function makeEtherealItem(category) {
     const isDynamic = currentItemData.baseType;
 
     if (isDynamic) {
-      // For dynamic items: just set the ethereal property and let generateItemDescription handle it
+      // For dynamic items: set the ethereal property, then recalculate damage
       currentItemData.properties.ethereal = true;
+
+      // Recalculate weapon damage with ethereal multiplier
+      if (typeof updateWeaponDamageDisplay === 'function') {
+        updateWeaponDamageDisplay();
+      }
     } else {
       // For static items: use the old method
       let description = currentItemData.description;
@@ -4467,8 +4472,25 @@ function makeEtherealItem(category) {
     const isDynamic = currentItemData.baseType;
 
     if (isDynamic) {
-      // For dynamic items: just set the ethereal property and let generateItemDescription handle it
+      // For dynamic items: set the ethereal property, then recalculate defense
       currentItemData.properties.ethereal = true;
+
+      // Recalculate defense with ethereal multiplier
+      // Generate temp description to get baseType
+      let tempDesc = window.generateItemDescription(currentItem, currentItemData, `${category}-dropdown`);
+      if (tempDesc) {
+        const baseType = tempDesc.split("<br>")[1];
+        if (baseType) {
+          const newDefense = calculateItemDefense(currentItemData, baseType, category);
+
+          // Store defense in properties (handling variable stats)
+          if (typeof currentItemData.properties.defense === 'object' && 'current' in currentItemData.properties.defense) {
+            currentItemData.properties.defense.current = newDefense;
+          } else {
+            currentItemData.properties.defense = newDefense;
+          }
+        }
+      }
     } else {
       // For static items: modify description directly
       let lines = currentItemData.description.split("<br>");
@@ -4493,11 +4515,6 @@ function makeEtherealItem(category) {
     }
   }
 
-  // Trigger change event to update display
-  select.dispatchEvent(new Event("change"));
-if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
-      return;
-
   // Reapply socket corruption if there was one
   if (socketCorruption) {
     const socketMatch = socketCorruption.match(/Socketed \((\d+)\)/);
@@ -4509,6 +4526,10 @@ if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll(
       updateSocketCount(category, socketCount);
     }
   }
+
+  // Trigger change event to update display
+  select.dispatchEvent(new Event("change"));
+  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
 }
 
 function makeEtherealWeapon(weaponName) {
