@@ -4597,12 +4597,6 @@ function makeEtherealItem(category) {
     }
   }
 
-  // Refresh saved state to capture current ethereal status + sockets + corruption
-  const dropdownId = `${category}-dropdown`;
-  if (typeof window.refreshSavedState === 'function') {
-    window.refreshSavedState(dropdownId, category);
-  }
-
   // Reapply socket corruption if there was one
   if (socketCorruption) {
     const socketMatch = socketCorruption.match(/Socketed \((\d+)\)/);
@@ -4618,6 +4612,12 @@ function makeEtherealItem(category) {
   // Trigger change event to update display
   select.dispatchEvent(new Event("change"));
   if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+
+  // Refresh saved state AFTER updateAll() completes (so description and properties are in sync)
+  const dropdownId = `${category}-dropdown`;
+  if (typeof window.refreshSavedState === 'function') {
+    setTimeout(() => window.refreshSavedState(dropdownId, category), 100);
+  }
 }
 
 function makeEtherealWeapon(weaponName) {
