@@ -778,9 +778,35 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       window.updateWeaponDamageDisplay();
     }
 
-    // For properties that affect defensive stats and other displayed stats, recalculate and update immediately
-    // This ensures drcontainer, mdrcontainer, pdrcontainer, magicfind, goldfind, etc. update immediately
-    const immediateUpdateProps = ['physdr', 'mdr', 'pdr', 'dr', 'plr', 'frw', 'fhr', 'cb', 'ow', 'deadly', 'magicfind', 'goldfind'];
+    // For properties that affect displayed stats, recalculate and update immediately
+    // This ensures ALL stat counters update instantly when you change input boxes
+    const immediateUpdateProps = [
+      // Attributes
+      'str', 'dex', 'vit', 'enr',
+      // Resistances
+      'fireresist', 'coldresist', 'lightresist', 'poisonresist', 'curseresist', 'allres',
+      // Speed stats
+      'ias', 'fcr', 'frw', 'fhr',
+      // Combat stats
+      'ow', 'cb', 'deadly', 'critchance', 'lifesteal', 'manasteal',
+      // Defensive stats
+      'dr', 'pdr', 'mdr', 'physdr', 'plr', 'blockchance', 'block',
+      // Core stats
+      'allsk', 'allskills', 'classsk', 'magicfind', 'goldfind', 'defense',
+      // Boolean stats
+      'cbf',
+      // Flat damage
+      'tomindmg', 'tomaxdmg', 'flatfiremin', 'flatfiremax', 'flatcoldmin', 'flatcoldmax',
+      'flatlightmin', 'flatlightmax', 'flatpoisonmin', 'flatpoisonmax',
+      'colddmgmin', 'colddmgmax', 'firedmgmin', 'firedmgmax', 'lightdmgmin', 'lightdmgmax',
+      'poisondmgmin', 'poisondmgmax', 'magicdmgmin', 'magicdmgmax',
+      // Skill damage
+      'fireskilldam', 'coldskilldam', 'lightningskilldam', 'poisonskilldam', 'magicskilldam',
+      // Pierce
+      'piercefireresist', 'piercecoldresist', 'piercelightningresist', 'piercepoisonresist', 'piercephysresist',
+      // Life/Mana
+      'tolife', 'tomana', 'life', 'mana'
+    ];
     if (immediateUpdateProps.includes(propKey) && window.unifiedSocketSystem) {
       if (typeof window.unifiedSocketSystem.calculateAllStats === 'function') {
         window.unifiedSocketSystem.calculateAllStats();
