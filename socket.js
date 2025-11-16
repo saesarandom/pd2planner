@@ -1652,8 +1652,18 @@
       ['itemKey', 'category', 'itemName', 'stats', 'levelReq'].forEach(attr => {
         delete socket.dataset[attr];
       });
-      
+
       this.updateAll();
+
+      // Refresh saved state after socket cleared
+      const container = socket.closest('.socket-container');
+      const section = container?.dataset.section;
+      if (section && typeof window.refreshSavedState === 'function') {
+        const dropdownId = this.getSectionDropdownId(section);
+        if (dropdownId) {
+          window.refreshSavedState(dropdownId, section);
+        }
+      }
     }
 
     fillSocket(itemKey, category) {
@@ -1685,8 +1695,17 @@
     }
     
     this.hideSocketModal();
-    this.currentSocket = null;
     this.updateAll();
+
+    // Refresh saved state after socket filled
+    if (section && typeof window.refreshSavedState === 'function') {
+      const dropdownId = this.getSectionDropdownId(section);
+      if (dropdownId) {
+        window.refreshSavedState(dropdownId, section);
+      }
+    }
+
+    this.currentSocket = null;
   }
     // === MODAL CREATION ===
     createSocketModal() {
