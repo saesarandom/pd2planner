@@ -17,15 +17,12 @@ window.saveItemState = function(dropdownId, itemName, section) {
   const socketData = [];
   const socketSlots = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
   socketSlots.forEach((slot, index) => {
-    // Get the image src from the actual img element
     const imgElement = slot.querySelector('img');
-    const imgSrc = imgElement ? imgElement.src : null;
-
     socketData.push({
       itemName: slot.dataset.itemName,
       stats: slot.dataset.stats,
       levelReq: slot.dataset.levelReq,
-      imgSrc: imgSrc,  // Save the actual image src
+      imgSrc: imgElement ? imgElement.src : null,
       index: index
     });
   });
@@ -34,12 +31,9 @@ window.saveItemState = function(dropdownId, itemName, section) {
   window.itemStates[stateKey] = {
     corruption: window.itemCorruptions ? window.itemCorruptions[dropdownId] : null,
     sockets: socketData,
-    socketCount: socketSlots.length,
     ethereal: item.properties?.ethereal || false,
     properties: item.properties ? JSON.parse(JSON.stringify(item.properties)) : null
   };
-
-  console.log('Saved state for', itemName, window.itemStates[stateKey]);
 };
 
 // Restore item state after switching
@@ -48,13 +42,7 @@ window.restoreItemState = function(dropdownId, itemName, section) {
 
   const stateKey = `${dropdownId}_${itemName}`;
   const savedState = window.itemStates[stateKey];
-
-  if (!savedState) {
-    console.log('No saved state for', itemName);
-    return;
-  }
-
-  console.log('Restoring state for', itemName, savedState);
+  if (!savedState) return;
 
   const item = window.getItemData(itemName);
   if (!item) return;
@@ -67,18 +55,13 @@ window.restoreItemState = function(dropdownId, itemName, section) {
   // Restore corruption
   if (savedState.corruption && window.itemCorruptions) {
     window.itemCorruptions[dropdownId] = savedState.corruption;
-
-    // Reapply corruption to properties
     if (savedState.corruption.text && typeof applyCorruptionToProperties === 'function') {
       applyCorruptionToProperties(itemName, savedState.corruption.text);
     }
   }
 
-  // Don't call updateAll() here - we'll call it after sockets are restored (or let socket.js handle it)
-
-  // Update ethereal button state based on restored ethereal flag
-  const category = section; // helm, armor, weapon, shield, etc.
-  const etherealBtn = document.querySelector(`button[onclick*="makeEtherealItem('${category}')"]`);
+  // Update ethereal button state
+  const etherealBtn = document.querySelector(`button[onclick*="makeEtherealItem('${section}')"]`);
   if (etherealBtn) {
     const isEthereal = savedState.ethereal || (savedState.properties && savedState.properties.ethereal);
     if (isEthereal) {
@@ -90,52 +73,36 @@ window.restoreItemState = function(dropdownId, itemName, section) {
     }
   }
 
-  // Restore sockets - simple direct approach
-  const hasSockets = savedState.sockets && savedState.sockets.length > 0;
-
-  if (hasSockets) {
-    // Directly restore socket data and images - socket slots should already exist
+  // Restore sockets
+  if (savedState.sockets && savedState.sockets.length > 0) {
     savedState.sockets.forEach(socketInfo => {
       const socketSlot = document.querySelector(
         `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
       );
 
-      if (socketSlot) {
-        console.log('Restoring socket:', socketInfo.itemName, 'to slot', socketInfo.index + 1, 'imgSrc:', socketInfo.imgSrc);
-        // Restore everything at once
+      if (socketSlot && socketInfo.imgSrc) {
         socketSlot.classList.remove('empty');
         socketSlot.classList.add('filled');
         socketSlot.dataset.itemName = socketInfo.itemName;
         socketSlot.dataset.stats = socketInfo.stats;
         socketSlot.dataset.levelReq = socketInfo.levelReq;
-
-        // Use the saved image src instead of constructing our own path
-        if (socketInfo.imgSrc) {
-          socketSlot.innerHTML = `<img src="${socketInfo.imgSrc}" alt="${socketInfo.itemName}">`;
-        }
-      } else {
-        console.log('Socket slot not found for index', socketInfo.index + 1, 'in section', section);
+        socketSlot.innerHTML = `<img src="${socketInfo.imgSrc}" alt="${socketInfo.itemName}">`;
       }
     });
+  }
 
-    // Call updateAll() after a tiny delay to merge socket stats
-    if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
-      setTimeout(() => window.unifiedSocketSystem.updateAll(), 20);
-    }
-  } else {
-    // No sockets to restore - call updateAll() immediately to update ethereal/corruption
-    if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
-      window.unifiedSocketSystem.updateAll();
-    }
+  // Update display to show restored state
+  if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
+    window.unifiedSocketSystem.updateAll();
   }
 };
 
 // Clear item state if requirements not met
 window.clearItemStateIfRequirementsNotMet = function(dropdownId, itemName) {
-  if (!itemName) return;
+  if (!itemName) return false;
 
   const item = window.getItemData(itemName);
-  if (!item || !item.properties) return;
+  if (!item || !item.properties) return false;
 
   const charLevel = window.unifiedSocketSystem?.currentLevel || 1;
   const charStr = parseInt(document.getElementById('str')?.value) || 0;
@@ -149,7 +116,6 @@ window.clearItemStateIfRequirementsNotMet = function(dropdownId, itemName) {
   if (charLevel < reqLevel || charStr < reqStr || charDex < reqDex) {
     const stateKey = `${dropdownId}_${itemName}`;
     delete window.itemStates[stateKey];
-    console.log('Cleared state for', itemName, '(requirements not met)');
     return true;
   }
 
