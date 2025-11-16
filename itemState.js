@@ -1,0 +1,129 @@
+// Simple in-memory item state storage
+// Remembers item modifications (corruption, sockets, ethereal, variable stats)
+// Only clears when requirements not met
+
+// Global storage for item states
+window.itemStates = {};
+
+// Save current item state before switching
+window.saveItemState = function(dropdownId, itemName, section) {
+  if (!itemName) return;
+
+  const stateKey = `${dropdownId}_${itemName}`;
+  const item = window.getItemData(itemName);
+  if (!item) return;
+
+  // Get socket data
+  const socketData = [];
+  const socketSlots = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+  socketSlots.forEach((slot, index) => {
+    socketData.push({
+      itemName: slot.dataset.itemName,
+      stats: slot.dataset.stats,
+      levelReq: slot.dataset.levelReq,
+      index: index
+    });
+  });
+
+  // Save complete state
+  window.itemStates[stateKey] = {
+    corruption: window.itemCorruptions ? window.itemCorruptions[dropdownId] : null,
+    sockets: socketData,
+    socketCount: socketSlots.length,
+    ethereal: item.properties?.ethereal || false,
+    properties: item.properties ? JSON.parse(JSON.stringify(item.properties)) : null
+  };
+
+  console.log('Saved state for', itemName, window.itemStates[stateKey]);
+};
+
+// Restore item state after switching
+window.restoreItemState = function(dropdownId, itemName, section) {
+  if (!itemName) return;
+
+  const stateKey = `${dropdownId}_${itemName}`;
+  const savedState = window.itemStates[stateKey];
+
+  if (!savedState) {
+    console.log('No saved state for', itemName);
+    return;
+  }
+
+  console.log('Restoring state for', itemName, savedState);
+
+  const item = window.getItemData(itemName);
+  if (!item) return;
+
+  // Restore properties (including ethereal and variable stats)
+  if (savedState.properties) {
+    item.properties = JSON.parse(JSON.stringify(savedState.properties));
+  }
+
+  // Restore corruption
+  if (savedState.corruption && window.itemCorruptions) {
+    window.itemCorruptions[dropdownId] = savedState.corruption;
+
+    // Reapply corruption to properties
+    if (savedState.corruption.text && typeof applyCorruptionToProperties === 'function') {
+      applyCorruptionToProperties(itemName, savedState.corruption.text);
+    }
+  }
+
+  // Restore sockets
+  if (savedState.sockets && window.unifiedSocketSystem) {
+    // Set socket count first
+    if (savedState.socketCount) {
+      window.unifiedSocketSystem.setSocketCount(section, savedState.socketCount);
+    }
+
+    // Restore socket items after a small delay to ensure sockets exist
+    setTimeout(() => {
+      savedState.sockets.forEach(socketInfo => {
+        const socketSlot = document.querySelector(
+          `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
+        );
+
+        if (socketSlot) {
+          socketSlot.classList.add('filled');
+          socketSlot.dataset.itemName = socketInfo.itemName;
+          socketSlot.dataset.stats = socketInfo.stats;
+          socketSlot.dataset.levelReq = socketInfo.levelReq;
+
+          // Add image
+          socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
+        }
+      });
+
+      // Trigger update after restoring sockets
+      if (window.unifiedSocketSystem.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
+    }, 50);
+  }
+};
+
+// Clear item state if requirements not met
+window.clearItemStateIfRequirementsNotMet = function(dropdownId, itemName) {
+  if (!itemName) return;
+
+  const item = window.getItemData(itemName);
+  if (!item || !item.properties) return;
+
+  const charLevel = window.unifiedSocketSystem?.currentLevel || 1;
+  const charStr = parseInt(document.getElementById('str')?.value) || 0;
+  const charDex = parseInt(document.getElementById('dex')?.value) || 0;
+
+  const reqLevel = item.properties.reqlvl || 0;
+  const reqStr = item.properties.reqstr || 0;
+  const reqDex = item.properties.reqdex || 0;
+
+  // Clear state if requirements not met
+  if (charLevel < reqLevel || charStr < reqStr || charDex < reqDex) {
+    const stateKey = `${dropdownId}_${itemName}`;
+    delete window.itemStates[stateKey];
+    console.log('Cleared state for', itemName, '(requirements not met)');
+    return true;
+  }
+
+  return false;
+};

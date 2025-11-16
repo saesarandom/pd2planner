@@ -1358,12 +1358,40 @@
         if (dropdown) {
           dropdown.addEventListener('change', () => {
             const section = this.equipmentMap[dropdownId].section;
+            const oldItemName = dropdown.dataset.previousValue;
             const newItemName = dropdown.value;
+
+            // SAVE current item state BEFORE switching
+            if (oldItemName && typeof window.saveItemState === 'function') {
+              window.saveItemState(dropdownId, oldItemName, section);
+            }
+
+            // Store current value for next change
+            dropdown.dataset.previousValue = newItemName;
+
+            // Check if we should clear state due to requirements
+            if (newItemName && typeof window.clearItemStateIfRequirementsNotMet === 'function') {
+              const shouldClear = window.clearItemStateIfRequirementsNotMet(dropdownId, newItemName);
+              if (shouldClear) {
+                // Requirements not met - clear corruptions and sockets
+                if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+                  delete window.itemCorruptions[dropdownId];
+                }
+                const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
+                if (socketableSections.includes(section)) {
+                  this.adjustSocketsForItem(section);
+                }
+                this.calculateAllStats();
+                this.updateStatsDisplay();
+                setTimeout(() => this.updateAll(), 50);
+                return;
+              }
+            }
 
             // Track if we're clearing a socket corruption on armor/helm/shield
             let clearedSocketCorruption = false;
 
-            // Clear corruption if switching to a different item
+            // Clear corruption if switching to a different item (OLD BEHAVIOR - only if not restoring state)
             if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
               const corruption = window.itemCorruptions[dropdownId];
               // If the corrupted item is different from the newly selected item, clear corruption
@@ -1396,6 +1424,12 @@
                 this.adjustSocketsForItem(section);
               }
             }
+
+            // RESTORE item state AFTER switching
+            if (newItemName && typeof window.restoreItemState === 'function') {
+              window.restoreItemState(dropdownId, newItemName, section);
+            }
+
             // Immediately recalculate stats when item changes
             this.calculateAllStats();
             this.updateStatsDisplay();
