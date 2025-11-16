@@ -108,11 +108,9 @@ window.restoreItemState = function(dropdownId, itemName, section) {
         }
       });
 
-      // Trigger update after restoring sockets
-      if (window.unifiedSocketSystem.updateAll) {
-        window.unifiedSocketSystem.updateAll();
-      }
-    }, 50);
+      // Don't call updateAll() here - let socket.js handle it after restoration completes
+      // This avoids timing conflicts where updateAll() might run before sockets are restored
+    }, 10);
   }
 };
 
