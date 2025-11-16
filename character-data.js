@@ -99,6 +99,7 @@ window.exportCharacterData = function() {
 
     // Get skills allocation
     const skills = {};
+    let selectedSkill = null;
     if (window.skillSystem) {
         // Get all skill inputs (they have IDs ending with "container")
         const skillInputs = document.querySelectorAll('input[id$="container"][type="number"]');
@@ -108,9 +109,15 @@ window.exportCharacterData = function() {
                 skills[input.id] = points;
             }
         });
+
+        // Get the currently selected skill from the dropdown
+        const skillDropdown = document.getElementById('active-skill-dropdown');
+        if (skillDropdown && skillDropdown.value) {
+            selectedSkill = skillDropdown.value;
+        }
     }
 
-  
+
     // Get resistances from displayed values
     const resistances = {
         fire: parseInt(document.getElementById('fireresistcontainer')?.textContent) || 0,
@@ -142,6 +149,7 @@ window.exportCharacterData = function() {
         variableStats,
         charms,
         skills,
+        selectedSkill,
         resistances,
         crafted_items: craftedItems
     };
@@ -411,6 +419,17 @@ window.loadCharacterFromData = function(data) {
                 // Update skill display after skills are loaded
                 if (window.skillSystem) {
                     window.skillSystem.updatePointsDisplay();
+
+                    // Restore the previously selected skill if available
+                    if (data.selectedSkill) {
+                        const skillDropdown = document.getElementById('active-skill-dropdown');
+                        if (skillDropdown) {
+                            // Set the selected skill
+                            skillDropdown.value = data.selectedSkill;
+                            // Trigger calculation to show the tooltip
+                            window.skillSystem.calculateSkillDamage();
+                        }
+                    }
                 }
 
                 // Final stats recalculation after all skills are loaded
