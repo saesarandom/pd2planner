@@ -4431,17 +4431,16 @@ function makeEtherealItem(category) {
       // For dynamic items: toggle ethereal property
       if (isCurrentlyEthereal) {
         // Remove ethereal
-        console.log('Removing ethereal from', currentItem);
         currentItemData.properties.ethereal = false;
       } else {
         // Add ethereal
-        console.log('Adding ethereal to', currentItem);
         currentItemData.properties.ethereal = true;
       }
 
-      // DON'T call updateWeaponDamageDisplay - it causes errors for dynamic items
-      // Just let the socket system regenerate everything at the end via updateAll()
-      console.log('Ethereal flag toggled, will regenerate via socket system');
+      // Trigger update to regenerate description with/without ethereal
+      if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
     } else {
       // For static items
       let description = currentItemData.description;
@@ -4554,16 +4553,16 @@ function makeEtherealItem(category) {
       // For dynamic items: toggle ethereal property
       if (isCurrentlyEthereal) {
         // Remove ethereal
-        console.log('Removing ethereal from', currentItem, '(armor/helm)');
         currentItemData.properties.ethereal = false;
       } else {
         // Add ethereal
-        console.log('Adding ethereal to', currentItem, '(armor/helm)');
         currentItemData.properties.ethereal = true;
       }
 
-      // Let the socket system handle regeneration
-      console.log('Ethereal flag set, letting socket system regenerate');
+      // Trigger update to regenerate description with/without ethereal
+      if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
     } else {
       // For static items
       let lines = currentItemData.description.split("<br>");
