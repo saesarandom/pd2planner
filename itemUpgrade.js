@@ -4597,6 +4597,16 @@ function makeEtherealItem(category) {
     }
   }
 
+  // Update saved state if it exists (so ethereal toggle is remembered)
+  const dropdownId = `${category}-dropdown`;
+  const stateKey = `${dropdownId}_${currentItem}`;
+  if (window.itemStates && window.itemStates[stateKey]) {
+    window.itemStates[stateKey].ethereal = currentItemData.properties.ethereal || false;
+    if (window.itemStates[stateKey].properties) {
+      window.itemStates[stateKey].properties.ethereal = currentItemData.properties.ethereal || false;
+    }
+  }
+
   // Reapply socket corruption if there was one
   if (socketCorruption) {
     const socketMatch = socketCorruption.match(/Socketed \((\d+)\)/);
