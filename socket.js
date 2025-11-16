@@ -5200,16 +5200,32 @@ const statsArray = [
 
   };
 
-  const toMinDmgContainer = document.getElementById('tomindmgcontainer');
-const toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+  // Setup mutation observers for damage containers - store in window to prevent garbage collection
+  const setupDamageContainerObservers = () => {
+    const toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    const toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
 
-if (toMinDmgContainer && toMaxDmgContainer) {
-  const observer = new MutationObserver(() => {
-    if (window.skillsCalculator && typeof window.skillsCalculator.calculateSkillDamage === 'function') {
-      window.skillsCalculator.calculateSkillDamage();
+    if (toMinDmgContainer && toMaxDmgContainer) {
+      // Only create observer if not already created
+      if (!window.damageContainerObserver) {
+        window.damageContainerObserver = new MutationObserver(() => {
+          if (window.skillsCalculator && typeof window.skillsCalculator.calculateSkillDamage === 'function') {
+            window.skillsCalculator.calculateSkillDamage();
+          }
+        });
+      }
+
+      // Use childList to detect text content changes (when textContent is set, it replaces child nodes)
+      const config = { childList: true, subtree: false };
+      window.damageContainerObserver.observe(toMinDmgContainer, config);
+      window.damageContainerObserver.observe(toMaxDmgContainer, config);
     }
-  });
-  
-  observer.observe(toMinDmgContainer, { characterData: true, childList: true, subtree: true });
-  observer.observe(toMaxDmgContainer, { characterData: true, childList: true, subtree: true });
-}
+  };
+
+  // Try to set up immediately
+  setupDamageContainerObservers();
+
+  // Also set up after DOM is fully loaded (in case elements weren't ready yet)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupDamageContainerObservers);
+  }
