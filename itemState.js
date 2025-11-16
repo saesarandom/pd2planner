@@ -69,10 +69,7 @@ window.restoreItemState = function(dropdownId, itemName, section) {
     }
   }
 
-  // Trigger immediate description update to sync ethereal text with properties
-  if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
-    window.unifiedSocketSystem.updateAll();
-  }
+  // Don't call updateAll() here - we'll call it after sockets are restored (or let socket.js handle it)
 
   // Update ethereal button state based on restored ethereal flag
   const category = section; // helm, armor, weapon, shield, etc.
@@ -89,7 +86,9 @@ window.restoreItemState = function(dropdownId, itemName, section) {
   }
 
   // Restore sockets
-  if (savedState.sockets && window.unifiedSocketSystem) {
+  const hasSockets = savedState.sockets && savedState.sockets.length > 0;
+
+  if (hasSockets && window.unifiedSocketSystem) {
     // Set socket count first
     if (savedState.socketCount) {
       window.unifiedSocketSystem.setSocketCount(section, savedState.socketCount);
@@ -112,7 +111,17 @@ window.restoreItemState = function(dropdownId, itemName, section) {
           socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
         }
       });
+
+      // CRITICAL: Call updateAll() AFTER sockets are restored to merge their stats into description
+      if (window.unifiedSocketSystem.updateAll) {
+        window.unifiedSocketSystem.updateAll();
+      }
     }, 100);
+  } else {
+    // No sockets to restore - call updateAll() immediately to update ethereal/corruption
+    if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
+      window.unifiedSocketSystem.updateAll();
+    }
   }
 };
 
