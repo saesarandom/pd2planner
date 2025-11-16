@@ -4354,14 +4354,22 @@ function makeEthereal() {
   const currentItem = select.value;
   const currentItemData = itemList[currentItem];
 
-  if (currentItemData.description.includes("Ethereal")) return;
-
-  currentItemData.properties.ethereal = true;
+  const isCurrentlyEthereal = currentItemData.properties?.ethereal ||
+    (currentItemData.description && currentItemData.description.includes("Ethereal"));
 
   let lines = currentItemData.description.split("<br>");
-  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
-  currentItemData.description = lines.join("<br>");
 
+  if (isCurrentlyEthereal) {
+    // Remove ethereal
+    currentItemData.properties.ethereal = false;
+    lines[lines.length - 1] = lines[lines.length - 1].replace(/\s*<span[^>]*>Ethereal<\/span>/i, '');
+  } else {
+    // Add ethereal
+    currentItemData.properties.ethereal = true;
+    lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+  }
+
+  currentItemData.description = lines.join("<br>");
   updateDefense();
 }
 
@@ -4370,14 +4378,22 @@ function makeEtherealArmor() {
   const currentItem = select.value;
   const currentItemData = itemList[currentItem];
 
-  if (currentItemData.description.includes("Ethereal")) return;
-
-  currentItemData.properties.ethereal = true;
+  const isCurrentlyEthereal = currentItemData.properties?.ethereal ||
+    (currentItemData.description && currentItemData.description.includes("Ethereal"));
 
   let lines = currentItemData.description.split("<br>");
-  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
-  currentItemData.description = lines.join("<br>");
 
+  if (isCurrentlyEthereal) {
+    // Remove ethereal
+    currentItemData.properties.ethereal = false;
+    lines[lines.length - 1] = lines[lines.length - 1].replace(/\s*<span[^>]*>Ethereal<\/span>/i, '');
+  } else {
+    // Add ethereal
+    currentItemData.properties.ethereal = true;
+    lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+  }
+
+  currentItemData.description = lines.join("<br>");
   updateDefense();
 }
 
@@ -4386,10 +4402,13 @@ function makeEtherealItem(category) {
   const currentItem = select.value;
   const currentItemData = itemList[currentItem];
 
-  if (!currentItemData || currentItemData.properties?.ethereal || (currentItemData.description && currentItemData.description.includes("Ethereal")))
-    return;
+  if (!currentItemData) return;
 
-  // Check if there's a socket corruption before making the item ethereal
+  // Check if ethereal is currently applied
+  const isCurrentlyEthereal = currentItemData.properties?.ethereal ||
+    (currentItemData.description && currentItemData.description.includes("Ethereal"));
+
+  // Check if there's a socket corruption to preserve
   let socketCorruption = null;
   const categoryInfo = document.getElementById(`${category}-info`);
   const corruptedMod = categoryInfo?.querySelector(".corrupted-mod");
@@ -4403,68 +4422,121 @@ function makeEtherealItem(category) {
     const isDynamic = currentItemData.baseType;
 
     if (isDynamic) {
-      // For dynamic items: set the ethereal property, then recalculate damage
-      currentItemData.properties.ethereal = true;
+      // For dynamic items: toggle ethereal property and recalculate damage
+      if (isCurrentlyEthereal) {
+        // Remove ethereal
+        currentItemData.properties.ethereal = false;
+      } else {
+        // Add ethereal
+        currentItemData.properties.ethereal = true;
+      }
 
-      // Recalculate weapon damage with ethereal multiplier
+      // Recalculate weapon damage (with or without ethereal multiplier)
       if (typeof updateWeaponDamageDisplay === 'function') {
         updateWeaponDamageDisplay();
       }
     } else {
-      // For static items: use the old method
+      // For static items
       let description = currentItemData.description;
       if (!description) return;
 
       const baseType = description.split("<br>")[1];
       const isTwoHanded = currentItemData.properties.twohandmin !== undefined;
 
-      const etherealDesc =
-        description +
-        ' <span style="color: #C0C0C0">Ethereal</span>';
+      if (isCurrentlyEthereal) {
+        // Remove ethereal
+        currentItemData.properties.ethereal = false;
 
-      const tempItem = {
-        description: etherealDesc,
-        properties: currentItemData.properties,
-      };
+        // Remove ethereal text from description
+        description = description.replace(/\s*<span[^>]*>Ethereal<\/span>/i, '');
 
-      const newProperties = {
-        ...currentItemData.properties,
-      };
+        // Recalculate damage without ethereal
+        const tempItem = {
+          description: description,
+          properties: currentItemData.properties,
+        };
 
-      if (isTwoHanded) {
-        newProperties.twohandmin = calculateItemDamage(tempItem, baseType, false);
-        newProperties.twohandmax = calculateItemDamage(tempItem, baseType, true);
+        const newProperties = {
+          ...currentItemData.properties,
+        };
+
+        if (isTwoHanded) {
+          newProperties.twohandmin = calculateItemDamage(tempItem, baseType, false);
+          newProperties.twohandmax = calculateItemDamage(tempItem, baseType, true);
+        } else {
+          newProperties.onehandmin = calculateItemDamage(tempItem, baseType, false);
+          newProperties.onehandmax = calculateItemDamage(tempItem, baseType, true);
+        }
+
+        itemList[currentItem] = {
+          description: buildDescriptionWeapon(
+            currentItem,
+            baseType,
+            newProperties,
+            description
+              .split("<br>")
+              .slice(3)
+              .filter(
+                (prop) => !prop.includes("Required") && !prop.includes("Damage:")
+              )
+              .join("<br>")
+          ),
+          properties: newProperties,
+        };
+
+        if (isTwoHanded) {
+          document.getElementById("twohandmindmgcontainer").textContent = newProperties.twohandmin;
+          document.getElementById("twohandmaxdmgcontainer").textContent = newProperties.twohandmax;
+        } else {
+          document.getElementById("onehandmindmgcontainer").textContent = newProperties.onehandmin;
+          document.getElementById("onehandmaxdmgcontainer").textContent = newProperties.onehandmax;
+        }
       } else {
-        newProperties.onehandmin = calculateItemDamage(tempItem, baseType, false);
-        newProperties.onehandmax = calculateItemDamage(tempItem, baseType, true);
-      }
+        // Add ethereal
+        currentItemData.properties.ethereal = true;
 
-      itemList[currentItem] = {
-        description: buildDescriptionWeapon(
-          currentItem,
-          baseType,
-          newProperties,
-          currentItemData.description
-            .split("<br>")
-            .slice(3)
-            .filter(
-              (prop) => !prop.includes("Required") && !prop.includes("Damage:")
-            )
-            .join("<br>") + ' <span style="color: #C0C0C0">Ethereal</span>'
-        ),
-        properties: newProperties,
-      };
+        const etherealDesc = description + ' <span style="color: #C0C0C0">Ethereal</span>';
 
-      if (isTwoHanded) {
-        document.getElementById("twohandmindmgcontainer").textContent =
-          newProperties.twohandmin;
-        document.getElementById("twohandmaxdmgcontainer").textContent =
-          newProperties.twohandmax;
-      } else {
-        document.getElementById("onehandmindmgcontainer").textContent =
-          newProperties.onehandmin;
-        document.getElementById("onehandmaxdmgcontainer").textContent =
-          newProperties.onehandmax;
+        const tempItem = {
+          description: etherealDesc,
+          properties: currentItemData.properties,
+        };
+
+        const newProperties = {
+          ...currentItemData.properties,
+        };
+
+        if (isTwoHanded) {
+          newProperties.twohandmin = calculateItemDamage(tempItem, baseType, false);
+          newProperties.twohandmax = calculateItemDamage(tempItem, baseType, true);
+        } else {
+          newProperties.onehandmin = calculateItemDamage(tempItem, baseType, false);
+          newProperties.onehandmax = calculateItemDamage(tempItem, baseType, true);
+        }
+
+        itemList[currentItem] = {
+          description: buildDescriptionWeapon(
+            currentItem,
+            baseType,
+            newProperties,
+            currentItemData.description
+              .split("<br>")
+              .slice(3)
+              .filter(
+                (prop) => !prop.includes("Required") && !prop.includes("Damage:")
+              )
+              .join("<br>") + ' <span style="color: #C0C0C0">Ethereal</span>'
+          ),
+          properties: newProperties,
+        };
+
+        if (isTwoHanded) {
+          document.getElementById("twohandmindmgcontainer").textContent = newProperties.twohandmin;
+          document.getElementById("twohandmaxdmgcontainer").textContent = newProperties.twohandmax;
+        } else {
+          document.getElementById("onehandmindmgcontainer").textContent = newProperties.onehandmin;
+          document.getElementById("onehandmaxdmgcontainer").textContent = newProperties.onehandmax;
+        }
       }
     }
   } else {
@@ -4472,11 +4544,16 @@ function makeEtherealItem(category) {
     const isDynamic = currentItemData.baseType;
 
     if (isDynamic) {
-      // For dynamic items: set the ethereal property, then recalculate defense
-      currentItemData.properties.ethereal = true;
+      // For dynamic items: toggle ethereal property and recalculate defense
+      if (isCurrentlyEthereal) {
+        // Remove ethereal
+        currentItemData.properties.ethereal = false;
+      } else {
+        // Add ethereal
+        currentItemData.properties.ethereal = true;
+      }
 
-      // Recalculate defense with ethereal multiplier
-      // Generate temp description to get baseType
+      // Recalculate defense (with or without ethereal multiplier)
       let tempDesc = window.generateItemDescription(currentItem, currentItemData, `${category}-dropdown`);
       if (tempDesc) {
         const baseType = tempDesc.split("<br>")[1];
@@ -4492,16 +4569,26 @@ function makeEtherealItem(category) {
         }
       }
     } else {
-      // For static items: modify description directly
+      // For static items
       let lines = currentItemData.description.split("<br>");
-      lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
-
       const baseType = lines[1];
-      const newDefense = calculateItemDefense(
-        currentItemData,
-        baseType,
-        category
-      );
+
+      if (isCurrentlyEthereal) {
+        // Remove ethereal
+        currentItemData.properties.ethereal = false;
+
+        // Remove ethereal text
+        lines[lines.length - 1] = lines[lines.length - 1].replace(/\s*<span[^>]*>Ethereal<\/span>/i, '');
+      } else {
+        // Add ethereal
+        currentItemData.properties.ethereal = true;
+
+        // Add ethereal text
+        lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+      }
+
+      // Recalculate defense (with or without ethereal multiplier)
+      const newDefense = calculateItemDefense(currentItemData, baseType, category);
       const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
       lines[defenseIndex] = `Defense: ${newDefense}`;
       currentItemData.description = lines.join("<br>");
@@ -4534,20 +4621,29 @@ function makeEtherealItem(category) {
 
 function makeEtherealWeapon(weaponName) {
   const itemData = itemList[weaponName];
-  if (!itemData || itemData.description.includes("Ethereal")) return;
+  if (!itemData) return;
+
+  const isCurrentlyEthereal = itemData.properties?.ethereal ||
+    (itemData.description && itemData.description.includes("Ethereal"));
 
   const baseType = itemData.description.split("<br>")[1];
   const isTwoHanded = itemData.properties.twohandmin !== undefined;
 
-  // Add ethereal flag to properties
-  itemData.properties.ethereal = true;
-
-  // Add ethereal text to description
   let lines = itemData.description.split("<br>");
-  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+
+  if (isCurrentlyEthereal) {
+    // Remove ethereal
+    itemData.properties.ethereal = false;
+    lines[lines.length - 1] = lines[lines.length - 1].replace(/\s*<span[^>]*>Ethereal<\/span>/i, '');
+  } else {
+    // Add ethereal
+    itemData.properties.ethereal = true;
+    lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+  }
+
   itemData.description = lines.join("<br>");
 
-  // Recalculate damage with both ethereal and corruption bonuses
+  // Recalculate damage (with or without ethereal multiplier)
   if (isTwoHanded) {
     itemData.properties.twohandmin = calculateItemDamage(
       itemData,
@@ -4572,7 +4668,6 @@ function makeEtherealWeapon(weaponName) {
     );
   }
 
-  // Update display elements
   // Update display elements
   document
     .getElementById("weapons-dropdown")
@@ -5408,18 +5503,16 @@ function makeEtherealShield() {
 
   if (!currentItemData) return;
 
+  // Check if ethereal is currently applied
+  const isCurrentlyEthereal = currentItemData.properties?.ethereal ||
+    (currentItemData.description && currentItemData.description.includes("Ethereal"));
+
   // Get description (generate if dynamic item)
   let description = currentItemData.description;
   if (!description && currentItemData.baseType) {
     description = window.generateItemDescription(currentItem, currentItemData, 'offs-dropdown');
   }
   if (!description) return;
-
-  if (description.includes("Ethereal")) {
-    return;
-  }
-
-  // Log initial state for debugging
 
   // Get base type from description
   const baseType = description.split("<br>")[1];
@@ -5431,41 +5524,58 @@ function makeEtherealShield() {
   const edef = currentItemData.properties.edef || 0;
   const todef = currentItemData.properties.todef || 0;
 
-  // Mark as ethereal in properties
-  currentItemData.properties.ethereal = true;
-
-  // Add ethereal text to description
   let lines = currentItemData.description.split("<br>");
-  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
 
-  // Calculate new defense manually for shields
-  // Apply 50% ethereal bonus to base defense
-  const baseWithEth = Math.floor(baseDefense * 1.5);
+  if (isCurrentlyEthereal) {
+    // Remove ethereal
+    currentItemData.properties.ethereal = false;
+    lines[lines.length - 1] = lines[lines.length - 1].replace(/\s*<span[^>]*>Ethereal<\/span>/i, '');
 
-  // Calculate final defense based on enhanced defense and bonuses
-  let newDefense;
-  if (edef > 0) {
-    // If there's enhanced defense, apply it to the ethereal base value
-    newDefense = Math.floor(baseWithEth * (1 + edef / 100));
-    if (todef > 0) {
-      newDefense += todef;
+    // Calculate defense without ethereal multiplier
+    let newDefense;
+    if (edef > 0) {
+      newDefense = Math.floor(baseDefense * (1 + edef / 100));
+      if (todef > 0) {
+        newDefense += todef;
+      }
+    } else if (todef > 0) {
+      newDefense = baseDefense + todef;
+    } else {
+      newDefense = baseDefense;
     }
-  } else if (todef > 0) {
-    // If there's only flat defense bonus
-    newDefense = baseWithEth + todef;
+
+    currentItemData.properties.defense = newDefense;
+
+    const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
+    if (defenseIndex !== -1) {
+      lines[defenseIndex] = `Defense: ${newDefense}`;
+    }
   } else {
-    // If there's neither, just use the ethereal base
-    newDefense = baseWithEth;
-  }
+    // Add ethereal
+    currentItemData.properties.ethereal = true;
+    lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
 
+    // Calculate defense with ethereal multiplier (1.5x)
+    const baseWithEth = Math.floor(baseDefense * 1.5);
 
-  // Update defense in properties
-  currentItemData.properties.defense = newDefense;
+    let newDefense;
+    if (edef > 0) {
+      newDefense = Math.floor(baseWithEth * (1 + edef / 100));
+      if (todef > 0) {
+        newDefense += todef;
+      }
+    } else if (todef > 0) {
+      newDefense = baseWithEth + todef;
+    } else {
+      newDefense = baseWithEth;
+    }
 
-  // Update defense in description
-  const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
-  if (defenseIndex !== -1) {
-    lines[defenseIndex] = `Defense: ${newDefense}`;
+    currentItemData.properties.defense = newDefense;
+
+    const defenseIndex = lines.findIndex((line) => line.startsWith("Defense:"));
+    if (defenseIndex !== -1) {
+      lines[defenseIndex] = `Defense: ${newDefense}`;
+    }
   }
 
   // Update description
@@ -5473,9 +5583,7 @@ function makeEtherealShield() {
 
   // Trigger display update
   select.dispatchEvent(new Event("change"));
-if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
-      return;
-
+  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
 }
 // Add this line to your event listeners
 
