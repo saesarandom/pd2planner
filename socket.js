@@ -2401,7 +2401,7 @@ this.selectedJewelSuffix3MaxValue = null;
     
     this.hideJewelModal();
     this.updateAll();
-    
+
     // Reset selections
     this.resetJewelSelections();
 }
@@ -2485,7 +2485,9 @@ this.selectedJewelSuffix3MaxValue = null;
       this.updateAllItemDisplays();
       this.calculateAllStats();
       this.updateStatsDisplay();
-    }
+
+
+  }
 
     updateAllItemDisplays() {
       Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
@@ -5197,3 +5199,17 @@ const statsArray = [
     
 
   };
+
+  const toMinDmgContainer = document.getElementById('tomindmgcontainer');
+const toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+
+if (toMinDmgContainer && toMaxDmgContainer) {
+  const observer = new MutationObserver(() => {
+    if (window.skillsCalculator && typeof window.skillsCalculator.calculateSkillDamage === 'function') {
+      window.skillsCalculator.calculateSkillDamage();
+    }
+  });
+  
+  observer.observe(toMinDmgContainer, { characterData: true, childList: true, subtree: true });
+  observer.observe(toMaxDmgContainer, { characterData: true, childList: true, subtree: true });
+}
