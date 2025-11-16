@@ -5641,15 +5641,39 @@ function makeItemEthereal(dropdownId) {
   const itemData = window.getItemData(itemName);
   if (!itemData) return;
 
-  // Get or generate description
-  let description = itemData.description;
-  if (!description && itemData.baseType) {
-    description = window.generateItemDescription(itemName, itemData, dropdownId);
+  // Ensure properties object exists
+  if (!itemData.properties) {
+    itemData.properties = {};
   }
-  if (!description) return;
 
   // Check if already ethereal
-  if (description.includes("Ethereal")) return;
+  const isCurrentlyEthereal = itemData.properties.ethereal ||
+    (itemData.description && itemData.description.includes("Ethereal"));
+
+  // For dynamic items (has baseType), just toggle the ethereal flag
+  // and let the socket system regenerate everything
+  if (itemData.baseType) {
+    console.log('makeItemEthereal: toggling ethereal for dynamic item', itemName);
+    if (isCurrentlyEthereal) {
+      itemData.properties.ethereal = false;
+    } else {
+      itemData.properties.ethereal = true;
+    }
+
+    // Trigger regeneration
+    dropdown.dispatchEvent(new Event("change"));
+    if (window.unifiedSocketSystem?.updateAll) {
+      window.unifiedSocketSystem.updateAll();
+    }
+    return;
+  }
+
+  // For static items, use the old method
+  // Get or generate description
+  let description = itemData.description;
+  if (!description) return;
+
+  if (isCurrentlyEthereal) return; // Can't remove ethereal for static items (not implemented)
 
   // Mark as ethereal in properties
   itemData.properties.ethereal = true;
@@ -5679,12 +5703,6 @@ function makeItemEthereal(dropdownId) {
 
     // Update weapon display
     dropdown.dispatchEvent(new Event("change"));
-    if (typeof updateWeaponDamageDisplay === 'function') {
-      updateWeaponDamageDisplay();
-    }
-    if (typeof updateWeaponDescription === 'function') {
-      updateWeaponDescription();
-    }
   } else if (isShield || isArmor) {
     // Handle armor/shield ethereal (50% defense bonus)
     const baseType = description.split("<br>")[1];
