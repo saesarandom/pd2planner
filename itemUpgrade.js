@@ -5678,37 +5678,98 @@ function makeItemEthereal(dropdownId) {
   let description = itemData.description;
   if (!description) return;
 
-  if (isCurrentlyEthereal) return; // Can't remove ethereal for static items (not implemented)
-
-  // Mark as ethereal in properties
-  itemData.properties.ethereal = true;
-
-  // Add ethereal text to description
   let lines = description.split("<br>");
-  lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
-  itemData.description = lines.join("<br>");
 
-  // Determine item category and apply appropriate bonuses
-  const isWeapon = dropdownId === 'weapons-dropdown';
-  const isShield = dropdownId === 'offs-dropdown';
-  const isArmor = ['armors-dropdown', 'helms-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown'].includes(dropdownId);
+  if (isCurrentlyEthereal) {
+    // REMOVE ethereal
+    console.log('makeItemEthereal: removing ethereal from static item', itemName);
+    itemData.properties.ethereal = false;
 
-  if (isWeapon) {
-    // Handle weapon ethereal (50% damage bonus)
-    const baseType = description.split("<br>")[1];
-    const isTwoHanded = itemData.properties.twohandmin !== undefined;
+    // Remove ethereal text from description
+    lines[lines.length - 1] = lines[lines.length - 1].replace(/\s*<span[^>]*>Ethereal<\/span>/i, '');
+    itemData.description = lines.join("<br>");
 
-    if (isTwoHanded) {
-      itemData.properties.twohandmin = calculateItemDamage(itemData, baseType, false);
-      itemData.properties.twohandmax = calculateItemDamage(itemData, baseType, true);
-    } else {
-      itemData.properties.onehandmin = calculateItemDamage(itemData, baseType, false);
-      itemData.properties.onehandmax = calculateItemDamage(itemData, baseType, true);
+    // Determine item category to recalculate stats WITHOUT ethereal
+    const isWeapon = dropdownId === 'weapons-dropdown';
+    const isShield = dropdownId === 'offs-dropdown';
+    const isArmor = ['armors-dropdown', 'helms-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown'].includes(dropdownId);
+
+    if (isWeapon) {
+      // Recalculate weapon damage WITHOUT ethereal
+      const baseType = description.split("<br>")[1];
+      const isTwoHanded = itemData.properties.twohandmin !== undefined;
+
+      if (isTwoHanded) {
+        itemData.properties.twohandmin = calculateItemDamage(itemData, baseType, false);
+        itemData.properties.twohandmax = calculateItemDamage(itemData, baseType, true);
+      } else {
+        itemData.properties.onehandmin = calculateItemDamage(itemData, baseType, false);
+        itemData.properties.onehandmax = calculateItemDamage(itemData, baseType, true);
+      }
+
+      dropdown.dispatchEvent(new Event("change"));
+    } else if (isShield || isArmor) {
+      // Recalculate defense WITHOUT ethereal
+      const baseType = description.split("<br>")[1];
+      const baseDefense = baseDefenses[baseType] || 0;
+      const edef = itemData.properties.edef || 0;
+      const todef = itemData.properties.todef || 0;
+
+      // Calculate defense WITHOUT ethereal (no 1.5x multiplier)
+      let newDefense;
+      if (edef > 0) {
+        newDefense = Math.floor(baseDefense * (1 + edef / 100));
+        if (todef > 0) {
+          newDefense += todef;
+        }
+      } else if (todef > 0) {
+        newDefense = baseDefense + todef;
+      } else {
+        newDefense = baseDefense;
+      }
+
+      itemData.properties.defense = newDefense;
+      const defenseIndex = lines.findIndex(line => line.startsWith("Defense:"));
+      if (defenseIndex !== -1) {
+        lines[defenseIndex] = `Defense: ${newDefense}`;
+        itemData.description = lines.join("<br>");
+      }
+
+      dropdown.dispatchEvent(new Event("change"));
+      if (typeof updateDefense === 'function') {
+        updateDefense();
+      }
     }
+  } else {
+    // ADD ethereal
+    console.log('makeItemEthereal: adding ethereal to static item', itemName);
+    itemData.properties.ethereal = true;
 
-    // Update weapon display
-    dropdown.dispatchEvent(new Event("change"));
-  } else if (isShield || isArmor) {
+    // Add ethereal text to description
+    lines[lines.length - 1] += ' <span style="color: #C0C0C0">Ethereal</span>';
+    itemData.description = lines.join("<br>");
+
+    // Determine item category and apply appropriate bonuses
+    const isWeapon = dropdownId === 'weapons-dropdown';
+    const isShield = dropdownId === 'offs-dropdown';
+    const isArmor = ['armors-dropdown', 'helms-dropdown', 'gloves-dropdown', 'belts-dropdown', 'boots-dropdown'].includes(dropdownId);
+
+    if (isWeapon) {
+      // Handle weapon ethereal (50% damage bonus)
+      const baseType = description.split("<br>")[1];
+      const isTwoHanded = itemData.properties.twohandmin !== undefined;
+
+      if (isTwoHanded) {
+        itemData.properties.twohandmin = calculateItemDamage(itemData, baseType, false);
+        itemData.properties.twohandmax = calculateItemDamage(itemData, baseType, true);
+      } else {
+        itemData.properties.onehandmin = calculateItemDamage(itemData, baseType, false);
+        itemData.properties.onehandmax = calculateItemDamage(itemData, baseType, true);
+      }
+
+      // Update weapon display
+      dropdown.dispatchEvent(new Event("change"));
+    } else if (isShield || isArmor) {
     // Handle armor/shield ethereal (50% defense bonus)
     const baseType = description.split("<br>")[1];
     const baseDefense = baseDefenses[baseType] || 0;
@@ -5739,10 +5800,11 @@ function makeItemEthereal(dropdownId) {
       itemData.description = lines.join("<br>");
     }
 
-    // Update display
-    dropdown.dispatchEvent(new Event("change"));
-    if (typeof updateDefense === 'function') {
-      updateDefense();
+      // Update display
+      dropdown.dispatchEvent(new Event("change"));
+      if (typeof updateDefense === 'function') {
+        updateDefense();
+      }
     }
   }
 

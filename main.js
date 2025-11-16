@@ -579,7 +579,18 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
   // Map property keys to display format
   const propertyDisplay = {
-    defense: (val) => defenseDisplay !== null ? defenseDisplay : `Defense: ${val}`,
+    defense: (val) => {
+      // If defenseDisplay is set (from edef calculation), use it
+      if (defenseDisplay !== null) return defenseDisplay;
+
+      // For static defense values, apply ethereal multiplier if item is ethereal
+      if (props.ethereal && val) {
+        const ethDefense = Math.floor(val * 1.5);
+        return `Defense: ${ethDefense}`;
+      }
+
+      return `Defense: ${val}`;
+    },
     smitedmgmin: (val, prop) => `Smite Damage: ${val} to ${props.smitedmgmax || '?'}`,
     smitedmgmax: () => '', // Skip, handled by smitedmgmin
     onehandmin: (val, prop) => `One-Hand Damage: ${val} to ${props.onehandmax || '?'}, Avg ${Math.round((val + (props.onehandmax || 0)) / 2 * 10) / 10}`,
