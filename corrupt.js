@@ -954,18 +954,9 @@ function applySocketCorruptionFromModal(corruption) {
     window.unifiedSocketSystem.setSocketCount(section, socketCount);
   }
 
-  // Update saved state if it exists (so socket corruption is remembered with current ethereal status)
-  if (window.itemStates) {
-    const stateKey = `${currentCorruptionSlot}_${itemName}`;
-    if (window.itemStates[stateKey]) {
-      // Update corruption in saved state
-      window.itemStates[stateKey].corruption = window.itemCorruptions[currentCorruptionSlot];
-      // Also update properties to include current ethereal status
-      if (item.properties) {
-        window.itemStates[stateKey].properties = JSON.parse(JSON.stringify(item.properties));
-        window.itemStates[stateKey].ethereal = item.properties.ethereal || false;
-      }
-    }
+  // Refresh saved state to capture socket corruption + ethereal + sockets
+  if (section && typeof window.refreshSavedState === 'function') {
+    window.refreshSavedState(currentCorruptionSlot, section);
   }
 
   // Trigger item display update
@@ -1163,19 +1154,10 @@ function applyCorruptionToItem(corruptionText) {
     }
   }
 
-  // Update saved state if it exists (so corruption is remembered with current ethereal status)
+  // Refresh saved state to capture current corruption + ethereal + sockets
   const section = SECTION_MAP[currentCorruptionSlot];
-  if (section && window.itemStates) {
-    const stateKey = `${currentCorruptionSlot}_${itemName}`;
-    if (window.itemStates[stateKey]) {
-      // Update corruption in saved state
-      window.itemStates[stateKey].corruption = window.itemCorruptions[currentCorruptionSlot];
-      // Also update properties to include current ethereal status
-      if (item.properties) {
-        window.itemStates[stateKey].properties = JSON.parse(JSON.stringify(item.properties));
-        window.itemStates[stateKey].ethereal = item.properties.ethereal || false;
-      }
-    }
+  if (section && typeof window.refreshSavedState === 'function') {
+    window.refreshSavedState(currentCorruptionSlot, section);
   }
 
   // Trigger item display update

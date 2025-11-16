@@ -5,13 +5,18 @@
 // Global storage for item states
 window.itemStates = {};
 
-// Save current item state before switching
-window.saveItemState = function(dropdownId, itemName, section) {
+// Refresh saved state for current item (call after any modification)
+window.refreshSavedState = function(dropdownId, section) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  const itemName = dropdown.value;
   if (!itemName) return;
 
-  const stateKey = `${dropdownId}_${itemName}`;
   const item = window.getItemData(itemName);
   if (!item) return;
+
+  const stateKey = `${dropdownId}_${itemName}`;
 
   // Get socket data
   const socketData = [];
@@ -27,13 +32,19 @@ window.saveItemState = function(dropdownId, itemName, section) {
     });
   });
 
-  // Save complete state
+  // Save complete current state - ethereal is always last/most current
   window.itemStates[stateKey] = {
     corruption: window.itemCorruptions ? window.itemCorruptions[dropdownId] : null,
     sockets: socketData,
     ethereal: item.properties?.ethereal || false,
     properties: item.properties ? JSON.parse(JSON.stringify(item.properties)) : null
   };
+};
+
+// Save current item state before switching (just calls refresh)
+window.saveItemState = function(dropdownId, itemName, section) {
+  if (!itemName) return;
+  window.refreshSavedState(dropdownId, section);
 };
 
 // Restore item state after switching
