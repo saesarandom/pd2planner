@@ -4345,8 +4345,8 @@ addToStatsMap(statsMap, key, data) {
     }
 
     // Recalculate skill damage whenever stats change (including when jewels are inserted)
-    if (window.skillsCalculator && typeof window.skillsCalculator.calculateSkillDamage === 'function') {
-      window.skillsCalculator.calculateSkillDamage();
+    if (window.skillSystem && typeof window.skillSystem.calculateSkillDamage === 'function') {
+      window.skillSystem.calculateSkillDamage();
     }
   }
 
