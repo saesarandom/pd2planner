@@ -2399,8 +2399,13 @@ this.selectedJewelSuffix3MaxValue = null;
     socketToUse.dataset.stats = jewelStats;
     socketToUse.dataset.levelReq = maxRequiredLevel.toString();
     
-    this.hideJewelModal();
+     this.hideJewelModal();
     this.updateAll();
+    
+    // Trigger skill tooltip recalculation
+    if (window.skillsCalculator && typeof window.skillsCalculator.calculateSkillDamage === 'function') {
+      window.skillsCalculator.calculateSkillDamage();
+    }
     
     // Reset selections
     this.resetJewelSelections();

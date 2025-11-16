@@ -3220,18 +3220,50 @@ function calculateItemDamage(item, baseType, isMax = false) {
     }
   }
 
-  // Get base min or max damage value
+// Get flat damage bonuses from jewels FIRST (before ED% is applied)
+  let flatDamageBonus = 0;
+  socketElements.forEach((socket) => {
+    if (!socket.dataset.itemName) return;
+    
+    let stats = [];
+    if (socket.dataset.itemName === "jewel") {
+      try {
+        stats = JSON.parse(socket.dataset.stats);
+      } catch (e) {
+        return;
+      }
+    }
+    
+    stats.forEach((stat) => {
+      // Look for +min or +max damage from jewels
+      if (isMax) {
+        const maxDmgMatch = stat.match(/\+(\d+) to (Maximum|Max) Damage/i);
+        if (maxDmgMatch) {
+          flatDamageBonus += parseInt(maxDmgMatch[1]);
+        }
+      } else {
+        const minDmgMatch = stat.match(/\+(\d+) to (Minimum|Min) Damage/i);
+        if (minDmgMatch) {
+          flatDamageBonus += parseInt(minDmgMatch[1]);
+        }
+      }
+    });
+  });
+
+  // Get base min or max damage value and add flat jewel damage to it
   const base = isMax ? baseDamage.max : baseDamage.min;
+  const baseWithFlatBonus = base + flatDamageBonus;
 
-  // Apply ethereal bonus to base damage
-  const ethBase = Math.floor(base * ethMult);
+  // Apply ethereal bonus to base damage (including flat bonus)
+  const ethBase = Math.floor(baseWithFlatBonus * ethMult);
 
-  // Sum up all enhanced damage sources (but NOT corruption again since it's in itemEdmg already)
+  // Sum up all enhanced damage sources
   const totalEnhancedDamage = itemEdmg + socketEnhancedDamage;
 
-  // Calculate final damage with all bonuses
+  // Calculate final damage with all bonuses (ED% now multiplies the flat damage too!)
   let finalDamage = Math.floor(ethBase * (1 + totalEnhancedDamage / 100));
 
+  // tomindmg/tomaxdmg from item properties still added at the end (these are from item itself, not jewels)
   if (isMax && item.properties.tomaxdmg) {
     finalDamage += item.properties.tomaxdmg;
   } else if (!isMax && item.properties.tomindmg) {
