@@ -17,10 +17,15 @@ window.saveItemState = function(dropdownId, itemName, section) {
   const socketData = [];
   const socketSlots = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
   socketSlots.forEach((slot, index) => {
+    // Get the image src from the actual img element
+    const imgElement = slot.querySelector('img');
+    const imgSrc = imgElement ? imgElement.src : null;
+
     socketData.push({
       itemName: slot.dataset.itemName,
       stats: slot.dataset.stats,
       levelReq: slot.dataset.levelReq,
+      imgSrc: imgSrc,  // Save the actual image src
       index: index
     });
   });
@@ -96,14 +101,18 @@ window.restoreItemState = function(dropdownId, itemName, section) {
       );
 
       if (socketSlot) {
-        console.log('Restoring socket:', socketInfo.itemName, 'to slot', socketInfo.index + 1);
+        console.log('Restoring socket:', socketInfo.itemName, 'to slot', socketInfo.index + 1, 'imgSrc:', socketInfo.imgSrc);
         // Restore everything at once
         socketSlot.classList.remove('empty');
         socketSlot.classList.add('filled');
         socketSlot.dataset.itemName = socketInfo.itemName;
         socketSlot.dataset.stats = socketInfo.stats;
         socketSlot.dataset.levelReq = socketInfo.levelReq;
-        socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
+
+        // Use the saved image src instead of constructing our own path
+        if (socketInfo.imgSrc) {
+          socketSlot.innerHTML = `<img src="${socketInfo.imgSrc}" alt="${socketInfo.itemName}">`;
+        }
       } else {
         console.log('Socket slot not found for index', socketInfo.index + 1, 'in section', section);
       }
