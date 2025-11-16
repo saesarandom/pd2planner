@@ -95,7 +95,7 @@ window.restoreItemState = function(dropdownId, itemName, section) {
       window.unifiedSocketSystem.setSocketCount(section, savedState.socketCount);
     }
 
-    // Wait for setSocketCount and its updateAll() to complete, THEN restore data and images
+    // Step 1: Wait for setSocketCount to complete, then restore socket DATA (without images)
     setTimeout(() => {
       savedState.sockets.forEach(socketInfo => {
         const socketSlot = document.querySelector(
@@ -103,23 +103,34 @@ window.restoreItemState = function(dropdownId, itemName, section) {
         );
 
         if (socketSlot) {
-          // Add filled class and data
+          // Add filled class and data (but NO image yet)
           socketSlot.classList.remove('empty');
           socketSlot.classList.add('filled');
           socketSlot.dataset.itemName = socketInfo.itemName;
           socketSlot.dataset.stats = socketInfo.stats;
           socketSlot.dataset.levelReq = socketInfo.levelReq;
-
-          // Add image
-          socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
         }
       });
 
-      // Call updateAll() AFTER sockets are fully restored to merge socket stats into description
+      // Step 2: Call updateAll() to merge socket stats into description
       if (window.unifiedSocketSystem.updateAll) {
         window.unifiedSocketSystem.updateAll();
       }
-    }, 200);
+
+      // Step 3: Add images AFTER updateAll() completes
+      setTimeout(() => {
+        savedState.sockets.forEach(socketInfo => {
+          const socketSlot = document.querySelector(
+            `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
+          );
+
+          if (socketSlot) {
+            // Now add the image
+            socketSlot.innerHTML = `<img src="images/${socketInfo.itemName}.jpg" alt="${socketInfo.itemName}">`;
+          }
+        });
+      }, 100);
+    }, 150);
   } else {
     // No sockets to restore - call updateAll() immediately to update ethereal/corruption
     if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
