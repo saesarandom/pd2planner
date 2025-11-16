@@ -2402,11 +2402,6 @@ this.selectedJewelSuffix3MaxValue = null;
     this.hideJewelModal();
     this.updateAll();
     
-    // Trigger skill tooltip recalculation immediately
-    if (window.skillsCalculator && typeof window.skillsCalculator.calculateSkillDamage === 'function') {
-      window.skillsCalculator.calculateSkillDamage();
-    }
-    
     // Reset selections
     this.resetJewelSelections();
 }
@@ -3528,28 +3523,12 @@ if (defMatch) {
 
     // Flat Physical Damage bonuses (jewels, runes, gems, items)
     // Minimum Damage: "+X to Minimum Damage"
-   // Flat Physical Damage bonuses (jewels, runes, gems, items)
-    // ONLY count these from WEAPON sockets (they're added flat at the end in skills.js)
-    // Other equipment socket damage is handled in calculateItemDamage() multiplicatively
     const toMinDmgMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Minimum\s+Damage/i);
-    if (toMinDmgMatch) { 
-      // Only add to container if this is from weapon section
-      if (section === 'weapon') {
-        this.stats.toMinDmg += parseInt(toMinDmgMatch[1]); 
-      }
-      return; 
-    }
+    if (toMinDmgMatch) { this.stats.toMinDmg += parseInt(toMinDmgMatch[1]); return; }
 
     // Maximum Damage: "+X to Maximum Damage"
     const toMaxDmgMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Maximum\s+Damage/i);
-    if (toMaxDmgMatch) { 
-      // Only add to container if this is from weapon section
-      if (section === 'weapon') {
-        this.stats.toMaxDmg += parseInt(toMaxDmgMatch[1]); 
-      }
-      return; 
-    }
-
+    if (toMaxDmgMatch) { this.stats.toMaxDmg += parseInt(toMaxDmgMatch[1]); return; }
 
     // Damage Reduction stats
     // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)

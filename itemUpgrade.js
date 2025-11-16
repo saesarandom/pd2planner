@@ -3220,97 +3220,23 @@ function calculateItemDamage(item, baseType, isMax = false) {
     }
   }
 
-// Get flat damage bonuses from jewels FIRST (before ED% is applied)
-  let flatDamageBonus = 0;
-  socketElements.forEach((socket) => {
-    if (!socket.dataset.itemName) return;
-    
-    let stats = [];
-    if (socket.dataset.itemName === "jewel") {
-      try {
-        stats = JSON.parse(socket.dataset.stats);
-      } catch (e) {
-        return;
-      }
-    }
-    
-    stats.forEach((stat) => {
-      // Look for +min or +max damage from jewels
-      if (isMax) {
-        const maxDmgMatch = stat.match(/\+(\d+) to (Maximum|Max) Damage/i);
-        if (maxDmgMatch) {
-          flatDamageBonus += parseInt(maxDmgMatch[1]);
-        }
-      } else {
-        const minDmgMatch = stat.match(/\+(\d+) to (Minimum|Min) Damage/i);
-        if (minDmgMatch) {
-          flatDamageBonus += parseInt(minDmgMatch[1]);
-        }
-      }
-    });
-  });
-
-  // Get base min or max damage value and add flat jewel damage to it
-   // Get base min or max damage value
-  // Get +min/max damage from OTHER EQUIPMENT sockets (NOT weapon sockets)
-  // These should be added to base BEFORE ED% is applied
-  let nonWeaponSocketFlatDmg = 0;
-  const allSections = ['helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
-  
-  allSections.forEach(section => {
-    const sectionSockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-    
-    sectionSockets.forEach(socket => {
-      if (!socket.dataset.stats) return;
-      
-      let stats = [];
-      if (socket.dataset.itemName === "jewel") {
-        try {
-          stats = JSON.parse(socket.dataset.stats);
-        } catch (e) {
-          return;
-        }
-      } else {
-        // For runes/gems, parse the stats string
-        stats = socket.dataset.stats.split(',').map(s => s.trim()).filter(Boolean);
-      }
-      
-      stats.forEach(stat => {
-        if (isMax) {
-          const maxDmgMatch = stat.match(/\+(\d+) to (Maximum|Max) Damage/i);
-          if (maxDmgMatch) {
-            nonWeaponSocketFlatDmg += parseInt(maxDmgMatch[1]);
-          }
-        } else {
-          const minDmgMatch = stat.match(/\+(\d+) to (Minimum|Min) Damage/i);
-          if (minDmgMatch) {
-            nonWeaponSocketFlatDmg += parseInt(minDmgMatch[1]);
-          }
-        }
-      });
-    });
-  });
-
-  // Get base min or max damage value and add NON-weapon socket damage
+  // Get base min or max damage value
   const base = isMax ? baseDamage.max : baseDamage.min;
-  const baseWithOtherEquipmentFlat = base + nonWeaponSocketFlatDmg;
 
-  // Apply ethereal bonus to base damage (including other equipment socket damage)
-  const ethBase = Math.floor(baseWithOtherEquipmentFlat * ethMult);
+  // Apply ethereal bonus to base damage
+  const ethBase = Math.floor(base * ethMult);
 
-  // Sum up all enhanced damage sources
+  // Sum up all enhanced damage sources (but NOT corruption again since it's in itemEdmg already)
   const totalEnhancedDamage = itemEdmg + socketEnhancedDamage;
 
-  // Calculate final damage with all percentage bonuses (now other equipment sockets get multiplied!)
+  // Calculate final damage with all bonuses
   let finalDamage = Math.floor(ethBase * (1 + totalEnhancedDamage / 100));
 
-  // Add item's own tomindmg/tomaxdmg AFTER ED% (like "Adds 8-25 Damage" on items)
   if (isMax && item.properties.tomaxdmg) {
     finalDamage += item.properties.tomaxdmg;
   } else if (!isMax && item.properties.tomindmg) {
     finalDamage += item.properties.tomindmg;
   }
-
 
   // Add per-level damage bonus to max damage only as the LAST step
   if (isMax && item.properties.maxdmgperlvl) {
