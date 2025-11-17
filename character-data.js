@@ -238,15 +238,19 @@ window.loadCharacterFromData = function(data) {
         // This ensures crafted items exist in the system when we try to restore their variable stats
         if (data.crafted_items && window.craftedItemsSystem) {
             // Filter to only include crafted items that are actually equipped in this build
-            // This prevents showing all user's crafted items in shared builds
             const equippedItemNames = new Set(Object.values(data.equipment || {}));
             const equippedCraftedItems = data.crafted_items.filter(item =>
                 equippedItemNames.has(item.fullName)
             );
 
-            // Load the equipped crafted items (replaces current crafted items temporarily)
-            // This works for both logged-in and non-logged-in users
-            window.craftedItemsSystem.loadFromData(equippedCraftedItems);
+            if (window.auth?.isLoggedIn()) {
+                // For logged-in users: Merge the build's crafted items with existing ones
+                // This preserves their other crafted items while adding the build's items
+                window.craftedItemsSystem.mergeBuildCraftedItems(equippedCraftedItems);
+            } else {
+                // For non-logged-in users: Replace with build's crafted items only
+                window.craftedItemsSystem.loadFromData(equippedCraftedItems);
+            }
 
             // Refresh dropdowns to include the loaded crafted items
             if (typeof window.populateItemDropdowns === 'function') {
