@@ -1543,7 +1543,7 @@ class CraftedItemsSystem {
   }
 
   /**
-   * Load crafted items from saved data
+   * Load crafted items from saved data (replaces all existing items)
    * @param {Array} data - Array of crafted items from backend or character_data
    */
   loadFromData(data) {
@@ -1556,6 +1556,34 @@ class CraftedItemsSystem {
       const maxId = Math.max(...data.map(item => parseInt(item.id.split('_')[1]) || 0));
       this.nextId = maxId + 1;
     }
+  }
+
+  /**
+   * Temporarily add crafted items from a build without removing existing ones
+   * Used when loading a build to ensure the build's crafted items are available
+   * @param {Array} buildItems - Array of crafted items from a build
+   */
+  mergeBuildCraftedItems(buildItems) {
+    if (!Array.isArray(buildItems) || buildItems.length === 0) return;
+
+    // Add items from build that don't already exist in our list
+    buildItems.forEach(buildItem => {
+      const exists = this.craftedItems.some(item => item.fullName === buildItem.fullName);
+      if (!exists) {
+        // Add this item temporarily (deep copy to avoid reference issues)
+        this.craftedItems.push(JSON.parse(JSON.stringify(buildItem)));
+      } else {
+        // If item exists, update its properties to match the build's version
+        // This ensures variable stats and other properties are correct
+        const existingIndex = this.craftedItems.findIndex(item => item.fullName === buildItem.fullName);
+        if (existingIndex !== -1) {
+          // Update the existing item's properties (but keep its ID)
+          const existingId = this.craftedItems[existingIndex].id;
+          this.craftedItems[existingIndex] = JSON.parse(JSON.stringify(buildItem));
+          this.craftedItems[existingIndex].id = existingId; // Preserve the ID
+        }
+      }
+    });
   }
 
   /**
