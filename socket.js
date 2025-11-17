@@ -2210,7 +2210,7 @@ updateSuffixValueInput(num) {
         blue: '#6666ff',
         yellow: '#ffff66',
         green: '#66ff66',
-        orange: '#ff8800',
+        purpel: '#c412caff',
         red: '#ff6666'
       };
       return colors[this.selectedJewelColor] || '#ffffff';
