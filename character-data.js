@@ -70,22 +70,32 @@ window.exportCharacterData = function() {
     }
 
     // Get variable item stats (for items with random ranges)
-    // Use global itemList (from items.js), not window.itemList
+    // Check both regular items (itemList) and crafted items (craftedItemsSystem)
     const variableStats = {};
     for (const [slot, itemName] of Object.entries(equipment)) {
-        if (itemName && typeof itemList !== 'undefined' && itemList[itemName]) {
-            const item = itemList[itemName];
-            if (item.properties) {
-                const varStats = {};
-                for (const [propKey, propValue] of Object.entries(item.properties)) {
-                    if (typeof propValue === 'object' && propValue !== null && 'current' in propValue) {
-                        varStats[propKey] = propValue.current;
-                    }
+        if (!itemName) continue;
+
+        let item = null;
+
+        // Check regular items first
+        if (typeof itemList !== 'undefined' && itemList[itemName]) {
+            item = itemList[itemName];
+        }
+        // Also check crafted items
+        else if (window.craftedItemsSystem) {
+            item = window.craftedItemsSystem.getCraftedItemByName(itemName);
+        }
+
+        // If we found the item, export its variable stats
+        if (item && item.properties) {
+            const varStats = {};
+            for (const [propKey, propValue] of Object.entries(item.properties)) {
+                if (typeof propValue === 'object' && propValue !== null && 'current' in propValue) {
+                    varStats[propKey] = propValue.current;
                 }
-                if (Object.keys(varStats).length > 0) {
-                    variableStats[slot] = { itemName, stats: varStats };
-                   
-                }
+            }
+            if (Object.keys(varStats).length > 0) {
+                variableStats[slot] = { itemName, stats: varStats };
             }
         }
     }
@@ -224,32 +234,9 @@ window.loadCharacterFromData = function(data) {
             if (mercLevelInput) mercLevelInput.value = data.mercenary.level || 1;
         }
 
-        // IMPORTANT: Restore variable item stats BEFORE setting equipment
-        // This ensures that when equipment dropdowns trigger regeneration of descriptions,
-        // the saved variable stat values are already in place
-        if (data.variableStats && typeof itemList !== 'undefined') {
-            
-            for (const [slot, varData] of Object.entries(data.variableStats)) {
-                const itemName = varData.itemName;
-                
-                if (itemList[itemName]) {
-                    const item = itemList[itemName];
-                    if (item.properties) {
-                        for (const [propKey, value] of Object.entries(varData.stats)) {
-                            if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
-                                
-                                item.properties[propKey].current = value;
-                            }
-                        }
-                    }
-                }
-            }
-            
-        }
-
-        // Load crafted items (only for visitors viewing shared builds)
-        // Logged-in users already have their crafted items loaded from the database
-        if (data.crafted_items && window.craftedItemsSystem && !window.auth?.isLoggedIn()) {
+        // IMPORTANT: Load crafted items FIRST, before restoring variable stats
+        // This ensures crafted items exist in the system when we try to restore their variable stats
+        if (data.crafted_items && window.craftedItemsSystem) {
             // Filter to only include crafted items that are actually equipped in this build
             // This prevents showing all user's crafted items in shared builds
             const equippedItemNames = new Set(Object.values(data.equipment || {}));
@@ -257,11 +244,48 @@ window.loadCharacterFromData = function(data) {
                 equippedItemNames.has(item.fullName)
             );
 
+            // Load the equipped crafted items (replaces current crafted items temporarily)
+            // This works for both logged-in and non-logged-in users
             window.craftedItemsSystem.loadFromData(equippedCraftedItems);
+
             // Refresh dropdowns to include the loaded crafted items
             if (typeof window.populateItemDropdowns === 'function') {
                 window.populateItemDropdowns();
             }
+        }
+
+        // IMPORTANT: Restore variable item stats AFTER loading crafted items
+        // This ensures that when equipment dropdowns trigger regeneration of descriptions,
+        // the saved variable stat values are already in place (for both regular and crafted items)
+        if (data.variableStats && typeof itemList !== 'undefined') {
+
+            for (const [slot, varData] of Object.entries(data.variableStats)) {
+                const itemName = varData.itemName;
+
+                // Check regular items first
+                if (itemList[itemName]) {
+                    const item = itemList[itemName];
+                    if (item.properties) {
+                        for (const [propKey, value] of Object.entries(varData.stats)) {
+                            if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
+                                item.properties[propKey].current = value;
+                            }
+                        }
+                    }
+                }
+                // Also check crafted items
+                else if (window.craftedItemsSystem) {
+                    const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
+                    if (craftedItem && craftedItem.properties) {
+                        for (const [propKey, value] of Object.entries(varData.stats)) {
+                            if (craftedItem.properties[propKey] && typeof craftedItem.properties[propKey] === 'object') {
+                                craftedItem.properties[propKey].current = value;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         // Set equipment
@@ -298,14 +322,25 @@ window.loadCharacterFromData = function(data) {
 
         // Log variable stats AFTER equipment is set to verify they're still correct
         if (data.variableStats && typeof itemList !== 'undefined') {
-            
+
             for (const [slot, varData] of Object.entries(data.variableStats)) {
                 const itemName = varData.itemName;
+                // Check regular items
                 if (itemList[itemName]) {
                     const item = itemList[itemName];
                     for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
                         const actualValue = item.properties?.[propKey]?.current;
-                        
+
+                    }
+                }
+                // Also check crafted items
+                else if (window.craftedItemsSystem) {
+                    const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
+                    if (craftedItem) {
+                        for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
+                            const actualValue = craftedItem.properties?.[propKey]?.current;
+
+                        }
                     }
                 }
             }
