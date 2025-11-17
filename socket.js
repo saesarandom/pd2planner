@@ -2506,41 +2506,32 @@ this.selectedJewelSuffix3MaxValue = null;
 
     const dropdownId = this.getSectionDropdownId(section);
     const dropdown = document.getElementById(dropdownId);
-    // if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
-    //   infoDiv.innerHTML = '';
-    //   return;
-    // }
-    
-    // const item = itemList[dropdown.value];
     const item = dropdown?.value ? window.getItemData(dropdown.value) : null;
 
     if (!dropdown || !dropdown.value || !item) {
-    infoDiv.innerHTML = '';
+      infoDiv.innerHTML = '';
       return;
-}
+    }
+
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
     const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
     const meetsRequirement = currentLevel >= actualRequiredLevel;
     const isUsableByClass = this.isItemUsableByCharacterClass(dropdown.value);
     const meetsStatRequirements = this.doesCharacterMeetStatRequirements(dropdown.value);
 
+    // Initialize itemState if not already done
+    if (!window.itemStateManager.hasItemState(dropdownId)) {
+      window.itemStateManager.initializeItemState(dropdownId, dropdown.value);
+    }
+
     // Get socket stats
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
 
     // Handle dynamic items (no static description)
     if (!item.description) {
-      // Always regenerate description for dynamic items to re-attach event listeners
-      // (This is critical for items like Arcanna's Deathwand with variable stats)
+      // Generate description from BASE properties (item.properties should be unmodified)
+      // Corruption will be shown separately in red text
       let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
-
-      // Check if item has corruption applied
-      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-        const corruption = window.itemCorruptions[dropdownId];
-        if (corruption.text && typeof window.addCorruptionWithStacking === 'function') {
-          // Apply corruption to the dynamically generated description
-          baseDescription = window.addCorruptionWithStacking(baseDescription, corruption.text);
-        }
-      }
 
       // Parse base stats from the generated description (strip input elements first)
       const tempDiv = document.createElement('div');
@@ -2574,15 +2565,21 @@ this.selectedJewelSuffix3MaxValue = null;
         }
       });
 
-      // For ALL dynamic items, use generateStackedDescription to show merged stats
-      // This function now preserves input boxes while stacking non-variable stats
-      // For example, Biggin's Bonnet will keep edmg/toatt inputs but stack +life from rubies
-      //
-      // TODO: Future enhancement for items where socket bonuses affect the SAME variable stats
-      // (e.g., weapon with variable edmg + jewel with +edmg%). Currently those don't combine.
+      // Generate stacked description with socket bonuses
       let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
 
-      // Update Required Level display - only check level requirement
+      // Apply corruption stacking (smart - preserves input boxes)
+      const modifiers = window.itemStateManager.getModifiers(dropdownId);
+      if (modifiers && modifiers.corruption && modifiers.corruption.text) {
+        if (typeof window.applyCorruptionToDescription === 'function') {
+          finalDescription = window.applyCorruptionToDescription(finalDescription, modifiers.corruption.text);
+        } else {
+          // Fallback: just append if function not loaded yet
+          finalDescription += `<span class="corruption-enhanced-stat">${modifiers.corruption.text}</span><br>`;
+        }
+      }
+
+      // Update Required Level display
       const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
       const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
       const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
@@ -2590,7 +2587,7 @@ this.selectedJewelSuffix3MaxValue = null;
         finalDescription = finalDescription.replace(levelPattern, newLevelLine);
       }
 
-      // Update Required Strength and Dexterity colors - check individually
+      // Update Required Strength and Dexterity colors
       finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
 
       // Update display
@@ -2623,7 +2620,13 @@ this.selectedJewelSuffix3MaxValue = null;
     }
 
     // From here on, handle static description items
-    let baseDescription = item.description;
+    // Get base properties from itemState (original unmodified)
+    const baseProperties = window.itemStateManager.getBaseProperties(dropdownId);
+
+    // Get the original static description from the item state
+    const itemState = window.itemState[dropdownId];
+    let baseDescription = itemState?.originalDescription || item.description;
+
     const baseStats = this.parseStatsToMap(baseDescription);
 
     // Build socket items array
@@ -2653,7 +2656,18 @@ this.selectedJewelSuffix3MaxValue = null;
     // Generate final description with stacked properties
     let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
 
-    // Update Required Level display - only check level requirement
+    // Apply corruption stacking (smart - preserves HTML structure)
+    const modifiers = window.itemStateManager.getModifiers(dropdownId);
+    if (modifiers && modifiers.corruption && modifiers.corruption.text) {
+      if (typeof window.applyCorruptionToDescription === 'function') {
+        finalDescription = window.applyCorruptionToDescription(finalDescription, modifiers.corruption.text);
+      } else {
+        // Fallback: just append if function not loaded yet
+        finalDescription += `<span class="corruption-enhanced-stat">${modifiers.corruption.text}</span><br>`;
+      }
+    }
+
+    // Update Required Level display
     const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
     const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
 
@@ -2662,7 +2676,7 @@ this.selectedJewelSuffix3MaxValue = null;
       finalDescription = finalDescription.replace(levelPattern, newLevelLine);
     }
 
-    // Update Required Strength and Dexterity colors - check individually
+    // Update Required Strength and Dexterity colors
     finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
 
     // Visual feedback for unusable items

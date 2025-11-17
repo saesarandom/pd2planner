@@ -1048,6 +1048,10 @@ function applyCorruptionToProperties(itemName, corruptionText) {
           props.edef = (props.edef || 0) + stat.value;
         }
         break;
+      case 'allskills':
+        // +X to All Skills
+        props.allsk = (props.allsk || 0) + stat.value;
+        break;
     }
   });
 }
@@ -1063,6 +1067,16 @@ function applyCorruptionToItem(corruptionText) {
     return;
   }
 
+  // Store original properties FIRST before any other logic
+  // This ensures we capture the clean state before any corruption is applied
+  if (!window.originalItemProperties) {
+    window.originalItemProperties = {};
+  }
+  if (!window.originalItemProperties[itemName]) {
+    // Deep clone the properties object to preserve originals
+    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
+  }
+
   // Check if there was a previous socket corruption, and restore original socket count
   const previousCorruption = window.itemCorruptions[currentCorruptionSlot];
   if (previousCorruption && previousCorruption.type === 'socket_corruption' && previousCorruption.originalSocketCount !== undefined) {
@@ -1072,92 +1086,29 @@ function applyCorruptionToItem(corruptionText) {
     }
   }
 
-  // Store original description if not already stored
-  if (!window.originalItemDescriptions[itemName]) {
-    let description = item.description;
-
-    // For dynamic items without a static description, generate it
-    if (!description) {
-      description = window.generateItemDescription(itemName, item, currentCorruptionSlot);
-    }
-
-    window.originalItemDescriptions[itemName] = description;
+  // Initialize itemState if not already done
+  if (!window.itemStateManager.hasItemState(currentCorruptionSlot)) {
+    window.itemStateManager.initializeItemState(currentCorruptionSlot, itemName);
   }
 
-  // Store original properties if not already stored
-  if (!window.originalItemProperties) {
-    window.originalItemProperties = {};
-  }
-  if (!window.originalItemProperties[itemName]) {
-    // Deep clone the properties object to preserve originals
-    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
-  }
+  // Parse corruption text into stats
+  const corruptionStats = parseCorruptionText(corruptionText);
 
-  // Store corruption info
+  // Set corruption modifier using new itemState system
+  // This will store the corruption and compute final properties
+  window.itemStateManager.setCorruptionModifier(currentCorruptionSlot, corruptionText, corruptionStats);
+
+  // Store corruption info for backward compatibility
   window.itemCorruptions[currentCorruptionSlot] = {
     text: corruptionText,
     type: 'corruption',
     itemName: itemName
   };
 
-  // Create enhanced description with stat stacking
-  const originalDescription = window.originalItemDescriptions[itemName];
-  const enhancedDescription = addCorruptionWithStacking(originalDescription, corruptionText);
-
-  // For dynamic items (has baseType), DON'T set static description - it breaks input boxes
-  // The socket system will regenerate the description with input boxes intact
-  if (!item.baseType) {
-    // Only set description for static items
-    item.description = enhancedDescription;
-  }
-
-  // Apply corruption stats to item properties (this is what matters for dynamic items)
-  applyCorruptionToProperties(itemName, corruptionText);
-
-  // For static weapons with edmg corruption, recalculate damage
-  if (!item.baseType && currentCorruptionSlot === 'weapons-dropdown') {
-    const stats = parseCorruptionText(corruptionText);
-    const hasEdmg = stats.some(stat => stat.type === 'edmg');
-
-    if (hasEdmg) {
-      // Get the base type from description
-      const lines = enhancedDescription.split('<br>');
-      const baseType = lines.length > 1 ? lines[1].trim() : null;
-
-      if (baseType && typeof calculateItemDamage === 'function') {
-        const isTwoHanded = item.properties.twohandmin !== undefined;
-
-        // Recalculate damage with corruption edmg
-        if (isTwoHanded) {
-          item.properties.twohandmin = calculateItemDamage(item, baseType, false);
-          item.properties.twohandmax = calculateItemDamage(item, baseType, true);
-        } else {
-          item.properties.onehandmin = calculateItemDamage(item, baseType, false);
-          item.properties.onehandmax = calculateItemDamage(item, baseType, true);
-        }
-
-        // Update the damage line in the description
-        const damageLine = isTwoHanded
-          ? `Two-Hand Damage: ${item.properties.twohandmin} to ${item.properties.twohandmax}, Avg ${Math.round((item.properties.twohandmin + item.properties.twohandmax) / 2 * 10) / 10}`
-          : `One-Hand Damage: ${item.properties.onehandmin} to ${item.properties.onehandmax}, Avg ${Math.round((item.properties.onehandmin + item.properties.onehandmax) / 2 * 10) / 10}`;
-
-        // Find and replace the damage line
-        const updatedLines = lines.map(line => {
-          if (line.includes('Damage:')) {
-            return damageLine;
-          }
-          return line;
-        });
-
-        item.description = updatedLines.join('<br>');
-      }
-    }
-  }
-
-  // Trigger item display update
+  // Trigger item display update (updateItemDisplay will use computed properties)
   triggerItemUpdate(currentCorruptionSlot);
 
-  // Refresh saved state AFTER triggerItemUpdate completes (so description and properties are in sync)
+  // Refresh saved state AFTER triggerItemUpdate completes
   const section = SECTION_MAP[currentCorruptionSlot];
   if (section && typeof window.refreshSavedState === 'function') {
     setTimeout(() => window.refreshSavedState(currentCorruptionSlot, section), 150);
@@ -1319,24 +1270,26 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
   }
 
   const searchPatterns = {
-    'ias': /(\+?\d+)%\s+(Increased Attack Speed)/i,
-    'edmg': /(\+?\d+)%\s+(Enhanced Damage)/i,
-    'fcr': /(\+?\d+)%\s+(Faster Cast Rate)/i,
-    'fhr': /(\+?\d+)%\s+(Faster Hit Recovery)/i,
-    'frw': /(\+?\d+)%\s+(Faster Run\/Walk)/i,
-    'edef': /(\+?\d+)%\s+(Enhanced Defense)/i,
-    'fbr': /(\+?\d+)%\s+(Faster Block Rate)/i,
-    'block': /(\+?\d+)%\s+(Increased Chance of Blocking)/i,
-    'life': /(\+?\d+)\s+(?:to\s+)?Life/i,
-    'mana': /(\+?\d+)\s+(?:to\s+)?Mana/i,
-    'str': /(\+?\d+)\s+(?:to\s+)?Strength/i,
-    'dex': /(\+?\d+)\s+(?:to\s+)?Dexterity/i,
-    'ar': /(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)/i,
-    'allskills': /(\+?\d+)\s+to\s+All\s+Skills/i,
-    'allres': /All\s+Resistances\s+\+(\d+)/i,
+    'ias': /([+-]?\d+)%\s+(Increased Attack Speed)/i,
+    'edmg': /([+-]?\d+)%\s+(Enhanced Damage)/i,
+    'fcr': /([+-]?\d+)%\s+(Faster Cast Rate)/i,
+    'fhr': /([+-]?\d+)%\s+(Faster Hit Recovery)/i,
+    'frw': /([+-]?\d+)%\s+(Faster Run\/Walk)/i,
+    'edef': /([+-]?\d+)%\s+(Enhanced Defense)/i,
+    'fbr': /([+-]?\d+)%\s+(Faster Block Rate)/i,
+    'block': /([+-]?\d+)%\s+(Increased Chance of Blocking)/i,
+    'life': /([+-]?\d+)\s+(?:to\s+)?Life/i,
+    'mana': /([+-]?\d+)\s+(?:to\s+)?Mana/i,
+    'str': /([+-]?\d+)\s+(?:to\s+)?Strength/i,
+    'dex': /([+-]?\d+)\s+(?:to\s+)?Dexterity/i,
+    'vit': /([+-]?\d+)\s+(?:to\s+)?Vitality/i,
+    'enr': /([+-]?\d+)\s+(?:to\s+)?Energy/i,
+    'ar': /([+-]?\d+)\s+(?:to\s+)?(?:Attack Rating)/i,
+    'allskills': /([+-]?\d+)\s+to\s+All\s+Skills/i,
+    'allres': /All\s+Resistances\s+([+-]?\d+)/i,
     'pdr': /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
     'mdr': /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
-    'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i
+    'cb': /([+-]?\d+)%\s+(Chance of Crushing Blow)/i
   };
   
  
@@ -1358,9 +1311,11 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     const originalValue = parseInt(match[1]);
     const newValue = originalValue + corruptionStat.value;
 
+    // Format new value with + sign for positive numbers
+    const newValueStr = newValue >= 0 ? `+${newValue}` : newValue.toString();
+
     // Replace the old value with new value
-    // The sign is already in the pattern, so we just replace the number
-    const newStatText = match[0].replace(match[1], newValue.toString());
+    const newStatText = match[0].replace(match[1], newValueStr);
     const redStatText = `<span class="corruption-enhanced-stat">${newStatText}</span>`;
 
     const newDescription = description.replace(match[0], redStatText);
@@ -1375,6 +1330,92 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
   
   return { found: false, description };
 }
+
+
+/**
+ * Apply corruption stacking to description WITHOUT breaking input boxes
+ * @param {string} baseDescription - The base HTML description (may contain input boxes)
+ * @param {string} corruptionText - The corruption text to apply
+ * @returns {string} - Description with corruption stacked/appended
+ */
+function applyCorruptionToDescription(baseDescription, corruptionText) {
+  if (!corruptionText) return baseDescription;
+
+  let description = baseDescription;
+  const corruptionStats = parseCorruptionText(corruptionText);
+
+  // Track which corruption stats were successfully stacked
+  const stackedLineIndices = new Set();
+
+  // Try to stack each corruption stat
+  corruptionStats.forEach((stat) => {
+    if (stat.stackable) {
+      // Check if the matching line in base description has an input box
+      // If it does, DON'T stack (it's a variable stat)
+      const hasInputBox = descriptionLineHasInputBox(description, stat.type);
+
+      if (!hasInputBox) {
+        // Safe to stack - no input box on this line
+        const result = replaceExistingStatWithCorruption(description, stat);
+        if (result.found) {
+          description = result.description;
+          stackedLineIndices.add(stat.lineIndex);
+        }
+      }
+    }
+  });
+
+  // Append any corruption lines that weren't stacked
+  const corruptionLines = corruptionText.split('<br>').map(line => line.trim()).filter(line => line);
+  const unstackedLines = corruptionLines.filter((_, index) => !stackedLineIndices.has(index));
+
+  if (unstackedLines.length > 0) {
+    const unstackedText = unstackedLines.join('<br>');
+    description += `<span class="corruption-enhanced-stat">${unstackedText}</span><br>`;
+  }
+
+  return description;
+}
+
+/**
+ * Check if a description line for a specific stat type contains an input box
+ * @param {string} description - The HTML description
+ * @param {string} statType - The stat type (e.g., 'allskills', 'life', 'edmg')
+ * @returns {boolean} - True if the line has an input box
+ */
+function descriptionLineHasInputBox(description, statType) {
+  // Patterns for finding stat lines
+  const linePatterns = {
+    'allskills': /\+?\d+\s+to\s+All\s+Skills/i,
+    'life': /\+?\d+\s+(?:to\s+)?Life/i,
+    'mana': /\+?\d+\s+(?:to\s+)?Mana/i,
+    'edmg': /\+?\d+%\s+Enhanced\s+Damage/i,
+    'edef': /\+?\d+%\s+Enhanced\s+Defense/i,
+    'str': /\+?\d+\s+(?:to\s+)?Strength/i,
+    'dex': /\+?\d+\s+(?:to\s+)?Dexterity/i,
+    'vit': /\+?\d+\s+(?:to\s+)?Vitality/i,
+    'enr': /\+?\d+\s+(?:to\s+)?Energy/i
+  };
+
+  const pattern = linePatterns[statType];
+  if (!pattern) return false;
+
+  // Split description into lines
+  const lines = description.split('<br>');
+
+  // Find the line that matches this stat type
+  for (const line of lines) {
+    if (pattern.test(line)) {
+      // Check if this line contains a stat-input element
+      return line.includes('class="stat-input"');
+    }
+  }
+
+  return false;
+}
+
+// Export for use in socket.js
+window.applyCorruptionToDescription = applyCorruptionToDescription;
 
 
 function triggerItemUpdate(dropdownId) {

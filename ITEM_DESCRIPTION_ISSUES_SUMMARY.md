@@ -65,6 +65,7 @@ The fundamental problem is that the **item description generation system doesn't
 4. **Stacking logic breaking HTML structure** (input boxes)
 5. **Corruption being applied in multiple places** (properties AND description)
 6. **Corruption state needs to be per-item**, not per-slot
+6. **Corruption state shared across all items** instead of per-item persistence
 
 ## Files Involved:
 - `corrupt.js` - Corruption application and property modification
@@ -78,3 +79,8 @@ Need a simpler, incremental approach that:
 3. Shows corruption correctly in character counter
 4. Keeps corruption text visually distinct (red color)
 5. Minimal changes to existing working code
+Need a simpler approach that:
+1. Preserves per-item corruption state (don't share across all items)
+2. Doesn't break input boxes for dynamic items
+3. Shows corruption correctly in character counter
+4. Keeps corruption text visually distinct (red color)
