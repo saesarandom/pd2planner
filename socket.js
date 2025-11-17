@@ -2529,14 +2529,42 @@ this.selectedJewelSuffix3MaxValue = null;
 
     // Handle dynamic items (no static description)
     if (!item.description) {
-      // Always regenerate description for dynamic items to re-attach event listeners
-      // (This is critical for items like Arcanna's Deathwand with variable stats)
-      let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
+      // For dynamic items with corruption, we need to:
+      // 1. Generate description from ORIGINAL (uncorrupted) properties
+      // 2. Apply corruption with addCorruptionWithStacking (adds red styling and stacking)
+      // This prevents double-counting corruption stats while maintaining proper display
 
-      // NOTE: For dynamic items, corruption has already been applied to properties
-      // by applyCorruptionToProperties in corrupt.js, so the generated description
-      // already includes the corrupted values. We should NOT call addCorruptionWithStacking
-      // again as that would double-count the corruption stats.
+      let baseDescription;
+      const itemName = dropdown.value;
+
+      // Check if item has corruption
+      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+        const corruption = window.itemCorruptions[dropdownId];
+
+        // Use stored original description if available
+        if (window.originalItemDescriptions && window.originalItemDescriptions[itemName]) {
+          baseDescription = window.originalItemDescriptions[itemName];
+        } else {
+          // Fallback: Generate from original properties if available
+          if (window.originalItemProperties && window.originalItemProperties[itemName]) {
+            const currentProps = item.properties;
+            item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
+            baseDescription = window.generateItemDescription(itemName, item, dropdownId);
+            item.properties = currentProps;
+          } else {
+            // Last resort: Generate with current properties
+            baseDescription = window.generateItemDescription(itemName, item, dropdownId);
+          }
+        }
+
+        // Apply corruption with stacking (adds red styling)
+        if (corruption.text && typeof window.addCorruptionWithStacking === 'function') {
+          baseDescription = window.addCorruptionWithStacking(baseDescription, corruption.text);
+        }
+      } else {
+        // No corruption - generate normally
+        baseDescription = window.generateItemDescription(itemName, item, dropdownId);
+      }
 
       // Parse base stats from the generated description (strip input elements first)
       const tempDiv = document.createElement('div');
