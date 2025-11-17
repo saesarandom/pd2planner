@@ -55,15 +55,16 @@ The fundamental problem is that the **item description generation system doesn't
 3. **Property-based generation vs description-based display**
 4. **Stacking logic breaking HTML structure** (input boxes)
 5. **Corruption being applied in multiple places** (properties AND description)
+6. **Corruption state shared across all items** instead of per-item persistence
 
 ## Files Involved:
 - `corrupt.js` - Corruption application and property modification
 - `socket.js` - Item display update and description generation
+- `itemState.js` - Item state persistence (uses `${dropdownId}_${itemName}` key)
 
 ## Next Steps:
-**COMPLETE REFACTOR** of item description system with clear separation:
-1. Single source of truth for item state (original vs modified)
-2. Unified generation flow for all item types
-3. Corruption as a modifier layer, not baked into base properties
-4. HTML-safe corruption display that preserves input boxes
-5. Clear distinction between display logic and stat calculation logic
+Need a simpler approach that:
+1. Preserves per-item corruption state (don't share across all items)
+2. Doesn't break input boxes for dynamic items
+3. Shows corruption correctly in character counter
+4. Keeps corruption text visually distinct (red color)
