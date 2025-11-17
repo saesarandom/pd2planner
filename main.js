@@ -2130,8 +2130,13 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const craftedItems = await window.auth.getCraftedItems();
         window.craftedItemsSystem.loadFromData(craftedItems);
-        // Refresh dropdowns to show crafted items
-        if (typeof populateItemDropdowns === 'function') {
+
+        // Only refresh dropdowns if NOT loading a build from URL
+        // (If loading from URL, the build load will handle adding crafted items)
+        const urlParams = new URLSearchParams(window.location.search);
+        const buildId = urlParams.get('build') || urlParams.get('id');
+
+        if (!buildId && typeof populateItemDropdowns === 'function') {
           populateItemDropdowns();
         }
       } catch (error) {
