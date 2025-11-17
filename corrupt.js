@@ -1072,92 +1072,29 @@ function applyCorruptionToItem(corruptionText) {
     }
   }
 
-  // Store original description if not already stored
-  if (!window.originalItemDescriptions[itemName]) {
-    let description = item.description;
-
-    // For dynamic items without a static description, generate it
-    if (!description) {
-      description = window.generateItemDescription(itemName, item, currentCorruptionSlot);
-    }
-
-    window.originalItemDescriptions[itemName] = description;
+  // Initialize itemState if not already done
+  if (!window.itemStateManager.hasItemState(currentCorruptionSlot)) {
+    window.itemStateManager.initializeItemState(currentCorruptionSlot, itemName);
   }
 
-  // Store original properties if not already stored
-  if (!window.originalItemProperties) {
-    window.originalItemProperties = {};
-  }
-  if (!window.originalItemProperties[itemName]) {
-    // Deep clone the properties object to preserve originals
-    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
-  }
+  // Parse corruption text into stats
+  const corruptionStats = parseCorruptionText(corruptionText);
 
-  // Store corruption info
+  // Set corruption modifier using new itemState system
+  // This will store the corruption and compute final properties
+  window.itemStateManager.setCorruptionModifier(currentCorruptionSlot, corruptionText, corruptionStats);
+
+  // Store corruption info for backward compatibility
   window.itemCorruptions[currentCorruptionSlot] = {
     text: corruptionText,
     type: 'corruption',
     itemName: itemName
   };
 
-  // Create enhanced description with stat stacking
-  const originalDescription = window.originalItemDescriptions[itemName];
-  const enhancedDescription = addCorruptionWithStacking(originalDescription, corruptionText);
-
-  // For dynamic items (has baseType), DON'T set static description - it breaks input boxes
-  // The socket system will regenerate the description with input boxes intact
-  if (!item.baseType) {
-    // Only set description for static items
-    item.description = enhancedDescription;
-  }
-
-  // Apply corruption stats to item properties (this is what matters for dynamic items)
-  applyCorruptionToProperties(itemName, corruptionText);
-
-  // For static weapons with edmg corruption, recalculate damage
-  if (!item.baseType && currentCorruptionSlot === 'weapons-dropdown') {
-    const stats = parseCorruptionText(corruptionText);
-    const hasEdmg = stats.some(stat => stat.type === 'edmg');
-
-    if (hasEdmg) {
-      // Get the base type from description
-      const lines = enhancedDescription.split('<br>');
-      const baseType = lines.length > 1 ? lines[1].trim() : null;
-
-      if (baseType && typeof calculateItemDamage === 'function') {
-        const isTwoHanded = item.properties.twohandmin !== undefined;
-
-        // Recalculate damage with corruption edmg
-        if (isTwoHanded) {
-          item.properties.twohandmin = calculateItemDamage(item, baseType, false);
-          item.properties.twohandmax = calculateItemDamage(item, baseType, true);
-        } else {
-          item.properties.onehandmin = calculateItemDamage(item, baseType, false);
-          item.properties.onehandmax = calculateItemDamage(item, baseType, true);
-        }
-
-        // Update the damage line in the description
-        const damageLine = isTwoHanded
-          ? `Two-Hand Damage: ${item.properties.twohandmin} to ${item.properties.twohandmax}, Avg ${Math.round((item.properties.twohandmin + item.properties.twohandmax) / 2 * 10) / 10}`
-          : `One-Hand Damage: ${item.properties.onehandmin} to ${item.properties.onehandmax}, Avg ${Math.round((item.properties.onehandmin + item.properties.onehandmax) / 2 * 10) / 10}`;
-
-        // Find and replace the damage line
-        const updatedLines = lines.map(line => {
-          if (line.includes('Damage:')) {
-            return damageLine;
-          }
-          return line;
-        });
-
-        item.description = updatedLines.join('<br>');
-      }
-    }
-  }
-
-  // Trigger item display update
+  // Trigger item display update (updateItemDisplay will use computed properties)
   triggerItemUpdate(currentCorruptionSlot);
 
-  // Refresh saved state AFTER triggerItemUpdate completes (so description and properties are in sync)
+  // Refresh saved state AFTER triggerItemUpdate completes
   const section = SECTION_MAP[currentCorruptionSlot];
   if (section && typeof window.refreshSavedState === 'function') {
     setTimeout(() => window.refreshSavedState(currentCorruptionSlot, section), 150);
