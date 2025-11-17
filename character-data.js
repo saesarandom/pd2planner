@@ -105,7 +105,7 @@ window.exportCharacterData = function() {
             }
 
             if (Object.keys(varStats).length > 0 || item.baseType) {
-                variableStats[slot] = {
+                const saveData = {
                     itemName,
                     stats: varStats,
                     // Save baseType if it exists (for upgraded items or crafted items)
@@ -113,6 +113,14 @@ window.exportCharacterData = function() {
                     // Save ALL properties for dynamic items (includes defense, reqstr, etc from upgrades)
                     ...(item.baseType && Object.keys(allProperties).length > 0 && { allProperties })
                 };
+
+                console.log(`Exporting ${itemName}:`, {
+                    baseType: item.baseType,
+                    allProperties: Object.keys(allProperties),
+                    saveData
+                });
+
+                variableStats[slot] = saveData;
             }
         }
     }
@@ -312,14 +320,24 @@ window.loadCharacterFromData = function(data) {
             for (const [slot, varData] of Object.entries(data.variableStats)) {
                 const itemName = varData.itemName;
 
+                console.log(`Importing ${itemName}:`, {
+                    hasBaseType: !!varData.baseType,
+                    baseType: varData.baseType,
+                    hasAllProperties: !!varData.allProperties,
+                    allPropertiesKeys: varData.allProperties ? Object.keys(varData.allProperties) : []
+                });
+
                 // Check regular items first
                 if (itemList[itemName]) {
                     const item = itemList[itemName];
+
+                    console.log(`Found in itemList. Original baseType: ${item.baseType}`);
 
                     // Restore baseType if it was saved (for upgraded items)
                     // Always set it if provided, even if item doesn't have baseType yet
                     if (varData.baseType) {
                         item.baseType = varData.baseType;
+                        console.log(`Set baseType to: ${varData.baseType}`);
                     }
 
                     // For items with baseType (dynamic/upgraded items), restore ALL properties
@@ -327,6 +345,7 @@ window.loadCharacterFromData = function(data) {
                         // Completely replace properties with saved version
                         // This ensures upgraded items have correct defense, reqstr, reqlvl, etc.
                         item.properties = varData.allProperties;
+                        console.log(`Restored allProperties. Defense: ${item.properties.defense}, reqlvl: ${item.properties.reqlvl}`);
                     }
                     // Otherwise, just restore variable stat values (backward compatibility)
                     else if (item.properties && varData.stats) {
@@ -335,6 +354,7 @@ window.loadCharacterFromData = function(data) {
                                 item.properties[propKey].current = value;
                             }
                         }
+                        console.log(`Restored variable stats only`);
                     }
                 }
                 // Also check crafted items
@@ -381,12 +401,41 @@ window.loadCharacterFromData = function(data) {
             });
         }
 
-        // Restore corruptions
+        // Restore corruptions (but skip corruptions on dynamic items - they break)
         if (data.corruptions?.data) {
-            window.itemCorruptions = data.corruptions.data;
+            // Filter out corruptions for dynamic items before restoring
+            const filteredCorruptions = {};
 
-            // Reapply corruptions to item descriptions
             for (const [slotId, corruption] of Object.entries(data.corruptions.data)) {
+                const itemName = corruption.itemName;
+
+                // Check if this is a dynamic item (has baseType, no static description)
+                let isDynamic = false;
+
+                // Check regular items
+                if (itemList[itemName]) {
+                    const item = itemList[itemName];
+                    isDynamic = item.baseType && !item.description;
+                }
+                // Check crafted items (all crafted items are dynamic)
+                else if (window.craftedItemsSystem?.isCraftedItem(itemName)) {
+                    isDynamic = true;
+                }
+
+                // Skip corruptions for dynamic items (corruption system doesn't support them properly)
+                if (isDynamic) {
+                    console.warn(`Skipping corruption for dynamic item: ${itemName}`);
+                    continue;
+                }
+
+                // Keep this corruption
+                filteredCorruptions[slotId] = corruption;
+            }
+
+            window.itemCorruptions = filteredCorruptions;
+
+            // Reapply corruptions to item descriptions (only static items at this point)
+            for (const [slotId, corruption] of Object.entries(filteredCorruptions)) {
                 const itemName = corruption.itemName;
                 if (itemName && typeof itemList !== 'undefined' && itemList[itemName]) {
                     // Store original description if not already stored
