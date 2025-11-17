@@ -2533,14 +2533,10 @@ this.selectedJewelSuffix3MaxValue = null;
       // (This is critical for items like Arcanna's Deathwand with variable stats)
       let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
 
-      // Check if item has corruption applied
-      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-        const corruption = window.itemCorruptions[dropdownId];
-        if (corruption.text && typeof window.addCorruptionWithStacking === 'function') {
-          // Apply corruption to the dynamically generated description
-          baseDescription = window.addCorruptionWithStacking(baseDescription, corruption.text);
-        }
-      }
+      // NOTE: For dynamic items, corruption has already been applied to properties
+      // by applyCorruptionToProperties in corrupt.js, so the generated description
+      // already includes the corrupted values. We should NOT call addCorruptionWithStacking
+      // again as that would double-count the corruption stats.
 
       // Parse base stats from the generated description (strip input elements first)
       const tempDiv = document.createElement('div');
