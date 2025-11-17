@@ -1,134 +1,320 @@
-// Simple in-memory item state storage
-// Remembers item modifications (corruption, sockets, ethereal, variable stats)
-// Only clears when requirements not met
+/**
+ * Item State Management System
+ *
+ * Provides a unified approach to managing item states across:
+ * - Regular items (static descriptions)
+ * - Dynamic items (generated descriptions with input boxes)
+ * - Set items (both types)
+ * - All modifier types (corruption, sockets, set bonuses, upgrades)
+ *
+ * Core principle: Base properties are NEVER modified.
+ * All modifications are stored separately and computed on-demand.
+ */
 
-// Global storage for item states
-window.itemStates = {};
+// Global item state storage
+window.itemState = window.itemState || {};
 
-// Refresh saved state for current item (call after any modification)
-window.refreshSavedState = function(dropdownId, section) {
-  const dropdown = document.getElementById(dropdownId);
-  if (!dropdown) return;
+/**
+ * Deep clone an object to prevent reference issues
+ */
+function deepClone(obj) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (obj instanceof Array) return obj.map(item => deepClone(item));
 
-  const itemName = dropdown.value;
-  if (!itemName) return;
+  const cloned = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      cloned[key] = deepClone(obj[key]);
+    }
+  }
+  return cloned;
+}
 
+/**
+ * Initialize item state for a slot
+ */
+function initializeItemState(slotId, itemName) {
   const item = window.getItemData(itemName);
-  if (!item) return;
+  if (!item) return null;
 
-  const stateKey = `${dropdownId}_${itemName}`;
-
-  // Get socket data
-  const socketData = [];
-  const socketSlots = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-  socketSlots.forEach((slot, index) => {
-    const imgElement = slot.querySelector('img');
-    socketData.push({
-      itemName: slot.dataset.itemName,
-      stats: slot.dataset.stats,
-      levelReq: slot.dataset.levelReq,
-      imgSrc: imgElement ? imgElement.src : null,
-      index: index
-    });
-  });
-
-  // Save complete current state - ethereal is always last/most current
-  window.itemStates[stateKey] = {
-    corruption: window.itemCorruptions ? window.itemCorruptions[dropdownId] : null,
-    sockets: socketData,
-    ethereal: item.properties?.ethereal || false,
-    properties: item.properties ? JSON.parse(JSON.stringify(item.properties)) : null
+  window.itemState[slotId] = {
+    itemName: itemName,
+    baseProperties: deepClone(item.properties || {}),
+    originalDescription: item.description || null,
+    modifiers: {
+      corruption: null,
+      sockets: [],
+      setBonus: null,
+      upgrade: null
+    },
+    computedProperties: null
   };
-};
 
-// Save current item state before switching (just calls refresh)
-window.saveItemState = function(dropdownId, itemName, section) {
-  if (!itemName) return;
-  window.refreshSavedState(dropdownId, section);
-};
+  // Initial computation
+  return computeFinalProperties(slotId);
+}
 
-// Restore item state after switching
-window.restoreItemState = function(dropdownId, itemName, section) {
-  if (!itemName) return;
+/**
+ * Get base (unmodified) properties for an item
+ */
+function getBaseProperties(slotId) {
+  if (!window.itemState[slotId]) return null;
+  return deepClone(window.itemState[slotId].baseProperties);
+}
 
-  const stateKey = `${dropdownId}_${itemName}`;
-  const savedState = window.itemStates[stateKey];
-  if (!savedState) return;
+/**
+ * Get all modifiers for a slot
+ */
+function getModifiers(slotId) {
+  if (!window.itemState[slotId]) return null;
+  return window.itemState[slotId].modifiers;
+}
 
-  const item = window.getItemData(itemName);
-  if (!item) return;
+/**
+ * Apply a single stat modifier to properties
+ * @param {object} props - Properties object to modify
+ * @param {object} stat - {type, value, subtype} stat to apply
+ */
+function applyStatModifier(props, stat) {
+  switch (stat.type) {
+    case 'ias':
+      props.ias = (props.ias || 0) + stat.value;
+      break;
+    case 'fcr':
+      props.fcr = (props.fcr || 0) + stat.value;
+      break;
+    case 'fhr':
+      props.fhr = (props.fhr || 0) + stat.value;
+      break;
+    case 'frw':
+      props.frw = (props.frw || 0) + stat.value;
+      break;
+    case 'fbr':
+      props.fbr = (props.fbr || 0) + stat.value;
+      break;
+    case 'block':
+      props.block = (props.block || 0) + stat.value;
+      break;
+    case 'str':
+      props.str = (props.str || 0) + stat.value;
+      break;
+    case 'dex':
+      props.dex = (props.dex || 0) + stat.value;
+      break;
+    case 'vit':
+      props.vit = (props.vit || 0) + stat.value;
+      break;
+    case 'enr':
+      props.enr = (props.enr || 0) + stat.value;
+      break;
+    case 'allattributes':
+      props.str = (props.str || 0) + stat.value;
+      props.dex = (props.dex || 0) + stat.value;
+      props.vit = (props.vit || 0) + stat.value;
+      props.enr = (props.enr || 0) + stat.value;
+      break;
+    case 'life':
+      // Handle both 'tolife' and 'life' properties
+      if ('tolife' in props) {
+        props.tolife = (props.tolife || 0) + stat.value;
+      } else {
+        props.life = (props.life || 0) + stat.value;
+      }
+      break;
+    case 'mana':
+      // Handle both 'tomana' and 'mana' properties
+      if ('tomana' in props) {
+        props.tomana = (props.tomana || 0) + stat.value;
+      } else {
+        props.mana = (props.mana || 0) + stat.value;
+      }
+      break;
+    case 'ar':
+      props.tohitrating = (props.tohitrating || 0) + stat.value;
+      break;
+    case 'edmg':
+      // Enhanced damage - add to edmg property
+      // For dynamic items with variable edmg, update the current value
+      if (typeof props.edmg === 'object' && 'current' in props.edmg) {
+        props.edmg.current = (props.edmg.current || props.edmg.min || 0) + stat.value;
+      } else {
+        props.edmg = (props.edmg || 0) + stat.value;
+      }
+      break;
+    case 'edef':
+      // Enhanced defense - add to edef property
+      if (typeof props.edef === 'object' && 'current' in props.edef) {
+        props.edef.current = (props.edef.current || props.edef.min || 0) + stat.value;
+      } else {
+        props.edef = (props.edef || 0) + stat.value;
+      }
+      break;
+    case 'allskills':
+      props.allsk = (props.allsk || 0) + stat.value;
+      break;
+    case 'resist':
+      // Fire, Cold, Lightning, Poison resist
+      const resistProp = stat.subtype + 'res';
+      props[resistProp] = (props[resistProp] || 0) + stat.value;
+      break;
+    case 'maxres':
+      // Maximum resistances
+      const maxResProp = 'max' + stat.subtype + 'res';
+      props[maxResProp] = (props[maxResProp] || 0) + stat.value;
+      break;
+    case 'allres':
+      props.fireres = (props.fireres || 0) + stat.value;
+      props.coldres = (props.coldres || 0) + stat.value;
+      props.lightres = (props.lightres || 0) + stat.value;
+      props.poisonres = (props.poisonres || 0) + stat.value;
+      break;
+    case 'pdr':
+      props.pdr = (props.pdr || 0) + stat.value;
+      break;
+    case 'mdr':
+      props.mdr = (props.mdr || 0) + stat.value;
+      break;
+    case 'cb':
+      props.cb = (props.cb || 0) + stat.value;
+      break;
+    // Add more stat types as needed
+  }
+}
 
-  // Restore properties (including ethereal and variable stats)
-  if (savedState.properties) {
-    item.properties = JSON.parse(JSON.stringify(savedState.properties));
+/**
+ * Compute final properties by applying all modifiers to base properties
+ * @param {string} slotId - The slot identifier (e.g., "helm-dropdown")
+ * @returns {object} - Computed properties
+ */
+function computeFinalProperties(slotId) {
+  const state = window.itemState[slotId];
+  if (!state) return null;
+
+  // Start with a deep clone of base properties
+  const finalProps = deepClone(state.baseProperties);
+
+  // Apply modifiers in order: corruption -> sockets -> set bonus -> upgrade
+  const mods = state.modifiers;
+
+  // 1. Apply corruption
+  if (mods.corruption && mods.corruption.stats) {
+    mods.corruption.stats.forEach(stat => applyStatModifier(finalProps, stat));
   }
 
-  // Restore corruption
-  if (savedState.corruption && window.itemCorruptions) {
-    window.itemCorruptions[dropdownId] = savedState.corruption;
-    if (savedState.corruption.text && typeof applyCorruptionToProperties === 'function') {
-      applyCorruptionToProperties(itemName, savedState.corruption.text);
-    }
-  }
-
-  // Update ethereal button state
-  const etherealBtn = document.querySelector(`button[onclick*="makeEtherealItem('${section}')"]`);
-  if (etherealBtn) {
-    const isEthereal = savedState.ethereal || (savedState.properties && savedState.properties.ethereal);
-    if (isEthereal) {
-      etherealBtn.classList.add('active');
-      etherealBtn.textContent = 'Remove Ethereal';
-    } else {
-      etherealBtn.classList.remove('active');
-      etherealBtn.textContent = 'Make Ethereal';
-    }
-  }
-
-  // Restore sockets
-  if (savedState.sockets && savedState.sockets.length > 0) {
-    savedState.sockets.forEach(socketInfo => {
-      const socketSlot = document.querySelector(
-        `.socket-container[data-section="${section}"] .socket-slot:nth-child(${socketInfo.index + 1})`
-      );
-
-      if (socketSlot && socketInfo.imgSrc) {
-        socketSlot.classList.remove('empty');
-        socketSlot.classList.add('filled');
-        socketSlot.dataset.itemName = socketInfo.itemName;
-        socketSlot.dataset.stats = socketInfo.stats;
-        socketSlot.dataset.levelReq = socketInfo.levelReq;
-        socketSlot.innerHTML = `<img src="${socketInfo.imgSrc}" alt="${socketInfo.itemName}">`;
+  // 2. Apply socket bonuses
+  if (mods.sockets && mods.sockets.length > 0) {
+    mods.sockets.forEach(socket => {
+      if (socket.stats && socket.stats.length > 0) {
+        socket.stats.forEach(stat => applyStatModifier(finalProps, stat));
       }
     });
   }
 
-  // Update display to show restored state
-  if (window.unifiedSocketSystem && window.unifiedSocketSystem.updateAll) {
-    window.unifiedSocketSystem.updateAll();
-  }
-};
-
-// Clear item state if requirements not met
-window.clearItemStateIfRequirementsNotMet = function(dropdownId, itemName) {
-  if (!itemName) return false;
-
-  const item = window.getItemData(itemName);
-  if (!item || !item.properties) return false;
-
-  const charLevel = window.unifiedSocketSystem?.currentLevel || 1;
-  const charStr = parseInt(document.getElementById('str')?.value) || 0;
-  const charDex = parseInt(document.getElementById('dex')?.value) || 0;
-
-  const reqLevel = item.properties.reqlvl || 0;
-  const reqStr = item.properties.reqstr || 0;
-  const reqDex = item.properties.reqdex || 0;
-
-  // Clear state if requirements not met
-  if (charLevel < reqLevel || charStr < reqStr || charDex < reqDex) {
-    const stateKey = `${dropdownId}_${itemName}`;
-    delete window.itemStates[stateKey];
-    return true;
+  // 3. Apply set bonus
+  if (mods.setBonus && mods.setBonus.stats) {
+    mods.setBonus.stats.forEach(stat => applyStatModifier(finalProps, stat));
   }
 
-  return false;
+  // 4. Apply upgrade bonuses
+  if (mods.upgrade && mods.upgrade.stats) {
+    mods.upgrade.stats.forEach(stat => applyStatModifier(finalProps, stat));
+  }
+
+  // Cache and return
+  state.computedProperties = finalProps;
+  return finalProps;
+}
+
+/**
+ * Set corruption modifier for a slot
+ * @param {string} slotId - The slot identifier
+ * @param {string} corruptionText - The corruption text to display
+ * @param {Array} corruptionStats - Parsed stats from corruption [{type, value, subtype}]
+ */
+function setCorruptionModifier(slotId, corruptionText, corruptionStats) {
+  if (!window.itemState[slotId]) return;
+
+  window.itemState[slotId].modifiers.corruption = {
+    text: corruptionText,
+    stats: corruptionStats
+  };
+
+  // Recompute properties
+  computeFinalProperties(slotId);
+}
+
+/**
+ * Clear corruption modifier for a slot
+ */
+function clearCorruptionModifier(slotId) {
+  if (!window.itemState[slotId]) return;
+  window.itemState[slotId].modifiers.corruption = null;
+  computeFinalProperties(slotId);
+}
+
+/**
+ * Add socket modifier
+ */
+function addSocketModifier(slotId, socketItemName, socketStats) {
+  if (!window.itemState[slotId]) return;
+
+  window.itemState[slotId].modifiers.sockets.push({
+    itemName: socketItemName,
+    stats: socketStats
+  });
+
+  computeFinalProperties(slotId);
+}
+
+/**
+ * Clear all socket modifiers
+ */
+function clearSocketModifiers(slotId) {
+  if (!window.itemState[slotId]) return;
+  window.itemState[slotId].modifiers.sockets = [];
+  computeFinalProperties(slotId);
+}
+
+/**
+ * Get computed (final) properties for a slot
+ */
+function getComputedProperties(slotId) {
+  if (!window.itemState[slotId]) return null;
+
+  // Return cached computed properties, or compute if not cached
+  if (!window.itemState[slotId].computedProperties) {
+    return computeFinalProperties(slotId);
+  }
+
+  return window.itemState[slotId].computedProperties;
+}
+
+/**
+ * Check if a slot has item state initialized
+ */
+function hasItemState(slotId) {
+  return window.itemState[slotId] !== undefined;
+}
+
+/**
+ * Clear all item state for a slot (when item is unequipped)
+ */
+function clearItemState(slotId) {
+  delete window.itemState[slotId];
+}
+
+// Export functions to global scope
+window.itemStateManager = {
+  initializeItemState,
+  getBaseProperties,
+  getModifiers,
+  getComputedProperties,
+  computeFinalProperties,
+  setCorruptionModifier,
+  clearCorruptionModifier,
+  addSocketModifier,
+  clearSocketModifiers,
+  hasItemState,
+  clearItemState,
+  applyStatModifier  // Expose for external use if needed
 };
