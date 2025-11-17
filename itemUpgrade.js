@@ -44,6 +44,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// ===================================================================
+// HELPER FUNCTIONS for handling both regular and crafted items
+// ===================================================================
+
+/**
+ * Safely update an item's data (works for both regular and crafted items)
+ * @param {string} itemName - The item's name or fullName
+ * @param {Object} newData - The new data to apply
+ */
+function updateItemData(itemName, newData) {
+  // Check if it's a crafted item
+  const isCrafted = window.craftedItemsSystem?.isCraftedItem(itemName);
+
+  if (isCrafted) {
+    // Update crafted item in the crafted items system
+    const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
+    if (craftedItem) {
+      // Update the crafted item's properties
+      Object.assign(craftedItem, newData);
+    }
+  } else {
+    // Update regular item in itemList
+    if (itemList[itemName]) {
+      itemList[itemName] = newData;
+    }
+  }
+}
 
 const upgradeDefinitions = {
   helms: {
@@ -3292,7 +3319,7 @@ function updateWeaponDescription() {
   if (!weaponSelect) return;
 
   const currentItem = weaponSelect.value;
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (currentItemData) {
     // Get description (generate if dynamic item)
@@ -3395,9 +3422,9 @@ function handleUpgrade() {
   const select = document.getElementById("helms-dropdown");
   const currentItem = select.value;
   const upgrades = upgradeDefinitions.helms[currentItem];
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
-  if (!upgrades) return;
+  if (!upgrades || !currentItemData) return;
 
   const isDynamic = currentItemData.baseType && !currentItemData.description;
 
@@ -3436,11 +3463,11 @@ function handleUpgrade() {
 
       if (isDynamic) {
         // For dynamic items, update baseType and properties only (no description)
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           ...currentItemData,
           baseType: upgrades.elite.base,
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
 
         // Trigger update manually via socket system to ensure input boxes work
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
@@ -3451,7 +3478,7 @@ function handleUpgrade() {
         }
       } else {
         // For static items, build new description
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           description: buildDescription(
             currentItem,
             upgrades.elite.base,
@@ -3459,7 +3486,7 @@ function handleUpgrade() {
             magicalProperties
           ),
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -3488,11 +3515,11 @@ function handleUpgrade() {
 
       if (isDynamic) {
         // For dynamic items, update baseType and properties only (no description)
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           ...currentItemData,
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
 
         // Trigger update manually via socket system to ensure input boxes work
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
@@ -3503,7 +3530,7 @@ function handleUpgrade() {
         }
       } else {
         // For static items, build new description
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           description: buildDescription(
             currentItem,
             upgrades.exceptional.base,
@@ -3511,7 +3538,7 @@ function handleUpgrade() {
             magicalProperties
           ),
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -3533,7 +3560,7 @@ function handleArmorUpgrade() {
   const select = document.getElementById("armors-dropdown");
   const currentItem = select.value;
   const upgrades = upgradeDefinitions.armors[currentItem];
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (!upgrades) return;
 
@@ -3574,11 +3601,11 @@ function handleArmorUpgrade() {
 
       if (isDynamic) {
         // For dynamic items, update baseType and properties only (no description)
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           ...currentItemData,
           baseType: upgrades.elite.base,
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
 
         // Trigger update manually via socket system to ensure input boxes work
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
@@ -3589,7 +3616,7 @@ function handleArmorUpgrade() {
         }
       } else {
         // For static items, build new description
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           description: buildDescription(
             currentItem,
             upgrades.elite.base,
@@ -3597,7 +3624,7 @@ function handleArmorUpgrade() {
             magicalProperties
           ),
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -3626,11 +3653,11 @@ function handleArmorUpgrade() {
 
       if (isDynamic) {
         // For dynamic items, update baseType and properties only (no description)
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           ...currentItemData,
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
 
         // Trigger update manually via socket system to ensure input boxes work
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
@@ -3641,7 +3668,7 @@ function handleArmorUpgrade() {
         }
       } else {
         // For static items, build new description
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           description: buildDescription(
             currentItem,
             upgrades.exceptional.base,
@@ -3649,7 +3676,7 @@ function handleArmorUpgrade() {
             magicalProperties
           ),
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -3671,7 +3698,7 @@ function handleWeaponUpgrade() {
   const select = document.getElementById("weapons-dropdown");
   const currentItem = select.value;
   const upgrades = upgradeDefinitions.weapons[currentItem];
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (!upgrades) return;
 
@@ -3853,7 +3880,7 @@ function handleWeaponUpgradeWithCorruption() {
   const select = document.getElementById("weapons-dropdown");
   const currentItem = select.value;
   const upgrades = upgradeDefinitions.weapons[currentItem];
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (!upgrades) return;
 
@@ -3991,7 +4018,7 @@ function handleGloveUpgrade() {
   const select = document.getElementById("gloves-dropdown");
   const currentItem = select.value;
   const upgrades = upgradeDefinitions.gloves[currentItem];
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (!upgrades) return;
 
@@ -4036,11 +4063,11 @@ function handleGloveUpgrade() {
 
       if (isDynamic) {
         // For dynamic items, update baseType and properties only (no description)
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           ...currentItemData,
           baseType: upgrades.elite.base,
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
 
         // Trigger update manually via socket system to ensure input boxes work
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
@@ -4051,7 +4078,7 @@ function handleGloveUpgrade() {
         }
       } else {
         // For static items, build new description
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           description: buildDescription(
             currentItem,
             upgrades.elite.base,
@@ -4059,7 +4086,7 @@ function handleGloveUpgrade() {
             magicalProperties
           ),
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -4089,11 +4116,11 @@ function handleGloveUpgrade() {
 
       if (isDynamic) {
         // For dynamic items, update baseType and properties only (no description)
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           ...currentItemData,
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
 
         // Trigger update manually via socket system to ensure input boxes work
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
@@ -4104,7 +4131,7 @@ function handleGloveUpgrade() {
         }
       } else {
         // For static items, build new description
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           description: buildDescription(
             currentItem,
             upgrades.exceptional.base,
@@ -4112,7 +4139,7 @@ function handleGloveUpgrade() {
             magicalProperties
           ),
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -4134,7 +4161,7 @@ function handleBeltUpgrade() {
   const select = document.getElementById("belts-dropdown");
   const currentItem = select.value;
   const upgrades = upgradeDefinitions.belts[currentItem];
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (!upgrades) return;
 
@@ -4230,11 +4257,11 @@ function handleBeltUpgrade() {
 
       if (isDynamic) {
         // For dynamic items, update baseType and properties only (no description)
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           ...currentItemData,
           baseType: upgrades.exceptional.base,
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
 
         // Trigger update manually via socket system to ensure input boxes work
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
@@ -4245,7 +4272,7 @@ function handleBeltUpgrade() {
         }
       } else {
         // For static items, build new description
-        itemList[currentItem] = {
+        updateItemData(currentItem, {
           description: buildDescription(
             currentItem,
             upgrades.exceptional.base,
@@ -4253,7 +4280,7 @@ function handleBeltUpgrade() {
             magicalProperties
           ),
           properties: { ...currentItemData.properties, ...newProperties },
-        };
+        });
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -4353,7 +4380,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function makeEthereal() {
   const select = document.getElementById("helms-dropdown");
   const currentItem = select.value;
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   const isCurrentlyEthereal = currentItemData.properties?.ethereal ||
     (currentItemData.description && currentItemData.description.includes("Ethereal"));
@@ -4377,7 +4404,7 @@ function makeEthereal() {
 function makeEtherealArmor() {
   const select = document.getElementById("armors-dropdown");
   const currentItem = select.value;
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   const isCurrentlyEthereal = currentItemData.properties?.ethereal ||
     (currentItemData.description && currentItemData.description.includes("Ethereal"));
@@ -4401,7 +4428,7 @@ function makeEtherealArmor() {
 function makeEtherealItem(category) {
   const select = document.getElementById(`${category}-dropdown`);
   const currentItem = select.value;
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (!currentItemData) return;
 
@@ -4682,7 +4709,7 @@ function updateWeaponDamageDisplay() {
   if (!weaponSelect) return;
 
   const currentItem = weaponSelect.value;
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (currentItemData) {
     const isDynamic = currentItemData.baseType;
@@ -4917,7 +4944,7 @@ function updateWeaponDescription() {
   if (!weaponSelect) return;
 
   const currentItem = weaponSelect.value;
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (currentItemData) {
     // Get description (generate if dynamic item)
@@ -5500,7 +5527,7 @@ function updateWeaponDisplayWithPerLevelDamage() {
 function makeEtherealShield() {
   const select = document.getElementById("offs-dropdown");
   const currentItem = select.value;
-  const currentItemData = itemList[currentItem];
+  const currentItemData = window.getItemData(currentItem);
 
   if (!currentItemData) return;
 
