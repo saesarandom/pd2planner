@@ -86,7 +86,7 @@ window.exportCharacterData = function() {
             item = window.craftedItemsSystem.getCraftedItemByName(itemName);
         }
 
-        // If we found the item, export its variable stats
+        // If we found the item, export its variable stats and baseType (if changed by upgrade)
         if (item && item.properties) {
             const varStats = {};
             for (const [propKey, propValue] of Object.entries(item.properties)) {
@@ -94,8 +94,13 @@ window.exportCharacterData = function() {
                     varStats[propKey] = propValue.current;
                 }
             }
-            if (Object.keys(varStats).length > 0) {
-                variableStats[slot] = { itemName, stats: varStats };
+            if (Object.keys(varStats).length > 0 || item.baseType) {
+                variableStats[slot] = {
+                    itemName,
+                    stats: varStats,
+                    // Save baseType if it exists (for upgraded items or crafted items)
+                    ...(item.baseType && { baseType: item.baseType })
+                };
             }
         }
     }
@@ -269,7 +274,14 @@ window.loadCharacterFromData = function(data) {
                 // Check regular items first
                 if (itemList[itemName]) {
                     const item = itemList[itemName];
-                    if (item.properties) {
+
+                    // Restore baseType if it was saved (for upgraded items)
+                    if (varData.baseType && item.baseType !== undefined) {
+                        item.baseType = varData.baseType;
+                    }
+
+                    // Restore variable stat values
+                    if (item.properties && varData.stats) {
                         for (const [propKey, value] of Object.entries(varData.stats)) {
                             if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
                                 item.properties[propKey].current = value;
@@ -280,10 +292,18 @@ window.loadCharacterFromData = function(data) {
                 // Also check crafted items
                 else if (window.craftedItemsSystem) {
                     const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
-                    if (craftedItem && craftedItem.properties) {
-                        for (const [propKey, value] of Object.entries(varData.stats)) {
-                            if (craftedItem.properties[propKey] && typeof craftedItem.properties[propKey] === 'object') {
-                                craftedItem.properties[propKey].current = value;
+                    if (craftedItem) {
+                        // Restore baseType if it was saved
+                        if (varData.baseType && craftedItem.baseType !== undefined) {
+                            craftedItem.baseType = varData.baseType;
+                        }
+
+                        // Restore variable stat values
+                        if (craftedItem.properties && varData.stats) {
+                            for (const [propKey, value] of Object.entries(varData.stats)) {
+                                if (craftedItem.properties[propKey] && typeof craftedItem.properties[propKey] === 'object') {
+                                    craftedItem.properties[propKey].current = value;
+                                }
                             }
                         }
                     }
