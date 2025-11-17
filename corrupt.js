@@ -1067,6 +1067,16 @@ function applyCorruptionToItem(corruptionText) {
     return;
   }
 
+  // Store original properties FIRST before any other logic
+  // This ensures we capture the clean state before any corruption is applied
+  if (!window.originalItemProperties) {
+    window.originalItemProperties = {};
+  }
+  if (!window.originalItemProperties[itemName]) {
+    // Deep clone the properties object to preserve originals
+    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
+  }
+
   // Check if there was a previous socket corruption, and restore original socket count
   const previousCorruption = window.itemCorruptions[currentCorruptionSlot];
   if (previousCorruption && previousCorruption.type === 'socket_corruption' && previousCorruption.originalSocketCount !== undefined) {
@@ -1080,21 +1090,16 @@ function applyCorruptionToItem(corruptionText) {
   if (!window.originalItemDescriptions[itemName]) {
     let description = item.description;
 
-    // For dynamic items without a static description, generate it
+    // For dynamic items without a static description, generate it FROM ORIGINAL PROPERTIES
     if (!description) {
+      // Temporarily restore original properties to generate clean description
+      const currentProps = item.properties;
+      item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
       description = window.generateItemDescription(itemName, item, currentCorruptionSlot);
+      item.properties = currentProps;
     }
 
     window.originalItemDescriptions[itemName] = description;
-  }
-
-  // Store original properties if not already stored
-  if (!window.originalItemProperties) {
-    window.originalItemProperties = {};
-  }
-  if (!window.originalItemProperties[itemName]) {
-    // Deep clone the properties object to preserve originals
-    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
   }
 
   // Store corruption info
