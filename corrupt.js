@@ -1050,7 +1050,7 @@ function applyCorruptionToProperties(itemName, corruptionText) {
         break;
       case 'allskills':
         // +X to All Skills
-        props.allskills = (props.allskills || 0) + stat.value;
+        props.allsk = (props.allsk || 0) + stat.value;
         break;
     }
   });
