@@ -1048,6 +1048,10 @@ function applyCorruptionToProperties(itemName, corruptionText) {
           props.edef = (props.edef || 0) + stat.value;
         }
         break;
+      case 'allskills':
+        // +X to All Skills
+        props.allsk = (props.allsk || 0) + stat.value;
+        break;
     }
   });
 }
@@ -1061,6 +1065,16 @@ function applyCorruptionToItem(corruptionText) {
   const item = window.getItemData(itemName);
   if (!itemName || !item) {
     return;
+  }
+
+  // Store original properties FIRST before any other logic
+  // This ensures we capture the clean state before any corruption is applied
+  if (!window.originalItemProperties) {
+    window.originalItemProperties = {};
+  }
+  if (!window.originalItemProperties[itemName]) {
+    // Deep clone the properties object to preserve originals
+    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
   }
 
   // Check if there was a previous socket corruption, and restore original socket count
