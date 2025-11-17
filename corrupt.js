@@ -1522,3 +1522,55 @@ window.updateSingleModPreview = updateSingleModPreview;
 window.generateCorruptionText = generateCorruptionText;
 window.generateDoubleModText = generateDoubleModText;
 
+function exampleCorruptionParsing() {
+  // Parse corruption text to find stats
+  const stats = [];
+  const corruptionLines = corruptionText.split('<br>');
+  
+  for (const line of corruptionLines) {
+    // Try each known stat pattern
+    for (const [formatKey, pattern] of Object.entries(StatPatterns)) {
+      const match = line.match(pattern);
+      if (match) {
+        stats.push({
+          formatKey: formatKey,
+          value: parseInt(match[1]),
+          pattern: pattern
+        });
+        break;
+      }
+    }
+  }
+  
+  return stats;
+}
+
+/**
+ * Example: How to stack corruption with existing stat
+ */
+function exampleStackCorruption(description, corruptionFormatKey, corruptionValue) {
+  // Parse current value from description
+  const currentValue = parseStatValue(description, corruptionFormatKey);
+  
+  if (currentValue !== null) {
+    // Stack the values
+    const newValue = currentValue + corruptionValue;
+    
+    // Replace in description with styled text
+    const result = replaceStatInDescription(
+      description, 
+      corruptionFormatKey, 
+      newValue,
+      'corruption-enhanced-stat'
+    );
+    
+    return result;
+  }
+  
+  // Stat not found, add it as new line
+  const newStatText = formatStat(corruptionFormatKey, corruptionValue);
+  return {
+    found: false,
+    description: description + `<span class="corruption-enhanced-stat">${newStatText}</span><br>`
+  };
+}
