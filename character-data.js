@@ -89,17 +89,29 @@ window.exportCharacterData = function() {
         // If we found the item, export its variable stats and baseType (if changed by upgrade)
         if (item && item.properties) {
             const varStats = {};
+            const allProperties = {}; // For items with baseType, save ALL properties (upgraded items)
+
             for (const [propKey, propValue] of Object.entries(item.properties)) {
                 if (typeof propValue === 'object' && propValue !== null && 'current' in propValue) {
+                    // Variable stat - save current value
                     varStats[propKey] = propValue.current;
+                    allProperties[propKey] = propValue; // Save full object
+                } else {
+                    // Fixed property - only save for dynamic items (with baseType)
+                    if (item.baseType) {
+                        allProperties[propKey] = propValue;
+                    }
                 }
             }
+
             if (Object.keys(varStats).length > 0 || item.baseType) {
                 variableStats[slot] = {
                     itemName,
                     stats: varStats,
                     // Save baseType if it exists (for upgraded items or crafted items)
-                    ...(item.baseType && { baseType: item.baseType })
+                    ...(item.baseType && { baseType: item.baseType }),
+                    // Save ALL properties for dynamic items (includes defense, reqstr, etc from upgrades)
+                    ...(item.baseType && Object.keys(allProperties).length > 0 && { allProperties })
                 };
             }
         }
@@ -305,12 +317,19 @@ window.loadCharacterFromData = function(data) {
                     const item = itemList[itemName];
 
                     // Restore baseType if it was saved (for upgraded items)
-                    if (varData.baseType && item.baseType !== undefined) {
+                    // Always set it if provided, even if item doesn't have baseType yet
+                    if (varData.baseType) {
                         item.baseType = varData.baseType;
                     }
 
-                    // Restore variable stat values
-                    if (item.properties && varData.stats) {
+                    // For items with baseType (dynamic/upgraded items), restore ALL properties
+                    if (varData.allProperties && item.properties) {
+                        // Completely replace properties with saved version
+                        // This ensures upgraded items have correct defense, reqstr, reqlvl, etc.
+                        item.properties = varData.allProperties;
+                    }
+                    // Otherwise, just restore variable stat values (backward compatibility)
+                    else if (item.properties && varData.stats) {
                         for (const [propKey, value] of Object.entries(varData.stats)) {
                             if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
                                 item.properties[propKey].current = value;
@@ -323,12 +342,17 @@ window.loadCharacterFromData = function(data) {
                     const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
                     if (craftedItem) {
                         // Restore baseType if it was saved
-                        if (varData.baseType && craftedItem.baseType !== undefined) {
+                        // Always set it if provided
+                        if (varData.baseType) {
                             craftedItem.baseType = varData.baseType;
                         }
 
-                        // Restore variable stat values
-                        if (craftedItem.properties && varData.stats) {
+                        // For crafted items, restore ALL properties if saved
+                        if (varData.allProperties && craftedItem.properties) {
+                            craftedItem.properties = varData.allProperties;
+                        }
+                        // Otherwise, just restore variable stat values
+                        else if (craftedItem.properties && varData.stats) {
                             for (const [propKey, value] of Object.entries(varData.stats)) {
                                 if (craftedItem.properties[propKey] && typeof craftedItem.properties[propKey] === 'object') {
                                     craftedItem.properties[propKey].current = value;
