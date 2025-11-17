@@ -1362,9 +1362,11 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     const originalValue = parseInt(match[1]);
     const newValue = originalValue + corruptionStat.value;
 
-    // Replace the old value with new value
-    // The sign is already in the pattern, so we just replace the number
-    const newStatText = match[0].replace(match[1], newValue.toString());
+    // Replace the old value with new value, preserving the + sign
+    // The pattern captures the optional + sign with the number, so we need to add it back
+    const hasPlus = match[1].startsWith('+');
+    const newValueStr = hasPlus ? '+' + newValue.toString() : newValue.toString();
+    const newStatText = match[0].replace(match[1], newValueStr);
     const redStatText = `<span class="corruption-enhanced-stat">${newStatText}</span>`;
 
     const newDescription = description.replace(match[0], redStatText);
