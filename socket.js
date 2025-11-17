@@ -1755,7 +1755,7 @@
             
             <h4>1. Select Color</h4>
             <div class="jewel-color-grid">
-              ${['white', 'blue', 'yellow', 'green', 'orange', 'red'].map(color => `
+              ${['white', 'blue', 'yellow', 'green', 'purple', 'red'].map(color => `
                 <div class="color-option ${color === 'white' ? 'selected' : ''}" data-color="${color}" 
                     style="background: ${color}; border: 2px solid ${color === 'white' ? '#000' : color};">
                   ${color.charAt(0).toUpperCase() + color.slice(1)}
@@ -2210,7 +2210,7 @@ updateSuffixValueInput(num) {
         blue: '#6666ff',
         yellow: '#ffff66',
         green: '#66ff66',
-        purpel: '#c412caff',
+        purple: '#c412caff',
         red: '#ff6666'
       };
       return colors[this.selectedJewelColor] || '#ffffff';
