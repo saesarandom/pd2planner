@@ -105,7 +105,7 @@ window.exportCharacterData = function() {
             }
 
             if (Object.keys(varStats).length > 0 || item.baseType) {
-                variableStats[slot] = {
+                const saveData = {
                     itemName,
                     stats: varStats,
                     // Save baseType if it exists (for upgraded items or crafted items)
@@ -113,6 +113,14 @@ window.exportCharacterData = function() {
                     // Save ALL properties for dynamic items (includes defense, reqstr, etc from upgrades)
                     ...(item.baseType && Object.keys(allProperties).length > 0 && { allProperties })
                 };
+
+                console.log(`Exporting ${itemName}:`, {
+                    baseType: item.baseType,
+                    allProperties: Object.keys(allProperties),
+                    saveData
+                });
+
+                variableStats[slot] = saveData;
             }
         }
     }
@@ -312,14 +320,24 @@ window.loadCharacterFromData = function(data) {
             for (const [slot, varData] of Object.entries(data.variableStats)) {
                 const itemName = varData.itemName;
 
+                console.log(`Importing ${itemName}:`, {
+                    hasBaseType: !!varData.baseType,
+                    baseType: varData.baseType,
+                    hasAllProperties: !!varData.allProperties,
+                    allPropertiesKeys: varData.allProperties ? Object.keys(varData.allProperties) : []
+                });
+
                 // Check regular items first
                 if (itemList[itemName]) {
                     const item = itemList[itemName];
+
+                    console.log(`Found in itemList. Original baseType: ${item.baseType}`);
 
                     // Restore baseType if it was saved (for upgraded items)
                     // Always set it if provided, even if item doesn't have baseType yet
                     if (varData.baseType) {
                         item.baseType = varData.baseType;
+                        console.log(`Set baseType to: ${varData.baseType}`);
                     }
 
                     // For items with baseType (dynamic/upgraded items), restore ALL properties
@@ -327,6 +345,7 @@ window.loadCharacterFromData = function(data) {
                         // Completely replace properties with saved version
                         // This ensures upgraded items have correct defense, reqstr, reqlvl, etc.
                         item.properties = varData.allProperties;
+                        console.log(`Restored allProperties. Defense: ${item.properties.defense}, reqlvl: ${item.properties.reqlvl}`);
                     }
                     // Otherwise, just restore variable stat values (backward compatibility)
                     else if (item.properties && varData.stats) {
@@ -335,6 +354,7 @@ window.loadCharacterFromData = function(data) {
                                 item.properties[propKey].current = value;
                             }
                         }
+                        console.log(`Restored variable stats only`);
                     }
                 }
                 // Also check crafted items
