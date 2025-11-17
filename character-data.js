@@ -401,12 +401,41 @@ window.loadCharacterFromData = function(data) {
             });
         }
 
-        // Restore corruptions
+        // Restore corruptions (but skip corruptions on dynamic items - they break)
         if (data.corruptions?.data) {
-            window.itemCorruptions = data.corruptions.data;
+            // Filter out corruptions for dynamic items before restoring
+            const filteredCorruptions = {};
 
-            // Reapply corruptions to item descriptions
             for (const [slotId, corruption] of Object.entries(data.corruptions.data)) {
+                const itemName = corruption.itemName;
+
+                // Check if this is a dynamic item (has baseType, no static description)
+                let isDynamic = false;
+
+                // Check regular items
+                if (itemList[itemName]) {
+                    const item = itemList[itemName];
+                    isDynamic = item.baseType && !item.description;
+                }
+                // Check crafted items (all crafted items are dynamic)
+                else if (window.craftedItemsSystem?.isCraftedItem(itemName)) {
+                    isDynamic = true;
+                }
+
+                // Skip corruptions for dynamic items (corruption system doesn't support them properly)
+                if (isDynamic) {
+                    console.warn(`Skipping corruption for dynamic item: ${itemName}`);
+                    continue;
+                }
+
+                // Keep this corruption
+                filteredCorruptions[slotId] = corruption;
+            }
+
+            window.itemCorruptions = filteredCorruptions;
+
+            // Reapply corruptions to item descriptions (only static items at this point)
+            for (const [slotId, corruption] of Object.entries(filteredCorruptions)) {
                 const itemName = corruption.itemName;
                 if (itemName && typeof itemList !== 'undefined' && itemList[itemName]) {
                     // Store original description if not already stored
