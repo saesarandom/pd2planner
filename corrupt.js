@@ -1314,6 +1314,92 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
 }
 
 
+/**
+ * Apply corruption stacking to description WITHOUT breaking input boxes
+ * @param {string} baseDescription - The base HTML description (may contain input boxes)
+ * @param {string} corruptionText - The corruption text to apply
+ * @returns {string} - Description with corruption stacked/appended
+ */
+function applyCorruptionToDescription(baseDescription, corruptionText) {
+  if (!corruptionText) return baseDescription;
+
+  let description = baseDescription;
+  const corruptionStats = parseCorruptionText(corruptionText);
+
+  // Track which corruption stats were successfully stacked
+  const stackedLineIndices = new Set();
+
+  // Try to stack each corruption stat
+  corruptionStats.forEach((stat) => {
+    if (stat.stackable) {
+      // Check if the matching line in base description has an input box
+      // If it does, DON'T stack (it's a variable stat)
+      const hasInputBox = descriptionLineHasInputBox(description, stat.type);
+
+      if (!hasInputBox) {
+        // Safe to stack - no input box on this line
+        const result = replaceExistingStatWithCorruption(description, stat);
+        if (result.found) {
+          description = result.description;
+          stackedLineIndices.add(stat.lineIndex);
+        }
+      }
+    }
+  });
+
+  // Append any corruption lines that weren't stacked
+  const corruptionLines = corruptionText.split('<br>').map(line => line.trim()).filter(line => line);
+  const unstackedLines = corruptionLines.filter((_, index) => !stackedLineIndices.has(index));
+
+  if (unstackedLines.length > 0) {
+    const unstackedText = unstackedLines.join('<br>');
+    description += `<span class="corruption-enhanced-stat">${unstackedText}</span><br>`;
+  }
+
+  return description;
+}
+
+/**
+ * Check if a description line for a specific stat type contains an input box
+ * @param {string} description - The HTML description
+ * @param {string} statType - The stat type (e.g., 'allskills', 'life', 'edmg')
+ * @returns {boolean} - True if the line has an input box
+ */
+function descriptionLineHasInputBox(description, statType) {
+  // Patterns for finding stat lines
+  const linePatterns = {
+    'allskills': /\+?\d+\s+to\s+All\s+Skills/i,
+    'life': /\+?\d+\s+(?:to\s+)?Life/i,
+    'mana': /\+?\d+\s+(?:to\s+)?Mana/i,
+    'edmg': /\+?\d+%\s+Enhanced\s+Damage/i,
+    'edef': /\+?\d+%\s+Enhanced\s+Defense/i,
+    'str': /\+?\d+\s+(?:to\s+)?Strength/i,
+    'dex': /\+?\d+\s+(?:to\s+)?Dexterity/i,
+    'vit': /\+?\d+\s+(?:to\s+)?Vitality/i,
+    'enr': /\+?\d+\s+(?:to\s+)?Energy/i
+  };
+
+  const pattern = linePatterns[statType];
+  if (!pattern) return false;
+
+  // Split description into lines
+  const lines = description.split('<br>');
+
+  // Find the line that matches this stat type
+  for (const line of lines) {
+    if (pattern.test(line)) {
+      // Check if this line contains a stat-input element
+      return line.includes('class="stat-input"');
+    }
+  }
+
+  return false;
+}
+
+// Export for use in socket.js
+window.applyCorruptionToDescription = applyCorruptionToDescription;
+
+
 function triggerItemUpdate(dropdownId) {
   setTimeout(() => {
     const dropdown = document.getElementById(dropdownId);

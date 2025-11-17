@@ -2568,10 +2568,15 @@ this.selectedJewelSuffix3MaxValue = null;
       // Generate stacked description with socket bonuses
       let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
 
-      // Append corruption text visually (in red) without mangling HTML
+      // Apply corruption stacking (smart - preserves input boxes)
       const modifiers = window.itemStateManager.getModifiers(dropdownId);
       if (modifiers && modifiers.corruption && modifiers.corruption.text) {
-        finalDescription += `<span class="corruption-enhanced-stat">${modifiers.corruption.text}</span><br>`;
+        if (typeof window.applyCorruptionToDescription === 'function') {
+          finalDescription = window.applyCorruptionToDescription(finalDescription, modifiers.corruption.text);
+        } else {
+          // Fallback: just append if function not loaded yet
+          finalDescription += `<span class="corruption-enhanced-stat">${modifiers.corruption.text}</span><br>`;
+        }
       }
 
       // Update Required Level display
@@ -2651,10 +2656,15 @@ this.selectedJewelSuffix3MaxValue = null;
     // Generate final description with stacked properties
     let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
 
-    // Append corruption text visually (in red) without mangling HTML
+    // Apply corruption stacking (smart - preserves HTML structure)
     const modifiers = window.itemStateManager.getModifiers(dropdownId);
     if (modifiers && modifiers.corruption && modifiers.corruption.text) {
-      finalDescription += `<span class="corruption-enhanced-stat">${modifiers.corruption.text}</span><br>`;
+      if (typeof window.applyCorruptionToDescription === 'function') {
+        finalDescription = window.applyCorruptionToDescription(finalDescription, modifiers.corruption.text);
+      } else {
+        // Fallback: just append if function not loaded yet
+        finalDescription += `<span class="corruption-enhanced-stat">${modifiers.corruption.text}</span><br>`;
+      }
     }
 
     // Update Required Level display
