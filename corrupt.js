@@ -1048,6 +1048,10 @@ function applyCorruptionToProperties(itemName, corruptionText) {
           props.edef = (props.edef || 0) + stat.value;
         }
         break;
+      case 'allskills':
+        // +X to All Skills
+        props.allskills = (props.allskills || 0) + stat.value;
+        break;
     }
   });
 }
