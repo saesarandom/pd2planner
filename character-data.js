@@ -257,10 +257,39 @@ window.loadCharacterFromData = function(data) {
                 window.craftedItemsSystem.loadFromData(equippedCraftedItems);
             }
 
-            // Refresh dropdowns to include the loaded crafted items
-            if (typeof window.populateItemDropdowns === 'function') {
-                window.populateItemDropdowns();
-            }
+            // Add the crafted items to dropdowns WITHOUT clearing existing selections
+            // We manually add options instead of calling populateItemDropdowns() which clears everything
+            equippedCraftedItems.forEach(craftedItem => {
+                // Determine which dropdown(s) this item belongs to
+                const itemType = craftedItem.itemType;
+                const dropdownIds = [];
+
+                // Map item type to dropdown IDs
+                if (itemType === 'weapon') dropdownIds.push('weapons-dropdown', 'mercweapons-dropdown');
+                else if (itemType === 'helm') dropdownIds.push('helms-dropdown', 'merchelms-dropdown');
+                else if (itemType === 'armor') dropdownIds.push('armors-dropdown', 'mercarmors-dropdown');
+                else if (itemType === 'shield') dropdownIds.push('offs-dropdown', 'mercoffs-dropdown');
+                else if (itemType === 'gloves') dropdownIds.push('gloves-dropdown', 'mercgloves-dropdown');
+                else if (itemType === 'belt') dropdownIds.push('belts-dropdown', 'mercbelts-dropdown');
+                else if (itemType === 'boots') dropdownIds.push('boots-dropdown', 'mercboots-dropdown');
+                else if (itemType === 'ringsone') dropdownIds.push('ringsone-dropdown', 'ringstwo-dropdown');
+                else if (itemType === 'amulets') dropdownIds.push('amulets-dropdown');
+
+                // Add option to each relevant dropdown if it doesn't already exist
+                dropdownIds.forEach(dropdownId => {
+                    const dropdown = document.getElementById(dropdownId);
+                    if (dropdown) {
+                        // Check if option already exists
+                        const existingOption = Array.from(dropdown.options).find(opt => opt.value === craftedItem.fullName);
+                        if (!existingOption) {
+                            const option = document.createElement('option');
+                            option.value = craftedItem.fullName;
+                            option.textContent = craftedItem.fullName;
+                            dropdown.appendChild(option);
+                        }
+                    }
+                });
+            });
         }
 
         // IMPORTANT: Restore variable item stats AFTER loading crafted items
