@@ -1256,24 +1256,26 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
   }
 
   const searchPatterns = {
-    'ias': /(\+?\d+)%\s+(Increased Attack Speed)/i,
-    'edmg': /(\+?\d+)%\s+(Enhanced Damage)/i,
-    'fcr': /(\+?\d+)%\s+(Faster Cast Rate)/i,
-    'fhr': /(\+?\d+)%\s+(Faster Hit Recovery)/i,
-    'frw': /(\+?\d+)%\s+(Faster Run\/Walk)/i,
-    'edef': /(\+?\d+)%\s+(Enhanced Defense)/i,
-    'fbr': /(\+?\d+)%\s+(Faster Block Rate)/i,
-    'block': /(\+?\d+)%\s+(Increased Chance of Blocking)/i,
-    'life': /(\+?\d+)\s+(?:to\s+)?Life/i,
-    'mana': /(\+?\d+)\s+(?:to\s+)?Mana/i,
-    'str': /(\+?\d+)\s+(?:to\s+)?Strength/i,
-    'dex': /(\+?\d+)\s+(?:to\s+)?Dexterity/i,
-    'ar': /(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)/i,
-    'allskills': /(\+?\d+)\s+to\s+All\s+Skills/i,
-    'allres': /All\s+Resistances\s+\+(\d+)/i,
+    'ias': /([+-]?\d+)%\s+(Increased Attack Speed)/i,
+    'edmg': /([+-]?\d+)%\s+(Enhanced Damage)/i,
+    'fcr': /([+-]?\d+)%\s+(Faster Cast Rate)/i,
+    'fhr': /([+-]?\d+)%\s+(Faster Hit Recovery)/i,
+    'frw': /([+-]?\d+)%\s+(Faster Run\/Walk)/i,
+    'edef': /([+-]?\d+)%\s+(Enhanced Defense)/i,
+    'fbr': /([+-]?\d+)%\s+(Faster Block Rate)/i,
+    'block': /([+-]?\d+)%\s+(Increased Chance of Blocking)/i,
+    'life': /([+-]?\d+)\s+(?:to\s+)?Life/i,
+    'mana': /([+-]?\d+)\s+(?:to\s+)?Mana/i,
+    'str': /([+-]?\d+)\s+(?:to\s+)?Strength/i,
+    'dex': /([+-]?\d+)\s+(?:to\s+)?Dexterity/i,
+    'vit': /([+-]?\d+)\s+(?:to\s+)?Vitality/i,
+    'enr': /([+-]?\d+)\s+(?:to\s+)?Energy/i,
+    'ar': /([+-]?\d+)\s+(?:to\s+)?(?:Attack Rating)/i,
+    'allskills': /([+-]?\d+)\s+to\s+All\s+Skills/i,
+    'allres': /All\s+Resistances\s+([+-]?\d+)/i,
     'pdr': /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
     'mdr': /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
-    'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i
+    'cb': /([+-]?\d+)%\s+(Chance of Crushing Blow)/i
   };
   
  
@@ -1295,9 +1297,11 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     const originalValue = parseInt(match[1]);
     const newValue = originalValue + corruptionStat.value;
 
+    // Format new value with + sign for positive numbers
+    const newValueStr = newValue >= 0 ? `+${newValue}` : newValue.toString();
+
     // Replace the old value with new value
-    // The sign is already in the pattern, so we just replace the number
-    const newStatText = match[0].replace(match[1], newValue.toString());
+    const newStatText = match[0].replace(match[1], newValueStr);
     const redStatText = `<span class="corruption-enhanced-stat">${newStatText}</span>`;
 
     const newDescription = description.replace(match[0], redStatText);
