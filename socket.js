@@ -2524,22 +2524,14 @@ this.selectedJewelSuffix3MaxValue = null;
       window.itemStateManager.initializeItemState(dropdownId, dropdown.value);
     }
 
-    // Get computed properties (includes base + corruption + sockets + other modifiers)
-    const computedProperties = window.itemStateManager.getComputedProperties(dropdownId);
-
-    // Create a temporary item object with computed properties for description generation
-    const itemWithComputedProps = {
-      ...item,
-      properties: computedProperties || item.properties
-    };
-
     // Get socket stats
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
 
     // Handle dynamic items (no static description)
     if (!item.description) {
-      // Generate description from COMPUTED properties (already includes corruption effects)
-      let baseDescription = window.generateItemDescription(dropdown.value, itemWithComputedProps, dropdownId);
+      // Generate description from BASE properties (item.properties should be unmodified)
+      // Corruption will be shown separately in red text
+      let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
 
       // Parse base stats from the generated description (strip input elements first)
       const tempDiv = document.createElement('div');
