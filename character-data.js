@@ -341,69 +341,14 @@ window.loadCharacterFromData = function(data) {
 
         }
 
-        // Set equipment
-        if (data.equipment) {
-            const equipmentMap = {
-                weapon: 'weapons-dropdown',
-                helm: 'helms-dropdown',
-                armor: 'armors-dropdown',
-                shield: 'offs-dropdown',
-                gloves: 'gloves-dropdown',
-                belt: 'belts-dropdown',
-                boots: 'boots-dropdown',
-                ring1: 'ringsone-dropdown',
-                ring2: 'ringstwo-dropdown',
-                amulet: 'amulets-dropdown',
-                mercWeapon: 'mercweapons-dropdown',
-                mercHelm: 'merchelms-dropdown',
-                mercArmor: 'mercarmors-dropdown',
-                mercShield: 'mercoffs-dropdown',
-                mercGloves: 'mercgloves-dropdown',
-                mercBelt: 'mercbelts-dropdown',
-                mercBoots: 'mercboots-dropdown'
-            };
-
-            for (const [slot, dropdownId] of Object.entries(equipmentMap)) {
-                const dropdown = document.getElementById(dropdownId);
-                if (dropdown && data.equipment[slot]) {
-                    dropdown.value = data.equipment[slot];
-                    // Trigger change event to update UI
-                    dropdown.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            }
-        }
-
-        // Log variable stats AFTER equipment is set to verify they're still correct
-        if (data.variableStats && typeof itemList !== 'undefined') {
-
-            for (const [slot, varData] of Object.entries(data.variableStats)) {
-                const itemName = varData.itemName;
-                // Check regular items
-                if (itemList[itemName]) {
-                    const item = itemList[itemName];
-                    for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
-                        const actualValue = item.properties?.[propKey]?.current;
-
-                    }
-                }
-                // Also check crafted items
-                else if (window.craftedItemsSystem) {
-                    const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
-                    if (craftedItem) {
-                        for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
-                            const actualValue = craftedItem.properties?.[propKey]?.current;
-
-                        }
-                    }
-                }
-            }
-        }
+        // IMPORTANT: Restore sockets and corruptions BEFORE setting equipment
+        // This ensures they're in place when equipment triggers display updates
 
         // Restore socket data
         if (data.sockets?.data && window.unifiedSocketSystem?.importSocketData) {
-            
+
             window.unifiedSocketSystem.importSocketData(data.sockets.data);
-            
+
         } else {
             console.warn('Socket data not available or socket system not ready', {
                 hasData: !!data.sockets?.data,
@@ -446,6 +391,62 @@ window.loadCharacterFromData = function(data) {
                             // Fallback if stacking function not available
                             const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.text}</span><br>`;
                             itemList[itemName].description = enhancedDescription;
+                        }
+                    }
+                }
+            }
+        }
+
+        // NOW set equipment after sockets and corruptions are restored
+        // This ensures that when equipment triggers display updates, sockets/corruptions are already in place
+        if (data.equipment) {
+            const equipmentMap = {
+                weapon: 'weapons-dropdown',
+                helm: 'helms-dropdown',
+                armor: 'armors-dropdown',
+                shield: 'offs-dropdown',
+                gloves: 'gloves-dropdown',
+                belt: 'belts-dropdown',
+                boots: 'boots-dropdown',
+                ring1: 'ringsone-dropdown',
+                ring2: 'ringstwo-dropdown',
+                amulet: 'amulets-dropdown',
+                mercWeapon: 'mercweapons-dropdown',
+                mercHelm: 'merchelms-dropdown',
+                mercArmor: 'mercarmors-dropdown',
+                mercShield: 'mercoffs-dropdown',
+                mercGloves: 'mercgloves-dropdown',
+                mercBelt: 'mercbelts-dropdown',
+                mercBoots: 'mercboots-dropdown'
+            };
+
+            for (const [slot, dropdownId] of Object.entries(equipmentMap)) {
+                const dropdown = document.getElementById(dropdownId);
+                if (dropdown && data.equipment[slot]) {
+                    dropdown.value = data.equipment[slot];
+                    // Trigger change event to update UI
+                    dropdown.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        }
+
+        // Log variable stats AFTER equipment is set to verify they're still correct
+        if (data.variableStats && typeof itemList !== 'undefined') {
+            for (const [slot, varData] of Object.entries(data.variableStats)) {
+                const itemName = varData.itemName;
+                // Check regular items
+                if (itemList[itemName]) {
+                    const item = itemList[itemName];
+                    for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
+                        const actualValue = item.properties?.[propKey]?.current;
+                    }
+                }
+                // Also check crafted items
+                else if (window.craftedItemsSystem) {
+                    const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
+                    if (craftedItem) {
+                        for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
+                            const actualValue = craftedItem.properties?.[propKey]?.current;
                         }
                     }
                 }
