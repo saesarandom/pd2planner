@@ -644,7 +644,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       return `${val}% Chance to Cast Level ${level} Bone Spear on Cast`;
     },
     magicfind: (val, prop) => formatVariableStat('', val, '% Better Chance of Getting Magic Items', prop, itemName, 'magicfind', dropdownId),
-    goldfind: (val, prop) => formatVariableStat('', val, '% Better Chance of Getting Gold', prop, itemName, 'goldfind', dropdownId),
+    goldfind: (val, prop) => formatVariableStat('', val, '% Extra Gold from Monsters', prop, itemName, 'goldfind', dropdownId),
     maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
     lleech: (val, prop) => formatVariableStat('', val, '% Life Stolen per Hit', prop, itemName, 'lleech', dropdownId),
     mleech: (val, prop) => formatVariableStat('', val, '% Mana Stolen per Hit', prop, itemName, 'mleech', dropdownId),

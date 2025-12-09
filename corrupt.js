@@ -164,15 +164,15 @@ const CORRUPTIONS = {
     { mod: "-[7-10]% to Enemy Lightning Resistance", type: "numeric", range: [7, 10] },
     { mod: "-[7-10]% to Enemy Poison Resistance", type: "numeric", range: [7, 10] },
     { mod: "+1 to All Skills", type: "fixed" },
-    { 
-      mod: "+30% Increased Attack Speed<br>[20-30]% Chance of Crushing Blow", 
-      type: "double", 
+    {
+      mod: "+30% Increased Attack Speed<br>[20-30]% Chance of Crushing Blow",
+      type: "double",
       ranges: [
         { label: "Increased Attack Speed", value: 30, type: "fixed" },
         { label: "Chance of Crushing Blow", range: [20, 30], type: "numeric" }
       ]
     },
-    
+
     { mod: "+[80-120]% Enhanced Damage<br>+20% Increased Attack Speed", type: "numeric", range: [80, 120] },
     { mod: "+[80-120]% Enhanced Damage<br>+250 to Attack Rating", type: "numeric", range: [80, 120] },
     { mod: "+[50-70]% Enhanced Damage<br>25% Deadly Strike", type: "numeric", range: [50, 70] },
@@ -422,7 +422,7 @@ const CORRUPTIONS = {
 
 // Section mapping for dropdowns to item types
 const SECTION_MAP = {
-  
+
   'helms-dropdown': 'helm',
   'armors-dropdown': 'armor',
   'weapons-dropdown': 'weapon',
@@ -449,18 +449,18 @@ let currentCorruptionSlot = null;
 // Initialize corruption system
 function initCorruptionSystem() {
 
-  
+
   addCorruptionCSS();
   createCorruptionModal();
   attachCorruptionButtons();
-  
+
 
 }
 
 // Enhanced CSS for corruption styling
 function addCorruptionCSS() {
   if (document.getElementById('corruption-styles')) return;
-  
+
   const style = document.createElement('style');
   style.id = 'corruption-styles';
   style.textContent = `
@@ -597,14 +597,14 @@ function createCorruptionModal() {
       </div>
     </div>
   `;
-  
+
   document.body.insertAdjacentHTML('beforeend', modalHTML);
-  
+
   // Attach modal event listeners
   document.getElementById('closeCorruptionModal').onclick = closeCorruptionModal;
   document.getElementById('cancelCorruption').onclick = closeCorruptionModal;
   document.getElementById('removeCorruption').onclick = removeCurrentCorruption;
-  
+
   // Close on background click
   document.getElementById('corruptionModal').onclick = (e) => {
     if (e.target.id === 'corruptionModal') closeCorruptionModal();
@@ -614,10 +614,10 @@ function createCorruptionModal() {
 // Attach corruption buttons to existing corrupt buttons
 function attachCorruptionButtons() {
 
-  
+
   const buttonMap = {
     'corruptHelm': 'helms-dropdown',
-    'corruptArmor': 'armors-dropdown', 
+    'corruptArmor': 'armors-dropdown',
     'corruptWeapon': 'weapons-dropdown',
     'corruptShield': 'offs-dropdown',
     'corruptGlove': 'gloves-dropdown',
@@ -627,7 +627,7 @@ function attachCorruptionButtons() {
     'corruptRingTwo': 'ringstwo-dropdown',
     'corruptAmulet': 'amulets-dropdown'
   };
-  
+
   Object.entries(buttonMap).forEach(([buttonId, dropdownId]) => {
     const button = document.getElementById(buttonId);
     if (button) {
@@ -640,20 +640,20 @@ function attachCorruptionButtons() {
 // Open corruption modal for specific item slot
 function openCorruptionModal(dropdownId) {
 
-  
+
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown || !dropdown.value) {
     alert('Please select an item first!');
     return;
   }
-  
+
   const itemType = SECTION_MAP[dropdownId];
   const corruptions = CORRUPTIONS[itemType];
   if (!corruptions) {
     alert('No corruptions available for this item type.');
     return;
   }
-  
+
   currentCorruptionSlot = dropdownId;
   populateCorruptionList(corruptions);
   document.getElementById('corruptionModal').style.display = 'block';
@@ -663,7 +663,7 @@ function openCorruptionModal(dropdownId) {
 function populateCorruptionList(corruptions) {
   const listContainer = document.getElementById('corruptionList');
   listContainer.innerHTML = '';
-  
+
   corruptions.forEach((corruption, index) => {
     const item = document.createElement('div');
     item.style.cssText = `
@@ -675,7 +675,7 @@ function populateCorruptionList(corruptions) {
       cursor: pointer;
       transition: background-color 0.2s;
     `;
-    
+
     if (corruption.type === 'double' && corruption.ranges) {
       // Handle double mods with independent sliders
       item.innerHTML = createDoubleModSliders(corruption, index);
@@ -710,10 +710,10 @@ function populateCorruptionList(corruptions) {
 
       item.onclick = () => applyCorruption(corruption.mod);
     }
-    
+
     item.onmouseenter = () => item.style.backgroundColor = '#444';
     item.onmouseleave = () => item.style.backgroundColor = '#333';
-    
+
     listContainer.appendChild(item);
   });
 }
@@ -724,15 +724,15 @@ function createDoubleModSliders(corruption, index) {
     <div class="corruption-slider-container">
       <div class="corruption-slider-label">${corruption.mod.replace(/<br>/g, ' + ').replace(/\[.*?\]/g, '[Range]')}</div>
   `;
-  
+
   corruption.ranges.forEach((range, rangeIndex) => {
     const sliderId = `corruption_${index}_${rangeIndex}`;
     const valueId = `value_${index}_${rangeIndex}`;
-    
+
     if (range.type === 'numeric') {
       const minVal = range.range[0];
       const maxVal = range.range[1];
-      
+
       html += `
         <div class="corruption-slider-row">
           <span style="min-width: 120px; color: #ccc; font-size: 11px;">${range.label}:</span>
@@ -758,15 +758,15 @@ function createDoubleModSliders(corruption, index) {
       `;
     }
   });
-  
+
   html += `
       <div class="corruption-preview" id="preview_${index}"></div>
     </div>
   `;
-  
+
   // Update preview after creating HTML
   setTimeout(() => updateDoubleModPreview(index), 10);
-  
+
   return html;
 }
 
@@ -775,10 +775,10 @@ function createSingleModSlider(corruption, index) {
   const sliderId = `corruption_single_${index}`;
   const valueId = `value_single_${index}`;
   const previewId = `preview_single_${index}`;
-  
+
   const minVal = corruption.range[0];
   const maxVal = corruption.range[1];
-  
+
   return `
     <div class="corruption-slider-container">
       <div class="corruption-slider-label">${corruption.mod.replace(/\[.*?\]/g, '[Range]')}</div>
@@ -803,19 +803,19 @@ function createSingleModSlider(corruption, index) {
 function updateDoubleModPreview(index) {
   const preview = document.getElementById(`preview_${index}`);
   if (!preview) return;
-  
+
   // Find the corruption data
   const corruption = getCurrentCorruptionByIndex(index);
   if (!corruption || !corruption.ranges) return;
-  
+
   let previewText = '';
   let values = [];
-  
+
   corruption.ranges.forEach((range, rangeIndex) => {
     if (range.type === 'numeric') {
       const slider = document.getElementById(`corruption_${index}_${rangeIndex}`);
       const valueDisplay = document.getElementById(`value_${index}_${rangeIndex}`);
-      
+
       if (slider && valueDisplay) {
         const value = parseInt(slider.value);
         valueDisplay.textContent = value;
@@ -825,7 +825,7 @@ function updateDoubleModPreview(index) {
       values.push(range.value);
     }
   });
-  
+
   // Generate preview text by replacing placeholders
   previewText = generateDoubleModText(corruption.mod, values);
   preview.innerHTML = previewText;
@@ -836,7 +836,7 @@ function updateSingleModPreview(index, modTemplate) {
   const slider = document.getElementById(`corruption_single_${index}`);
   const valueDisplay = document.getElementById(`value_single_${index}`);
   const preview = document.getElementById(`preview_single_${index}`);
-  
+
   if (slider && valueDisplay && preview) {
     const value = parseInt(slider.value);
     valueDisplay.textContent = value;
@@ -855,14 +855,14 @@ function getCurrentCorruptionByIndex(index) {
 function generateDoubleModText(template, values) {
   let result = template;
   let valueIndex = 0;
-  
+
   // Replace placeholders with actual values in order
   result = result.replace(/\[[\d\-]+\]/g, () => {
     const value = values[valueIndex] || 0;
     valueIndex++;
     return value.toString();
   });
-  
+
   return result;
 }
 
@@ -874,7 +874,7 @@ function generateCorruptionText(template, value) {
 // Apply double corruption with multiple values
 function applyDoubleCorruption(corruption, index) {
   let values = [];
-  
+
   // Collect values from sliders
   corruption.ranges.forEach((range, rangeIndex) => {
     if (range.type === 'numeric') {
@@ -884,11 +884,11 @@ function applyDoubleCorruption(corruption, index) {
       values.push(range.value);
     }
   });
-  
+
   const corruptionText = generateDoubleModText(corruption.mod, values);
-  
-  
-  
+
+
+
   applyCorruptionToItem(corruptionText);
 }
 
@@ -1048,6 +1048,12 @@ function applyCorruptionToProperties(itemName, corruptionText) {
           props.edef = (props.edef || 0) + stat.value;
         }
         break;
+      case 'magicfind':
+        props.magicfind = (props.magicfind || 0) + stat.value;
+        break;
+      case 'goldfind':
+        props.goldfind = (props.goldfind || 0) + stat.value;
+        break;
     }
   });
 }
@@ -1177,35 +1183,35 @@ function addCorruptionWithStacking(originalDescription, corruptionText) {
 
   // Parse corruption stats
   const corruptionStats = parseCorruptionText(corruptionText);
-  
+
   // Track what gets stacked vs what needs to be added
   const stackedLines = new Set();
   const processedStatTypes = new Set();
-  
+
   // Process stackable stats
   corruptionStats.forEach((stat, index) => {
     if (stat.stackable) {
       const statKey = stat.subtype ? `${stat.type}_${stat.subtype}` : stat.type;
-      
+
       // Only process each stat type once
       if (processedStatTypes.has(statKey)) return;
       processedStatTypes.add(statKey);
-      
+
       // Try to stack with existing stat
       const replaced = replaceExistingStatWithCorruption(description, stat);
       if (replaced.found) {
         description = replaced.description;
         stackedLines.add(stat.lineIndex); // Mark this line as handled
-       
+
       }
     }
   });
-  
+
   // Reconstruct remaining corruption text from non-stacked lines
   if (corruptionText.includes('<br>')) {
     const lines = corruptionText.split('<br>').map(line => line.trim());
     const remainingLines = lines.filter((line, index) => !stackedLines.has(index));
-    
+
     if (remainingLines.length > 0) {
       const remainingText = remainingLines.join('<br>');
       description += `<span class="corruption-enhanced-stat">${remainingText}</span><br>`;
@@ -1229,7 +1235,7 @@ window.addCorruptionWithStacking = addCorruptionWithStacking;
 // Enhanced parseCorruptionText to handle double mods properly
 function parseCorruptionText(corruptionText) {
   const stats = [];
-  
+
   // Define stackable stat patterns
   const stackablePatterns = [
     { pattern: /(\+?\d+)%\s+(Increased Attack Speed)/i, type: 'ias' },
@@ -1254,38 +1260,40 @@ function parseCorruptionText(corruptionText) {
     { pattern: /All\s+Resistances\s+\+(\d+)/i, type: 'allres' },
     { pattern: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'pdr' },
     { pattern: /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'mdr' },
-    { pattern: /(\+?\d+)%\s+(Chance of Crushing Blow)/i, type: 'cb' }
+    { pattern: /(\+?\d+)%\s+(Chance of Crushing Blow)/i, type: 'cb' },
+    { pattern: /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i, type: 'magicfind' },
+    { pattern: /(\+?\d+)%\s+(Extra Gold from Monsters)/i, type: 'goldfind' }
   ];
-  
+
   // Split corruption text by <br> to handle multi-line mods
   const lines = corruptionText.split('<br>').map(line => line.trim()).filter(line => line);
-  
+
   // Process each line separately
   lines.forEach((line, lineIndex) => {
     let matched = false;
-    
+
     // Check if line matches any stackable pattern
     for (const { pattern, type } of stackablePatterns) {
       const match = line.match(pattern);
       if (match) {
         let value;
         let subtype = '';
-        
+
         // Handle special cases
         if (type === 'maxres') {
           value = parseInt(match[1]);
-          subtype = match[2].toLowerCase(); 
+          subtype = match[2].toLowerCase();
         } else if (type === 'resist') {
           value = parseInt(match[2]);
-          subtype = match[1].toLowerCase(); 
+          subtype = match[1].toLowerCase();
         } else {
           value = parseInt(match[1]);
         }
-        
+
         stats.push({
           text: line,
           fullText: corruptionText,
-          lineIndex: lineIndex, 
+          lineIndex: lineIndex,
           value: value,
           type: type,
           subtype: subtype,
@@ -1296,7 +1304,7 @@ function parseCorruptionText(corruptionText) {
         break;
       }
     }
-    
+
 
     if (!matched) {
       stats.push({
@@ -1307,7 +1315,7 @@ function parseCorruptionText(corruptionText) {
       });
     }
   });
-  
+
   return stats;
 }
 
@@ -1336,10 +1344,12 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     'allres': /All\s+Resistances\s+\+(\d+)/i,
     'pdr': /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
     'mdr': /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
-    'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i
+    'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i,
+    'magicfind': /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i,
+    'goldfind': /(\+?\d+)%\s+(Extra Gold from Monsters)/i
   };
-  
- 
+
+
   if (corruptionStat.type === 'maxres') {
     const pattern = new RegExp(`(\\+?\\d+)%\\s+(?:to\\s+)?Maximum\\s+${corruptionStat.subtype}\\s+Resist`, 'i');
     searchPatterns['maxres'] = pattern;
@@ -1347,12 +1357,12 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     const pattern = new RegExp(`${corruptionStat.subtype}\\s+Resist\\s+\\+(\\d+)%`, 'i');
     searchPatterns['resist'] = pattern;
   }
-  
+
   const searchPattern = searchPatterns[corruptionStat.type];
   if (!searchPattern) {
     return { found: false, description };
   }
-  
+
   const match = description.match(searchPattern);
   if (match) {
     const originalValue = parseInt(match[1]);
@@ -1372,7 +1382,7 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
       newValue: newValue
     };
   }
-  
+
   return { found: false, description };
 }
 
@@ -1454,7 +1464,7 @@ function closeCorruptionModal() {
 }
 
 // Programmatically apply socket corruption (called from socket system)
-window.applySocketCorruption = function(dropdownId, socketCount) {
+window.applySocketCorruption = function (dropdownId, socketCount) {
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) {
     return;
@@ -1526,7 +1536,7 @@ function exampleCorruptionParsing() {
   // Parse corruption text to find stats
   const stats = [];
   const corruptionLines = corruptionText.split('<br>');
-  
+
   for (const line of corruptionLines) {
     // Try each known stat pattern
     for (const [formatKey, pattern] of Object.entries(StatPatterns)) {
@@ -1541,7 +1551,7 @@ function exampleCorruptionParsing() {
       }
     }
   }
-  
+
   return stats;
 }
 
@@ -1551,22 +1561,22 @@ function exampleCorruptionParsing() {
 function exampleStackCorruption(description, corruptionFormatKey, corruptionValue) {
   // Parse current value from description
   const currentValue = parseStatValue(description, corruptionFormatKey);
-  
+
   if (currentValue !== null) {
     // Stack the values
     const newValue = currentValue + corruptionValue;
-    
+
     // Replace in description with styled text
     const result = replaceStatInDescription(
-      description, 
-      corruptionFormatKey, 
+      description,
+      corruptionFormatKey,
       newValue,
       'corruption-enhanced-stat'
     );
-    
+
     return result;
   }
-  
+
   // Stat not found, add it as new line
   const newStatText = formatStat(corruptionFormatKey, corruptionValue);
   return {
