@@ -406,7 +406,7 @@ window.populateItemDropdowns = populateItemDropdowns;
  * @param {string} itemName - Item name (full name for crafted items)
  * @returns {Object|null} Item data or null if not found
  */
-window.getItemData = function(itemName) {
+window.getItemData = function (itemName) {
   // Check if it's a crafted item first
   if (window.craftedItemsSystem?.isCraftedItem(itemName)) {
     return window.craftedItemsSystem.getCraftedItemByName(itemName);
@@ -505,7 +505,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     }
   }
 
-    if (item.isCrafted && item.baseType && item.itemType !== 'weapon') {
+  if (item.isCrafted && item.baseType && item.itemType !== 'weapon') {
     // Check if this is armor or helm
     if (window.baseDefenses && window.baseDefenses[item.baseType]) {
       const baseDef = window.baseDefenses[item.baseType];
@@ -627,7 +627,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     block: (val, prop) => formatVariableStat('', val, '% Increased Chance of Blocking', prop, itemName, 'block', dropdownId),
     edef: (val, prop) => formatVariableStat('+', val, '% Enhanced Defense', prop, itemName, 'edef', dropdownId),
     repl: (val, prop) => formatVariableStat('Replenish Life +', val, '', prop, itemName, 'repl', dropdownId),
-    allsk: (val, prop) => formatVariableStat('+', val, 'to All Skills', prop, itemName, 'allsk', dropdownId),
+    allsk: (val, prop) => formatVariableStat('+', val, ' to All Skills', prop, itemName, 'allsk', dropdownId),
     str: (val, prop) => formatVariableStat('+', val, ' to Strength', prop, itemName, 'str', dropdownId),
     dex: (val, prop) => formatVariableStat('+', val, ' to Dexterity', prop, itemName, 'dex', dropdownId),
     vit: (val, prop) => formatVariableStat('+', val, ' to Vitality', prop, itemName, 'vit', dropdownId),
@@ -750,9 +750,9 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       // Save focus state before regenerating
       const activeElement = document.activeElement;
       const isFocusedInput = activeElement &&
-                             activeElement.classList.contains('stat-input') &&
-                             activeElement.dataset.item === itemName &&
-                             activeElement.dataset.prop === propKey;
+        activeElement.classList.contains('stat-input') &&
+        activeElement.dataset.item === itemName &&
+        activeElement.dataset.prop === propKey;
       const cursorPosition = isFocusedInput ? activeElement.selectionStart : null;
 
       // Let the socket system handle the update - it will regenerate the description
@@ -967,7 +967,7 @@ function setupSocketHandlers() {
 
   // Socket category tabs
   document.querySelectorAll('.socket-category-tab').forEach(tab => {
-    tab.addEventListener('click', function() {
+    tab.addEventListener('click', function () {
       document.querySelectorAll('.socket-category-tab').forEach(t =>
         t.classList.remove('active'));
       document.querySelectorAll('.socket-content').forEach(c =>
@@ -1285,7 +1285,7 @@ function populateFixedProperties(craftType) {
     slider.dataset.propKey = propKey;
     slider.style.cssText = 'width: 100%; cursor: pointer;';
 
-    slider.addEventListener('input', function() {
+    slider.addEventListener('input', function () {
       valueSpan.textContent = this.value;
     });
 
@@ -1310,7 +1310,7 @@ function openCraftingModal() {
   // Setup craft type change listener
   const craftTypeSelect = document.getElementById('craftType');
   if (craftTypeSelect) {
-    craftTypeSelect.addEventListener('change', function() {
+    craftTypeSelect.addEventListener('change', function () {
       populateBaseItemsByType(this.value);
       populateFixedProperties(this.value);
       refreshAffixesForBaseType(''); // Clear affixes initially
@@ -1320,7 +1320,7 @@ function openCraftingModal() {
   // Setup base type change listener
   const baseTypeSelect = document.getElementById('craftBaseType');
   if (baseTypeSelect) {
-    baseTypeSelect.addEventListener('change', function() {
+    baseTypeSelect.addEventListener('change', function () {
       refreshAffixesForBaseType(this.value);
     });
   }
@@ -1415,43 +1415,43 @@ function refreshAffixesForBaseType(baseType) {
       barbarianskills: '+ to Barbarian Skill Levels',
       drusk: '+ to Druid Skill Levels',
       assassinskills: '+ to Assassin Skill Levels',
-  
-  // Amazon skill trees
+
+      // Amazon skill trees
       bowskills: '+ to Bow and Crossbow Skills (Amazon Only)',
       amazonmagic: '+ to Passive and Magic Skills (Amazon Only)',
       javskills: '+ to Javelin and Spear Skills (Amazon Only)',
-  
-  // Sorceress skill trees
+
+      // Sorceress skill trees
       firespells: '+ to Fire Skills (Sorceress Only)',
       lightspells: '+ to Lightning Skills (Sorceress Only)',
       coldspells: '+ to Cold Skills (Sorceress Only)',
-  
-  // Necromancer skill trees
+
+      // Necromancer skill trees
       curses: '+ to Curses (Necromancer Only)',
       necromancersummoning: '+ to Summoning Skills (Necromancer Only)',
       poisonandbone: '+ to Poison and Bone Skills (Necromancer Only)',
-  
-  // Paladin skill trees
+
+      // Paladin skill trees
       paladinoffensive: '+ to Offensive Auras (Paladin Only)',
       paladindefensive: '+ to Defensive Auras (Paladin Only)',
       paladincombat: '+ to Combat Skills (Paladin Only)',
-  
-  // Barbarian skill trees  
+
+      // Barbarian skill trees  
       barbariancombat: '+ to Combat Skills (Barbarian Only)',
       barbarianmasteries: '+ to Combat Masteries (Barbarian Only)',
       warcries: '+ to Warcries (Barbarian Only)',
-  
-  // Druid skill trees
+
+      // Druid skill trees
       druidsummoning: '+ to Summoning Skills (Druid Only)',
       shapeshifting: '+ to Shape Shifting Skills (Druid Only)',
       druidelemental: '+ to Elemental Skills (Druid Only)',
-  
-  // Assassin skill trees
+
+      // Assassin skill trees
       traps: '+ to Trap Skills (Assassin Only)',
       martialarts: '+ to Martial Arts (Assassin Only)',
       shadowdisciplines: '+ to Shadow Disciplines (Assassin Only)',
-  
-  // All skills (generic)
+
+      // All skills (generic)
       allskills: '+ to All Skills'
     };
 
