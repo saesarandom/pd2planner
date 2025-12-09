@@ -2696,6 +2696,16 @@ class UnifiedSocketSystem {
     const etherealText = etherealMatch ? etherealMatch[0] : '';
     let finalDescription = etherealText ? originalDescription.replace(/\s*<span[^>]*>Ethereal<\/span>/i, '') : originalDescription;
 
+    // EXTRACT CORRUPTION BUTTON Logic
+    // Socket system would accidentally strip the button because it rebuilds the description
+    // match any button calling openCorruptionModal
+    const buttonMatch = finalDescription.match(/<button[^>]*openCorruptionModal[^>]*>.*?<\/button>/i);
+    const buttonText = buttonMatch ? buttonMatch[0] : '';
+    if (buttonText) {
+      // Temporarily remove it so it doesn't get messed up by regex replacements
+      finalDescription = finalDescription.replace(buttonText, '');
+    }
+
     // Replace stacked stats in original description with blue colored versions
     mergedStats.forEach((data, key) => {
       if (data.stacked || data.fromSocket) {
@@ -2736,6 +2746,11 @@ class UnifiedSocketSystem {
     // Re-add ethereal at the very end if it was present
     if (etherealText) {
       finalDescription += etherealText;
+    }
+
+    // CRITICAL FIX: Re-add the corruption button
+    if (buttonText) {
+      finalDescription += `<br>${buttonText}`;
     }
 
     return finalDescription;
@@ -3512,6 +3527,9 @@ class UnifiedSocketSystem {
 
       const fhrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Hit\s+Recovery/i);
       if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
+
+      // Cannot Be Frozen
+      if (cleanLine.match(/Cannot\s+Be\s+Frozen/i)) { this.stats.cbf = true; return; }
 
       // Attack Rating (multiple formats for rune compatibility)
       // Percentage: "20% Bonus to Attack Rating"

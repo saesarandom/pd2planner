@@ -1102,10 +1102,23 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         // Also update individual resists if they exist as properties? 
         // Typically allres is a separate property in display, so just updating allres is enough.
         break;
-      // Speed Stats
-      case 'fcr':
-        props.fcr = (props.fcr || 0) + stat.value;
+
+      // CRITICAL FIX: Handle generic 'resist' and 'maxres' types from parser
+      case 'resist':
+        if (stat.subtype === 'fire') props.firres = (props.firres || 0) + stat.value;
+        if (stat.subtype === 'cold') props.coldres = (props.coldres || 0) + stat.value;
+        if (stat.subtype === 'lightning') props.ligres = (props.ligres || 0) + stat.value;
+        if (stat.subtype === 'poison') props.poisres = (props.poisres || 0) + stat.value;
         break;
+
+      case 'maxres':
+        if (stat.subtype === 'fire') props.maxfirres = (props.maxfirres || 0) + stat.value;
+        if (stat.subtype === 'cold') props.maxcoldres = (props.maxcoldres || 0) + stat.value;
+        if (stat.subtype === 'lightning') props.maxligres = (props.maxligres || 0) + stat.value;
+        if (stat.subtype === 'poison') props.maxpoisres = (props.maxpoisres || 0) + stat.value;
+        break;
+
+      // Legacy specific cases (keep just in case)
       case 'ias':
         props.ias = (props.ias || 0) + stat.value;
         break;
@@ -1129,8 +1142,15 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
       case 'block':
         props.block = (props.block || 0) + stat.value;
         break;
+      case 'cbf':
+        props.cbf = 1;
+        break;
+      case 'curseres':
+        props.curseres = (props.curseres || 0) + stat.value;
+        break;
       // Skills
       case 'allsk':
+      case 'allskills':
         props.allsk = (props.allsk || 0) + stat.value;
         break;
       // Damage
@@ -1372,6 +1392,8 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\+?\d+)\s+Life\s+after\s+each\s+Kill/i, type: 'laek' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?Mana\s+after\s+each\s+Kill/i, type: 'maek' },
     { pattern: /Regenerate\s+Mana\s+(\d+)%/i, type: 'manarecovery' },
+    { pattern: /Cannot\s+Be\s+Frozen/i, type: 'cbf' },
+    { pattern: /(\+?\d+)%\s+(Curse Resistance)/i, type: 'curseres' },
     { pattern: /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i, type: 'magicfind' },
     { pattern: /(\+?\d+)%\s+(Extra Gold from Monsters)/i, type: 'goldfind' }
   ];
@@ -1397,6 +1419,8 @@ function parseCorruptionText(corruptionText) {
         } else if (type === 'resist') {
           value = parseInt(match[2]);
           subtype = match[1].toLowerCase();
+        } else if (type === 'cbf') {
+          value = 1;
         } else {
           value = parseInt(match[1]);
         }

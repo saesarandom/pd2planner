@@ -665,6 +665,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     pdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '', prop, itemName, 'pdr', dropdownId),
     pdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '', prop, itemName, 'pdr', dropdownId),
     manarecovery: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'manarecovery', dropdownId),
+    cbf: (val) => val ? '<span style="color: red; font-weight: bold;">Cannot Be Frozen</span>' : '',
+    curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
   };
 
   // Build description from properties
