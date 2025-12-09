@@ -3216,6 +3216,16 @@ this.selectedJewelSuffix3MaxValue = null;
           const itemName = document.getElementById(dropdownId)?.value;
           if (itemName) {
             description = window.generateItemDescription(itemName, item, dropdownId);
+            
+            // CRITICAL FIX: Inject corruption text if it exists for this item
+            // This ensures the stats parser sees the corruption even for dynamic items
+            if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+                const corruption = window.itemCorruptions[dropdownId];
+                if (corruption.text && typeof window.addCorruptionWithStacking === 'function') {
+                    // Apply corruption to the dynamically generated description just for parsing purposes
+                    description = window.addCorruptionWithStacking(description, corruption.text);
+                }
+            }
           }
         }
       }
