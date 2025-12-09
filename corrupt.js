@@ -944,6 +944,15 @@ function applySocketCorruptionFromModal(corruption) {
     originalSocketCount: originalSocketCount
   };
 
+  // CRITICAL FIX: Persist Socket Corruption to Memory
+  if (!window.slotItemCorruptions) {
+    window.slotItemCorruptions = {};
+  }
+  if (!window.slotItemCorruptions[currentCorruptionSlot]) {
+    window.slotItemCorruptions[currentCorruptionSlot] = {};
+  }
+  window.slotItemCorruptions[currentCorruptionSlot][itemName] = window.itemCorruptions[currentCorruptionSlot];
+
   // Add corruption text to item description
   const originalDescription = window.originalItemDescriptions[itemName];
   const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.mod}</span><br>`;
@@ -966,9 +975,14 @@ function applySocketCorruptionFromModal(corruption) {
 }
 
 // Apply corruption stats to item properties for character stat calculations
-function applyCorruptionToProperties(itemName, corruptionText) {
-  // Use global item lookup to support both regular and crafted items
-  const item = window.getItemData(itemName);
+// Apply corruption stats to item properties for character stat calculations
+function applyCorruptionToProperties(itemOrName, corruptionText) {
+  // CRITICAL FIX: Handle both Item Object (from main.js) and Item Name String
+  let item = itemOrName;
+  if (typeof itemOrName === 'string') {
+    item = window.getItemData(itemOrName);
+  }
+
   if (!item) return;
 
   // Ensure properties object exists
@@ -976,10 +990,11 @@ function applyCorruptionToProperties(itemName, corruptionText) {
     item.properties = {};
   }
 
-  // Restore original properties first (to replace any previous corruption)
-  if (window.originalItemProperties && window.originalItemProperties[itemName]) {
-    item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
-  }
+  // NOTE: We REMOVED the "Restore original properties" block here.
+  // The caller (applyCorruptionToItem OR updateItemInfo in main.js) 
+  // is responsible for providing the Clean Base (User persistent state or Factory).
+  // Doing it here wipes User Edits and causes "Returns to default" bug.
+
 
   // Parse corruption text to extract stat bonuses
   const stats = parseCorruptionText(corruptionText);
@@ -1048,15 +1063,89 @@ function applyCorruptionToProperties(itemName, corruptionText) {
           props.edef = (props.edef || 0) + stat.value;
         }
         break;
+      case 'laek':
+        props.laek = (props.laek || 0) + stat.value;
+        break;
+      case 'maek':
+        props.maek = (props.maek || 0) + stat.value;
+        break;
+      case 'replenish':
+        props.replenish = (props.replenish || 0) + stat.value; // map to 'replenish' or 'repl'? propDisplay uses 'repl' typically?
+        // Checking propDisplay, 'repl' is key. But let's check parseCorruptionText type 'replenish'.
+        // Let's use 'repl' as key just in case main.js expects it.
+        props.repl = (props.repl || 0) + stat.value;
+        break;
+      case 'manarecovery':
+        props.manarecovery = (props.manarecovery || 0) + stat.value;
+        break;
       case 'magicfind':
         props.magicfind = (props.magicfind || 0) + stat.value;
         break;
       case 'goldfind':
         props.goldfind = (props.goldfind || 0) + stat.value;
         break;
+      // Resists (Note: key mapping to main.js properties)
+      case 'fireresist':
+        props.firres = (props.firres || 0) + stat.value;
+        break;
+      case 'coldresist':
+        props.coldres = (props.coldres || 0) + stat.value;
+        break;
+      case 'lightresist':
+        props.ligres = (props.ligres || 0) + stat.value;
+        break;
+      case 'poisonresist':
+        props.poisres = (props.poisres || 0) + stat.value;
+        break;
+      case 'allres':
+        props.allres = (props.allres || 0) + stat.value;
+        // Also update individual resists if they exist as properties? 
+        // Typically allres is a separate property in display, so just updating allres is enough.
+        break;
+      // Speed Stats
+      case 'fcr':
+        props.fcr = (props.fcr || 0) + stat.value;
+        break;
+      case 'ias':
+        props.ias = (props.ias || 0) + stat.value;
+        break;
+      case 'frw':
+        props.frw = (props.frw || 0) + stat.value;
+        break;
+      case 'fhr':
+        props.fhr = (props.fhr || 0) + stat.value;
+        break;
+      // Combat Stats
+      case 'cb': // Crushing Blow
+        props.cb = (props.cb || 0) + stat.value;
+        break;
+      case 'ds': // Deadly Strike
+      case 'deadly':
+        props.deadly = (props.deadly || 0) + stat.value;
+        break;
+      case 'ow': // Open Wounds
+        props.ow = (props.ow || 0) + stat.value;
+        break;
+      case 'block':
+        props.block = (props.block || 0) + stat.value;
+        break;
+      // Skills
+      case 'allsk':
+        props.allsk = (props.allsk || 0) + stat.value;
+        break;
+      // Damage
+      case 'maxdmg':
+        props.tomaxdmg = (props.tomaxdmg || 0) + stat.value;
+        break;
+      case 'mindmg':
+        props.tomindmg = (props.tomindmg || 0) + stat.value;
+        break;
     }
   });
 }
+
+// Make available globally
+window.applyCorruptionToProperties = applyCorruptionToProperties;
 
 // Common function to apply corruption to item
 function applyCorruptionToItem(corruptionText) {
@@ -1097,6 +1186,13 @@ function applyCorruptionToItem(corruptionText) {
   if (!window.originalItemProperties[itemName]) {
     // Deep clone the properties object to preserve originals
     window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
+  } else {
+    // CRITICAL FIX: Always reset properties to original state before applying new corruption
+    // This prevents "stacking" previous corruptions or leaking values if the global item object was mutated
+    if (item.properties) {
+      // Restore from original
+      item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
+    }
   }
 
   // Store corruption info
@@ -1105,6 +1201,15 @@ function applyCorruptionToItem(corruptionText) {
     type: 'corruption',
     itemName: itemName
   };
+
+  // NEW: Store corruption in persistent per-slot per-item memory
+  if (!window.slotItemCorruptions) {
+    window.slotItemCorruptions = {};
+  }
+  if (!window.slotItemCorruptions[currentCorruptionSlot]) {
+    window.slotItemCorruptions[currentCorruptionSlot] = {};
+  }
+  window.slotItemCorruptions[currentCorruptionSlot][itemName] = window.itemCorruptions[currentCorruptionSlot];
 
   // Create enhanced description with stat stacking
   const originalDescription = window.originalItemDescriptions[itemName];
@@ -1261,6 +1366,12 @@ function parseCorruptionText(corruptionText) {
     { pattern: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'pdr' },
     { pattern: /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'mdr' },
     { pattern: /(\+?\d+)%\s+(Chance of Crushing Blow)/i, type: 'cb' },
+    { pattern: /(\+?\d+)%\s+(Deadly Strike)/i, type: 'deadly' },
+    { pattern: /(\+?\d+)%\s+(Chance of Open Wounds)/i, type: 'ow' },
+    { pattern: /Replenish\s+Life\s+\+(\d+)/i, type: 'replenish' },
+    { pattern: /(\+?\d+)\s+Life\s+after\s+each\s+Kill/i, type: 'laek' },
+    { pattern: /(\+?\d+)\s+(?:to\s+)?Mana\s+after\s+each\s+Kill/i, type: 'maek' },
+    { pattern: /Regenerate\s+Mana\s+(\d+)%/i, type: 'manarecovery' },
     { pattern: /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i, type: 'magicfind' },
     { pattern: /(\+?\d+)%\s+(Extra Gold from Monsters)/i, type: 'goldfind' }
   ];

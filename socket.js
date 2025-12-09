@@ -2519,6 +2519,10 @@ class UnifiedSocketSystem {
       infoDiv.innerHTML = '';
       return;
     }
+
+    // NOTE: We do NOT reset properties here in socket.js because it would wipe
+    // manual user input changes (e.g. perfect rolls).
+    // The "Reset on Switch" logic is handled in main.js updateItemInfo.
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
     const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
     const meetsRequirement = currentLevel >= actualRequiredLevel;
@@ -2535,12 +2539,11 @@ class UnifiedSocketSystem {
       let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
 
       // Check if item has corruption applied
+      // NOTE: We do NOT use addCorruptionWithStacking here because properties are already updated via corrupt.js
+      // Using it would cause double-counting (e.g. 24% base + 24% corruption text = 48%)
+      // We will handle visual "Red" styling separately if needed
       if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-        const corruption = window.itemCorruptions[dropdownId];
-        if (corruption.text && typeof window.addCorruptionWithStacking === 'function') {
-          // Apply corruption to the dynamically generated description
-          baseDescription = window.addCorruptionWithStacking(baseDescription, corruption.text);
-        }
+        // Handled by main.js formatVariableStat
       }
 
       // Parse base stats from the generated description (strip input elements first)
