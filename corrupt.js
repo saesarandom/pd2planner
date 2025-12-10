@@ -990,11 +990,30 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
     item.properties = {};
   }
 
-  // NOTE: We REMOVED the "Restore original properties" block here.
-  // The caller (applyCorruptionToItem OR updateItemInfo in main.js) 
-  // is responsible for providing the Clean Base (User persistent state or Factory).
-  // Doing it here wipes User Edits and causes "Returns to default" bug.
+  // Helper to safely add value to property (number or object)
+  function addStatToProp(key, value) {
+    if (!item.properties) return;
 
+    // If property doesn't exist, just set it
+    if (item.properties[key] === undefined) {
+      item.properties[key] = value;
+      return;
+    }
+
+    // If it's an object with min/max/current
+    if (typeof item.properties[key] === 'object' && item.properties[key] !== null) {
+      if ('current' in item.properties[key]) {
+        item.properties[key].current = (item.properties[key].current || 0) + value;
+      } else if ('max' in item.properties[key]) {
+        // Fallback: update current derived from max
+        item.properties[key].current = (item.properties[key].max || 0) + value;
+      }
+      return;
+    }
+
+    // Normal number
+    item.properties[key] = (item.properties[key] || 0) + value;
+  }
 
   // Parse corruption text to extract stat bonuses
   const stats = parseCorruptionText(corruptionText);
@@ -1003,192 +1022,157 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
   stats.forEach(stat => {
     if (!stat.stackable || !stat.value) return;
 
-    const props = item.properties;
-
     // Map corruption stat types to item property names
     switch (stat.type) {
       case 'str':
-        props.str = (props.str || 0) + stat.value;
+        addStatToProp('str', stat.value);
         break;
       case 'dex':
-        props.dex = (props.dex || 0) + stat.value;
+        addStatToProp('dex', stat.value);
         break;
       case 'vit':
-        props.vit = (props.vit || 0) + stat.value;
+        addStatToProp('vit', stat.value);
         break;
       case 'enr':
-        props.enr = (props.enr || 0) + stat.value;
+        addStatToProp('enr', stat.value);
         break;
       case 'allattributes':
-        // Add to all four attributes
-        props.str = (props.str || 0) + stat.value;
-        props.dex = (props.dex || 0) + stat.value;
-        props.vit = (props.vit || 0) + stat.value;
-        props.enr = (props.enr || 0) + stat.value;
+        addStatToProp('str', stat.value);
+        addStatToProp('dex', stat.value);
+        addStatToProp('vit', stat.value);
+        addStatToProp('enr', stat.value);
         break;
       case 'life':
-        // Handle both 'tolife' and 'life' properties
-        if ('tolife' in props) {
-          props.tolife = (props.tolife || 0) + stat.value;
+        if (item.properties && 'tolife' in item.properties) {
+          addStatToProp('tolife', stat.value);
         } else {
-          props.life = (props.life || 0) + stat.value;
+          addStatToProp('life', stat.value);
         }
         break;
       case 'mana':
-        // Handle both 'tomana' and 'mana' properties
-        if ('tomana' in props) {
-          props.tomana = (props.tomana || 0) + stat.value;
+        if (item.properties && 'tomana' in item.properties) {
+          addStatToProp('tomana', stat.value);
         } else {
-          props.mana = (props.mana || 0) + stat.value;
+          addStatToProp('mana', stat.value);
         }
         break;
-      // Add other stat types as needed
       case 'ar':
-        props.tohitrating = (props.tohitrating || 0) + stat.value;
+        addStatToProp('tohitrating', stat.value);
         break;
       case 'edmg':
-        // Enhanced damage - add to edmg property
-        // For dynamic items with variable edmg, update the current value
-        if (typeof props.edmg === 'object' && 'current' in props.edmg) {
-          props.edmg.current = (props.edmg.current || 0) + stat.value;
-        } else {
-          props.edmg = (props.edmg || 0) + stat.value;
-        }
+        addStatToProp('edmg', stat.value);
         break;
       case 'edef':
-        // Enhanced defense - add to edef property
-        if (typeof props.edef === 'object' && 'current' in props.edef) {
-          props.edef.current = (props.edef.current || 0) + stat.value;
-        } else {
-          props.edef = (props.edef || 0) + stat.value;
-        }
+        addStatToProp('edef', stat.value);
         break;
       case 'laek':
-        props.laek = (props.laek || 0) + stat.value;
+        addStatToProp('laek', stat.value);
         break;
       case 'maek':
-        props.maek = (props.maek || 0) + stat.value;
+        addStatToProp('maek', stat.value);
         break;
       case 'replenish':
-        props.replenish = (props.replenish || 0) + stat.value; // map to 'replenish' or 'repl'? propDisplay uses 'repl' typically?
-        // Checking propDisplay, 'repl' is key. But let's check parseCorruptionText type 'replenish'.
-        // Let's use 'repl' as key just in case main.js expects it.
-        props.repl = (props.repl || 0) + stat.value;
+        addStatToProp('repl', stat.value);
         break;
       case 'manarecovery':
-        props.manarecovery = (props.manarecovery || 0) + stat.value;
+        addStatToProp('manarecovery', stat.value);
         break;
       case 'magicfind':
-        props.magicfind = (props.magicfind || 0) + stat.value;
+        addStatToProp('magicfind', stat.value);
         break;
       case 'goldfind':
-        props.goldfind = (props.goldfind || 0) + stat.value;
+        addStatToProp('goldfind', stat.value);
         break;
-      // Resists (Note: key mapping to main.js properties)
       case 'fireresist':
-        props.firres = (props.firres || 0) + stat.value;
+        addStatToProp('firres', stat.value);
         break;
       case 'coldresist':
-        props.coldres = (props.coldres || 0) + stat.value;
+        addStatToProp('coldres', stat.value);
         break;
       case 'lightresist':
-        props.ligres = (props.ligres || 0) + stat.value;
+        addStatToProp('ligres', stat.value);
         break;
       case 'poisonresist':
-        props.poisres = (props.poisres || 0) + stat.value;
+        addStatToProp('poisres', stat.value);
         break;
       case 'allres':
-        props.allres = (props.allres || 0) + stat.value;
-        // Also update individual resists if they exist as properties? 
-        // Typically allres is a separate property in display, so just updating allres is enough.
+        addStatToProp('allres', stat.value);
         break;
-
       case 'physdr':
-        props.physdr = (props.physdr || 0) + stat.value;
+        addStatToProp('physdr', stat.value);
         break;
-
-      // CRITICAL FIX: Handle generic 'resist' and 'maxres' types from parser
+      case 'pdr':
+        addStatToProp('pdr', stat.value);
+        break;
       case 'resist':
-        if (stat.subtype === 'fire') props.firres = (props.firres || 0) + stat.value;
-        if (stat.subtype === 'cold') props.coldres = (props.coldres || 0) + stat.value;
-        if (stat.subtype === 'lightning') props.ligres = (props.ligres || 0) + stat.value;
-        if (stat.subtype === 'poison') props.poisres = (props.poisres || 0) + stat.value;
+        if (stat.subtype === 'fire') addStatToProp('firres', stat.value);
+        if (stat.subtype === 'cold') addStatToProp('coldres', stat.value);
+        if (stat.subtype === 'lightning') addStatToProp('ligres', stat.value);
+        if (stat.subtype === 'poison') addStatToProp('poisres', stat.value);
         break;
-
       case 'indestructible':
-        props.indestructible = 1;
+        item.properties.indestructible = 1;
         break;
-
       case 'maxlife':
-        // Check if using 'maxlife' or 'lifepercent' property convention, usually maxlife for % increase is rare on items except Jah etc.
-        // items.js uses 'maxlife' mostly?
-        props.maxlife = (props.maxlife || 0) + stat.value;
+        addStatToProp('maxlife', stat.value);
         break;
-
       case 'maxmana':
-        props.maxmana = (props.maxmana || 0) + stat.value;
+        addStatToProp('maxmana', stat.value);
         break;
-
       case 'lleech':
-        props.lleech = (props.lleech || 0) + stat.value;
+        addStatToProp('lleech', stat.value);
         break;
-
       case 'mleech':
-        props.mleech = (props.mleech || 0) + stat.value;
+        addStatToProp('mleech', stat.value);
         break;
-
       case 'maxres':
-        if (stat.subtype === 'fire') props.maxfirres = (props.maxfirres || 0) + stat.value;
-        if (stat.subtype === 'cold') props.maxcoldres = (props.maxcoldres || 0) + stat.value;
-        if (stat.subtype === 'lightning') props.maxligres = (props.maxligres || 0) + stat.value;
-        if (stat.subtype === 'poison') props.maxpoisres = (props.maxpoisres || 0) + stat.value;
+        if (stat.subtype === 'fire') addStatToProp('maxfirres', stat.value);
+        if (stat.subtype === 'cold') addStatToProp('maxcoldres', stat.value);
+        if (stat.subtype === 'lightning') addStatToProp('maxligres', stat.value);
+        if (stat.subtype === 'poison') addStatToProp('maxpoisres', stat.value);
         break;
-
-      // Legacy specific cases (keep just in case)
       case 'ias':
-        props.ias = (props.ias || 0) + stat.value;
+        addStatToProp('ias', stat.value);
         break;
       case 'frw':
-        props.frw = (props.frw || 0) + stat.value;
+        addStatToProp('frw', stat.value);
         break;
       case 'fhr':
-        props.fhr = (props.fhr || 0) + stat.value;
+        addStatToProp('fhr', stat.value);
         break;
-      // Combat Stats
-      case 'cb': // Crushing Blow
-        props.cb = (props.cb || 0) + stat.value;
+      case 'cb':
+        addStatToProp('cb', stat.value);
         break;
-      case 'ds': // Deadly Strike
+      case 'ds':
       case 'deadly':
-        props.deadly = (props.deadly || 0) + stat.value;
+        addStatToProp('deadly', stat.value);
         break;
-      case 'ow': // Open Wounds
-        props.ow = (props.ow || 0) + stat.value;
+      case 'ow':
+        addStatToProp('ow', stat.value);
         break;
       case 'block':
-        props.block = (props.block || 0) + stat.value;
+        addStatToProp('block', stat.value);
         break;
       case 'cbf':
-        props.cbf = 1;
+        item.properties.cbf = 1;
         break;
       case 'curseres':
-        props.curseres = (props.curseres || 0) + stat.value;
+        addStatToProp('curseres', stat.value);
         break;
-      // Skills
       case 'allsk':
       case 'allskills':
-        props.allsk = (props.allsk || 0) + stat.value;
+        addStatToProp('allsk', stat.value);
         break;
-      // Damage
       case 'maxdmg':
-        props.tomaxdmg = (props.tomaxdmg || 0) + stat.value;
+        addStatToProp('tomaxdmg', stat.value);
         break;
       case 'mindmg':
-        props.tomindmg = (props.tomindmg || 0) + stat.value;
+        addStatToProp('tomindmg', stat.value);
         break;
     }
   });
 }
+
 
 // Make available globally
 window.applyCorruptionToProperties = applyCorruptionToProperties;
@@ -1233,11 +1217,27 @@ function applyCorruptionToItem(corruptionText) {
     // Deep clone the properties object to preserve originals
     window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
   } else {
-    // CRITICAL FIX: Always reset properties to original state before applying new corruption
-    // This prevents "stacking" previous corruptions or leaking values if the global item object was mutated
+    // CRITICAL FIX: Reset properties to original state before applying new corruption
+    // BUT preserve user-modified .current values for variable stats
     if (item.properties) {
+      // Save current user-modified values
+      const userModifiedValues = {};
+      for (const key in item.properties) {
+        const prop = item.properties[key];
+        if (typeof prop === 'object' && prop !== null && 'current' in prop) {
+          userModifiedValues[key] = prop.current;
+        }
+      }
+
       // Restore from original
       item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
+
+      // Re-apply user-modified current values
+      for (const key in userModifiedValues) {
+        if (item.properties[key] && typeof item.properties[key] === 'object') {
+          item.properties[key].current = userModifiedValues[key];
+        }
+      }
     }
   }
 

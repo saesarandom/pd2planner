@@ -716,6 +716,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, dropdownId) {
   // Determine if this property is modified (corrupted)
   let isModified = false;
+  let corruptionBonus = 0;
 
   // check original values to see if modified
   if (window.originalItemProperties && window.originalItemProperties[itemName]) {
@@ -733,6 +734,7 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
         (typeof originalVal === 'object' && 'max' in originalVal) ? originalVal.max : originalVal;
       if (prop.current !== origValue) {
         isModified = true;
+        corruptionBonus = prop.current - origValue;
       }
     } else if (typeof prop === 'number') {
       // Fixed stat (or simplified variable stat)
@@ -750,7 +752,23 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
   if (typeof prop === 'object' && prop !== null && 'min' in prop && 'max' in prop) {
     // Variable stat - show with range and input box
     const style = isModified ? inputRedStyle : inputNormalStyle;
-    return `${prefix}${value}${suffix} <span style="color: #888;">[${prop.min}-${prop.max}]</span> <input type="number" class="stat-input" data-item="${itemName}" data-prop="${propKey}" data-dropdown="${dropdownId}" min="${prop.min}" max="${prop.max}" value="${value}" style="${style}">`;
+
+    // If corrupted, expand the range to show the new effective range
+    let displayMin = prop.min;
+    let displayMax = prop.max;
+    if (isModified && corruptionBonus > 0 && window.originalItemProperties && window.originalItemProperties[itemName]) {
+      const originalVal = window.originalItemProperties[itemName][propKey];
+      if (typeof originalVal === 'object' && 'min' in originalVal && 'max' in originalVal) {
+        displayMin = originalVal.min + corruptionBonus;
+        displayMax = originalVal.max + corruptionBonus;
+      }
+    }
+
+    const textStyle = isModified ? redStyle : "";
+    const textWrapper = isModified ? `<span style="${textStyle}">` : "";
+    const textWrapperEnd = isModified ? "</span>" : "";
+
+    return `${textWrapper}${prefix}${value}${suffix}${textWrapperEnd} <span style="color: #888;">[${displayMin}-${displayMax}]</span> <input type="number" class="stat-input" data-item="${itemName}" data-prop="${propKey}" data-dropdown="${dropdownId}" min="${displayMin}" max="${displayMax}" value="${value}" style="${style}">`;
   }
 
   // Fixed stat - show normally, wrapped in span if modified
@@ -786,8 +804,25 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
 
   const prop = item.properties[propKey];
   if (typeof prop === 'object' && 'min' in prop && 'max' in prop) {
-    // Clamp value to range
-    const clampedValue = Math.max(prop.min, Math.min(prop.max, parseInt(newValue) || prop.max));
+    // Calculate the effective range (expanded if corrupted)
+    let effectiveMin = prop.min;
+    let effectiveMax = prop.max;
+
+    // Check if this property is corrupted and calculate the expanded range
+    if (window.originalItemProperties && window.originalItemProperties[itemName]) {
+      const originalVal = window.originalItemProperties[itemName][propKey];
+      if (typeof originalVal === 'object' && 'current' in originalVal) {
+        const origValue = originalVal.current || originalVal.max;
+        const corruptionBonus = prop.current - origValue;
+        if (corruptionBonus > 0 && 'min' in originalVal && 'max' in originalVal) {
+          effectiveMin = originalVal.min + corruptionBonus;
+          effectiveMax = originalVal.max + corruptionBonus;
+        }
+      }
+    }
+
+    // Clamp value to the effective range
+    const clampedValue = Math.max(effectiveMin, Math.min(effectiveMax, parseInt(newValue) || effectiveMax));
     prop.current = clampedValue;
 
     // UPDATE PERSISTENCE (itemBaseProperties)
@@ -854,8 +889,9 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
           (propKey === 'enr' && cText.includes('energy')) ||
           (propKey === 'life' && cText.includes('life')) ||
           (propKey === 'mana' && cText.includes('mana')) ||
-          (propKey === 'edmg' && cText.includes('damage')) ||
-          (propKey === 'edef' && cText.includes('defense'))
+          (propKey === 'edmg' && cText.includes('enhanced damage')) ||
+          (propKey === 'edef' && cText.includes('enhanced defense')) ||
+          (propKey === 'physdr' && cText.includes('physical damage taken reduced'))
         ) {
           isCorrupted = true;
         }
