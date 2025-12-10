@@ -19,7 +19,7 @@ const CORRUPTIONS = {
     { mod: "[3-5]% Life Stolen per Hit", type: "numeric", range: [3, 5] },
     { mod: "[3-5]% Mana Stolen per Hit", type: "numeric", range: [3, 5] },
     { mod: "Increase Maximum Life [4-6]%", type: "numeric", range: [4, 6] },
-    { mod: "+[3-4] Life after each Kill", type: "numeric", range: [3, 4] },
+    { mod: "+[3-4] to Life after each Kill", type: "numeric", range: [3, 4] },
     { mod: "+[3-4] to Mana after each Kill", type: "numeric", range: [3, 4] },
     { mod: "Cannot Be Frozen", type: "fixed" },
     { mod: "+1 to All Skills", type: "fixed" },
@@ -1103,12 +1103,38 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         // Typically allres is a separate property in display, so just updating allres is enough.
         break;
 
+      case 'physdr':
+        props.physdr = (props.physdr || 0) + stat.value;
+        break;
+
       // CRITICAL FIX: Handle generic 'resist' and 'maxres' types from parser
       case 'resist':
         if (stat.subtype === 'fire') props.firres = (props.firres || 0) + stat.value;
         if (stat.subtype === 'cold') props.coldres = (props.coldres || 0) + stat.value;
         if (stat.subtype === 'lightning') props.ligres = (props.ligres || 0) + stat.value;
         if (stat.subtype === 'poison') props.poisres = (props.poisres || 0) + stat.value;
+        break;
+
+      case 'indestructible':
+        props.indestructible = 1;
+        break;
+
+      case 'maxlife':
+        // Check if using 'maxlife' or 'lifepercent' property convention, usually maxlife for % increase is rare on items except Jah etc.
+        // items.js uses 'maxlife' mostly?
+        props.maxlife = (props.maxlife || 0) + stat.value;
+        break;
+
+      case 'maxmana':
+        props.maxmana = (props.maxmana || 0) + stat.value;
+        break;
+
+      case 'lleech':
+        props.lleech = (props.lleech || 0) + stat.value;
+        break;
+
+      case 'mleech':
+        props.mleech = (props.mleech || 0) + stat.value;
         break;
 
       case 'maxres':
@@ -1371,6 +1397,8 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\+?\d+)%\s+(Enhanced Defense)/i, type: 'edef' },
     { pattern: /(\+?\d+)%\s+(Faster Block Rate)/i, type: 'fbr' },
     { pattern: /(\+?\d+)%\s+(Increased Chance of Blocking)/i, type: 'block' },
+    { pattern: /(\+?\d+)\s+(?:to\s+)?Life\s+after\s+each\s+Kill/i, type: 'laek' },
+    { pattern: /(\+?\d+)\s+(?:to\s+)?Mana\s+after\s+each\s+Kill/i, type: 'maek' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?Life/i, type: 'life' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?Mana/i, type: 'mana' },
     { pattern: /(\+?\d+)\s+(?:to\s+)?Vitality/i, type: 'vit' },
@@ -1383,19 +1411,23 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\+?\d+)%\s+(?:to\s+)?Maximum\s+(\w+)\s+Resist/i, type: 'maxres' },
     { pattern: /(\w+)\s+Resist\s+\+(\d+)%/i, type: 'resist' },
     { pattern: /All\s+Resistances\s+\+(\d+)/i, type: 'allres' },
+    { pattern: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)%/i, type: 'physdr' },
     { pattern: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'pdr' },
     { pattern: /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'mdr' },
     { pattern: /(\+?\d+)%\s+(Chance of Crushing Blow)/i, type: 'cb' },
     { pattern: /(\+?\d+)%\s+(Deadly Strike)/i, type: 'deadly' },
     { pattern: /(\+?\d+)%\s+(Chance of Open Wounds)/i, type: 'ow' },
     { pattern: /Replenish\s+Life\s+\+(\d+)/i, type: 'replenish' },
-    { pattern: /(\+?\d+)\s+Life\s+after\s+each\s+Kill/i, type: 'laek' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Mana\s+after\s+each\s+Kill/i, type: 'maek' },
     { pattern: /Regenerate\s+Mana\s+(\d+)%/i, type: 'manarecovery' },
     { pattern: /Cannot\s+Be\s+Frozen/i, type: 'cbf' },
     { pattern: /(\+?\d+)%\s+(Curse Resistance)/i, type: 'curseres' },
     { pattern: /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i, type: 'magicfind' },
-    { pattern: /(\+?\d+)%\s+(Extra Gold from Monsters)/i, type: 'goldfind' }
+    { pattern: /(\+?\d+)%\s+(Extra Gold from Monsters)/i, type: 'goldfind' },
+    { pattern: /(\+?\d+)%\s+(Life Stolen per Hit)/i, type: 'lleech' },
+    { pattern: /(\+?\d+)%\s+(Mana Stolen per Hit)/i, type: 'mleech' },
+    { pattern: /Increase\s+Maximum\s+Life\s+(\d+)%/i, type: 'maxlife' },
+    { pattern: /Increase\s+Maximum\s+Mana\s+(\d+)%/i, type: 'maxmana' },
+    { pattern: /Indestructible/i, type: 'indestructible' }
   ];
 
   // Split corruption text by <br> to handle multi-line mods

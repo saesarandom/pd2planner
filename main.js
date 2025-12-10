@@ -666,6 +666,15 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     manarecovery: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'manarecovery', dropdownId),
     cbf: (val) => val ? '<span style="color: #ff5555; font-weight: bold;">Cannot Be Frozen</span>' : '',
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
+
+    // Missing display handlers for dynamic items
+    maxfirres: (val, prop) => formatVariableStat('+', val, '% to Maximum Fire Resist', prop, itemName, 'maxfirres', dropdownId),
+    maxcoldres: (val, prop) => formatVariableStat('+', val, '% to Maximum Cold Resist', prop, itemName, 'maxcoldres', dropdownId),
+    maxligres: (val, prop) => formatVariableStat('+', val, '% to Maximum Lightning Resist', prop, itemName, 'maxligres', dropdownId),
+    maxpoisres: (val, prop) => formatVariableStat('+', val, '% to Maximum Poison Resist', prop, itemName, 'maxpoisres', dropdownId),
+    maxlife: (val, prop) => formatVariableStat('Increase Maximum Life ', val, '%', prop, itemName, 'maxlife', dropdownId),
+    maxmana: (val, prop) => formatVariableStat('Increase Maximum Mana ', val, '%', prop, itemName, 'maxmana', dropdownId),
+    indestructible: (val) => val ? '<span style="color: #ff5555; font-weight: bold;">Indestructible</span>' : '',
   };
 
   // Build description from properties
@@ -734,7 +743,7 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
   }
 
   // Define Red Style
-  const redStyle = "color: #ff5555; font-weight: bold;";
+  const redStyle = "color: #ff5555; font-weight: bold; text-shadow: 0 0 3px #ff5555";
   const inputRedStyle = "width: 45px; padding: 2px; background: #1a1a2e; color: #ff5555; font-weight: bold; border: 1px solid #ff5555; border-radius: 3px;";
   const inputNormalStyle = "width: 45px; padding: 2px; background: #1a1a2e; color: #fff; border: 1px solid #0f3460; border-radius: 3px;";
 
