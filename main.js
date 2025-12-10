@@ -663,9 +663,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     maek: (val, prop) => formatVariableStat('+', val, ' to Mana after each Kill', prop, itemName, 'maek', dropdownId),
     ow: (val, prop) => formatVariableStat('', val, '% Chance of Open Wounds', prop, itemName, 'ow', dropdownId),
     pdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '', prop, itemName, 'pdr', dropdownId),
-    pdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '', prop, itemName, 'pdr', dropdownId),
     manarecovery: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'manarecovery', dropdownId),
-    cbf: (val) => val ? '<span style="color: red; font-weight: bold;">Cannot Be Frozen</span>' : '',
+    cbf: (val) => val ? '<span style="color: #ff5555; font-weight: bold;">Cannot Be Frozen</span>' : '',
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
   };
 
@@ -735,8 +734,8 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
   }
 
   // Define Red Style
-  const redStyle = "color: #ff3333; font-weight: bold;";
-  const inputRedStyle = "width: 45px; padding: 2px; background: #1a1a2e; color: #ff3333; font-weight: bold; border: 1px solid #ff3333; border-radius: 3px;";
+  const redStyle = "color: #ff5555; font-weight: bold;";
+  const inputRedStyle = "width: 45px; padding: 2px; background: #1a1a2e; color: #ff5555; font-weight: bold; border: 1px solid #ff5555; border-radius: 3px;";
   const inputNormalStyle = "width: 45px; padding: 2px; background: #1a1a2e; color: #fff; border: 1px solid #0f3460; border-radius: 3px;";
 
   if (typeof prop === 'object' && prop !== null && 'min' in prop && 'max' in prop) {
