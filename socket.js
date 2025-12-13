@@ -2706,31 +2706,39 @@ class UnifiedSocketSystem {
       finalDescription = finalDescription.replace(buttonText, '');
     }
 
-    // Replace stacked stats in original description with blue colored versions
-    mergedStats.forEach((data, key) => {
-      if (data.stacked || data.fromSocket) {
-        const replacement = this.formatStackedStat(key, data);
-        if (replacement) {
-          const pattern = this.getStatPattern(key);
-          if (pattern && !data.fromSocket) {
-            // Replace existing stat line with stacked version
-            // BUT preserve any stat-input elements that are in the original line
-            finalDescription = finalDescription.replace(pattern, (match) => {
-              // Check if the matched text contains a stat-input element
-              const inputMatch = match.match(/<input[^>]*class="stat-input"[^>]*>/);
-              if (inputMatch) {
-                // Keep the input element and append it to the replacement
-                return replacement + ' ' + inputMatch[0];
-              }
-              return replacement;
-            });
-          } else if (data.fromSocket) {
-            // Add new socket-only stats in blue
-            finalDescription += `${replacement}<br>`;
-          }
+   const sortedKeys = Array.from(mergedStats.keys()).sort((a, b) => {
+    // Process percentage patterns first (e.g., physical_damage_reduced_percent before physical_damage_reduced)
+    if (a.includes('_percent') && !b.includes('_percent')) return -1;
+    if (!a.includes('_percent') && b.includes('_percent')) return 1;
+    return 0;
+  });
+
+  // Replace stacked stats in original description with blue colored versions
+  sortedKeys.forEach(key => {
+    const data = mergedStats.get(key);
+    if (data.stacked || data.fromSocket) {
+      const replacement = this.formatStackedStat(key, data);
+      if (replacement) {
+        const pattern = this.getStatPattern(key);
+        if (pattern && !data.fromSocket) {
+          // Replace existing stat line with stacked version
+          // BUT preserve any stat-input elements that are in the original line
+          finalDescription = finalDescription.replace(pattern, (match) => {
+            // Check if the matched text contains a stat-input element
+            const inputMatch = match.match(/<input[^>]*class="stat-input"[^>]*>/);
+            if (inputMatch) {
+              // Keep the input element and append it to the replacement
+              return replacement + ' ' + inputMatch[0];
+            }
+            return replacement;
+          });
+        } else if (data.fromSocket) {
+          // Add new socket-only stats in blue
+          finalDescription += `${replacement}<br>`;
         }
       }
-    });
+    }
+  });
 
     // Add unusable socket items in gray
     const unusableEffects = socketItems.filter(item => !item.usable);
@@ -3557,25 +3565,19 @@ class UnifiedSocketSystem {
       // Damage Reduction stats
       // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
       // Check percentage first (more specific) before flat patterns
-      const drPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
-      if (drPercentMatch) {
-        this.stats.dr += parseInt(drPercentMatch[1]);
-        return;
-      }
+const drPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\s*%/i);
+if (drPercentMatch) {
+  this.stats.dr += parseInt(drPercentMatch[1]);
+  return;
+}
 
-      // Physical Damage Taken Reduced by X (flat -> PDR)
-      const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
-      if (pdrFlatMatch) {
-        this.stats.pdr += parseInt(pdrFlatMatch[1]);
-        return;
-      }
-
-      // Damage Reduced by X (flat -> PDR, general damage reduction)
-      const drFlatMatch = cleanLine.match(/^Damage\s+Reduced\s+by\s+(\d+)(?!%)/i);
-      if (drFlatMatch) {
-        this.stats.pdr += parseInt(drFlatMatch[1]);
-        return;
-      }
+// Physical Damage Taken Reduced by X (flat -> PDR)
+// FIXED: Added \b word boundary
+const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\b(?!\s*%)/i);
+if (pdrFlatMatch) {
+  this.stats.pdr += parseInt(pdrFlatMatch[1]);
+  return;
+}
 
       // Magic Damage Reduced by X (flat -> MDR)
       const mdrMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)/i);
@@ -3949,31 +3951,24 @@ class UnifiedSocketSystem {
         return;
       }
 
-      // Physical Damage Taken Reduced by X (flat - Sol rune in helm/armor/shield)
-      const pdrFlatMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
-      if (pdrFlatMapMatch) {
-        const value = parseInt(pdrFlatMapMatch[1]);
-        this.addToStatsMap(statsMap, 'physical_damage_reduced', { value });
-        return;
-      }
-
       // Physical Damage Reduced by X% (percentage - String of Ears)
-      const drPercentMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
+       const drPercentMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\s*%/i);
       if (drPercentMapMatch) {
         const value = parseInt(drPercentMapMatch[1]);
         this.addToStatsMap(statsMap, 'physical_damage_reduced_percent', { value });
         return;
       }
 
-      // Magic Damage Reduced by X (flat - String of Ears MDR)
-      const mdrMapMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)/i);
-      if (mdrMapMatch) {
-        const value = parseInt(mdrMapMatch[1]);
-        this.addToStatsMap(statsMap, 'magic_damage_reduced', { value });
+      // Physical Damage Taken Reduced by X (flat - Sol rune in helm/armor/shield)
+      // FIXED: Added \b word boundary to prevent matching "1" in "10%"
+      const pdrFlatMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\b(?!\s*%)/i);
+      if (pdrFlatMapMatch) {
+        const value = parseInt(pdrFlatMapMatch[1]);
+        this.addToStatsMap(statsMap, 'physical_damage_reduced', { value });
         return;
       }
 
-
+      
 
       // Store other stats as non-stackable
       statsMap.set(`other_${Date.now()}_${Math.random()}`, { text: cleanLine, stackable: false });
@@ -4253,6 +4248,13 @@ class UnifiedSocketSystem {
         return /(\d+)%\s+Chance\s+to\s+Cast\s+(.+?)\s+when\s+you\s+Die/gi;
       case 'lightRadius':
         return /(?:\+)?\d+\s+(?:to\s+)?Light\s+Radius/gi;
+      case 'physical_damage_reduced_percent':
+        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\s*%/gi;
+      case 'physical_damage_reduced':
+      // FIXED: Added \b word boundary to prevent matching "1" in "10%"
+        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\b(?!\s*%)/gi;
+      case 'magic_damage_reduced':
+        return /Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\b/gi;
       default:
         return null;
     }

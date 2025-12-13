@@ -1137,16 +1137,15 @@ const itemList = {
   },
 
   Rockfleece: {
-    description:
-      "Rockfleece<br>Field Plate<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 236<br>Required Strength: 50<br>Required Level: 28<br>+130% Enhanced Defense<br>+15 to Strength<br>Physical Damage Taken Reduced by 15%<br>Physical Damage Taken Reduced by 10<br>Requirements -10%<br>",
+    baseType: "Field Plate",
     properties: {
       defense: 236,
       reqstr: 50,
       reqlvl: 28,
-      edef: 130,
-      str: 15,
-      physdr: 15,
-      pdr: 10,
+      edef: { min: 100, max: 130, current: 130 },
+      str: { min: 10, max: 15, current: 15 },
+      physdr: { min: 10, max: 15, current: 15 },
+      pdr: { min: 5, max: 10, current: 10 },
       req: -10,
     },
   },
