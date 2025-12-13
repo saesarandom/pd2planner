@@ -4220,12 +4220,12 @@ if (pdrFlatMatch) {
         return /\+\d+%\s+Damage\s+vs\s+Undead/gi;
       case 'ar_vs_undead':
         return /\+\d+\s+Attack\s+Rating\s+vs\s+Undead/gi;
-      case 'physical_damage_reduced':
-        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+(?!%)/gi;
       case 'physical_damage_reduced_percent':
-        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+%/gi;
+        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\s*%/gi;
+      case 'physical_damage_reduced':
+        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\b(?!\s*%)/gi;
       case 'magic_damage_reduced':
-        return /Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+/gi;
+        return /Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\b/gi;
       case 'fire_skill_damage':
         return /\+(\d+)%\s+to\s+Fire\s+Skill\s+Damage/gi;
       case 'cold_skill_damage':
@@ -4248,13 +4248,6 @@ if (pdrFlatMatch) {
         return /(\d+)%\s+Chance\s+to\s+Cast\s+(.+?)\s+when\s+you\s+Die/gi;
       case 'lightRadius':
         return /(?:\+)?\d+\s+(?:to\s+)?Light\s+Radius/gi;
-      case 'physical_damage_reduced_percent':
-        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\s*%/gi;
-      case 'physical_damage_reduced':
-      // FIXED: Added \b word boundary to prevent matching "1" in "10%"
-        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\b(?!\s*%)/gi;
-      case 'magic_damage_reduced':
-        return /Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\b/gi;
       default:
         return null;
     }

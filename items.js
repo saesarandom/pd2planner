@@ -1151,16 +1151,15 @@ const itemList = {
   },
 
   Rattlecage: {
-    description:
-      "Rattlecage<br>Gothic Plate<br>Defense: 328<br>Required Strength: 70<br>Required Level: 29<br>+90% Enhanced Damage<br>+145 to Attack Rating<br>25% Chance of Crushing Blow<br>Hit Causes Monster to Flee 10%??? <br>+200 Defense<br>",
+    baseType: "Gothic Plate",
     properties: {
       defense: 328,
       reqstr: 70,
       reqlvl: 29,
-      edmg: 90,
-      toatt: 145,
+      edmg: { min: 60, max: 90, current: 90 },
+      toatt: { min: 100, max: 145, current: 145 },
       cb: 25,
-      fear: 10,
+      fear: 7,
       todef: 200,
     },
   },
