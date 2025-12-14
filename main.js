@@ -627,6 +627,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     todef: (val) => `+${val} Defense`,
     tolife: (val) => `+${val} to Life`,
     tomana: (val) => `+${val} to Mana`,
+    tomaxdmg: (val, prop) => formatVariableStat('+', val, ' to Maximum Damage', prop, itemName, 'tomaxdmg', dropdownId),
     ias: (val, prop) => formatVariableStat('+', val, '% Increased Attack Speed', prop, itemName, 'ias', dropdownId),
     fbr: (val, prop) => formatVariableStat('+', val, '% Faster Block Rate', prop, itemName, 'fbr', dropdownId),
     fhr: (val, prop) => formatVariableStat('+', val, '% Faster Hit Recovery', prop, itemName, 'fhr', dropdownId),
@@ -694,7 +695,12 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     maek: (val, prop) => formatVariableStat('+', val, ' to Mana after each Kill', prop, itemName, 'maek', dropdownId),
     ow: (val, prop) => formatVariableStat('', val, '% Chance of Open Wounds', prop, itemName, 'ow', dropdownId),
     pdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '', prop, itemName, 'pdr', dropdownId),
-    manarecovery: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'manarecovery', dropdownId),
+    regmana: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'regmana', dropdownId),
+    firedmgmin: (val, prop) => {
+      const maxVal = props.firedmgmax || val;
+      return `Adds ${val}-${maxVal} Fire Damage`;
+    },
+    firedmgmax: () => '', // Skip, handled by firedmgmin
     cbf: (val, prop) => formatVariableStat('', val ? 'Cannot Be Frozen' : '', '', prop, itemName, 'cbf', dropdownId),
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
 

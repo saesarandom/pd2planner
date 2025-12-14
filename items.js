@@ -4034,41 +4034,38 @@ const itemList = {
   },
 
   Bloodfist: {
-    description:
-      "Bloodfist<br>Heavy Gloves<br>Defense: 18<br>Required Level: 9<br>Melee Attacks Deal Splash Damage<br>+10% Increased Attack Speed<br>+30% Faster Hit Recovery<br>+10 to Maximum Damage<br>+20% Enhanced Defense<br>+10 Defense<br>+40 to Life<br>",
+    baseType: "Heavy Gloves",
     properties: {
       defense: 18,
       reqlvl: 9,
       splash: 1,
       ias: 10,
       fhr: 30,
-      tomaxdmg: 10,
-      edef: 20,
+      tomaxdmg: { min: 5, max: 10, current: 10 },
+      edef: { min: 10, max: 20, current: 20 },
       todef: 10,
       tolife: 40,
     },
   },
 
   "Chance Guards": {
-    description:
-      "Chance Guards<br>Chain Gloves<br>Defense: 28<br>Required Strength: 25<br>Required Level: 15<br>+25 to Attack Rating<br>+30% Enhanced Defense<br>+15 Defense<br>+2 to Mana after each Kill<br>200% Extra Gold from Monsters<br>40% Better Chance of Getting Magic Items<br>+2 to Light Radius<br>",
+    baseType: "Chain Gloves",
     properties: {
       defense: 28,
       reqstr: 25,
       reqlvl: 15,
       toatt: 25,
-      edef: 30,
+      edef: { min: 20, max: 30, current: 30 },
       todef: 15,
-      maek: 2,
+      maek: { min: 1, max: 2, current: 2 },
       goldfind: 200,
-      magicfind: 40,
+      magicfind: { min: 25, max: 40, current: 40 },
       ligrad: 2,
     },
   },
 
   Magefist: {
-    description:
-      "Magefist<br>Light Gauntlets<br>Defense: 25<br>Required Strength: 45<br>Required Level: 23<br>+1 to Fire Skills<br>+20% Faster Cast Rate<br>Adds 6-36 Fire Damage<br>+30% Enhanced Defense<br>+10 Defense<br>Regenerate Mana 25%<br>",
+    baseType: "Light Gauntlets",
     properties: {
       defense: 25,
       reqstr: 45,
@@ -4077,9 +4074,9 @@ const itemList = {
       fcr: 20,
       firedmgmin: 6,
       firedmgmax: 36,
-      edef: 30,
+      edef: { min: 20, max: 30, current: 30 },
       todef: 10,
-      regmana: 25,
+      regmana: { min: 15, max: 25, current: 25 },
     },
   },
 
