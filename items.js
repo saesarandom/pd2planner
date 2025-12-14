@@ -105,17 +105,16 @@ const itemList = {
   },
 
   "Undead Crown": {
-    description:
-      "Undead Crown<br>Crown<br>Defense: 85<br>Required Strength: 55<br>Required Level: 29<br>+50% Damage to Undead<br>+100 to Attack Rating against Undead<br>5% Life Stolen per Hit<br>+3 to Skeleton Mastery (Necromancer Only)<br>+3 to Raise Skeleton Warrior (Necromancer Only)<br>+40 Defense<br>Poison Resist +50%<br>Half Freeze Duration<br>",
+    baseType: "Crown",
     properties: {
       defense: 85,
       reqstr: 55,
       reqlvl: 29,
       dmgtoun: 50,
-      toattun: 100,
+      toattun: { min: 50, max: 100, current: 100 },
       lleech: 5,
-      skmastery: 3,
-      raiseskwarrior: 3,
+      skmastery: { min: 2, max: 3, current: 3 },
+      raiseskwarrior: { min: 2, max: 3, current: 3 },
       todef: 40,
       poisres: 50,
       freezedur: 0.5,
@@ -1052,7 +1051,7 @@ const itemList = {
       maxlightres: 5,
       maxfirres: 5,
       allres: 15,
-      tolightrad: 3,
+      ligrad: 3,
     },
   },
 
@@ -1087,50 +1086,47 @@ const itemList = {
   },
 
   "Venom Ward": {
-    description:
-      "Venom Ward<br>Breast Plate<br>Defense: 118<br>Required Strength: 30<br>Required Level: 20<br>-12% to Enemy Poison Resistance<br>+100% Enhanced Defense<br>+8% to Maximum Poison Resist<br>Poison Resist +60%<br>Poison Length Reduced by 50%<br>+2 to Light Radius<br>",
+    baseType: "Breast Plate",
     properties: {
       defense: 118,
       reqstr: 30,
       reqlvl: 20,
-      poisonpierce: 12,
-      edef: 100,
-      maxpoisonres: 8,
-      poisres: 60,
+      poisonpierce: { min: 6, max: 12, current: 12 },
+      edef: { min: 60, max: 100, current: 100 },
+      maxpoisonres: { min: 5, max: 8, current: 8 },
+      poisres: { min: 40, max: 60, current: 60 },
       plr: 50,
-      lightrad: 2,
+      ligrad: 2,
     },
   },
 
   Iceblink: {
-    description:
-      "Iceblink<br>Splint Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 153<br>Required Strength: 51<br>Required Level: 22<br>+2 to Cold Skills<br>Freezes Target<br>+80% Enhanced Defense<br>Cold Resist +35%<br>Magic Damage Taken Reduced by 6<br>+4 to Light Radius<br>",
+    baseType: "Splint Mail",
     properties: {
       defense: 153,
       reqstr: 51,
       reqlvl: 22,
-      coldskills: 2,
+      coldsk: { min: 1, max: 2, current: 2 },
       freeze: 1,
-      edef: 80,
-      coldres: 35,
-      mdr: 6,
+      edef: { min: 70, max: 80, current: 80 },
+      coldres: { min: 20, max: 35, current: 35 },
+      mdr: { min: 2, max: 6, current: 6 },
       ligrad: 4,
     },
   },
 
   Boneflesh: {
-    description:
-      "Boneflesh<br>Plate Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 239<br>Required Strength: 65<br>Required Level: 26<br>10% Chance to Cast Level 15 Bone Armor when Struck<br>+235 to Attack Rating<br>5% Life Stolen per Hit<br>25% Chance of Open Wounds<br>+32 Open Wounds Damage per Second<br>+120% Enhanced Defense<br>",
+    baseType: "Plate Mail",
     properties: {
       defense: 239,
       reqstr: 65,
       reqlvl: 26,
-      bonearmorctcstruck: 10 - 15,
+      bonearmorctcstruck: { chance: 10, level: 15 },
       toatt: 235,
       lleech: 5,
       ow: 25,
-      owdmg: 32,
-      edef: 120,
+      owdmg: { min: 24, max: 32, current: 32 },
+      edef: { min: 100, max: 120, current: 120 },
     },
   },
 
@@ -1163,50 +1159,47 @@ const itemList = {
   },
 
   "Heavenly Garb": {
-    description:
-      "Heavenly Garb<br>Light Plate<br>Defense: 200<br>Required Strength: 41<br>Required Level: 29<br>Level 4 Sanctuary Aura when Equipped<br>+1 to Magic Skills<br>+50% Damage to Undead<br>+100 to Attack Rating against Undead<br>+100% Enhanced Defense<br>+15 to Energy<br>Regenerate Mana 25%<br>All Resistances +20<br>",
+    baseType: "Light Plate",
     properties: {
       defense: 200,
       reqstr: 41,
       reqlvl: 29,
-      sancaura: 4,
+      sancaura: { min: 4, max: 6, current: 6 },
       magicsk: 1,
       dmgtoun: 50,
       atttoun: 100,
       edef: 100,
       enr: 15,
       regmana: 25,
-      allres: 20,
+      allres: { min: 10, max: 20, current: 20 },
     },
   },
 
   Goldskin: {
-    description:
-      "Goldskin<br>Full Plate Mail<br>Defense: 377<br>Required Strength: 80<br>Required Level: 28<br>+150% Enhanced Defense<br>All Resistances +35<br>Attacker Takes Damage of 10<br>200% Extra Gold from Monsters<br>+2 to Light Radius<br>",
+    baseType: "Full Plate Mail",
     properties: {
       defense: 377,
       reqstr: 80,
       reqlvl: 28,
-      edef: 150,
+      edef: { min: 120, max: 150, current: 150 },
       allres: 35,
       atdmg: 10,
-      goldfind: 200,
+      goldfind: { min: 100, max: 200, current: 200 },
       ligrad: 2,
     },
   },
 
   "Silks of the Victor": {
-    description:
-      "Silks of the Victor<br>Ancient Armor<br>Defense: 409<br>Required Strength: 100<br>Required Level: 28<br>+1 to All Skills<br>+25% Faster Run/Walk<br>5% Mana Stolen per Hit<br>+120% Enhanced Defense<br>+4 Life after each Kill<br>+2 to Light Radius<br>",
+    baseType: "Ancient Armor",
     properties: {
       defense: 409,
       reqstr: 100,
       reqlvl: 28,
       allsk: 1,
       frw: 25,
-      mleech: 5,
+      mleech: { min: 2, max: 5, current: 5 },
       edef: 120,
-      laek: 4,
+      laek: { min: 2, max: 4, current: 4 },
       ligrad: 2,
     },
   },
@@ -1283,7 +1276,7 @@ const itemList = {
       defense: 470,
       reqstr: 74,
       reqlvl: 35,
-      fireskills: 2,
+      firesk: 2,
       firedmgmin: 20,
       firedmgmax: 65,
       edef: 160,
@@ -1442,7 +1435,7 @@ const itemList = {
       attodem: 450,
       edef: 200,
       halffreeze: 1,
-      lightrad: -2,
+      ligrad: -2,
       sock: 3,
     },
   },
@@ -1591,7 +1584,7 @@ const itemList = {
       pdr: 2,
       atdmg: 13,
       edef: 100 // pronbably good
-      
+
     },
   },
 
@@ -1605,7 +1598,7 @@ const itemList = {
       edmg: 45,
       str: 15,
       tolife: 40 //probably good
-      
+
     },
   },
 
@@ -2108,7 +2101,7 @@ const itemList = {
       reqstr: 55,
       reqdex: 39,
       reqlvl: 22,
-      fireskills: 2,
+      firesk: 2,
       edmg: 80,
       firedmgmin: 25,
       firedmgmax: 75,
@@ -2665,7 +2658,7 @@ const itemList = {
       reqstr: 35,
       reqdex: 55,
       reqlvl: 27,
-      fireskills: 3,
+      firesk: 3,
       ias: 20,
       pierce: 20,
       edmg: 160,
@@ -3012,7 +3005,7 @@ const itemList = {
       reqlvl: 5,
       ctcfireboltcast: 20,
       ctcfireboltcastlevel: 8,
-      fireskills: 2,
+      firesk: 2,
       ias: 20,
       fcr: 10,
       edmg: 60,
@@ -3081,7 +3074,7 @@ const itemList = {
       reqlvl: 21,
       ctclesserhydracast: 20,
       ctclesserhydracastlevel: 14,
-      fireskills: 3,
+      firesk: 3,
       fcr: 10,
       firedmgmin: 15,
       firedmgmax: 32,
@@ -3836,37 +3829,37 @@ const itemList = {
   },
 
   "Steel": {
-  description:
-    "Steel<br>Short Sword<br>One-Hand Damage: 5 to 11<br>Required Strength: 27<br>Required Dexterity: 28<br>Required Level: 13<br>+25% Increased Attack Speed<br>+20% Enhanced Damage<br>+3 to Minimum Damage<br>+3 to Maximum Damage<br>+50 to Attack Rating<br>+50% Chance of Open Wounds<br>+1 to Light Radius<br>Socketed (2)",
-  properties: {
-    onehandmin: 5,
-    onehandmax: 11,
-    reqstr: 27,
-    reqdex: 28,
-    reqlvl: 13,
-    ias: 25,
-    edmg: 20,
-    mindmg: 3,
-    maxdmg: 3,
-    toatt: 50,
-    openwounds: 50,
-    socketed: true,
-    socketCount: 2
-  }
-},
-
-"Nadir": {
-  description:
-    "Nadir<br>Cap<br>Defense: 5<br>Required Strength: 0<br>Required Dexterity: 0<br>Required Level: 13<br>+5 to Strength<br>-33% Extra Gold from Monsters<br>+6 to Mana after each Kill<br>-3 to Light Radius<br>Socketed (2)",
-  properties: {
-    defense: 5,
-    reqlvl: 13,
-    goldfind: -33,
-    str: 5,
-    socketed: true,
-    socketCount: 2
+    description:
+      "Steel<br>Short Sword<br>One-Hand Damage: 5 to 11<br>Required Strength: 27<br>Required Dexterity: 28<br>Required Level: 13<br>+25% Increased Attack Speed<br>+20% Enhanced Damage<br>+3 to Minimum Damage<br>+3 to Maximum Damage<br>+50 to Attack Rating<br>+50% Chance of Open Wounds<br>+1 to Light Radius<br>Socketed (2)",
+    properties: {
+      onehandmin: 5,
+      onehandmax: 11,
+      reqstr: 27,
+      reqdex: 28,
+      reqlvl: 13,
+      ias: 25,
+      edmg: 20,
+      mindmg: 3,
+      maxdmg: 3,
+      toatt: 50,
+      openwounds: 50,
+      socketed: true,
+      socketCount: 2
     }
-},
+  },
+
+  "Nadir": {
+    description:
+      "Nadir<br>Cap<br>Defense: 5<br>Required Strength: 0<br>Required Dexterity: 0<br>Required Level: 13<br>+5 to Strength<br>-33% Extra Gold from Monsters<br>+6 to Mana after each Kill<br>-3 to Light Radius<br>Socketed (2)",
+    properties: {
+      defense: 5,
+      reqlvl: 13,
+      goldfind: -33,
+      str: 5,
+      socketed: true,
+      socketCount: 2
+    }
+  },
   // UNIQUE SHIELDS
 
   "Pelta Lunata": {
@@ -3939,7 +3932,7 @@ const itemList = {
       edef: 100,
       todef: 20,
       allres: { min: 5, max: 10, current: 10 },
-      lightrad: 3,
+      ligrad: 3,
       dur: 20
     },
   },

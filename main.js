@@ -636,15 +636,33 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     cb: (val, prop) => formatVariableStat('', val, '% Chance of Crushing Blow', prop, itemName, 'cb', dropdownId),
     deadly: (val, prop) => formatVariableStat('', val, '% Deadly Strike', prop, itemName, 'deadly', dropdownId),
     dmgtoun: (val, prop) => formatVariableStat('+', val, '% Damage to Undead', prop, itemName, 'dmgtoun', dropdownId),
+    toattun: (val, prop) => formatVariableStat('+', val, ' to Attack Rating against Undead', prop, itemName, 'toattun', dropdownId),
+    skmastery: (val, prop) => formatVariableStat('+', val, ' to Skeleton Mastery (Necromancer Only)', prop, itemName, 'skmastery', dropdownId),
+    raiseskwarrior: (val, prop) => formatVariableStat('+', val, ' to Raise Skeleton Warrior (Necromancer Only)', prop, itemName, 'raiseskwarrior', dropdownId),
     sorsk: (val, prop) => formatVariableStat('+', val, ' to Sorceress Skill Levels', prop, itemName, 'sorsk', dropdownId),
     fcr: (val, prop) => formatVariableStat('+', val, '% Faster Cast Rate', prop, itemName, 'fcr', dropdownId),
-    lightrad: (val) => `+${val} to Light Radius`,
+    // lightrad: (val, prop) => formatVariableStat(val >= 0 ? '+' : '', val, ' to Light Radius', prop, itemName, 'lightrad', dropdownId),
+    plr: (val, prop) => formatVariableStat('Poison Length Reduced by ', val, '%', prop, itemName, 'plr', dropdownId),
+    bonearmorctcstruck: (val, prop) => {
+      // val is an object like { chance: 10, level: 15 }
+      if (typeof val === 'object' && val.chance && val.level) {
+        return `${val.chance}% Chance to Cast Level ${val.level} Bone Armor when Struck`;
+      }
+      // Fallback for old format or simple values
+      return `${val}% Chance to Cast Level 15 Bone Armor when Struck`;
+    },
     ctcbonespearcast: (val, prop) => {
       const level = props.ctcbonespearcastlevel || 2;
       return `${val}% Chance to Cast Level ${level} Bone Spear on Cast`;
     },
     magicfind: (val, prop) => formatVariableStat('', val, '% Better Chance of Getting Magic Items', prop, itemName, 'magicfind', dropdownId),
     goldfind: (val, prop) => formatVariableStat('', val, '% Extra Gold from Monsters', prop, itemName, 'goldfind', dropdownId),
+    poisonpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Poison Resistance', prop, itemName, 'poisonpierce', dropdownId),
+    coldsk: (val, prop) => formatVariableStat('+', val, ' to Cold Skills', prop, itemName, 'coldsk', dropdownId),
+    magicsk: (val, prop) => formatVariableStat('+', val, ' to Magic Skills', prop, itemName, 'magicsk', dropdownId),
+    firesk: (val, prop) => formatVariableStat('+', val, ' to Fire Skills', prop, itemName, 'firesk', dropdownId),
+    owdmg: (val, prop) => formatVariableStat('+', val, ' Open Wounds Damage per Second', prop, itemName, 'owdmg', dropdownId),
+    sancaura: (val, prop) => formatVariableStat('Level ', val, ' Sanctuary Aura when Equipped', prop, itemName, 'sancaura', dropdownId),
     maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
     lleech: (val, prop) => formatVariableStat('', val, '% Life Stolen per Hit', prop, itemName, 'lleech', dropdownId),
     mleech: (val, prop) => formatVariableStat('', val, '% Mana Stolen per Hit', prop, itemName, 'mleech', dropdownId),
@@ -682,6 +700,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     lightdamage: (val, prop) => formatVariableStat('+', val, '% to Lightning Skill Damage', prop, itemName, 'lightdamage', dropdownId),
     atligdmg: (val, prop) => formatVariableStat('Attacker Takes Lightning Damage of ', val, '', prop, itemName, 'atligdmg', dropdownId),
     ravenoskill: (val, prop) => formatVariableStat('+', val, ' to Raven', prop, itemName, 'ravenoskill', dropdownId),
+    ligrad: (val, prop) => formatVariableStat(val >= 0 ? '+' : '', val, ' to Light Radius', prop, itemName, 'ligrad', dropdownId),
   };
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere
@@ -984,7 +1003,7 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       // Speed stats
       'ias', 'fcr', 'frw', 'fhr',
       // Combat stats
-      'ow', 'cb', 'deadly', 'critchance', 'lifesteal', 'manasteal',
+      'ow', 'cb', 'deadly', 'critchance', 'lleech', 'mleech',
       // Defensive stats
       'dr', 'pdr', 'mdr', 'physdr', 'plr', 'blockchance', 'block',
       // Core stats
@@ -997,8 +1016,8 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       'colddmgmin', 'colddmgmax', 'firedmgmin', 'firedmgmax', 'lightdmgmin', 'lightdmgmax',
       'poisondmgmin', 'poisondmgmax', 'magicdmgmin', 'magicdmgmax',
       // Skill damage
-      'fireskilldam', 'coldskilldam', 'lightningskilldam', 'poisonskilldam', 'magicskilldam',
-      // Pierce
+      'fireskilldam', 'coldskilldam', 'lightningskilldam', 'poisonskilldam', 'magicskilldam', 'poisonpierce', 'firepierce', 'lightpierce', 'coldpierce', 'magicpierce',
+      // Pierce TADY JE CHYBA, ty TO NEBUDOU UZIVANE, dal jsem to uz na ten predhcozi radekj
       'piercefireresist', 'piercecoldresist', 'piercelightningresist', 'piercepoisonresist', 'piercephysresist',
       // Life/Mana
       'tolife', 'tomana', 'life', 'mana'

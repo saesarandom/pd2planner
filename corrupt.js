@@ -1155,7 +1155,6 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         break;
       case 'indestructible':
         item.properties.indestructible = 1;
-        // CRITICAL FIX: Track that indestructible was corrupted so it shows in red
         if (!window.corruptedProperties) window.corruptedProperties = {};
         if (!window.corruptedProperties[itemName]) window.corruptedProperties[itemName] = new Set();
         window.corruptedProperties[itemName].add('indestructible');
@@ -1202,7 +1201,6 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         break;
       case 'cbf':
         item.properties.cbf = 1;
-        // CRITICAL FIX: Track that cbf was corrupted so it shows in red
         if (!window.corruptedProperties) window.corruptedProperties = {};
         if (!window.corruptedProperties[itemName]) window.corruptedProperties[itemName] = new Set();
         window.corruptedProperties[itemName].add('cbf');
