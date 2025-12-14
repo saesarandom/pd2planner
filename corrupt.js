@@ -1144,6 +1144,9 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
       case 'pdr':
         addStatToProp('pdr', stat.value);
         break;
+      case 'mdr':
+        addStatToProp('mdr', stat.value);
+        break;
       case 'resist':
         if (stat.subtype === 'fire') addStatToProp('firres', stat.value);
         if (stat.subtype === 'cold') addStatToProp('coldres', stat.value);

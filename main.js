@@ -948,6 +948,15 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       window.characterManager.updateTotalStats();
     }
 
+    // CRITICAL FIX: Refresh saved state to persist the change immediately
+    // This ensures the new value is saved and will be restored when switching items
+    if (window.refreshSavedState && typeof window.refreshSavedState === 'function') {
+      const config = window.unifiedSocketSystem?.equipmentMap?.[dropdownId];
+      if (config && config.section) {
+        window.refreshSavedState(dropdownId, config.section);
+      }
+    }
+
     // For static items with description, notify socket system to update
     // (Dynamic items are already handled by updateItemDisplay above)
     if (window.unifiedSocketSystem && typeof window.unifiedSocketSystem.updateAll === 'function' && item.description) {
@@ -969,8 +978,9 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     const immediateUpdateProps = [
       // Attributes
       'str', 'dex', 'vit', 'enr',
-      // Resistances
+      // Resistances (both long and short forms)
       'fireresist', 'coldresist', 'lightresist', 'poisonresist', 'curseresist', 'allres',
+      'firres', 'coldres', 'ligres', 'poisres',  // Short forms used in item properties
       // Speed stats
       'ias', 'fcr', 'frw', 'fhr',
       // Combat stats
@@ -1112,18 +1122,15 @@ window.updateItemInfo = function updateItemInfo(event) {
         // CRITICAL FIX: If item has corruption, restore from ORIGINAL (clean) state
         // This prevents double-stacking corruption when switching items
 
-        // BUT preserve user-modified .current values for variable stats
-        // CRITICAL FIX: Exclude corrupted properties from preservation
+        // Preserve ALL user-modified .current values (including corrupted properties)
+        // We'll restore from clean state, then re-apply corruption, then restore user values
         const userModifiedValues = {};
-        const corruptedProps = window.corruptedProperties && window.corruptedProperties[selectedItemName]
-          ? window.corruptedProperties[selectedItemName]
-          : new Set();
 
         if (item.properties) {
           for (const key in item.properties) {
             const prop = item.properties[key];
-            // Only preserve if it's a variable stat AND it was NOT corrupted
-            if (typeof prop === 'object' && prop !== null && 'current' in prop && !corruptedProps.has(key)) {
+            // Save ALL current values for variable stats
+            if (typeof prop === 'object' && prop !== null && 'current' in prop) {
               userModifiedValues[key] = prop.current;
             }
           }
@@ -1132,12 +1139,10 @@ window.updateItemInfo = function updateItemInfo(event) {
         // Restore from original (clean) state
         item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[selectedItemName]));
 
-        // Re-apply user-modified current values (excluding corrupted values)
-        for (const key in userModifiedValues) {
-          if (item.properties[key] && typeof item.properties[key] === 'object') {
-            item.properties[key].current = userModifiedValues[key];
-          }
-        }
+        // Store user values to re-apply AFTER corruption is applied
+        // This ensures user's manual changes persist even for corrupted properties
+        if (!window.pendingUserValues) window.pendingUserValues = {};
+        window.pendingUserValues[selectedItemName] = userModifiedValues;
       } else if (window.itemBaseProperties[selectedItemName]) {
         // No corruption: restore from Base State (user's specific rolls)
         item.properties = JSON.parse(JSON.stringify(window.itemBaseProperties[selectedItemName]));
@@ -1158,11 +1163,22 @@ window.updateItemInfo = function updateItemInfo(event) {
 
       // Double check it matches current item
       if (corruption.itemName === selectedItemName && corruption.text) {
-        console.log('Applying corruption to:', selectedItemName);
         // Only apply to properties if we're NOT currently in the middle of applying corruption
         if (!window.isApplyingCorruption && typeof window.applyCorruptionToProperties === 'function') {
           // CRITICAL FIX: Pass itemName string instead of item object to ensure correct tracking
           window.applyCorruptionToProperties(selectedItemName, corruption.text);
+
+          // CRITICAL FIX: After applying corruption, restore user-modified values
+          // This allows manual input changes to persist for corrupted properties
+          if (window.pendingUserValues && window.pendingUserValues[selectedItemName]) {
+            const userValues = window.pendingUserValues[selectedItemName];
+            for (const key in userValues) {
+              if (item.properties[key] && typeof item.properties[key] === 'object' && 'current' in item.properties[key]) {
+                item.properties[key].current = userValues[key];
+              }
+            }
+            delete window.pendingUserValues[selectedItemName];
+          }
         }
       }
     }
