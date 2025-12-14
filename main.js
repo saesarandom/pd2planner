@@ -724,28 +724,20 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
   let isModified = false;
   let corruptionBonus = 0;
 
-  // check original values to see if modified
-  if (window.originalItemProperties && window.originalItemProperties[itemName]) {
-    const originalProps = window.originalItemProperties[itemName];
-    const originalVal = originalProps[propKey];
+  // CRITICAL FIX: Only mark as modified if this property was ACTUALLY corrupted
+  // Check the corruptedProperties set instead of comparing all values
+  if (window.corruptedProperties && window.corruptedProperties[itemName]) {
+    isModified = window.corruptedProperties[itemName].has(propKey);
 
-    if (originalVal === undefined) {
-      // Property didn't exist originally -> New Corruption Property
-      isModified = true;
-    } else if (typeof prop === 'object' && 'current' in prop) {
-      // Variable stat: compare current value to original current/max
-      // Note: original might be {min, max} while current has {current}
-      // If original has no current, it defaults to max.
-      const origValue = (typeof originalVal === 'object' && 'current' in originalVal) ? originalVal.current :
-        (typeof originalVal === 'object' && 'max' in originalVal) ? originalVal.max : originalVal;
-      if (prop.current !== origValue) {
-        isModified = true;
+    // If corrupted, calculate the corruption bonus
+    if (isModified && window.originalItemProperties && window.originalItemProperties[itemName]) {
+      const originalProps = window.originalItemProperties[itemName];
+      const originalVal = originalProps[propKey];
+
+      if (typeof prop === 'object' && 'current' in prop) {
+        const origValue = (typeof originalVal === 'object' && 'current' in originalVal) ? originalVal.current :
+          (typeof originalVal === 'object' && 'max' in originalVal) ? originalVal.max : originalVal;
         corruptionBonus = prop.current - origValue;
-      }
-    } else if (typeof prop === 'number') {
-      // Fixed stat (or simplified variable stat)
-      if (prop !== originalVal) {
-        isModified = true;
       }
     }
   }
@@ -814,13 +806,22 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     let effectiveMin = prop.min;
     let effectiveMax = prop.max;
 
-    // Check if this property is corrupted and calculate the expanded range
-    if (window.originalItemProperties && window.originalItemProperties[itemName]) {
+    // CRITICAL FIX: Check if this property is corrupted using corruptedProperties
+    // This prevents infinite value growth by using a FIXED corruption bonus
+    const isCorrupted = window.corruptedProperties &&
+      window.corruptedProperties[itemName] &&
+      window.corruptedProperties[itemName].has(propKey);
+
+    if (isCorrupted && window.originalItemProperties && window.originalItemProperties[itemName]) {
       const originalVal = window.originalItemProperties[itemName][propKey];
-      if (typeof originalVal === 'object' && 'current' in originalVal) {
-        const origValue = originalVal.current || originalVal.max;
-        const corruptionBonus = prop.current - origValue;
-        if (corruptionBonus > 0 && 'min' in originalVal && 'max' in originalVal) {
+      if (typeof originalVal === 'object' && 'min' in originalVal && 'max' in originalVal) {
+        // Calculate FIXED corruption bonus from the original value
+        // Use the original max as the baseline (not current, which changes)
+        const originalMax = originalVal.max;
+        const currentMax = prop.max;
+        const corruptionBonus = currentMax - originalMax;
+
+        if (corruptionBonus > 0) {
           effectiveMin = originalVal.min + corruptionBonus;
           effectiveMax = originalVal.max + corruptionBonus;
         }
@@ -881,29 +882,13 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       // User Edits on Uncorrupted Props DO persist.
       // This is a good compromise for now.
 
-      let isCorrupted = false;
-      // reuse the check logic from formatVariableStat?
-      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-        const cText = window.itemCorruptions[dropdownId].text.toLowerCase();
-        // Minimal check for property presence in corruption text
-        // This is heuristic but safeish
-        // If corruption text has "Strength" and prop is "str", assume corrupted.
-        if (
-          (propKey === 'str' && cText.includes('strength')) ||
-          (propKey === 'dex' && cText.includes('dexterity')) ||
-          (propKey === 'vit' && cText.includes('vitality')) ||
-          (propKey === 'enr' && cText.includes('energy')) ||
-          (propKey === 'life' && cText.includes('life')) ||
-          (propKey === 'mana' && cText.includes('mana')) ||
-          (propKey === 'edmg' && cText.includes('enhanced damage')) ||
-          (propKey === 'edef' && cText.includes('enhanced defense')) ||
-          (propKey === 'physdr' && cText.includes('physical damage taken reduced'))
-        ) {
-          isCorrupted = true;
-        }
-      }
+      // CRITICAL FIX: Use corruptedProperties to check if this property is corrupted
+      // Don't update itemBaseProperties for corrupted properties
+      const isPropertyCorrupted = window.corruptedProperties &&
+        window.corruptedProperties[itemName] &&
+        window.corruptedProperties[itemName].has(propKey);
 
-      if (!isCorrupted) {
+      if (!isPropertyCorrupted) {
         if (typeof window.itemBaseProperties[itemName][propKey] === 'object') {
           window.itemBaseProperties[itemName][propKey].current = clampedValue;
         } else {
@@ -1084,10 +1069,8 @@ window.updateItemInfo = function updateItemInfo(event) {
       }
 
       delete window.itemCorruptions[dropdown.id];
-      // Also clear any stored original properties/descriptions for this slot
-      // to ensure the new item starts fresh
-      // Note: We don't delete from window.originalItemDescriptions/Properties generally
-      // as they are keyed by itemName, but we need to ensure the new item loads clean.
+      // Note: We DON'T delete originalItemProperties/corruptedProperties here
+      // because corruptions persist per-item via slotItemCorruptions system
     }
   }
 
@@ -1109,22 +1092,74 @@ window.updateItemInfo = function updateItemInfo(event) {
     if (!window.itemBaseProperties[selectedItemName]) {
       // Seed with current item properties (assuming clean on startup)
       window.itemBaseProperties[selectedItemName] = JSON.parse(JSON.stringify(item.properties || {}));
-    } else {
-      // 2. RESTORE from Base State on selection
-      // This restores the User's specific rolls
-      item.properties = JSON.parse(JSON.stringify(window.itemBaseProperties[selectedItemName]));
     }
 
-    // 3. Re-Apply Saved Corruption if it matches this item
+    // 2. Check if this item has a saved corruption
+    const hasSavedCorruption = window.slotItemCorruptions &&
+      window.slotItemCorruptions[dropdown.id] &&
+      window.slotItemCorruptions[dropdown.id][selectedItemName];
+
+    // 3. RESTORE from appropriate state
+    // CRITICAL FIX: Skip restoration if we're currently applying corruption (properties already set)
+    if (!window.isApplyingCorruption) {
+      if (hasSavedCorruption && window.originalItemProperties && window.originalItemProperties[selectedItemName]) {
+        // CRITICAL FIX: If item has corruption, restore from ORIGINAL (clean) state
+        // This prevents double-stacking corruption when switching items
+
+        // BUT preserve user-modified .current values for variable stats
+        const userModifiedValues = {};
+        if (item.properties) {
+          for (const key in item.properties) {
+            const prop = item.properties[key];
+            if (typeof prop === 'object' && prop !== null && 'current' in prop) {
+              userModifiedValues[key] = prop.current;
+            }
+          }
+        }
+
+        // Restore from original (clean) state
+        item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[selectedItemName]));
+
+        // Re-apply user-modified current values
+        for (const key in userModifiedValues) {
+          if (item.properties[key] && typeof item.properties[key] === 'object') {
+            item.properties[key].current = userModifiedValues[key];
+          }
+        }
+      } else if (window.itemBaseProperties[selectedItemName]) {
+        // No corruption: restore from Base State (user's specific rolls)
+        item.properties = JSON.parse(JSON.stringify(window.itemBaseProperties[selectedItemName]));
+      }
+    }
+
+    // 4. Re-Apply Saved Corruption if it matches this item
+    // CRITICAL FIX: Skip property application if we just applied it (prevents double-application)
+    // But still allow the rest of updateItemInfo to run for display refresh
     if (window.itemCorruptions && window.itemCorruptions[dropdown.id]) {
       const corruption = window.itemCorruptions[dropdown.id];
       // Double check it matches current item
       if (corruption.itemName === selectedItemName && corruption.text) {
-        if (typeof window.applyCorruptionToProperties === 'function') {
+        // Only apply to properties if we're NOT currently in the middle of applying corruption
+        if (!window.isApplyingCorruption && typeof window.applyCorruptionToProperties === 'function') {
           window.applyCorruptionToProperties(item, corruption.text);
         }
       }
     }
+
+    // CRITICAL FIX: Recalculate defense from edef after restoring properties/corruption
+    // Defense should always be calculated dynamically, not cached
+    if (item.properties && item.properties.edef && item.baseType && typeof window.calculateItemDefense === 'function') {
+      // Determine category from dropdown
+      let category = 'helm';
+      if (dropdown.id.includes('armor')) category = 'armor';
+      else if (dropdown.id.includes('belt')) category = 'belts';
+      else if (dropdown.id.includes('glove')) category = 'gloves';
+      else if (dropdown.id.includes('boot')) category = 'boots';
+      else if (dropdown.id.includes('off') || dropdown.id.includes('shield')) category = 'shield';
+
+      item.properties.defense = window.calculateItemDefense(item, item.baseType, category);
+    }
+
 
     // For dynamic items (no static description), delegate to socket system
     // This ensures proper handling of corruptions, upgrades, and socket stats

@@ -979,11 +979,30 @@ function applySocketCorruptionFromModal(corruption) {
 function applyCorruptionToProperties(itemOrName, corruptionText) {
   // CRITICAL FIX: Handle both Item Object (from main.js) and Item Name String
   let item = itemOrName;
+  let itemName = null;
+
   if (typeof itemOrName === 'string') {
+    itemName = itemOrName;
     item = window.getItemData(itemOrName);
+  } else {
+    // It's an item object - need to find its name
+    // Search in itemList to find the matching item
+    for (const name in itemList) {
+      if (itemList[name] === item) {
+        itemName = name;
+        break;
+      }
+    }
+    // If not found in itemList, check crafted items
+    if (!itemName && window.craftedItemsSystem) {
+      const craftedItem = window.craftedItemsSystem.getCraftedItemByObject(item);
+      if (craftedItem) {
+        itemName = craftedItem.fullName;
+      }
+    }
   }
 
-  if (!item) return;
+  if (!item || !itemName) return;
 
   // Ensure properties object exists
   if (!item.properties) {
@@ -993,6 +1012,15 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
   // Helper to safely add value to property (number or object)
   function addStatToProp(key, value) {
     if (!item.properties) return;
+
+    // CRITICAL FIX: Track that this property was corrupted
+    if (!window.corruptedProperties) {
+      window.corruptedProperties = {};
+    }
+    if (!window.corruptedProperties[itemName]) {
+      window.corruptedProperties[itemName] = new Set();
+    }
+    window.corruptedProperties[itemName].add(key);
 
     // If property doesn't exist, just set it
     if (item.properties[key] === undefined) {
@@ -1004,9 +1032,21 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
     if (typeof item.properties[key] === 'object' && item.properties[key] !== null) {
       if ('current' in item.properties[key]) {
         item.properties[key].current = (item.properties[key].current || 0) + value;
+        // CRITICAL FIX: Also update min and max to reflect the corrupted range
+        if ('min' in item.properties[key]) {
+          item.properties[key].min = (item.properties[key].min || 0) + value;
+        }
+        if ('max' in item.properties[key]) {
+          item.properties[key].max = (item.properties[key].max || 0) + value;
+        }
       } else if ('max' in item.properties[key]) {
         // Fallback: update current derived from max
         item.properties[key].current = (item.properties[key].max || 0) + value;
+        // Also update min and max
+        if ('min' in item.properties[key]) {
+          item.properties[key].min = (item.properties[key].min || 0) + value;
+        }
+        item.properties[key].max = (item.properties[key].max || 0) + value;
       }
       return;
     }
@@ -1220,11 +1260,16 @@ function applyCorruptionToItem(corruptionText) {
     // CRITICAL FIX: Reset properties to original state before applying new corruption
     // BUT preserve user-modified .current values for variable stats
     if (item.properties) {
-      // Save current user-modified values
+      // Save current user-modified values (but NOT corrupted values)
       const userModifiedValues = {};
+      const oldCorruptedProps = window.corruptedProperties && window.corruptedProperties[itemName]
+        ? window.corruptedProperties[itemName]
+        : new Set();
+
       for (const key in item.properties) {
         const prop = item.properties[key];
-        if (typeof prop === 'object' && prop !== null && 'current' in prop) {
+        // Only preserve if it's a variable stat AND it was NOT corrupted
+        if (typeof prop === 'object' && prop !== null && 'current' in prop && !oldCorruptedProps.has(key)) {
           userModifiedValues[key] = prop.current;
         }
       }
@@ -1232,12 +1277,18 @@ function applyCorruptionToItem(corruptionText) {
       // Restore from original
       item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
 
-      // Re-apply user-modified current values
+      // Re-apply user-modified current values (excluding old corrupted values)
       for (const key in userModifiedValues) {
         if (item.properties[key] && typeof item.properties[key] === 'object') {
           item.properties[key].current = userModifiedValues[key];
         }
       }
+    }
+
+    // CRITICAL FIX: Clear old corrupted properties tracking
+    // This ensures old corrupted properties turn white when corruption changes
+    if (window.corruptedProperties && window.corruptedProperties[itemName]) {
+      delete window.corruptedProperties[itemName];
     }
   }
 
@@ -1311,8 +1362,29 @@ function applyCorruptionToItem(corruptionText) {
     }
   }
 
+  // CRITICAL FIX: Recalculate defense for items with edef corruption (dynamic items)
+  if (item.baseType && item.properties && item.properties.edef && typeof window.calculateItemDefense === 'function') {
+    // Determine category from dropdown
+    let category = 'helm';
+    if (currentCorruptionSlot.includes('armor')) category = 'armor';
+    else if (currentCorruptionSlot.includes('belt')) category = 'belts';
+    else if (currentCorruptionSlot.includes('glove')) category = 'gloves';
+    else if (currentCorruptionSlot.includes('boot')) category = 'boots';
+    else if (currentCorruptionSlot.includes('off') || currentCorruptionSlot.includes('shield')) category = 'shield';
+
+    item.properties.defense = window.calculateItemDefense(item, item.baseType, category);
+  }
+
+  // CRITICAL FIX: Set flag to prevent double-application during triggerItemUpdate
+  window.isApplyingCorruption = true;
+
   // Trigger item display update
   triggerItemUpdate(currentCorruptionSlot);
+
+  // Clear flag after update completes
+  setTimeout(() => {
+    window.isApplyingCorruption = false;
+  }, 200);
 
   // Refresh saved state AFTER triggerItemUpdate completes (so description and properties are in sync)
   const section = SECTION_MAP[currentCorruptionSlot];
@@ -1600,6 +1672,13 @@ function removeCurrentCorruption() {
     // Restore original properties
     if (window.originalItemProperties && window.originalItemProperties[corruption.itemName]) {
       itemList[corruption.itemName].properties = JSON.parse(JSON.stringify(window.originalItemProperties[corruption.itemName]));
+      // CRITICAL FIX: Delete the original properties entry to prevent false "modified" detection
+      delete window.originalItemProperties[corruption.itemName];
+    }
+
+    // CRITICAL FIX: Clear the corrupted properties tracking
+    if (window.corruptedProperties && window.corruptedProperties[corruption.itemName]) {
+      delete window.corruptedProperties[corruption.itemName];
     }
 
     // Check if item is dynamic (has baseType)
@@ -1614,6 +1693,11 @@ function removeCurrentCorruption() {
       if (originalDescription) {
         itemList[corruption.itemName].description = originalDescription;
       }
+    }
+
+    // CRITICAL FIX: Also delete the original description entry to fully clean up
+    if (window.originalItemDescriptions && window.originalItemDescriptions[corruption.itemName]) {
+      delete window.originalItemDescriptions[corruption.itemName];
     }
   }
 
