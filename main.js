@@ -1107,11 +1107,17 @@ window.updateItemInfo = function updateItemInfo(event) {
         // This prevents double-stacking corruption when switching items
 
         // BUT preserve user-modified .current values for variable stats
+        // CRITICAL FIX: Exclude corrupted properties from preservation
         const userModifiedValues = {};
+        const corruptedProps = window.corruptedProperties && window.corruptedProperties[selectedItemName]
+          ? window.corruptedProperties[selectedItemName]
+          : new Set();
+
         if (item.properties) {
           for (const key in item.properties) {
             const prop = item.properties[key];
-            if (typeof prop === 'object' && prop !== null && 'current' in prop) {
+            // Only preserve if it's a variable stat AND it was NOT corrupted
+            if (typeof prop === 'object' && prop !== null && 'current' in prop && !corruptedProps.has(key)) {
               userModifiedValues[key] = prop.current;
             }
           }
@@ -1120,7 +1126,7 @@ window.updateItemInfo = function updateItemInfo(event) {
         // Restore from original (clean) state
         item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[selectedItemName]));
 
-        // Re-apply user-modified current values
+        // Re-apply user-modified current values (excluding corrupted values)
         for (const key in userModifiedValues) {
           if (item.properties[key] && typeof item.properties[key] === 'object') {
             item.properties[key].current = userModifiedValues[key];
