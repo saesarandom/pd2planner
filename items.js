@@ -1057,34 +1057,32 @@ const itemList = {
   },
 
   Hawkmail: {
-    description:
-      "Hawkmail<br>Scale Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 128<br>Required Strength: 44<br>Required Level: 15<br>+25% Faster Run/Walk<br>+3 to Raven<br>+100% Enhanced Defense<br>+5% to Maximum Cold Resist<br>Cold Resist +30%<br>Cannot Be Frozen<br>",
+    baseType: "Scale Mail",
     properties: {
       defense: 128,
       reqstr: 44,
       reqlvl: 15,
       frw: 25,
-      ravenoskill: 3,
-      edef: 100,
+      ravenoskill: { min: 2, max: 3, current: 3 },
+      edef: { min: 80, max: 100, current: 100 },
       maxcoldres: 5,
-      coldres: 30,
+      coldres: { min: 20, max: 30, current: 30 },
       cbf: 1,
     },
   },
 
   "Sparking Mail": {
-    description:
-      "Sparking Mail<br>Chain Mail<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 133<br>Required Strength: 48<br>Required Level: 17<br>Adds 1-45 Lightning Damage<br>+10% to Lightning Skill Damage<br>+85% Enhanced Defense<br>Lightning Resist +30%<br>Attacker Takes Lightning Damage of 28<br>",
+    baseType: "Chain Mail",
     properties: {
       defense: 133,
       reqstr: 48,
       reqlvl: 17,
       lightdmgmin: 1,
       lightdmgmax: 45,
-      edef: 85,
-      lightdamage: 10,
+      edef: { min: 75, max: 85, current: 85 },
+      lightdamage: { min: 5, max: 10, current: 10 },
       ligres: 30,
-      atligdmg: 28,
+      atligdmg: { min: 20, max: 28, current: 28 },
     },
   },
 

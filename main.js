@@ -664,7 +664,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     ow: (val, prop) => formatVariableStat('', val, '% Chance of Open Wounds', prop, itemName, 'ow', dropdownId),
     pdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '', prop, itemName, 'pdr', dropdownId),
     manarecovery: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'manarecovery', dropdownId),
-    cbf: (val) => val ? '<span style="color: #ff5555; font-weight: bold;">Cannot Be Frozen</span>' : '',
+    cbf: (val) => val ? 'Cannot Be Frozen' : '',
     curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
 
     // Missing display handlers for dynamic items
@@ -675,8 +675,14 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     maxlife: (val, prop) => formatVariableStat('Increase Maximum Life ', val, '%', prop, itemName, 'maxlife', dropdownId),
     maxmana: (val, prop) => formatVariableStat('Increase Maximum Mana ', val, '%', prop, itemName, 'maxmana', dropdownId),
     indestructible: (val) => val ? '<span style="color: #ff5555; font-weight: bold;">Indestructible</span>' : '',
-  };
 
+    //anothjer series
+    lightdmgmin: (val, prop) => `Adds ${val}-${props.lightdmgmax || val} Lightning Damage`,
+    lightdmgmax: () => '',
+    lightdamage: (val, prop) => formatVariableStat('+', val, '% to Lightning Skill Damage', prop, itemName, 'lightdamage', dropdownId),
+    atligdmg: (val, prop) => formatVariableStat('Attacker Takes Lightning Damage of ', val, '', prop, itemName, 'atligdmg', dropdownId),
+    ravenoskill: (val, prop) => formatVariableStat('+', val, ' to Raven', prop, itemName, 'ravenoskill', dropdownId),
+  };
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere
   const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax'];

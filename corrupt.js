@@ -1419,7 +1419,7 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\+?\d+)%\s+(Chance of Open Wounds)/i, type: 'ow' },
     { pattern: /Replenish\s+Life\s+\+(\d+)/i, type: 'replenish' },
     { pattern: /Regenerate\s+Mana\s+(\d+)%/i, type: 'manarecovery' },
-    { pattern: /Cannot\s+Be\s+Frozen/i, type: 'cbf' },
+    // { pattern: /Cannot\s+Be\s+Frozen/i, type: 'cbf', value: 1 },
     { pattern: /(\+?\d+)%\s+(Curse Resistance)/i, type: 'curseres' },
     { pattern: /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i, type: 'magicfind' },
     { pattern: /(\+?\d+)%\s+(Extra Gold from Monsters)/i, type: 'goldfind' },
@@ -1428,6 +1428,7 @@ function parseCorruptionText(corruptionText) {
     { pattern: /Increase\s+Maximum\s+Life\s+(\d+)%/i, type: 'maxlife' },
     { pattern: /Increase\s+Maximum\s+Mana\s+(\d+)%/i, type: 'maxmana' },
     { pattern: /Indestructible/i, type: 'indestructible' }
+
   ];
 
   // Split corruption text by <br> to handle multi-line mods
@@ -1513,7 +1514,8 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     'mdr': /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
     'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i,
     'magicfind': /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i,
-    'goldfind': /(\+?\d+)%\s+(Extra Gold from Monsters)/i
+    'goldfind': /(\+?\d+)%\s+(Extra Gold from Monsters)/i,
+
   };
 
 
