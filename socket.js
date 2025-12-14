@@ -2706,39 +2706,39 @@ class UnifiedSocketSystem {
       finalDescription = finalDescription.replace(buttonText, '');
     }
 
-   const sortedKeys = Array.from(mergedStats.keys()).sort((a, b) => {
-    // Process percentage patterns first (e.g., physical_damage_reduced_percent before physical_damage_reduced)
-    if (a.includes('_percent') && !b.includes('_percent')) return -1;
-    if (!a.includes('_percent') && b.includes('_percent')) return 1;
-    return 0;
-  });
+    const sortedKeys = Array.from(mergedStats.keys()).sort((a, b) => {
+      // Process percentage patterns first (e.g., physical_damage_reduced_percent before physical_damage_reduced)
+      if (a.includes('_percent') && !b.includes('_percent')) return -1;
+      if (!a.includes('_percent') && b.includes('_percent')) return 1;
+      return 0;
+    });
 
-  // Replace stacked stats in original description with blue colored versions
-  sortedKeys.forEach(key => {
-    const data = mergedStats.get(key);
-    if (data.stacked || data.fromSocket) {
-      const replacement = this.formatStackedStat(key, data);
-      if (replacement) {
-        const pattern = this.getStatPattern(key);
-        if (pattern && !data.fromSocket) {
-          // Replace existing stat line with stacked version
-          // BUT preserve any stat-input elements that are in the original line
-          finalDescription = finalDescription.replace(pattern, (match) => {
-            // Check if the matched text contains a stat-input element
-            const inputMatch = match.match(/<input[^>]*class="stat-input"[^>]*>/);
-            if (inputMatch) {
-              // Keep the input element and append it to the replacement
-              return replacement + ' ' + inputMatch[0];
-            }
-            return replacement;
-          });
-        } else if (data.fromSocket) {
-          // Add new socket-only stats in blue
-          finalDescription += `${replacement}<br>`;
+    // Replace stacked stats in original description with blue colored versions
+    sortedKeys.forEach(key => {
+      const data = mergedStats.get(key);
+      if (data.stacked || data.fromSocket) {
+        const replacement = this.formatStackedStat(key, data);
+        if (replacement) {
+          const pattern = this.getStatPattern(key);
+          if (pattern && !data.fromSocket) {
+            // Replace existing stat line with stacked version
+            // BUT preserve any stat-input elements that are in the original line
+            finalDescription = finalDescription.replace(pattern, (match) => {
+              // Check if the matched text contains a stat-input element
+              const inputMatch = match.match(/<input[^>]*class="stat-input"[^>]*>/);
+              if (inputMatch) {
+                // Keep the input element and append it to the replacement
+                return replacement + ' ' + inputMatch[0];
+              }
+              return replacement;
+            });
+          } else if (data.fromSocket) {
+            // Add new socket-only stats in blue
+            finalDescription += `${replacement}<br>`;
+          }
         }
       }
-    }
-  });
+    });
 
     // Add unusable socket items in gray
     const unusableEffects = socketItems.filter(item => !item.usable);
@@ -2842,6 +2842,7 @@ class UnifiedSocketSystem {
   }
 
   calculateAllStats() {
+    console.log('=== calculateAllStats START ===');
     // Reset stats
     Object.keys(this.stats).forEach(key => {
       this.stats[key] = typeof this.stats[key] === 'boolean' ? false : 0;
@@ -2853,6 +2854,7 @@ class UnifiedSocketSystem {
     this.stats.lightningSkillDamage = 0;
     this.stats.poisonSkillDamage = 0;
     this.stats.magicSkillDamage = 0;
+    console.log('Stats reset, poisonSkillDamage:', this.stats.poisonSkillDamage);
     this.stats.pierceFire = 0;
     this.stats.pierceCold = 0;
     this.stats.pierceLightning = 0;
@@ -2865,14 +2867,19 @@ class UnifiedSocketSystem {
     });
 
     // Calculate equipment stats (ONLY player equipment, exclude mercenary)
+    console.log('About to parse equipment stats...');
     Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
       // Skip mercenary equipment for player stats
       if (config.section.startsWith('merc')) return;
+      console.log('Parsing stats for:', dropdownId, config.section);
       this.calculateEquipmentStats(dropdownId, config.section);
+      console.log('After parsing', dropdownId, 'poisonSkillDamage:', this.stats.poisonSkillDamage);
     });
 
+    console.log('Before socket stats, poisonSkillDamage:', this.stats.poisonSkillDamage);
     // Calculate socket stats
     this.calculateSocketStats();
+    console.log('After socket stats, poisonSkillDamage:', this.stats.poisonSkillDamage);
 
     // Calculate mercenary equipment stats separately
     this.calculateMercenaryStats();
@@ -3249,8 +3256,10 @@ class UnifiedSocketSystem {
 
     if (!description) return;
 
+    console.log('parseItemStats - description:', description.substring(0, 200));
     const lines = description.split('<br>');
     lines.forEach(line => this.parseStatLine(line.trim()));
+    console.log('parseItemStats DONE - poisonSkillDamage:', this.stats.poisonSkillDamage);
   }
 
   // parseSocketStats(statsText, section) {
@@ -3326,9 +3335,12 @@ class UnifiedSocketSystem {
 
       if (cleanLine.match(/\+\d+%\s+to\s+Poison\s+Skill\s+Damage/i)) {
         const match = cleanLine.match(/\+(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i);
+        console.log('POISON SKILL DAMAGE LINE MATCHED:', cleanLine);
         if (match) {
           const value = parseInt(match[1]);
+          console.log('POISON SKILL DAMAGE PARSED:', value, 'current total:', this.stats.poisonSkillDamage);
           this.stats.poisonSkillDamage = (this.stats.poisonSkillDamage || 0) + value;
+          console.log('POISON SKILL DAMAGE AFTER ADD:', this.stats.poisonSkillDamage);
           return;
         }
       }
@@ -3565,19 +3577,19 @@ class UnifiedSocketSystem {
       // Damage Reduction stats
       // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
       // Check percentage first (more specific) before flat patterns
-const drPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\s*%/i);
-if (drPercentMatch) {
-  this.stats.dr += parseInt(drPercentMatch[1]);
-  return;
-}
+      const drPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\s*%/i);
+      if (drPercentMatch) {
+        this.stats.dr += parseInt(drPercentMatch[1]);
+        return;
+      }
 
-// Physical Damage Taken Reduced by X (flat -> PDR)
-// FIXED: Added \b word boundary
-const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\b(?!\s*%)/i);
-if (pdrFlatMatch) {
-  this.stats.pdr += parseInt(pdrFlatMatch[1]);
-  return;
-}
+      // Physical Damage Taken Reduced by X (flat -> PDR)
+      // FIXED: Added \b word boundary
+      const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\b(?!\s*%)/i);
+      if (pdrFlatMatch) {
+        this.stats.pdr += parseInt(pdrFlatMatch[1]);
+        return;
+      }
 
       // Magic Damage Reduced by X (flat -> MDR)
       const mdrMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)/i);
@@ -3952,7 +3964,7 @@ if (pdrFlatMatch) {
       }
 
       // Physical Damage Reduced by X% (percentage - String of Ears)
-       const drPercentMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\s*%/i);
+      const drPercentMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\s*%/i);
       if (drPercentMapMatch) {
         const value = parseInt(drPercentMapMatch[1]);
         this.addToStatsMap(statsMap, 'physical_damage_reduced_percent', { value });
@@ -3968,7 +3980,7 @@ if (pdrFlatMatch) {
         return;
       }
 
-      
+
 
       // Store other stats as non-stackable
       statsMap.set(`other_${Date.now()}_${Math.random()}`, { text: cleanLine, stackable: false });

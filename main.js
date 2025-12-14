@@ -718,6 +718,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     lightdmgmax: () => '',
     lightdamage: (val, prop) => formatVariableStat('+', val, '% to Lightning Skill Damage', prop, itemName, 'lightdamage', dropdownId),
     atligdmg: (val, prop) => formatVariableStat('Attacker Takes Lightning Damage of ', val, '', prop, itemName, 'atligdmg', dropdownId),
+    poisondamage: (val, prop) => formatVariableStat('+', val, '% to Poison Skill Damage', prop, itemName, 'poisondamage', dropdownId),
+    firedamage: (val, prop) => formatVariableStat('+', val, '% to Fire Skill Damage', prop, itemName, 'firedamage', dropdownId),
+    colddamage: (val, prop) => formatVariableStat('+', val, '% to Cold Skill Damage', prop, itemName, 'colddamage', dropdownId),
+    magicdamage: (val, prop) => formatVariableStat('+', val, '% to Magic Skill Damage', prop, itemName, 'magicdamage', dropdownId),
+    lightdamage: (val, prop) => formatVariableStat('+', val, '% to Lightning Skill Damage', prop, itemName, 'lightdamage', dropdownId),
     ravenoskill: (val, prop) => formatVariableStat('+', val, ' to Raven', prop, itemName, 'ravenoskill', dropdownId),
     ligrad: (val, prop) => formatVariableStat(val >= 0 ? '+' : '', val, ' to Light Radius', prop, itemName, 'ligrad', dropdownId),
   };
@@ -1035,7 +1040,7 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       'colddmgmin', 'colddmgmax', 'firedmgmin', 'firedmgmax', 'lightdmgmin', 'lightdmgmax',
       'poisondmgmin', 'poisondmgmax', 'magicdmgmin', 'magicdmgmax',
       // Skill damage
-      'fireskilldam', 'coldskilldam', 'lightningskilldam', 'poisonskilldam', 'magicskilldam', 'poisonpierce', 'firepierce', 'lightpierce', 'coldpierce', 'magicpierce',
+      'firedamage', 'colddamage', 'lightdamage', 'poisondamage', 'magicdamage', 'poisonpierce', 'firepierce', 'lightpierce', 'coldpierce', 'magicpierce',
       // Pierce TADY JE CHYBA, ty TO NEBUDOU UZIVANE, dal jsem to uz na ten predhcozi radekj
       'piercefireresist', 'piercecoldresist', 'piercelightningresist', 'piercepoisonresist', 'piercephysresist',
       // Life/Mana

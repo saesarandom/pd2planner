@@ -4017,16 +4017,15 @@ const itemList = {
 
   // UNIQUE GLOVES
   "The Hand of Broc": {
-    description:
-      "The Hand of Broc<br>Leather Gloves<br>Defense: 14<br>Required Level: 5<br>Melee Attacks Deal Splash Damage<br>+30% Enhanced Damage<br>3% Mana Stolen per Hit<br>3% Life Stolen per Hit<br>+20% Enhanced Defense<br>+10 Defense<br>+20 to Mana<br>Poison Resist +10%<br>",
+    baseType: "Leather Gloves",
     properties: {
       defense: 14,
       reqlvl: 5,
       splash: 1,
-      edmg: 30,
+      edmg: { min: 20, max: 30, current: 30 },
       lleech: 3,
       mleech: 3,
-      edef: 20,
+      edef: { min: 10, max: 20, current: 20 },
       todef: 10,
       tomana: 20,
       poisres: 10,
@@ -4435,15 +4434,14 @@ const itemList = {
   },
 
   Snakecord: {
-    description:
-      "Snakecord<br>Light Belt<br>Defense: 15<br>Required Level: 12<br>+6% to Poison Skill Damage<br>+30% Enhanced Defense<br>+10 Defense<br>Replenish Life +15<br>Poison Resist +25%<br>Poison Length Reduced by 50%<br>",
+    baseType: "Light Belt",
     properties: {
       defense: 15,
       reqlvl: 12,
-      poisondamage: 6,
-      edef: 30,
+      poisondamage: { min: 4, max: 6, current: 6 },
+      edef: { min: 20, max: 30, current: 30 },
       todef: 10,
-      repl: 15,
+      repl: { min: 5, max: 15, current: 15 },
       poisres: 25,
       plr: 50,
     },
