@@ -583,6 +583,13 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       // If defenseDisplay is set (from edef calculation), use it
       if (defenseDisplay !== null) return defenseDisplay;
 
+      // Calculate defense per level bonus if it exists
+      let defenseBonus = 0;
+      if (props.defperlevel) {
+        const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+        defenseBonus = Math.floor(props.defperlevel * currentLevel);
+      }
+
       // For static defense values with ethereal, recalculate from base defense
       if (props.ethereal && val && item.baseType) {
         // Look up base defense from baseDefenses table (defined in itemUpgrade.js)
@@ -594,13 +601,13 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
           // Add todef if it exists
           const todefValue = props.todef || 0;
-          const finalDefense = ethBase + todefValue;
+          const finalDefense = ethBase + todefValue + defenseBonus;
 
           return `Defense: ${finalDefense}`;
         }
       }
 
-      return `Defense: ${val}`;
+      return `Defense: ${val + defenseBonus}`;
     },
     smitedmgmin: (val, prop) => `Smite Damage: ${val} to ${props.smitedmgmax || '?'}`,
     smitedmgmax: () => '', // Skip, handled by smitedmgmin
@@ -650,6 +657,12 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       }
       // Fallback for old format or simple values
       return `${val}% Chance to Cast Level 15 Bone Armor when Struck`;
+    },
+    defperlevel: (val, prop) => {
+      // Calculate total defense based on character level
+      const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+      const totalDefense = Math.floor(val * currentLevel);
+      return `+${totalDefense} Defense (+${val} per Character Level)`;
     },
     ctcbonespearcast: (val, prop) => {
       const level = props.ctcbonespearcastlevel || 2;

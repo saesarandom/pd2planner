@@ -1205,8 +1205,7 @@ const itemList = {
   },
 
   "Spirit Shroud": {
-    description:
-      "Spirit Shroud<br>Ghost Armor<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 282<br>Required Strength: 38<br>Required Level: 28<br>+1 to All Skills<br>+30% Faster Cast Rate<br>+150% Enhanced Defense<br>Replenish Life +20<br>Curse Resistance +10%<br>Magic Damage Taken Reduced by 11<br>Cannot Be Frozen<br>",
+    baseType: "Ghost Armor",
     properties: {
       defense: 282,
       reqstr: 38,
@@ -1214,16 +1213,15 @@ const itemList = {
       allsk: 1,
       fcr: 30,
       edef: 150,
-      repl: 20,
+      repl: { min: 10, max: 20, current: 20 },
       curseres: 10,
-      mdr: 11,
+      mdr: { min: 7, max: 11, current: 11 },
       cbf: 1,
     },
   },
 
   "Skin of the Vipermagi": {
-    description:
-      "Skin of the Vipermagi<br>Serpentskin Armor<br>Base Maximum Sockets: 2 (3 for upgraded versions)<br>Defense: 270<br>Required Strength: 43<br>Required Level: 29<br>+1 to All Skills<br>+30% Faster Cast Rate<br>+120% Enhanced Defense<br>All Resistances +30<br>Magic Damaged Taken Reduced by 8<br>",
+    baseType: "Serpentskin Armor",
     properties: {
       defense: 270,
       reqstr: 43,
@@ -1231,8 +1229,8 @@ const itemList = {
       allsk: 1,
       fcr: 30,
       edef: 120,
-      allres: 30,
-      mdr: 8,
+      allres: { min: 20, max: 30, current: 30 },
+      mdr: { min: 5, max: 8, current: 8 },
     },
   },
 
@@ -3985,6 +3983,27 @@ const itemList = {
       allsk: 1,
       reqstr: 38,
       reqlvl: 28,
+    },
+  },
+
+  Stormshield: {
+    baseType: "Monarch",
+    properties: {
+      smitedmgmin: 12,
+      smitedmgmax: 34,
+      defense: 148,
+      block1: 67,
+      fbr: 35,
+      block: 25,
+      indestructible: 1,
+      str: { min: 20, max: 30, current: 30 },
+      coldres: { min: 40, max: 50, current: 50 },
+      ligres: 25,
+      defperlevel: 3.75,
+      physdr: { min: 20, max: 30, current: 30 },
+      atligdmg: { min: 150, max: 250, current: 250 },
+      reqstr: 156,
+      reqlvl: 73,
     },
   },
 
