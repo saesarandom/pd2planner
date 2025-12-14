@@ -1080,6 +1080,12 @@ window.updateItemInfo = function updateItemInfo(event) {
     if (savedCorruption) {
       if (!window.itemCorruptions) window.itemCorruptions = {};
       window.itemCorruptions[dropdown.id] = savedCorruption;
+    } else {
+      // CRITICAL FIX: Clear itemCorruptions if no saved corruption for this item
+      // This prevents previous item's corruption from being applied to new item
+      if (window.itemCorruptions && window.itemCorruptions[dropdown.id]) {
+        delete window.itemCorruptions[dropdown.id];
+      }
     }
   }
 
@@ -1143,11 +1149,20 @@ window.updateItemInfo = function updateItemInfo(event) {
     // But still allow the rest of updateItemInfo to run for display refresh
     if (window.itemCorruptions && window.itemCorruptions[dropdown.id]) {
       const corruption = window.itemCorruptions[dropdown.id];
+      console.log('=== RESTORATION DEBUG ===');
+      console.log('dropdown.id:', dropdown.id);
+      console.log('selectedItemName:', selectedItemName);
+      console.log('corruption.itemName:', corruption.itemName);
+      console.log('corruption.text:', corruption.text);
+      console.log('Match?', corruption.itemName === selectedItemName);
+
       // Double check it matches current item
       if (corruption.itemName === selectedItemName && corruption.text) {
+        console.log('Applying corruption to:', selectedItemName);
         // Only apply to properties if we're NOT currently in the middle of applying corruption
         if (!window.isApplyingCorruption && typeof window.applyCorruptionToProperties === 'function') {
-          window.applyCorruptionToProperties(item, corruption.text);
+          // CRITICAL FIX: Pass itemName string instead of item object to ensure correct tracking
+          window.applyCorruptionToProperties(selectedItemName, corruption.text);
         }
       }
     }

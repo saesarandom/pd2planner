@@ -104,7 +104,7 @@ class SetTracker {
 
     // Check for explicit setBonuses property (for dynamic items)
     if (item.setBonuses && Array.isArray(item.setBonuses) && item.setBonuses.length > 0) {
-      console.log(`[SetTracker] Detected dynamic set item: ${itemName} (has setBonuses property)`);
+      // console.log(`[SetTracker] Detected dynamic set item: ${itemName} (has setBonuses property)`);
       return true;
     }
 
@@ -113,7 +113,7 @@ class SetTracker {
     // Set items have patterns like "(2 Items)", "(3 Items)", "(Complete Set)"
     const isSet = /\(\d+\s+Items?\)|\(Complete Set\)/i.test(item.description);
     if (isSet) {
-      console.log(`[SetTracker] Detected static set item: ${itemName} (has set pattern in description)`);
+      // console.log(`[SetTracker] Detected static set item: ${itemName} (has set pattern in description)`);
     }
     return isSet;
   }
@@ -393,7 +393,7 @@ class SetTracker {
    * Update set tracking based on currently equipped items
    */
   updateSetTracking() {
-    console.log('[SetTracker] updateSetTracking() called');
+    // console.log('[SetTracker] updateSetTracking() called');
     // Clear current tracking
     this.equippedSets.clear();
 
@@ -476,18 +476,18 @@ class SetTracker {
     this.equippedSets.forEach((setData, setName) => {
       const itemCount = setData.items.length;
 
-      console.log(`[SetTracker] Getting active bonuses for ${setName}: ${itemCount} items equipped`);
-      console.log('[SetTracker] All possible bonuses:', setData.allBonuses);
+      // console.log(`[SetTracker] Getting active bonuses for ${setName}: ${itemCount} items equipped`);
+      // console.log('[SetTracker] All possible bonuses:', setData.allBonuses);
 
       // Find bonuses that are active for this item count
       setData.allBonuses.forEach(bonusGroup => {
-        console.log(`[SetTracker] Checking bonus group: itemCount requirement = ${bonusGroup.itemCount}`);
+        // console.log(`[SetTracker] Checking bonus group: itemCount requirement = ${bonusGroup.itemCount}`);
 
         if (bonusGroup.itemCount === 'complete') {
           // Check if we have the complete set
           const completeSetSize = this.SET_SIZES[setName];
           if (completeSetSize && itemCount >= completeSetSize) {
-            console.log(`[SetTracker] ✓ Activating Complete Set: ${itemCount} >= ${completeSetSize} (complete)`);
+            // console.log(`[SetTracker] ✓ Activating Complete Set: ${itemCount} >= ${completeSetSize} (complete)`);
             activeBonuses.push({
               setName: setName,
               itemCount: itemCount,
@@ -495,10 +495,10 @@ class SetTracker {
               bonuses: bonusGroup.bonuses
             });
           } else {
-            console.log(`[SetTracker] ✗ Complete Set not activated: ${itemCount} < ${completeSetSize || '?'}`);
+            // console.log(`[SetTracker] ✗ Complete Set not activated: ${itemCount} < ${completeSetSize || '?'}`);
           }
         } else if (typeof bonusGroup.itemCount === 'number' && itemCount >= bonusGroup.itemCount) {
-          console.log(`[SetTracker] ✓ Activating: ${itemCount} >= ${bonusGroup.itemCount}`);
+          // console.log(`[SetTracker] ✓ Activating: ${itemCount} >= ${bonusGroup.itemCount}`);
           activeBonuses.push({
             setName: setName,
             itemCount: itemCount,
@@ -506,12 +506,12 @@ class SetTracker {
             bonuses: bonusGroup.bonuses
           });
         } else {
-          console.log(`[SetTracker] ✗ Not activated: ${itemCount} < ${bonusGroup.itemCount}`);
+          // console.log(`[SetTracker] ✗ Not activated: ${itemCount} < ${bonusGroup.itemCount}`);
         }
       });
     });
 
-    console.log('[SetTracker] Final active bonuses:', activeBonuses);
+    // console.log('[SetTracker] Final active bonuses:', activeBonuses);
     return activeBonuses;
   }
 
@@ -519,14 +519,14 @@ class SetTracker {
    * Update buff icon display
    */
   updateBuffDisplay() {
-    console.log('[SetTracker] updateBuffDisplay() called, equippedSets:', Array.from(this.equippedSets.keys()));
+    // console.log('[SetTracker] updateBuffDisplay() called, equippedSets:', Array.from(this.equippedSets.keys()));
     if (!window.buffSystem) {
-      console.log('[SetTracker] buffSystem not found, skipping buff display');
+      // console.log('[SetTracker] buffSystem not found, skipping buff display');
       return;
     }
 
     // Remove ALL previously active set buffs (not just current ones!)
-    console.log('[SetTracker] Removing old buffs:', Array.from(this.activeBuffs));
+    // console.log('[SetTracker] Removing old buffs:', Array.from(this.activeBuffs));
     this.activeBuffs.forEach(setName => {
       window.buffSystem.removeBuff(`set-${setName}`);
     });
@@ -535,7 +535,7 @@ class SetTracker {
     // Add new set buffs
     this.equippedSets.forEach((setData, setName) => {
       const itemCount = setData.items.length;
-      console.log(`[SetTracker] Adding buff for ${setName}, itemCount: ${itemCount}`);
+      // console.log(`[SetTracker] Adding buff for ${setName}, itemCount: ${itemCount}`);
       if (itemCount === 0) return;
 
       // Build tooltip
@@ -627,10 +627,10 @@ class SetTracker {
     };
 
     // Debug: Log what we're applying
-    console.log('[SetTracker] Applying set bonuses:', activeBonuses);
+    // console.log('[SetTracker] Applying set bonuses:', activeBonuses);
 
     activeBonuses.forEach(activeBonus => {
-      console.log(`[SetTracker] Processing set: ${activeBonus.setName}, itemCount: ${activeBonus.itemCount}, requiredCount: ${activeBonus.requiredCount}`);
+      // console.log(`[SetTracker] Processing set: ${activeBonus.setName}, itemCount: ${activeBonus.itemCount}, requiredCount: ${activeBonus.requiredCount}`);
 
       // Double-check that we meet the requirement (safety check)
       if (activeBonus.requiredCount === 'complete') {
@@ -638,7 +638,7 @@ class SetTracker {
         const completeSetSize = this.SET_SIZES[activeBonus.setName];
         if (completeSetSize && activeBonus.itemCount >= completeSetSize) {
           activeBonus.bonuses.forEach(bonus => {
-            console.log(`[SetTracker] Applying Complete Set bonus: ${bonus.stat} = ${bonus.value}`);
+            // console.log(`[SetTracker] Applying Complete Set bonus: ${bonus.stat} = ${bonus.value}`);
 
             if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
               totalBonuses[bonus.stat] += bonus.value;
@@ -649,7 +649,7 @@ class SetTracker {
         }
       } else if (activeBonus.itemCount >= activeBonus.requiredCount) {
         activeBonus.bonuses.forEach(bonus => {
-          console.log(`[SetTracker] Applying bonus: ${bonus.stat} = ${bonus.value}`);
+          // console.log(`[SetTracker] Applying bonus: ${bonus.stat} = ${bonus.value}`);
 
           if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
             totalBonuses[bonus.stat] += bonus.value;
@@ -660,7 +660,7 @@ class SetTracker {
       }
     });
 
-    console.log('[SetTracker] Total bonuses to apply:', totalBonuses);
+    // console.log('[SetTracker] Total bonuses to apply:', totalBonuses);
 
     // Store bonuses for access by other systems
     this.currentBonuses = totalBonuses;

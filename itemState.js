@@ -6,7 +6,7 @@
 window.itemStates = {};
 
 // Refresh saved state for current item (call after any modification)
-window.refreshSavedState = function(dropdownId, section) {
+window.refreshSavedState = function (dropdownId, section) {
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) return;
 
@@ -42,13 +42,13 @@ window.refreshSavedState = function(dropdownId, section) {
 };
 
 // Save current item state before switching (just calls refresh)
-window.saveItemState = function(dropdownId, itemName, section) {
+window.saveItemState = function (dropdownId, itemName, section) {
   if (!itemName) return;
   window.refreshSavedState(dropdownId, section);
 };
 
 // Restore item state after switching
-window.restoreItemState = function(dropdownId, itemName, section) {
+window.restoreItemState = function (dropdownId, itemName, section) {
   if (!itemName) return;
 
   const stateKey = `${dropdownId}_${itemName}`;
@@ -65,9 +65,12 @@ window.restoreItemState = function(dropdownId, itemName, section) {
 
   // Restore corruption
   if (savedState.corruption && window.itemCorruptions) {
-    window.itemCorruptions[dropdownId] = savedState.corruption;
-    if (savedState.corruption.text && typeof applyCorruptionToProperties === 'function') {
-      applyCorruptionToProperties(itemName, savedState.corruption.text);
+    // CRITICAL FIX: Only restore if corruption matches this item
+    if (savedState.corruption.itemName === itemName) {
+      window.itemCorruptions[dropdownId] = savedState.corruption;
+      if (savedState.corruption.text && typeof applyCorruptionToProperties === 'function') {
+        applyCorruptionToProperties(itemName, savedState.corruption.text);
+      }
     }
   }
 
@@ -109,7 +112,7 @@ window.restoreItemState = function(dropdownId, itemName, section) {
 };
 
 // Clear item state if requirements not met
-window.clearItemStateIfRequirementsNotMet = function(dropdownId, itemName) {
+window.clearItemStateIfRequirementsNotMet = function (dropdownId, itemName) {
   if (!itemName) return false;
 
   const item = window.getItemData(itemName);
