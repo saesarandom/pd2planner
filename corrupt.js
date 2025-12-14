@@ -1155,6 +1155,10 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         break;
       case 'indestructible':
         item.properties.indestructible = 1;
+        // CRITICAL FIX: Track that indestructible was corrupted so it shows in red
+        if (!window.corruptedProperties) window.corruptedProperties = {};
+        if (!window.corruptedProperties[itemName]) window.corruptedProperties[itemName] = new Set();
+        window.corruptedProperties[itemName].add('indestructible');
         break;
       case 'maxlife':
         addStatToProp('maxlife', stat.value);
@@ -1198,6 +1202,10 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         break;
       case 'cbf':
         item.properties.cbf = 1;
+        // CRITICAL FIX: Track that cbf was corrupted so it shows in red
+        if (!window.corruptedProperties) window.corruptedProperties = {};
+        if (!window.corruptedProperties[itemName]) window.corruptedProperties[itemName] = new Set();
+        window.corruptedProperties[itemName].add('cbf');
         break;
       case 'curseres':
         addStatToProp('curseres', stat.value);
@@ -1494,7 +1502,7 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\+?\d+)%\s+(Chance of Open Wounds)/i, type: 'ow' },
     { pattern: /Replenish\s+Life\s+\+(\d+)/i, type: 'replenish' },
     { pattern: /Regenerate\s+Mana\s+(\d+)%/i, type: 'manarecovery' },
-    // { pattern: /Cannot\s+Be\s+Frozen/i, type: 'cbf', value: 1 },
+    { pattern: /Cannot\s+Be\s+Frozen/i, type: 'cbf', value: 1 },
     { pattern: /(\+?\d+)%\s+(Curse Resistance)/i, type: 'curseres' },
     { pattern: /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i, type: 'magicfind' },
     { pattern: /(\+?\d+)%\s+(Extra Gold from Monsters)/i, type: 'goldfind' },
