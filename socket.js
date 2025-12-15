@@ -2500,6 +2500,100 @@ class UnifiedSocketSystem {
 
   // Replace your existing updateItemDisplay method with this enhanced version
 
+  // NUCLEAR OPTION: Post-Processing Deduplication to satisfy user request ("Recalculate duplicate text")
+  // This checks if the Red Corruption Text appears elsewhere (as White Text) and removes the Red Text if found.
+  cleanDuplicateCorruptionText(html) {
+    if (!html || !html.includes('corruption-enhanced-stat')) return html;
+
+    let cleanedHtml = html;
+
+    // 1. Remove Exact Red Duplicates (Double Red Lines)
+    const redPattern = /(<div class="corruption-enhanced-stat">[^<]+<\/div>|<span class="corruption-enhanced-stat">[^<]+<\/span>)/gi;
+    const redMatches = cleanedHtml.match(redPattern);
+
+    if (redMatches && redMatches.length > 1) {
+      const uniqueMatches = new Set();
+      for (const match of redMatches) {
+        const content = match.replace(/<[^>]+>/g, '').toLowerCase().trim();
+        if (uniqueMatches.has(content)) {
+          // Replace only the first occurrence found (which effectively removes duplicates one by one)
+          cleanedHtml = cleanedHtml.replace(match, '');
+        } else {
+          uniqueMatches.add(content);
+        }
+      }
+    }
+
+    // 2. Remove Red if Fuzzy Matched in White
+    // Helper to strip tags and normalize
+    const normalize = (s) => s.replace(/<[^>]+>/g, '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+    const tokenize = (s) => s.replace(/<[^>]+>/g, '').toLowerCase().match(/[a-z]+/g) || [];
+
+    const divPattern = /<div class="corruption-enhanced-stat">([^<]+)<\/div>/gi;
+    const spanPattern = /<span class="corruption-enhanced-stat">([^<]+)<\/span>/gi;
+
+    // Function to process matches
+    const processMatches = (pattern) => {
+      let match;
+      // We must reset lastIndex or create new regex loop if reusing global regex, 
+      // but here we create new regex logic or just iterate 'cleanedHtml' which changes.
+      // Iterating a changing string with exec is tricky.
+      // Simpler approach: find all matches first, then process?
+      // No, because removing one might affect others (overlap?). Unlikely for distinct div/span blocks.
+
+      // Let's use a standard while loop but be careful about infinite loops if string doesn't shrink.
+      // But we always replace with '' if match found.
+
+      while ((match = pattern.exec(cleanedHtml)) !== null) {
+        const fullTag = match[0];
+        const textContent = match[1];
+        if (!textContent) continue;
+
+        const corruptTokens = tokenize(textContent);
+        if (corruptTokens.length === 0) continue;
+
+        // Temporarily remove this tag to check the REST of the description
+        const tempHtml = cleanedHtml.replace(fullTag, '');
+        const restTokens = tokenize(tempHtml);
+
+        const significantTokens = corruptTokens.filter(t => t.length > 2);
+        if (significantTokens.length === 0) continue;
+
+        // Check for Magic Find specifically
+        const isMagicFind = significantTokens.includes('magic') && significantTokens.includes('find');
+        const isMFInDescription = restTokens.includes('magic') && restTokens.includes('items') && restTokens.includes('chance');
+
+        // Check all tokens
+        let matchCount = 0;
+        for (const token of significantTokens) {
+          if (restTokens.includes(token)) matchCount++;
+        }
+        const matchRatio = matchCount / significantTokens.length;
+
+        if (matchRatio >= 1.0 || (isMagicFind && isMFInDescription)) {
+          // Duplicate found! Remove it.
+          cleanedHtml = cleanedHtml.replace(fullTag, '');
+          // Since we modified cleanedHtml, the regex index is invalid. Return true to restart loop?
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // Loop until stable
+    let mutated = true;
+    let maxLoops = 5;
+    while (mutated && maxLoops > 0) {
+      // Re-create regexes each pass to ensure clean state
+      const p1 = /<div class="corruption-enhanced-stat">([^<]+)<\/div>/gi;
+      const p2 = /<span class="corruption-enhanced-stat">([^<]+)<\/span>/gi;
+      mutated = processMatches(p1) || processMatches(p2);
+      maxLoops--;
+    }
+
+    return cleanedHtml;
+  }
+
   updateItemDisplay(section) {
     const infoId = this.getSectionInfoId(section);
     const infoDiv = document.getElementById(infoId);
@@ -2673,8 +2767,55 @@ class UnifiedSocketSystem {
       }
     });
 
+    // CRITICAL FIX: Merge Corruption Stats for Static Items (Fixes Stacking Issue)
+    // We must parse the corruption text and merge it into baseStats so generateStackedDescription can replace the original lines.
+    let corruptionMerged = false;
+    if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+      const corruption = window.itemCorruptions[dropdownId];
+      if (corruption.text && corruption.itemName === dropdown.value) {
+        // Strip HTML from corruption text just in case
+        const cleanCorruptionText = corruption.text.replace(/<[^>]+>/g, '');
+        const corruptionStats = this.parseStatsToMap(cleanCorruptionText);
+
+        // Mark stats as corrupted for coloring
+        corruptionStats.forEach((value, key) => {
+          value.isCorrupted = true;
+        });
+
+        // Merge into baseStats so they stack properly
+        this.mergeStatsMaps(baseStats, corruptionStats);
+
+        // Mark that we have handled corruption via merging
+        // This prevents the fallback logic below from blindly appending the text again
+        corruptionMerged = true;
+      }
+    }
+
     // Generate final description with stacked properties
     let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
+
+    // CRITICAL FIX: Smart Corruption Display for Static Items
+    // ONLY run this fallback if we didn't successfully merge the corruption logic above
+    if (!corruptionMerged && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+      const corruption = window.itemCorruptions[dropdownId];
+      if (corruption.text && corruption.itemName === dropdown.value) {
+        // Smart Strip: Preserve input values
+        let plainDescription = finalDescription.replace(/<input[^>]+value=["']([^"']+)["'][^>]*>/gi, '$1');
+        plainDescription = plainDescription.replace(/<[^>]+>/g, '');
+
+        // Normalize for comparison
+        const normalize = (s) => s.replace(/[^a-z0-9]/gi, '').toLowerCase();
+        const plainNorm = normalize(plainDescription);
+        const corruptNorm = normalize(corruption.text);
+
+        if (plainNorm.includes(corruptNorm)) {
+          // Found - Skip append
+        } else {
+          // Corruption text not found - Append new Red Div
+          finalDescription += `<div class="corruption-enhanced-stat">${corruption.text}</div>`;
+        }
+      }
+    }
 
     // Update Required Level display - only check level requirement
     const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
@@ -2687,6 +2828,9 @@ class UnifiedSocketSystem {
 
     // Update Required Strength and Dexterity colors - check individually
     finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
+
+    // NUCLEAR OPTION: Post-Processing Deduplication
+    finalDescription = this.cleanDuplicateCorruptionText(finalDescription);
 
     // Visual feedback for unusable items
     if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
@@ -2932,7 +3076,12 @@ class UnifiedSocketSystem {
     if (!dropdown || !dropdown.value) return;
 
     // Use window.getItemData to support both regular and crafted items
-    const item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
+    // CRITICAL FIX: Check cache first for slot-specific modified items (e.g. corrupted)
+    let item = window.dropdownItemCache && window.dropdownItemCache[`${dropdownId}_${dropdown.value}`];
+
+    if (!item) {
+      item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
+    }
     if (!item) return;
 
     const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
@@ -3027,7 +3176,12 @@ class UnifiedSocketSystem {
       if (!dropdown || !dropdown.value) return;
 
       // Use window.getItemData to support both regular and crafted items
-      const item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
+      // CRITICAL FIX: Check cache first for slot-specific modified items
+      let item = window.dropdownItemCache && window.dropdownItemCache[`${dropdownId}_${dropdown.value}`];
+
+      if (!item) {
+        item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
+      }
       if (!item) return;
 
       // Check if mercenary meets level requirement for this item
@@ -3077,6 +3231,23 @@ class UnifiedSocketSystem {
 
   parseMercenaryItemStats(item, section) {
     let description = item.description;
+
+    // CRITICAL FIX: Append corruption text to description for parsing stats
+    // Find the dropdown for this section
+    const dropdownId = Object.entries(this.equipmentMap).find(
+      ([_, config]) => config.section === section
+    )?.[0];
+
+    if (dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+      const corruption = window.itemCorruptions[dropdownId];
+      if (corruption.text && corruption.itemName) {
+        // Optionally verify name match if we can determine item name
+        const currentName = document.getElementById(dropdownId)?.value;
+        if (currentName === corruption.itemName) {
+          description += `<br>${corruption.text}`;
+        }
+      }
+    }
 
     // For dynamic items without a static description, generate it
     if (!description && item.baseType) {
@@ -3252,6 +3423,24 @@ class UnifiedSocketSystem {
 
   parseItemStats(item, section) {
     let description = item.description;
+
+    // CRITICAL FIX: Append corruption text to description for parsing stats
+    // This allows static items with corruption to have their corruption stats parsed
+    // Find the dropdown for this section
+    const dropdownId = Object.entries(this.equipmentMap).find(
+      ([_, config]) => config.section === section
+    )?.[0];
+
+    if (dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+      const corruption = window.itemCorruptions[dropdownId];
+      if (corruption.text && corruption.itemName) {
+        // Optionally verify name match if we can determine item name
+        const currentName = document.getElementById(dropdownId)?.value;
+        if (currentName === corruption.itemName) {
+          description += `<br>${corruption.text}`;
+        }
+      }
+    }
 
     // For dynamic items without a static description, generate it
     if (!description && item.baseType) {
@@ -4041,6 +4230,11 @@ class UnifiedSocketSystem {
           baseData.value = (baseData.value || 0) + socketData.value;
           baseData.stacked = true;
         }
+
+        // CRITICAL FIX: Preserve corruption flag
+        if (socketData.isCorrupted) {
+          baseData.isCorrupted = true;
+        }
       } else {
         // New stat from sockets only
         baseStats.set(key, { ...socketData, fromSocket: true });
@@ -4050,7 +4244,14 @@ class UnifiedSocketSystem {
 
   // Format stacked stat for display with blue color
   formatStackedStat(key, data) {
-    const color = data.stacked || data.fromSocket ? '#4a90e2' : 'inherit';
+    // CRITICAL FIX: Use Red for Corruption, Blue for Sockets
+    let color = '#4a90e2'; // Default Blue
+    let shadow = '';
+
+    if (data.isCorrupted) {
+      color = '#ff5555'; // Red for Corruption
+      shadow = 'text-shadow: 0 0 3px #ff5555;'; // Add Glow
+    }
 
     if (key.startsWith('level_up_proc_')) {
       return `<span style="color: ${color}; font-weight: bold;">${data.chance}% Chance to Cast Level ${data.level} ${data.skill} when you Level Up</span>`;
@@ -4062,71 +4263,71 @@ class UnifiedSocketSystem {
 
     switch (key) {
       case 'lightning_damage':
-        return `<span style="color: ${color}; font-weight: bold;">Adds ${data.min}-${data.max} Lightning Damage</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Adds ${data.min}-${data.max} Lightning Damage</span>`;
       case 'fire_damage':
-        return `<span style="color: ${color}; font-weight: bold;">Adds ${data.min}-${data.max} Fire Damage</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Adds ${data.min}-${data.max} Fire Damage</span>`;
       case 'cold_damage':
-        return `<span style="color: ${color}; font-weight: bold;">Adds ${data.min}-${data.max} Cold Damage</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Adds ${data.min}-${data.max} Cold Damage</span>`;
       case 'poison_damage':
-        return `<span style="color: ${color}; font-weight: bold;">Adds ${data.min}-${data.max} Poison Damage</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Adds ${data.min}-${data.max} Poison Damage</span>`;
       case 'fire_resist':
-        return `<span style="color: ${color}; font-weight: bold;">Fire Resist +${data.value}%</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Fire Resist +${data.value}%</span>`;
       case 'cold_resist':
-        return `<span style="color: ${color}; font-weight: bold;">Cold Resist +${data.value}%</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Cold Resist +${data.value}%</span>`;
       case 'lightning_resist':
-        return `<span style="color: ${color}; font-weight: bold;">Lightning Resist +${data.value}%</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Lightning Resist +${data.value}%</span>`;
       case 'poison_resist':
-        return `<span style="color: ${color}; font-weight: bold;">Poison Resist +${data.value}%</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Poison Resist +${data.value}%</span>`;
       case 'max_fire_resist':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Maximum Fire Resist</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Maximum Fire Resist</span>`;
       case 'max_cold_resist':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Maximum Cold Resist</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Maximum Cold Resist</span>`;
       case 'max_lightning_resist':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Maximum Lightning Resist</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Maximum Lightning Resist</span>`;
       case 'max_poison_resist':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Maximum Poison Resist</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Maximum Poison Resist</span>`;
       case 'strength':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Strength</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Strength</span>`;
       case 'dexterity':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Dexterity</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Dexterity</span>`;
       case 'vitality':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Vitality</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Vitality</span>`;
       case 'energy':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Energy</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Energy</span>`;
       case 'attack_rating':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Attack Rating</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Attack Rating</span>`;
       case 'attack_rating_percent':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Attack Rating</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Attack Rating</span>`;
       case 'faster_hit_recovery':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Faster Hit Recovery</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Faster Hit Recovery</span>`;
       case 'faster_block_rate':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Faster Block Rate</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Faster Block Rate</span>`;
       case 'faster_cast_rate':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Faster Cast Rate</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Faster Cast Rate</span>`;
       case 'increased_attack_speed':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Increased Attack Speed</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Increased Attack Speed</span>`;
       case 'faster_run_walk':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Faster Run/Walk</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Faster Run/Walk</span>`;
       case 'magic_find':
-        return `<span style="color: ${color}; font-weight: bold;">${data.value}% Better Chance of Getting Magic Items</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Better Chance of Getting Magic Items</span>`;
       case 'gold_find':
-        return `<span style="color: ${color}; font-weight: bold;">${data.value}% Extra Gold from Monsters</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Extra Gold from Monsters</span>`;
       case 'life':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Life</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Life</span>`;
       case 'mana':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Mana</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Mana</span>`;
       case 'all_skills':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to All Skills</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to All Skills</span>`;
       case 'crushing_blow':
-        return `<span style="color: ${color}; font-weight: bold;">${data.value}% Chance of Crushing Blow</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Chance of Crushing Blow</span>`;
       case 'deadly_strike':
-        return `<span style="color: ${color}; font-weight: bold;">${data.value}% Deadly Strike</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Deadly Strike</span>`;
       case 'open_wounds':
-        return `<span style="color: ${color}; font-weight: bold;">${data.value}% Chance of Open Wounds</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Chance of Open Wounds</span>`;
       case 'minimum_damage':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Minimum Damage</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Minimum Damage</span>`;
       case 'maximum_damage':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Maximum Damage</span>`;
+        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Maximum Damage</span>`;
       case 'mana_after_kill':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Mana after each Kill</span>`;
       case 'replenish_life':

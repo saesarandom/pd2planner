@@ -734,11 +734,48 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
   // Iterate through propertyDisplay keys in order to control display order
   // This ensures damage lines appear in the correct position, not at the end
+  // Iterate through propertyDisplay keys in order to control display order
+  // This ensures damage lines appear in the correct position, not at the end
   for (const key of Object.keys(propertyDisplay)) {
     if (skipProperties.includes(key)) continue;
     if (!(key in props)) continue;
 
-    const prop = props[key];
+    // CRITICAL FIX: Handle corrupted properties to prevent duplicate display
+    // Check multiple potential tracking keys (ID and Name) to match how it was stored
+    const keysToCheck = [dropdownId, itemName];
+    let isCorrupted = false;
+
+    if (window.corruptedProperties) {
+      for (const trackKey of keysToCheck) {
+        if (trackKey && window.corruptedProperties[trackKey]) {
+          if (window.corruptedProperties[trackKey].has(key) ||
+            window.corruptedProperties[trackKey].has(key.toLowerCase())) {
+            isCorrupted = true;
+            break;
+          }
+        }
+      }
+    }
+
+    // Debug Filter Logic
+    /*
+    if (isCorrupted) {
+       console.log(`[Filter] Skipping Corrupted Key: ${key} for ${itemName}`);
+    }
+    */
+
+    // STRATEGY CHANGE: Do NOT skip corrupted properties.
+    // We want main.js to handle ALL display (showing the merged Total).
+    // If isCorrupted is true, formatVariableStat will try to color it Red.
+    // If check fails, it shows White. In both cases, we avoid duplicates found in socket.js.
+
+    /* REMOVED AGGRESSIVE FILTER
+    if (isCorrupted) {
+        continue;
+    }
+    */
+
+    const prop = props[key]; // Use props[key] directly as propToDisplay was removed
     const value = getPropertyValue(prop);
     const displayText = propertyDisplay[key](value, prop);
     if (displayText) { // Skip empty strings (for properties that are already handled)
@@ -770,9 +807,22 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
   let corruptionBonus = 0;
 
   // CRITICAL FIX: Only mark as modified if this property was ACTUALLY corrupted
-  // Check the corruptedProperties set instead of comparing all values
-  if (window.corruptedProperties && window.corruptedProperties[itemName]) {
-    isModified = window.corruptedProperties[itemName].has(propKey);
+  // Check the corruptedProperties set using slot-specific key
+  const trackingKey = dropdownId || itemName;
+
+
+  console.log('[formatVariableStat] Checking:', {
+    propKey,
+    itemName,
+    dropdownId,
+    trackingKey,
+    hasEntry: window.corruptedProperties && window.corruptedProperties[trackingKey],
+    isModified: window.corruptedProperties && window.corruptedProperties[trackingKey] && window.corruptedProperties[trackingKey].has(propKey)
+  });
+
+
+  if (window.corruptedProperties && window.corruptedProperties[trackingKey]) {
+    isModified = window.corruptedProperties[trackingKey].has(propKey);
 
     // If corrupted, calculate the corruption bonus
     if (isModified && window.originalItemProperties && window.originalItemProperties[itemName]) {
@@ -869,9 +919,11 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
 
     // CRITICAL FIX: Check if this property is corrupted using corruptedProperties
     // This prevents infinite value growth by using a FIXED corruption bonus
+    // Use slot-specific key to prevent cross-contamination
+    const uniqueKey = dropdownId ? `${dropdownId}_${itemName}` : itemName;
     const isCorrupted = window.corruptedProperties &&
-      window.corruptedProperties[itemName] &&
-      window.corruptedProperties[itemName].has(propKey);
+      window.corruptedProperties[uniqueKey] &&
+      window.corruptedProperties[uniqueKey].has(propKey);
 
     if (isCorrupted && window.originalItemProperties && window.originalItemProperties[itemName]) {
       const originalVal = window.originalItemProperties[itemName][propKey];
@@ -897,15 +949,15 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     // We must update the base property so it doesn't reset on switch
     // CRITICAL FIX: Use unique key (dropdownId_itemName) to prevent shared state
     // This ensures changing Mercenary item stats doesn't affect Player item
-    const uniqueKey = `${dropdownId}_${itemName}`;
+    const basePropKey = `${dropdownId}_${itemName}`;
 
     if (window.itemBaseProperties) {
-      if (!window.itemBaseProperties[uniqueKey]) {
+      if (!window.itemBaseProperties[basePropKey]) {
         // If prop missing in base, init it
-        window.itemBaseProperties[uniqueKey] = {};
+        window.itemBaseProperties[basePropKey] = {};
       }
-      if (!window.itemBaseProperties[uniqueKey][propKey]) {
-        window.itemBaseProperties[uniqueKey][propKey] = JSON.parse(JSON.stringify(prop));
+      if (!window.itemBaseProperties[basePropKey][propKey]) {
+        window.itemBaseProperties[basePropKey][propKey] = JSON.parse(JSON.stringify(prop));
       }
 
       let corruptionValue = 0;
@@ -952,15 +1004,17 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
 
       // CRITICAL FIX: Use corruptedProperties to check if this property is corrupted
       // Don't update itemBaseProperties for corrupted properties
+      // Use slot-specific key to prevent cross-contamination
+      const uniqueKeyForCheck = dropdownId ? `${dropdownId}_${itemName}` : itemName;
       const isPropertyCorrupted = window.corruptedProperties &&
-        window.corruptedProperties[itemName] &&
-        window.corruptedProperties[itemName].has(propKey);
+        window.corruptedProperties[uniqueKeyForCheck] &&
+        window.corruptedProperties[uniqueKeyForCheck].has(propKey);
 
       if (!isPropertyCorrupted) {
-        if (typeof window.itemBaseProperties[uniqueKey][propKey] === 'object') {
-          window.itemBaseProperties[uniqueKey][propKey].current = clampedValue;
+        if (typeof window.itemBaseProperties[basePropKey][propKey] === 'object') {
+          window.itemBaseProperties[basePropKey][propKey].current = clampedValue;
         } else {
-          window.itemBaseProperties[uniqueKey][propKey] = clampedValue;
+          window.itemBaseProperties[basePropKey][propKey] = clampedValue;
         }
       }
     }
@@ -1260,7 +1314,11 @@ window.updateItemInfo = function updateItemInfo(event) {
         // Only apply to properties if we're NOT currently in the middle of applying corruption
         if (!window.isApplyingCorruption && typeof window.applyCorruptionToProperties === 'function') {
           // CRITICAL FIX: Pass itemName string instead of item object to ensure correct tracking
-          window.applyCorruptionToProperties(selectedItemName, corruption.text);
+          // CRITICAL FIX: Pass ITEM OBJECT (cached item) instead of name string
+          // This ensures we modify the specific instance for this slot, not the global shared object
+          // Also pass dropdown.id for slot-specific corruption tracking
+          // And pass itemName explicitly since the object reference won't match itemList
+          window.applyCorruptionToProperties(item, corruption.text, dropdown.id, selectedItemName);
 
           // CRITICAL FIX: After applying corruption, restore user-modified values
           // This allows manual input changes to persist for corrupted properties
@@ -1303,6 +1361,7 @@ window.updateItemInfo = function updateItemInfo(event) {
         }
         // Update display with full socket system integration
         window.unifiedSocketSystem.updateItemDisplay(section);
+
         return; // Socket system handles everything for dynamic items
       }
     }
@@ -1313,26 +1372,52 @@ window.updateItemInfo = function updateItemInfo(event) {
 
     // Attach event listeners to any stat input boxes
     attachStatInputListeners();
+
+    // Check if we can/should defer to socket system for display
+    const section = window.SECTION_MAP && window.SECTION_MAP[dropdown.id];
+
+    // DEBUG LOG
+    /*
+    console.log('[updateItemInfo] Debug:', {
+        dropdownId: dropdown.id,
+        itemName: selectedItemName,
+        section: section,
+        unifiedSocketSystem: !!window.unifiedSocketSystem,
+        corruptedProps: window.corruptedProperties[dropdown.id || selectedItemName]
+    });
+    */
+
+    // Update socket system if available
+    if (section && window.unifiedSocketSystem) {
+      if (typeof window.unifiedSocketSystem.updateItemDisplay === 'function') {
+        // Force update immediately for this section
+        window.unifiedSocketSystem.updateItemDisplay(section);
+      }
+      // Also trigger full update to handle dependencies
+      window.unifiedSocketSystem.updateAll();
+    }
+
   } else {
     // If not in itemList, try to show a basic placeholder
     infoDiv.innerHTML = selectedItemName;
   }
 
-  // For static items, adjust socket count and update socket system
-  const section = window.SECTION_MAP && window.SECTION_MAP[dropdown.id];
-  if (section && window.unifiedSocketSystem) {
-    try {
-      // Adjust socket count to match new item's max
-      if (typeof window.unifiedSocketSystem.adjustSocketsForItem === 'function') {
-        window.unifiedSocketSystem.adjustSocketsForItem(section);
-      }
+  // Update socket system if available
+  // Re-fetch section as it might be needed for adjustSocketsForItem even if we are in the else block (edge case)
+  // But typically only if we have a valid dropdown ID
+  const sectionForUpdate = window.SECTION_MAP && window.SECTION_MAP[dropdown.id];
 
-      // Always update to add socket stats to description
+  if (window.unifiedSocketSystem) {
+    // Use setTimeout to ensure DOM is fully updated and avoid race conditions
+    // This forces the "Red Div" display logic from socket.js to run effectively
+    setTimeout(() => {
+      if (sectionForUpdate && typeof window.unifiedSocketSystem.adjustSocketsForItem === 'function') {
+        window.unifiedSocketSystem.adjustSocketsForItem(sectionForUpdate);
+      }
       if (typeof window.unifiedSocketSystem.updateAll === 'function') {
         window.unifiedSocketSystem.updateAll();
       }
-    } catch (error) {
-    }
+    }, 50);
   }
 }
 

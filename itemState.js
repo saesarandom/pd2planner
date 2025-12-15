@@ -69,7 +69,7 @@ window.restoreItemState = function (dropdownId, itemName, section) {
     if (savedState.corruption.itemName === itemName) {
       window.itemCorruptions[dropdownId] = savedState.corruption;
       if (savedState.corruption.text && typeof applyCorruptionToProperties === 'function') {
-        applyCorruptionToProperties(itemName, savedState.corruption.text);
+        applyCorruptionToProperties(itemName, savedState.corruption.text, dropdownId);
       }
     }
   }

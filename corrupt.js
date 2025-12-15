@@ -625,7 +625,11 @@ function attachCorruptionButtons() {
     'corruptBoot': 'boots-dropdown',
     'corruptRingOne': 'ringsone-dropdown',
     'corruptRingTwo': 'ringstwo-dropdown',
-    'corruptAmulet': 'amulets-dropdown'
+    'corruptAmulet': 'amulets-dropdown',
+    // Mercenary corruption buttons
+    'corruptMercHelm': 'merchelms-dropdown',
+    'corruptMercArmor': 'mercarmors-dropdown',
+    'corruptMercWeapon': 'mercweapons-dropdown'
   };
 
   Object.entries(buttonMap).forEach(([buttonId, dropdownId]) => {
@@ -648,7 +652,9 @@ function openCorruptionModal(dropdownId) {
   }
 
   const itemType = SECTION_MAP[dropdownId];
-  const corruptions = CORRUPTIONS[itemType];
+  // Strip 'merc' prefix for mercenary items since CORRUPTIONS uses base types
+  const baseItemType = itemType ? itemType.replace(/^merc/, '') : itemType;
+  const corruptions = CORRUPTIONS[baseItemType];
   if (!corruptions) {
     alert('No corruptions available for this item type.');
     return;
@@ -976,15 +982,15 @@ function applySocketCorruptionFromModal(corruption) {
 
 // Apply corruption stats to item properties for character stat calculations
 // Apply corruption stats to item properties for character stat calculations
-function applyCorruptionToProperties(itemOrName, corruptionText) {
+function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, itemNameOverride) {
   // CRITICAL FIX: Handle both Item Object (from main.js) and Item Name String
   let item = itemOrName;
-  let itemName = null;
+  let itemName = itemNameOverride || null;
 
   if (typeof itemOrName === 'string') {
     itemName = itemOrName;
     item = window.getItemData(itemOrName);
-  } else {
+  } else if (!itemName) {
     // It's an item object - need to find its name
     // Search in itemList to find the matching item
     for (const name in itemList) {
@@ -1014,13 +1020,16 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
     if (!item.properties) return;
 
     // CRITICAL FIX: Track that this property was corrupted
+    // Use slot-specific key to prevent cross-contamination between player and mercenary
     if (!window.corruptedProperties) {
       window.corruptedProperties = {};
     }
-    if (!window.corruptedProperties[itemName]) {
-      window.corruptedProperties[itemName] = new Set();
+    // Use dropdownId as primary key for robustness (avoids name mismatches)
+    const trackingKey = dropdownId || itemName;
+    if (!window.corruptedProperties[trackingKey]) {
+      window.corruptedProperties[trackingKey] = new Set();
     }
-    window.corruptedProperties[itemName].add(key);
+    window.corruptedProperties[trackingKey].add(key);
 
     // If property doesn't exist, just set it
     if (item.properties[key] === undefined) {
@@ -1140,6 +1149,7 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         break;
       case 'physdr':
         addStatToProp('physdr', stat.value);
+        break;
       case 'plr':
         addStatToProp('plr', stat.value);
         break;
@@ -1156,10 +1166,8 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         if (stat.subtype === 'poison') addStatToProp('poisres', stat.value);
         break;
       case 'indestructible':
-        item.properties.indestructible = 1;
-        if (!window.corruptedProperties) window.corruptedProperties = {};
-        if (!window.corruptedProperties[itemName]) window.corruptedProperties[itemName] = new Set();
-        window.corruptedProperties[itemName].add('indestructible');
+        // Use addStatToProp to ensure consistent tracking via dropdownId
+        addStatToProp('indestructible', 1);
         break;
       case 'maxlife':
         addStatToProp('maxlife', stat.value);
@@ -1202,10 +1210,8 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         addStatToProp('block', stat.value);
         break;
       case 'cbf':
-        item.properties.cbf = 1;
-        if (!window.corruptedProperties) window.corruptedProperties = {};
-        if (!window.corruptedProperties[itemName]) window.corruptedProperties[itemName] = new Set();
-        window.corruptedProperties[itemName].add('cbf');
+        // Use addStatToProp to ensure consistent tracking via dropdownId
+        addStatToProp('cbf', 1);
         break;
       case 'curseres':
         addStatToProp('curseres', stat.value);
@@ -1220,6 +1226,73 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
       case 'mindmg':
         addStatToProp('tomindmg', stat.value);
         break;
+      // MISSING STATS RESTORED:
+      case 'ias':
+        addStatToProp('ias', stat.value);
+        break;
+      case 'fcr':
+        addStatToProp('fcr', stat.value);
+        break;
+      case 'fhr':
+        addStatToProp('fhr', stat.value);
+        break;
+      case 'frw':
+        addStatToProp('frw', stat.value);
+        break;
+      case 'fbr':
+        addStatToProp('fbr', stat.value);
+        break;
+      case 'edef':
+        addStatToProp('edef', stat.value);
+        break;
+      case 'maxres':
+        if (stat.subtype) {
+          const maxMap = { fire: 'maxfirres', cold: 'maxcoldres', lightning: 'maxligres', poison: 'maxpoisres' };
+          if (maxMap[stat.subtype]) addStatToProp(maxMap[stat.subtype], stat.value);
+        }
+        break;
+      case 'resist':
+        if (stat.subtype) {
+          const resMap = { fire: 'firres', cold: 'coldres', lightning: 'ligres', poison: 'poisres' };
+          if (resMap[stat.subtype]) addStatToProp(resMap[stat.subtype], stat.value);
+        }
+        break;
+      case 'allres':
+        addStatToProp('allres', stat.value);
+        break;
+      case 'physdr':
+        addStatToProp('physdr', stat.value);
+        break;
+      case 'pdr':
+        addStatToProp('pdr', stat.value);
+        break;
+      case 'mdr':
+        addStatToProp('mdr', stat.value);
+        break;
+      case 'manarecovery':
+        addStatToProp('regmana', stat.value);
+        break;
+      case 'magicfind':
+        addStatToProp('magicfind', stat.value);
+        break;
+      case 'goldfind':
+        addStatToProp('goldfind', stat.value);
+        break;
+      case 'lleech':
+        addStatToProp('lleech', stat.value);
+        break;
+      case 'mleech':
+        addStatToProp('mleech', stat.value);
+        break;
+      case 'maxlife':
+        addStatToProp('maxlife', stat.value);
+        break;
+      case 'maxmana':
+        addStatToProp('maxmana', stat.value);
+        break;
+      case 'indestructible':
+        addStatToProp('indestructible', 1);
+        break;
     }
   });
 }
@@ -1233,8 +1306,21 @@ function applyCorruptionToItem(corruptionText) {
   const dropdown = document.getElementById(currentCorruptionSlot);
   const itemName = dropdown.value;
 
-  // Use global item lookup to support both regular and crafted items
-  const item = window.getItemData(itemName);
+  // CRITICAL FIX: Use slot-specific item cache to prevent shared state
+  // This ensures we modify a COPY of the item, not the global shared object
+  if (!window.dropdownItemCache) window.dropdownItemCache = {};
+  const cacheKey = `${currentCorruptionSlot}_${itemName}`;
+
+  // If not in cache, create a deep copy from source
+  if (!window.dropdownItemCache[cacheKey]) {
+    const sourceItem = window.getItemData(itemName);
+    if (!sourceItem) return;
+    window.dropdownItemCache[cacheKey] = JSON.parse(JSON.stringify(sourceItem));
+  }
+
+  // Work with the cached copy
+  const item = window.dropdownItemCache[cacheKey];
+
   if (!itemName || !item) {
     return;
   }
@@ -1323,15 +1409,21 @@ function applyCorruptionToItem(corruptionText) {
   const originalDescription = window.originalItemDescriptions[itemName];
   const enhancedDescription = addCorruptionWithStacking(originalDescription, corruptionText);
 
-  // For dynamic items (has baseType), DON'T set static description - it breaks input boxes
-  // The socket system will regenerate the description with input boxes intact
+  // CRITICAL FIX: Don't modify item.description to prevent cross-contamination
+  // When player and mercenary have the same item, they share the same item object
+  // Instead, corruption text will be appended during display by checking window.itemCorruptions
+  // This keeps the description clean and prevents corruption from showing on both player and merc
+  /*
   if (!item.baseType) {
     // Only set description for static items
     item.description = enhancedDescription;
   }
+  */
 
   // Apply corruption stats to item properties (this is what matters for dynamic items)
-  applyCorruptionToProperties(itemName, corruptionText);
+  // Apply corruption stats to item properties (this is what matters for dynamic items)
+  // CRITICAL FIX: Pass the ITEM OBJECT (our cached copy), not the name
+  applyCorruptionToProperties(item, corruptionText, currentCorruptionSlot, itemName);
 
   // For static weapons with edmg corruption, recalculate damage
   if (!item.baseType && currentCorruptionSlot === 'weapons-dropdown') {
