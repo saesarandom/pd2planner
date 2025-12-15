@@ -1140,6 +1140,8 @@ function applyCorruptionToProperties(itemOrName, corruptionText) {
         break;
       case 'physdr':
         addStatToProp('physdr', stat.value);
+      case 'plr':
+        addStatToProp('plr', stat.value);
         break;
       case 'pdr':
         addStatToProp('pdr', stat.value);

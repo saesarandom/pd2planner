@@ -48,7 +48,7 @@ class UnifiedSocketSystem {
     this.stats = {
       strength: 0, dexterity: 0, vitality: 0, energy: 0,
       allSkills: 0, magicFind: 0, goldFind: 0, defense: 0,
-      ias: 0, fcr: 0, frw: 0, fhr: 0,
+      ias: 0, fcr: 0, frw: 0, fhr: 0, plr: 0,
       fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
       allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0,
       life: 0, mana: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
@@ -1368,7 +1368,8 @@ class UnifiedSocketSystem {
             // Same item - just update display, don't save/restore
             this.calculateAllStats();
             this.updateStatsDisplay();
-            setTimeout(() => this.updateAll(), 50);
+            // BUGFIX: Removed setTimeout updateAll - was causing skill damage to reset
+            // setTimeout(() => this.updateAll(), 50);
             return;
           }
 
@@ -1394,7 +1395,8 @@ class UnifiedSocketSystem {
               }
               this.calculateAllStats();
               this.updateStatsDisplay();
-              setTimeout(() => this.updateAll(), 50);
+              // BUGFIX: Removed setTimeout updateAll - was causing skill damage to reset
+              // setTimeout(() => this.updateAll(), 50);
               return;
             }
           }
@@ -1432,8 +1434,8 @@ class UnifiedSocketSystem {
           // Immediately recalculate stats when item changes
           this.calculateAllStats();
           this.updateStatsDisplay();
-          // Also trigger full update after a short delay to ensure everything syncs
-          setTimeout(() => this.updateAll(), 50);
+          // BUGFIX: Removed setTimeout updateAll - was causing skill damage to reset
+          // setTimeout(() => this.updateAll(), 50);
         });
       }
     });
@@ -2538,6 +2540,14 @@ class UnifiedSocketSystem {
       // (This is critical for items like Arcanna's Deathwand with variable stats)
       let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
 
+
+      // TODO: Potential fix for skill damage stats resetting to 0 after input changes:
+      // Store the regenerated description back into item.description so that when
+      // calculateAllStats() is called by other systems (setTracker, character manager, etc.),
+      // they parse the UPDATED description with current property values.
+      // However, this currently breaks input box functionality, so it's disabled for now.
+      // item.description = baseDescription;
+
       // Check if item has corruption applied
       // NOTE: We do NOT use addCorruptionWithStacking here because properties are already updated via corrupt.js
       // Using it would cause double-counting (e.g. 24% base + 24% corruption text = 48%)
@@ -2842,7 +2852,6 @@ class UnifiedSocketSystem {
   }
 
   calculateAllStats() {
-    console.log('=== calculateAllStats START ===');
     // Reset stats
     Object.keys(this.stats).forEach(key => {
       this.stats[key] = typeof this.stats[key] === 'boolean' ? false : 0;
@@ -2854,7 +2863,6 @@ class UnifiedSocketSystem {
     this.stats.lightningSkillDamage = 0;
     this.stats.poisonSkillDamage = 0;
     this.stats.magicSkillDamage = 0;
-    console.log('Stats reset, poisonSkillDamage:', this.stats.poisonSkillDamage);
     this.stats.pierceFire = 0;
     this.stats.pierceCold = 0;
     this.stats.pierceLightning = 0;
@@ -2867,19 +2875,14 @@ class UnifiedSocketSystem {
     });
 
     // Calculate equipment stats (ONLY player equipment, exclude mercenary)
-    console.log('About to parse equipment stats...');
     Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
       // Skip mercenary equipment for player stats
       if (config.section.startsWith('merc')) return;
-      console.log('Parsing stats for:', dropdownId, config.section);
       this.calculateEquipmentStats(dropdownId, config.section);
-      console.log('After parsing', dropdownId, 'poisonSkillDamage:', this.stats.poisonSkillDamage);
     });
 
-    console.log('Before socket stats, poisonSkillDamage:', this.stats.poisonSkillDamage);
     // Calculate socket stats
     this.calculateSocketStats();
-    console.log('After socket stats, poisonSkillDamage:', this.stats.poisonSkillDamage);
 
     // Calculate mercenary equipment stats separately
     this.calculateMercenaryStats();
@@ -2930,6 +2933,8 @@ class UnifiedSocketSystem {
     // Check for either properties OR description (description might have corruption stats)
     if (this.currentLevel >= actualLevel && meetsStatRequirements && (item.properties || item.description)) {
       this.parseItemStats(item, section);
+
+
     }
   }
 
@@ -3256,10 +3261,8 @@ class UnifiedSocketSystem {
 
     if (!description) return;
 
-    console.log('parseItemStats - description:', description.substring(0, 200));
     const lines = description.split('<br>');
     lines.forEach(line => this.parseStatLine(line.trim()));
-    console.log('parseItemStats DONE - poisonSkillDamage:', this.stats.poisonSkillDamage);
   }
 
   // parseSocketStats(statsText, section) {
@@ -3335,12 +3338,10 @@ class UnifiedSocketSystem {
 
       if (cleanLine.match(/\+\d+%\s+to\s+Poison\s+Skill\s+Damage/i)) {
         const match = cleanLine.match(/\+(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i);
-        console.log('POISON SKILL DAMAGE LINE MATCHED:', cleanLine);
         if (match) {
           const value = parseInt(match[1]);
-          console.log('POISON SKILL DAMAGE PARSED:', value, 'current total:', this.stats.poisonSkillDamage);
+          debugger; // COMPARE: Check if this behaves same as firepierce
           this.stats.poisonSkillDamage = (this.stats.poisonSkillDamage || 0) + value;
-          console.log('POISON SKILL DAMAGE AFTER ADD:', this.stats.poisonSkillDamage);
           return;
         }
       }
@@ -3350,6 +3351,7 @@ class UnifiedSocketSystem {
         const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Fire\s+Resistance/i);
         if (match) {
           const value = parseInt(match[1]);
+          debugger; // COMPARE: Does firepierce behave differently than poisondamage?
           this.stats.pierceFire = (this.stats.pierceFire || 0) + value;
           return;
         }

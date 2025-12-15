@@ -107,7 +107,7 @@ const BASE_TYPE_CATEGORIES = {
   'Akaran Targe': 'shield', 'Akaran Rondache': 'shield', 'Protector Shield': 'shield',
   'Gilded Shield': 'shield', 'Royal Shield': 'shield', 'Sacred Targe': 'shield',
   'Sacred Rondache': 'shield', 'Kurast Shield': 'shield', 'Zakarum Shield': 'shield',
-  'Vortex Shield': 'shield',
+  'Vortex Shield': 'shield', 'Blunt Arrows': 'shield',
 
   // Gloves
   'Leather Gloves': 'gloves', 'Heavy Gloves': 'gloves', 'Chain Gloves': 'gloves',
@@ -725,6 +725,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     lightdamage: (val, prop) => formatVariableStat('+', val, '% to Lightning Skill Damage', prop, itemName, 'lightdamage', dropdownId),
     ravenoskill: (val, prop) => formatVariableStat('+', val, ' to Raven', prop, itemName, 'ravenoskill', dropdownId),
     ligrad: (val, prop) => formatVariableStat(val >= 0 ? '+' : '', val, ' to Light Radius', prop, itemName, 'ligrad', dropdownId),
+    defvsmiss: (val, prop) => formatVariableStat('+', val, ' Defense vs. Missile', prop, itemName, 'defvsmiss', dropdownId),
+    firepierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Fire Resistance', prop, itemName, 'firepierce', dropdownId),
   };
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere

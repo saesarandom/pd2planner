@@ -4007,6 +4007,19 @@ const itemList = {
     },
   },
 
+  Balefire: {
+    baseType: "Blunt Arrows",
+    properties: {
+      tomaxdmg: 2,
+      firedmgmin: 6,
+      firedmgmax: 10,
+      firepierce: { min: 5, max: 8, current: 8 },
+      lleech: { min: 2, max: 3, current: 3 },
+      defvsmiss: { min: 20, max: 45, current: 45 },
+      magicfind: { min: 18, max: 32, current: 32 },
+    },
+  },
+
   "Some other claw": {
     description:
       "Some other clawcga<br> Smalls Shielgdsd<br>tady je to nejvic cool claw ever a taky jeste neco navic<br>",
