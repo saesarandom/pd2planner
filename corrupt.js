@@ -1306,20 +1306,24 @@ function applyCorruptionToItem(corruptionText) {
   const dropdown = document.getElementById(currentCorruptionSlot);
   const itemName = dropdown.value;
 
-  // CRITICAL FIX: Use slot-specific item cache to prevent shared state
-  // This ensures we modify a COPY of the item, not the global shared object
+  // CRITICAL FIX: Use the EXISTING cached item from main.js
+  // Don't create a duplicate cache entry - retrieve and update the existing one
+  // This ensures edmg and other properties are updated on the same object that generateItemDescription uses
   if (!window.dropdownItemCache) window.dropdownItemCache = {};
   const cacheKey = `${currentCorruptionSlot}_${itemName}`;
 
-  // If not in cache, create a deep copy from source
-  if (!window.dropdownItemCache[cacheKey]) {
+  // Get the existing cached item (created by main.js updateItemInfo)
+  let item = window.dropdownItemCache[cacheKey];
+
+  // If not in cache yet, create it (fallback for edge cases)
+  if (!item) {
     const sourceItem = window.getItemData(itemName);
     if (!sourceItem) return;
-    window.dropdownItemCache[cacheKey] = JSON.parse(JSON.stringify(sourceItem));
+    item = JSON.parse(JSON.stringify(sourceItem));
+    window.dropdownItemCache[cacheKey] = item;
   }
 
-  // Work with the cached copy
-  const item = window.dropdownItemCache[cacheKey];
+  // Now 'item' is guaranteed to be the same reference that main.js uses
 
   if (!itemName || !item) {
     return;
@@ -1359,8 +1363,11 @@ function applyCorruptionToItem(corruptionText) {
     if (item.properties) {
       // Save current user-modified values (but NOT corrupted values)
       const userModifiedValues = {};
-      const oldCorruptedProps = window.corruptedProperties && window.corruptedProperties[itemName]
-        ? window.corruptedProperties[itemName]
+
+      // CRITICAL FIX: Use the same tracking key as applyCorruptionToProperties
+      const trackingKey = currentCorruptionSlot || itemName;
+      const oldCorruptedProps = window.corruptedProperties && window.corruptedProperties[trackingKey]
+        ? window.corruptedProperties[trackingKey]
         : new Set();
 
       for (const key in item.properties) {
@@ -1382,10 +1389,11 @@ function applyCorruptionToItem(corruptionText) {
       }
     }
 
-    // CRITICAL FIX: Clear old corrupted properties tracking
-    // This ensures old corrupted properties turn white when corruption changes
-    if (window.corruptedProperties && window.corruptedProperties[itemName]) {
-      delete window.corruptedProperties[itemName];
+    // CRITICAL FIX: Clear old corrupted properties tracking using the correct key
+    // Use dropdownId (currentCorruptionSlot) to match the tracking system
+    const trackingKey = currentCorruptionSlot || itemName;
+    if (window.corruptedProperties && window.corruptedProperties[trackingKey]) {
+      delete window.corruptedProperties[trackingKey];
     }
   }
 

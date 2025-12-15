@@ -468,8 +468,9 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     html += `${item.baseType}<br>`;
   }
 
-  // Calculate weapon damage for crafted items
-  if (item.isCrafted && item.baseType && typeof baseDamages !== 'undefined' && baseDamages[item.baseType]) {
+  // Calculate weapon damage for dynamic items with baseType
+  // This includes both crafted items AND regular dynamic items like True Silver
+  if (item.baseType && typeof baseDamages !== 'undefined' && baseDamages[item.baseType]) {
     const baseDmg = baseDamages[item.baseType];
     const edmgValue = getPropertyValue(props.edmg || 0);
 
@@ -480,8 +481,15 @@ window.generateItemDescription = function generateItemDescription(itemName, item
 
     // Calculate damage with enhanced damage modifier
     // Formula: floor(base * (1 + edmg/100))
-    const minDmg = Math.floor(ethBaseMin * (1 + edmgValue / 100));
-    const maxDmg = Math.floor(ethBaseMax * (1 + edmgValue / 100));
+    let minDmg = Math.floor(ethBaseMin * (1 + edmgValue / 100));
+    let maxDmg = Math.floor(ethBaseMax * (1 + edmgValue / 100));
+
+    // Add level-scaled damage bonus if present (e.g., True Silver's +2.25 max damage per level)
+    if (props.maxdmgperlvl) {
+      const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+      const levelScaledBonus = Math.floor(currentLevel * getPropertyValue(props.maxdmgperlvl));
+      maxDmg += levelScaledBonus;
+    }
 
     // Determine weapon type
     const isTwoHandedOnly = typeof twoHandedOnlyWeapons !== 'undefined' && twoHandedOnlyWeapons.has(item.baseType);
@@ -505,7 +513,9 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     }
   }
 
-  if (item.isCrafted && item.baseType && item.itemType !== 'weapon') {
+  // Calculate defense for dynamic armor/helms with baseType
+  // This includes both crafted items AND regular dynamic items
+  if (item.baseType && item.itemType !== 'weapon') {
     // Check if this is armor or helm
     if (window.baseDefenses && window.baseDefenses[item.baseType]) {
       const baseDef = window.baseDefenses[item.baseType];
