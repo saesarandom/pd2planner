@@ -690,6 +690,50 @@ const upgradeDefinitions = {
       },
     },
   },
+  boots: {
+    "Hotspur": {
+      exceptional: {
+        name: "Hotspur",
+        base: "Demonhide Boots",
+        properties: {
+          defense: 100,
+          reqstr: 20,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Hotspur",
+        base: "Wyrmhide Boots",
+        properties: {
+          defense: 150,
+          reqstr: 50,
+          reqlvl: 50,
+        },
+      },
+    },
+  },
+  shields: {
+    "Pelta Lunata": {
+      exceptional: {
+        name: "Pelta Lunata",
+        base: "Defender",
+        properties: {
+          defense: 100,
+          reqstr: 20,
+          reqlvl: 25,
+        },
+      },
+      elite: {
+        name: "Pelta Lunata",
+        base: "Heater",
+        properties: {
+          defense: 150,
+          reqstr: 50,
+          reqlvl: 50,
+        },
+      },
+    },
+  },
   weapons: {
     "The Gnasher": {
       exceptional: {
@@ -1844,6 +1888,8 @@ window.baseDefenses = {
   "Tower Shield": 25,
   "Gothic Shield": 35,
   Defender: 49,
+  Heater: 143, //buged
+  "Demonhide Boots": 20, //buged
   "Leather Gloves": 3,
   "Demonhide Gloves": 35,
   "Bramble Mitts": 62,
@@ -1985,6 +2031,8 @@ const baseStrengths = {
   "Tower Shield": 75,
   "Gothic Shield": 60,
   Defender: 38,
+  Heater: 143, //bugged
+  "Demonhide Boots": 20, //bugged
   "Leather Gloves": 0,
   "Demonhide Gloves": 20,
   "Bramble Mitts": 50,
@@ -4144,7 +4192,20 @@ function handleGloveUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
           const config = window.unifiedSocketSystem.equipmentMap[select.id];
           if (config && config.section) {
@@ -4197,7 +4258,20 @@ function handleGloveUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
           const config = window.unifiedSocketSystem.equipmentMap[select.id];
           if (config && config.section) {
@@ -4287,7 +4361,20 @@ function handleBeltUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `belts-dropdown_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         const section = window.SECTION_MAP && window.SECTION_MAP['belts-dropdown'];
         if (section && window.unifiedSocketSystem) {
           window.unifiedSocketSystem.updateItemDisplay(section);
@@ -4338,7 +4425,20 @@ function handleBeltUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `belts-dropdown_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
           const config = window.unifiedSocketSystem.equipmentMap[select.id];
           if (config && config.section) {
@@ -4360,6 +4460,342 @@ function handleBeltUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
+      }
+      return;
+    }
+  }
+
+  alert("Character does not meet requirements for upgrade");
+}
+
+function handleBootUpgrade() {
+  const select = document.getElementById("boots-dropdown");
+  const currentItem = select.value;
+  const upgrades = upgradeDefinitions.boots[currentItem];
+  const currentItemData = itemList[currentItem];
+
+  if (!upgrades) return;
+
+  const isDynamic = currentItemData.baseType && !currentItemData.description;
+
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'boots-dropdown');
+  }
+  if (!description) return;
+
+  const level = parseInt(document.getElementById("lvlValue").value) || 0;
+  const str = parseInt(document.getElementById("str").value) || 0;
+  const baseType = description.split("<br>")[1];
+
+  if (baseType === upgrades.elite.base) {
+    alert("Item is already at maximum upgrade level");
+    return;
+  }
+
+  const magicalProperties = description
+    .split("<br>")
+    .slice(3)
+    .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
+    .join("<br>");
+
+  if (baseType === upgrades.exceptional.base) {
+    if (
+      level >= upgrades.elite.properties.reqlvl &&
+      str >= baseStrengths[upgrades.elite.base]
+    ) {
+      const newProperties = {
+        ...upgrades.elite.properties,
+        defense: calculateItemDefense(currentItemData, upgrades.elite.base, "boots"),
+        reqstr: baseStrengths[upgrades.elite.base],
+      };
+
+      if (isDynamic) {
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.elite.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
+      } else {
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.elite.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
+
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
+      }
+
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
+      }
+      return;
+    }
+  } else {
+    if (
+      level >= upgrades.exceptional.properties.reqlvl &&
+      str >= baseStrengths[upgrades.exceptional.base]
+    ) {
+      const newProperties = {
+        ...upgrades.exceptional.properties,
+        defense: calculateItemDefense(currentItemData, upgrades.exceptional.base, "boots"),
+        reqstr: baseStrengths[upgrades.exceptional.base],
+      };
+
+      if (isDynamic) {
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.exceptional.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
+      } else {
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.exceptional.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
+
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
+      }
+
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
+      }
+      return;
+    }
+  }
+
+  alert("Character does not meet requirements for upgrade");
+}
+
+function handleShieldUpgrade() {
+  const select = document.getElementById("offs-dropdown");
+  const currentItem = select.value;
+  const upgrades = upgradeDefinitions.shields[currentItem];
+  const currentItemData = itemList[currentItem];
+
+  if (!upgrades) return;
+
+  const isDynamic = currentItemData.baseType && !currentItemData.description;
+
+  let description = currentItemData.description;
+  if (!description && currentItemData.baseType) {
+    description = window.generateItemDescription(currentItem, currentItemData, 'offs-dropdown');
+  }
+  if (!description) return;
+
+  const level = parseInt(document.getElementById("lvlValue").value) || 0;
+  const str = parseInt(document.getElementById("str").value) || 0;
+  const baseType = description.split("<br>")[1];
+
+  if (baseType === upgrades.elite.base) {
+    alert("Item is already at maximum upgrade level");
+    return;
+  }
+
+  const magicalProperties = description
+    .split("<br>")
+    .slice(3)
+    .filter((prop) => !prop.includes("Required") && !prop.includes("Defense:"))
+    .join("<br>");
+
+  if (baseType === upgrades.exceptional.base) {
+    if (
+      level >= upgrades.elite.properties.reqlvl &&
+      str >= baseStrengths[upgrades.elite.base]
+    ) {
+      const newProperties = {
+        ...upgrades.elite.properties,
+        defense: calculateItemDefense(currentItemData, upgrades.elite.base, "shield"),
+        reqstr: baseStrengths[upgrades.elite.base],
+      };
+
+      if (isDynamic) {
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.elite.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
+      } else {
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.elite.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
+
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
+      }
+
+      if (!isDynamic) {
+        select.dispatchEvent(new Event("change"));
+        if (window.unifiedSocketSystem?.updateAll) {
+          window.unifiedSocketSystem.updateAll();
+        }
+      }
+      return;
+    }
+  } else {
+    if (
+      level >= upgrades.exceptional.properties.reqlvl &&
+      str >= baseStrengths[upgrades.exceptional.base]
+    ) {
+      const newProperties = {
+        ...upgrades.exceptional.properties,
+        defense: calculateItemDefense(currentItemData, upgrades.exceptional.base, "shield"),
+        reqstr: baseStrengths[upgrades.exceptional.base],
+      };
+
+      if (isDynamic) {
+        itemList[currentItem] = {
+          ...currentItemData,
+          baseType: upgrades.exceptional.base,
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
+      } else {
+        itemList[currentItem] = {
+          description: buildDescription(
+            currentItem,
+            upgrades.exceptional.base,
+            newProperties,
+            magicalProperties
+          ),
+          properties: { ...currentItemData.properties, ...newProperties },
+        };
+      }
+
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
+      }
+
       if (!isDynamic) {
         select.dispatchEvent(new Event("change"));
         if (window.unifiedSocketSystem?.updateAll) {
@@ -5700,10 +6136,10 @@ document.addEventListener('DOMContentLoaded', function () {
     'upgradeHelmButton': handleUpgrade,
     'upgradeArmorButton': handleArmorUpgrade,
     'upgradeWeaponButton': handleWeaponUpgrade,
-    'upgradeShieldButton': () => { },
+    'upgradeShieldButton': handleShieldUpgrade,
     'upgradeGloveButton': handleGloveUpgrade,
     'upgradeBeltButton': handleBeltUpgrade,
-    'upgradeBootButton': () => { }
+    'upgradeBootButton': handleBootUpgrade
   };
 
   Object.entries(upgradeButtons).forEach(([buttonId, handler]) => {
