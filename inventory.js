@@ -2498,6 +2498,25 @@ function getEquipmentSkillDamageBonuses() {
     const item = itemData?.[dropdownElement.value];
     if (!item) return;
 
+    // CRITICAL: Check if character meets item requirements
+    // Don't count bonuses from items the character can't use!
+    const socketSystem = window.unifiedSocketSystem;
+    if (socketSystem) {
+      // Get actual level requirement (considering -lvl req from items)
+      const baseReqLvl = item.reqlvl || item.properties?.reqlvl || 0;
+      const levelReqReduction = socketSystem.stats?.levelReqReduction || 0;
+      const actualLevel = Math.max(1, baseReqLvl - levelReqReduction);
+
+      // Check level requirement
+      const currentLevel = socketSystem.currentLevel || 1;
+      if (currentLevel < actualLevel) return;
+
+      // Check stat requirements (str, dex)
+      const meetsStatRequirements = socketSystem.doesCharacterMeetStatRequirements?.(dropdownElement.value);
+      if (meetsStatRequirements === false) return;
+    }
+
+
     // Check equipment description for skill damage bonuses
     if (item.description) {
       const desc = item.description;
@@ -2520,13 +2539,40 @@ function getEquipmentSkillDamageBonuses() {
       }
     }
 
-    // Also check properties
-    if (item.properties) {
-      bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + (item.properties.poisonSkillDmg || 0);
-      bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + (item.properties.coldSkillDmg || 0);
-      bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + (item.properties.fireSkillDmg || 0);
-      bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + (item.properties.lightningSkillDmg || 0);
-      bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + (item.properties.magicSkillDmg || 0);
+    // Also check properties - BUT ONLY for dynamic items (items without description)
+    // Static items already have skill damage in their description, so checking properties would double-count
+    // CRITICAL FIX: Property names in items are lowercase (poisondamage, firedamage, etc.)
+    // not camelCase (poisonSkillDmg), so we need to check both
+
+
+    //     Perfect! The skill damage reset bug is completely fixed! 🎉
+
+    // Summary
+    // The bug was caused by a property name mismatch in 
+    // getEquipmentSkillDamageBonuses()
+    //  which was looking for camelCase names (poisonSkillDmg) instead of the actual lowercase names (
+    // poisondamage
+    // ) used in items.
+
+    // The complete solution involved three fixes:
+
+    // Corrected property names - Changed from camelCase to lowercase to match actual item properties
+    // Prevented double-counting - Only check properties for dynamic items (not static items with descriptions)
+    // Added requirement checks - Only count skill damage when character meets item requirements
+
+    if (item.properties && !item.description) {
+      const getPropValue = (prop) => {
+        if (typeof prop === 'object' && prop !== null) {
+          return prop.current !== undefined ? prop.current : (prop.max !== undefined ? prop.max : 0);
+        }
+        return prop || 0;
+      };
+
+      bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + getPropValue(item.properties.poisondamage);
+      bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + getPropValue(item.properties.colddamage);
+      bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + getPropValue(item.properties.firedamage);
+      bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + getPropValue(item.properties.lightdamage);
+      bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + getPropValue(item.properties.magicdamage);
     }
   });
 

@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PD2 Character Planner</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="auth-styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Overlock SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Overlock SC:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/png" href="/icon.png">
 </head>
+
 <body>
-    
+
 
 
 
@@ -18,31 +21,31 @@
         <!-- <div class="polyrellife">
             Polynomial Relative Life: <span id="polyrellife">0</span>
         </div> -->
-       
-<div class="modecontainer">
-  <div class="section">
-    <select class="modedropdown">
-      <option value="pvm">PvM</option>
-      <option value="pvp-n">PvP N</option>
-      <option value="pvp-nm">PvP NM</option>
-      <option value="pvp-hell">PvP Hell</option>
-    </select>
-  </div>
-</div>
 
-<div class="anyacontainer">
-  <div class="anyasection">
-<!-- <label class="label">
+        <div class="modecontainer">
+            <div class="section">
+                <select class="modedropdown">
+                    <option value="pvm">PvM</option>
+                    <option value="pvp-n">PvP N</option>
+                    <option value="pvp-nm">PvP NM</option>
+                    <option value="pvp-hell">PvP Hell</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="anyacontainer">
+            <div class="anyasection">
+                <!-- <label class="label">
     <input type="checkbox">
     <span class="checkbox"></span>
     Anya N
 </label> -->
-    <label><input type="checkbox" class="checkbox" value="anya-n">Anya N</label>
-    <label><input type="checkbox" class="checkbox" value="anya-nm">Anya NM</label>
-    <label><input type="checkbox" class="checkbox" value="anya-h">Anya H</label>
+                <label><input type="checkbox" class="checkbox" value="anya-n">Anya N</label>
+                <label><input type="checkbox" class="checkbox" value="anya-nm">Anya NM</label>
+                <label><input type="checkbox" class="checkbox" value="anya-h">Anya H</label>
 
-  </div>
-</div>
+            </div>
+        </div>
 
         <div class="menucontainer">
 
@@ -55,81 +58,81 @@
                 <option>Paladin</option>
                 <option>Sorceress</option>
             </select>
-            </div>
-            
-
-
-            <!-- <h4>Character Name</h4>
-            <input type="text" id="character-name" placeholder="Enter character name"> -->
-
-            <div class="stats-section">
-                <div class="stat-row">
-                    <label>Level: <input type="number" id="lvlValue" value="1" min="1" max="99"></label>
-                </div>
-                <div class="stat-row">
-                    <label>Strength: <input type="number" id="str" value="0" min="0"></label>
-                </div>
-                <div class="stat-row">
-                    <label>Dexterity: <input type="number" id="dex" value="0" min="0"></label>
-                </div>
-                <div class="stat-row">
-                    <label>Vitality: <input type="number" id="vit" value="0" min="0"></label>
-                </div>
-                <div class="stat-row">
-                    <label>Energy: <input type="number" id="enr" value="0" min="0"></label>
-                </div>
-            </div>
         </div>
 
-<div class="buffcontainer"></div>
 
-        <div class="equipment-section">
-          <div class="equipment-container">
+
+        <!-- <h4>Character Name</h4>
+            <input type="text" id="character-name" placeholder="Enter character name"> -->
+
+        <div class="stats-section">
+            <div class="stat-row">
+                <label>Level: <input type="number" id="lvlValue" value="1" min="1" max="99"></label>
+            </div>
+            <div class="stat-row">
+                <label>Strength: <input type="number" id="str" value="0" min="0"></label>
+            </div>
+            <div class="stat-row">
+                <label>Dexterity: <input type="number" id="dex" value="0" min="0"></label>
+            </div>
+            <div class="stat-row">
+                <label>Vitality: <input type="number" id="vit" value="0" min="0"></label>
+            </div>
+            <div class="stat-row">
+                <label>Energy: <input type="number" id="enr" value="0" min="0"></label>
+            </div>
+        </div>
+    </div>
+
+    <div class="buffcontainer"></div>
+
+    <div class="equipment-section">
+        <div class="equipment-container">
             <div class="groupweapons">
-              <label>Weapon</label>
-              <select id="weapons-dropdown">
-                <option value="">None</option>
-              </select>
-              <button id="upgradeWeaponButton">Upgrade</button>
-              <button id="makeetherealweapon">Make Ethereal</button>
-              <button id="corruptWeapon">Corrupt</button>
-              <div id="weapon-info" class="item-info"></div>
-              <div class="socket-container" data-section="weapon">
-                <div class="socket-grid sockets-0"></div>
-                  <button class="add-socket-btn" onclick="addSocket('weapon')">+</button>
+                <label>Weapon</label>
+                <select id="weapons-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeWeaponButton">Upgrade</button>
+                <button id="makeetherealweapon">Make Ethereal</button>
+                <button id="corruptWeapon">Corrupt</button>
+                <div id="weapon-info" class="item-info"></div>
+                <div class="socket-container" data-section="weapon">
+                    <div class="socket-grid sockets-0"></div>
+                    <button class="add-socket-btn" onclick="addSocket('weapon')">+</button>
                 </div>
             </div>
-                
+
             <div class="grouphelms">
-              <label>Helm</label>
-              <select id="helms-dropdown">
-                <option value="">None</option>
-              </select>
-              <button id="upgradeHelmButton">Upgrade</button>
-              <button id="makeethereal">Make Ethereal</button>
-              <button id="corruptHelm">Corrupt</button>
-              <div id="helm-info" class="item-info"></div>
-              <div class="socket-container" data-section="helm">
-                <div class="socket-grid sockets-0"></div>
-  <button class="add-socket-btn" onclick="addSocket('helm')">+</button>
-</div>
-</div>
+                <label>Helm</label>
+                <select id="helms-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeHelmButton">Upgrade</button>
+                <button id="makeethereal">Make Ethereal</button>
+                <button id="corruptHelm">Corrupt</button>
+                <div id="helm-info" class="item-info"></div>
+                <div class="socket-container" data-section="helm">
+                    <div class="socket-grid sockets-0"></div>
+                    <button class="add-socket-btn" onclick="addSocket('helm')">+</button>
+                </div>
+            </div>
 
             <div class="grouparmor">
-              <label>Armor</label>
-              <select id="armors-dropdown">
-                <option value="">None</option>
-              </select>
-              <button id="upgradeArmorButton">Upgrade</button>
-              <button id="makeetherealarmor">Make Ethereal</button>
-              <button id="corruptArmor">Corrupt</button>
-              <div id="armor-info" class="item-info"></div>
-              <div class="socket-container" data-section="armor">
-                <div class="socket-grid sockets-0"></div>
-  <button class="add-socket-btn" onclick="addSocket('armor')">+</button>
-</div>
+                <label>Armor</label>
+                <select id="armors-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="upgradeArmorButton">Upgrade</button>
+                <button id="makeetherealarmor">Make Ethereal</button>
+                <button id="corruptArmor">Corrupt</button>
+                <div id="armor-info" class="item-info"></div>
+                <div class="socket-container" data-section="armor">
+                    <div class="socket-grid sockets-0"></div>
+                    <button class="add-socket-btn" onclick="addSocket('armor')">+</button>
+                </div>
             </div>
-            
+
 
             <div class="groupoffhand">
                 <label>Shield/Off-hand</label>
@@ -137,14 +140,14 @@
                     <option value="">None</option>
                 </select>
                 <button id="upgradeShieldButton">Upgrade</button>
-            <button id="makeetherealshield">Make Ethereal</button>
-            <button id="corruptShield">Corrupt</button>
-           
-            <div id="off-info" class="item-info"></div>
-            <div class="socket-container" data-section="shield">
-                <div class="socket-grid sockets-0"></div>
-  <button class="add-socket-btn" onclick="addSocket('shield')">+</button>
-</div>
+                <button id="makeetherealshield">Make Ethereal</button>
+                <button id="corruptShield">Corrupt</button>
+
+                <div id="off-info" class="item-info"></div>
+                <div class="socket-container" data-section="shield">
+                    <div class="socket-grid sockets-0"></div>
+                    <button class="add-socket-btn" onclick="addSocket('shield')">+</button>
+                </div>
             </div>
 
             <div class="groupgloves">
@@ -153,13 +156,13 @@
                     <option value="">None</option>
                 </select>
                 <button id="upgradeGloveButton">Upgrade</button>
-            <button id="makeetherealglove">Make Ethereal</button>
-            <button id="corruptGlove">Corrupt</button>
-        
-            <div id="glove-info" class="item-info"></div>
+                <button id="makeetherealglove">Make Ethereal</button>
+                <button id="corruptGlove">Corrupt</button>
+
+                <div id="glove-info" class="item-info"></div>
             </div>
-            
-    
+
+
 
             <div class="groupbelts">
                 <label>Belt</label>
@@ -167,12 +170,12 @@
                     <option value="">None</option>
                 </select>
                 <button id="upgradeBeltButton">Upgrade</button>
-            <button id="makeetherealbelt">Make Ethereal</button>
-            <button id="corruptBelt">Corrupt</button>
-            <div id="belt-info" class="item-info"></div>
+                <button id="makeetherealbelt">Make Ethereal</button>
+                <button id="corruptBelt">Corrupt</button>
+                <div id="belt-info" class="item-info"></div>
             </div>
-            
-                 
+
+
 
             <div class="groupboots">
                 <label>Boots</label>
@@ -180,9 +183,9 @@
                     <option value="">None</option>
                 </select>
                 <button id="upgradeBootButton">Upgrade</button>
-            <button id="makeetherealboot">Make Ethereal</button>
-            <button id="corruptBoot">Corrupt</button>
-            <div id="boot-info" class="item-info"></div>
+                <button id="makeetherealboot">Make Ethereal</button>
+                <button id="corruptBoot">Corrupt</button>
+                <div id="boot-info" class="item-info"></div>
             </div>
 
             <div class="groupringsone">
@@ -195,11 +198,11 @@
             </div>
             <div class="groupringstwo">
                 <label>Ring 2</label>
-            <select id="ringstwo-dropdown">
-                <option value="">None</option>
-            </select>
-            <button id="corruptRingTwo">Corrupt</button>
-            <div id="ringstwo-info" class="item-info"></div>
+                <select id="ringstwo-dropdown">
+                    <option value="">None</option>
+                </select>
+                <button id="corruptRingTwo">Corrupt</button>
+                <div id="ringstwo-info" class="item-info"></div>
             </div>
 
             <div class="groupamulet">
@@ -211,234 +214,239 @@
                 <div id="amulet-info" class="item-info"></div>
             </div>
         </div>
-        
-        
 
-       
+
+
+
 
 
 
         <div class="stats-display-grid">
-    <!-- Core Stats -->
-    <div class="stat-group">
-        <h4>Core Stats</h4>
-        <div class="stat-item">
-            <span class="stat-label">Life:</span>
-            <span id="lifecontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Mana:</span>
-            <span id="manacontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">All Skills:</span>
-            <span id="allskillscontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Magic Find:</span>
-            <span id="magicfindcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Gold Find:</span>
-            <span id="goldfindcontainer" class="stat-value">0</span>%
-        </div>
-    
-    
-        <div class="stat-item">
-            <span class="stat-label">Defense:</span>
-            <span id="defensecontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Block Chance:</span>
-            <span id="realblockcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">DR%:</span>
-            <span id="drcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">PDR:</span>
-            <span id="pdrcontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">MDR:</span>
-            <span id="mdrcontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">PLR:</span>
-            <span id="plrcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Cannot Be Frozen:</span>
-            <span id="cbfcontainer" class="stat-value">No</span>
-        </div>
-    
-        <div class="stat-item">
-            <span class="stat-label">IAS:</span>
-            <span id="iascontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">FCR:</span>
-            <span id="fcrcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">FRW:</span>
-            <span id="frwcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">FHR:</span>
-            <span id="fhrcontainer" class="stat-value">0</span>%
-        </div>
-    
-        <div class="stat-item">
-            <span class="stat-label">Fire Resist:</span>
-            <span id="fireresistcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Cold Resist:</span>
-            <span id="coldresistcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Lightning Resist:</span>
-            <span id="lightresistcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Poison Resist:</span>
-            <span id="poisonresistcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Curse Resist:</span>
-            <span id="curseresistcontainer" class="stat-value">0</span>%
-        </div>
-    </div>
+            <!-- Core Stats -->
+            <div class="stat-group">
+                <h4>Core Stats</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Life:</span>
+                    <span id="lifecontainer" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Mana:</span>
+                    <span id="manacontainer" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">All Skills:</span>
+                    <span id="allskillscontainer" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Magic Find:</span>
+                    <span id="magicfindcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Gold Find:</span>
+                    <span id="goldfindcontainer" class="stat-value">0</span>%
+                </div>
 
-    <!-- Combat Stats -->
-    <div class="stat-group">
-        <h4>Combat Stats</h4>
-        <div class="stat-item">
-            <span class="stat-label">Life Steal:</span>
-            <span id="lifestealcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Mana Steal:</span>
-            <span id="manastealcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Open Wounds:</span>
-            <span id="owcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">OW Dmg/s:</span>
-            <span id="owdmgcontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Crushing Blow:</span>
-            <span id="cbcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">CB Damage:</span>
-            <span id="cbdmgcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Critical Hit:</span>
-            <span id="criticalhitcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Deadly Strike:</span>
-            <span id="deadlystrikecontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Weapon Mastery:</span>
-            <span id="weaponmasterycontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Crit Multiplier:</span>
-            <span id="crithitmultipliercontainer" class="stat-value">skills.critMultiplier</span>x
-        </div>
-         <div class="stat-item">
-            <span class="stat-label">Fire Skill Damage:</span>
-            <span id="fireskilldmgcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Cold Skill Damage:</span>
-            <span id="coldskilldmgcontainer" class="stat-value">0</span>% 
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Lightning Skill Damage:</span>
-            <span id="lightningskilldmgcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Poison Skill Damage:</span>
-            <span id="poisonskilldmgcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Magic Skill Damage:</span>
-            <span id="magicskilldmgcontainer" class="stat-value">0</span>%
-        </div>
-    </div>
 
-    <!-- Hidden containers for skill tooltip stats -->
-    <div style="display: none;">
-        <span id="tomindmgcontainer">0</span>
-        <span id="tomaxdmgcontainer">0</span>
-    </div>
+                <div class="stat-item">
+                    <span class="stat-label">Defense:</span>
+                    <span id="defensecontainer" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Block Chance:</span>
+                    <span id="realblockcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">DR%:</span>
+                    <span id="drcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">PDR:</span>
+                    <span id="pdrcontainer" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">MDR:</span>
+                    <span id="mdrcontainer" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">PLR:</span>
+                    <span id="plrcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Cannot Be Frozen:</span>
+                    <span id="cbfcontainer" class="stat-value">No</span>
+                </div>
 
-    <!-- Pierce Stats -->
-    <div class="stat-group">
-        <h4>Enemy Resistance Pierce</h4>
-        <div class="stat-item">
-            <span class="stat-label">Pierce Physical:</span>
-            <span id="piercephyscontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Pierce Fire:</span>
-            <span id="piercefirecontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Pierce Cold:</span>
-            <span id="piercecoldcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Pierce Lightning:</span>
-            <span id="piercelightningcontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Pierce Poison:</span>
-            <span id="piercepoisoncontainer" class="stat-value">0</span>%
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Pierce Magic:</span>
-            <span id="piercemagiccontainer" class="stat-value">0</span>%
-        </div>
-       
+                <div class="stat-item">
+                    <span class="stat-label">IAS:</span>
+                    <span id="iascontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">FCR:</span>
+                    <span id="fcrcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">FRW:</span>
+                    <span id="frwcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">FHR:</span>
+                    <span id="fhrcontainer" class="stat-value">0</span>%
+                </div>
 
-    </div>
+                <div class="stat-item">
+                    <span class="stat-label">Fire Resist:</span>
+                    <span id="fireresistcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Cold Resist:</span>
+                    <span id="coldresistcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Lightning Resist:</span>
+                    <span id="lightresistcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Poison Resist:</span>
+                    <span id="poisonresistcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Curse Resist:</span>
+                    <span id="curseresistcontainer" class="stat-value">0</span>%
+                </div>
+            </div>
 
-    <!-- Flat Damage Stats -->
-    <div class="stat-group">
-        <h4>Added Damage</h4>
-        <div class="stat-item">
-            <span class="stat-label">Fire Damage:</span>
-            <span id="flatfiremincontainer" class="stat-value">0</span>-<span id="flatfiremaxcontainer" class="stat-value">0</span>
+            <!-- Combat Stats -->
+            <div class="stat-group">
+                <h4>Combat Stats</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Life Steal:</span>
+                    <span id="lifestealcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Mana Steal:</span>
+                    <span id="manastealcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Open Wounds:</span>
+                    <span id="owcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">OW Dmg/s:</span>
+                    <span id="owdmgcontainer" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Crushing Blow:</span>
+                    <span id="cbcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CB Damage:</span>
+                    <span id="cbdmgcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Critical Hit:</span>
+                    <span id="criticalhitcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Deadly Strike:</span>
+                    <span id="deadlystrikecontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Weapon Mastery:</span>
+                    <span id="weaponmasterycontainer" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Crit Multiplier:</span>
+                    <span id="crithitmultipliercontainer" class="stat-value">skills.critMultiplier</span>x
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Fire Skill Damage:</span>
+                    <span id="fireskilldmgcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Cold Skill Damage:</span>
+                    <span id="coldskilldmgcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Lightning Skill Damage:</span>
+                    <span id="lightningskilldmgcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Poison Skill Damage:</span>
+                    <span id="poisonskilldmgcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Magic Skill Damage:</span>
+                    <span id="magicskilldmgcontainer" class="stat-value">0</span>%
+                </div>
+            </div>
+
+            <!-- Hidden containers for skill tooltip stats -->
+            <div style="display: none;">
+                <span id="tomindmgcontainer">0</span>
+                <span id="tomaxdmgcontainer">0</span>
+            </div>
+
+            <!-- Pierce Stats -->
+            <div class="stat-group">
+                <h4>Enemy Resistance Pierce</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Pierce Physical:</span>
+                    <span id="piercephyscontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pierce Fire:</span>
+                    <span id="piercefirecontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pierce Cold:</span>
+                    <span id="piercecoldcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pierce Lightning:</span>
+                    <span id="piercelightningcontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pierce Poison:</span>
+                    <span id="piercepoisoncontainer" class="stat-value">0</span>%
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pierce Magic:</span>
+                    <span id="piercemagiccontainer" class="stat-value">0</span>%
+                </div>
+
+
+            </div>
+
+            <!-- Flat Damage Stats -->
+            <div class="stat-group">
+                <h4>Added Damage</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Fire Damage:</span>
+                    <span id="flatfiremincontainer" class="stat-value">0</span>-<span id="flatfiremaxcontainer"
+                        class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Cold Damage:</span>
+                    <span id="flatcoldmincontainer" class="stat-value">0</span>-<span id="flatcoldmaxcontainer"
+                        class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Lightning Damage:</span>
+                    <span id="flatlightmincontainer" class="stat-value">0</span>-<span id="flatlightmaxcontainer"
+                        class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Poison Damage:</span>
+                    <span id="flatpoisonmincontainer" class="stat-value">0</span>-<span id="flatpoisonmaxcontainer"
+                        class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Magic Damage:</span>
+                    <span id="flatmagicmincontainer" class="stat-value">0</span>-<span id="flatmagicmaxcontainer"
+                        class="stat-value">0</span>
+                </div>
+            </div>
         </div>
-        <div class="stat-item">
-            <span class="stat-label">Cold Damage:</span>
-            <span id="flatcoldmincontainer" class="stat-value">0</span>-<span id="flatcoldmaxcontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Lightning Damage:</span>
-            <span id="flatlightmincontainer" class="stat-value">0</span>-<span id="flatlightmaxcontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Poison Damage:</span>
-            <span id="flatpoisonmincontainer" class="stat-value">0</span>-<span id="flatpoisonmaxcontainer" class="stat-value">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-label">Magic Damage:</span>
-            <span id="flatmagicmincontainer" class="stat-value">0</span>-<span id="flatmagicmaxcontainer" class="stat-value">0</span>
-        </div>
-    </div>
-</div>
 
         <!-- <div class="inventorycontainer">
             </div> -->
@@ -458,190 +466,190 @@
             <input type="number" id="merclvlValue" min="1" max="99" value="1">
             <h3>Level</h3>
             <div class="mercequipment-container">
-                 
+
                 <div class="mercgroupweapons">
-              <label>Merc Weapon</label>
-              <select id="mercweapons-dropdown">
-                <option value="">None</option>
-              </select>
-              <button id="upgradeWeaponButton">Upgrade</button>
-              <button id="makeetherealweapon">Make Ethereal</button>
-              <button id="corruptWeapon">Corrupt</button>
-              <div id="merc-weapon-info" class="item-info"></div>
-              <div class="socket-container" data-section="mercweapon">
-                <div class="socket-grid sockets-0"></div>
-  <button class="add-socket-btn" onclick="addSocket('mercweapon')">+</button>
-</div>
-</div>
-               <div class="mercgrouphelms">
-              <label>Merc Helm</label>
-              <select id="merchelms-dropdown">
-                <option value="">None</option>
-              </select>
-              <button id="upgradeHelmButton">Upgrade</button>
-              <button id="makeethereal">Make Ethereal</button>
-              <button id="corruptHelm">Corrupt</button>
-              <div id="merc-helm-info" class="item-info"></div>
-              <div class="socket-container" data-section="merchelm">
-                <div class="socket-grid sockets-0"></div>
-  <button class="add-socket-btn" onclick="addSocket('merchelm')">+</button>
-</div>
-</div>
-                 <div class="mercgrouparmors">
-              <label>Merc Armor</label>
-              <select id="mercarmors-dropdown">
-                <option value="">None</option>
-              </select>
-              <button id="upgradeArmorButton">Upgrade</button>
-              <button id="makeetherealarmor">Make Ethereal</button>
-              <button id="corruptArmor">Corrupt</button>
-              <div id="merc-armor-info" class="item-info"></div>
-              <div class="socket-container" data-section="mercarmor">
-                <div class="socket-grid sockets-0"></div>
-  <button class="add-socket-btn" onclick="addSocket('mercarmor')">+</button>
-</div>
-</div>
-
- <div class="mercgroupoffs">
-              <label>Merc Off-Hand/Shield</label>
-              <select id="mercoffs-dropdown">
-                <option value="">None</option>
-              </select>
-              <button id="upgradeShieldButton">Upgrade</button>
-              <button id="makeetherealshield">Make Ethereal</button>
-              <button id="corruptShield">Corrupt</button>
-              <div id="merc-off-info" class="item-info"></div>
-              <div class="socket-container" data-section="mercoff">
-                <div class="socket-grid sockets-0">
-  <div class="socket-slot empty" data-index="0"></div>
-  <div class="socket-slot empty" data-index="1"></div>
-  </div>
-  <button class="add-socket-btn" onclick="addSocket('mercoff')">+</button>
-</div>
-</div>
-
-<div class="mercgroupgloves">
-                <label>Merc Gloves</label>
-                <select id="mercgloves-dropdown">
-                    <option value="">None</option>
-                </select>
-                <button id="upgradeGloveButton">Upgrade</button>
-            <button id="makeetherealglove">Make Ethereal</button>
-            <button id="corruptGlove">Corrupt</button>
-
-            <div id="merc-glove-info" class="item-info"></div>
-            </div>
-
-            <div class="mercgroupbelts">
-                <label>Merc Belts</label>
-                <select id="mercbelts-dropdown">
-                    <option value="">None</option>
-                </select>
-                <button id="upgradeBeltButton">Upgrade</button>
-            <button id="makeetherealbelt">Make Ethereal</button>
-            <button id="corruptBelt">Corrupt</button>
-
-            <div id="merc-belt-info" class="item-info"></div>
-            </div>
-
-            <div class="mercgroupboots">
-                <label>Merc Boots</label>
-                <select id="mercboots-dropdown">
-                    <option value="">None</option>
-                </select>
-                <button id="upgradeBootButton">Upgrade</button>
-            <button id="makeetherealboot">Make Ethereal</button>
-            <button id="corruptBoot">Corrupt</button>
-
-            <div id="merc-boot-info" class="item-info"></div>
-            </div>
-             </div>
-              </div>
-
-              </div>
-
-              <!-- Mercenary Stats Display (positioned absolutely to the right) -->
-              <div class="mercenary-stats-display">
-                <h4>Mercenary Stats</h4>
-                <div class="merc-stats-grid">
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">All Skills:</span>
-                    <span id="merc-allskills" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">MF:</span>
-                    <span id="merc-mf" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">GF:</span>
-                    <span id="merc-gf" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">Defense:</span>
-                    <span id="merc-defense" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">DR:</span>
-                    <span id="merc-dr" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">PDR:</span>
-                    <span id="merc-pdr" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">MDR:</span>
-                    <span id="merc-mdr" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">PLR:</span>
-                    <span id="merc-plr" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">Cannot be Frozen:</span>
-                    <span id="merc-cbf" class="merc-stat-value">No</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">IAS:</span>
-                    <span id="merc-ias" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">FCR:</span>
-                    <span id="merc-fcr" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">FRW:</span>
-                    <span id="merc-frw" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">FHR:</span>
-                    <span id="merc-fhr" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">Fire Resist:</span>
-                    <span id="merc-fire-res" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">Cold Resist:</span>
-                    <span id="merc-cold-res" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">Light Resist:</span>
-                    <span id="merc-light-res" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">Poison Resist:</span>
-                    <span id="merc-poison-res" class="merc-stat-value">0</span>
-                  </div>
-                  <div class="merc-stat-row">
-                    <span class="merc-stat-label">Curse Resist:</span>
-                    <span id="merc-curse-res" class="merc-stat-value">0</span>
-                  </div>
+                    <label>Merc Weapon</label>
+                    <select id="mercweapons-dropdown">
+                        <option value="">None</option>
+                    </select>
+                    <button id="upgradeWeaponButton">Upgrade</button>
+                    <button id="makeetherealweapon">Make Ethereal</button>
+                    <button id="corruptWeapon">Corrupt</button>
+                    <div id="merc-weapon-info" class="item-info"></div>
+                    <div class="socket-container" data-section="mercweapon">
+                        <div class="socket-grid sockets-0"></div>
+                        <button class="add-socket-btn" onclick="addSocket('mercweapon')">+</button>
+                    </div>
                 </div>
-              </div>
+                <div class="mercgrouphelms">
+                    <label>Merc Helm</label>
+                    <select id="merchelms-dropdown">
+                        <option value="">None</option>
+                    </select>
+                    <button id="upgradeHelmButton">Upgrade</button>
+                    <button id="makeethereal">Make Ethereal</button>
+                    <button id="corruptHelm">Corrupt</button>
+                    <div id="merc-helm-info" class="item-info"></div>
+                    <div class="socket-container" data-section="merchelm">
+                        <div class="socket-grid sockets-0"></div>
+                        <button class="add-socket-btn" onclick="addSocket('merchelm')">+</button>
+                    </div>
+                </div>
+                <div class="mercgrouparmors">
+                    <label>Merc Armor</label>
+                    <select id="mercarmors-dropdown">
+                        <option value="">None</option>
+                    </select>
+                    <button id="upgradeArmorButton">Upgrade</button>
+                    <button id="makeetherealarmor">Make Ethereal</button>
+                    <button id="corruptArmor">Corrupt</button>
+                    <div id="merc-armor-info" class="item-info"></div>
+                    <div class="socket-container" data-section="mercarmor">
+                        <div class="socket-grid sockets-0"></div>
+                        <button class="add-socket-btn" onclick="addSocket('mercarmor')">+</button>
+                    </div>
+                </div>
+
+                <div class="mercgroupoffs">
+                    <label>Merc Off-Hand/Shield</label>
+                    <select id="mercoffs-dropdown">
+                        <option value="">None</option>
+                    </select>
+                    <button id="upgradeShieldButton">Upgrade</button>
+                    <button id="makeetherealshield">Make Ethereal</button>
+                    <button id="corruptShield">Corrupt</button>
+                    <div id="merc-off-info" class="item-info"></div>
+                    <div class="socket-container" data-section="mercoff">
+                        <div class="socket-grid sockets-0">
+                            <div class="socket-slot empty" data-index="0"></div>
+                            <div class="socket-slot empty" data-index="1"></div>
+                        </div>
+                        <button class="add-socket-btn" onclick="addSocket('mercoff')">+</button>
+                    </div>
+                </div>
+
+                <div class="mercgroupgloves">
+                    <label>Merc Gloves</label>
+                    <select id="mercgloves-dropdown">
+                        <option value="">None</option>
+                    </select>
+                    <button id="upgradeGloveButton">Upgrade</button>
+                    <button id="makeetherealglove">Make Ethereal</button>
+                    <button id="corruptGlove">Corrupt</button>
+
+                    <div id="merc-glove-info" class="item-info"></div>
+                </div>
+
+                <div class="mercgroupbelts">
+                    <label>Merc Belts</label>
+                    <select id="mercbelts-dropdown">
+                        <option value="">None</option>
+                    </select>
+                    <button id="upgradeBeltButton">Upgrade</button>
+                    <button id="makeetherealbelt">Make Ethereal</button>
+                    <button id="corruptBelt">Corrupt</button>
+
+                    <div id="merc-belt-info" class="item-info"></div>
+                </div>
+
+                <div class="mercgroupboots">
+                    <label>Merc Boots</label>
+                    <select id="mercboots-dropdown">
+                        <option value="">None</option>
+                    </select>
+                    <button id="upgradeBootButton">Upgrade</button>
+                    <button id="makeetherealboot">Make Ethereal</button>
+                    <button id="corruptBoot">Corrupt</button>
+
+                    <div id="merc-boot-info" class="item-info"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Mercenary Stats Display (positioned absolutely to the right) -->
+    <div class="mercenary-stats-display">
+        <h4>Mercenary Stats</h4>
+        <div class="merc-stats-grid">
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">All Skills:</span>
+                <span id="merc-allskills" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">MF:</span>
+                <span id="merc-mf" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">GF:</span>
+                <span id="merc-gf" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">Defense:</span>
+                <span id="merc-defense" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">DR:</span>
+                <span id="merc-dr" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">PDR:</span>
+                <span id="merc-pdr" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">MDR:</span>
+                <span id="merc-mdr" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">PLR:</span>
+                <span id="merc-plr" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">Cannot be Frozen:</span>
+                <span id="merc-cbf" class="merc-stat-value">No</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">IAS:</span>
+                <span id="merc-ias" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">FCR:</span>
+                <span id="merc-fcr" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">FRW:</span>
+                <span id="merc-frw" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">FHR:</span>
+                <span id="merc-fhr" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">Fire Resist:</span>
+                <span id="merc-fire-res" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">Cold Resist:</span>
+                <span id="merc-cold-res" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">Light Resist:</span>
+                <span id="merc-light-res" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">Poison Resist:</span>
+                <span id="merc-poison-res" class="merc-stat-value">0</span>
+            </div>
+            <div class="merc-stat-row">
+                <span class="merc-stat-label">Curse Resist:</span>
+                <span id="merc-curse-res" class="merc-stat-value">0</span>
+            </div>
+        </div>
+    </div>
 
 
 
-        <!-- <div class="auth-container">
+    <!-- <div class="auth-container">
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <h2>Login</h2>
                 <input type="text" id="loginInput" placeholder="Email or Username" required>
@@ -662,12 +670,12 @@
             </form>
         </div> -->
 
-        
-        
 
-       
 
-        <!-- <div class="character-management">
+
+
+
+    <!-- <div class="character-management">
             <button id="saveCharacterButton">Save Character</button>
             <button id="loadCharacterButton">Load Character</button>
             <div id="charactersList"></div>
@@ -693,115 +701,148 @@
 
 
 
-        <!-- Crafting Modal -->
-        <div id="craftingModalBackdrop" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9998;"></div>
-        <div id="craftingModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; max-height: 90vh; overflow-y: auto; width: 90%; max-width: 1000px;">
-            <div style="background: #0a0e27; border-radius: 8px; padding: 25px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="color: #ffd700; margin: 0; font-size: 24px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">Craft</h2>
-                    <button onclick="closeCraftingModal()" style="background: #e74c3c; border: none; color: white; font-size: 28px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;" onmouseover="this.style.background='#c0392b'; this.style.boxShadow='0 0 20px rgba(231, 76, 60, 0.8)';" onmouseout="this.style.background='#e74c3c'; this.style.boxShadow='none';">×</button>
-                </div>
+    <!-- Crafting Modal -->
+    <div id="craftingModalBackdrop"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9998;">
+    </div>
+    <div id="craftingModal"
+        style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; max-height: 90vh; overflow-y: auto; width: 90%; max-width: 1000px;">
+        <div style="background: #0a0e27; border-radius: 8px; padding: 25px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: #ffd700; margin: 0; font-size: 24px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">
+                    Craft</h2>
+                <button onclick="closeCraftingModal()"
+                    style="background: #e74c3c; border: none; color: white; font-size: 28px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"
+                    onmouseover="this.style.background='#c0392b'; this.style.boxShadow='0 0 20px rgba(231, 76, 60, 0.8)';"
+                    onmouseout="this.style.background='#e74c3c'; this.style.boxShadow='none';">×</button>
+            </div>
 
-                <!-- Two column layout -->
-                <div style="display: grid; grid-template-columns: 1fr 350px; gap: 20px;">
-                    <!-- Left column: Craft form -->
-                    <div class="craft-form">
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <label for="craftName" style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 6px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Item Name (max 11 chars):</label>
-                            <input type="text" id="craftName" maxlength="21" placeholder="e.g. myTestWeapon" style="width: 100%; padding: 10px; background: #1a1f3a; border: none; color: #ffd700; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
-                        </div>
+            <!-- Two column layout -->
+            <div style="display: grid; grid-template-columns: 1fr 350px; gap: 20px;">
+                <!-- Left column: Craft form -->
+                <div class="craft-form">
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label for="craftName"
+                            style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 6px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Item
+                            Name (max 11 chars):</label>
+                        <input type="text" id="craftName" maxlength="21" placeholder="e.g. myTestWeapon"
+                            style="width: 100%; padding: 10px; background: #1a1f3a; border: none; color: #ffd700; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+                    </div>
 
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <label for="craftBaseType" style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 6px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Base Item Type:</label>
-                            <select id="craftBaseType" style="width: 100%; padding: 10px; background: #1a1f3a; border: none; color: #ffd700; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
-                                <option value="">Select base item...</option>
-                            </select>
-                        </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label for="craftBaseType"
+                            style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 6px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Base
+                            Item Type:</label>
+                        <select id="craftBaseType"
+                            style="width: 100%; padding: 10px; background: #1a1f3a; border: none; color: #ffd700; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+                            <option value="">Select base item...</option>
+                        </select>
+                    </div>
 
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <label for="craftType" style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 6px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Craft Type:</label>
-                            <select id="craftType" style="width: 100%; padding: 10px; background: #1a1f3a; border: none; color: #ffd700; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
-                                <option value="blood">Blood Weapon</option>
-                                <option value="bloodarmor">Blood Armor</option>
-                                <option value="bloodhelm">Blood Helm</option>
-                                <option value="bloodshield">Blood Shield</option>
-                                <option value="bloodboots">Blood Boots</option>
-                                <option value="bloodgloves">Blood Gloves</option>
-                                <option value="bloodbelt">Blood Belt</option>
-                                <option value="bloodring">Blood Ring</option>
-                                <option value="bloodamulet">Blood Amulet</option>
-                                <option value="safetyarmor">Safety Armor</option>
-                                <option value="safetyshield">Safety Shield</option>
-                                <option value="brilliantgloves">Brilliant Gloves</option>
-                                <option value="caster">Caster Craft</option>
-                                <option value="hitpower">Hit Power Craft</option>
-                                <option value="safety">Safety Craft</option>
-                                <option value="vampiric">Vampiric Craft</option>
-                                <option value="bountiful">Bountiful Craft</option>
-                                <option value="brilliant">Brilliant Craft</option>
-                            </select>
-                        </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label for="craftType"
+                            style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 6px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Craft
+                            Type:</label>
+                        <select id="craftType"
+                            style="width: 100%; padding: 10px; background: #1a1f3a; border: none; color: #ffd700; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+                            <option value="blood">Blood Weapon</option>
+                            <option value="bloodarmor">Blood Armor</option>
+                            <option value="bloodhelm">Blood Helm</option>
+                            <option value="bloodshield">Blood Shield</option>
+                            <option value="bloodboots">Blood Boots</option>
+                            <option value="bloodgloves">Blood Gloves</option>
+                            <option value="bloodbelt">Blood Belt</option>
+                            <option value="bloodring">Blood Ring</option>
+                            <option value="bloodamulet">Blood Amulet</option>
+                            <option value="safetyarmor">Safety Armor</option>
+                            <option value="safetyshield">Safety Shield</option>
+                            <option value="brilliantgloves">Brilliant Gloves</option>
+                            <option value="caster">Caster Craft</option>
+                            <option value="hitpower">Hit Power Craft</option>
+                            <option value="safety">Safety Craft</option>
+                            <option value="vampiric">Vampiric Craft</option>
+                            <option value="bountiful">Bountiful Craft</option>
+                            <option value="brilliant">Brilliant Craft</option>
+                        </select>
+                    </div>
 
-                        <!-- Fixed Properties Section -->
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <label style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 8px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Fixed Properties (adjust sliders):</label>
-                            <div id="fixedPropertiesContainer" class="affixes-grid" style="max-height: 200px; overflow-y: auto; padding: 10px; background: #1a1f3a; border-radius: 4px;">
-                                <!-- Dynamically populated -->
-                            </div>
-                        </div>
-
-                        <!-- Affixes Section -->
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <label style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 8px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Affixes (adjust sliders):</label>
-                            <div id="affixesContainer" class="affixes-grid" style="max-height: 300px; overflow-y: auto; padding: 10px; background: #1a1f3a; border-radius: 4px;">
-                                <!-- Dynamically populated -->
-                            </div>
-                        </div>
-
-                        <div class="form-actions" style="display: flex; gap: 10px; margin-top: 15px;">
-                            <button onclick="createCraftedItem()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #28a745, #1e7e34); border: none; color: #ffd700; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(40, 167, 69, 0.4);" onmouseover="this.style.background='linear-gradient(135deg, #2ce84b, #22963d)'; this.style.boxShadow='0 0 25px rgba(44, 232, 75, 0.6)';" onmouseout="this.style.background='linear-gradient(135deg, #28a745, #1e7e34)'; this.style.boxShadow='0 0 15px rgba(40, 167, 69, 0.4)';">CREATE ITEM</button>
-                            <button onclick="closeCraftingModal()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #6c757d, #5a6268); border: none; color: #ffd700; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(108, 117, 125, 0.4);" onmouseover="this.style.background='linear-gradient(135deg, #7a8490, #6a7380)'; this.style.boxShadow='0 0 25px rgba(122, 132, 144, 0.6)';" onmouseout="this.style.background='linear-gradient(135deg, #6c757d, #5a6268)'; this.style.boxShadow='0 0 15px rgba(108, 117, 125, 0.4)';">CANCEL</button>
+                    <!-- Fixed Properties Section -->
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label
+                            style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 8px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Fixed
+                            Properties (adjust sliders):</label>
+                        <div id="fixedPropertiesContainer" class="affixes-grid"
+                            style="max-height: 200px; overflow-y: auto; padding: 10px; background: #1a1f3a; border-radius: 4px;">
+                            <!-- Dynamically populated -->
                         </div>
                     </div>
 
-                    <!-- Right column: My Crafted Items -->
-                    <div>
-                        <h3 style="color: #ffd700; margin: 0 0 10px 0; font-size: 18px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">My Crafted Items</h3>
-                        <div id="craftedItemsList" style="max-height: calc(90vh - 150px); overflow-y: auto; padding: 10px; background: #1a1f3a; border-radius: 4px;">
+                    <!-- Affixes Section -->
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label
+                            style="display: block; color: #ffd700; font-weight: bold; margin-bottom: 8px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">Affixes
+                            (adjust sliders):</label>
+                        <div id="affixesContainer" class="affixes-grid"
+                            style="max-height: 300px; overflow-y: auto; padding: 10px; background: #1a1f3a; border-radius: 4px;">
                             <!-- Dynamically populated -->
                         </div>
+                    </div>
+
+                    <div class="form-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button onclick="createCraftedItem()"
+                            style="flex: 1; padding: 12px; background: linear-gradient(135deg, #28a745, #1e7e34); border: none; color: #ffd700; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(40, 167, 69, 0.4);"
+                            onmouseover="this.style.background='linear-gradient(135deg, #2ce84b, #22963d)'; this.style.boxShadow='0 0 25px rgba(44, 232, 75, 0.6)';"
+                            onmouseout="this.style.background='linear-gradient(135deg, #28a745, #1e7e34)'; this.style.boxShadow='0 0 15px rgba(40, 167, 69, 0.4)';">CREATE
+                            ITEM</button>
+                        <button onclick="closeCraftingModal()"
+                            style="flex: 1; padding: 12px; background: linear-gradient(135deg, #6c757d, #5a6268); border: none; color: #ffd700; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(108, 117, 125, 0.4);"
+                            onmouseover="this.style.background='linear-gradient(135deg, #7a8490, #6a7380)'; this.style.boxShadow='0 0 25px rgba(122, 132, 144, 0.6)';"
+                            onmouseout="this.style.background='linear-gradient(135deg, #6c757d, #5a6268)'; this.style.boxShadow='0 0 15px rgba(108, 117, 125, 0.4)';">CANCEL</button>
+                    </div>
+                </div>
+
+                <!-- Right column: My Crafted Items -->
+                <div>
+                    <h3
+                        style="color: #ffd700; margin: 0 0 10px 0; font-size: 18px; text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);">
+                        My Crafted Items</h3>
+                    <div id="craftedItemsList"
+                        style="max-height: calc(90vh - 150px); overflow-y: auto; padding: 10px; background: #1a1f3a; border-radius: 4px;">
+                        <!-- Dynamically populated -->
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-<script src="items.js"></script>
-<script src="stats-descriptions.js"></script>
-<script src="craftedItems.js"></script>
-<script src="character.js"></script>
-<script src="socket.js"></script>
-<script src="corrupt.js"></script>
-<script src="itemUpgrade.js"></script>
-<script src="buffs.js"></script>
-<script src="setTracker.js"></script>
-<script src="inventory.js"></script>
-<script src="runeword.js"></script>
-<script src="skills.js"></script>
-<script src="notification.js"></script>
-<script src="character-data.js"></script>
-<script src="itemState.js"></script>
-<script src="auth.js"></script>
-<script src="auth-ui.js"></script>
-<script src="main.js"></script>
-
-
-    
+    <script src="items.js"></script>
+    <script src="stats-descriptions.js"></script>
+    <script src="craftedItems.js"></script>
+    <script src="character.js"></script>
+    <script src="socket.js"></script>
+    <script src="corrupt.js"></script>
+    <script src="itemUpgrade.js"></script>
+    <script src="buffs.js"></script>
+    <script src="setTracker.js"></script>
+    <script src="inventory.js"></script>
+    <script src="runeword.js"></script>
+    <script src="skills.js"></script>
+    <script src="notification.js"></script>
+    <script src="character-data.js"></script>
+    <script src="itemState.js"></script>
+    <script src="auth.js"></script>
+    <script src="auth-ui.js"></script>
+    <script src="main.js"></script>
 
 
 
 
-    
+
+
+
+
 
 
 </body>
+
 </html>

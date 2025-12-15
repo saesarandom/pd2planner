@@ -3261,6 +3261,7 @@ class UnifiedSocketSystem {
 
     if (!description) return;
 
+
     const lines = description.split('<br>');
     lines.forEach(line => this.parseStatLine(line.trim()));
   }
@@ -3340,7 +3341,6 @@ class UnifiedSocketSystem {
         const match = cleanLine.match(/\+(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i);
         if (match) {
           const value = parseInt(match[1]);
-          debugger; // COMPARE: Check if this behaves same as firepierce
           this.stats.poisonSkillDamage = (this.stats.poisonSkillDamage || 0) + value;
           return;
         }
@@ -3351,7 +3351,6 @@ class UnifiedSocketSystem {
         const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Fire\s+Resistance/i);
         if (match) {
           const value = parseInt(match[1]);
-          debugger; // COMPARE: Does firepierce behave differently than poisondamage?
           this.stats.pierceFire = (this.stats.pierceFire || 0) + value;
           return;
         }
