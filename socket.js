@@ -2509,15 +2509,24 @@ class UnifiedSocketSystem {
 
     const dropdownId = this.getSectionDropdownId(section);
     const dropdown = document.getElementById(dropdownId);
-    // if (!dropdown || !dropdown.value || !itemList[dropdown.value]) {
-    //   infoDiv.innerHTML = '';
-    //   return;
-    // }
 
-    // const item = itemList[dropdown.value];
-    const item = dropdown?.value ? window.getItemData(dropdown.value) : null;
+    if (!dropdown || !dropdown.value) {
+      infoDiv.innerHTML = '';
+      return;
+    }
 
-    if (!dropdown || !dropdown.value || !item) {
+    // CRITICAL FIX: Use dropdown-specific cache to get the modified item
+    // This ensures we use the item with updated properties from handleVariableStatChange
+    const cacheKey = `${dropdownId}_${dropdown.value}`;
+    let item = window.dropdownItemCache?.[cacheKey];
+
+    // If not in cache, this is the first time - shouldn't happen if updateItemInfo ran first
+    // but handle it gracefully
+    if (!item) {
+      item = window.getItemData(dropdown.value);
+    }
+
+    if (!item) {
       infoDiv.innerHTML = '';
       return;
     }

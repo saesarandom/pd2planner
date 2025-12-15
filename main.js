@@ -842,7 +842,23 @@ function formatLevelScaledStat(perLevelValue, prop, itemName, propKey, dropdownI
  * Handle changes to variable stat inputs
  */
 function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipRegeneration = false) {
-  const item = itemList[itemName];
+  // CRITICAL FIX: Get item from dropdown-specific cache, not shared itemList
+  // This prevents mercenary changes from affecting player items
+  if (!window.dropdownItemCache) window.dropdownItemCache = {};
+
+  const cacheKey = `${dropdownId}_${itemName}`;
+  let item = window.dropdownItemCache[cacheKey];
+
+  // If not in cache, get from itemList and cache it
+  if (!item) {
+    const sourceItem = itemList[itemName];
+    if (!sourceItem) return;
+
+    // Create a deep copy so we don't modify the shared itemList
+    item = JSON.parse(JSON.stringify(sourceItem));
+    window.dropdownItemCache[cacheKey] = item;
+  }
+
   if (!item || !item.properties || !item.properties[propKey]) return;
 
   const prop = item.properties[propKey];
@@ -879,10 +895,17 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
 
     // UPDATE PERSISTENCE (itemBaseProperties)
     // We must update the base property so it doesn't reset on switch
-    if (window.itemBaseProperties && window.itemBaseProperties[itemName]) {
-      if (!window.itemBaseProperties[itemName][propKey]) {
+    // CRITICAL FIX: Use unique key (dropdownId_itemName) to prevent shared state
+    // This ensures changing Mercenary item stats doesn't affect Player item
+    const uniqueKey = `${dropdownId}_${itemName}`;
+
+    if (window.itemBaseProperties) {
+      if (!window.itemBaseProperties[uniqueKey]) {
         // If prop missing in base, init it
-        window.itemBaseProperties[itemName][propKey] = JSON.parse(JSON.stringify(prop));
+        window.itemBaseProperties[uniqueKey] = {};
+      }
+      if (!window.itemBaseProperties[uniqueKey][propKey]) {
+        window.itemBaseProperties[uniqueKey][propKey] = JSON.parse(JSON.stringify(prop));
       }
 
       let corruptionValue = 0;
@@ -934,10 +957,10 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
         window.corruptedProperties[itemName].has(propKey);
 
       if (!isPropertyCorrupted) {
-        if (typeof window.itemBaseProperties[itemName][propKey] === 'object') {
-          window.itemBaseProperties[itemName][propKey].current = clampedValue;
+        if (typeof window.itemBaseProperties[uniqueKey][propKey] === 'object') {
+          window.itemBaseProperties[uniqueKey][propKey].current = clampedValue;
         } else {
-          window.itemBaseProperties[itemName][propKey] = clampedValue;
+          window.itemBaseProperties[uniqueKey][propKey] = clampedValue;
         }
       }
     }
@@ -977,7 +1000,8 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       if (isFocusedInput) {
         // Need to wait for the display update to complete
         setTimeout(() => {
-          const newInput = document.querySelector(`.stat-input[data-item="${itemName}"][data-prop="${propKey}"]`);
+          // CRITICAL FIX: Include data-dropdown to find the correct input (player vs mercenary)
+          const newInput = document.querySelector(`.stat-input[data-item="${itemName}"][data-prop="${propKey}"][data-dropdown="${dropdownId}"]`);
           if (newInput) {
             newInput.focus();
             if (cursorPosition !== null) {
@@ -1106,8 +1130,25 @@ window.updateItemInfo = function updateItemInfo(event) {
     return;
   }
 
-  // Try to get item info from itemList or crafted items
-  const item = window.getItemData(selectedItemName);
+  // CRITICAL FIX: Use dropdown-specific item cache to prevent shared state
+  // This ensures player and mercenary items are independent
+  if (!window.dropdownItemCache) window.dropdownItemCache = {};
+
+  const cacheKey = `${dropdown.id}_${selectedItemName}`;
+  let item = window.dropdownItemCache[cacheKey];
+
+  // If not in cache or item changed, get fresh copy from itemList
+  if (!item) {
+    const sourceItem = window.getItemData(selectedItemName);
+    if (!sourceItem) {
+      infoDiv.innerHTML = '';
+      return;
+    }
+
+    // Create a deep copy so we don't modify the shared itemList
+    item = JSON.parse(JSON.stringify(sourceItem));
+    window.dropdownItemCache[cacheKey] = item;
+  }
 
   // CRITICAL FIX: Clear corruption if item changed
   if (window.itemCorruptions && window.itemCorruptions[dropdown.id]) {
@@ -1149,10 +1190,18 @@ window.updateItemInfo = function updateItemInfo(event) {
     // Use itemBaseProperties to track USER STATE (including manual rolls), separate from Factory Defaults
     if (!window.itemBaseProperties) window.itemBaseProperties = {};
 
+    // Use unique key to separate player vs mercenary instances of same item
+    const uniqueKey = `${dropdown.id}_${selectedItemName}`;
+
     // 1. Capture Base State if not present (First load / Clean load)
-    if (!window.itemBaseProperties[selectedItemName]) {
+    if (!window.itemBaseProperties[uniqueKey]) {
       // Seed with current item properties (assuming clean on startup)
-      window.itemBaseProperties[selectedItemName] = JSON.parse(JSON.stringify(item.properties || {}));
+      // Check if we have a generic one to copy from (legacy fallback)
+      if (window.itemBaseProperties[selectedItemName]) {
+        window.itemBaseProperties[uniqueKey] = JSON.parse(JSON.stringify(window.itemBaseProperties[selectedItemName]));
+      } else {
+        window.itemBaseProperties[uniqueKey] = JSON.parse(JSON.stringify(item.properties || {}));
+      }
     }
 
     // 2. Check if this item has a saved corruption
@@ -1188,9 +1237,9 @@ window.updateItemInfo = function updateItemInfo(event) {
         // This ensures user's manual changes persist even for corrupted properties
         if (!window.pendingUserValues) window.pendingUserValues = {};
         window.pendingUserValues[selectedItemName] = userModifiedValues;
-      } else if (window.itemBaseProperties[selectedItemName]) {
+      } else if (window.itemBaseProperties[uniqueKey]) {
         // No corruption: restore from Base State (user's specific rolls)
-        item.properties = JSON.parse(JSON.stringify(window.itemBaseProperties[selectedItemName]));
+        item.properties = JSON.parse(JSON.stringify(window.itemBaseProperties[uniqueKey]));
       }
     }
 
