@@ -1,47 +1,47 @@
 let isProcessingWeaponChange = false;
 
 // Override the weapon dropdown event handling to prevent loops
-document.addEventListener('DOMContentLoaded', function() {
-    const weaponDropdown = document.getElementById('weapons-dropdown');
-    if (weaponDropdown) {
-        // Remove all existing event listeners by cloning the element
-        const newWeaponDropdown = weaponDropdown.cloneNode(true);
-        weaponDropdown.parentNode.replaceChild(newWeaponDropdown, weaponDropdown);
-        
-        // Add single, safe event listener
-        newWeaponDropdown.addEventListener('change', function(event) {
-            if (isProcessingWeaponChange) return; // Prevent loops
-            isProcessingWeaponChange = true;
-            
-            try {
-                const selectedItemName = event.target.value;
-                
-                // Update item info display
-                const infoDiv = document.getElementById('weapon-info');
-                if (infoDiv) {
-                    if (selectedItemName && itemList[selectedItemName]) {
-                        infoDiv.innerHTML = itemList[selectedItemName].description;
-                    } else {
-                        infoDiv.innerHTML = '';
-                    }
-                }
-                
-                // Call your existing weapon update functions safely
-                if (typeof updateWeaponDamageDisplay === 'function') {
-                    updateWeaponDamageDisplay();
-                }
-                
-                // Calculate stats if function exists
-                if (typeof calculateAllEquippedStats === 'function') {
-                    calculateAllEquippedStats();
-                }
-                
-            } catch (error) {
-            } finally {
-                setTimeout(() => { isProcessingWeaponChange = false; }, 100);
-            }
-        });
-    }
+document.addEventListener('DOMContentLoaded', function () {
+  const weaponDropdown = document.getElementById('weapons-dropdown');
+  if (weaponDropdown) {
+    // Remove all existing event listeners by cloning the element
+    const newWeaponDropdown = weaponDropdown.cloneNode(true);
+    weaponDropdown.parentNode.replaceChild(newWeaponDropdown, weaponDropdown);
+
+    // Add single, safe event listener
+    newWeaponDropdown.addEventListener('change', function (event) {
+      if (isProcessingWeaponChange) return; // Prevent loops
+      isProcessingWeaponChange = true;
+
+      try {
+        const selectedItemName = event.target.value;
+
+        // Update item info display
+        const infoDiv = document.getElementById('weapon-info');
+        if (infoDiv) {
+          if (selectedItemName && itemList[selectedItemName]) {
+            infoDiv.innerHTML = itemList[selectedItemName].description;
+          } else {
+            infoDiv.innerHTML = '';
+          }
+        }
+
+        // Call your existing weapon update functions safely
+        if (typeof updateWeaponDamageDisplay === 'function') {
+          updateWeaponDamageDisplay();
+        }
+
+        // Calculate stats if function exists
+        if (typeof calculateAllEquippedStats === 'function') {
+          calculateAllEquippedStats();
+        }
+
+      } catch (error) {
+      } finally {
+        setTimeout(() => { isProcessingWeaponChange = false; }, 100);
+      }
+    });
+  }
 });
 
 
@@ -3061,7 +3061,7 @@ function getSocketStats(socket) {
   }
 
   let stats = [];
-  
+
   try {
     if (socket.dataset.itemName === "jewel") {
       stats = JSON.parse(socket.dataset.stats);
@@ -3442,7 +3442,20 @@ function handleUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
           const config = window.unifiedSocketSystem.equipmentMap[select.id];
           if (config && config.section) {
@@ -3460,6 +3473,19 @@ function handleUpgrade() {
           ),
           properties: { ...currentItemData.properties, ...newProperties },
         };
+      }
+
+      // CRITICAL FIX: Clear cache to force regeneration with new baseType
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
+        // Force immediate display refresh
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
+        }
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -3494,7 +3520,20 @@ function handleUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
           const config = window.unifiedSocketSystem.equipmentMap[select.id];
           if (config && config.section) {
@@ -3512,6 +3551,12 @@ function handleUpgrade() {
           ),
           properties: { ...currentItemData.properties, ...newProperties },
         };
+      }
+
+      // CRITICAL FIX: Clear cache to force regeneration with new baseType
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -3600,6 +3645,12 @@ function handleArmorUpgrade() {
         };
       }
 
+      // CRITICAL FIX: Clear cache to force regeneration with new baseType
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
+      }
+
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
       if (!isDynamic) {
@@ -3632,7 +3683,20 @@ function handleArmorUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
           const config = window.unifiedSocketSystem.equipmentMap[select.id];
           if (config && config.section) {
@@ -3650,6 +3714,12 @@ function handleArmorUpgrade() {
           ),
           properties: { ...currentItemData.properties, ...newProperties },
         };
+      }
+
+      // CRITICAL FIX: Clear cache to force regeneration with new baseType
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -3743,7 +3813,20 @@ function handleWeaponUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
           const config = window.unifiedSocketSystem.equipmentMap[select.id];
           if (config && config.section) {
@@ -3763,6 +3846,12 @@ function handleWeaponUpgrade() {
           description: newDescription,
           properties: { ...currentItemData.properties, ...newProperties },
         };
+      }
+
+      // CRITICAL FIX: Clear cache to force regeneration with new baseType
+      const cacheKey = `${select.id}_${currentItem}`;
+      if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+        delete window.dropdownItemCache[cacheKey];
       }
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
@@ -3817,7 +3906,20 @@ function handleWeaponUpgrade() {
           properties: { ...currentItemData.properties, ...newProperties },
         };
 
-        // Trigger update manually via socket system to ensure input boxes work
+        // CRITICAL FIX: Delete calculated properties so they get recalculated with new baseType
+        delete itemList[currentItem].properties.onehandmin;
+        delete itemList[currentItem].properties.onehandmax;
+        delete itemList[currentItem].properties.twohandmin;
+        delete itemList[currentItem].properties.twohandmax;
+        delete itemList[currentItem].properties.defense;
+
+        // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
+        const cacheKey = `${select.id}_${currentItem}`;
+        if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+          delete window.dropdownItemCache[cacheKey];
+        }
+
+        // Now trigger update - this will regenerate cache from the updated itemList
         if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
           const config = window.unifiedSocketSystem.equipmentMap[select.id];
           if (config && config.section) {
@@ -3839,10 +3941,10 @@ function handleWeaponUpgrade() {
         };
       }
 
-          select.dispatchEvent(new Event("change"));
-    if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
-      
+
     }
   }
 
@@ -3977,8 +4079,8 @@ function handleWeaponUpgradeWithCorruption() {
 
   // Trigger update
   select.dispatchEvent(new Event("change"));
-if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
-      return;
+  if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+  return;
   updateWeaponDamageDisplay();
 
   // Make sure corruptions are still displayed
@@ -4314,7 +4416,7 @@ function updateDefense() {
         item.properties.defense = newDefense;
       }
       select.dispatchEvent(new Event("change"));
-if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
+      if (window.unifiedSocketSystem?.updateAll) window.unifiedSocketSystem.updateAll();
       return;
     }
   });
@@ -5592,16 +5694,16 @@ function makeEtherealShield() {
 // ===================================================================
 // EVENT LISTENERS - Connect upgrade buttons to their functions
 // ===================================================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Setup upgrade button event listeners
   const upgradeButtons = {
     'upgradeHelmButton': handleUpgrade,
     'upgradeArmorButton': handleArmorUpgrade,
     'upgradeWeaponButton': handleWeaponUpgrade,
-    'upgradeShieldButton': () => {},
+    'upgradeShieldButton': () => { },
     'upgradeGloveButton': handleGloveUpgrade,
     'upgradeBeltButton': handleBeltUpgrade,
-    'upgradeBootButton': () => {}
+    'upgradeBootButton': () => { }
   };
 
   Object.entries(upgradeButtons).forEach(([buttonId, handler]) => {
@@ -5776,35 +5878,35 @@ function makeItemEthereal(dropdownId) {
       // Update weapon display
       dropdown.dispatchEvent(new Event("change"));
     } else if (isShield || isArmor) {
-    // Handle armor/shield ethereal (50% defense bonus)
-    const baseType = description.split("<br>")[1];
-    const baseDefense = baseDefenses[baseType] || 0;
-    const edef = itemData.properties.edef || 0;
-    const todef = itemData.properties.todef || 0;
+      // Handle armor/shield ethereal (50% defense bonus)
+      const baseType = description.split("<br>")[1];
+      const baseDefense = baseDefenses[baseType] || 0;
+      const edef = itemData.properties.edef || 0;
+      const todef = itemData.properties.todef || 0;
 
-    // Apply 50% ethereal bonus to base defense
-    const baseWithEth = Math.floor(baseDefense * 1.5);
+      // Apply 50% ethereal bonus to base defense
+      const baseWithEth = Math.floor(baseDefense * 1.5);
 
-    // Calculate final defense
-    let newDefense;
-    if (edef > 0) {
-      newDefense = Math.floor(baseWithEth * (1 + edef / 100));
-      if (todef > 0) {
-        newDefense += todef;
+      // Calculate final defense
+      let newDefense;
+      if (edef > 0) {
+        newDefense = Math.floor(baseWithEth * (1 + edef / 100));
+        if (todef > 0) {
+          newDefense += todef;
+        }
+      } else if (todef > 0) {
+        newDefense = baseWithEth + todef;
+      } else {
+        newDefense = baseWithEth;
       }
-    } else if (todef > 0) {
-      newDefense = baseWithEth + todef;
-    } else {
-      newDefense = baseWithEth;
-    }
 
-    // Update defense in properties and description
-    itemData.properties.defense = newDefense;
-    const defenseIndex = lines.findIndex(line => line.startsWith("Defense:"));
-    if (defenseIndex !== -1) {
-      lines[defenseIndex] = `Defense: ${newDefense}`;
-      itemData.description = lines.join("<br>");
-    }
+      // Update defense in properties and description
+      itemData.properties.defense = newDefense;
+      const defenseIndex = lines.findIndex(line => line.startsWith("Defense:"));
+      if (defenseIndex !== -1) {
+        lines[defenseIndex] = `Defense: ${newDefense}`;
+        itemData.description = lines.join("<br>");
+      }
 
       // Update display
       dropdown.dispatchEvent(new Event("change"));
