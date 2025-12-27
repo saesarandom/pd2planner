@@ -66,10 +66,19 @@ window.exportCharacterData = function () {
         }
     }
 
-    const charms = window.charmInventory?.exportCharms ? window.charmInventory.exportCharms() : [];
+    const charms = window.charmInventory?.getAllCharms ? window.charmInventory.getAllCharms() : [];
     const skills = {};
-    document.querySelectorAll('.skill-tree input[type="number"], .skills-container input[type="number"]').forEach(input => {
-        if (parseInt(input.value) > 0) skills[input.id] = parseInt(input.value);
+    // Broad search for skill inputs
+    const skillSelectors = [
+        '.skill-tree-container input[type="number"]',
+        '.skills-container input[type="number"]',
+        '[id$="skillscontainer"] input[type="number"]'
+    ];
+    skillSelectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(input => {
+            const val = parseInt(input.value);
+            if (val > 0 && input.id) skills[input.id] = val;
+        });
     });
 
     return {
@@ -289,6 +298,25 @@ window.loadCharacterFromData = function (data) {
                 window.skillSystem.updateSkillDropdown();
             }
             window._isLoadingCharacterData = false;
+
+            // Re-set level inputs to ensure they display correctly
+            if (data.character.level) {
+                const lvlInput = document.getElementById('lvlValue');
+                if (lvlInput) lvlInput.value = data.character.level;
+                if (window.characterManager) {
+                    window.characterManager.currentLevel = data.character.level;
+                    window.characterManager.level = data.character.level;
+                }
+            }
+            if (data.mercenary?.level) {
+                const mercLvlInput = document.getElementById('merclvlValue');
+                if (mercLvlInput) mercLvlInput.value = data.mercenary.level;
+            }
+
+            // Final recalculation to update item requirements
+            if (window.unifiedSocketSystem?.updateAll) {
+                window.unifiedSocketSystem.updateAll();
+            }
         }, 1000);
 
         if (window.notificationSystem) window.notificationSystem.success('Build Loaded', 'Character build successfully imported.');
