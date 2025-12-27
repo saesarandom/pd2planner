@@ -5,7 +5,7 @@
  * Export current character state to a serializable object
  * @returns {Object} Character data object ready for JSON serialization
  */
-window.exportCharacterData = function() {
+window.exportCharacterData = function () {
     // Get basic character info
     const level = parseInt(document.getElementById('lvlValue')?.value) || 1;
     const characterClass = document.getElementById('selectClass')?.value || 'Amazon';
@@ -59,7 +59,7 @@ window.exportCharacterData = function() {
     if (window.unifiedSocketSystem) {
         // Export socket data from the unified socket system
         sockets.data = window.unifiedSocketSystem.exportSocketData?.() || {};
-        
+
         console.warn('No unified socket system found during export');
     }
 
@@ -129,7 +129,7 @@ window.exportCharacterData = function() {
     // This is simpler and more reliable than parsing the DOM manually
     const charms = window.charmInventory?.getAllCharms?.() || [];
     if (charms.length > 0) {
-       
+
     }
 
     // Get skills allocation
@@ -194,7 +194,7 @@ window.exportCharacterData = function() {
  * Load character state from a data object
  * @param {Object} data - Character data object (from exportCharacterData)
  */
-window.loadCharacterFromData = function(data) {
+window.loadCharacterFromData = function (data) {
     if (!data || !data.character) {
         console.error('Invalid character data');
         return;
@@ -204,24 +204,51 @@ window.loadCharacterFromData = function(data) {
         // Set loading flag to prevent class change from resetting stats
         window._isLoadingCharacterData = true;
 
+        // Ensure global tracking objects are initialized
+        if (!window.itemCorruptions) window.itemCorruptions = {};
+        if (!window.slotItemCorruptions) window.slotItemCorruptions = {};
+        if (!window.itemBaseProperties) window.itemBaseProperties = {};
+        if (!window.originalItemProperties) window.originalItemProperties = {};
+        if (!window.originalItemDescriptions) window.originalItemDescriptions = {};
+        if (!window.corruptedProperties) window.corruptedProperties = {};
+
+        // Mapping for equipment categories
+        const equipmentMap = {
+            weapon: 'weapons-dropdown',
+            helm: 'helms-dropdown',
+            armor: 'armors-dropdown',
+            shield: 'offs-dropdown',
+            gloves: 'gloves-dropdown',
+            belt: 'belts-dropdown',
+            boots: 'boots-dropdown',
+            ring1: 'ringsone-dropdown',
+            ring2: 'ringstwo-dropdown',
+            amulet: 'amulets-dropdown',
+            mercWeapon: 'mercweapons-dropdown',
+            mercHelm: 'merchelms-dropdown',
+            mercArmor: 'mercarmors-dropdown',
+            mercShield: 'mercoffs-dropdown',
+            mercGloves: 'mercgloves-dropdown',
+            mercBelt: 'mercbelts-dropdown',
+            mercBoots: 'mercboots-dropdown'
+        };
+
         // Set basic character info
         const lvlInput = document.getElementById('lvlValue');
         if (lvlInput) {
             lvlInput.value = data.character.level || 1;
-            // Trigger input event to update stats calculations
             lvlInput.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
         const classSelect = document.getElementById('selectClass');
         if (classSelect) {
             classSelect.value = data.character.class || 'Amazon';
-            // Update character manager class but don't reset stats
             if (window.characterManager) {
                 window.characterManager.currentClass = data.character.class || 'Amazon';
             }
         }
 
-        // Set base stats (without triggering recalculations yet)
+        // Set base stats
         const strInput = document.getElementById('str');
         const dexInput = document.getElementById('dex');
         const vitInput = document.getElementById('vit');
@@ -236,7 +263,7 @@ window.loadCharacterFromData = function(data) {
         const modeDropdown = document.querySelector('.modedropdown');
         if (modeDropdown && data.mode) modeDropdown.value = data.mode;
 
-        // Set Anya bonuses (just set values, recalculation happens at end)
+        // Set Anya bonuses
         if (data.anya) {
             const anyaN = document.querySelector('input[value="anya-n"]');
             const anyaNM = document.querySelector('input[value="anya-nm"]');
@@ -246,11 +273,10 @@ window.loadCharacterFromData = function(data) {
             if (anyaNM) anyaNM.checked = data.anya.nm;
             if (anyaH) anyaH.checked = data.anya.h;
 
-            // Update the global checkbox resistance bonus
             window.checkboxResistBonus = (data.anya.n ? 10 : 0) + (data.anya.nm ? 10 : 0) + (data.anya.h ? 10 : 0);
         }
 
-        // Set mercenary info (just set values, recalculation happens at end)
+        // Set mercenary info
         if (data.mercenary) {
             const mercClassSelect = document.getElementById('mercclass');
             const mercLevelInput = document.getElementById('merclvlValue');
@@ -259,32 +285,20 @@ window.loadCharacterFromData = function(data) {
             if (mercLevelInput) mercLevelInput.value = data.mercenary.level || 1;
         }
 
-        // IMPORTANT: Load crafted items FIRST, before restoring variable stats
-        // This ensures crafted items exist in the system when we try to restore their variable stats
+        // Load crafted items
         if (data.crafted_items && window.craftedItemsSystem) {
-            // Filter to only include crafted items that are actually equipped in this build
             const equippedItemNames = new Set(Object.values(data.equipment || {}));
-            const equippedCraftedItems = data.crafted_items.filter(item =>
-                equippedItemNames.has(item.fullName)
-            );
+            const equippedCraftedItems = data.crafted_items.filter(item => equippedItemNames.has(item.fullName));
 
             if (window.auth?.isLoggedIn()) {
-                // For logged-in users: Merge the build's crafted items with existing ones
-                // This preserves their other crafted items while adding the build's items
                 window.craftedItemsSystem.mergeBuildCraftedItems(equippedCraftedItems);
             } else {
-                // For non-logged-in users: Replace with build's crafted items only
                 window.craftedItemsSystem.loadFromData(equippedCraftedItems);
             }
 
-            // Add the crafted items to dropdowns WITHOUT clearing existing selections
-            // We manually add options instead of calling populateItemDropdowns() which clears everything
             equippedCraftedItems.forEach(craftedItem => {
-                // Determine which dropdown(s) this item belongs to
                 const itemType = craftedItem.itemType;
                 const dropdownIds = [];
-
-                // Map item type to dropdown IDs
                 if (itemType === 'weapon') dropdownIds.push('weapons-dropdown', 'mercweapons-dropdown');
                 else if (itemType === 'helm') dropdownIds.push('helms-dropdown', 'merchelms-dropdown');
                 else if (itemType === 'armor') dropdownIds.push('armors-dropdown', 'mercarmors-dropdown');
@@ -295,11 +309,9 @@ window.loadCharacterFromData = function(data) {
                 else if (itemType === 'ringsone') dropdownIds.push('ringsone-dropdown', 'ringstwo-dropdown');
                 else if (itemType === 'amulets') dropdownIds.push('amulets-dropdown');
 
-                // Add option to each relevant dropdown if it doesn't already exist
                 dropdownIds.forEach(dropdownId => {
                     const dropdown = document.getElementById(dropdownId);
                     if (dropdown) {
-                        // Check if option already exists
                         const existingOption = Array.from(dropdown.options).find(opt => opt.value === craftedItem.fullName);
                         if (!existingOption) {
                             const option = document.createElement('option');
@@ -312,289 +324,142 @@ window.loadCharacterFromData = function(data) {
             });
         }
 
-        // IMPORTANT: Restore variable item stats AFTER loading crafted items
-        // This ensures that when equipment dropdowns trigger regeneration of descriptions,
-        // the saved variable stat values are already in place (for both regular and crafted items)
+        // Restore variable item stats
         if (data.variableStats && typeof itemList !== 'undefined') {
-
             for (const [slot, varData] of Object.entries(data.variableStats)) {
                 const itemName = varData.itemName;
+                const dropdownId = equipmentMap[slot] || slot;
+                const uniqueKey = `${dropdownId}_${itemName}`;
 
-                console.log(`Importing ${itemName}:`, {
-                    hasBaseType: !!varData.baseType,
-                    baseType: varData.baseType,
-                    hasAllProperties: !!varData.allProperties,
-                    allPropertiesKeys: varData.allProperties ? Object.keys(varData.allProperties) : []
-                });
+                // Seed originalItemProperties for corrupted items
+                if (data.corruptions?.data && data.corruptions.data[dropdownId] &&
+                    data.corruptions.data[dropdownId].itemName === itemName) {
+                    if (!window.originalItemProperties[itemName]) {
+                        window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(itemList[itemName]?.properties || {}));
+                    }
+                }
 
-                // Check regular items first
                 if (itemList[itemName]) {
                     const item = itemList[itemName];
-
-                    console.log(`Found in itemList. Original baseType: ${item.baseType}`);
-
-                    // Restore baseType if it was saved (for upgraded items)
-                    // Always set it if provided, even if item doesn't have baseType yet
-                    if (varData.baseType) {
-                        item.baseType = varData.baseType;
-                        console.log(`Set baseType to: ${varData.baseType}`);
-                    }
-
-                    // For items with baseType (dynamic/upgraded items), restore ALL properties
+                    if (varData.baseType) item.baseType = varData.baseType;
                     if (varData.allProperties && item.properties) {
-                        // Completely replace properties with saved version
-                        // This ensures upgraded items have correct defense, reqstr, reqlvl, etc.
                         item.properties = varData.allProperties;
-                        console.log(`Restored allProperties. Defense: ${item.properties.defense}, reqlvl: ${item.properties.reqlvl}`);
-                    }
-                    // Otherwise, just restore variable stat values (backward compatibility)
-                    else if (item.properties && varData.stats) {
+                    } else if (item.properties && varData.stats) {
                         for (const [propKey, value] of Object.entries(varData.stats)) {
                             if (item.properties[propKey] && typeof item.properties[propKey] === 'object') {
                                 item.properties[propKey].current = value;
                             }
                         }
-                        console.log(`Restored variable stats only`);
                     }
-                }
-                // Also check crafted items
-                else if (window.craftedItemsSystem) {
+                    window.itemBaseProperties[uniqueKey] = JSON.parse(JSON.stringify(item.properties || {}));
+                } else if (window.craftedItemsSystem) {
                     const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
                     if (craftedItem) {
-                        // Restore baseType if it was saved
-                        // Always set it if provided
-                        if (varData.baseType) {
-                            craftedItem.baseType = varData.baseType;
-                        }
-
-                        // For crafted items, restore ALL properties if saved
+                        if (varData.baseType) craftedItem.baseType = varData.baseType;
                         if (varData.allProperties && craftedItem.properties) {
                             craftedItem.properties = varData.allProperties;
-                        }
-                        // Otherwise, just restore variable stat values
-                        else if (craftedItem.properties && varData.stats) {
+                        } else if (craftedItem.properties && varData.stats) {
                             for (const [propKey, value] of Object.entries(varData.stats)) {
                                 if (craftedItem.properties[propKey] && typeof craftedItem.properties[propKey] === 'object') {
                                     craftedItem.properties[propKey].current = value;
                                 }
                             }
                         }
+                        window.itemBaseProperties[uniqueKey] = JSON.parse(JSON.stringify(craftedItem.properties || {}));
                     }
                 }
             }
-
         }
-
-        // IMPORTANT: Restore sockets and corruptions BEFORE setting equipment
-        // This ensures they're in place when equipment triggers display updates
 
         // Restore socket data
         if (data.sockets?.data && window.unifiedSocketSystem?.importSocketData) {
-
             window.unifiedSocketSystem.importSocketData(data.sockets.data);
-
-        } else {
-            console.warn('Socket data not available or socket system not ready', {
-                hasData: !!data.sockets?.data,
-                hasSystem: !!window.unifiedSocketSystem,
-                hasImport: !!window.unifiedSocketSystem?.importSocketData
-            });
         }
 
-        // Restore corruptions (but skip corruptions on dynamic items - they break)
+        // Restore corruptions
         if (data.corruptions?.data) {
-            // Filter out corruptions for dynamic items before restoring
-            const filteredCorruptions = {};
-
+            const restoredCorruptions = {};
             for (const [slotId, corruption] of Object.entries(data.corruptions.data)) {
-                const itemName = corruption.itemName;
-
-                // Check if this is a dynamic item (has baseType, no static description)
-                let isDynamic = false;
-
-                // Check regular items
-                if (itemList[itemName]) {
-                    const item = itemList[itemName];
-                    isDynamic = item.baseType && !item.description;
-                }
-                // Check crafted items (all crafted items are dynamic)
-                else if (window.craftedItemsSystem?.isCraftedItem(itemName)) {
-                    isDynamic = true;
-                }
-
-                // Skip corruptions for dynamic items (corruption system doesn't support them properly)
-                if (isDynamic) {
-                    console.warn(`Skipping corruption for dynamic item: ${itemName}`);
-                    continue;
-                }
-
-                // Keep this corruption
-                filteredCorruptions[slotId] = corruption;
+                restoredCorruptions[slotId] = corruption;
+                if (!window.slotItemCorruptions[slotId]) window.slotItemCorruptions[slotId] = {};
+                window.slotItemCorruptions[slotId][corruption.itemName] = corruption;
             }
+            window.itemCorruptions = restoredCorruptions;
 
-            window.itemCorruptions = filteredCorruptions;
-
-            // Reapply corruptions to item descriptions (only static items at this point)
-            for (const [slotId, corruption] of Object.entries(filteredCorruptions)) {
+            // Reapply descriptions for static items
+            for (const [slotId, corruption] of Object.entries(restoredCorruptions)) {
                 const itemName = corruption.itemName;
-                if (itemName && typeof itemList !== 'undefined' && itemList[itemName]) {
-                    // Store original description if not already stored
+                if (itemName && itemList[itemName]) {
                     if (!window.originalItemDescriptions[itemName]) {
                         window.originalItemDescriptions[itemName] = itemList[itemName].description;
                     }
-
                     const originalDescription = window.originalItemDescriptions[itemName];
-
                     if (corruption.type === 'socket_corruption') {
-                        // Reapply socket corruption description
-                        const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.text}</span><br>`;
-                        itemList[itemName].description = enhancedDescription;
-
-                        // Restore socket count
+                        itemList[itemName].description = originalDescription + `<span class="corruption-enhanced-stat">${corruption.text}</span><br>`;
                         const section = window.SECTION_MAP?.[slotId];
-                        if (section && window.unifiedSocketSystem && typeof window.unifiedSocketSystem.setSocketCount === 'function') {
+                        if (section && window.unifiedSocketSystem?.setSocketCount) {
                             window.unifiedSocketSystem.setSocketCount(section, corruption.socketCount);
                         }
+                    } else if (window.addCorruptionWithStacking) {
+                        itemList[itemName].description = window.addCorruptionWithStacking(originalDescription, corruption.text);
                     } else {
-                        // Reapply regular corruption with stacking
-                        if (window.addCorruptionWithStacking) {
-                            const enhancedDescription = window.addCorruptionWithStacking(originalDescription, corruption.text);
-                            itemList[itemName].description = enhancedDescription;
-                        } else {
-                            // Fallback if stacking function not available
-                            const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.text}</span><br>`;
-                            itemList[itemName].description = enhancedDescription;
-                        }
+                        itemList[itemName].description = originalDescription + `<span class="corruption-enhanced-stat">${corruption.text}</span><br>`;
                     }
                 }
             }
         }
 
-        // NOW set equipment after sockets and corruptions are restored
-        // This ensures that when equipment triggers display updates, sockets/corruptions are already in place
+        // Set equipment
         if (data.equipment) {
-            const equipmentMap = {
-                weapon: 'weapons-dropdown',
-                helm: 'helms-dropdown',
-                armor: 'armors-dropdown',
-                shield: 'offs-dropdown',
-                gloves: 'gloves-dropdown',
-                belt: 'belts-dropdown',
-                boots: 'boots-dropdown',
-                ring1: 'ringsone-dropdown',
-                ring2: 'ringstwo-dropdown',
-                amulet: 'amulets-dropdown',
-                mercWeapon: 'mercweapons-dropdown',
-                mercHelm: 'merchelms-dropdown',
-                mercArmor: 'mercarmors-dropdown',
-                mercShield: 'mercoffs-dropdown',
-                mercGloves: 'mercgloves-dropdown',
-                mercBelt: 'mercbelts-dropdown',
-                mercBoots: 'mercboots-dropdown'
-            };
-
             for (const [slot, dropdownId] of Object.entries(equipmentMap)) {
                 const dropdown = document.getElementById(dropdownId);
                 if (dropdown && data.equipment[slot]) {
                     dropdown.value = data.equipment[slot];
-                    // Trigger change event to update UI
                     dropdown.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             }
         }
 
-        // Log variable stats AFTER equipment is set to verify they're still correct
-        if (data.variableStats && typeof itemList !== 'undefined') {
-            for (const [slot, varData] of Object.entries(data.variableStats)) {
-                const itemName = varData.itemName;
-                // Check regular items
-                if (itemList[itemName]) {
-                    const item = itemList[itemName];
-                    for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
-                        const actualValue = item.properties?.[propKey]?.current;
-                    }
-                }
-                // Also check crafted items
-                else if (window.craftedItemsSystem) {
-                    const craftedItem = window.craftedItemsSystem.getCraftedItemByName(itemName);
-                    if (craftedItem) {
-                        for (const [propKey, expectedValue] of Object.entries(varData.stats)) {
-                            const actualValue = craftedItem.properties?.[propKey]?.current;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Clear and restore charms - always clear inventory when loading a character
-        // This ensures empty builds have empty charm inventory
+        // Charms
         const clearCharmsWhenReady = (attempt = 1) => {
-            if (window.charmInventory && window.charmInventory.initialized) {
+            if (window.charmInventory?.initialized) {
                 const container = document.querySelector('.inventorycontainer');
                 const charmSlots = container?.querySelectorAll('.charm1').length ?? 0;
                 if (container && charmSlots >= 40) {
-                    
                     window.charmInventory.clearInventory();
-
-                    // Now restore charms if there are any
-                    if (data.charms && data.charms.length > 0) {
-                        
+                    if (data.charms?.length > 0) {
                         if (window.charmInventory.restoreAllCharms) {
                             window.charmInventory.restoreAllCharms(data.charms);
-                        } else {
-                            console.warn('restoreAllCharms not available, using individual charm restoration');
-                            data.charms.forEach((charm, idx) => {
-                                
-                                if (window.charmInventory.restoreCharm) {
-                                    window.charmInventory.restoreCharm(charm);
-                                }
-                            });
+                        } else if (window.charmInventory.restoreCharm) {
+                            data.charms.forEach(charm => window.charmInventory.restoreCharm(charm));
                         }
-                    } else {
-                        
                     }
-                } else {
-                    console.warn('Charm inventory grid not ready, retrying...', {
-                        containerExists: !!container,
-                        charmSlots: charmSlots
-                    });
+                } else if (attempt < 10) {
                     setTimeout(() => clearCharmsWhenReady(attempt + 1), 200);
                 }
-            } else {
-                console.warn('Charm inventory not initialized, retrying...');
+            } else if (attempt < 10) {
                 setTimeout(() => clearCharmsWhenReady(attempt + 1), 200);
             }
         };
-
         setTimeout(clearCharmsWhenReady, 500);
 
-        // Restore skills (just set values without triggering validation)
+        // Skills
         if (data.skills) {
             setTimeout(() => {
                 for (const [inputId, points] of Object.entries(data.skills)) {
                     const input = document.getElementById(inputId);
-                    if (input && input.tagName === 'INPUT') {
-                        input.value = points;
-                    }
+                    if (input?.tagName === 'INPUT') input.value = points;
                 }
-
-                // Update skill display after skills are loaded
                 if (window.skillSystem) {
                     window.skillSystem.updatePointsDisplay();
-
-                    // Restore the previously selected skill if available
                     if (data.selectedSkill) {
                         const skillDropdown = document.getElementById('active-skill-dropdown');
                         if (skillDropdown) {
-                            // Set the selected skill
                             skillDropdown.value = data.selectedSkill;
-                            // Trigger calculation to show the tooltip
                             window.skillSystem.calculateSkillDamage();
                         }
                     }
                 }
-
-                // Final stats recalculation after all skills are loaded
                 if (window.characterManager) {
                     window.characterManager.updateTotalStats();
                     window.characterManager.calculateLifeAndMana();
@@ -602,25 +467,20 @@ window.loadCharacterFromData = function(data) {
             }, 1000);
         }
 
-        // Trigger character manager update immediately after all values are set
+        // Final updates
         if (window.characterManager) {
             window.characterManager.updateTotalStats();
             window.characterManager.calculateLifeAndMana();
         }
-
-        // Update socket system to show all bonuses
         if (window.unifiedSocketSystem?.updateAll) {
             window.unifiedSocketSystem.updateAll();
         }
 
-        // Final recalculation after all async operations (charms, skills, etc.)
         setTimeout(() => {
             if (window.characterManager) {
                 window.characterManager.updateTotalStats();
                 window.characterManager.calculateLifeAndMana();
             }
-
-            // Ensure skill bonus indicators are updated with current All Skills and Class Skills bonuses
             if (window.skillSystem && window.unifiedSocketSystem) {
                 window.skillSystem.updateSkillBonuses(
                     window.unifiedSocketSystem.stats?.allSkills || 0,
@@ -628,14 +488,9 @@ window.loadCharacterFromData = function(data) {
                 );
                 window.skillSystem.updateSkillDropdown();
             }
-
-            // Clear loading flag
             window._isLoadingCharacterData = false;
         }, 1500);
 
-        
-
-        // Show success message
         if (window.notificationSystem) {
             window.notificationSystem.success('Success!', 'Character build loaded successfully!', { duration: 4000 });
         } else {
@@ -644,10 +499,11 @@ window.loadCharacterFromData = function(data) {
 
     } catch (error) {
         console.error('Error loading character data:', error);
+        window._isLoadingCharacterData = false;
         if (window.notificationSystem) {
-            window.notificationSystem.error('Load Failed', 'Failed to load character build. See console for details.', { duration: 6000 });
+            window.notificationSystem.error('Load Failed', 'Failed to load character build.', { duration: 6000 });
         } else {
-            alert('Failed to load character build. See console for details.');
+            alert('Failed to load character build.');
         }
     }
 };
@@ -657,7 +513,7 @@ window.loadCharacterFromData = function(data) {
  * @param {Object} data - Character data object
  * @returns {string} Base64-encoded build code
  */
-window.createBuildCode = function(data) {
+window.createBuildCode = function (data) {
     try {
         const json = JSON.stringify(data);
         return btoa(json);
@@ -672,7 +528,7 @@ window.createBuildCode = function(data) {
  * @param {string} code - Base64-encoded build code
  * @returns {Object} Character data object
  */
-window.decodeBuildCode = function(code) {
+window.decodeBuildCode = function (code) {
     try {
         const json = atob(code);
         return JSON.parse(json);
