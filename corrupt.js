@@ -1124,7 +1124,7 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
         addStatToProp('repl', stat.value);
         break;
       case 'manarecovery':
-        addStatToProp('manarecovery', stat.value);
+        addStatToProp('regmana', stat.value);
         break;
       case 'magicfind':
         addStatToProp('magicfind', stat.value);
@@ -1161,12 +1161,11 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
         break;
       case 'resist':
         if (stat.subtype === 'fire') addStatToProp('firres', stat.value);
-        if (stat.subtype === 'cold') addStatToProp('coldres', stat.value);
-        if (stat.subtype === 'lightning') addStatToProp('ligres', stat.value);
-        if (stat.subtype === 'poison') addStatToProp('poisres', stat.value);
+        else if (stat.subtype === 'cold') addStatToProp('coldres', stat.value);
+        else if (stat.subtype === 'lightning') addStatToProp('ligres', stat.value);
+        else if (stat.subtype === 'poison') addStatToProp('poisres', stat.value);
         break;
       case 'indestructible':
-        // Use addStatToProp to ensure consistent tracking via dropdownId
         addStatToProp('indestructible', 1);
         break;
       case 'maxlife':
@@ -1183,18 +1182,24 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
         break;
       case 'maxres':
         if (stat.subtype === 'fire') addStatToProp('maxfirres', stat.value);
-        if (stat.subtype === 'cold') addStatToProp('maxcoldres', stat.value);
-        if (stat.subtype === 'lightning') addStatToProp('maxligres', stat.value);
-        if (stat.subtype === 'poison') addStatToProp('maxpoisres', stat.value);
+        else if (stat.subtype === 'cold') addStatToProp('maxcoldres', stat.value);
+        else if (stat.subtype === 'lightning') addStatToProp('maxligres', stat.value);
+        else if (stat.subtype === 'poison') addStatToProp('maxpoisres', stat.value);
         break;
       case 'ias':
         addStatToProp('ias', stat.value);
+        break;
+      case 'fcr':
+        addStatToProp('fcr', stat.value);
         break;
       case 'frw':
         addStatToProp('frw', stat.value);
         break;
       case 'fhr':
         addStatToProp('fhr', stat.value);
+        break;
+      case 'fbr':
+        addStatToProp('fbr', stat.value);
         break;
       case 'cb':
         addStatToProp('cb', stat.value);
@@ -1210,7 +1215,6 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
         addStatToProp('block', stat.value);
         break;
       case 'cbf':
-        // Use addStatToProp to ensure consistent tracking via dropdownId
         addStatToProp('cbf', 1);
         break;
       case 'curseres':
@@ -1225,73 +1229,6 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
         break;
       case 'mindmg':
         addStatToProp('tomindmg', stat.value);
-        break;
-      // MISSING STATS RESTORED:
-      case 'ias':
-        addStatToProp('ias', stat.value);
-        break;
-      case 'fcr':
-        addStatToProp('fcr', stat.value);
-        break;
-      case 'fhr':
-        addStatToProp('fhr', stat.value);
-        break;
-      case 'frw':
-        addStatToProp('frw', stat.value);
-        break;
-      case 'fbr':
-        addStatToProp('fbr', stat.value);
-        break;
-      case 'edef':
-        addStatToProp('edef', stat.value);
-        break;
-      case 'maxres':
-        if (stat.subtype) {
-          const maxMap = { fire: 'maxfirres', cold: 'maxcoldres', lightning: 'maxligres', poison: 'maxpoisres' };
-          if (maxMap[stat.subtype]) addStatToProp(maxMap[stat.subtype], stat.value);
-        }
-        break;
-      case 'resist':
-        if (stat.subtype) {
-          const resMap = { fire: 'firres', cold: 'coldres', lightning: 'ligres', poison: 'poisres' };
-          if (resMap[stat.subtype]) addStatToProp(resMap[stat.subtype], stat.value);
-        }
-        break;
-      case 'allres':
-        addStatToProp('allres', stat.value);
-        break;
-      case 'physdr':
-        addStatToProp('physdr', stat.value);
-        break;
-      case 'pdr':
-        addStatToProp('pdr', stat.value);
-        break;
-      case 'mdr':
-        addStatToProp('mdr', stat.value);
-        break;
-      case 'manarecovery':
-        addStatToProp('regmana', stat.value);
-        break;
-      case 'magicfind':
-        addStatToProp('magicfind', stat.value);
-        break;
-      case 'goldfind':
-        addStatToProp('goldfind', stat.value);
-        break;
-      case 'lleech':
-        addStatToProp('lleech', stat.value);
-        break;
-      case 'mleech':
-        addStatToProp('mleech', stat.value);
-        break;
-      case 'maxlife':
-        addStatToProp('maxlife', stat.value);
-        break;
-      case 'maxmana':
-        addStatToProp('maxmana', stat.value);
-        break;
-      case 'indestructible':
-        addStatToProp('indestructible', 1);
         break;
     }
   });

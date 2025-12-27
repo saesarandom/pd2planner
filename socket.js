@@ -2653,8 +2653,8 @@ class UnifiedSocketSystem {
     // Get socket stats
     const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
 
-    // Handle dynamic items (no static description)
-    if (!item.description) {
+    // Handle dynamic items (no static description, or has baseType)
+    if (!item.description || item.baseType) {
       // Always regenerate description for dynamic items to re-attach event listeners
       // (This is critical for items like Arcanna's Deathwand with variable stats)
       let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
@@ -2756,7 +2756,9 @@ class UnifiedSocketSystem {
     }
 
     // From here on, handle static description items
-    let baseDescription = item.description;
+    // CRITICAL FIX: Use the ORIGINAL description as base for merging corruption/sockets
+    // This prevents double-counting if item.description already contains the corruption
+    let baseDescription = (window.originalItemDescriptions && window.originalItemDescriptions[dropdown.value]) || item.description;
     const baseStats = this.parseStatsToMap(baseDescription);
 
     // Build socket items array
@@ -3254,8 +3256,9 @@ class UnifiedSocketSystem {
   parseMercenaryItemStats(item, section) {
     let description = item.description;
 
-    // 1. For dynamic items without a static description, generate it FIRST
-    if (!description && item.baseType) {
+    // 1. For dynamic items without a static description (or has baseType), generate it FIRST
+    // This provides the base stats (Defense, Damage, etc.) for the parser
+    if (!description || item.baseType) {
       const dropdownId = Object.entries(this.equipmentMap).find(
         ([_, config]) => config.section === section
       )?.[0];
@@ -3268,12 +3271,13 @@ class UnifiedSocketSystem {
       }
     }
 
-    // 2. Safely append corruption text for parsing (mostly for static items)
+    // 2. Safely append corruption text for parsing (ONLY for static items)
+    // Dynamic items already have corruption built into their properties and base description
     const dropdownId = Object.entries(this.equipmentMap).find(
       ([_, config]) => config.section === section
     )?.[0];
 
-    if (dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+    if (!item.baseType && dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
       const corruption = window.itemCorruptions[dropdownId];
       if (corruption.text && corruption.itemName) {
         const currentName = document.getElementById(dropdownId)?.value;
@@ -3450,9 +3454,9 @@ class UnifiedSocketSystem {
   parseItemStats(item, section) {
     let description = item.description;
 
-    // 1. For dynamic items without a static description, generate it FIRST
+    // 1. For dynamic items without a static description (or has baseType), generate it FIRST
     // This provides the base stats (Defense, Damage, etc.) for the parser
-    if (!description && item.baseType) {
+    if (!description || item.baseType) {
       const dropdownId = Object.entries(this.equipmentMap).find(
         ([_, config]) => config.section === section
       )?.[0];
@@ -3465,12 +3469,13 @@ class UnifiedSocketSystem {
       }
     }
 
-    // 2. Safely append corruption text for parsing (mostly for static items)
+    // 2. Safely append corruption text for parsing (ONLY for static items)
+    // Dynamic items already have corruption built into their properties and base description
     const dropdownId = Object.entries(this.equipmentMap).find(
       ([_, config]) => config.section === section
     )?.[0];
 
-    if (dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+    if (!item.baseType && dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
       const corruption = window.itemCorruptions[dropdownId];
       if (corruption.text && corruption.itemName) {
         const currentName = document.getElementById(dropdownId)?.value;
