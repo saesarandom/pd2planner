@@ -7,7 +7,6 @@
  */
 window.exportCharacterData = function () {
     const level = parseInt(document.getElementById('lvlValue')?.value) || 1;
-    const mercLevel = parseInt(document.getElementById('merclvlValue')?.value) || 1;
     const characterClass = document.getElementById('selectClass')?.value || 'Amazon';
     const str = parseInt(document.getElementById('str')?.value) || 0;
     const dex = parseInt(document.getElementById('dex')?.value) || 0;
@@ -22,6 +21,7 @@ window.exportCharacterData = function () {
     };
 
     const mercClass = document.getElementById('mercclass')?.value || 'No Mercenary';
+    const mercLevel = parseInt(document.getElementById('merclvlValue')?.value) || 1;
 
     const equipmentMap = {
         weapon: 'weapons-dropdown', helm: 'helms-dropdown', armor: 'armors-dropdown', shield: 'offs-dropdown',
@@ -68,18 +68,8 @@ window.exportCharacterData = function () {
 
     const charms = window.charmInventory?.exportCharms ? window.charmInventory.exportCharms() : [];
     const skills = {};
-    // Broad search for any inputs that look like they belong to skills
-    const skillSelectors = [
-        '.skill-tree-container input[type="number"]',
-        '.skills-container input[type="number"]',
-        '[id$="container"] input[type="number"]',
-        '[id$="skillscontainer"] input[type="number"]'
-    ];
-    skillSelectors.forEach(sel => {
-        document.querySelectorAll(sel).forEach(input => {
-            const val = parseInt(input.value);
-            if (val > 0 && input.id) skills[input.id] = val;
-        });
+    document.querySelectorAll('.skill-tree input[type="number"], .skills-container input[type="number"]').forEach(input => {
+        if (parseInt(input.value) > 0) skills[input.id] = parseInt(input.value);
     });
 
     return {
@@ -119,30 +109,25 @@ window.loadCharacterFromData = function (data) {
             mercShield: 'mercoffs-dropdown', mercGloves: 'mercgloves-dropdown', mercBelt: 'mercbelts-dropdown', mercBoots: 'mercboots-dropdown'
         };
 
-        // Restore basic info - SET VALUES FIRST, dispatch events LATER
-        const lvlInput = document.getElementById('lvlValue');
-        if (lvlInput) {
-            lvlInput.value = data.character.level || 1;
-            if (window.characterManager) window.characterManager.currentLevel = data.character.level || 1;
+        // Restore basic info
+        if (document.getElementById('lvlValue')) {
+            document.getElementById('lvlValue').value = data.character.level || 1;
+            document.getElementById('lvlValue').dispatchEvent(new Event('input', { bubbles: true }));
         }
-
-        const classSelect = document.getElementById('selectClass');
-        if (classSelect) {
-            classSelect.value = data.character.class || 'Amazon';
+        if (document.getElementById('selectClass')) {
+            document.getElementById('selectClass').value = data.character.class || 'Amazon';
+            document.getElementById('selectClass').dispatchEvent(new Event('change', { bubbles: true }));
             if (window.characterManager) window.characterManager.currentClass = data.character.class;
         }
-
-        // Set all stat values
         ['str', 'dex', 'vit', 'enr'].forEach(s => {
-            const input = document.getElementById(s);
-            if (input) {
-                input.value = data.character.stats[s] || 0;
+            if (document.getElementById(s)) {
+                document.getElementById(s).value = data.character.stats[s] || 0;
+                document.getElementById(s).dispatchEvent(new Event('input', { bubbles: true }));
             }
         });
-
-        const modeDropdown = document.querySelector('.modedropdown');
-        if (modeDropdown && data.mode) {
-            modeDropdown.value = data.mode;
+        if (document.querySelector('.modedropdown') && data.mode) {
+            document.querySelector('.modedropdown').value = data.mode;
+            document.querySelector('.modedropdown').dispatchEvent(new Event('change', { bubbles: true }));
         }
 
         if (data.anya) {
@@ -150,55 +135,20 @@ window.loadCharacterFromData = function (data) {
                 const cb = document.querySelector(`input[value="anya-${m}"]`);
                 if (cb) {
                     cb.checked = data.anya[m];
+                    cb.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             });
             window.checkboxResistBonus = (data.anya.n ? 10 : 0) + (data.anya.nm ? 10 : 0) + (data.anya.h ? 10 : 0);
         }
 
         if (data.mercenary) {
-            // Set level first so aura/buff systems have the correct value when class change fires
-            const ml = document.getElementById('merclvlValue');
-            if (ml) {
-                ml.value = data.mercenary.level || 1;
+            if (document.getElementById('mercclass')) {
+                document.getElementById('mercclass').value = data.mercenary.class || 'No Mercenary';
+                document.getElementById('mercclass').dispatchEvent(new Event('change', { bubbles: true }));
             }
-            const mc = document.getElementById('mercclass');
-            if (mc) {
-                mc.value = data.mercenary.class || 'No Mercenary';
-            }
-        }
-
-        // NOW dispatch all events after values are set
-        if (lvlInput) {
-            lvlInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        if (classSelect) {
-            classSelect.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-        ['str', 'dex', 'vit', 'enr'].forEach(s => {
-            const input = document.getElementById(s);
-            if (input) {
-                input.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        });
-        if (modeDropdown) {
-            modeDropdown.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-        if (data.anya) {
-            ['n', 'nm', 'h'].forEach(m => {
-                const cb = document.querySelector(`input[value="anya-${m}"]`);
-                if (cb) {
-                    cb.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            });
-        }
-        if (data.mercenary) {
-            const mc = document.getElementById('mercclass');
-            const ml = document.getElementById('merclvlValue');
-            if (mc) {
-                mc.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            if (ml) {
-                ml.dispatchEvent(new Event('input', { bubbles: true }));
+            if (document.getElementById('merclvlValue')) {
+                document.getElementById('merclvlValue').value = data.mercenary.level || 1;
+                document.getElementById('merclvlValue').dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
 

@@ -116,13 +116,6 @@ class CharacterManager {
       this.currentClass = classSelect.value;
     }
 
-    // Read current level from DOM on init
-    const lvlInput = document.getElementById('lvlValue');
-    if (lvlInput) {
-      this.currentLevel = parseInt(lvlInput.value) || 1;
-      this.level = this.currentLevel;
-    }
-
     // Immediate calculation - no delays
     this.updateTotalStats();
     this.updateStatPointsDisplay();
@@ -732,7 +725,6 @@ class CharacterManager {
   }
 
   handleLevelChange() {
-    if (window._isLoadingCharacterData) return;
     const lvlInput = document.getElementById('lvlValue');
     let level = parseInt(lvlInput.value) || 1;
 
