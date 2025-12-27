@@ -6,17 +6,12 @@
  * @returns {Object} Character data object ready for JSON serialization
  */
 window.exportCharacterData = function () {
-    const getVal = (id) => {
-        const el = document.getElementById(id);
-        return el ? (parseInt(el.value) || 0) : 0;
-    };
-
-    const level = getVal('lvlValue') || getVal('lvl-value') || 1;
+    const level = parseInt(document.getElementById('lvlValue')?.value) || 1;
     const characterClass = document.getElementById('selectClass')?.value || 'Amazon';
-    const str = getVal('str');
-    const dex = getVal('dex');
-    const vit = getVal('vit');
-    const enr = getVal('enr');
+    const str = parseInt(document.getElementById('str')?.value) || 0;
+    const dex = parseInt(document.getElementById('dex')?.value) || 0;
+    const vit = parseInt(document.getElementById('vit')?.value) || 0;
+    const enr = parseInt(document.getElementById('enr')?.value) || 0;
     const mode = document.querySelector('.modedropdown')?.value || 'pvm';
 
     const anyaBonuses = {
@@ -26,8 +21,7 @@ window.exportCharacterData = function () {
     };
 
     const mercClass = document.getElementById('mercclass')?.value || 'No Mercenary';
-    const mercLevelInput = document.getElementById('merclvlValue');
-    const mercLevel = mercLevelInput ? (parseInt(mercLevelInput.value) || 1) : 1;
+    const mercLevel = parseInt(document.getElementById('merclvlValue')?.value) || 1;
 
     const equipmentMap = {
         weapon: 'weapons-dropdown', helm: 'helms-dropdown', armor: 'armors-dropdown', shield: 'offs-dropdown',
