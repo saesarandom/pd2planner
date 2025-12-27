@@ -6,7 +6,8 @@
  * @returns {Object} Character data object ready for JSON serialization
  */
 window.exportCharacterData = function () {
-    const level = parseInt(document.getElementById('lvlValue')?.value) || 1;
+    const levelInput = document.getElementById('lvlValue');
+    const level = levelInput ? (parseInt(levelInput.value) || 1) : 1;
     const characterClass = document.getElementById('selectClass')?.value || 'Amazon';
     const str = parseInt(document.getElementById('str')?.value) || 0;
     const dex = parseInt(document.getElementById('dex')?.value) || 0;
@@ -21,7 +22,8 @@ window.exportCharacterData = function () {
     };
 
     const mercClass = document.getElementById('mercclass')?.value || 'No Mercenary';
-    const mercLevel = parseInt(document.getElementById('merclvlValue')?.value) || 1;
+    const mercLevelInput = document.getElementById('merclvlValue');
+    const mercLevel = mercLevelInput ? (parseInt(mercLevelInput.value) || 1) : 1;
 
     const equipmentMap = {
         weapon: 'weapons-dropdown', helm: 'helms-dropdown', armor: 'armors-dropdown', shield: 'offs-dropdown',
@@ -110,9 +112,11 @@ window.loadCharacterFromData = function (data) {
         };
 
         // Restore basic info
-        if (document.getElementById('lvlValue')) {
-            document.getElementById('lvlValue').value = data.character.level || 1;
-            document.getElementById('lvlValue').dispatchEvent(new Event('input', { bubbles: true }));
+        const lvlInput = document.getElementById('lvlValue');
+        if (lvlInput) {
+            lvlInput.value = data.character.level || 1;
+            lvlInput.dispatchEvent(new Event('input', { bubbles: true }));
+            if (window.characterManager) window.characterManager.currentLevel = data.character.level || 1;
         }
         if (document.getElementById('selectClass')) {
             document.getElementById('selectClass').value = data.character.class || 'Amazon';
@@ -142,13 +146,18 @@ window.loadCharacterFromData = function (data) {
         }
 
         if (data.mercenary) {
-            if (document.getElementById('mercclass')) {
-                document.getElementById('mercclass').value = data.mercenary.class || 'No Mercenary';
-                document.getElementById('mercclass').dispatchEvent(new Event('change', { bubbles: true }));
+            // Set level first so aura/buff systems have the correct value when class change fires
+            const ml = document.getElementById('merclvlValue');
+            if (ml) {
+                ml.value = data.mercenary.level || 1;
             }
-            if (document.getElementById('merclvlValue')) {
-                document.getElementById('merclvlValue').value = data.mercenary.level || 1;
-                document.getElementById('merclvlValue').dispatchEvent(new Event('input', { bubbles: true }));
+            const mc = document.getElementById('mercclass');
+            if (mc) {
+                mc.value = data.mercenary.class || 'No Mercenary';
+                mc.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            if (ml) {
+                ml.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
 

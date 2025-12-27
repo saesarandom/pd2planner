@@ -725,6 +725,7 @@ class CharacterManager {
   }
 
   handleLevelChange() {
+    if (window._isLoadingCharacterData) return;
     const lvlInput = document.getElementById('lvlValue');
     let level = parseInt(lvlInput.value) || 1;
 
