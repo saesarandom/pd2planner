@@ -1354,6 +1354,22 @@ class UnifiedSocketSystem {
       });
     }
 
+    // Mercenary class change - recalculate when switching between mercenary types or "No Mercenary"
+    const mercClassDropdown = document.getElementById('mercclass');
+    if (mercClassDropdown) {
+      mercClassDropdown.addEventListener('change', () => {
+        this.updateAll(); // Recalculate all stats when mercenary class changes
+      });
+    }
+
+    // Mercenary level change
+    const mercLevelInput = document.getElementById('merclvlValue');
+    if (mercLevelInput) {
+      mercLevelInput.addEventListener('input', () => {
+        this.updateAll(); // Recalculate when mercenary level changes
+      });
+    }
+
     // Equipment changes
     Object.keys(this.equipmentMap).forEach(dropdownId => {
       const dropdown = document.getElementById(dropdownId);
@@ -3165,6 +3181,12 @@ class UnifiedSocketSystem {
 
   // Calculate mercenary equipment stats separately from player stats
   calculateMercenaryStats() {
+    // CRITICAL: Check if mercenary exists first - if "No Mercenary" selected, ignore all merc equipment
+    const mercClass = document.getElementById('mercclass')?.value;
+    if (!mercClass || mercClass === 'No Mercenary') {
+      return; // Early exit - no mercenary means no mercenary stats
+    }
+
     // Get mercenary level
     const mercLevel = parseInt(document.getElementById('merclvlValue')?.value) || 1;
 
