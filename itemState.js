@@ -13,7 +13,16 @@ window.refreshSavedState = function (dropdownId, section) {
   const itemName = dropdown.value;
   if (!itemName) return;
 
-  const item = window.getItemData(itemName);
+  // CRITICAL FIX: Use dropdown-specific cache to get the modified item
+  // This ensures we save the current state with user-modified variable stats
+  const cacheKey = `${dropdownId}_${itemName}`;
+  let item = window.dropdownItemCache && window.dropdownItemCache[cacheKey];
+
+  // Fallback to getItemData if not in cache
+  if (!item) {
+    item = window.getItemData(itemName);
+  }
+
   if (!item) return;
 
   const stateKey = `${dropdownId}_${itemName}`;

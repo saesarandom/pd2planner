@@ -1648,7 +1648,7 @@ const upgradeDefinitions = {
     Frostburn: {
       exceptional: {
         name: "Frostburn",
-        base: "Heavy Bracers",
+        base: "War Gauntlets",
         properties: {
           defense: 52,
           reqstr: 58,
@@ -4369,15 +4369,17 @@ function handleBeltUpgrade() {
         delete itemList[currentItem].properties.defense;
 
         // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
-        const cacheKey = `belts-dropdown_${currentItem}`;
+        const cacheKey = `${select.id}_${currentItem}`;
         if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
           delete window.dropdownItemCache[cacheKey];
         }
 
         // Now trigger update - this will regenerate cache from the updated itemList
-        const section = window.SECTION_MAP && window.SECTION_MAP['belts-dropdown'];
-        if (section && window.unifiedSocketSystem) {
-          window.unifiedSocketSystem.updateItemDisplay(section);
+        if (window.unifiedSocketSystem && window.unifiedSocketSystem.equipmentMap) {
+          const config = window.unifiedSocketSystem.equipmentMap[select.id];
+          if (config && config.section) {
+            window.unifiedSocketSystem.updateItemDisplay(config.section);
+          }
         }
       } else {
         // For static items, build new description
@@ -4433,7 +4435,7 @@ function handleBeltUpgrade() {
         delete itemList[currentItem].properties.defense;
 
         // CRITICAL FIX: Clear cache BEFORE calling updateItemDisplay
-        const cacheKey = `belts-dropdown_${currentItem}`;
+        const cacheKey = `${select.id}_${currentItem}`;
         if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
           delete window.dropdownItemCache[cacheKey];
         }

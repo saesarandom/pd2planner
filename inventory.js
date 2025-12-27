@@ -2494,8 +2494,16 @@ function getEquipmentSkillDamageBonuses() {
     const dropdownElement = document.getElementById(dropdown);
     if (!dropdownElement || !dropdownElement.value) return;
 
-    const itemData = window.itemList || itemList;
-    const item = itemData?.[dropdownElement.value];
+    // CRITICAL FIX: Check dropdown-specific cache first to get user-modified values
+    // This ensures poisondamage.current (and other variable stats) are read correctly
+    const cacheKey = `${dropdown}_${dropdownElement.value}`;
+    let item = window.dropdownItemCache && window.dropdownItemCache[cacheKey];
+
+    // Fallback to itemList if not in cache
+    if (!item) {
+      const itemData = window.itemList || itemList;
+      item = itemData?.[dropdownElement.value];
+    }
     if (!item) return;
 
     // CRITICAL: Check if character meets item requirements
