@@ -6,13 +6,17 @@
  * @returns {Object} Character data object ready for JSON serialization
  */
 window.exportCharacterData = function () {
-    const levelInput = document.getElementById('lvlValue');
-    const level = levelInput ? (parseInt(levelInput.value) || 1) : 1;
+    const getVal = (id) => {
+        const el = document.getElementById(id);
+        return el ? (parseInt(el.value) || 0) : 0;
+    };
+
+    const level = getVal('lvlValue') || getVal('lvl-value') || 1;
     const characterClass = document.getElementById('selectClass')?.value || 'Amazon';
-    const str = parseInt(document.getElementById('str')?.value) || 0;
-    const dex = parseInt(document.getElementById('dex')?.value) || 0;
-    const vit = parseInt(document.getElementById('vit')?.value) || 0;
-    const enr = parseInt(document.getElementById('enr')?.value) || 0;
+    const str = getVal('str');
+    const dex = getVal('dex');
+    const vit = getVal('vit');
+    const enr = getVal('enr');
     const mode = document.querySelector('.modedropdown')?.value || 'pvm';
 
     const anyaBonuses = {
@@ -70,8 +74,18 @@ window.exportCharacterData = function () {
 
     const charms = window.charmInventory?.exportCharms ? window.charmInventory.exportCharms() : [];
     const skills = {};
-    document.querySelectorAll('.skill-tree input[type="number"], .skills-container input[type="number"]').forEach(input => {
-        if (parseInt(input.value) > 0) skills[input.id] = parseInt(input.value);
+    // Broad search for any inputs that look like they belong to skills
+    const skillSelectors = [
+        '.skill-tree-container input[type="number"]',
+        '.skills-container input[type="number"]',
+        '[id$="container"] input[type="number"]',
+        '[id$="skillscontainer"] input[type="number"]'
+    ];
+    skillSelectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(input => {
+            const val = parseInt(input.value);
+            if (val > 0 && input.id) skills[input.id] = val;
+        });
     });
 
     return {
