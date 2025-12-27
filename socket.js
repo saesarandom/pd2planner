@@ -4607,6 +4607,12 @@ class UnifiedSocketSystem {
       window.onEquipmentOrSocketChange();
     }
 
+    // CRITICAL: Update character total stats display (green bonus numbers)
+    // This ensures str/dex/vit/enr show correct totals after equipment/corruption changes
+    if (window.characterManager && typeof window.characterManager.updateTotalStats === 'function') {
+      window.characterManager.updateTotalStats();
+    }
+
     // Recalculate skill damage whenever stats change (including when jewels are inserted)
     if (window.skillSystem && typeof window.skillSystem.calculateSkillDamage === 'function') {
       window.skillSystem.calculateSkillDamage();

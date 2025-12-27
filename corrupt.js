@@ -1756,6 +1756,14 @@ function triggerItemUpdate(dropdownId) {
       // Update socket system to re-add socket stats to description
       if (window.unifiedSocketSystem?.updateAll) {
         window.unifiedSocketSystem.updateAll();
+
+        // CRITICAL: Second update after a delay to ensure character stats are fully recalculated
+        // This fixes the issue where str/dex/vit/enr/defense don't update immediately after corruption
+        setTimeout(() => {
+          if (window.unifiedSocketSystem?.updateAll) {
+            window.unifiedSocketSystem.updateAll();
+          }
+        }, 50);
       }
 
       if (window.statsCalculator?.updateAll) {
