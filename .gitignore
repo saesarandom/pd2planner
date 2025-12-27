@@ -4,4 +4,3 @@ node_modules/
 cloudflare-worker/worker.js
 cloudflare-worker/node_modules/
 cloudflare-worker/.wrangler/
-CODE_REVIEWER_SYSTEM.md

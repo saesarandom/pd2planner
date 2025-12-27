@@ -268,15 +268,25 @@ window.loadCharacterFromData = function (data) {
                 }
             }
             if (data.skills) {
+                // First pass: Set all skill values without triggering events
                 for (const [id, val] of Object.entries(data.skills)) {
                     const input = document.getElementById(id);
                     if (input) {
                         input.value = val;
+                    }
+                }
+
+                // Second pass: Dispatch events after all values are set
+                for (const [id, val] of Object.entries(data.skills)) {
+                    const input = document.getElementById(id);
+                    if (input) {
                         input.dispatchEvent(new Event('input', { bubbles: true }));
                     }
                 }
+
                 if (window.skillSystem) {
                     window.skillSystem.updatePointsDisplay();
+                    window.skillSystem.updateSkillVisuals(); // Refresh skill availability based on prerequisites
                     if (data.selectedSkill && document.getElementById('active-skill-dropdown')) {
                         document.getElementById('active-skill-dropdown').value = data.selectedSkill;
                         document.getElementById('active-skill-dropdown').dispatchEvent(new Event('change', { bubbles: true }));
