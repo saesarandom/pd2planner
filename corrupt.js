@@ -1473,9 +1473,10 @@ function applyCorruptionToItem(corruptionText) {
     }
   }
 
-  // CRITICAL FIX: Recalculate defense for items with edef corruption (dynamic items)
-  if (item.baseType && item.properties && item.properties.edef && typeof window.calculateItemDefense === 'function') {
-    // Determine category from dropdown
+  // CRITICAL FIX: Recalculate defense for dynamic items using the shared global function
+  // ONLY if it's a defensive item (helm, armor, shield, etc.) present in baseDefenses
+  const isActuallyWeapon = item.itemType === 'weapon' || (item.baseType && window.BASE_TYPE_CATEGORIES && window.BASE_TYPE_CATEGORIES[item.baseType] === 'weapon');
+  if (!isActuallyWeapon && item.baseType && item.properties && window.baseDefenses?.[item.baseType] > 0 && typeof window.calculateItemDefense === 'function') {
     let category = 'helm';
     if (currentCorruptionSlot.includes('armor')) category = 'armor';
     else if (currentCorruptionSlot.includes('belt')) category = 'belts';
@@ -1484,6 +1485,17 @@ function applyCorruptionToItem(corruptionText) {
     else if (currentCorruptionSlot.includes('off') || currentCorruptionSlot.includes('shield')) category = 'shield';
 
     item.properties.defense = window.calculateItemDefense(item, item.baseType, category);
+  } else if (item.properties && item.properties.defense !== undefined) {
+    // If it's not a defensive item but somehow has a defense property (e.g. from edef corruption on a weapon), DELETE IT
+    delete item.properties.defense;
+  }
+
+  // CRITICAL FIX: Clear the dropdown cache to force regeneration with updated defense
+  // This ensures the next display refresh uses the newly calculated defense value
+  // Reuse cacheKey from line 1313
+  if (window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+    // Update the cached item's defense property before clearing
+    window.dropdownItemCache[cacheKey].properties.defense = item.properties.defense;
   }
 
   // CRITICAL FIX: Set flag to prevent double-application during triggerItemUpdate

@@ -2464,7 +2464,8 @@ const baseStrengths = {
   "Dimensional Shard": 0, // No value provided, defaulting to 0
 };
 
-const baseDamages = {
+// Make baseDamages globally accessible
+window.baseDamages = {
   "Hand Axe": { min: 3, max: 6 },
   Hatchet: { min: 15, max: 30 },
   Tomahawk: { min: 35, max: 70 },
@@ -3160,16 +3161,15 @@ function buildDescriptionWeapon(itemName, baseType, properties, magicalProps) {
 
 // Expose globally for use by main.js when edef/todef changes
 window.calculateItemDefense = function calculateItemDefense(item, baseType, category = "helm") {
-  const baseDefense = baseDefenses[baseType] || 0;
+  const isActuallyWeapon = item.itemType === 'weapon' || (baseType && window.BASE_TYPE_CATEGORIES && window.BASE_TYPE_CATEGORIES[baseType] === 'weapon');
+  if (isActuallyWeapon) return 0;
 
-  // Extract edef and todef, handling variable stats (objects with current property)
-  let { edef, todef } = item.properties || {};
-  if (typeof edef === 'object' && edef !== null && 'current' in edef) {
-    edef = edef.current;
-  }
-  if (typeof todef === 'object' && todef !== null && 'current' in todef) {
-    todef = todef.current;
-  }
+  const baseDefense = baseDefenses[baseType] || 0;
+  if (baseDefense <= 0) return 0; // Weapons/items without base defense shouldn't have defense
+
+  // Extract edef and todef using the shared helper to handle variable stat objects
+  const edef = typeof window.getPropertyValue === 'function' ? window.getPropertyValue(item.properties?.edef || 0) : 0;
+  const todef = typeof window.getPropertyValue === 'function' ? window.getPropertyValue(item.properties?.todef || 0) : 0;
 
   const ethMult = (item.properties?.ethereal || (item.description && item.description.includes("Ethereal"))) ? 1.5 : 1;
 
@@ -3538,11 +3538,10 @@ function handleUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -3609,11 +3608,10 @@ function handleUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -3701,11 +3699,10 @@ function handleArmorUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -3772,11 +3769,10 @@ function handleArmorUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -3904,11 +3900,10 @@ function handleWeaponUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -4227,11 +4222,10 @@ function handleGloveUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -4293,11 +4287,10 @@ function handleGloveUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -4396,11 +4389,10 @@ function handleBeltUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -4462,11 +4454,10 @@ function handleBeltUpgrade() {
 
       // For dynamic items, we already called updateItemDisplay above - skip dispatchEvent
       // For static items, dispatch change event to trigger full update
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -4564,11 +4555,10 @@ function handleBootUpgrade() {
         }
       }
 
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -4630,11 +4620,10 @@ function handleBootUpgrade() {
         }
       }
 
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -4732,11 +4721,10 @@ function handleShieldUpgrade() {
         }
       }
 
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }
@@ -4798,11 +4786,10 @@ function handleShieldUpgrade() {
         }
       }
 
-      if (!isDynamic) {
-        select.dispatchEvent(new Event("change"));
-        if (window.unifiedSocketSystem?.updateAll) {
-          window.unifiedSocketSystem.updateAll();
-        }
+      // Always trigger full update to refresh character stats
+      select.dispatchEvent(new Event("change"));
+      if (window.unifiedSocketSystem?.updateAll) {
+        window.unifiedSocketSystem.updateAll();
       }
       return;
     }

@@ -62,7 +62,7 @@ const ALL_DROPDOWNS = [
 ];
 
 // Base type to category mapping - DEFINITIVE source of truth
-const BASE_TYPE_CATEGORIES = {
+window.BASE_TYPE_CATEGORIES = {
   // Helms
   'Cap': 'helm', 'Skull Cap': 'helm', 'Helm': 'helm', 'Full Helm': 'helm',
   'Great Helm': 'helm', 'Crown': 'helm', 'Mask': 'helm', 'Bone Helm': 'helm',
@@ -454,6 +454,16 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Generate dynamic description for items with variable stats
   const props = item.properties || {};
 
+  // CRITICAL FIX: Ensure weapons never have a defense property
+  // This prevents "Defense: 0" or "Defense: NaN" from appearing at the top of the tooltip
+  const isWeapon = item.itemType === 'weapon' ||
+    (item.baseType && window.BASE_TYPE_CATEGORIES && window.BASE_TYPE_CATEGORIES[item.baseType] === 'weapon') ||
+    (item.baseType && window.baseDamages && (window.baseDamages[item.baseType] || window.baseDamages[item.baseType + " (1h)"] || window.baseDamages[item.baseType + " (melee)"]));
+
+  if (isWeapon && props.defense !== undefined) {
+    delete props.defense;
+  }
+
   let html = '';
 
   // Special display for crafted items: show name + craft type label
@@ -514,8 +524,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   }
 
   // Calculate defense for dynamic armor/helms with baseType
-  // This includes both crafted items AND regular dynamic items
-  if (item.baseType && item.itemType !== 'weapon') {
+  // ONLY if it's a defensive item (helm, armor, shield, etc.) present in baseDefenses
+  if (!isWeapon && item.baseType && window.baseDefenses && window.baseDefenses[item.baseType]) {
     // Check if this is armor or helm
     if (window.baseDefenses && window.baseDefenses[item.baseType]) {
       const baseDef = window.baseDefenses[item.baseType];
@@ -557,7 +567,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Calculate dynamic defense if item has edef
   let calculatedDefense = null;
   let defenseDisplay = null;
-  if (props.edef && item.baseType && baseDefenseMap[item.baseType]) {
+  if (!isWeapon && props.edef && item.baseType && baseDefenseMap[item.baseType]) {
     const baseItemDefense = baseDefenseMap[item.baseType];
     const edefValue = getPropertyValue(props.edef || 0);
     const todefValue = props.todef || 0;
@@ -590,6 +600,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Map property keys to display format
   const propertyDisplay = {
     defense: (val) => {
+      // Secondary safety check: don't show defense line for weapons, 0 value, or NaN
+      const isWeapon = item.itemType === 'weapon' ||
+        (item.baseType && window.BASE_TYPE_CATEGORIES && window.BASE_TYPE_CATEGORIES[item.baseType] === 'weapon') ||
+        (item.baseType && window.baseDamages && (window.baseDamages[item.baseType] || window.baseDamages[item.baseType + " (1h)"] || window.baseDamages[item.baseType + " (melee)"]));
+      if (isWeapon || !val || isNaN(val)) return '';
       // If defenseDisplay is set (from edef calculation), use it
       if (defenseDisplay !== null) return defenseDisplay;
 
@@ -1030,7 +1045,8 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     }
 
     // If changing edef or todef, recalculate defense property
-    if ((propKey === 'edef' || propKey === 'todef') && item.baseType && typeof window.calculateItemDefense === 'function') {
+    // ONLY for items that actually have a base defense (prevent "Defense: NaN" on weapons)
+    if ((propKey === 'edef' || propKey === 'todef') && item.baseType && window.baseDefenses?.[item.baseType] > 0 && typeof window.calculateItemDefense === 'function') {
       // Determine category from dropdownId
       let category = 'helm';
       if (dropdownId.includes('armor')) category = 'armor';
@@ -1346,8 +1362,9 @@ window.updateItemInfo = function updateItemInfo(event) {
     }
 
     // CRITICAL FIX: Recalculate defense from edef after restoring properties/corruption
-    // Defense should always be calculated dynamically, not cached
-    if (item.properties && item.properties.edef && item.baseType && typeof window.calculateItemDefense === 'function') {
+    // ONLY for defensive items (helm, armor, shield, etc.) to prevent "Defense: NaN" on weapons
+    const isActuallyWeapon = item.itemType === 'weapon' || (item.baseType && window.BASE_TYPE_CATEGORIES && window.BASE_TYPE_CATEGORIES[item.baseType] === 'weapon');
+    if (!isActuallyWeapon && item.properties && item.properties.edef && item.baseType && window.baseDefenses?.[item.baseType] > 0 && typeof window.calculateItemDefense === 'function') {
       // Determine category from dropdown
       let category = 'helm';
       if (dropdown.id.includes('armor')) category = 'armor';
@@ -1357,7 +1374,11 @@ window.updateItemInfo = function updateItemInfo(event) {
       else if (dropdown.id.includes('off') || dropdown.id.includes('shield')) category = 'shield';
 
       item.properties.defense = window.calculateItemDefense(item, item.baseType, category);
+    } else if (item.properties && item.properties.defense !== undefined && item.baseType && !window.baseDefenses?.[item.baseType]) {
+      // Cleanup: remove defense property from non-defensive items (like weapons with edef)
+      delete item.properties.defense;
     }
+
 
 
     // For dynamic items (no static description), delegate to socket system

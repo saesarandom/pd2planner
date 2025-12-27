@@ -3254,24 +3254,7 @@ class UnifiedSocketSystem {
   parseMercenaryItemStats(item, section) {
     let description = item.description;
 
-    // CRITICAL FIX: Append corruption text to description for parsing stats
-    // Find the dropdown for this section
-    const dropdownId = Object.entries(this.equipmentMap).find(
-      ([_, config]) => config.section === section
-    )?.[0];
-
-    if (dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-      const corruption = window.itemCorruptions[dropdownId];
-      if (corruption.text && corruption.itemName) {
-        // Optionally verify name match if we can determine item name
-        const currentName = document.getElementById(dropdownId)?.value;
-        if (currentName === corruption.itemName) {
-          description += `<br>${corruption.text}`;
-        }
-      }
-    }
-
-    // For dynamic items without a static description, generate it
+    // 1. For dynamic items without a static description, generate it FIRST
     if (!description && item.baseType) {
       const dropdownId = Object.entries(this.equipmentMap).find(
         ([_, config]) => config.section === section
@@ -3281,6 +3264,27 @@ class UnifiedSocketSystem {
         const itemName = document.getElementById(dropdownId)?.value;
         if (itemName) {
           description = window.generateItemDescription(itemName, item, dropdownId);
+        }
+      }
+    }
+
+    // 2. Safely append corruption text for parsing (mostly for static items)
+    const dropdownId = Object.entries(this.equipmentMap).find(
+      ([_, config]) => config.section === section
+    )?.[0];
+
+    if (dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+      const corruption = window.itemCorruptions[dropdownId];
+      if (corruption.text && corruption.itemName) {
+        const currentName = document.getElementById(dropdownId)?.value;
+        if (currentName === corruption.itemName) {
+          // Only append if the corruption text isn't already in the description
+          const cleanCorruption = corruption.text.replace(/<[^>]*>/g, '').trim();
+          const cleanDescription = (description || '').replace(/<[^>]*>/g, '').trim();
+
+          if (!cleanDescription.includes(cleanCorruption)) {
+            description = (description ? description + '<br>' : '') + corruption.text;
+          }
         }
       }
     }
@@ -3446,27 +3450,9 @@ class UnifiedSocketSystem {
   parseItemStats(item, section) {
     let description = item.description;
 
-    // CRITICAL FIX: Append corruption text to description for parsing stats
-    // This allows static items with corruption to have their corruption stats parsed
-    // Find the dropdown for this section
-    const dropdownId = Object.entries(this.equipmentMap).find(
-      ([_, config]) => config.section === section
-    )?.[0];
-
-    if (dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-      const corruption = window.itemCorruptions[dropdownId];
-      if (corruption.text && corruption.itemName) {
-        // Optionally verify name match if we can determine item name
-        const currentName = document.getElementById(dropdownId)?.value;
-        if (currentName === corruption.itemName) {
-          description += `<br>${corruption.text}`;
-        }
-      }
-    }
-
-    // For dynamic items without a static description, generate it
+    // 1. For dynamic items without a static description, generate it FIRST
+    // This provides the base stats (Defense, Damage, etc.) for the parser
     if (!description && item.baseType) {
-      // Find the dropdown for this section to use as dropdownId
       const dropdownId = Object.entries(this.equipmentMap).find(
         ([_, config]) => config.section === section
       )?.[0];
@@ -3479,8 +3465,29 @@ class UnifiedSocketSystem {
       }
     }
 
-    if (!description) return;
+    // 2. Safely append corruption text for parsing (mostly for static items)
+    const dropdownId = Object.entries(this.equipmentMap).find(
+      ([_, config]) => config.section === section
+    )?.[0];
 
+    if (dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+      const corruption = window.itemCorruptions[dropdownId];
+      if (corruption.text && corruption.itemName) {
+        const currentName = document.getElementById(dropdownId)?.value;
+        if (currentName === corruption.itemName) {
+          // Only append if the corruption text isn't already in the description
+          // (generateItemDescription for dynamic items already includes property-based corruption)
+          const cleanCorruption = corruption.text.replace(/<[^>]*>/g, '').trim();
+          const cleanDescription = (description || '').replace(/<[^>]*>/g, '').trim();
+
+          if (!cleanDescription.includes(cleanCorruption)) {
+            description = (description ? description + '<br>' : '') + corruption.text;
+          }
+        }
+      }
+    }
+
+    if (!description) return;
 
     const lines = description.split('<br>');
     lines.forEach(line => this.parseStatLine(line.trim()));
