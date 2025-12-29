@@ -673,6 +673,12 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     skmastery: (val, prop) => formatVariableStat('+', val, ' to Skeleton Mastery (Necromancer Only)', prop, itemName, 'skmastery', dropdownId),
     raiseskwarrior: (val, prop) => formatVariableStat('+', val, ' to Raise Skeleton Warrior (Necromancer Only)', prop, itemName, 'raiseskwarrior', dropdownId),
     sorsk: (val, prop) => formatVariableStat('+', val, ' to Sorceress Skill Levels', prop, itemName, 'sorsk', dropdownId),
+    amask: (val, prop) => formatVariableStat('+', val, ' to Amazon Skill Levels', prop, itemName, 'amask', dropdownId),
+    necsk: (val, prop) => formatVariableStat('+', val, ' to Necromancer Skill Levels', prop, itemName, 'necsk', dropdownId),
+    barsk: (val, prop) => formatVariableStat('+', val, ' to Barbarian Skill Levels', prop, itemName, 'barsk', dropdownId),
+    palsk: (val, prop) => formatVariableStat('+', val, ' to Paladin Skill Levels', prop, itemName, 'palsk', dropdownId),
+    drusk: (val, prop) => formatVariableStat('+', val, ' to Druid Skill Levels', prop, itemName, 'drusk', dropdownId),
+    assk: (val, prop) => formatVariableStat('+', val, ' to Assassin Skill Levels', prop, itemName, 'assk', dropdownId),
     fcr: (val, prop) => formatVariableStat('+', val, '% Faster Cast Rate', prop, itemName, 'fcr', dropdownId),
     // lightrad: (val, prop) => formatVariableStat(val >= 0 ? '+' : '', val, ' to Light Radius', prop, itemName, 'lightrad', dropdownId),
     plr: (val, prop) => formatVariableStat('Poison Length Reduced by ', val, '%', prop, itemName, 'plr', dropdownId),
@@ -719,6 +725,14 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     laek: (val, prop) => formatVariableStat('+', val, ' Life after each Kill', prop, itemName, 'laek', dropdownId),
     maek: (val, prop) => formatVariableStat('+', val, ' to Mana after each Kill', prop, itemName, 'maek', dropdownId),
     ow: (val, prop) => formatVariableStat('', val, '% Chance of Open Wounds', prop, itemName, 'ow', dropdownId),
+    openwounds: (val, prop) => formatVariableStat('', val, '% Chance of Open Wounds', prop, itemName, 'openwounds', dropdownId),
+    atdmg: (val, prop) => formatVariableStat('Attacker Takes Damage of ', val, '', prop, itemName, 'atdmg', dropdownId),
+    mindmg: (val, prop) => {
+      const maxVal = props.maxdmg || val;
+      return `Adds ${val}-${maxVal} Damage`;
+    },
+    maxdmg: () => '', // Skip, handled by mindmg
+    blind: (val, prop) => val ? 'Hit Blinds Target' : '',
     pdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '', prop, itemName, 'pdr', dropdownId),
     regmana: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'regmana', dropdownId),
     firedmgmin: (val, prop) => {
@@ -755,7 +769,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   };
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere
-  const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax'];
+  const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax', 'maxdmg'];
 
   // Iterate through propertyDisplay keys in order to control display order
   // This ensures damage lines appear in the correct position, not at the end

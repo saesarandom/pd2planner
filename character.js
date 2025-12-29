@@ -541,6 +541,73 @@ class CharacterManager {
     return bonuses;
   }
 
+  // Collect class-specific skill bonuses from equipment (amask, sorsk, etc.)
+  getEquipmentClassSkills() {
+    let classSkills = 0;
+    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+    const currentClass = this.currentClass;
+
+    // Get current character stats for requirement checking
+    const baseStr = this.classStats[currentClass].str;
+    const baseDex = this.classStats[currentClass].dex;
+    const currentStr = parseInt(document.getElementById('str')?.value) || baseStr;
+    const currentDex = parseInt(document.getElementById('dex')?.value) || baseDex;
+
+    // Map class names to their property keys
+    const classSkillProperties = {
+      'Amazon': 'amask',
+      'Sorceress': 'sorsk',
+      'Necromancer': 'necsk',
+      'Barbarian': 'barsk',
+      'Paladin': 'palsk',
+      'Druid': 'drusk',
+      'Assassin': 'assk'
+    };
+
+    const classSkillProp = classSkillProperties[currentClass];
+    if (!classSkillProp) return 0;
+
+    // Player equipment only
+    const equipmentSections = [
+      { dropdown: 'weapons-dropdown', section: 'weapon' },
+      { dropdown: 'helms-dropdown', section: 'helm' },
+      { dropdown: 'armors-dropdown', section: 'armor' },
+      { dropdown: 'offs-dropdown', section: 'shield' },
+      { dropdown: 'gloves-dropdown', section: 'gloves' },
+      { dropdown: 'belts-dropdown', section: 'belts' },
+      { dropdown: 'boots-dropdown', section: 'boots' },
+      { dropdown: 'ringsone-dropdown', section: 'ring' },
+      { dropdown: 'ringstwo-dropdown', section: 'ring' },
+      { dropdown: 'amulets-dropdown', section: 'amulet' }
+    ];
+
+    equipmentSections.forEach(({ dropdown, section }) => {
+      const dropdownElement = document.getElementById(dropdown);
+      if (!dropdownElement || !dropdownElement.value) return;
+
+      // Check cache first for corrupted/modified items
+      const cacheKey = `${dropdown}_${dropdownElement.value}`;
+      let item = window.dropdownItemCache && window.dropdownItemCache[cacheKey];
+
+      if (!item) {
+        item = window.getItemData(dropdownElement.value);
+      }
+      if (!item) return;
+
+      const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
+      const isUsableByClass = isItemUsableByClass(dropdownElement.value, currentClass);
+      const meetsStatRequirements = doesCharacterMeetStatRequirements(dropdownElement.value, currentStr, currentDex);
+
+      if (currentLevel >= actualRequiredLevel && isUsableByClass && meetsStatRequirements && item.properties) {
+        // Check for class-specific skill property (e.g., amask for Amazon)
+        const skillBonus = getPropertyValue(item.properties[classSkillProp]) || 0;
+        classSkills += skillBonus;
+      }
+    });
+
+    return classSkills;
+  }
+
   getSocketBonuses() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;

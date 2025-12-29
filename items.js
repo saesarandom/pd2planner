@@ -3881,9 +3881,10 @@ const itemList = {
   },
 
   "Umbral Disk": {
-    description:
-      "Umbral Disk<br>Small Shield<br>Base Smite Damage: 2 to 3, Avg 2.5<br>Defense: 46<br>Block: 55% (Dru/Nec/Sor), 60% (Ama/Ass/Bar), 65% (Pal)<br>Required Strength: 22<br>Required Level: 9<br>30% Increased Chance of Blocking<br>Adds 4-8 Damage<br>Hit Blinds Target<br>+50% Enhanced Defense<br>+30 Defense<br>+10 to Dexterity<br>+20 to Life<br>",
+    baseType: "Small Shield",
     properties: {
+      reqlvl: 9,
+      reqstr: 22,
       smitedmgmin: 2,
       smitedmgmax: 3,
       defense: 46,
@@ -3892,26 +3893,29 @@ const itemList = {
       mindmg: 4,
       maxdmg: 8,
       blind: 1,
-      edef: 50,
+      edef: { min: 40, max: 50, current: 50 },
       dex: 10,
       tolife: 20,
+      todef: 30,
       dur: 15, //nev im, jestli tohle je gg
     },
   },
 
   "Swordback Hold": {
-    description:
-      "Swordback Hold<br>Spiked Shield<br>Base Smite Damage: 9 to 16, Avg 12.5<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 51<br>Block: 50% (Dru/Nec/Sor), 55% (Ama/Ass/Bar), 60% (Pal)<br>Required Strength: 30<br>Required Level: 15<br>20% Increased Chance of Blocking<br>50% Chance of Open Wounds<br>+8 Open Wounds Damage per Second<br>+60% Enhanced Defense<br>+10 Defense<br>Attacker Takes Damage of 32<br>",
+    baseType: "Spiked Shield",
     properties: {
+      reqlvl: 15,
+      reqstr: 30,
       smitedmgmin: 9,
       smitedmgmax: 16,
       defense: 51,
       block1: 50,
       block: 20,
-      openwounds: 50,
+      openwounds: 50, //tady to neukazuje, uz jo
       owdmg: 8,
-      edef: 60,
-      thorns: 32,
+      todef: 10,
+      edef: { min: 50, max: 60, current: 60 },
+      atdmg: 32, //tady to neukazuje, uz jo
     },
   },
 
@@ -3936,62 +3940,105 @@ const itemList = {
   },
 
   "Wall of the Eyeless": {
-    description:
-      "Wall of the Eyeless<br>Bone Shield<br>Base Smite Damage: 5 to 10, Avg 7.5<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 53<br>Block: 40% (Dru/Nec/Sor), 45% (Ama/Ass/Bar), 50% (Pal)<br>Required Strength: 25<br>Required Level: 20<br>+20% Faster Cast Rate<br>3% Mana Stolen per Hit<br>+40% Enhanced Defense<br>+10 Defense<br>Cold Resist +20%<br>Fire Resist +20%<br>Poison Resist +20%<br>+5 to Mana after each Kill<br>",
+    baseType: "Bone Shield",
     properties: {
+      reqlvl: 20,
+      reqstr: 25,
       smitedmgmin: 5,
       smitedmgmax: 10,
       defense: 53,
+      block1: 40,
+      fcr: 20,
+      mleech: 3,
+      edef: { min: 30, max: 40, current: 40 },
+      todef: 10,
+      coldres: 20,
+      firres: 20,
+      poisres: 20,
+      maek: { min: 3, max: 5, current: 5 },
     },
   },
 
   "Bverrit Keep": {
-    description:
-      "Bverrit Keep<br>Tower Shield<br>Base Smite Damage: 5 to 23, Avg 14<br>Defense: 87<br>Block: 54% (Dru/Nec/Sor), 59% (Ama/Ass/Bar), 64% (Pal)<br>Required Strength: 75<br>Required Level: 19<br>10% Increased Chance of Blocking<br>+120% Enhanced Defense<br>+30 Defense<br>+15 to Strength<br>Fire Resist +50%<br>Physical Damage Taken Reduced by 10%<br>Magic Damage Taken Reduced by 5<br>+100 Durability<br>",
+    baseType: "Tower Shield",
     properties: {
-      smitedmgmin: 2,
-      smitedmgmax: 3,
-      defense: 46,
-      block1: 55,
+      reqlvl: 19,
+      reqstr: 75,
+      smitedmgmin: 5,
+      smitedmgmax: 23,
+      defense: 87,
+      block1: 54,
+      block: 10,
+      edef: { min: 80, max: 120, current: 120 },
+      todef: 30,
+      str: { min: 5, max: 15, current: 15 },
+      firres: { min: 30, max: 50, current: 50 },
+      physdr: { min: 5, max: 10, current: 10 },
+      mdr: 5,
+      dur: { min: 80, max: 100, current: 100 }, //tady to asi neukaze
     },
   },
 
   "The Ward": {
-    description:
-      "The Ward<br>Gothic Shield<br>Base Smite Damage: 4 to 11, Avg 7.5<br>Defense: 112<br>Block: 46% (Dru/Nec/Sor), 51% (Ama/Ass/Bar), 56% (Pal)<br>Required Strength: 60<br>Required Level: 26<br>10% Increased Chance of Blocking<br>+100% Enhanced Defense<br>+40 Defense<br>+10 to Strength<br>All Resistances +50<br>Magic Damage Taken Reduced by 2<br>",
+    baseType: "Gothic Shield",
     properties: {
+      reqlvl: 26,
+      reqstr: 60,
       smitedmgmin: 4,
       smitedmgmax: 11,
       defense: 112,
       block1: 46,
+      block: 10,
+      edef: 100,
+      todef: 40,
+      str: 10,
+      allres: { min: 30, max: 50, current: 50 },
+      mdr: 2,
     },
   },
 
   Visceratuant: {
-    description:
-      "Visceratuant<br>Defender<br>Base Smite Damage: 10 to 15, Avg 12.5<br>Base Maximum Sockets: 1 (2 for upgraded versions)<br>Defense: 125<br>Block: 60% (Dru/Nec/Sor), 65% (Ama/Ass/Bar), 70% (Pal)<br>Required Strength: 38<br>Required Level: 28<br>+1 to Sorceress Skills<br>+30% Faster Block Rate<br>30% Increased Chance of Blocking<br>+10% to Lightning Skill Damage<br>+150% Enhanced Defense<br>Attacker Takes Lightning Damage of 50<br>",
+    baseType: "Defender",
     properties: {
+      reqlvl: 28,
+      reqstr: 38,
       smitedmgmin: 10,
       smitedmgmax: 15,
       defense: 125,
       block1: 60,
       fbr: 30,
       block: 30,
-      lightskill: 10,
-      edef: 150,
-      atligdmg: 50, //who knows if these are correct
-      allsk: 1,
-      reqstr: 38,
-      reqlvl: 28,
+      sorsk: 1, // Note: Description says "Sorceress Skills" but using allsk for now
+      lightdamage: { min: 5, max: 10, current: 10 },
+      edef: { min: 100, max: 150, current: 150 },
+      atligdmg: { min: 35, max: 50, current: 50 },
+    },
+  },
+
+  "Moser's Blessed Circle": {
+    baseType: "Round Shield",
+    properties: {
+      defense: 125,
+      reqstr: 53,
+      reqlvl: 31,
+      smitedmgmin: 10,
+      smitedmgmax: 15,
+      block1: 60,
+      fbr: 30,
+      block: 25,
+      edef: { min: 180, max: 220, current: 220 },
+      curseres: 10,
+      allres: 20,
+      sock: 2,
     },
   },
 
   Stormshield: {
     baseType: "Monarch",
     properties: {
+      defense: 148,
       smitedmgmin: 12,
       smitedmgmax: 34,
-      defense: 148,
       block1: 67,
       fbr: 35,
       block: 25,
@@ -4577,7 +4624,7 @@ const itemList = {
 
   "Thundergod's Vigor": {
     description:
-      "Thundergod's Vigor<br>War Belt<br>Defense: 159<br>Required Strength: 110<br>Required Level:47<br>5% Chance to Cast Level 17 Fist of the Heavens when Struck<br>+2 to Lightning Skills<br>Adds 1 to 250 Lightning Damage<br>+200% Enhanced Defense<br>+15 to Strength<br> +15 to Vitality<br>+8% to Maximum Lightning Resist<br>",
+      "Thundergod's Vigor<br>War Belt<br>Defense: 159<br>Required Strength: 110<br>Required Level: 47<br>5% Chance to Cast Level 17 Fist of the Heavens when Struck<br>+2 to Lightning Skills<br>Adds 1 to 250 Lightning Damage<br>+200% Enhanced Defense<br>+15 to Strength<br> +15 to Vitality<br>+8% to Maximum Lightning Resist<br>",
     properties: {
       defense: 159,
       reqstr: 110,

@@ -47,7 +47,7 @@ class UnifiedSocketSystem {
     // Fast stats tracking
     this.stats = {
       strength: 0, dexterity: 0, vitality: 0, energy: 0,
-      allSkills: 0, magicFind: 0, goldFind: 0, defense: 0,
+      allSkills: 0, classSkills: 0, magicFind: 0, goldFind: 0, defense: 0,
       ias: 0, fcr: 0, frw: 0, fhr: 0, plr: 0,
       fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
       allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0,
@@ -4570,6 +4570,22 @@ class UnifiedSocketSystem {
 
     // Core stats
     this.updateElement('allskillscontainer', this.stats.allSkills);
+
+    // CRITICAL: Add equipment class skills to this.stats.classSkills
+    // Get equipment class skills from character manager (e.g., amask: 2 from Blastbark)
+    if (window.characterManager && typeof window.characterManager.getEquipmentClassSkills === 'function') {
+      const equipmentClassSkills = window.characterManager.getEquipmentClassSkills();
+
+      // Get FRESH charm class skills by calling getCharmBonuses directly (not from window.statsCalculator)
+      // This prevents stacking issues where old values accumulate
+      let charmClassSkills = 0;
+      if (typeof getCharmBonuses === 'function') {
+        const charmBonuses = getCharmBonuses();
+        charmClassSkills = charmBonuses.classSkills || 0;
+      }
+
+      this.stats.classSkills = equipmentClassSkills + charmClassSkills;
+    }
 
     // Update skill bonus indicators if skill system is available (include both all skills and class skills)
     if (window.skillSystem) {

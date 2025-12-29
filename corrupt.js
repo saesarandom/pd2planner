@@ -1211,6 +1211,9 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
       case 'ow':
         addStatToProp('ow', stat.value);
         break;
+      case 'owdmg':
+        addStatToProp('owdmg', stat.value); //added new
+        break;
       case 'block':
         addStatToProp('block', stat.value);
         break;
@@ -1549,6 +1552,7 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\+?\d+)%\s+(Chance of Crushing Blow)/i, type: 'cb' },
     { pattern: /(\+?\d+)%\s+(Deadly Strike)/i, type: 'deadly' },
     { pattern: /(\+?\d+)%\s+(Chance of Open Wounds)/i, type: 'ow' },
+    { pattern: /(\+?\d+)\s+(?:to\s+)?(Open Wounds Damage per Second)/i, type: 'owdmg' }, //added new
     { pattern: /Replenish\s+Life\s+\+(\d+)/i, type: 'replenish' },
     { pattern: /Regenerate\s+Mana\s+(\d+)%/i, type: 'manarecovery' },
     { pattern: /Cannot\s+Be\s+Frozen/i, type: 'cbf', value: 1 },

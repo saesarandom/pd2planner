@@ -1879,7 +1879,7 @@ window.baseDefenses = {
   "Avenger Guard": 50,
   "Slayer Guard": 120,
   "Guardian Crown": 168,
-  Buckler: 6, //nEW MAYBE BUG?
+  Buckler: 6,
   "Small Shield": 10,
   "Large Shield": 14,
   "Spiked Shield": 25,
@@ -1888,8 +1888,10 @@ window.baseDefenses = {
   "Tower Shield": 25,
   "Gothic Shield": 35,
   Defender: 49,
-  Heater: 143, //buged
-  "Demonhide Boots": 20, //buged
+  "Round Shield": 55,
+  Monarch: 148,
+  Heater: 110,
+  "Demonhide Boots": 35,
   "Leather Gloves": 3,
   "Demonhide Gloves": 35,
   "Bramble Mitts": 62,

@@ -173,3 +173,132 @@ if (!window._isLoadingCharacterData) {
 ---
 
 **End of Guide** - Keep this concise and update only with critical patterns/fixes.
+
+---
+
+## 📝 Recent Updates (2025-12-29)
+
+### Dynamic Item System - Defense Calculation
+**Pattern:** Items with `baseType` property calculate defense dynamically:
+```javascript
+// itemUpgrade.js - window.baseDefenses object
+window.baseDefenses = {
+  "Round Shield": 55,
+  "Monarch": 148,
+  // ... must include ALL base types used in items.js
+};
+
+// main.js - generateItemDescription()
+if (item.baseType && window.baseDefenses[item.baseType]) {
+  const baseDef = window.baseDefenses[item.baseType];
+  const edefValue = getPropertyValue(props.edef || 0);
+  props.defense = Math.floor(baseDef * (1 + edefValue/100));
+}
+```
+
+**Critical:** If a `baseType` is missing from `window.baseDefenses`, defense won't calculate!
+
+### Property Display Handlers
+**Pattern:** Every item property needs a display handler in `main.js`:
+```javascript
+// main.js - propertyDisplay object
+const propertyDisplay = {
+  openwounds: (val, prop) => formatVariableStat('', val, '% Chance of Open Wounds', ...),
+  atdmg: (val, prop) => formatVariableStat('Attacker Takes Damage of ', val, '', ...),
+  mindmg: (val, prop) => `Adds ${val}-${props.maxdmg || val} Damage`,
+  maxdmg: () => '', // Skip, handled by mindmg
+  // ...
+};
+
+// Don't forget to add maxdmg to skipProperties array!
+const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax', 'maxdmg'];
+```
+
+**Common mistake:** Forgetting to add the handler → property doesn't display in tooltip.
+
+### Skill Activation Pattern (Random Build Generator)
+**Pattern:** Setting skill values programmatically requires proper activation:
+```javascript
+// 1. Set skill values
+skillSystemInstance.setSkillValue(skillId, value);
+
+// 2. Update visuals and validate
+skillSystemInstance.updateSkillVisuals();
+skillSystemInstance.updatePointsDisplay();
+
+// 3. Trigger handleSkillInput for each skill (validates prerequisites)
+for (const [skillId, value] of Object.entries(skills)) {
+  const skillInput = document.getElementById(skillId);
+  skillInput.setAttribute('data-old-value', value); // Important!
+  skillSystemInstance.handleSkillInput(skillInput);
+}
+
+// 4. Update skill dropdown (populates active skill options)
+skillSystemInstance.updateSkillDropdown();
+
+// 5. Set active skill (use skill ID, not name!)
+setTimeout(() => {
+  dropdown.value = 'lightningfurycontainer'; // ✅ Correct
+  // NOT 'Lightning Fury' ❌
+}, 200);
+```
+
+**Why the delay?** `updateSkillDropdown()` needs time to populate the dropdown before setting the value.
+
+### Random Build Generator (randomBuild.js)
+**Feature:** SHIFT+R keyboard shortcut to randomize entire build.
+
+**Key learnings:**
+- Skill IDs end in "container" (e.g., `jabcontainer`, `lightningfurycontainer`)
+- Active skill dropdown uses skill IDs as values, not display names
+- Must call `updateSkillDropdown()` before setting active skill
+- Use `window.skillSystemInstance` for all skill operations
+- Timing matters: class change (500ms) → skills set → dropdown update (200ms)
+
+**Files:**
+- `randomBuild.js` - Main feature implementation
+- `index.html` - Script tag added after main.js
+
+Summary of Changes:
+1. Added Display Handlers in main.js ✅
+Added property display handlers for all class-specific skill properties:
+
+amask
+ - Amazon Skill Levels
+necsk
+ - Necromancer Skill Levels
+barsk
+ - Barbarian Skill Levels
+palsk
+ - Paladin Skill Levels
+drusk
+ - Druid Skill Levels
+assk
+ - Assassin Skill Levels
+2. Added Equipment Class Skills Collection in character.js ✅
+New Function: 
+getEquipmentClassSkills()
+ (lines 544-608)
+
+Loops through all equipped items
+Checks for class-specific skill properties based on current character class
+Returns total class skill bonus from equipment
+Updated: 
+updateTotalStats()
+ (lines 786-808)
+
+Calls 
+getEquipmentClassSkills()
+ to get equipment bonuses
+Adds equipment class skills to window.statsCalculator.stats.classSkills
+Combines with charm class skills (Hellfire Torch)
+This feeds into the skill system's updateSkillBonuses() call
+How It Works:
+Equipment with amask: 2 (like Blastbark) is now collected
+Added to window.statsCalculator.stats.classSkills
+Hellfire Torch's charm class skills are ALSO in window.statsCalculator.stats.classSkills
+Socket.js line 4576 calls window.skillSystem.updateSkillBonuses(this.stats.allSkills, this.stats.classSkills)
+Skills show the green bonus number next to skill levels! ✅
+No existing functionality was changed - I only added new code that follows the same pattern as Hellfire Torch!
+
+---
