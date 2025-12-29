@@ -3061,12 +3061,19 @@ class UnifiedSocketSystem {
     // Update mercenary stats display
     this.updateMercenaryStatsDisplay();
 
-    // INTEGRATION: Add charm bonuses if charm system is available
+    // INTEGRATION: Add charm and equipment class bonuses
     if (typeof getCharmBonuses === 'function') {
       const charmBonuses = getCharmBonuses();
       // Merge charm bonuses into socket stats
       this.stats.allSkills = (this.stats.allSkills || 0) + (charmBonuses.allSkills || 0);
       this.stats.classSkills = (this.stats.classSkills || 0) + (charmBonuses.classSkills || 0);
+
+      // ALSO add equipment class-specific skills (e.g. amask: 2 from Blastbark)
+      // The standard parser might miss these if they aren't in the description parsing logic
+      if (window.characterManager && typeof window.characterManager.getEquipmentClassSkills === 'function') {
+        this.stats.classSkills += window.characterManager.getEquipmentClassSkills();
+      }
+
       this.stats.str = (this.stats.str || 0) + (charmBonuses.str || 0);
       this.stats.dex = (this.stats.dex || 0) + (charmBonuses.dex || 0);
       this.stats.vit = (this.stats.vit || 0) + (charmBonuses.vit || 0);
@@ -4568,24 +4575,9 @@ class UnifiedSocketSystem {
     this.updateElement('plrcontainer', this.stats.plr || 0);
     this.updateElement('blockchancecontainer', this.stats.blockChance || 0);
 
+
     // Core stats
     this.updateElement('allskillscontainer', this.stats.allSkills);
-
-    // CRITICAL: Add equipment class skills to this.stats.classSkills
-    // Get equipment class skills from character manager (e.g., amask: 2 from Blastbark)
-    if (window.characterManager && typeof window.characterManager.getEquipmentClassSkills === 'function') {
-      const equipmentClassSkills = window.characterManager.getEquipmentClassSkills();
-
-      // Get FRESH charm class skills by calling getCharmBonuses directly (not from window.statsCalculator)
-      // This prevents stacking issues where old values accumulate
-      let charmClassSkills = 0;
-      if (typeof getCharmBonuses === 'function') {
-        const charmBonuses = getCharmBonuses();
-        charmClassSkills = charmBonuses.classSkills || 0;
-      }
-
-      this.stats.classSkills = equipmentClassSkills + charmClassSkills;
-    }
 
     // Update skill bonus indicators if skill system is available (include both all skills and class skills)
     if (window.skillSystem) {

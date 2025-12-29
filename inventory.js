@@ -1825,6 +1825,11 @@ class CharmInventory {
     if (typeof window.onCharmChange === 'function') {
       setTimeout(() => window.onCharmChange(), 150);
     }
+    // CRITICAL: Update everything (stats + display) after charm removal
+    // Delay needs to be longer than onCharmChange to ensure DOM is updated
+    if (window.unifiedSocketSystem?.updateAll) {
+      setTimeout(() => window.unifiedSocketSystem.updateAll(), 250);
+    }
   }
 
 
@@ -2300,9 +2305,14 @@ function getCharmBonuses() {
       }
 
       // Class-specific Skills (for Hellfire Torch: "+2 to Amazon Skills", "+2 to Sorceress Skills", etc.)
-      // Track separately from all skills - to be displayed in a dedicated container later
-      if (match = line.match(/\+(\d+)\s+to\s+(Amazon|Sorceress|Necromancer|Druid|Paladin|Barbarian)\s+Skills/i)) {
-        bonuses.classSkills = (bonuses.classSkills || 0) + parseInt(match[1]);
+      // CRITICAL: Only count if the charm's class matches the current character class
+      if (match = line.match(/\+(\d+)\s+to\s+(Amazon|Sorceress|Necromancer|Druid|Paladin|Barbarian|Assassin)\s+Skills/i)) {
+        const charmClass = match[2];
+        const currentClass = document.getElementById('selectClass')?.value || 'Amazon';
+        // Only add the bonus if the charm's class matches the current character class
+        if (charmClass === currentClass) {
+          bonuses.classSkills = (bonuses.classSkills || 0) + parseInt(match[1]);
+        }
       }
 
       // Life
