@@ -3074,6 +3074,15 @@ class UnifiedSocketSystem {
         this.stats.classSkills += window.characterManager.getEquipmentClassSkills();
       }
 
+      // NEW: Add tree-specific skill bonuses (e.g. +3 to Javelin and Spear Skills)
+      this.stats.treeSkills = charmBonuses.treeSkills || {};
+      if (window.characterManager && typeof window.characterManager.getEquipmentTreeSkills === 'function') {
+        const equipTreeBonuses = window.characterManager.getEquipmentTreeSkills();
+        Object.keys(equipTreeBonuses).forEach(treeId => {
+          this.stats.treeSkills[treeId] = (this.stats.treeSkills[treeId] || 0) + equipTreeBonuses[treeId];
+        });
+      }
+
       this.stats.str = (this.stats.str || 0) + (charmBonuses.str || 0);
       this.stats.dex = (this.stats.dex || 0) + (charmBonuses.dex || 0);
       this.stats.vit = (this.stats.vit || 0) + (charmBonuses.vit || 0);
@@ -4581,7 +4590,7 @@ class UnifiedSocketSystem {
 
     // Update skill bonus indicators if skill system is available (include both all skills and class skills)
     if (window.skillSystem) {
-      window.skillSystem.updateSkillBonuses(this.stats.allSkills, this.stats.classSkills);
+      window.skillSystem.updateSkillBonuses(this.stats.allSkills, this.stats.classSkills, this.stats.treeSkills);
     }
 
     this.updateElement('magicfindcontainer', this.stats.magicFind);

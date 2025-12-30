@@ -2304,6 +2304,63 @@ function getCharmBonuses() {
         bonuses.allSkills = (bonuses.allSkills || 0) + parseInt(match[1]);
       }
 
+      // Tree-specific Skills (e.g., "+1 to Javelin and Spear Skills (Amazon Only)")
+      // Handles both "Skills" and "Spells" as used in D2
+      if (match = line.match(/\+(\d+)\s+to\s+([\w\s&]+?)(?:\s+Skills|\s+Spells)?\s+\((Amazon|Sorceress|Necromancer|Druid|Paladin|Barbarian|Assassin)\s+Only\)/i)) {
+        const bonus = parseInt(match[1]);
+        const treeName = match[2].trim();
+        const charmClass = match[3];
+        const currentClass = document.getElementById('selectClass')?.value || 'Amazon';
+
+        if (charmClass === currentClass) {
+          // Comprehensive mapping of tree names (partial match)
+          const treeMapping = {
+            // Amazon
+            'Javelin and Spear': 'javelinandspearskillscontainer',
+            'Passive and Magic': 'passiveskillscontainer',
+            'Bow and Crossbow': 'bowandcrossbowskillscontainer',
+            // Sorceress
+            'Fire': 'firespellscontainer',
+            'Lightning': 'lightningspellscontainer',
+            'Cold': 'coldspellscontainer',
+            // Necromancer
+            'Summoning': 'summoningspellsneccontainer',
+            'Poison and Bone': 'poisonandbonespellscontainer',
+            'Curses': 'cursescontainer',
+            // Paladin
+            'Combat': 'combatskillspalcontainer',
+            'Offensive Auras': 'offensiveaurascontainer',
+            'Defensive Auras': 'defensiveaurascontainer',
+            // Barbarian
+            'Combat': 'combatskillsbarcontainer', // D2 Barb Combat Skills -> combatskillsbarcontainer
+            'Combat Masteries': 'combatmasteriescontainer',
+            'Warcries': 'warcriescontainer',
+            // Druid
+            'Elemental': 'elementalskillscontainer',
+            'Shape Shifting': 'shapeshiftingskillscontainer',
+            'Shapeshifting': 'shapeshiftingskillscontainer',
+            'Summoning': 'summoningskillscontainer',
+            // Assassin
+            'Martial Arts': 'martialartscontainer',
+            'Shadow Disciplines': 'shadowdisciplinescontainer',
+            'Traps': 'trapscontainer'
+          };
+
+          // Special case for Barbarian Combat vs Paladin Combat
+          let containerId = treeMapping[treeName];
+          if (treeName === 'Combat') {
+            containerId = (charmClass === 'Paladin') ? 'combatskillspalcontainer' : 'combatskillsbarcontainer';
+          } else if (treeName === 'Summoning') {
+            containerId = (charmClass === 'Necromancer') ? 'summoningspellsneccontainer' : 'summoningskillscontainer';
+          }
+
+          if (containerId) {
+            bonuses.treeSkills = bonuses.treeSkills || {};
+            bonuses.treeSkills[containerId] = (bonuses.treeSkills[containerId] || 0) + bonus;
+          }
+        }
+      }
+
       // Class-specific Skills (for Hellfire Torch: "+2 to Amazon Skills", "+2 to Sorceress Skills", etc.)
       // CRITICAL: Only count if the charm's class matches the current character class
       if (match = line.match(/\+(\d+)\s+to\s+(Amazon|Sorceress|Necromancer|Druid|Paladin|Barbarian|Assassin)\s+Skills/i)) {

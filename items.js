@@ -2735,14 +2735,14 @@ const itemList = {
       speed: 10,
       twohandminbow: 7,
       twohandmaxbow: 57,
-      reqstr: 50,
-      reqdex: 65,
-      reqlvl: 28,
-      amask: 2,
-      pierce: 20,
-      edmg: 150,
-      mleech: 3,
-      explodingarrowoskill: 3,
+      reqstr: 53,
+      reqdex: 49,
+      reqlvl: 33,
+      bowandcrossbowskills: 3, //je to jine ale na test udelame jav and spears
+      pierce: 50,
+      edmg: 180,
+      mleech: 2,
+      explodingarrowoskill: 7,
       knock: 1,
       str: 5,
     },
@@ -3644,7 +3644,7 @@ const itemList = {
       "Baranar's Star<br>Devil Star<br>Base Melee Range: 2<br>One-Hand Damage: 196 to 241, Avg 218.5<br>Required Strength: 153<br>Required Dexterity: 44<br>Required Level: 65<br>+50% Increased Attack Speed<br>+200% Enhanced Damage<br>200% Bonus to Attack Rating<br>Adds 50-300 Fire Damage<br>Adds 50-300 Lightning Damage<br>Adds 50-300 Cold Damage<br>+15 to Strength<br>+15 to Dexterity<br>+50% Damage to Undead<br>+100 Durability<br>",
     properties: {
       onehandmin: 196, // One-Hand Damage Min
-      onehandmax: 241, // One-Hand Damage Max
+      onehandmax: 241,
     },
   },
 

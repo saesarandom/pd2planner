@@ -608,6 +608,96 @@ class CharacterManager {
     return classSkills;
   }
 
+  // Collect tree-specific skill bonuses from equipment (e.g., bowskills, javskills)
+  getEquipmentTreeSkills() {
+    const treeBonuses = {};
+    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+    const currentClass = this.currentClass;
+
+    // Mapping of property keys to tree container IDs
+    const treeMap = {
+      // Amazon
+      bowandcrossbowskills: 'bowandcrossbowskillscontainer',
+      passiveskills: 'passiveskillscontainer',
+      javelinandspearskills: 'javelinandspearskillscontainer',
+      // Sorceress
+      fireskills: 'firespellscontainer',
+      lightningskills: 'lightningspellscontainer',
+      coldskills: 'coldspellscontainer',
+      // Necromancer
+      curseskills: 'cursescontainer',
+      summoningspellskills: 'summoningspellsneccontainer',
+      poisonandboneskills: 'poisonandbonespellscontainer',
+      // Paladin
+      offensiveskills: 'offensiveaurascontainer',
+      defensiveskills: 'defensiveaurascontainer',
+      combatskillspal: 'combatskillspalcontainer',
+      // Barbarian
+      combatskillsbar: 'combatskillsbarcontainer',
+      masterieskills: 'combatmasteriescontainer',
+      warcriesskills: 'warcriescontainer',
+      // Druid
+      elementalskills: 'elementalskillscontainer',
+      shapeshiftingskills: 'shapeshiftingskillscontainer',
+      summoningskills: 'summoningskillscontainer',
+      // Assassin
+      trapskills: 'trapscontainer',
+      martialartskills: 'martialartscontainer',
+      shadowdisciplineskills: 'shadowdisciplinescontainer'
+    };
+
+    // Get current character stats for requirement checking
+    const baseStr = this.classStats[currentClass].str;
+    const baseDex = this.classStats[currentClass].dex;
+    const currentStr = parseInt(document.getElementById('str')?.value) || baseStr;
+    const currentDex = parseInt(document.getElementById('dex')?.value) || baseDex;
+
+    const equipmentSections = [
+      { dropdown: 'weapons-dropdown', section: 'weapon' },
+      { dropdown: 'helms-dropdown', section: 'helm' },
+      { dropdown: 'armors-dropdown', section: 'armor' },
+      { dropdown: 'offs-dropdown', section: 'shield' },
+      { dropdown: 'gloves-dropdown', section: 'gloves' },
+      { dropdown: 'belts-dropdown', section: 'belts' },
+      { dropdown: 'boots-dropdown', section: 'boots' },
+      { dropdown: 'ringsone-dropdown', section: 'ring' },
+      { dropdown: 'ringstwo-dropdown', section: 'ring' },
+      { dropdown: 'amulets-dropdown', section: 'amulet' }
+    ];
+
+    equipmentSections.forEach(({ dropdown, section }) => {
+      const dropdownElement = document.getElementById(dropdown);
+      if (!dropdownElement || !dropdownElement.value) return;
+
+      const cacheKey = `${dropdown}_${dropdownElement.value}`;
+      let item = window.dropdownItemCache && window.dropdownItemCache[cacheKey];
+
+      if (!item) {
+        item = window.getItemData(dropdownElement.value);
+      }
+      if (!item || !item.properties) return;
+
+      const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
+      const isUsableByClass = isItemUsableByClass(dropdownElement.value, currentClass);
+      const meetsStatRequirements = doesCharacterMeetStatRequirements(dropdownElement.value, currentStr, currentDex);
+
+      if (currentLevel >= actualRequiredLevel && isUsableByClass && meetsStatRequirements) {
+        // Scan item properties for any matching tree keys
+        Object.keys(treeMap).forEach(propKey => {
+          if (item.properties[propKey]) {
+            const containerId = treeMap[propKey];
+            const bonus = getPropertyValue(item.properties[propKey]) || 0;
+            if (bonus > 0) {
+              treeBonuses[containerId] = (treeBonuses[containerId] || 0) + bonus;
+            }
+          }
+        });
+      }
+    });
+
+    return treeBonuses;
+  }
+
   getSocketBonuses() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
     const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;

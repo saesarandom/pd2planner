@@ -15,11 +15,11 @@ function isWeaponUsable() {
 
   // Check level requirement
   var requiredLevel = weapon.properties.reqlvl || 1;
-  
+
   // Also check if there are sockets that increase the level requirement
   var actualRequiredLevel = requiredLevel;
   var sockets = document.querySelectorAll('.socket-container[data-section="weapon"] .socket-slot.filled');
-  sockets.forEach(function(socket) {
+  sockets.forEach(function (socket) {
     var socketLevelReq = parseInt(socket.dataset.levelReq) || 1;
     if (socketLevelReq > actualRequiredLevel) {
       actualRequiredLevel = socketLevelReq;
@@ -36,8 +36,12 @@ class SkillSystem {
     this.currentClass = 'Amazon';
     this.currentLevel = 1;
     this.maxSkillPoints = 12;
-    this.skillBonuses = {}; // Store item bonuses per skill (e.g., {'jabcontainer': 1})
-    
+    this.skillBonuses = {
+      allSkills: 0,
+      classSkills: 0,
+      treeSkills: {} // Store tree-specific bonuses (e.g., {'bowandcrossbowskillscontainer': 3})
+    };
+
     // Define all class skill trees
     this.classSkillTrees = {
       'Amazon': {
@@ -66,7 +70,7 @@ class SkillSystem {
         ],
         'bowandcrossbowskillscontainer': [
           { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1, prerequisites: [] },
-           { id: 'multipleshotcontainer', name: 'Multiple Shot', level: 6, prerequisites: ['magicarrowcontainer'] },
+          { id: 'multipleshotcontainer', name: 'Multiple Shot', level: 6, prerequisites: ['magicarrowcontainer'] },
           { id: 'firearrowcontainer', name: 'Fire Arrow', level: 1, prerequisites: ['magicarrowcontainer'] },
           { id: 'coldarrowcontainer', name: 'Cold Arrow', level: 6, prerequisites: ['magicarrowcontainer'] },
           { id: 'icearrowcontainer', name: 'Ice Arrow', level: 12, prerequisites: ['magicarrowcontainer', 'coldarrowcontainer'] },
@@ -358,12 +362,12 @@ class SkillSystem {
           { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'lightning' },
           { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'nova' }
         ]
- },
-         lightningboltcontainer: {
-        name: "Lightning Bolt", type: "placeholder"
-        
       },
-      
+      lightningboltcontainer: {
+        name: "Lightning Bolt", type: "placeholder"
+
+      },
+
       chargedstrikecontainer: {
         name: "Charged Strike", type: "lightning",
         chargedBolts: [3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
@@ -375,7 +379,7 @@ class SkillSystem {
         synergies: [
           { skillId: 'powerstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' },
           { skillId: 'lightningstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' },
-     ]
+        ]
       },
       lightningstrikecontainer: {
         name: "Lightning Strike", type: "lightning",
@@ -510,91 +514,91 @@ class SkillSystem {
   }
 
   createContainers() {
-  // Define container titles for each class
-  var classTitles = {
-    'Amazon': [
-      { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear Skills' },
-      { id: 'passiveskillscontainer', title: 'Passive & Magic Skills' },
-      { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow Skills' }
-    ],
-    'Assassin': [
-      { id: 'martialartscontainer', title: 'Martial Arts' },
-      { id: 'shadowdisciplinescontainer', title: 'Shadow Disciplines' },
-      { id: 'trapscontainer', title: 'Traps' }
-    ],
-    'Barbarian': [
-      { id: 'warcriescontainer', title: 'Warcries' },
-      { id: 'combatmasteriescontainer', title: 'Combat Masteries' },
-      { id: 'combatskillsbarcontainer', title: 'Combat Skills' }
-    ],
-    'Druid': [
-      { id: 'elementalskillscontainer', title: 'Elemental Skills' },
-      { id: 'shapeshiftingskillscontainer', title: 'Shapeshifting Skills' },
-      { id: 'summoningskillscontainer', title: 'Summoning Skills' }
-    ],
-    'Necromancer': [
-      { id: 'summoningspellsneccontainer', title: 'Summoning Spells' },
-      { id: 'poisonandbonespellscontainer', title: 'Poison & Bone Spells' },
-      { id: 'cursescontainer', title: 'Curses' }
-    ],
-    'Paladin': [
-      { id: 'defensiveaurascontainer', title: 'Defensive Auras' },
-      { id: 'offensiveaurascontainer', title: 'Offensive Auras' },
-      { id: 'combatskillspalcontainer', title: 'Combat Skills' }
-    ],
-    'Sorceress': [
-      { id: 'coldspellscontainer', title: 'Cold Spells' },
-      { id: 'lightningspellscontainer', title: 'Lightning Spells' },
-      { id: 'firespellscontainer', title: 'Fire Spells' }
-    ]
-  };
+    // Define container titles for each class
+    var classTitles = {
+      'Amazon': [
+        { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear Skills' },
+        { id: 'passiveskillscontainer', title: 'Passive & Magic Skills' },
+        { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow Skills' }
+      ],
+      'Assassin': [
+        { id: 'martialartscontainer', title: 'Martial Arts' },
+        { id: 'shadowdisciplinescontainer', title: 'Shadow Disciplines' },
+        { id: 'trapscontainer', title: 'Traps' }
+      ],
+      'Barbarian': [
+        { id: 'warcriescontainer', title: 'Warcries' },
+        { id: 'combatmasteriescontainer', title: 'Combat Masteries' },
+        { id: 'combatskillsbarcontainer', title: 'Combat Skills' }
+      ],
+      'Druid': [
+        { id: 'elementalskillscontainer', title: 'Elemental Skills' },
+        { id: 'shapeshiftingskillscontainer', title: 'Shapeshifting Skills' },
+        { id: 'summoningskillscontainer', title: 'Summoning Skills' }
+      ],
+      'Necromancer': [
+        { id: 'summoningspellsneccontainer', title: 'Summoning Spells' },
+        { id: 'poisonandbonespellscontainer', title: 'Poison & Bone Spells' },
+        { id: 'cursescontainer', title: 'Curses' }
+      ],
+      'Paladin': [
+        { id: 'defensiveaurascontainer', title: 'Defensive Auras' },
+        { id: 'offensiveaurascontainer', title: 'Offensive Auras' },
+        { id: 'combatskillspalcontainer', title: 'Combat Skills' }
+      ],
+      'Sorceress': [
+        { id: 'coldspellscontainer', title: 'Cold Spells' },
+        { id: 'lightningspellscontainer', title: 'Lightning Spells' },
+        { id: 'firespellscontainer', title: 'Fire Spells' }
+      ]
+    };
 
-  // Get current class from character selector
-  var classSelect = document.getElementById('selectClass');
-  var selectedClass = classSelect ? classSelect.value : 'Amazon';
-  this.currentClass = selectedClass;
+    // Get current class from character selector
+    var classSelect = document.getElementById('selectClass');
+    var selectedClass = classSelect ? classSelect.value : 'Amazon';
+    this.currentClass = selectedClass;
 
-  // Get positions for current class
-  var positions = classTitles[selectedClass] || classTitles['Amazon'];
+    // Get positions for current class
+    var positions = classTitles[selectedClass] || classTitles['Amazon'];
 
-  // Remove old skill containers first
-  var oldContainers = document.querySelectorAll('.skill-tree-container');
-  for (var i = 0; i < oldContainers.length; i++) {
-    oldContainers[i].remove();
+    // Remove old skill containers first
+    var oldContainers = document.querySelectorAll('.skill-tree-container');
+    for (var i = 0; i < oldContainers.length; i++) {
+      oldContainers[i].remove();
+    }
+
+    // Create new containers for current class
+    // Position offsets: first column (right: 10px), second (-260px), third (-530px)
+    var rightOffsets = [10, -260, -530];
+
+    for (var i = 0; i < positions.length; i++) {
+      var pos = positions[i];
+      var container = document.createElement('div');
+      container.id = pos.id;
+      container.className = 'skill-tree-container';
+
+      // Set inline positioning to match Amazon layout
+      container.style.position = 'absolute';
+      container.style.top = '147px';
+      container.style.right = rightOffsets[i] + 'px';
+      container.style.width = '250px';
+      container.style.height = '450px';
+      container.style.overflowY = 'auto';
+
+      var title = document.createElement('h3');
+      title.textContent = pos.title;
+
+      container.appendChild(title);
+      document.body.appendChild(container);
+    }
   }
-
-  // Create new containers for current class
-  // Position offsets: first column (right: 10px), second (-260px), third (-530px)
-  var rightOffsets = [10, -260, -530];
-
-  for (var i = 0; i < positions.length; i++) {
-    var pos = positions[i];
-    var container = document.createElement('div');
-    container.id = pos.id;
-    container.className = 'skill-tree-container';
-
-    // Set inline positioning to match Amazon layout
-    container.style.position = 'absolute';
-    container.style.top = '147px';
-    container.style.right = rightOffsets[i] + 'px';
-    container.style.width = '250px';
-    container.style.height = '450px';
-    container.style.overflowY = 'auto';
-
-    var title = document.createElement('h3');
-    title.textContent = pos.title;
-
-    container.appendChild(title);
-    document.body.appendChild(container);
-  }
-}
 
   populateSkills() {
     var self = this;
     // Get current class skills
     var currentClassSkills = this.classSkillTrees[this.currentClass] || this.classSkillTrees['Amazon'];
 
-    Object.keys(currentClassSkills).forEach(function(containerId) {
+    Object.keys(currentClassSkills).forEach(function (containerId) {
       var skills = currentClassSkills[containerId];
       var container = document.getElementById(containerId);
       if (!container) return;
@@ -660,26 +664,26 @@ class SkillSystem {
   }
 
   createSkillCalculator() {
-  var calcContainer = document.createElement('div');
-  calcContainer.id = 'skill-calculator-container';
-  calcContainer.className = 'skill-calculator-container';
+    var calcContainer = document.createElement('div');
+    calcContainer.id = 'skill-calculator-container';
+    calcContainer.className = 'skill-calculator-container';
 
-  calcContainer.innerHTML = '<h5>Active Skill</h5>' +
-    '<select id="active-skill-dropdown">' +
-    '<option value="">Select Active Skill...</option></select>';
+    calcContainer.innerHTML = '<h5>Active Skill</h5>' +
+      '<select id="active-skill-dropdown">' +
+      '<option value="">Select Active Skill...</option></select>';
 
-  var damageDisplay = document.createElement('div');
-  damageDisplay.id = 'skill-damage-display';
-  damageDisplay.className = 'skill-damage-display';
+    var damageDisplay = document.createElement('div');
+    damageDisplay.id = 'skill-damage-display';
+    damageDisplay.className = 'skill-damage-display';
 
-  damageDisplay.innerHTML = '<h5>Damage</h5>' +
-    '<div id="damage-results">Select a skill to see damage calculations</div>';
+    damageDisplay.innerHTML = '<h5>Damage</h5>' +
+      '<div id="damage-results">Select a skill to see damage calculations</div>';
 
-  document.body.appendChild(calcContainer);
-  document.body.appendChild(damageDisplay);
-  
-  //('Created skill calculator at top: 1350px');
-}
+    document.body.appendChild(calcContainer);
+    document.body.appendChild(damageDisplay);
+
+    //('Created skill calculator at top: 1350px');
+  }
 
   setupEvents() {
     var self = this;
@@ -687,7 +691,7 @@ class SkillSystem {
     // Class changes - rebuild skill trees when class changes
     var classSelect = document.getElementById('selectClass');
     if (classSelect) {
-      classSelect.addEventListener('change', function(e) {
+      classSelect.addEventListener('change', function (e) {
         self.currentClass = e.target.value;
         self.rebuildSkillTrees();
       });
@@ -696,7 +700,7 @@ class SkillSystem {
     // Level changes
     var levelInput = document.getElementById('lvlValue');
     if (levelInput) {
-      levelInput.addEventListener('input', function(e) {
+      levelInput.addEventListener('input', function (e) {
         self.currentLevel = parseInt(e.target.value) || 1;
         self.maxSkillPoints = self.currentLevel + 11;
         self.updateSkillMaxValues();  // Update all skill input max attributes immediately
@@ -711,30 +715,30 @@ class SkillSystem {
     for (var i = 0; i < statInputs.length; i++) {
       var statInput = document.getElementById(statInputs[i]);
       if (statInput) {
-        statInput.addEventListener('input', function() {
+        statInput.addEventListener('input', function () {
           self.scheduleCalculation();
         });
       }
     }
 
     // Skill input changes
-    document.addEventListener('input', function(e) {
+    document.addEventListener('input', function (e) {
       if (e.target && e.target.matches && e.target.matches('[id$="container"] input[type="number"]')) {
         self.handleSkillInput(e.target);
-        setTimeout(function() { self.updateSkillDropdown(); }, 100);
+        setTimeout(function () { self.updateSkillDropdown(); }, 100);
         self.scheduleCalculation();
       }
     });
 
     // Keydown restriction
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
       if (e.target && e.target.matches && e.target.matches('[id$="container"] input[type="number"]')) {
         self.restrictInput(e);
       }
     });
 
     // Dropdown changes
-    document.addEventListener('change', function(e) {
+    document.addEventListener('change', function (e) {
       if (e.target && e.target.id === 'active-skill-dropdown') {
         self.calculateSkillDamage();
       }
@@ -749,13 +753,13 @@ class SkillSystem {
     });
 
     // Socket changes (if you have socket system)
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
       if (e.target && (e.target.classList.contains('socket-slot') || e.target.classList.contains('socket-item'))) {
         self.scheduleCalculation();
       }
     });
 
-    setTimeout(function() { self.updateSkillDropdown(); }, 500);
+    setTimeout(function () { self.updateSkillDropdown(); }, 333);
   }
 
   // Lightweight calculation scheduler to avoid spam
@@ -764,7 +768,7 @@ class SkillSystem {
     if (self.calculationTimer) {
       clearTimeout(self.calculationTimer);
     }
-    self.calculationTimer = setTimeout(function() {
+    self.calculationTimer = setTimeout(function () {
       self.calculateSkillDamage();
     }, 150);
   }
@@ -789,7 +793,7 @@ class SkillSystem {
     ];
 
     var self = this;
-    Object.keys(this.skillData).forEach(function(skillId) {
+    Object.keys(this.skillData).forEach(function (skillId) {
       // Skip excluded skills
       if (excludedSkills.indexOf(skillId) !== -1) {
         return;
@@ -799,14 +803,17 @@ class SkillSystem {
       if (skillInput && parseInt(skillInput.value) > 0) {
         var skill = self.skillData[skillId];
         var baseValue = parseInt(skillInput.value);
-        var bonus = self.skillBonuses.allSkills || 0;
-        var totalValue = baseValue + bonus;
+
+        // Combine All Skills and Class Skills for the dropdown display
+        var allBonus = self.skillBonuses.allSkills || 0;
+        var classBonus = self.skillBonuses.classSkills || 0;
+        var totalValue = baseValue + allBonus + classBonus;
 
         var option = document.createElement('option');
         option.value = skillId;
 
         // Show total level with bonus, or just base level if no bonus
-        if (bonus > 0) {
+        if (allBonus + classBonus > 0) {
           option.textContent = skill.name + ' (' + totalValue + ')';
         } else {
           option.textContent = skill.name + ' (' + baseValue + ')';
@@ -832,240 +839,253 @@ class SkillSystem {
 
   calculateSkillDamage() {
     var dropdown = document.getElementById('active-skill-dropdown');
-  var display = document.getElementById('damage-results');
-  
-  if (!dropdown || !display || !dropdown.value) {
-    if (display) display.innerHTML = 'Select a skill to see damage calculations';
-    return;
-  }
+    var display = document.getElementById('damage-results');
 
-  var skillId = dropdown.value;
-  var skill = this.skillData[skillId];
-  var skillInput = document.getElementById(skillId);
-  var skillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+    if (!dropdown || !display || !dropdown.value) {
+      if (display) display.innerHTML = 'Select a skill to see damage calculations';
+      return;
+    }
 
-  if (skillLevel === 0) {
-    display.innerHTML = 'No points invested in this skill';
-    return;
-  }
+    var skillId = dropdown.value;
+    var skill = this.skillData[skillId];
+    var skillInput = document.getElementById(skillId);
+    var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
 
-  var dexInput = document.getElementById('dex');
-  var dexterity = parseInt(dexInput && dexInput.value ? dexInput.value : '0') || 0;
+    if (baseSkillLevel === 0) {
+      display.innerHTML = 'No points invested in this skill';
+      return;
+    }
 
-  var weaponDamage = this.getWeaponDamage();
-  
-  var html = '<div style="margin-bottom: 10px;"><strong>' + skill.name + ' (Level ' + skillLevel + ')</strong></div>';
+    // Calculate total skill level including ALL bonuses (All Skills + Class Skills)
+    var allBonus = this.skillBonuses.allSkills || 0;
+    var classBonus = this.skillBonuses.classSkills || 0;
+    var totalSkillLevel = baseSkillLevel + allBonus + classBonus;
 
-  // Check if weapon is usable before showing damage calculations
-  var weaponUsable = isWeaponUsable();
-
-  if (skill.type === 'physical') {
-    var damageInfo = this.calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId);
-
-    html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
-
-    // Display Attack Rating if available
-    if (skill.attackRating) {
-      var attackRatingBonus;
-      if (Array.isArray(skill.attackRating)) {
-        var levelIndex = Math.min(skillLevel - 1, skill.attackRating.length - 1);
-        attackRatingBonus = skill.attackRating[levelIndex] || 0;
-      } else {
-        attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+    // NEW: Add tree-specific bonus
+    var currentClassSkills = this.classSkillTrees[this.currentClass] || {};
+    Object.keys(currentClassSkills).forEach((containerId) => {
+      if (currentClassSkills[containerId].some(s => s.id === skillId)) {
+        totalSkillLevel += (this.skillBonuses.treeSkills[containerId] || 0);
       }
-      html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
-    }
+    });
 
-    html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
-    html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
-    if (damageInfo.synergyBonus > 0) {
-      html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
-    }
-    if (damageInfo.masteryDamageBonus > 0) {
-      html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
-    }
+    var dexInput = document.getElementById('dex');
+    var dexterity = parseInt(dexInput && dexInput.value ? dexInput.value : '0') || 0;
 
-    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
-    var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
-    var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
-    var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+    var weaponDamage = this.getWeaponDamage();
 
-    if (toMinDmg > 0) {
-      // Calculate the actual damage added (with bonuses)
-      var toMinDmgActual = Math.floor(toMinDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.synergyBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
-      html += '<div style="margin: 5px 0; color: #ffcc99;">to Min Dmg: +' + toMinDmgActual + ' (' + toMinDmg + ' base)</div>';
-    }
-    if (toMaxDmg > 0) {
-      // Calculate the actual damage added (with bonuses)
-      var toMaxDmgActual = Math.floor(toMaxDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.synergyBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
-      html += '<div style="margin: 5px 0; color: #ffcc99;">to Max Dmg: +' + toMaxDmgActual + ' (' + toMaxDmg + ' base)</div>';
-    }
+    var html = '<div style="margin-bottom: 10px;"><strong>' + skill.name + ' (Level ' + totalSkillLevel + ')</strong></div>';
 
-    // Show elemental damages if they exist
-    var elem = damageInfo.elementalDamages;
-    if (elem.fire.max > 0) {
-      html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
-    }
-    if (elem.cold.max > 0) {
-      html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
-    }
-    if (elem.lightning.max > 0) {
-      html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
-    }
-    if (elem.poison.max > 0) {
-      html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
-    }
-    
-    // Only show Physical, Total, and Average damage if weapon is usable
-    if (weaponUsable) {
-      html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
-      html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
-      html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
-    } else {
-      html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level requirement not met</div>';
-    }
-    
-    var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
-  if (combinedCriticalStrike > 0) {
-    html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
-  }
-    if (damageInfo.deadlyStrike > 0) {
-      html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
-    }
-  } else if (skill.type === 'poison') {
-    var damageInfo = this.calculatePoisonDamage(skill, skillLevel, skillId);
+    // Check if weapon is usable before showing damage calculations
+    var weaponUsable = isWeaponUsable();
 
-    // Display Attack Rating if available
-    if (skill.attackRating) {
-      var attackRatingBonus;
-      if (Array.isArray(skill.attackRating)) {
-        var levelIndex = Math.min(skillLevel - 1, skill.attackRating.length - 1);
-        attackRatingBonus = skill.attackRating[levelIndex] || 0;
-      } else {
-        attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
+    if (skill.type === 'physical') {
+      var damageInfo = this.calculatePhysicalDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
+
+      html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+      // Display Attack Rating if available
+      if (skill.attackRating) {
+        var attackRatingBonus;
+        if (Array.isArray(skill.attackRating)) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          attackRatingBonus = skill.attackRating[levelIndex] || 0;
+        } else {
+          attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (totalSkillLevel - 1));
+        }
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
       }
-      html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+
+      html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+      html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
+      if (damageInfo.synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+      if (damageInfo.masteryDamageBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+      }
+
+      var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+      var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+      var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+      var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+      if (toMinDmg > 0) {
+        // Calculate the actual damage added (with bonuses)
+        var toMinDmgActual = Math.floor(toMinDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.synergyBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ffcc99;">to Min Dmg: +' + toMinDmgActual + ' (' + toMinDmg + ' base)</div>';
+      }
+      if (toMaxDmg > 0) {
+        // Calculate the actual damage added (with bonuses)
+        var toMaxDmgActual = Math.floor(toMaxDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.synergyBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ffcc99;">to Max Dmg: +' + toMaxDmgActual + ' (' + toMaxDmg + ' base)</div>';
+      }
+
+      // Show elemental damages if they exist
+      var elem = damageInfo.elementalDamages;
+      if (elem.fire.max > 0) {
+        html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+      }
+      if (elem.cold.max > 0) {
+        html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+      }
+      if (elem.lightning.max > 0) {
+        html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+      }
+      if (elem.poison.max > 0) {
+        html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+      }
+
+      // Only show Physical, Total, and Average damage if weapon is usable
+      if (weaponUsable) {
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+        html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
+        html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+      } else {
+        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level requirement not met</div>';
+      }
+
+      var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+      if (combinedCriticalStrike > 0) {
+        html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
+      }
+      if (damageInfo.deadlyStrike > 0) {
+        html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+      }
+    } else if (skill.type === 'poison') {
+      var damageInfo = this.calculatePoisonDamage(skill, totalSkillLevel, skillId);
+
+      // Display Attack Rating if available
+      if (skill.attackRating) {
+        var attackRatingBonus;
+        if (Array.isArray(skill.attackRating)) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          attackRatingBonus = skill.attackRating[levelIndex] || 0;
+        } else {
+          attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (totalSkillLevel - 1));
+        }
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + damageInfo.min + '-' + damageInfo.max + ' over 4s</div>';
+      html += '<div style="margin: 5px 0;">Per Second: ' + damageInfo.average + '</div>';
+      if (damageInfo.synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+    } else if (skill.type === 'lightning_conversion') {
+      var damageInfo = this.calculateLightningConversionDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
+
+      // Display physical as 0-0 since it's converted
+      html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+      html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+      if (damageInfo.masteryDamageBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+      }
+      html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: 0-0 (Converted to Lightning)</div>';
+      html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
+      html += '<div style="margin: 5px 0;">Average Lightning: ' + damageInfo.averageLightning + '</div>';
+      if (damageInfo.synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+      html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
+      html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.averageLightning + '</div>';
+
+      var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+      if (combinedCriticalStrike > 0) {
+        html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
+      }
+      if (damageInfo.deadlyStrike > 0) {
+        html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+      }
+      if (damageInfo.critMultiplier > 1) {
+        html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
+      }
+    } else if (skill.type === 'lightning') {
+      var damageInfo = this.calculateElementalDamage(skill, totalSkillLevel, skillId);
+
+      // Display Attack Rating if available
+      if (skill.attackRating) {
+        var attackRatingBonus;
+        if (Array.isArray(skill.attackRating)) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          attackRatingBonus = skill.attackRating[levelIndex] || 0;
+        } else {
+          attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (totalSkillLevel - 1));
+        }
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      // Display physical damage bonus from mastery (for javelin skills like Power Strike)
+      var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+      if (masteryDamageBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + masteryDamageBonus + '%</div>';
+      }
+
+      html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
+      if (damageInfo.novaMin !== undefined && damageInfo.novaMax !== undefined) {
+        html += '<div style="margin: 5px 0; color: #ffff00;">Nova: ' + damageInfo.novaMin + '-' + damageInfo.novaMax + '</div>';
+      }
+      html += '<div style="margin: 5px 0;">Average Lightning: ' + damageInfo.averageLightning + '</div>';
+      if (damageInfo.averageNova !== undefined) {
+        html += '<div style="margin: 5px 0;">Average Nova: ' + damageInfo.averageNova + '</div>';
+      }
+      if (damageInfo.synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+
+      // Display bolts, charged bolts, or hits if available
+      if (damageInfo.bolts) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Bolts: ' + damageInfo.bolts + '</div>';
+      }
+      if (damageInfo.chargedBolts) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Bolts: ' + damageInfo.chargedBolts + '</div>';
+      }
+      if (damageInfo.hits) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Hits: ' + damageInfo.hits + '</div>';
+      }
+    } else if (skillId === 'decoycontainer') {
+      // Display Decoy summon information
+      var levelIndex = Math.min(totalSkillLevel - 1, skill.damage.min.length - 1);
+      var damageMin = skill.damage.min[levelIndex] || 0;
+      var damageMax = skill.damage.max[levelIndex] || 0;
+      var life = skill.life[levelIndex] || 0;
+      var attackRating = skill.attackRating[levelIndex] || 0;
+      var allRes = skill.allResistances[levelIndex] || 0;
+      var manaCost = skill.manaCost[levelIndex] || 0;
+      var decoyCount = skill.decoys[Math.min(totalSkillLevel - 1, skill.decoys.length - 1)] || 1;
+
+      html += '<div style="margin: 5px 0;">Damage: ' + damageMin + '-' + damageMax + '</div>';
+      html += '<div style="margin: 5px 0;">Life: ' + life + '%</div>';
+      html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: ' + attackRating + '</div>';
+      html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '%</div>';
+      html += '<div style="margin: 5px 0;">Number of Decoys: ' + decoyCount + '</div>';
+      html += '<div style="margin: 5px 0; color: #ffff00;">Mana Cost: ' + manaCost + '</div>';
+    } else if (skillId === 'valkyriecontainer') {
+      // Display Valkyrie summon information
+      var levelIndex = Math.min(totalSkillLevel - 1, skill.powerStrikeLevel.length - 1);
+      var lifeHell = skill.life.hell[levelIndex] || 0;
+      var powerStrikeLevel = skill.powerStrikeLevel[levelIndex] || 0;
+      var attackRating = skill.attackRating[levelIndex] || 0;
+      var defense = skill.defense[levelIndex] || 0;
+      var allRes = skill.allResistances[levelIndex] || 0;
+      var manaCost = skill.manaCost[levelIndex] || 0;
+
+      html += '<div style="margin: 5px 0;">Life (Hell): ' + lifeHell + '</div>';
+      html += '<div style="margin: 5px 0; color: #cccccc;">Power Strike Level: ' + powerStrikeLevel + '</div>';
+      html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRating + '%</div>';
+      html += '<div style="margin: 5px 0;">Defense: +' + defense + '%</div>';
+      html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '%</div>';
+      html += '<div style="margin: 5px 0; color: #ffff00;">Mana Cost: ' + manaCost + '</div>';
+      html += '<div style="margin: 5px 0;">Cooldown: ' + skill.cooldown + 's</div>';
+      html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Can summon additional Valkyrie at levels 20 and 30</div>';
     }
 
-    html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + damageInfo.min + '-' + damageInfo.max + ' over 4s</div>';
-    html += '<div style="margin: 5px 0;">Per Second: ' + damageInfo.average + '</div>';
-    if (damageInfo.synergyBonus > 0) {
-      html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
-    }
-  } else if (skill.type === 'lightning_conversion') {
-    var damageInfo = this.calculateLightningConversionDamage(skill, skillLevel, weaponDamage, dexterity, skillId);
-
-    // Display physical as 0-0 since it's converted
-    html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
-    html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
-    if (damageInfo.masteryDamageBonus > 0) {
-      html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
-    }
-    html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: 0-0 (Converted to Lightning)</div>';
-    html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
-    html += '<div style="margin: 5px 0;">Average Lightning: ' + damageInfo.averageLightning + '</div>';
-    if (damageInfo.synergyBonus > 0) {
-      html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
-    }
-    html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
-    html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.averageLightning + '</div>';
-
-    var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
-    if (combinedCriticalStrike > 0) {
-      html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
-    }
-    if (damageInfo.deadlyStrike > 0) {
-      html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
-    }
-    if (damageInfo.critMultiplier > 1) {
+    if (damageInfo && damageInfo.critMultiplier > 1) {
       html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
     }
-  } else if (skill.type === 'lightning') {
-    var damageInfo = this.calculateElementalDamage(skill, skillLevel, skillId);
 
-    // Display Attack Rating if available
-    if (skill.attackRating) {
-      var attackRatingBonus;
-      if (Array.isArray(skill.attackRating)) {
-        var levelIndex = Math.min(skillLevel - 1, skill.attackRating.length - 1);
-        attackRatingBonus = skill.attackRating[levelIndex] || 0;
-      } else {
-        attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (skillLevel - 1));
-      }
-      html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
-    }
-
-    // Display physical damage bonus from mastery (for javelin skills like Power Strike)
-    var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
-    if (masteryDamageBonus > 0) {
-      html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + masteryDamageBonus + '%</div>';
-    }
-
-    html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
-    if (damageInfo.novaMin !== undefined && damageInfo.novaMax !== undefined) {
-      html += '<div style="margin: 5px 0; color: #ffff00;">Nova: ' + damageInfo.novaMin + '-' + damageInfo.novaMax + '</div>';
-    }
-    html += '<div style="margin: 5px 0;">Average Lightning: ' + damageInfo.averageLightning + '</div>';
-    if (damageInfo.averageNova !== undefined) {
-      html += '<div style="margin: 5px 0;">Average Nova: ' + damageInfo.averageNova + '</div>';
-    }
-    if (damageInfo.synergyBonus > 0) {
-      html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
-    }
-
-    // Display bolts, charged bolts, or hits if available
-    if (damageInfo.bolts) {
-      html += '<div style="margin: 5px 0; color: #cccccc;">Bolts: ' + damageInfo.bolts + '</div>';
-    }
-    if (damageInfo.chargedBolts) {
-      html += '<div style="margin: 5px 0; color: #cccccc;">Bolts: ' + damageInfo.chargedBolts + '</div>';
-    }
-    if (damageInfo.hits) {
-      html += '<div style="margin: 5px 0; color: #cccccc;">Hits: ' + damageInfo.hits + '</div>';
-    }
-  } else if (skillId === 'decoycontainer') {
-    // Display Decoy summon information
-    var levelIndex = Math.min(skillLevel - 1, skill.damage.min.length - 1);
-    var damageMin = skill.damage.min[levelIndex] || 0;
-    var damageMax = skill.damage.max[levelIndex] || 0;
-    var life = skill.life[levelIndex] || 0;
-    var attackRating = skill.attackRating[levelIndex] || 0;
-    var allRes = skill.allResistances[levelIndex] || 0;
-    var manaCost = skill.manaCost[levelIndex] || 0;
-    var decoyCount = skill.decoys[Math.min(skillLevel - 1, skill.decoys.length - 1)] || 1;
-
-    html += '<div style="margin: 5px 0;">Damage: ' + damageMin + '-' + damageMax + '</div>';
-    html += '<div style="margin: 5px 0;">Life: ' + life + '%</div>';
-    html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: ' + attackRating + '</div>';
-    html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '%</div>';
-    html += '<div style="margin: 5px 0;">Number of Decoys: ' + decoyCount + '</div>';
-    html += '<div style="margin: 5px 0; color: #ffff00;">Mana Cost: ' + manaCost + '</div>';
-  } else if (skillId === 'valkyriecontainer') {
-    // Display Valkyrie summon information
-    var levelIndex = Math.min(skillLevel - 1, skill.powerStrikeLevel.length - 1);
-    var lifeHell = skill.life.hell[levelIndex] || 0;
-    var powerStrikeLevel = skill.powerStrikeLevel[levelIndex] || 0;
-    var attackRating = skill.attackRating[levelIndex] || 0;
-    var defense = skill.defense[levelIndex] || 0;
-    var allRes = skill.allResistances[levelIndex] || 0;
-    var manaCost = skill.manaCost[levelIndex] || 0;
-
-    html += '<div style="margin: 5px 0;">Life (Hell): ' + lifeHell + '</div>';
-    html += '<div style="margin: 5px 0; color: #cccccc;">Power Strike Level: ' + powerStrikeLevel + '</div>';
-    html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRating + '%</div>';
-    html += '<div style="margin: 5px 0;">Defense: +' + defense + '%</div>';
-    html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '%</div>';
-    html += '<div style="margin: 5px 0; color: #ffff00;">Mana Cost: ' + manaCost + '</div>';
-    html += '<div style="margin: 5px 0;">Cooldown: ' + skill.cooldown + 's</div>';
-    html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Can summon additional Valkyrie at levels 20 and 30</div>';
+    display.innerHTML = html;
   }
-
-  if (damageInfo && damageInfo.critMultiplier > 1) {
-    html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
-  }
-  
-  display.innerHTML = html;
-}
 
   getWeaponDamage() {
     var weaponDropdown = document.getElementById('weapons-dropdown');
@@ -1085,218 +1105,218 @@ class SkillSystem {
     return { min: min, max: max };
   }
 
- calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
-  // Base skill damage bonus (just from the skill itself)
-  // Handle both array format and object format
-  var skillDamageBonus;
-  if (Array.isArray(skill.damage)) {
-    var levelIndex = Math.min(skillLevel - 1, skill.damage.length - 1);
-    skillDamageBonus = skill.damage[levelIndex] || 0;
-  } else {
-    skillDamageBonus = skill.damage.base + (skill.damage.perLevel * (skillLevel - 1));
+  calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
+    // Base skill damage bonus (just from the skill itself)
+    // Handle both array format and object format
+    var skillDamageBonus;
+    if (Array.isArray(skill.damage)) {
+      var levelIndex = Math.min(skillLevel - 1, skill.damage.length - 1);
+      skillDamageBonus = skill.damage[levelIndex] || 0;
+    } else {
+      skillDamageBonus = skill.damage.base + (skill.damage.perLevel * (skillLevel - 1));
+    }
+
+    // Get synergy bonus separately
+    var synergyBonus = this.calculateSynergyBonus(skillId, 'physical');
+
+    // Get mastery damage bonus (applies to all javelin/spear skills)
+    var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+
+    // Calculate total damage bonus (all bonuses are additive)
+    var totalDamageBonus = skillDamageBonus + synergyBonus + masteryDamageBonus;
+
+    // Dexterity bonus for Amazon (applies to damage directly)
+    var statBonus = Math.floor(dexterity * 1);
+
+    // Get weapon elemental damages
+    var elementalDamages = this.getWeaponElementalDamages();
+
+    // Get flat damage bonuses from socketed items (jewels, runes, gems)
+    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+    var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+    var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+    // Apply percentage bonuses to flat damage (so +15 max dmg becomes +60 with 300% damage)
+    var toMinDmgWithBonuses = Math.floor(toMinDmg * (1 + totalDamageBonus / 100 + statBonus / 100));
+    var toMaxDmgWithBonuses = Math.floor(toMaxDmg * (1 + totalDamageBonus / 100 + statBonus / 100));
+
+    // Calculate base physical damage with all bonuses
+    var baseMinDamage = Math.floor((weaponDamage.min) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMinDmgWithBonuses;
+    var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMaxDmgWithBonuses;
+
+    // Get individual critical chances (each capped at 75%)
+    var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
+    var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
+    var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
+
+
+
+    // NEW CRIT SYSTEM: Calculate total crit chance using multiplicative formula
+    // Total Crit Chance = 1 - ((1 - DS) * (1 - CS) * (1 - WM))
+    var totalCritChance = 1 - ((1 - deadlyStrike / 100) * (1 - criticalStrike / 100) * (1 - weaponMastery / 100));
+
+    // Round down to nearest percent
+    totalCritChance = Math.floor(totalCritChance * 100);
+
+    // Cap at 95% maximum
+    totalCritChance = Math.min(totalCritChance, 95);
+
+    // NEW CRIT MULTIPLIER: All crits now multiply by 1.5x instead of 2x
+    var critMultiplier = 1 + (totalCritChance / 100) * 0.5; // 50% more damage on crit
+
+    // Apply crit multiplier to physical damage only
+    var physicalMinWithCrits = Math.floor(baseMinDamage * critMultiplier);
+    var physicalMaxWithCrits = Math.floor(baseMaxDamage * critMultiplier);
+
+    // Add elemental damages (these don't get crit multiplier)
+    var totalMinDamage = physicalMinWithCrits + elementalDamages.fire.min + elementalDamages.cold.min + elementalDamages.lightning.min + elementalDamages.poison.min;
+    var totalMaxDamage = physicalMaxWithCrits + elementalDamages.fire.max + elementalDamages.cold.max + elementalDamages.lightning.max + elementalDamages.poison.max;
+
+    // Calculate average
+    var avgPhysicalDamage = (baseMinDamage + baseMaxDamage) / 2;
+    var avgPhysicalWithCrits = Math.floor(avgPhysicalDamage * critMultiplier);
+
+    // Total average includes elemental (which doesn't crit)
+    var avgElemental = (elementalDamages.fire.min + elementalDamages.fire.max +
+      elementalDamages.cold.min + elementalDamages.cold.max +
+      elementalDamages.lightning.min + elementalDamages.lightning.max +
+      elementalDamages.poison.min + elementalDamages.poison.max) / 2;
+
+    var totalAvgDamage = avgPhysicalWithCrits + avgElemental;
+
+    return {
+      min: totalMinDamage,
+      max: totalMaxDamage,
+      average: Math.floor((totalMinDamage + totalMaxDamage) / 2),
+      skillBonus: skillDamageBonus,
+      synergyBonus: synergyBonus,
+      masteryDamageBonus: masteryDamageBonus,
+      statBonus: statBonus,
+      elementalDamages: elementalDamages,
+      criticalStrike: criticalStrike,
+      deadlyStrike: deadlyStrike,
+      weaponMastery: weaponMastery,
+      totalCritChance: totalCritChance, // Show the combined crit chance
+      critMultiplier: critMultiplier.toFixed(2),
+      physicalMin: physicalMinWithCrits,
+      physicalMax: physicalMaxWithCrits
+
+
+    };
+
   }
 
-  // Get synergy bonus separately
-  var synergyBonus = this.calculateSynergyBonus(skillId, 'physical');
-
-  // Get mastery damage bonus (applies to all javelin/spear skills)
-  var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
-
-  // Calculate total damage bonus (all bonuses are additive)
-  var totalDamageBonus = skillDamageBonus + synergyBonus + masteryDamageBonus;
-
-  // Dexterity bonus for Amazon (applies to damage directly)
-  var statBonus = Math.floor(dexterity * 1);
-
-  // Get weapon elemental damages
-  var elementalDamages = this.getWeaponElementalDamages();
-
-  // Get flat damage bonuses from socketed items (jewels, runes, gems)
-  var toMinDmgContainer = document.getElementById('tomindmgcontainer');
-  var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
-  var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
-  var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
-
-  // Apply percentage bonuses to flat damage (so +15 max dmg becomes +60 with 300% damage)
-  var toMinDmgWithBonuses = Math.floor(toMinDmg * (1 + totalDamageBonus / 100 + statBonus / 100));
-  var toMaxDmgWithBonuses = Math.floor(toMaxDmg * (1 + totalDamageBonus / 100 + statBonus / 100));
-
-  // Calculate base physical damage with all bonuses
-  var baseMinDamage = Math.floor((weaponDamage.min) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMinDmgWithBonuses;
-  var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMaxDmgWithBonuses;
-
-  // Get individual critical chances (each capped at 75%)
-  var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
-  var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
-  var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
-
-
-
-  // NEW CRIT SYSTEM: Calculate total crit chance using multiplicative formula
-  // Total Crit Chance = 1 - ((1 - DS) * (1 - CS) * (1 - WM))
-  var totalCritChance = 1 - ((1 - deadlyStrike/100) * (1 - criticalStrike/100) * (1 - weaponMastery/100));
-
-  // Round down to nearest percent
-  totalCritChance = Math.floor(totalCritChance * 100);
-
-  // Cap at 95% maximum
-  totalCritChance = Math.min(totalCritChance, 95);
-
-  // NEW CRIT MULTIPLIER: All crits now multiply by 1.5x instead of 2x
-  var critMultiplier = 1 + (totalCritChance / 100) * 0.5; // 50% more damage on crit
-
-  // Apply crit multiplier to physical damage only
-  var physicalMinWithCrits = Math.floor(baseMinDamage * critMultiplier);
-  var physicalMaxWithCrits = Math.floor(baseMaxDamage * critMultiplier);
-
-  // Add elemental damages (these don't get crit multiplier)
-  var totalMinDamage = physicalMinWithCrits + elementalDamages.fire.min + elementalDamages.cold.min + elementalDamages.lightning.min + elementalDamages.poison.min;
-  var totalMaxDamage = physicalMaxWithCrits + elementalDamages.fire.max + elementalDamages.cold.max + elementalDamages.lightning.max + elementalDamages.poison.max;
-
-  // Calculate average
-  var avgPhysicalDamage = (baseMinDamage + baseMaxDamage) / 2;
-  var avgPhysicalWithCrits = Math.floor(avgPhysicalDamage * critMultiplier);
-
-  // Total average includes elemental (which doesn't crit)
-  var avgElemental = (elementalDamages.fire.min + elementalDamages.fire.max +
-                     elementalDamages.cold.min + elementalDamages.cold.max +
-                     elementalDamages.lightning.min + elementalDamages.lightning.max +
-                     elementalDamages.poison.min + elementalDamages.poison.max) / 2;
-
-  var totalAvgDamage = avgPhysicalWithCrits + avgElemental;
-
-  return {
-    min: totalMinDamage,
-    max: totalMaxDamage,
-    average: Math.floor((totalMinDamage + totalMaxDamage) / 2),
-    skillBonus: skillDamageBonus,
-    synergyBonus: synergyBonus,
-    masteryDamageBonus: masteryDamageBonus,
-    statBonus: statBonus,
-    elementalDamages: elementalDamages,
-    criticalStrike: criticalStrike,
-    deadlyStrike: deadlyStrike,
-    weaponMastery: weaponMastery,
-    totalCritChance: totalCritChance, // Show the combined crit chance
-    critMultiplier: critMultiplier.toFixed(2),
-    physicalMin: physicalMinWithCrits,
-    physicalMax: physicalMaxWithCrits
-
-
-  };
-
-}
 
 
 
 
 
+  getWeaponMasteryChance() {
+    // Check for weapon mastery from javelin mastery
+    var masteryInput = document.getElementById('javelinandspearmasterycontainer');
+    if (!masteryInput || parseInt(masteryInput.value) === 0) return 0;
 
-getWeaponMasteryChance() {
-  // Check for weapon mastery from javelin mastery
-  var masteryInput = document.getElementById('javelinandspearmasterycontainer');
-  if (!masteryInput || parseInt(masteryInput.value) === 0) return 0;
-
-  var level = parseInt(masteryInput.value);
-  var masteryData = this.skillData.javelinandspearmasterycontainer;
-  if (masteryData && masteryData.criticalStrike) {
-    var levelIndex = Math.min(level - 1, masteryData.criticalStrike.length - 1);
-    return masteryData.criticalStrike[levelIndex] || 0;
+    var level = parseInt(masteryInput.value);
+    var masteryData = this.skillData.javelinandspearmasterycontainer;
+    if (masteryData && masteryData.criticalStrike) {
+      var levelIndex = Math.min(level - 1, masteryData.criticalStrike.length - 1);
+      return masteryData.criticalStrike[levelIndex] || 0;
+    }
+    return 0;
   }
-  return 0;
-}
 
-getWeaponMasteryDamageBonus() {
-  // Check for weapon mastery from javelin mastery
-  var masteryInput = document.getElementById('javelinandspearmasterycontainer');
-  if (!masteryInput || parseInt(masteryInput.value) === 0) return 0;
+  getWeaponMasteryDamageBonus() {
+    // Check for weapon mastery from javelin mastery
+    var masteryInput = document.getElementById('javelinandspearmasterycontainer');
+    if (!masteryInput || parseInt(masteryInput.value) === 0) return 0;
 
-  var level = parseInt(masteryInput.value);
-  var masteryData = this.skillData.javelinandspearmasterycontainer;
-  if (masteryData && masteryData.damage) {
-    var levelIndex = Math.min(level - 1, masteryData.damage.length - 1);
-    return masteryData.damage[levelIndex] || 0;
+    var level = parseInt(masteryInput.value);
+    var masteryData = this.skillData.javelinandspearmasterycontainer;
+    if (masteryData && masteryData.damage) {
+      var levelIndex = Math.min(level - 1, masteryData.damage.length - 1);
+      return masteryData.damage[levelIndex] || 0;
+    }
+    return 0;
   }
-  return 0;
-}
 
   getWeaponElementalDamages() {
-  var elementalDamages = {
-    fire: { min: 0, max: 0 },
-    cold: { min: 0, max: 0 },
-    lightning: { min: 0, max: 0 },
-    poison: { min: 0, max: 0 }
-  };
-  
-  // Fire damage
-  var fireMinContainer = document.getElementById('flatfiremincontainer');
-  var fireMaxContainer = document.getElementById('flatfiremaxcontainer');
-  if (fireMinContainer && fireMaxContainer) {
-    elementalDamages.fire.min = parseInt(fireMinContainer.textContent) || 0;
-    elementalDamages.fire.max = parseInt(fireMaxContainer.textContent) || 0;
-  }
-  
-  // Cold damage
-  var coldMinContainer = document.getElementById('flatcoldmincontainer');
-  var coldMaxContainer = document.getElementById('flatcoldmaxcontainer');
-  if (coldMinContainer && coldMaxContainer) {
-    elementalDamages.cold.min = parseInt(coldMinContainer.textContent) || 0;
-    elementalDamages.cold.max = parseInt(coldMaxContainer.textContent) || 0;
-  }
-  
-  // Lightning damage (assuming similar pattern)
-  var lightningMinContainer = document.getElementById('flatlightmincontainer');
-  var lightningMaxContainer = document.getElementById('flatlightmaxcontainer');
-  if (lightningMinContainer && lightningMaxContainer) {
-    elementalDamages.lightning.min = parseInt(lightningMinContainer.textContent) || 0;
-    elementalDamages.lightning.max = parseInt(lightningMaxContainer.textContent) || 0;
-  }
-  
-  // Poison damage (assuming similar pattern)
-  var poisonMinContainer = document.getElementById('flatpoisonmincontainer');
-  var poisonMaxContainer = document.getElementById('flatpoisonmaxcontainer');
-  if (poisonMinContainer && poisonMaxContainer) {
-    elementalDamages.poison.min = parseInt(poisonMinContainer.textContent) || 0;
-    elementalDamages.poison.max = parseInt(poisonMaxContainer.textContent) || 0;
-  }
+    var elementalDamages = {
+      fire: { min: 0, max: 0 },
+      cold: { min: 0, max: 0 },
+      lightning: { min: 0, max: 0 },
+      poison: { min: 0, max: 0 }
+    };
 
-  //('Elemental damages from stats calculator:', elementalDamages);
-  return elementalDamages;
-}
+    // Fire damage
+    var fireMinContainer = document.getElementById('flatfiremincontainer');
+    var fireMaxContainer = document.getElementById('flatfiremaxcontainer');
+    if (fireMinContainer && fireMaxContainer) {
+      elementalDamages.fire.min = parseInt(fireMinContainer.textContent) || 0;
+      elementalDamages.fire.max = parseInt(fireMaxContainer.textContent) || 0;
+    }
 
+    // Cold damage
+    var coldMinContainer = document.getElementById('flatcoldmincontainer');
+    var coldMaxContainer = document.getElementById('flatcoldmaxcontainer');
+    if (coldMinContainer && coldMaxContainer) {
+      elementalDamages.cold.min = parseInt(coldMinContainer.textContent) || 0;
+      elementalDamages.cold.max = parseInt(coldMaxContainer.textContent) || 0;
+    }
 
- getCriticalStrikeChance() {
-  var criticalInput = document.getElementById('criticalstrikecontainer');
-  if (!criticalInput || parseInt(criticalInput.value) === 0) return 0;
+    // Lightning damage (assuming similar pattern)
+    var lightningMinContainer = document.getElementById('flatlightmincontainer');
+    var lightningMaxContainer = document.getElementById('flatlightmaxcontainer');
+    if (lightningMinContainer && lightningMaxContainer) {
+      elementalDamages.lightning.min = parseInt(lightningMinContainer.textContent) || 0;
+      elementalDamages.lightning.max = parseInt(lightningMaxContainer.textContent) || 0;
+    }
 
-  var level = parseInt(criticalInput.value);
-  // Critical Strike chance formula: 15% + 3% per level, max 75%
-  return Math.min(15 + (level * 3), 75);
-}
+    // Poison damage (assuming similar pattern)
+    var poisonMinContainer = document.getElementById('flatpoisonmincontainer');
+    var poisonMaxContainer = document.getElementById('flatpoisonmaxcontainer');
+    if (poisonMinContainer && poisonMaxContainer) {
+      elementalDamages.poison.min = parseInt(poisonMinContainer.textContent) || 0;
+      elementalDamages.poison.max = parseInt(poisonMaxContainer.textContent) || 0;
+    }
 
-getDeadlyStrikeChance() {
-  // First, try to get deadly strike from socket system stats (works for both static and dynamic items)
-  if (window.unifiedSocketSystem && window.unifiedSocketSystem.stats) {
-    return Math.min(window.unifiedSocketSystem.stats.deadlyStrike || 0, 75);
+    //('Elemental damages from stats calculator:', elementalDamages);
+    return elementalDamages;
   }
 
-  // Fallback: Check weapon for deadly strike (for static items)
-  var weaponDropdown = document.getElementById('weapons-dropdown');
-  var deadlyStrike = 0;
 
-  if (weaponDropdown && weaponDropdown.value && typeof itemList !== 'undefined') {
-    var weapon = itemList[weaponDropdown.value];
-    if (weapon && weapon.description) {
-      var deadlyMatch = weapon.description.match(/(\d+)% Deadly Strike/i);
-      if (deadlyMatch) {
-        deadlyStrike += parseInt(deadlyMatch[1]);
+  getCriticalStrikeChance() {
+    var criticalInput = document.getElementById('criticalstrikecontainer');
+    if (!criticalInput || parseInt(criticalInput.value) === 0) return 0;
+
+    var level = parseInt(criticalInput.value);
+    // Critical Strike chance formula: 15% + 3% per level, max 75%
+    return Math.min(15 + (level * 3), 75);
+  }
+
+  getDeadlyStrikeChance() {
+    // First, try to get deadly strike from socket system stats (works for both static and dynamic items)
+    if (window.unifiedSocketSystem && window.unifiedSocketSystem.stats) {
+      return Math.min(window.unifiedSocketSystem.stats.deadlyStrike || 0, 75);
+    }
+
+    // Fallback: Check weapon for deadly strike (for static items)
+    var weaponDropdown = document.getElementById('weapons-dropdown');
+    var deadlyStrike = 0;
+
+    if (weaponDropdown && weaponDropdown.value && typeof itemList !== 'undefined') {
+      var weapon = itemList[weaponDropdown.value];
+      if (weapon && weapon.description) {
+        var deadlyMatch = weapon.description.match(/(\d+)% Deadly Strike/i);
+        if (deadlyMatch) {
+          deadlyStrike += parseInt(deadlyMatch[1]);
+        }
       }
     }
-  }
 
-  // Return deadlyStrike, capped at 75%
-  return Math.min(deadlyStrike, 75);
-}
+    // Return deadlyStrike, capped at 75%
+    return Math.min(deadlyStrike, 75);
+  }
 
 
 
@@ -1326,7 +1346,7 @@ getDeadlyStrikeChance() {
     var statBonus = Math.floor(dexterity * 1);
 
     // Get flat damage bonuses from socketed items (jewels, runes, gems)
-   var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
     var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
     var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
     var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
@@ -1359,7 +1379,7 @@ getDeadlyStrikeChance() {
     var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
 
     // Calculate total crit chance
-    var totalCritChance = 1 - ((1 - deadlyStrike/100) * (1 - criticalStrike/100) * (1 - weaponMastery/100));
+    var totalCritChance = 1 - ((1 - deadlyStrike / 100) * (1 - criticalStrike / 100) * (1 - weaponMastery / 100));
     totalCritChance = Math.floor(totalCritChance * 100);
     totalCritChance = Math.min(totalCritChance, 95);
 
@@ -1447,7 +1467,7 @@ getDeadlyStrikeChance() {
     var newValue = parseInt(input.value + e.key);
     var skillLevel = parseInt(input.getAttribute('data-skill-level')) || 1;
     var maxAllowed = this.getMaxAllowed(skillLevel);
-    
+
     if (newValue > maxAllowed) {
       e.preventDefault();
       return;
@@ -1455,7 +1475,7 @@ getDeadlyStrikeChance() {
 
     var totalUsed = this.getTotalUsed();
     var remainingPoints = this.maxSkillPoints - totalUsed + currentValue;
-    
+
     if (newValue > remainingPoints) {
       e.preventDefault();
       return;
@@ -1618,14 +1638,14 @@ getDeadlyStrikeChance() {
     return total;
   }
 
- createPointsDisplay() {
-  var display = document.createElement('div');
-  display.id = 'skill-points-display';
-  display.className = 'skill-points-display';
-  
-  document.body.appendChild(display);
-  this.updatePointsDisplay();
-}
+  createPointsDisplay() {
+    var display = document.createElement('div');
+    display.id = 'skill-points-display';
+    display.className = 'skill-points-display';
+
+    document.body.appendChild(display);
+    this.updatePointsDisplay();
+  }
 
   updateSkillMaxValues() {
     // Update max attribute on all skill container inputs based on character level
@@ -1728,7 +1748,7 @@ getDeadlyStrikeChance() {
 
     warning.textContent = message;
     warning.style.display = 'block';
-    setTimeout(function() { warning.style.display = 'none'; }, 3000);
+    setTimeout(function () { warning.style.display = 'none'; }, 3000);
   }
 
   getSkillValue(skillId) {
@@ -1783,10 +1803,11 @@ getDeadlyStrikeChance() {
   }
 
   // Update skill bonuses from item equipment
-  updateSkillBonuses(allSkillsBonus, classSkillsBonus) {
-    // Store both types of bonuses separately
+  updateSkillBonuses(allSkillsBonus, classSkillsBonus, treeSkillsBonus) {
+    // Store all types of bonuses separately
     this.skillBonuses.allSkills = allSkillsBonus || 0;
     this.skillBonuses.classSkills = classSkillsBonus || 0;
+    this.skillBonuses.treeSkills = treeSkillsBonus || {};
 
     // Update all skill inputs' bonus indicators
     var currentClassSkills = this.classSkillTrees[this.currentClass] || this.classSkillTrees['Amazon'];
@@ -1809,10 +1830,23 @@ getDeadlyStrikeChance() {
     var skillInput = document.getElementById(skillId);
 
     if (bonusSpan && skillInput) {
-      // Combine both all skills and class skills bonuses
+      // Combine all types of bonuses
       var allSkillsBonus = this.skillBonuses.allSkills || 0;
       var classSkillsBonus = this.skillBonuses.classSkills || 0;
-      var totalBonus = allSkillsBonus + classSkillsBonus;
+
+      // Find if this skill belongs to a tree that has a bonus
+      var treeBonus = 0;
+      var currentClassSkills = this.classSkillTrees[this.currentClass] || this.classSkillTrees['Amazon'];
+
+      Object.keys(currentClassSkills).forEach((containerId) => {
+        var skillsInTree = currentClassSkills[containerId];
+        var isSkillInTree = skillsInTree.some(s => s.id === skillId);
+        if (isSkillInTree) {
+          treeBonus = this.skillBonuses.treeSkills[containerId] || 0;
+        }
+      });
+
+      var totalBonus = allSkillsBonus + classSkillsBonus + treeBonus;
       var baseValue = parseInt(skillInput.value) || 0;
 
       // Only show bonus if skill has actual points AND there's a bonus
@@ -1840,7 +1874,7 @@ function initSkillSystem() {
   }
 }
 
-window.testSkillSystem = function() {
+window.testSkillSystem = function () {
   //('🧪 Testing...');
   if (skillSystemInstance) {
     //('✅ Skills working:', skillSystemInstance.getTotalUsed(), 'points used');
@@ -1850,7 +1884,7 @@ window.testSkillSystem = function() {
 };
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     setTimeout(initSkillSystem, 100);
   });
 } else {
