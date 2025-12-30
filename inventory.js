@@ -166,6 +166,23 @@ class CharmInventory {
     }
   }
 
+  clearAll() {
+    const container = document.querySelector('.inventorycontainer');
+    if (container) {
+      // Remove all overlays (charms) while keeping the grid slots
+      const overlays = container.querySelectorAll('.charm-overlay');
+      overlays.forEach(overlay => overlay.remove());
+    }
+    this.occupiedSlots.clear();
+    this.charmElements.clear();
+    this.checkUniqueCharmAvailability();
+
+    // Trigger stat update if needed
+    if (window.unifiedSocketSystem) {
+      window.unifiedSocketSystem.updateAll();
+    }
+  }
+
   // Replace the createModal and createCharm methods with these:
 
   createModal() {
@@ -1606,7 +1623,7 @@ class CharmInventory {
 
 
   // Add this missing placeCharm method:
-  placeCharm(position, charmType, backgroundImage, charmData, hoverText = null) {
+  placeCharm(position, charmType, backgroundImage, charmData, hoverText = null, silent = false) {
     const container = document.querySelector('.inventorycontainer');
     const mainSlot = container.children[position];
 
@@ -1686,22 +1703,9 @@ class CharmInventory {
       }
     }
 
-    // Recalculate stats after placing ANY charm
-    if (window.unifiedSocketSystem?.calculateAllStats) {
-      setTimeout(() => window.unifiedSocketSystem.calculateAllStats(), 25);
-    }
-    if (window.unifiedSocketSystem?.updateStatsDisplay) {
-      setTimeout(() => window.unifiedSocketSystem.updateStatsDisplay(), 50);
-    }
-    if (window.statsCalculator?.updateAll) {
-      setTimeout(() => window.statsCalculator.updateAll(), 75);
-    }
-    if (window.characterStats?.updateTotalStats) {
-      setTimeout(() => window.characterStats.updateTotalStats(), 100);
-    }
-    // Trigger charm change which handles stat recalculation
-    if (typeof window.onCharmChange === 'function') {
-      setTimeout(() => window.onCharmChange(), 150);
+    // Trigger charm change recalculation (skip if silent mode during bulk restore)
+    if (!silent && typeof window.onCharmChange === 'function') {
+      window.onCharmChange();
     }
   }
 
@@ -2085,7 +2089,8 @@ class CharmInventory {
           charm.type,
           backgroundImage,
           charmDataStr,
-          displayText
+          displayText,
+          true // SILENT = true to prevent O(N^2) timeouts during restoration
         );
 
         // Store the imagePath for later restoration
@@ -2104,6 +2109,11 @@ class CharmInventory {
 
     // Fix titles on all restored charms
     setTimeout(() => this.fixCharmTitles(), 50);
+
+    // CRITICAL: Trigger a SINGLE recalculation after all charms are in place
+    if (typeof window.onCharmChange === 'function') {
+      window.onCharmChange();
+    }
   }
 
   clearInventory() {
@@ -2197,7 +2207,8 @@ function getCharmBonuses() {
 
   charms.forEach(charm => {
     const data = charm.dataset.charmData;
-    if (!data) return;
+    // Skip if no data or empty/whitespace only
+    if (!data || !data.trim()) return;
 
     // Parse charm data - handle both JSON and plain text formats
     let linesToParse = [];
@@ -2702,92 +2713,14 @@ function onEquipmentOrSocketChange() {
   }, 100);
 }
 
-// Call this when ONLY charms are added/removed (preserves socket bonuses in base)
+// Call this when ONLY charms are added/removed
 function onCharmChange() {
-
-
-  const newCharmBonuses = getCharmBonuses();
-
-  // Store charm bonuses for character system to access
-  if (!window.statsCalculator) {
-    window.statsCalculator = { stats: {} };
+  // Trigger a full recalculation when charms change
+  // Call methods directly to bypass isInitializing check
+  if (window.unifiedSocketSystem) {
+    window.unifiedSocketSystem.calculateAllStats();
+    window.unifiedSocketSystem.updateStatsDisplay();
   }
-
-  // FIXED: Set the stats that character.js expects
-  window.statsCalculator.stats = {
-    str: newCharmBonuses.str || 0,
-    dex: newCharmBonuses.dex || 0,
-    vit: newCharmBonuses.vit || 0,
-    enr: newCharmBonuses.enr || 0,
-    life: newCharmBonuses.life || 0,
-    mana: newCharmBonuses.mana || 0,
-    allSkills: newCharmBonuses.allSkills || 0,
-    classSkills: newCharmBonuses.classSkills || 0  // Class-specific skill bonuses (tracked separately)
-  };
-
-  // Update non-attribute stats directly
-  const containers = {
-    defense: 'defensecontainer',
-    coldResist: 'coldresistcontainer',
-    fireResist: 'fireresistcontainer',
-    lightResist: 'lightresistcontainer',
-    poisonResist: 'poisonresistcontainer',
-    attackrating: 'attackratingcontainer',
-    allResistances: ['coldresistcontainer', 'fireresistcontainer', 'lightresistcontainer', 'poisonresistcontainer'],  // Assuming all resistances are shown in their respective containers
-    magicFind: 'magicfindcontainer',
-    goldFind: 'goldfindcontainer',
-    frw: 'frwcontainer',
-    fhr: 'fhrcontainer',
-    lightDmgMin: 'flatlightmincontainer',
-    lightDmgMax: 'flatlightmaxcontainer',
-    coldDmgMin: 'flatcoldmincontainer',
-    coldDmgMax: 'flatcoldmaxcontainer',
-    fireDmgMin: 'flatfiremincontainer',
-    fireDmgMax: 'flatfiremaxcontainer',
-    poisonDmgMin: 'flatpoisonmincontainer',
-    poisonDmgMax: 'flatpoisonmaxcontainer',
-    magicDmgMin: 'flatmagicmincontainer',
-    magicDmgMax: 'flatmagicmaxcontainer',
-    poisonSkillDmg: 'poisonskilldmgcontainer',
-    coldSkillDmg: 'coldskilldmgcontainer',
-    fireSkillDmg: 'fireskilldmgcontainer',
-    lightningSkillDmg: 'lightningskilldmgcontainer',
-    magicSkillDmg: 'magicskilldmgcontainer'
-  };
-
-  Object.keys(containers).forEach(stat => {
-    const containerId = containers[stat];
-    const container = document.getElementById(containerId);
-
-    if (container) {
-      const baseValue = charmSystem.baseValues[stat] || 0;
-      const newCharmBonus = newCharmBonuses[stat] || 0;
-      const totalValue = baseValue + newCharmBonus;
-
-      container.textContent = totalValue;
-
-      if (newCharmBonus > 0) {
-        container.style.color = '#d0d007ff';
-      } else {
-        container.style.color = '';
-      }
-    }
-  });
-
-  // FIXED: Trigger character system to handle str/dex/vit/enr/life/mana
-  if (window.characterManager) {
-    window.characterManager.updateTotalStats();
-  }
-
-  // Update tracked charm bonuses
-  charmSystem.currentCharmBonuses = { ...newCharmBonuses };
-
-  // ADD: Force immediate refresh of character displays
-  setTimeout(() => {
-    if (window.characterManager) {
-      window.characterManager.forceStatsUpdate();
-    }
-  }, 10);
 }
 
 //   captureCurrentBaseValues();
@@ -2833,4 +2766,4 @@ window.onCharmChange = onCharmChange;
 window.initializeCharmSystem = initializeCharmSystem;
 
 // Initialize after other systems are ready
-setTimeout(initializeCharmSystem, 2000);
+setTimeout(initializeCharmSystem, 500);

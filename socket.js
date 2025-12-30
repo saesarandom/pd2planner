@@ -1477,6 +1477,44 @@ class UnifiedSocketSystem {
     });
   }
 
+  // === UI CLEARING ===
+  clearAll() {
+    // 1. Reset all equipment dropdowns to "None"
+    Object.keys(this.equipmentMap).forEach(dropdownId => {
+      const dropdown = document.getElementById(dropdownId);
+      if (dropdown) {
+        dropdown.value = '';
+        dropdown.dataset.previousValue = '';
+        // If there's an active item icon in the UI, we might need to hide it
+        // but usually the next steps handle the socket grids.
+      }
+    });
+
+    // 2. Clear all socket slots
+    const socketContainers = document.querySelectorAll('.socket-container');
+    socketContainers.forEach(container => {
+      const socketGrid = container.querySelector('.socket-grid');
+      if (socketGrid) {
+        socketGrid.innerHTML = '';
+        socketGrid.className = 'socket-grid sockets-0';
+      }
+    });
+
+    // 3. Reset ethereal buttons
+    document.querySelectorAll('button[onclick*="makeEtherealItem"]').forEach(btn => {
+      btn.classList.remove('active');
+      btn.textContent = 'Make Ethereal';
+    });
+
+    // 4. Clear item corruptions (visual and data)
+    window.itemCorruptions = {};
+    document.querySelectorAll('.corruption-text').forEach(el => el.remove());
+
+    // 5. Reset internal state
+    this.calculateAllStats();
+    this.updateStatsDisplay();
+  }
+
   // === SOCKET MANAGEMENT ===
 
   // Get max sockets for current item in a section
@@ -3018,14 +3056,17 @@ class UnifiedSocketSystem {
         enhancements.push(socket.dataset.stats);
       }
     });
-
     return enhancements;
   }
 
   calculateAllStats() {
     // Reset stats
     Object.keys(this.stats).forEach(key => {
-      this.stats[key] = typeof this.stats[key] === 'boolean' ? false : 0;
+      if (Array.isArray(this.stats[key])) {
+        this.stats[key] = [];
+      } else {
+        this.stats[key] = typeof this.stats[key] === 'boolean' ? false : 0;
+      }
     });
 
     // Explicitly reset Rainbow Facet stats to be sure
@@ -3039,6 +3080,9 @@ class UnifiedSocketSystem {
     this.stats.pierceLightning = 0;
     this.stats.piercePoison = 0;
     this.stats.piercePhysical = 0;
+
+    // CRITICAL: Reset treeSkills object (not in initial stats, so Object.keys won't reset it)
+    this.stats.treeSkills = {};
 
     // Reset mercenary stats
     Object.keys(this.mercenaryStats).forEach(key => {
@@ -3062,19 +3106,20 @@ class UnifiedSocketSystem {
     this.updateMercenaryStatsDisplay();
 
     // INTEGRATION: Add charm and equipment class bonuses
+    // ALL charm bonuses are read from DOM via getCharmBonuses() - single source of truth
     if (typeof getCharmBonuses === 'function') {
       const charmBonuses = getCharmBonuses();
+
       // Merge charm bonuses into socket stats
       this.stats.allSkills = (this.stats.allSkills || 0) + (charmBonuses.allSkills || 0);
       this.stats.classSkills = (this.stats.classSkills || 0) + (charmBonuses.classSkills || 0);
 
       // ALSO add equipment class-specific skills (e.g. amask: 2 from Blastbark)
-      // The standard parser might miss these if they aren't in the description parsing logic
       if (window.characterManager && typeof window.characterManager.getEquipmentClassSkills === 'function') {
         this.stats.classSkills += window.characterManager.getEquipmentClassSkills();
       }
 
-      // NEW: Add tree-specific skill bonuses (e.g. +3 to Javelin and Spear Skills)
+      // Add tree-specific skill bonuses (e.g. +3 to Javelin and Spear Skills)
       this.stats.treeSkills = charmBonuses.treeSkills || {};
       if (window.characterManager && typeof window.characterManager.getEquipmentTreeSkills === 'function') {
         const equipTreeBonuses = window.characterManager.getEquipmentTreeSkills();
@@ -3083,10 +3128,8 @@ class UnifiedSocketSystem {
         });
       }
 
-      this.stats.str = (this.stats.str || 0) + (charmBonuses.str || 0);
-      this.stats.dex = (this.stats.dex || 0) + (charmBonuses.dex || 0);
-      this.stats.vit = (this.stats.vit || 0) + (charmBonuses.vit || 0);
-      this.stats.enr = (this.stats.enr || 0) + (charmBonuses.enr || 0);
+
+      // Add charm bonuses (EXCEPT str/dex/vit/enr which are handled by character.js)
       this.stats.life = (this.stats.life || 0) + (charmBonuses.life || 0);
       this.stats.mana = (this.stats.mana || 0) + (charmBonuses.mana || 0);
       this.stats.defense = (this.stats.defense || 0) + (charmBonuses.defense || 0);
@@ -3098,6 +3141,16 @@ class UnifiedSocketSystem {
       this.stats.fireResist = (this.stats.fireResist || 0) + (charmBonuses.fireResist || 0);
       this.stats.lightResist = (this.stats.lightResist || 0) + (charmBonuses.lightResist || 0);
       this.stats.poisonResist = (this.stats.poisonResist || 0) + (charmBonuses.poisonResist || 0);
+
+      // Add damage bonuses from charms
+      this.stats.lightDmgMin = (this.stats.lightDmgMin || 0) + (charmBonuses.lightDmgMin || 0);
+      this.stats.lightDmgMax = (this.stats.lightDmgMax || 0) + (charmBonuses.lightDmgMax || 0);
+      this.stats.fireDmgMin = (this.stats.fireDmgMin || 0) + (charmBonuses.fireDmgMin || 0);
+      this.stats.fireDmgMax = (this.stats.fireDmgMax || 0) + (charmBonuses.fireDmgMax || 0);
+      this.stats.coldDmgMin = (this.stats.coldDmgMin || 0) + (charmBonuses.coldDmgMin || 0);
+      this.stats.coldDmgMax = (this.stats.coldDmgMax || 0) + (charmBonuses.coldDmgMax || 0);
+      this.stats.poisonDmgMin = (this.stats.poisonDmgMin || 0) + (charmBonuses.poisonDmgMin || 0);
+      this.stats.poisonDmgMax = (this.stats.poisonDmgMax || 0) + (charmBonuses.poisonDmgMax || 0);
     }
 
     if (window.characterStatManager) {
@@ -4632,8 +4685,13 @@ class UnifiedSocketSystem {
       window.updateCritDisplay();
     }
 
-    if (window.onEquipmentOrSocketChange) {
-      window.onEquipmentOrSocketChange();
+    // NOTE: We do NOT call onEquipmentOrSocketChange here because it triggers updateCharmDisplay
+    // which calls getCharmBonuses() again, causing double-counting.
+    // Charm bonuses are already read by calculateAllStats() above.
+
+    // BUT we DO need to update character stats to show green bonus numbers for str/dex/vit/enr
+    if (window.characterManager && typeof window.characterManager.updateTotalStats === 'function') {
+      window.characterManager.updateTotalStats();
     }
 
     // CRITICAL: Update character total stats display (green bonus numbers)

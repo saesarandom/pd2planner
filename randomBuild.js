@@ -112,6 +112,7 @@
 
     // Main randomize function
     function randomizeBuild() {
+        if (window._isLoadingCharacterData) return;
         console.log('Randomizing build...');
 
         // Pick a random build template

@@ -804,16 +804,30 @@ class SkillSystem {
         var skill = self.skillData[skillId];
         var baseValue = parseInt(skillInput.value);
 
-        // Combine All Skills and Class Skills for the dropdown display
+        // Combine All Skills, Class Skills, and Tree Skills for the dropdown display
         var allBonus = self.skillBonuses.allSkills || 0;
         var classBonus = self.skillBonuses.classSkills || 0;
-        var totalValue = baseValue + allBonus + classBonus;
+
+        // Find if this skill belongs to a tree that has a bonus
+        var treeBonus = 0;
+        var currentClassSkills = self.classSkillTrees[self.currentClass] || self.classSkillTrees['Amazon'];
+
+        Object.keys(currentClassSkills).forEach(function (containerId) {
+          var skillsInTree = currentClassSkills[containerId];
+          var isSkillInTree = skillsInTree.some(function (s) { return s.id === skillId; });
+          if (isSkillInTree) {
+            treeBonus = self.skillBonuses.treeSkills[containerId] || 0;
+          }
+        });
+
+        var totalBonus = allBonus + classBonus + treeBonus;
+        var totalValue = baseValue + totalBonus;
 
         var option = document.createElement('option');
         option.value = skillId;
 
         // Show total level with bonus, or just base level if no bonus
-        if (allBonus + classBonus > 0) {
+        if (totalBonus > 0) {
           option.textContent = skill.name + ' (' + totalValue + ')';
         } else {
           option.textContent = skill.name + ' (' + baseValue + ')';

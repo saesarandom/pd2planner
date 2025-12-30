@@ -1,10 +1,6 @@
-// Character Data Serialization/Deserialization
-// Handles exporting and importing character builds
+// character-data.js - Enhanced Load/Export logic
+// Handles full character state including items, charms, skills, sockets and corruptions.
 
-/**
- * Export current character state to a serializable object
- * @returns {Object} Character data object ready for JSON serialization
- */
 window.exportCharacterData = function () {
     const level = parseInt(document.getElementById('lvlValue')?.value) || 1;
     const characterClass = document.getElementById('selectClass')?.value || 'Amazon';
@@ -28,7 +24,7 @@ window.exportCharacterData = function () {
         gloves: 'gloves-dropdown', belt: 'belts-dropdown', boots: 'boots-dropdown',
         ring1: 'ringsone-dropdown', ring2: 'ringstwo-dropdown', amulet: 'amulets-dropdown',
         mercWeapon: 'mercweapons-dropdown', mercHelm: 'merchelms-dropdown', mercArmor: 'mercarmors-dropdown',
-        mercShield: 'mercoffs-dropdown', mercGloves: 'mercgloves-dropdown', mercBelt: 'mercbelts-dropdown', mercBoots: 'mercboots-dropdown'
+        mercShield: 'mercoffs-dropdown', mercGloves: 'mercgloves-dropdown', mercBelt: 'mercbelt-dropdown', mercBoots: 'mercboots-dropdown'
     };
 
     const equipment = {};
@@ -39,129 +35,149 @@ window.exportCharacterData = function () {
     const sockets = { data: window.unifiedSocketSystem?.exportSocketData?.() || {} };
     const corruptions = { data: JSON.parse(JSON.stringify(window.itemCorruptions || {})) };
 
-    const variableStats = {};
-    for (const [slot, itemName] of Object.entries(equipment)) {
-        if (!itemName) continue;
-        const dropdownId = equipmentMap[slot];
-        let item = (window.dropdownItemCache && window.dropdownItemCache[`${dropdownId}_${itemName}`]) ||
-            (typeof itemList !== 'undefined' && itemList[itemName]) ||
-            window.craftedItemsSystem?.getCraftedItemByName(itemName);
-
-        if (item && item.properties) {
-            const stats = {};
-            const allProps = {};
-            for (const [k, v] of Object.entries(item.properties)) {
-                if (typeof v === 'object' && v !== null && ('current' in v || 'max' in v)) {
-                    stats[k] = v.current !== undefined ? v.current : v.max;
-                    allProps[k] = JSON.parse(JSON.stringify(v));
-                } else if (item.baseType) {
-                    allProps[k] = v;
-                }
-            }
-            variableStats[slot] = {
-                itemName,
-                stats,
-                ...(item.baseType && { baseType: item.baseType, allProperties: allProps })
-            };
-        }
-    }
+    // Crucial for saving user modifications to variable stats
+    const itemStates = JSON.parse(JSON.stringify(window.itemStates || {}));
 
     const charms = window.charmInventory?.getAllCharms ? window.charmInventory.getAllCharms() : [];
+
     const skills = {};
-    // Broad search for skill inputs
-    const skillSelectors = [
-        '.skill-tree-container input[type="number"]',
-        '.skills-container input[type="number"]',
-        '[id$="skillscontainer"] input[type="number"]'
-    ];
-    skillSelectors.forEach(sel => {
-        document.querySelectorAll(sel).forEach(input => {
-            const val = parseInt(input.value);
-            if (val > 0 && input.id) skills[input.id] = val;
-        });
+    const skillInputs = document.querySelectorAll('.skill-tree-container input[type="number"], .skills-container input[type="number"]');
+    skillInputs.forEach(input => {
+        const val = parseInt(input.value);
+        if (val > 0 && input.id) skills[input.id] = val;
     });
 
     return {
+        timestamp: new Date().toISOString(),
         character: { level, class: characterClass, stats: { str, dex, vit, enr } },
         mode, anya: anyaBonuses,
         mercenary: { class: mercClass, level: mercLevel },
-        equipment, sockets, corruptions, variableStats, charms, skills,
-        selectedSkill: document.getElementById('active-skill-dropdown')?.value || '',
-        crafted_items: window.craftedItemsSystem?.exportToData() || []
+        equipment, sockets, corruptions, itemStates, charms, skills,
+        selectedSkill: document.getElementById('active-skill-dropdown')?.value || ''
     };
 };
 
-/**
- * Load character state from a data object
- * @param {Object} data - Character data object (from exportCharacterData)
- */
 window.loadCharacterFromData = function (data, silent = false) {
     if (!data || !data.character) return;
     try {
         window._isLoadingCharacterData = true;
-        // ... (middle content remains same)
-        setTimeout(() => {
-            if (window.characterManager) window.characterManager.updateTotalStats();
-            if (window.skillSystem && window.unifiedSocketSystem) {
-                window.skillSystem.updateSkillBonuses(window.unifiedSocketSystem.stats?.allSkills || 0, window.unifiedSocketSystem.stats?.classSkills || 0);
-                window.skillSystem.updateSkillDropdown();
-            }
-            window._isLoadingCharacterData = false;
 
-            // Re-set level inputs to ensure they display correctly
-            if (data.character.level) {
-                const lvlInput = document.getElementById('lvlValue');
-                if (lvlInput) lvlInput.value = data.character.level;
-                if (window.characterManager) {
-                    window.characterManager.currentLevel = data.character.level;
-                    window.characterManager.level = data.character.level;
+        // 1. CLEAR EVERYTHING - Ensure clean slate
+        if (window.unifiedSocketSystem?.clearAll) window.unifiedSocketSystem.clearAll();
+        if (window.charmInventory?.clearAll) window.charmInventory.clearAll();
+        if (window.clearAllItemStates) window.clearAllItemStates();
+
+        // 2. Set Basic Info
+        const classSelect = document.getElementById('selectClass');
+        if (classSelect) {
+            classSelect.value = data.character.class || 'Amazon';
+            // Trigger class change logic (resets trees etc)
+            classSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        const lvlInput = document.getElementById('lvlValue');
+        if (lvlInput) {
+            lvlInput.value = data.character.level || 1;
+            // CRITICAL: Also update the socket system's currentLevel so level checks work
+            if (window.unifiedSocketSystem) {
+                window.unifiedSocketSystem.currentLevel = parseInt(lvlInput.value) || 1;
+            }
+        }
+
+        // 3. Set Stats
+        const statsMap = { str: 'str', dex: 'dex', vit: 'vit', enr: 'enr' };
+        for (const [key, id] of Object.entries(statsMap)) {
+            const input = document.getElementById(id);
+            if (input) input.value = data.character.stats[key] || 0;
+        }
+
+        // 4. Set Anya & Mode
+        if (data.anya) {
+            if (document.querySelector('input[value="anya-n"]')) document.querySelector('input[value="anya-n"]').checked = !!data.anya.n;
+            if (document.querySelector('input[value="anya-nm"]')) document.querySelector('input[value="anya-nm"]').checked = !!data.anya.nm;
+            if (document.querySelector('input[value="anya-h"]')) document.querySelector('input[value="anya-h"]').checked = !!data.anya.h;
+        }
+        const modeDropdown = document.querySelector('.modedropdown');
+        if (modeDropdown && data.mode) modeDropdown.value = data.mode;
+
+        // 5. Restore Item States (corruptions, sockets, variable stats) -> do this BEFORE loading items
+        if (data.itemStates) {
+            window.itemStates = JSON.parse(JSON.stringify(data.itemStates));
+        }
+        if (data.corruptions?.data) {
+            window.itemCorruptions = JSON.parse(JSON.stringify(data.corruptions.data));
+        }
+
+        // 6. Set Equipment
+        const equipmentMap = {
+            weapon: 'weapons-dropdown', helm: 'helms-dropdown', armor: 'armors-dropdown', shield: 'offs-dropdown',
+            gloves: 'gloves-dropdown', belt: 'belts-dropdown', boots: 'boots-dropdown',
+            ring1: 'ringsone-dropdown', ring2: 'ringstwo-dropdown', amulet: 'amulets-dropdown',
+            mercWeapon: 'mercweapons-dropdown', mercHelm: 'merchelms-dropdown', mercArmor: 'mercarmors-dropdown',
+            mercShield: 'mercoffs-dropdown', mercGloves: 'mercgloves-dropdown', mercBelt: 'mercbelts-dropdown', mercBoots: 'mercboots-dropdown'
+        };
+
+        for (const [slot, id] of Object.entries(equipmentMap)) {
+            const dropdown = document.getElementById(id);
+            if (dropdown && data.equipment[slot]) {
+                dropdown.value = data.equipment[slot];
+                dropdown.dataset.previousValue = data.equipment[slot];
+                // Use the restore logic from itemState.js if available
+                if (window.restoreItemState) {
+                    window.restoreItemState(id, data.equipment[slot], slot.replace('merc', '').toLowerCase());
                 }
             }
-            if (data.mercenary?.level) {
-                const mercLvlInput = document.getElementById('merclvlValue');
-                if (mercLvlInput) mercLvlInput.value = data.mercenary.level;
+        }
+
+        // Clear the item cache so calculateAllStats reads fresh item data with restored properties
+        if (window.dropdownItemCache) {
+            window.dropdownItemCache = {};
+        }
+
+        // NOTE: We don't call updateAllItemDisplays here - we'll do it in the setTimeout
+        // after charms are loaded to ensure everything is ready
+
+        // 7. Load Charms (this will trigger onCharmChange internally)
+        if (data.charms && window.charmInventory?.restoreAllCharms) {
+            window.charmInventory.restoreAllCharms(data.charms);
+            // NOTE: restoreAllCharms now calls onCharmChange internally, no need to call it again
+        }
+
+        // 8. Load Skills
+        if (data.skills) {
+            for (const [skillId, value] of Object.entries(data.skills)) {
+                const input = document.getElementById(skillId);
+                if (input) {
+                    input.value = value;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            }
+        }
+
+        // 9. Recalculate everything AFTER charms are loaded
+        // Small delay to ensure DOM updates from equipment/charm loading are complete
+        setTimeout(() => {
+            // IMPORTANT: Calculate equipment/charm stats FIRST, then character stats
+            // This ensures stat point calculations have correct equipment bonuses
+            if (window.unifiedSocketSystem) {
+                window.unifiedSocketSystem.updateAllItemDisplays(); // Refresh item displays
+                window.unifiedSocketSystem.calculateAllStats();      // Calculate equipment + charm stats
+                window.unifiedSocketSystem.updateStatsDisplay();     // Update stat displays
             }
 
-            // Final recalculation to update item requirements
-            if (window.unifiedSocketSystem?.updateAll) {
-                window.unifiedSocketSystem.updateAll();
+            // Skill selection
+            if (data.selectedSkill && document.getElementById('active-skill-dropdown')) {
+                document.getElementById('active-skill-dropdown').value = data.selectedSkill;
+                document.getElementById('active-skill-dropdown').dispatchEvent(new Event('change', { bubbles: true }));
             }
-        }, 1000);
+
+            window._isLoadingCharacterData = false;
+        }, 10);
 
         if (!silent && window.notificationSystem) window.notificationSystem.success('Build Loaded', 'Character build successfully imported.');
     } catch (e) {
-        // ...
         console.error('Load error:', e);
         window._isLoadingCharacterData = false;
-    }
-};
-
-/**
- * Create a shareable URL-safe build code (optional feature)
- * @param {Object} data - Character data object
- * @returns {string} Base64-encoded build code
- */
-window.createBuildCode = function (data) {
-    try {
-        const json = JSON.stringify(data);
-        return btoa(json);
-    } catch (error) {
-        console.error('Error creating build code:', error);
-        return null;
-    }
-};
-
-/**
- * Decode a build code back to character data
- * @param {string} code - Base64-encoded build code
- * @returns {Object} Character data object
- */
-window.decodeBuildCode = function (code) {
-    try {
-        const json = atob(code);
-        return JSON.parse(json);
-    } catch (error) {
-        console.error('Error decoding build code:', error);
-        return null;
+        if (window.notificationSystem) window.notificationSystem.error('Load Failed', 'Error importing build.');
     }
 };

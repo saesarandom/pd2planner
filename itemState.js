@@ -144,3 +144,7 @@ window.clearItemStateIfRequirementsNotMet = function (dropdownId, itemName) {
 
   return false;
 };
+
+window.clearAllItemStates = function () {
+  window.itemStates = {};
+};

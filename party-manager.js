@@ -16,7 +16,6 @@ class PartyManager {
     init() {
         document.addEventListener('DOMContentLoaded', () => {
             this.createUI();
-            this.loadPartyFromStorage();
             this.updateUI();
         });
     }
@@ -51,11 +50,8 @@ class PartyManager {
         if (newIndex === this.activeIndex) return;
         if (window._isLoadingCharacterData) return;
 
-        // 1. Export current character to current slot
-        const currentData = window.exportCharacterData ? window.exportCharacterData() : null;
-        if (currentData) {
-            this.partyData[this.activeIndex] = currentData;
-        }
+        // 1. Save current slot's state
+        this.saveCurrentSlot();
 
         // 2. Set new active index
         const oldIndex = this.activeIndex;
@@ -69,82 +65,40 @@ class PartyManager {
         const dataToLoad = this.partyData[newIndex];
 
         if (dataToLoad) {
-            // Load existing build
+            // Load existing build - it now clears its own state internally
             if (window.loadCharacterFromData) {
                 window.loadCharacterFromData(dataToLoad, true); // true = silent
             }
         } else {
-            // New/Empty slot - we could either reset or keep current but switched
-            // Usually best to start with a "Fresh" character of same class or reset
-            // For now, let's just keep it as is but mark it as active
-            // Actually, let's just save the current character into the new slot if it was empty?
-            // User said: "it will just go to P2's window where everything is customizable like from scratch"
-            // So we should probably reset the UI for P2.
-
+            // New/Empty slot - truly reset everything
             this.resetToDefault();
         }
+    }
 
-        this.savePartyToStorage();
+    saveCurrentSlot() {
+        const currentData = window.exportCharacterData ? window.exportCharacterData() : null;
+        if (currentData) {
+            this.partyData[this.activeIndex] = currentData;
+        }
     }
 
     resetToDefault() {
-        // Simple way to reset: load a minimal default object
+        // Clear all global states before loading default
+        if (window.unifiedSocketSystem?.clearAll) window.unifiedSocketSystem.clearAll();
+        if (window.charmInventory?.clearAll) window.charmInventory.clearAll();
+        if (window.clearAllItemStates) window.clearAllItemStates();
+
         const defaultData = {
-            character: { level: 1, class: 'Amazon', stats: { str: 0, dex: 0, vit: 0, enr: 0 } },
+            character: { level: 1, class: 'Amazon', stats: { str: 20, dex: 25, vit: 20, enr: 15 } },
             equipment: {},
             skills: {},
             charms: [],
             sockets: { data: {} },
-            corruptions: { data: {} }
+            corruptions: { data: {} },
+            itemStates: {}
         };
         if (window.loadCharacterFromData) {
             window.loadCharacterFromData(defaultData, true); // true = silent
-        }
-    }
-
-    savePartyToStorage() {
-        // Save to current character/build in local storage
-        try {
-            const currentData = window.exportCharacterData ? window.exportCharacterData() : null;
-            if (currentData) {
-                this.partyData[this.activeIndex] = currentData;
-            }
-            localStorage.setItem('pd2_party_data', JSON.stringify({
-                activeIndex: this.activeIndex,
-                partyData: this.partyData
-            }));
-        } catch (e) {
-            console.error('Failed to save party data', e);
-        }
-    }
-
-    loadPartyFromStorage() {
-        try {
-            const stored = localStorage.getItem('pd2_party_data');
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                if (parsed.partyData && Array.isArray(parsed.partyData)) {
-                    this.partyData = parsed.partyData;
-
-                    // Check if we should restore the active index
-                    // Only do this if there's no build in the URL to avoid conflicts
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const buildId = urlParams.get('build') || urlParams.get('id');
-
-                    if (!buildId && parsed.activeIndex !== undefined) {
-                        this.activeIndex = parsed.activeIndex;
-
-                        // Load the data for this slot after a small delay to ensure systems are ready
-                        setTimeout(() => {
-                            if (this.partyData[this.activeIndex] && window.loadCharacterFromData) {
-                                window.loadCharacterFromData(this.partyData[this.activeIndex], true); // true = silent
-                            }
-                        }, 800);
-                    }
-                }
-            }
-        } catch (e) {
-            console.warn('Failed to load party data', e);
         }
     }
 
