@@ -44,6 +44,12 @@ window.refreshSavedState = function (dropdownId, section) {
   // Save complete current state - ethereal is always last/most current
   window.itemStates[stateKey] = {
     corruption: window.itemCorruptions ? window.itemCorruptions[dropdownId] : null,
+    corruptedProps: window.corruptedProperties && window.corruptedProperties[dropdownId]
+      ? Array.from(window.corruptedProperties[dropdownId])
+      : [],
+    originalProperties: window.originalItemProperties && window.originalItemProperties[itemName]
+      ? JSON.parse(JSON.stringify(window.originalItemProperties[itemName]))
+      : null,
     sockets: socketData,
     ethereal: item.properties?.ethereal || false,
     properties: item.properties ? JSON.parse(JSON.stringify(item.properties)) : null
@@ -68,17 +74,45 @@ window.restoreItemState = function (dropdownId, itemName, section) {
   if (!item) return;
 
   // Restore properties (including ethereal and variable stats)
-  if (savedState.properties) {
+  // BUT: Don't restore if there's a corruption, because we'll apply it fresh
+  if (savedState.properties && !savedState.corruption) {
     item.properties = JSON.parse(JSON.stringify(savedState.properties));
+  } else if (savedState.properties && savedState.corruption) {
+    // If there's a corruption, restore properties but let corruption stack on top
+    // Copy all properties from saved state
+    if (!item.properties) item.properties = {};
+
+    // Restore all variable stats (ED, defense, etc.) and ethereal
+    for (const [key, value] of Object.entries(savedState.properties)) {
+      // Skip properties that corruption might stack with (these will be applied by applyCorruptionToProperties)
+      // Just restore everything - the corruption will stack correctly
+      item.properties[key] = value;
+    }
   }
 
-  // Restore corruption
+  // Restore corruption metadata (for UI display and styling)
   if (savedState.corruption && window.itemCorruptions) {
-    // CRITICAL FIX: Only restore if corruption matches this item
+    // CRITICAL FIX: Restore metadata and styling tracking, but don't re-apply to properties
+    // The corruption is already baked into savedState.properties
     if (savedState.corruption.itemName === itemName) {
       window.itemCorruptions[dropdownId] = savedState.corruption;
-      if (savedState.corruption.text && typeof applyCorruptionToProperties === 'function') {
-        applyCorruptionToProperties(itemName, savedState.corruption.text, dropdownId);
+
+      // Restore corruptedProperties tracking for red styling
+      if (savedState.corruptedProps && savedState.corruptedProps.length > 0) {
+        // New format: corruptedProps saved, just restore them
+        // Don't re-apply corruption - properties already have it
+        if (!window.corruptedProperties) {
+          window.corruptedProperties = {};
+        }
+        window.corruptedProperties[dropdownId] = new Set(savedState.corruptedProps);
+      }
+
+      // Restore original properties for corruption removal/replacement
+      if (savedState.originalProperties) {
+        if (!window.originalItemProperties) {
+          window.originalItemProperties = {};
+        }
+        window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(savedState.originalProperties));
       }
     }
   }

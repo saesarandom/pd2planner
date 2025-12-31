@@ -140,6 +140,8 @@ function loadSingleCharacter(data, silent = false) {
             if (window.unifiedSocketSystem) {
                 window.unifiedSocketSystem.currentLevel = parseInt(lvlInput.value) || 1;
             }
+            // CRITICAL: Trigger input event so skill system updates
+            lvlInput.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
         // 3. Set Stats
@@ -158,7 +160,13 @@ function loadSingleCharacter(data, silent = false) {
         const modeDropdown = document.querySelector('.modedropdown');
         if (modeDropdown && data.mode) modeDropdown.value = data.mode;
 
-        // 5. Restore Item States (corruptions, sockets, variable stats) -> do this BEFORE loading items
+        // 5. CRITICAL: Clear item cache FIRST to prevent double-application of corruptions
+        // Do NOT clear corruptedProperties as it's needed for styling
+        if (window.dropdownItemCache) {
+            window.dropdownItemCache = {};
+        }
+
+        // 6. Restore Item States (corruptions, sockets, variable stats) -> do this BEFORE loading items
         if (data.itemStates) {
             window.itemStates = JSON.parse(JSON.stringify(data.itemStates));
         }
@@ -166,7 +174,7 @@ function loadSingleCharacter(data, silent = false) {
             window.itemCorruptions = JSON.parse(JSON.stringify(data.corruptions.data));
         }
 
-        // 6. Set Equipment
+        // 7. Set Equipment
         const equipmentMap = {
             weapon: 'weapons-dropdown', helm: 'helms-dropdown', armor: 'armors-dropdown', shield: 'offs-dropdown',
             gloves: 'gloves-dropdown', belt: 'belts-dropdown', boots: 'boots-dropdown',
@@ -187,10 +195,7 @@ function loadSingleCharacter(data, silent = false) {
             }
         }
 
-        // Clear the item cache so calculateAllStats reads fresh item data with restored properties
-        if (window.dropdownItemCache) {
-            window.dropdownItemCache = {};
-        }
+
 
         // NOTE: We don't call updateAllItemDisplays here - we'll do it in the setTimeout
         // after charms are loaded to ensure everything is ready
@@ -206,16 +211,8 @@ function loadSingleCharacter(data, silent = false) {
             window.unifiedSocketSystem.importSocketData(data.sockets.data);
         }
 
-        // 8. Load Skills
-        if (data.skills) {
-            for (const [skillId, value] of Object.entries(data.skills)) {
-                const input = document.getElementById(skillId);
-                if (input) {
-                    input.value = value;
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                }
-            }
-        }
+        // 8. Load Skills - DELAYED to ensure skill tree is rendered
+        // Skills are loaded in the setTimeout below after everything else is ready
 
         // 9. Recalculate everything AFTER charms are loaded
         // Small delay to ensure DOM updates from equipment/charm loading are complete
@@ -226,6 +223,33 @@ function loadSingleCharacter(data, silent = false) {
                 window.unifiedSocketSystem.updateAllItemDisplays(); // Refresh item displays
                 window.unifiedSocketSystem.calculateAllStats();      // Calculate equipment + charm stats
                 window.unifiedSocketSystem.updateStatsDisplay();     // Update stat displays
+            }
+
+            // Load Skills - NOW that skill tree is rendered
+            // Use retry logic to handle prerequisite dependencies
+            if (data.skills) {
+                const maxRetries = 3;
+                let remainingSkills = { ...data.skills };
+
+                for (let retry = 0; retry < maxRetries && Object.keys(remainingSkills).length > 0; retry++) {
+                    const failedSkills = {};
+
+                    for (const [skillId, value] of Object.entries(remainingSkills)) {
+                        const input = document.getElementById(skillId);
+                        if (input) {
+                            const oldValue = input.value;
+                            input.value = value;
+                            input.dispatchEvent(new Event('input', { bubbles: true }));
+
+                            // Check if skill was actually set (might fail due to prerequisites)
+                            if (parseInt(input.value) !== parseInt(value)) {
+                                failedSkills[skillId] = value;
+                            }
+                        }
+                    }
+
+                    remainingSkills = failedSkills;
+                }
             }
 
             // Skill selection
