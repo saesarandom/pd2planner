@@ -169,6 +169,29 @@ function loadSingleCharacter(data, silent = false) {
         // 6. Restore Item States (corruptions, sockets, variable stats) -> do this BEFORE loading items
         if (data.itemStates) {
             window.itemStates = JSON.parse(JSON.stringify(data.itemStates));
+
+            // CRITICAL FIX: Also populate main.js internal trackers to prevent reset to max stats
+            if (!window.itemBaseProperties) window.itemBaseProperties = {};
+            if (!window.originalItemProperties) window.originalItemProperties = {};
+
+            for (const [key, state] of Object.entries(data.itemStates)) {
+                // key is dropdownId_itemName
+                // CRITICAL FIX: Use originalProperties (uncorrupted) if available
+                // This prevents double-stacking when main.js re-applies corruption
+                if (state.originalProperties) {
+                    window.itemBaseProperties[key] = JSON.parse(JSON.stringify(state.originalProperties));
+                } else if (state.properties) {
+                    window.itemBaseProperties[key] = JSON.parse(JSON.stringify(state.properties));
+                }
+
+                // Get item name from key (everything after the first underscore)
+                const firstUnderscore = key.indexOf('_');
+                const itemName = firstUnderscore !== -1 ? key.substring(firstUnderscore + 1) : key;
+
+                if (state.originalProperties) {
+                    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(state.originalProperties));
+                }
+            }
         }
         if (data.corruptions?.data) {
             window.itemCorruptions = JSON.parse(JSON.stringify(data.corruptions.data));
@@ -192,6 +215,8 @@ function loadSingleCharacter(data, silent = false) {
                 if (window.restoreItemState) {
                     window.restoreItemState(id, data.equipment[slot], slot.replace('merc', '').toLowerCase());
                 }
+                // Trigger change event to sync UI in main.js
+                dropdown.dispatchEvent(new Event('change', { bubbles: true }));
             }
         }
 

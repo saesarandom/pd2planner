@@ -1019,17 +1019,14 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
   function addStatToProp(key, value) {
     if (!item.properties) return;
 
-    // CRITICAL FIX: Track that this property was corrupted
-    // Use slot-specific key to prevent cross-contamination between player and mercenary
-    if (!window.corruptedProperties) {
-      window.corruptedProperties = {};
+    // Track that this property was corrupted for red styling
+    if (!window.corruptedProperties) window.corruptedProperties = {};
+    if (dropdownId) {
+      if (!window.corruptedProperties[dropdownId]) {
+        window.corruptedProperties[dropdownId] = new Set();
+      }
+      window.corruptedProperties[dropdownId].add(key);
     }
-    // Use dropdownId as primary key for robustness (avoids name mismatches)
-    const trackingKey = dropdownId || itemName;
-    if (!window.corruptedProperties[trackingKey]) {
-      window.corruptedProperties[trackingKey] = new Set();
-    }
-    window.corruptedProperties[trackingKey].add(key);
 
     // If property doesn't exist, just set it
     if (item.properties[key] === undefined) {
@@ -1278,63 +1275,56 @@ function applyCorruptionToItem(corruptionText) {
     }
   }
 
-  // Store original description if not already stored
+  // 1. Store original description if not already stored
   if (!window.originalItemDescriptions[itemName]) {
     let description = item.description;
-
-    // For dynamic items without a static description, generate it
-    if (!description) {
+    if (!description && typeof window.generateItemDescription === 'function') {
       description = window.generateItemDescription(itemName, item, currentCorruptionSlot);
     }
-
     window.originalItemDescriptions[itemName] = description;
   }
 
-  // Store original properties if not already stored
-  if (!window.originalItemProperties) {
-    window.originalItemProperties = {};
-  }
-  if (!window.originalItemProperties[itemName]) {
-    // Deep clone the properties object to preserve originals
+  // 2. Determine the best source for "Clean" properties (Original Item + User Rolls)
+  const basePropertiesSource = (window.itemBaseProperties && window.itemBaseProperties[cacheKey])
+    || (window.originalItemProperties && window.originalItemProperties[itemName]);
+
+  // 3. Store original properties if not already stored
+  if (!window.originalItemProperties) window.originalItemProperties = {};
+  if (basePropertiesSource && !window.originalItemProperties[itemName]) {
+    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(basePropertiesSource));
+  } else if (!window.originalItemProperties[itemName]) {
     window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(item.properties || {}));
-  } else {
-    // CRITICAL FIX: Reset properties to original state before applying new corruption
-    // BUT preserve user-modified .current values for variable stats
-    if (item.properties) {
-      // Save current user-modified values (but NOT corrupted values)
-      const userModifiedValues = {};
+  }
 
-      // CRITICAL FIX: Use the same tracking key as applyCorruptionToProperties
-      const trackingKey = currentCorruptionSlot || itemName;
-      const oldCorruptedProps = window.corruptedProperties && window.corruptedProperties[trackingKey]
-        ? window.corruptedProperties[trackingKey]
-        : new Set();
+  // 4. Reset properties to original state before applying new corruption
+  if (item.properties) {
+    const userModifiedValues = {};
+    const oldCorruptedProps = window.corruptedProperties && window.corruptedProperties[currentCorruptionSlot]
+      ? window.corruptedProperties[currentCorruptionSlot]
+      : new Set();
 
-      for (const key in item.properties) {
-        const prop = item.properties[key];
-        // Only preserve if it's a variable stat AND it was NOT corrupted
-        if (typeof prop === 'object' && prop !== null && 'current' in prop && !oldCorruptedProps.has(key)) {
-          userModifiedValues[key] = prop.current;
-        }
-      }
-
-      // Restore from original
-      item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[itemName]));
-
-      // Re-apply user-modified current values (excluding old corrupted values)
-      for (const key in userModifiedValues) {
-        if (item.properties[key] && typeof item.properties[key] === 'object') {
-          item.properties[key].current = userModifiedValues[key];
-        }
+    for (const key in item.properties) {
+      const prop = item.properties[key];
+      if (typeof prop === 'object' && prop !== null && 'current' in prop && !oldCorruptedProps.has(key)) {
+        userModifiedValues[key] = prop.current;
       }
     }
 
-    // CRITICAL FIX: Clear old corrupted properties tracking using the correct key
-    // Use dropdownId (currentCorruptionSlot) to match the tracking system
-    const trackingKey = currentCorruptionSlot || itemName;
-    if (window.corruptedProperties && window.corruptedProperties[trackingKey]) {
-      delete window.corruptedProperties[trackingKey];
+    const cleanProps = basePropertiesSource || window.originalItemProperties[itemName];
+    item.properties = JSON.parse(JSON.stringify(cleanProps));
+
+    for (const key in userModifiedValues) {
+      if (item.properties[key] && typeof item.properties[key] === 'object') {
+        item.properties[key].current = userModifiedValues[key];
+      }
     }
+  }
+
+  // CRITICAL FIX: Clear old corrupted properties tracking using the correct key
+  // Use dropdownId (currentCorruptionSlot) to match the tracking system
+  const trackingKey = currentCorruptionSlot || itemName;
+  if (window.corruptedProperties && window.corruptedProperties[trackingKey]) {
+    delete window.corruptedProperties[trackingKey];
   }
 
   // Store corruption info

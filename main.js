@@ -845,23 +845,9 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
   let isModified = false;
   let corruptionBonus = 0;
 
-  // CRITICAL FIX: Only mark as modified if this property was ACTUALLY corrupted
-  // Check the corruptedProperties set using slot-specific key
-  const trackingKey = dropdownId || itemName;
-
-
-  console.log('[formatVariableStat] Checking:', {
-    propKey,
-    itemName,
-    dropdownId,
-    trackingKey,
-    hasEntry: window.corruptedProperties && window.corruptedProperties[trackingKey],
-    isModified: window.corruptedProperties && window.corruptedProperties[trackingKey] && window.corruptedProperties[trackingKey].has(propKey)
-  });
-
-
-  if (window.corruptedProperties && window.corruptedProperties[trackingKey]) {
-    isModified = window.corruptedProperties[trackingKey].has(propKey);
+  // Check the corruptedProperties set using slot-specific ID
+  if (window.corruptedProperties && window.corruptedProperties[dropdownId]) {
+    isModified = window.corruptedProperties[dropdownId].has(propKey);
 
     // If corrupted, calculate the corruption bonus
     if (isModified && window.originalItemProperties && window.originalItemProperties[itemName]) {
@@ -1306,31 +1292,10 @@ window.updateItemInfo = function updateItemInfo(event) {
     // 3. RESTORE from appropriate state
     // CRITICAL FIX: Skip restoration if we're currently applying corruption (properties already set)
     if (!window.isApplyingCorruption) {
-      if (hasSavedCorruption && window.originalItemProperties && window.originalItemProperties[selectedItemName]) {
-        // CRITICAL FIX: If item has corruption, restore from ORIGINAL (clean) state
-        // This prevents double-stacking corruption when switching items
-
-        // Preserve ALL user-modified .current values (including corrupted properties)
-        // We'll restore from clean state, then re-apply corruption, then restore user values
-        const userModifiedValues = {};
-
-        if (item.properties) {
-          for (const key in item.properties) {
-            const prop = item.properties[key];
-            // Save ALL current values for variable stats
-            if (typeof prop === 'object' && prop !== null && 'current' in prop) {
-              userModifiedValues[key] = prop.current;
-            }
-          }
-        }
-
-        // Restore from original (clean) state
-        item.properties = JSON.parse(JSON.stringify(window.originalItemProperties[selectedItemName]));
-
-        // Store user values to re-apply AFTER corruption is applied
-        // This ensures user's manual changes persist even for corrupted properties
-        if (!window.pendingUserValues) window.pendingUserValues = {};
-        window.pendingUserValues[selectedItemName] = userModifiedValues;
+      if (hasSavedCorruption && window.itemBaseProperties[uniqueKey]) {
+        // CRITICAL FIX: If item has corruption, restore from our saved BASE state (with user rolls)
+        // This ensures variable stats (like ED) don't reset to max when loading a corrupted item
+        item.properties = JSON.parse(JSON.stringify(window.itemBaseProperties[uniqueKey]));
       } else if (window.itemBaseProperties[uniqueKey]) {
         // No corruption: restore from Base State (user's specific rolls)
         item.properties = JSON.parse(JSON.stringify(window.itemBaseProperties[uniqueKey]));
@@ -1342,12 +1307,6 @@ window.updateItemInfo = function updateItemInfo(event) {
     // But still allow the rest of updateItemInfo to run for display refresh
     if (window.itemCorruptions && window.itemCorruptions[dropdown.id]) {
       const corruption = window.itemCorruptions[dropdown.id];
-      console.log('=== RESTORATION DEBUG ===');
-      console.log('dropdown.id:', dropdown.id);
-      console.log('selectedItemName:', selectedItemName);
-      console.log('corruption.itemName:', corruption.itemName);
-      console.log('corruption.text:', corruption.text);
-      console.log('Match?', corruption.itemName === selectedItemName);
 
       // Double check it matches current item
       if (corruption.itemName === selectedItemName && corruption.text) {

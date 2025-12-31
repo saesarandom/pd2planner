@@ -66,55 +66,45 @@ window.saveItemState = function (dropdownId, itemName, section) {
 window.restoreItemState = function (dropdownId, itemName, section) {
   if (!itemName) return;
 
+  // CRITICAL FIX: Get or create slot-specific item instance in cache
+  const cacheKey = `${dropdownId}_${itemName}`;
+  if (!window.dropdownItemCache) window.dropdownItemCache = {};
+
+  let item = window.dropdownItemCache[cacheKey];
+  if (!item) {
+    const sourceItem = window.getItemData(itemName);
+    if (!sourceItem) return;
+    item = JSON.parse(JSON.stringify(sourceItem));
+    window.dropdownItemCache[cacheKey] = item;
+  }
+
   const stateKey = `${dropdownId}_${itemName}`;
   const savedState = window.itemStates[stateKey];
   if (!savedState) return;
 
-  const item = window.getItemData(itemName);
-  if (!item) return;
-
   // Restore properties (including ethereal and variable stats)
-  // BUT: Don't restore if there's a corruption, because we'll apply it fresh
-  if (savedState.properties && !savedState.corruption) {
+  // We prioritize originalProperties (base + user rolls) if available
+  if (savedState.originalProperties) {
+    item.properties = JSON.parse(JSON.stringify(savedState.originalProperties));
+  } else if (savedState.properties) {
     item.properties = JSON.parse(JSON.stringify(savedState.properties));
-  } else if (savedState.properties && savedState.corruption) {
-    // If there's a corruption, restore properties but let corruption stack on top
-    // Copy all properties from saved state
-    if (!item.properties) item.properties = {};
-
-    // Restore all variable stats (ED, defense, etc.) and ethereal
-    for (const [key, value] of Object.entries(savedState.properties)) {
-      // Skip properties that corruption might stack with (these will be applied by applyCorruptionToProperties)
-      // Just restore everything - the corruption will stack correctly
-      item.properties[key] = value;
-    }
   }
 
-  // Restore corruption metadata (for UI display and styling)
+  // Restore corruption metadata - main.js will use this to re-apply styling
   if (savedState.corruption && window.itemCorruptions) {
-    // CRITICAL FIX: Restore metadata and styling tracking, but don't re-apply to properties
-    // The corruption is already baked into savedState.properties
     if (savedState.corruption.itemName === itemName) {
       window.itemCorruptions[dropdownId] = savedState.corruption;
 
-      // Restore corruptedProperties tracking for red styling
-      if (savedState.corruptedProps && savedState.corruptedProps.length > 0) {
-        // New format: corruptedProps saved, just restore them
-        // Don't re-apply corruption - properties already have it
-        if (!window.corruptedProperties) {
-          window.corruptedProperties = {};
-        }
-        window.corruptedProperties[dropdownId] = new Set(savedState.corruptedProps);
-      }
-
-      // Restore original properties for corruption removal/replacement
-      if (savedState.originalProperties) {
-        if (!window.originalItemProperties) {
-          window.originalItemProperties = {};
-        }
-        window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(savedState.originalProperties));
-      }
+      // We don't call applyCorruptionToProperties here anymore!
+      // Instead, we let the 'change' event in main.js handle it normally
+      // after the item cache is primed.
     }
+  }
+
+  // Ensure original properties global tracking is set for removal/replacement logic
+  if (savedState.originalProperties) {
+    if (!window.originalItemProperties) window.originalItemProperties = {};
+    window.originalItemProperties[itemName] = JSON.parse(JSON.stringify(savedState.originalProperties));
   }
 
   // Update ethereal button state
