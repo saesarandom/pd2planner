@@ -813,9 +813,9 @@ class CharacterManager {
     const base = parseInt(document.getElementById(statId)?.value) || 0;
     const bonus = total - base;
 
-    if (bonus > 0) {
+    if (bonus !== 0) {
       totalDiv.textContent = ` ${total}`;
-      totalDiv.style.color = '#00ff00';
+      totalDiv.style.color = bonus > 0 ? '#00ff00' : '#ff5555';
     } else {
       totalDiv.textContent = '';
     }

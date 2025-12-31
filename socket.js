@@ -3755,23 +3755,23 @@ class UnifiedSocketSystem {
         return;
       }
 
-      const strMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(?:Strength|STR)/i);
+      const strMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(?:Strength|STR)/i);
       if (strMatch) { this.stats.strength += parseInt(strMatch[1]); return; }
 
-      const dexMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(?:Dexterity|DEX)/i);
+      const dexMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(?:Dexterity|DEX)/i);
       if (dexMatch) { this.stats.dexterity += parseInt(dexMatch[1]); return; }
 
-      const vitMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(?:Vitality|VIT)/i);
+      const vitMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(?:Vitality|VIT)/i);
       if (vitMatch) { this.stats.vitality += parseInt(vitMatch[1]); return; }
 
-      const enrMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(?:Energy|ENR)/i);
+      const enrMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(?:Energy|ENR)/i);
       if (enrMatch) { this.stats.energy += parseInt(enrMatch[1]); return; }
 
       // Life and Mana
-      const lifeMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Life/i);
+      const lifeMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?Life/i);
       if (lifeMatch) { this.stats.life += parseInt(lifeMatch[1]); return; }
 
-      const manaMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Mana/i);
+      const manaMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?Mana/i);
       if (manaMatch) { this.stats.mana += parseInt(manaMatch[1]); return; }
 
       // Light Radius
@@ -3783,7 +3783,7 @@ class UnifiedSocketSystem {
       if (allSkillsMatch) { this.stats.allSkills += parseInt(allSkillsMatch[1]); return; }
 
       // Resistances
-      const allResMatch = cleanLine.match(/All\s+Resistances?\s+(?:\+)?(\d+)%?/i);
+      const allResMatch = cleanLine.match(/All\s+Resistances?\s+([+-]?\d+)%?/i);
       if (allResMatch) {
         const value = parseInt(allResMatch[1]);
         this.stats.allResistances += value;
@@ -3795,19 +3795,19 @@ class UnifiedSocketSystem {
         return;
       }
 
-      const fireResMatch = cleanLine.match(/Fire\s+Resist\s+(?:\+)?(\d+)%?/i);
+      const fireResMatch = cleanLine.match(/Fire\s+Resist\s+([+-]?\d+)%?/i);
       if (fireResMatch) { this.stats.fireResist += parseInt(fireResMatch[1]); return; }
 
-      const coldResMatch = cleanLine.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i);
+      const coldResMatch = cleanLine.match(/Cold\s+Resist\s+([+-]?\d+)%?/i);
       if (coldResMatch) { this.stats.coldResist += parseInt(coldResMatch[1]); return; }
 
-      const lightResMatch = cleanLine.match(/Lightning\s+Resist\s+(?:\+)?(\d+)%?/i);
+      const lightResMatch = cleanLine.match(/Lightning\s+Resist\s+([+-]?\d+)%?/i);
       if (lightResMatch) { this.stats.lightResist += parseInt(lightResMatch[1]); return; }
 
-      const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+(?:\+)?(\d+)%?/i);
+      const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+([+-]?\d+)%?/i);
       if (poisonResMatch) { this.stats.poisonResist += parseInt(poisonResMatch[1]); return; }
 
-      const curseResMatch = cleanLine.match(/Curse\s+Resist(?:ance)?\s+(?:\+)?(\d+)%?/i);
+      const curseResMatch = cleanLine.match(/Curse\s+Resist(?:ance)?\s+([+-]?\d+)%?/i);
       if (curseResMatch) { this.stats.curseResist += parseInt(curseResMatch[1]); return; }
 
       // Life Steal
@@ -4053,7 +4053,7 @@ class UnifiedSocketSystem {
       }
 
       // Resistances: Fire Resist +30%, Lightning Resist +30%, Curse Resistance +10%
-      const resMatch = cleanLine.match(/(Fire|Cold|Lightning|Poison|Curse)\s+Resist(?:ance)?\s+\+?(\d+)%?/i);
+      const resMatch = cleanLine.match(/(Fire|Cold|Lightning|Poison|Curse)\s+Resist(?:ance)?\s+([+-]?\d+)%?/i);
       if (resMatch) {
         const type = resMatch[1].toLowerCase();
         const value = parseInt(resMatch[2]);
@@ -4062,7 +4062,7 @@ class UnifiedSocketSystem {
       }
 
       // All Resistances +15%
-      const allResMatch = cleanLine.match(/All\s+Resistances\s+\+?(\d+)%?/i);
+      const allResMatch = cleanLine.match(/All\s+Resistances\s+([+-]?\d+)%?/i);
       if (allResMatch) {
         const value = parseInt(allResMatch[1]);
         ['fire', 'cold', 'lightning', 'poison'].forEach(type => {
@@ -4081,7 +4081,7 @@ class UnifiedSocketSystem {
       }
 
       // Attributes: +10 to Strength, +15 Dexterity, 20 to Vitality
-      const attrMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?(Strength|Dexterity|Vitality|Energy)/i);
+      const attrMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(Strength|Dexterity|Vitality|Energy)/i);
       if (attrMatch) {
         const value = parseInt(attrMatch[1]);
         const attr = attrMatch[2].toLowerCase();
@@ -4090,7 +4090,7 @@ class UnifiedSocketSystem {
       }
 
       // Attack Rating: +50 to Attack Rating, +120 Attack Rating
-      const arMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Attack\s+Rating/i);
+      const arMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?Attack\s+Rating/i);
       if (arMatch) {
         const value = parseInt(arMatch[1]);
         this.addToStatsMap(statsMap, 'attack_rating', { value });

@@ -60,7 +60,19 @@ class CharmInventory {
           { label: '+{value}% Better Chance of Getting Magic Items', key: 'mf', min: 20, max: 40, value: 20 },
           { label: 'Reduces All Vendor Prices {value}%', key: 'vendorprice', min: 10, max: 15, value: 10 }
         ]
-      }
+      },
+      'corrupted-annihilus': {
+        name: 'Annihilus',
+        type: 'small-charm',
+        imagePath: 'img/corrannihilus.png',
+        stats: [
+          { label: '+2 to All Skills', key: 'skills', fixed: 2 },
+          { label: '+{value} to Vitality', key: 'vitality', min: 30, max: 60, value: 30 },
+          { label: '+{value} to Energy', key: 'energy', min: 10, max: 20, value: 10 },
+          { label: 'All Resistances +{value}%', key: 'allres', min: 10, max: 20, value: 10 },
+          { label: '+{value}% to Experience Gained', key: 'expgain', min: 5, max: 10, value: 5 }
+        ]
+      },
     };
 
     this.occupiedSlots = new Set(); // Track occupied slots
@@ -225,8 +237,9 @@ class CharmInventory {
           <h4 style="color: rgb(164, 19, 19); margin: 10px 0;">Unique Charms:</h4>
           <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px;">
             <button data-unique="annihilus" class="unique-charm-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Annihilus</span> (Small)</button>
+            <button data-unique="corrupted-annihilus" class="unique-charm-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Annihilus (Corrupted)</span> (Small)</button>
             <button data-unique="hellfire-torch" class="unique-charm-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Hellfire Torch</span> (Large)</button>
-            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Gheed's Fortune</span> (Small)</button>
+            <button data-unique="gheeds-fortune" class="unique-charm-btn" style="cursor: pointer !important; padding: 10px; background: rgba(164, 19, 19, 0.3); border: 1px solid rgb(164, 19, 19); color: #FFD700; border-radius: 3px; transition: all 0.2s ease; font-family: overlock sc; font-size: 14px;" onmouseover="this.style.background='rgba(164, 19, 19, 0.6)'; this.style.cursor='pointer';" onmouseout="this.style.background='rgba(164, 19, 19, 0.3)'; this.style.cursor='pointer';">Gheed's Fortune</span> (Grand)</button>
           </div>
           <div style="text-align: center; color: #888; font-size: 12px; margin: 15px 0; border-top: 1px solid rgb(80, 80, 80); border-bottom: 1px solid rgb(80, 80, 80); padding: 10px 0;">Regular Charms</div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -391,9 +404,9 @@ class CharmInventory {
     const uniqueCharmNames = {
       'annihilus': "Annihilus",
       'hellfire-torch': "Hellfire Torch",
-      'gheeds-fortune': "Gheed's Fortune"
+      'gheeds-fortune': "Gheed's Fortune",
+      'corrupted-annihilus': "Annihilus"
     };
-
     const container = document.querySelector('.inventorycontainer');
     if (!container) return;
 
