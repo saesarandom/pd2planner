@@ -143,6 +143,11 @@ window.loadCharacterFromData = function (data, silent = false) {
             // NOTE: restoreAllCharms now calls onCharmChange internally, no need to call it again
         }
 
+        // 7b. Load Sockets
+        if (data.sockets && data.sockets.data && window.unifiedSocketSystem?.importSocketData) {
+            window.unifiedSocketSystem.importSocketData(data.sockets.data);
+        }
+
         // 8. Load Skills
         if (data.skills) {
             for (const [skillId, value] of Object.entries(data.skills)) {

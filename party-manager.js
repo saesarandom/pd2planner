@@ -25,11 +25,17 @@ class PartyManager {
         partyBar.className = 'party-bar';
         partyBar.id = 'party-bar';
 
-        const title = document.createElement('div');
-        title.className = 'party-bar-title';
-        title.textContent = 'PARTY SLOTS';
-        partyBar.appendChild(title);
+        // Settings button on the left
+        const settingsBtn = document.createElement('button');
+        settingsBtn.className = 'party-settings-btn';
+        const settingsImg = document.createElement('img');
+        settingsImg.src = './img/settings.png';
+        settingsImg.alt = 'Settings';
+        settingsBtn.appendChild(settingsImg);
+        // settingsBtn.onclick = () => { /* Open settings */ }; 
+        partyBar.appendChild(settingsBtn);
 
+        // Buttons container
         const buttonsContainer = document.createElement('div');
         buttonsContainer.className = 'party-buttons';
 

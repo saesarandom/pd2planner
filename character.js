@@ -734,12 +734,13 @@ class CharacterManager {
   getCharmBonuses() {
     const bonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
 
-    if (window.statsCalculator && window.statsCalculator.stats) {
-      const stats = window.statsCalculator.stats;
-      bonuses.str = stats.str || 0;
-      bonuses.dex = stats.dex || 0;
-      bonuses.vit = stats.vit || 0;
-      bonuses.enr = stats.enr || 0;
+    // Call the global getCharmBonuses from inventory.js
+    if (typeof window.getCharmBonuses === 'function') {
+      const charmBonuses = window.getCharmBonuses();
+      bonuses.str = charmBonuses.str || 0;
+      bonuses.dex = charmBonuses.dex || 0;
+      bonuses.vit = charmBonuses.vit || 0;
+      bonuses.enr = charmBonuses.enr || 0;
     }
 
     return bonuses;

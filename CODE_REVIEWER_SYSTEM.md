@@ -301,4 +301,13 @@ Socket.js line 4576 calls window.skillSystem.updateSkillBonuses(this.stats.allSk
 Skills show the green bonus number next to skill levels! ✅
 No existing functionality was changed - I only added new code that follows the same pattern as Hellfire Torch!
 
+737 liny     // Call the global getCharmBonuses from inventory.js
+    if (typeof window.getCharmBonuses === 'function') {
+      const charmBonuses = window.getCharmBonuses();
+      bonuses.str = charmBonuses.str || 0;
+      bonuses.dex = charmBonuses.dex || 0;
+      bonuses.vit = charmBonuses.vit || 0;
+      bonuses.enr = charmBonuses.enr || 0;
+    }
+
 ---
