@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Build - PD2 Planner</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="auth-styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Overlock SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Overlock SC:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/png" href="/icon.png">
     <style>
         .build-viewer-header {
@@ -123,6 +125,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="build-viewer-header">
         <h1 id="build-title">Loading build...</h1>
@@ -194,14 +197,35 @@
                     return;
                 }
 
+                // For shared URLs, extract only P1 if it's a party build
+                let dataToLoad = build.character_data;
+                let displayClass = '-';
+                let displayLevel = '-';
+
+                if (build.character_data.isPartyBuild && build.character_data.party && Array.isArray(build.character_data.party)) {
+                    const p1Data = build.character_data.party[0];
+
+                    if (p1Data && p1Data.character) {
+                        dataToLoad = p1Data;
+                        displayClass = p1Data.character.class || '-';
+                        displayLevel = p1Data.character.level || '-';
+                    } else {
+                        showError('This build has no character in P1 slot');
+                        return;
+                    }
+                } else {
+                    displayClass = build.character_data.character?.class || '-';
+                    displayLevel = build.character_data.character?.level || '-';
+                }
+
                 // Update header
                 document.getElementById('build-title').textContent = build.character_name;
 
                 // Update stats
                 document.getElementById('build-views').textContent = build.views || 0;
                 document.getElementById('build-created').textContent = new Date(build.created_at).toLocaleDateString();
-                document.getElementById('build-class').textContent = build.character_data.character?.class || '-';
-                document.getElementById('build-level').textContent = build.character_data.character?.level || '-';
+                document.getElementById('build-class').textContent = displayClass;
+                document.getElementById('build-level').textContent = displayLevel;
 
                 // Hide loading, show stats
                 document.getElementById('build-loading').style.display = 'none';
@@ -209,7 +233,7 @@
 
                 // Load the character data
                 if (window.loadCharacterFromData) {
-                    window.loadCharacterFromData(build.character_data);
+                    window.loadCharacterFromData(dataToLoad);
                 }
 
                 // Update page title
@@ -243,4 +267,5 @@
         });
     </script>
 </body>
+
 </html>

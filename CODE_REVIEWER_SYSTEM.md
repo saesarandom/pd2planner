@@ -310,4 +310,58 @@ No existing functionality was changed - I only added new code that follows the s
       bonuses.enr = charmBonuses.enr || 0;
     }
 
+only).
+
+## How It Works
+
+### Saving a Build
+- Click "Save Build" button
+- All 8 party slots are saved together
+- Data structure: `{ isPartyBuild: true, activeIndex: 0, party: [P1, P2, ..., P8] }`
+
+### Loading a Build (from "My Builds")
+- Click "Load" on any saved build
+- System detects if it's a party build or single character
+- **Party Build**: Loads all 8 slots, switches to the active index
+- **Single Character**: Loads into current active slot
+
+### Sharing a Build (via URL)
+- Click "Share" to copy URL
+- URL format: `https://pd2planner.net/?build=BUILD_ID`
+- When someone visits the URL: **Only P1 is loaded** (not all 8 players)
+- This keeps shared builds simple and focused
+
+## Files Modified
+
+1. **main.js** - `saveCurrentBuild()`
+   - Now saves all 8 party members from `partyManager.partyData`
+   - Creates party build object with `isPartyBuild` flag
+
+2. **main.js** - `loadBuildFromURL()`
+   - Extracts P1 only from party builds when loading from shared URL
+   - Single character builds work as before
+
+3. **character-data.js** - `loadCharacterFromData()`
+   - Detects party builds vs single character builds
+   - Loads all 8 slots for party builds
+   - Loads into active slot for single character builds
+
+## User Experience
+
+### As a Build Creator:
+1. Build your 8-player party
+2. Click "Save Build"
+3. All 8 characters are saved
+4. Click "Share" to get a URL that shows P1 only
+
+### As a Build Loader:
+- **From "My Builds"**: Get all 8 characters back
+- **From Shared URL**: Get P1 only (clean, simple view)
+
+## Backward Compatibility
+
+Old builds (single character) still work perfectly:
+- They load into the current active slot
+- No breaking changes
+
 ---

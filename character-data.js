@@ -58,6 +58,64 @@ window.exportCharacterData = function () {
 };
 
 window.loadCharacterFromData = function (data, silent = false) {
+    if (!data) return;
+
+    try {
+        window._isLoadingCharacterData = true;
+
+        // Check if this is a party build (new format) or single character (old format/shared)
+        if (data.isPartyBuild && data.party && Array.isArray(data.party)) {
+
+            if (window.partyManager) {
+                // Load all party data
+                window.partyManager.partyData = data.party;
+
+                // Set active index (default to 0 if not specified)
+                const targetIndex = data.activeIndex || 0;
+                window.partyManager.activeIndex = targetIndex;
+
+                // Update UI to show correct active button
+                window.partyManager.updateUI();
+
+                // Load the active player's data
+                const activePlayerData = data.party[targetIndex];
+                if (activePlayerData) {
+                    loadSingleCharacter(activePlayerData, silent);
+                } else {
+                    // No data for this slot, reset to default
+                    window.partyManager.resetToDefault();
+                }
+            } else {
+                console.warn('PartyManager not available, loading first character only');
+                loadSingleCharacter(data.party[0] || {}, silent);
+            }
+        } else {
+            // Loading a single character (old format or shared link)
+            // This loads into the currently active slot
+            loadSingleCharacter(data, silent);
+
+            // If partyManager exists, update its current slot
+            if (window.partyManager) {
+                window.partyManager.saveCurrentSlot();
+            }
+        }
+
+        window._isLoadingCharacterData = false;
+
+        if (!silent && window.notificationSystem) {
+            window.notificationSystem.success('Build Loaded', 'Character build successfully imported.');
+        }
+    } catch (e) {
+        console.error('Load error:', e);
+        window._isLoadingCharacterData = false;
+        if (window.notificationSystem) {
+            window.notificationSystem.error('Load Failed', 'Error importing build.');
+        }
+    }
+};
+
+// Helper function to load a single character's data into the current UI
+function loadSingleCharacter(data, silent = false) {
     if (!data || !data.character) return;
     try {
         window._isLoadingCharacterData = true;
@@ -178,11 +236,9 @@ window.loadCharacterFromData = function (data, silent = false) {
 
             window._isLoadingCharacterData = false;
         }, 10);
-
-        if (!silent && window.notificationSystem) window.notificationSystem.success('Build Loaded', 'Character build successfully imported.');
     } catch (e) {
-        console.error('Load error:', e);
+        console.error('Load error in loadSingleCharacter:', e);
         window._isLoadingCharacterData = false;
-        if (window.notificationSystem) window.notificationSystem.error('Load Failed', 'Error importing build.');
+        throw e; // Re-throw to be caught by parent function
     }
 };

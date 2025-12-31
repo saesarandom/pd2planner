@@ -1566,6 +1566,7 @@ function setupCritListeners() {
 
 /**
  * Save current build to the cloud
+ * Now saves all 8 party members
  */
 async function saveCurrentBuild() {
   if (!window.auth?.isLoggedIn()) {
@@ -1580,7 +1581,21 @@ async function saveCurrentBuild() {
   }
 
   try {
-    const characterData = window.exportCharacterData();
+    // Save current slot before exporting
+    if (window.partyManager) {
+      window.partyManager.saveCurrentSlot();
+    }
+
+    // Get all party data (8 players)
+    const partyData = window.partyManager ? window.partyManager.partyData : [];
+    const activeIndex = window.partyManager ? window.partyManager.activeIndex : 0;
+
+    // Create the full party build object
+    const characterData = {
+      isPartyBuild: true,
+      activeIndex: activeIndex,
+      party: partyData
+    };
 
     const result = await window.auth.saveCharacter(buildName.trim(), characterData);
 
@@ -2523,16 +2538,34 @@ function createSaveButton() {
 
 /**
  * Load build from URL parameter (for shared builds)
+ * Shared URLs only load P1, not the full party
  */
 async function loadBuildFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const buildId = urlParams.get('build') || urlParams.get('id');
 
+
   if (buildId && window.auth) {
     try {
       const build = await window.auth.getBuild(buildId);
+
       if (build && build.character_data) {
-        window.loadCharacterFromData(build.character_data);
+        // For shared URLs, extract only P1 if it's a party build
+        let dataToLoad = build.character_data;
+
+        if (build.character_data.isPartyBuild && build.character_data.party && Array.isArray(build.character_data.party)) {
+
+          // Extract P1 only for shared links
+          const p1Data = build.character_data.party[0];
+
+          if (p1Data && p1Data.character) {
+            dataToLoad = p1Data;
+          } else {
+            alert('This build has no character in P1 slot');
+            return;
+          }
+        }
+        window.loadCharacterFromData(dataToLoad);
         window.currentLoadedBuildId = buildId;
 
         // Show notification
@@ -2646,8 +2679,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // 9.7. Setup crafting modal handlers
   setTimeout(setupCraftingModalHandlers, 700);
 
-  // 10. Load build from URL if present
-  setTimeout(loadBuildFromURL, 1000);
+  // 10. Load build from URL if present (wait for auth to be ready)
+  setTimeout(async () => {
+    // Wait for auth to initialize
+    let attempts = 0;
+    while (!window.auth && attempts < 20) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      attempts++;
+    }
+    loadBuildFromURL();
+  }, 1000);
 
   // 11. Check login state (legacy)
   const username = localStorage.getItem('username');
