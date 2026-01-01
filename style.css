@@ -1233,6 +1233,36 @@ label {
   filter: brightness(1.1);
 }
 
+/* Build Title Display */
+.build-title-display {
+  position: fixed;
+  transform: translateX(-50%);
+  color: #ffd700;
+  font-family: 'Overlock SC', cursive;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  z-index: 99999;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  animation: titleFadeIn 0.5s ease-in-out;
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@keyframes titleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* Add padding to body so fixed bar doesn't overlap content */
 body {
   padding-bottom: 70px !important;

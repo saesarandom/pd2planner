@@ -7,6 +7,7 @@
     // Build templates
     const BUILD_TEMPLATES = {
         amazon_lightning_fury: {
+            title: 'Light. Fury',
             class: 'Amazon',
             skills: {
                 'lightningfurycontainer': 20,
@@ -34,6 +35,56 @@
                 str: 200,
                 dex: 125,
                 vit: 200,
+                enr: 15
+            }
+        },
+        amazon_decoy: {
+            title: 'Decoy',
+            class: 'Amazon',
+            skills: {
+                'innersightcontainer': 1,
+                'criticalstrikecontainer': 20,
+                'evadecontainer': 1,
+                'slowmovementcontainer': 1,
+                'piercecontainer': 1,
+                'dodgecontainer': 1,
+                'decoycontainer': 20,
+                'penetratecontainer': 1,
+                'valkyriecontainer': 20
+            },
+            activeSkill: 'decoycontainer',
+            stats: {
+                str: 150,
+                dex: 150,
+                vit: 200,
+                enr: 15
+            }
+        },
+        amazon_multishot: {
+            title: 'Multishot',
+            class: 'Amazon',
+            skills: {
+                'magicarrowcontainer': 1,
+                'firearrowcontainer': 1,
+                'coldarrowcontainer': 1,
+                'multipleshotcontainer': 20,
+                'guidedarrowcontainer': 1,
+                'strafecontainer': 20,
+                'innersightcontainer': 1,
+                'criticalstrikecontainer': 20,
+                'evadecontainer': 1,
+                'slowmovementcontainer': 1,
+                'piercecontainer': 20,
+                'dodgecontainer': 1,
+                'decoycontainer': 1,
+                'penetratecontainer': 1,
+                'valkyriecontainer': 1
+            },
+            activeSkill: 'multipleshotcontainer',
+            stats: {
+                str: 100,
+                dex: 180,
+                vit: 100,
                 enr: 15
             }
         }
@@ -110,6 +161,53 @@
         return true;
     }
 
+    // Display build title
+    function displayBuildTitle(title) {
+        console.log('Displaying build title:', title);
+
+        // Get active player index
+        const activeIndex = window.partyManager?.activeIndex || 0;
+
+        // Remove existing title for this player if present
+        const existingTitle = document.getElementById(`build-title-p${activeIndex + 1}`);
+        if (existingTitle) {
+            existingTitle.remove();
+        }
+
+        // Create new title element
+        const titleElement = document.createElement('div');
+        titleElement.id = `build-title-p${activeIndex + 1}`;
+        titleElement.className = 'build-title-display';
+        titleElement.textContent = title;
+
+        // Find the active party button to position the title directly under it
+        const activeButton = document.getElementById(`party-btn-${activeIndex}`);
+        const partyBar = document.getElementById('party-bar');
+
+        if (activeButton && partyBar) {
+            // Get button and party bar positions
+            const buttonRect = activeButton.getBoundingClientRect();
+            const partyBarRect = partyBar.getBoundingClientRect();
+
+            // Calculate bottom position: party bar height + small gap
+            const bottomOffset = window.innerHeight - partyBarRect.bottom - 14; // 5px gap above party bar
+
+            // Position title directly under the button
+            titleElement.style.left = `${buttonRect.left + (buttonRect.width / 2)}px`;
+            titleElement.style.bottom = `${bottomOffset}px`;
+
+            console.log('Title positioned at:', {
+                left: titleElement.style.left,
+                bottom: titleElement.style.bottom,
+                playerIndex: activeIndex + 1
+            });
+
+            document.body.appendChild(titleElement);
+        } else {
+            console.warn('Could not find party button or bar:', { activeButton, partyBar });
+        }
+    }
+
     // Main randomize function
     function randomizeBuild() {
         if (window._isLoadingCharacterData) return;
@@ -121,6 +219,11 @@
         const build = BUILD_TEMPLATES[randomBuildKey];
 
         console.log(`Selected build: ${randomBuildKey}`);
+
+        // Display build title
+        if (build.title) {
+            displayBuildTitle(build.title);
+        }
 
         // Set class
         const classDropdown = document.getElementById('selectClass');
@@ -220,6 +323,31 @@
             randomizeBuild();
         }
     });
+
+    // Reposition all titles on window resize
+    window.addEventListener('resize', function () {
+        const partyBar = document.getElementById('party-bar');
+        if (!partyBar) return;
+
+        const partyBarRect = partyBar.getBoundingClientRect();
+        const bottomOffset = window.innerHeight - partyBarRect.top + 5;
+
+        // Reposition all existing titles
+        for (let i = 0; i < 8; i++) {
+            const titleElement = document.getElementById(`build-title-p${i + 1}`);
+            if (titleElement) {
+                const button = document.getElementById(`party-btn-${i}`);
+                if (button) {
+                    const buttonRect = button.getBoundingClientRect();
+                    titleElement.style.left = `${buttonRect.left + (buttonRect.width / 2)}px`;
+                    titleElement.style.bottom = `${bottomOffset}px`;
+                }
+            }
+        }
+    });
+
+    // Expose displayBuildTitle globally for party manager
+    window.displayBuildTitle = displayBuildTitle;
 
     console.log('Random Build Generator loaded. Press SHIFT+R to randomize!');
 })();

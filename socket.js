@@ -4648,7 +4648,11 @@ class UnifiedSocketSystem {
 
     this.updateElement('magicfindcontainer', this.stats.magicFind);
     this.updateElement('goldfindcontainer', this.stats.goldFind);
-    this.updateElement('defensecontainer', this.stats.defense);
+
+    // Calculate total defense including dexterity bonus (totalDex / 4)
+    const dexDefenseBonus = Math.floor(totalDex / 4);
+    const totalDefense = this.stats.defense + dexDefenseBonus;
+    this.updateElement('defensecontainer', totalDefense);
 
     // Boolean stats
     this.updateElement('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');
