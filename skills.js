@@ -496,6 +496,52 @@ class SkillSystem {
         allResistances: [3, 6, 9, 12, 15, 18, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
         manaCost: [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84],
         cooldown: 1
+      },
+      magicarrowcontainer: {
+        name: "Magic Arrow",
+        type: "magic_conversion",
+        attackRating: [10, 19, 28, 37, 46, 55, 64, 73, 82, 91, 100, 109, 118, 127, 136, 145, 154, 163, 172, 181, 190, 199, 208, 217, 226, 235, 244, 253, 262, 271, 280, 289, 298, 307, 316, 325, 334, 343, 352, 361, 370, 379, 388, 397, 406, 415, 424, 433, 442, 451, 460, 469, 478, 487, 496, 505, 514, 523, 532, 541],
+        magicDamage: {
+          min: [2, 3, 5, 6, 8, 9, 11, 12, 16, 20, 24, 27, 31, 35, 39, 42, 54, 65, 76, 87, 99, 110, 132, 154, 176, 198, 220, 242, 275, 308, 341, 374, 407, 440, 473, 506, 539, 572, 605, 638, 671, 704, 737, 770, 803, 836, 869, 902, 935, 968, 1001, 1034, 1067, 1100, 1133, 1166, 1199, 1232, 1265, 1298],
+          max: [3, 6, 8, 10, 12, 15, 17, 19, 24, 30, 35, 40, 45, 51, 56, 61, 74, 87, 99, 112, 125, 138, 162, 186, 210, 234, 258, 282, 317, 352, 387, 422, 457, 492, 527, 562, 597, 632, 667, 702, 737, 772, 807, 842, 877, 912, 947, 982, 1017, 1052, 1087, 1122, 1157, 1192, 1227, 1262, 1297, 1332, 1367, 1402]
+        },
+        manaCost: [2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8, 9, 9.1, 9.2, 9.3],
+        arrows: [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5],
+        pierceChance: 100,
+        convertsPhysical: 75, // Converts 75% Physical Damage to Magic Damage
+        synergies: [
+          { skillId: 'innersightcontainer', bonusPerLevel: 20, damageType: 'magic' },
+          { skillId: 'slowmovementcontainer', bonusPerLevel: 20, damageType: 'magic' },
+          { skillId: 'guidedarrowcontainer', bonusPerLevel: 20, damageType: 'magic' }
+        ],
+        prerequisites: []
+      },
+      multipleshotcontainer: {
+        name: "Multiple Shot",
+        type: "physical",
+        attackRating: [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80, 86, 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, 164, 170, 176, 182, 188, 194, 200, 206, 212, 218, 224, 230, 236, 242, 248, 254, 260, 266, 272, 278, 284, 290, 296, 302, 308, 314, 320, 326, 332, 338, 344, 350, 356, 362],
+        damage: [40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300, 305, 310, 315, 320, 325, 330, 335],
+        arrows: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24],
+        manaCost: [1.5, 1.6, 1.7, 1.8, 2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8],
+        pierceReduction: 20, // 20% reduced damage per pierce
+        synergies: []
+      },
+      firearrowcontainer: {
+        name: "Fire Arrow",
+        type: "fire_conversion",
+        attackRating: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600],
+        fireDamage: {
+          min: [8, 12, 15, 19, 22, 26, 29, 33, 39, 45, 51, 57, 63, 69, 75, 81, 97, 113, 129, 145, 161, 177, 209, 241, 273, 305, 337, 369, 417, 465, 513, 561, 609, 657, 705, 753, 801, 849, 897, 945, 993, 1041, 1089, 1137, 1185, 1233, 1281, 1329, 1377, 1425, 1473, 1521, 1569, 1617, 1665, 1713, 1761, 1809, 1857, 1905],
+          max: [12, 16, 21, 25, 30, 34, 39, 43, 61, 78, 96, 113, 131, 148, 166, 183, 201, 218, 236, 253, 271, 288, 323, 358, 393, 428, 463, 498, 551, 603, 656, 708, 761, 813, 866, 918, 971, 1023, 1076, 1128, 1181, 1233, 1286, 1338, 1391, 1443, 1496, 1548, 1601, 1653, 1706, 1758, 1811, 1863, 1916, 1968, 2021, 2073, 2126, 2178]
+        },
+        arrows: [2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
+        manaCost: [1.5, 1.6, 1.7, 1.8, 2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8],
+        convertsPhysical: 50, // Converts 50% Physical Damage to Fire Damage
+        synergies: [
+          { skillId: 'magicarrowcontainer', bonusPerLevel: 18, damageType: 'fire' },
+          { skillId: 'immolationarrowcontainer', bonusPerLevel: 18, damageType: 'fire' }
+        ],
+        prerequisites: []
       }
     };
 
@@ -894,78 +940,105 @@ class SkillSystem {
     var weaponUsable = isWeaponUsable();
 
     if (skill.type === 'physical') {
-      var damageInfo = this.calculatePhysicalDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
-
-      html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
-
-      // Display Attack Rating if available
-      if (skill.attackRating) {
-        var attackRatingBonus;
-        if (Array.isArray(skill.attackRating)) {
-          var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
-          attackRatingBonus = skill.attackRating[levelIndex] || 0;
-        } else {
-          attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (totalSkillLevel - 1));
-        }
-        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
-      }
-
-      html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
-      html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
-      if (damageInfo.synergyBonus > 0) {
-        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
-      }
-      if (damageInfo.masteryDamageBonus > 0) {
-        html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
-      }
-
-      var toMinDmgContainer = document.getElementById('tomindmgcontainer');
-      var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
-      var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
-      var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
-
-      if (toMinDmg > 0) {
-        // Calculate the actual damage added (with bonuses)
-        var toMinDmgActual = Math.floor(toMinDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.synergyBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
-        html += '<div style="margin: 5px 0; color: #ffcc99;">to Min Dmg: +' + toMinDmgActual + ' (' + toMinDmg + ' base)</div>';
-      }
-      if (toMaxDmg > 0) {
-        // Calculate the actual damage added (with bonuses)
-        var toMaxDmgActual = Math.floor(toMaxDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.synergyBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
-        html += '<div style="margin: 5px 0; color: #ffcc99;">to Max Dmg: +' + toMaxDmgActual + ' (' + toMaxDmg + ' base)</div>';
-      }
-
-      // Show elemental damages if they exist
-      var elem = damageInfo.elementalDamages;
-      if (elem.fire.max > 0) {
-        html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
-      }
-      if (elem.cold.max > 0) {
-        html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
-      }
-      if (elem.lightning.max > 0) {
-        html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
-      }
-      if (elem.poison.max > 0) {
-        html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
-      }
-
-      // Only show Physical, Total, and Average damage if weapon is usable
-      if (weaponUsable) {
-        html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
-        html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
-        html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+      // OPTION C: Show simple error message if weapon requirements not met
+      if (!weaponUsable) {
+        html += '<div style="margin: 10px 0; color: #ff6666; font-weight: bold;">Cannot use this skill</div>';
+        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level, strength, or dexterity requirement not met</div>';
       } else {
-        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level requirement not met</div>';
-      }
+        // Weapon is usable - show full stats
+        var damageInfo = this.calculatePhysicalDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
 
-      var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
-      if (combinedCriticalStrike > 0) {
-        html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
-      }
-      if (damageInfo.deadlyStrike > 0) {
-        html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
-      }
+        html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+        // Display Attack Rating if available
+        if (skill.attackRating) {
+          var attackRatingBonus;
+          if (Array.isArray(skill.attackRating)) {
+            var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+            attackRatingBonus = skill.attackRating[levelIndex] || 0;
+          } else {
+            attackRatingBonus = skill.attackRating.base + (skill.attackRating.perLevel * (totalSkillLevel - 1));
+          }
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+        }
+
+        html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+        html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
+        if (damageInfo.synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+        }
+        if (damageInfo.masteryDamageBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+        }
+
+        var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+        var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+        var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+        var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+        if (toMinDmg > 0) {
+          // Calculate the actual damage added (with bonuses)
+          var toMinDmgActual = Math.floor(toMinDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.synergyBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ffcc99;">to Min Dmg: +' + toMinDmgActual + ' (' + toMinDmg + ' base)</div>';
+        }
+        if (toMaxDmg > 0) {
+          // Calculate the actual damage added (with bonuses)
+          var toMaxDmgActual = Math.floor(toMaxDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.synergyBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ffcc99;">to Max Dmg: +' + toMaxDmgActual + ' (' + toMaxDmg + ' base)</div>';
+        }
+
+        // Show elemental damages if they exist
+        var elem = damageInfo.elementalDamages;
+        if (elem.fire.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+        }
+        if (elem.cold.max > 0) {
+          html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+        }
+        if (elem.lightning.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+        }
+        if (elem.poison.max > 0) {
+          html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+        }
+
+        // Only show Physical, Total, and Average damage if weapon is usable
+        if (weaponUsable) {
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+          html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
+          html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+        } else {
+          html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level requirement not met</div>';
+        }
+
+        var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+        if (combinedCriticalStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
+        }
+        if (damageInfo.deadlyStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+        }
+
+        // Display number of arrows if available (for Multishot, etc.)
+        if (skill.arrows) {
+          var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+          var arrowIndex = Math.min(baseSkillLevel - 1, skill.arrows.length - 1);
+          var arrowCount = skill.arrows[arrowIndex] || 1;
+          html += '<div style="margin: 5px 0; color: #cccccc;">Arrows: ' + arrowCount + '</div>';
+        }
+
+        // Display pierce reduction if available (for Multishot)html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Can summon additional Valkyrie at levels 20 and 30</div>';
+        if (skill.pierceReduction) {
+          html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Deals ' + skill.pierceReduction + '% reduced damage every time they pierce</div>';
+        }
+
+        // Display mana cost if available
+        if (skill.manaCost) {
+          var manaCostIndex = Math.min(totalSkillLevel - 1, skill.manaCost.length - 1);
+          var manaCost = skill.manaCost[manaCostIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        }
+      } // End of weaponUsable check for physical skills
     } else if (skill.type === 'poison') {
       var damageInfo = this.calculatePoisonDamage(skill, totalSkillLevel, skillId);
 
@@ -1057,6 +1130,173 @@ class SkillSystem {
       if (damageInfo.hits) {
         html += '<div style="margin: 5px 0; color: #cccccc;">Hits: ' + damageInfo.hits + '</div>';
       }
+    } else if (skill.type === 'magic_conversion') {
+      // OPTION C: Show simple error message if weapon requirements not met
+      if (!weaponUsable) {
+        html += '<div style="margin: 10px 0; color: #ff6666; font-weight: bold;">Cannot use this skill</div>';
+        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level, strength, or dexterity requirement not met</div>';
+      } else {
+        // Magic Arrow - converts 75% physical to magic
+        var damageInfo = this.calculateMagicConversionDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
+
+        // Display weapon and bonuses
+        html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+        // Display Attack Rating if available
+        if (skill.attackRating) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          var attackRatingBonus = skill.attackRating[levelIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+        }
+
+        html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+        if (damageInfo.masteryDamageBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+        }
+
+        // Display conversion info
+        var conversionPercent = skill.convertsPhysical || 75;
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Converts ' + conversionPercent + '% Physical to Magic</div>';
+
+        // Display magic damage (converted + skill magic)
+        html += '<div style="margin: 5px 0; color: #ff66ff;">Magic Damage: ' + damageInfo.magicMin + '-' + damageInfo.magicMax + '</div>';
+
+        // Display remaining physical damage (25%)
+        if (damageInfo.physicalMin > 0 || damageInfo.physicalMax > 0) {
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+        }
+
+        if (damageInfo.synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+        }
+
+        // Show elemental damages if they exist
+        var elem = damageInfo.elementalDamages;
+        if (elem.fire.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+        }
+        if (elem.cold.max > 0) {
+          html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+        }
+        if (elem.lightning.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+        }
+        if (elem.poison.max > 0) {
+          html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+        }
+
+        // Only show Total and Average damage if weapon is usable
+        if (weaponUsable) {
+          html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.totalMin + '-' + damageInfo.totalMax + '</div>';
+          html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+        } else {
+          html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level requirement not met</div>';
+        }
+
+        // Display number of arrows if available
+        if (skill.arrows) {
+          // Use base invested skill level (hard points only), not total with +skills
+          var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+          var arrowIndex = Math.min(baseSkillLevel, skill.arrows.length - 1);
+          var arrowCount = skill.arrows[arrowIndex] || 1;
+          html += '<div style="margin: 5px 0; color: #cccccc;">Arrows: ' + arrowCount + '</div>';
+        }
+
+        // Display pierce chance
+        if (skill.pierceChance) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Pierce Chance: ' + skill.pierceChance + '%</div>';
+        }
+
+        // Display mana cost
+        if (skill.manaCost) {
+          var manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        }
+
+        // Display critical strike info
+        var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+        if (combinedCriticalStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
+        }
+        if (damageInfo.deadlyStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+        }
+        if (damageInfo.critMultiplier > 1) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
+        }
+      } // End of weaponUsable check for magic_conversion skills
+    } else if (skill.type === 'fire_conversion') {
+      // OPTION C: Show simple error message if weapon requirements not met
+      if (!weaponUsable) {
+        html += '<div style="margin: 10px 0; color: #ff6666; font-weight: bold;">Cannot use this skill</div>';
+        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level, strength, or dexterity requirement not met</div>';
+      } else {
+        // Fire Arrow - converts 50% physical to fire
+        var damageInfo = this.calculateFireConversionDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
+
+        html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+        if (skill.attackRating) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          var attackRatingBonus = skill.attackRating[levelIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+        }
+
+        html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+        if (damageInfo.masteryDamageBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+        }
+
+        var conversionPercent = skill.convertsPhysical || 50;
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Converts ' + conversionPercent + '% Physical to Fire</div>';
+
+        html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + damageInfo.fireMin + '-' + damageInfo.fireMax + '</div>';
+
+        if (damageInfo.physicalMin > 0 || damageInfo.physicalMax > 0) {
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+        }
+
+        if (damageInfo.synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+        }
+
+        var elem = damageInfo.elementalDamages;
+        if (elem.cold.max > 0) {
+          html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+        }
+        if (elem.lightning.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+        }
+        if (elem.poison.max > 0) {
+          html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+        }
+
+        html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.totalMin + '-' + damageInfo.totalMax + '</div>';
+        html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+
+        if (skill.arrows) {
+          var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+          var arrowIndex = Math.min(baseSkillLevel, skill.arrows.length - 1);
+          var arrowCount = skill.arrows[arrowIndex] || 1;
+          html += '<div style="margin: 5px 0; color: #cccccc;">Arrows: ' + arrowCount + '</div>';
+        }
+
+        if (skill.manaCost) {
+          var manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        }
+
+        var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+        if (combinedCriticalStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
+        }
+        if (damageInfo.deadlyStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+        }
+        if (damageInfo.critMultiplier > 1) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
+        }
+      } // End of weaponUsable check for fire_conversion skills
     } else if (skillId === 'decoycontainer') {
       // Display Decoy summon information
       var levelIndex = Math.min(totalSkillLevel - 1, skill.damage.min.length - 1);
@@ -1378,14 +1618,14 @@ class SkillSystem {
     var skillLightningMin = skill.lightningDamage.min[levelIndex] || 1;
     var skillLightningMax = skill.lightningDamage.max[levelIndex] || 1;
 
-    // Total base lightning = converted physical + skill lightning
-    var baseLightningMin = convertedPhysicalMin + skillLightningMin;
-    var baseLightningMax = convertedPhysicalMax + skillLightningMax;
-
-    // Apply synergies to total lightning damage
+    // Apply synergies ONLY to skill's lightning damage, NOT to converted weapon damage
     var synergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
-    var lightningMin = Math.floor(baseLightningMin * (1 + synergyBonus / 100));
-    var lightningMax = Math.floor(baseLightningMax * (1 + synergyBonus / 100));
+    var skillLightningWithSynergiesMin = Math.floor(skillLightningMin * (1 + synergyBonus / 100));
+    var skillLightningWithSynergiesMax = Math.floor(skillLightningMax * (1 + synergyBonus / 100));
+
+    // Total lightning = converted physical (no synergies) + skill lightning (with synergies)
+    var lightningMin = convertedPhysicalMin + skillLightningWithSynergiesMin;
+    var lightningMax = convertedPhysicalMax + skillLightningWithSynergiesMax;
 
     // Get critical strike chances
     var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
@@ -1400,9 +1640,14 @@ class SkillSystem {
     // Apply crit multiplier (1.5x on crit)
     var critMultiplier = 1 + (totalCritChance / 100) * 0.5;
 
-    // Apply crit to lightning damage
-    var finalLightningMin = Math.floor(lightningMin * critMultiplier);
-    var finalLightningMax = Math.floor(lightningMax * critMultiplier);
+    // CRITICAL STRIKES ONLY APPLY TO PHYSICAL DAMAGE (converted portion)
+    // Apply crit to the converted physical damage BEFORE it becomes lightning
+    var convertedPhysicalWithCritsMin = Math.floor(convertedPhysicalMin * critMultiplier);
+    var convertedPhysicalWithCritsMax = Math.floor(convertedPhysicalMax * critMultiplier);
+
+    // Total lightning = converted physical (with crits) + skill lightning (no crits)
+    var finalLightningMin = convertedPhysicalWithCritsMin + skillLightningWithSynergiesMin;
+    var finalLightningMax = convertedPhysicalWithCritsMax + skillLightningWithSynergiesMax;
 
     return {
       lightningMin: finalLightningMin,
@@ -1415,6 +1660,198 @@ class SkillSystem {
       deadlyStrike: deadlyStrike,
       weaponMastery: weaponMastery,
       critMultiplier: critMultiplier.toFixed(2)
+    };
+  }
+
+  calculateMagicConversionDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
+    // Magic Arrow converts 75% of BASE weapon damage to magic
+    // Then applies Dex/Mastery bonuses only to the remaining 25% physical
+
+    var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+    var statBonus = Math.floor(dexterity * 1);
+
+    // Get flat damage bonuses from socketed items (jewels, runes, gems)
+    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+    var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+    var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+    // Convert 75% of BASE weapon damage to magic (no bonuses applied yet)
+    var conversionPercent = skill.convertsPhysical || 75;
+    var convertedMagicMin = Math.floor(weaponDamage.min * (conversionPercent / 100));
+    var convertedMagicMax = Math.floor(weaponDamage.max * (conversionPercent / 100));
+
+    // Remaining 25% stays as physical
+    var remainingPhysicalMin = weaponDamage.min - convertedMagicMin;
+    var remainingPhysicalMax = weaponDamage.max - convertedMagicMax;
+
+    // Apply Dex/Mastery bonuses ONLY to the remaining physical damage
+    var bonusedPhysicalMin = Math.floor(remainingPhysicalMin * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    var bonusedPhysicalMax = Math.floor(remainingPhysicalMax * (1 + masteryDamageBonus / 100 + statBonus / 100));
+
+    // Apply bonuses to flat damage and add to physical
+    var toMinDmgWithBonuses = Math.floor(toMinDmg * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    var toMaxDmgWithBonuses = Math.floor(toMaxDmg * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    bonusedPhysicalMin += toMinDmgWithBonuses;
+    bonusedPhysicalMax += toMaxDmgWithBonuses;
+
+    // Get skill's base magic damage
+    var levelIndex = Math.min(skillLevel - 1, 59);
+    var skillMagicMin = skill.magicDamage.min[levelIndex] || 0;
+    var skillMagicMax = skill.magicDamage.max[levelIndex] || 0;
+
+    // Apply synergies ONLY to skill's magic damage, NOT to converted weapon damage
+    var synergyBonus = this.calculateSynergyBonus(skillId, 'magic');
+    var skillMagicWithSynergiesMin = Math.floor(skillMagicMin * (1 + synergyBonus / 100));
+    var skillMagicWithSynergiesMax = Math.floor(skillMagicMax * (1 + synergyBonus / 100));
+
+    // Total magic = converted physical (no synergies) + skill magic (with synergies)
+    var magicMin = convertedMagicMin + skillMagicWithSynergiesMin;
+    var magicMax = convertedMagicMax + skillMagicWithSynergiesMax;
+
+    // Get elemental damages from equipment
+    var elementalDamages = this.getWeaponElementalDamages();
+
+    // Get critical strike chances
+    var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
+    var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
+    var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
+
+    // Calculate total crit chance
+    var totalCritChance = 1 - ((1 - deadlyStrike / 100) * (1 - criticalStrike / 100) * (1 - weaponMastery / 100));
+    totalCritChance = Math.floor(totalCritChance * 100);
+    totalCritChance = Math.min(totalCritChance, 95);
+
+    // Apply crit multiplier (1.5x on crit)
+    var critMultiplier = 1 + (totalCritChance / 100) * 0.5;
+
+    // CRITICAL STRIKES ONLY APPLY TO PHYSICAL DAMAGE
+    // Apply crit to converted physical BEFORE it becomes magic, and to remaining physical
+    var convertedMagicWithCritsMin = Math.floor(convertedMagicMin * critMultiplier);
+    var convertedMagicWithCritsMax = Math.floor(convertedMagicMax * critMultiplier);
+    var finalPhysicalMin = Math.floor(bonusedPhysicalMin * critMultiplier);
+    var finalPhysicalMax = Math.floor(bonusedPhysicalMax * critMultiplier);
+
+    // Total magic = converted physical (with crits) + skill magic (no crits)
+    var finalMagicMin = convertedMagicWithCritsMin + skillMagicWithSynergiesMin;
+    var finalMagicMax = convertedMagicWithCritsMax + skillMagicWithSynergiesMax;
+
+    // Total damage = magic + remaining physical + elemental
+    var totalMin = finalMagicMin + finalPhysicalMin + elementalDamages.fire.min + elementalDamages.cold.min + elementalDamages.lightning.min + elementalDamages.poison.min;
+    var totalMax = finalMagicMax + finalPhysicalMax + elementalDamages.fire.max + elementalDamages.cold.max + elementalDamages.lightning.max + elementalDamages.poison.max;
+
+    return {
+      magicMin: finalMagicMin,
+      magicMax: finalMagicMax,
+      physicalMin: finalPhysicalMin,
+      physicalMax: finalPhysicalMax,
+      totalMin: totalMin,
+      totalMax: totalMax,
+      average: Math.floor((totalMin + totalMax) / 2),
+      synergyBonus: synergyBonus,
+      masteryDamageBonus: masteryDamageBonus,
+      statBonus: statBonus,
+      criticalStrike: criticalStrike,
+      deadlyStrike: deadlyStrike,
+      weaponMastery: weaponMastery,
+      critMultiplier: critMultiplier.toFixed(2),
+      elementalDamages: elementalDamages
+    };
+  }
+
+  calculateFireConversionDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
+    // Fire Arrow converts 50% of BASE weapon damage to fire
+    // Then applies Dex/Mastery bonuses only to the remaining 50% physical
+
+    var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+    var statBonus = Math.floor(dexterity * 1);
+
+    // Get flat damage bonuses from socketed items
+    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+    var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+    var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+    // Convert 50% of BASE weapon damage to fire (no bonuses applied yet)
+    var conversionPercent = skill.convertsPhysical || 50;
+    var convertedFireMin = Math.floor(weaponDamage.min * (conversionPercent / 100));
+    var convertedFireMax = Math.floor(weaponDamage.max * (conversionPercent / 100));
+
+    // Remaining 50% stays as physical
+    var remainingPhysicalMin = weaponDamage.min - convertedFireMin;
+    var remainingPhysicalMax = weaponDamage.max - convertedFireMax;
+
+    // Apply Dex/Mastery bonuses ONLY to the remaining physical damage
+    var bonusedPhysicalMin = Math.floor(remainingPhysicalMin * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    var bonusedPhysicalMax = Math.floor(remainingPhysicalMax * (1 + masteryDamageBonus / 100 + statBonus / 100));
+
+    // Apply bonuses to flat damage and add to physical
+    var toMinDmgWithBonuses = Math.floor(toMinDmg * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    var toMaxDmgWithBonuses = Math.floor(toMaxDmg * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    bonusedPhysicalMin += toMinDmgWithBonuses;
+    bonusedPhysicalMax += toMaxDmgWithBonuses;
+
+    // Get skill's base fire damage
+    var levelIndex = Math.min(skillLevel - 1, 59);
+    var skillFireMin = skill.fireDamage.min[levelIndex] || 0;
+    var skillFireMax = skill.fireDamage.max[levelIndex] || 0;
+
+    // Apply synergies ONLY to skill's fire damage, NOT to converted weapon damage
+    var synergyBonus = this.calculateSynergyBonus(skillId, 'fire');
+    var skillFireWithSynergiesMin = Math.floor(skillFireMin * (1 + synergyBonus / 100));
+    var skillFireWithSynergiesMax = Math.floor(skillFireMax * (1 + synergyBonus / 100));
+
+    // Total fire = converted physical (no synergies) + skill fire (with synergies)
+    var fireMin = convertedFireMin + skillFireWithSynergiesMin;
+    var fireMax = convertedFireMax + skillFireWithSynergiesMax;
+
+    // Get elemental damages from equipment
+    var elementalDamages = this.getWeaponElementalDamages();
+
+    // Get critical strike chances
+    var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
+    var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
+    var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
+
+    // Calculate total crit chance
+    var totalCritChance = 1 - ((1 - deadlyStrike / 100) * (1 - criticalStrike / 100) * (1 - weaponMastery / 100));
+    totalCritChance = Math.floor(totalCritChance * 100);
+    totalCritChance = Math.min(totalCritChance, 95);
+
+    // Apply crit multiplier (1.5x on crit)
+    var critMultiplier = 1 + (totalCritChance / 100) * 0.5;
+
+    // CRITICAL STRIKES ONLY APPLY TO PHYSICAL DAMAGE
+    // Apply crit to converted physical BEFORE it becomes fire, and to remaining physical
+    var convertedFireWithCritsMin = Math.floor(convertedFireMin * critMultiplier);
+    var convertedFireWithCritsMax = Math.floor(convertedFireMax * critMultiplier);
+    var finalPhysicalMin = Math.floor(bonusedPhysicalMin * critMultiplier);
+    var finalPhysicalMax = Math.floor(bonusedPhysicalMax * critMultiplier);
+
+    // Total fire = converted physical (with crits) + skill fire (no crits)
+    var finalFireMin = convertedFireWithCritsMin + skillFireWithSynergiesMin;
+    var finalFireMax = convertedFireWithCritsMax + skillFireWithSynergiesMax;
+
+    // Total damage = fire + remaining physical + other elemental
+    var totalMin = finalFireMin + finalPhysicalMin + elementalDamages.cold.min + elementalDamages.lightning.min + elementalDamages.poison.min;
+    var totalMax = finalFireMax + finalPhysicalMax + elementalDamages.cold.max + elementalDamages.lightning.max + elementalDamages.poison.max;
+
+    return {
+      fireMin: finalFireMin,
+      fireMax: finalFireMax,
+      physicalMin: finalPhysicalMin,
+      physicalMax: finalPhysicalMax,
+      totalMin: totalMin,
+      totalMax: totalMax,
+      average: Math.floor((totalMin + totalMax) / 2),
+      synergyBonus: synergyBonus,
+      masteryDamageBonus: masteryDamageBonus,
+      statBonus: statBonus,
+      criticalStrike: criticalStrike,
+      deadlyStrike: deadlyStrike,
+      weaponMastery: weaponMastery,
+      critMultiplier: critMultiplier.toFixed(2),
+      elementalDamages: elementalDamages
     };
   }
 
