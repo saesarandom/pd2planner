@@ -542,6 +542,113 @@ class SkillSystem {
           { skillId: 'immolationarrowcontainer', bonusPerLevel: 18, damageType: 'fire' }
         ],
         prerequisites: []
+      },
+      coldarrowcontainer: {
+        name: "Cold Arrow",
+        type: "cold_converted",
+        attackRating: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600],
+        coldDamage: {
+          min: [7, 9, 11, 13, 15, 17, 19, 21, 26, 31, 36, 41, 46, 51, 56, 61, 76, 91, 106, 121, 136, 151, 181, 211, 241, 271, 301, 331, 376, 421, 466, 511, 556, 601, 646, 691, 736, 781, 826, 871, 916, 961, 1006, 1051, 1096, 1141, 1186, 1231, 1276, 1321, 1366, 1411, 1456, 1501, 1546, 1591, 1636, 1681, 1726, 1771],
+          max: [10, 14, 18, 22, 26, 30, 34, 38, 44, 50, 56, 62, 68, 74, 80, 86, 102, 118, 134, 150, 166, 182, 214, 246, 278, 310, 342, 374, 422, 470, 518, 566, 614, 662, 710, 758, 806, 854, 902, 950, 998, 1046, 1094, 1142, 1190, 1238, 1286, 1334, 1382, 1430, 1478, 1526, 1574, 1622, 1670, 1718, 1766, 1814, 1862, 1910]
+        },
+        arrows: [2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+        manaCost: [1.5, 1.6, 1.7, 1.8, 2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8],
+        convertsPhysical: 50, // Converts 50% Physical Damage to Cold Damage
+        synergies: [
+          { skillId: 'magicarrowcontainer', bonusPerLevel: 17, damageType: 'cold' },
+          { skillId: 'icearrowcontainer', bonusPerLevel: 17, damageType: 'cold' }
+        ],
+        prerequisites: []
+      },
+      icearrowcontainer: {
+        name: "Ice Arrow",
+        type: "cold",
+        attackRating: [20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610],
+        coldDamage: {
+          min: [22, 32, 42, 52, 62, 72, 82, 92, 106, 120, 134, 148, 162, 176, 190, 204, 228, 252, 276, 300, 324, 348, 382, 416, 450, 484, 518, 552, 596, 640, 684, 728, 772, 816, 860, 904, 948, 992, 1036, 1080, 1124, 1168, 1212, 1256, 1300, 1344, 1388, 1432, 1476, 1520, 1564, 1608, 1652, 1696, 1740, 1784, 1828, 1872, 1916, 1960],
+          max: [36, 47, 58, 69, 80, 91, 102, 113, 129, 145, 161, 177, 193, 209, 225, 241, 267, 293, 319, 345, 371, 397, 433, 469, 505, 541, 577, 613, 659, 705, 751, 797, 843, 889, 935, 981, 1027, 1073, 1119, 1165, 1211, 1257, 1303, 1349, 1395, 1441, 1487, 1533, 1579, 1625, 1671, 1717, 1763, 1809, 1855, 1901, 1947, 1993, 2039, 2085]
+        },
+        manaCost: 3,
+        synergies: [
+          { skillId: 'magicarrowcontainer', bonusPerLevel: 16, damageType: 'cold' },
+          { skillId: 'coldarrowcontainer', bonusPerLevel: 10, damageType: 'cold' },
+          { skillId: 'freezingarrowcontainer', bonusPerLevel: 10, damageType: 'cold' }
+        ],
+        prerequisites: []
+      },
+      guidedarrowcontainer: {
+        name: "Guided Arrow",
+        type: "physical_magic_hybrid", // Physical with optional magic conversion based on Magic Arrow synergy
+        damage: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295],
+        manaCost: [8, 7.7, 7.5, 7.2, 7, 6.7, 6.5, 6.2, 6, 5.7, 5.5, 5.2, 5, 4.7, 4.5, 4.2, 4, 3.7, 3.5, 3.2, 3, 2.7, 2.5, 2.2, 2, 1.7, 1.5, 1.2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        synergies: [
+          { skillId: 'magicarrowcontainer', bonusPerLevel: 0.5, damageType: 'magic_conversion' } // 1% conversion per 2 levels
+        ],
+        prerequisites: []
+      },
+      explodingarrowcontainer: {
+        name: "Exploding Arrow",
+        type: "fire",
+        attackRating: [20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610],
+        fireDamage: {
+          min: [2, 7, 12, 17, 22, 27, 32, 37, 46, 55, 64, 73, 82, 91, 100, 109, 126, 143, 160, 177, 194, 211, 238, 265, 292, 319, 346, 373, 410, 447, 484, 521, 558, 595, 632, 669, 706, 743, 780, 817, 854, 891, 928, 965, 1002, 1039, 1076, 1113, 1150, 1187, 1224, 1261, 1298, 1335, 1372, 1409, 1446, 1483, 1520, 1557],
+          max: [6, 12, 18, 24, 30, 36, 42, 48, 58, 68, 78, 88, 98, 108, 118, 128, 146, 164, 182, 200, 218, 236, 264, 292, 320, 348, 376, 404, 442, 480, 518, 556, 594, 632, 670, 708, 746, 784, 822, 860, 898, 936, 974, 1012, 1050, 1088, 1126, 1164, 1202, 1240, 1278, 1316, 1354, 1392, 1430, 1468, 1506, 1544, 1582, 1620]
+        },
+        radius: [2, 2, 2, 2, 2.6, 2.6, 2.6, 2.6, 3.3, 3.3, 3.3, 3.3, 4, 4, 4, 4, 4.6, 4.6, 4.6, 4.6, 5.3],
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
+        synergies: [
+          { skillId: 'magicarrowcontainer', bonusPerLevel: 18, damageType: 'fire' },
+          { skillId: 'immolationarrowcontainer', bonusPerLevel: 18, damageType: 'fire' }
+        ],
+        prerequisites: []
+      },
+      strafecontainer: {
+        name: "Strafe",
+        type: "physical",
+        attackRating: [80, 86, 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, 164, 170, 176, 182, 188, 194, 200, 206, 212, 218, 224, 230, 236, 242, 248, 254, 260, 266, 272, 278, 284, 290, 296, 302, 308, 314, 320, 326, 332, 338, 344, 350, 356, 362, 368, 374, 380, 386, 392, 398, 404, 410, 416, 422, 428, 434],
+        damage: [100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910, 925, 940, 955, 970, 985],
+        targets: [3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+        manaCost: 11,
+        synergies: [
+          { skillId: 'penetratecontainer', bonusPerLevel: 12, damageType: 'physical' }
+        ],
+        prerequisites: []
+      },
+      immolationarrowcontainer: {
+        name: "Immolation Arrow",
+        type: "fire",
+        attackRating: [30, 39, 48, 57, 66, 75, 84, 93, 102, 111, 120, 129, 138, 147, 156, 165, 174, 183, 192, 201, 210, 219, 228, 237, 246, 255, 264, 273, 282, 291, 300, 309, 318, 327, 336, 345, 354, 363, 372, 381, 390, 399, 408, 417, 426, 435, 444, 453, 462, 471, 480, 489, 498, 507, 516, 525, 534, 543, 552, 561],
+        fireDamage: {
+          min: [11, 21, 31, 42, 52, 63, 73, 84, 102, 121, 140, 158, 177, 196, 215, 234, 262, 290, 318, 346, 375, 403, 434, 464, 494, 525, 555, 585, 616, 648, 679, 711, 742, 774, 805, 836, 867, 898, 930, 961, 992, 1024, 1055, 1086, 1118, 1149, 1180, 1211, 1243, 1274, 1305, 1337, 1368, 1399, 1431, 1462, 1493, 1524, 1556, 1587],
+          max: [26, 34, 45, 55, 65, 75, 86, 96, 115, 135, 154, 172, 191, 210, 228, 247, 275, 304, 332, 360, 388, 416, 447, 477, 507, 538, 568, 598, 630, 661, 693, 724, 755, 786, 818, 850, 881, 912, 944, 975, 1007, 1038, 1070, 1101, 1132, 1164, 1195, 1227, 1258, 1290, 1321, 1352, 1384, 1415, 1447, 1478, 1510, 1541, 1572, 1604]
+        },
+        burningDamage: {
+          min: [12, 17, 24, 29, 35, 42, 48, 54, 68, 82, 95, 108, 122, 135, 149, 162, 183, 205, 225, 245, 265, 287, 315, 344, 371, 400, 428, 455, 492, 527, 563, 598, 634, 670, 705, 740, 776, 811, 847, 882, 918, 954, 989, 1025, 1060, 1096, 1132, 1167, 1203, 1238, 1274, 1309, 1345, 1381, 1416, 1452, 1487, 1523, 1559, 1594],
+          max: [12, 19, 26, 34, 41, 48, 55, 63, 77, 92, 107, 122, 136, 151, 165, 181, 202, 225, 246, 269, 290, 313, 343, 371, 401, 430, 460, 490, 525, 563, 599, 636, 673, 710, 746, 783, 820, 856, 893, 929, 966, 1003, 1039, 1076, 1113, 1149, 1186, 1222, 1259, 1296, 1332, 1369, 1406, 1442, 1479, 1515, 1552, 1589, 1625, 1662]
+        },
+        manaCost: [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 30, 30.5, 31, 31.5, 32, 32.5, 33, 33.5, 34, 34.5, 35, 35.5],
+        synergies: [
+          { skillId: 'magicarrowcontainer', bonusPerLevel: 5, damageType: 'fire' },
+          { skillId: 'explodingarrowcontainer', bonusPerLevel: 5, damageType: 'fire' },
+          { skillId: 'firearrowcontainer', bonusPerLevel: 5, damageType: 'fire' }
+        ],
+        prerequisites: []
+      },
+      freezingarrowcontainer: {
+        name: "Freezing Arrow",
+        type: "cold",
+        attackRating: [40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630],
+        coldDamage: {
+          min: [35, 43, 51, 59, 67, 75, 83, 91, 103, 115, 127, 139, 151, 163, 175, 187, 203, 219, 235, 251, 267, 283, 303, 323, 343, 363, 383, 403, 427, 451, 475, 499, 523, 547, 571, 595, 619, 643, 667, 691, 715, 739, 763, 787, 811, 835, 859, 883, 907, 931, 955, 979, 1003, 1027, 1051, 1075, 1099, 1123, 1147, 1171],
+          max: [55, 65, 75, 85, 95, 105, 115, 125, 139, 153, 167, 181, 195, 209, 223, 237, 255, 273, 291, 309, 327, 345, 367, 389, 411, 433, 455, 477, 503, 529, 555, 581, 607, 633, 659, 685, 711, 737, 763, 789, 815, 841, 867, 893, 919, 945, 971, 997, 1023, 1049, 1075, 1101, 1127, 1153, 1179, 1205, 1231, 1257, 1283, 1309]
+        },
+        radius: [2.6, 2.6, 2.6, 2.6, 3.3, 3.3, 3.3, 3.3, 4, 4, 4, 4, 4.6, 4.6, 4.6, 4.6, 5.3, 5.3, 5.3, 5.3, 6],
+        manaCost: [4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2],
+        synergies: [
+          { skillId: 'coldarrowcontainer', bonusPerLevel: 6, damageType: 'cold' },
+          { skillId: 'icearrowcontainer', bonusPerLevel: 6, damageType: 'cold' }
+        ],
+        prerequisites: []
       }
     };
 
@@ -1027,6 +1134,14 @@ class SkillSystem {
           html += '<div style="margin: 5px 0; color: #cccccc;">Arrows: ' + arrowCount + '</div>';
         }
 
+        // Display number of targets if available (for Strafe)
+        if (skill.targets) {
+          var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+          var targetIndex = Math.min(baseSkillLevel - 1, skill.targets.length - 1);
+          var targetCount = skill.targets[targetIndex] || 1;
+          html += '<div style="margin: 5px 0; color: #cccccc;">Targets: ' + targetCount + '</div>';
+        }
+
         // Display pierce reduction if available (for Multishot)html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Can summon additional Valkyrie at levels 20 and 30</div>';
         if (skill.pierceReduction) {
           html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Deals ' + skill.pierceReduction + '% reduced damage every time they pierce</div>';
@@ -1297,6 +1412,222 @@ class SkillSystem {
           html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
         }
       } // End of weaponUsable check for fire_conversion skills
+    } else if (skill.type === 'cold_converted') {
+      // OPTION C: Show simple error message if weapon requirements not met
+      if (!weaponUsable) {
+        html += '<div style="margin: 10px 0; color: #ff6666; font-weight: bold;">Cannot use this skill</div>';
+        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level, strength, or dexterity requirement not met</div>';
+      } else {
+        // Cold Arrow - converts 50% physical to cold
+        var damageInfo = this.calculateColdConversionDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
+
+        html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+        if (skill.attackRating) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          var attackRatingBonus = skill.attackRating[levelIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+        }
+
+        html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+        if (damageInfo.masteryDamageBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+        }
+
+        var conversionPercent = skill.convertsPhysical || 50;
+        html += '<div style="margin: 5px 0; color: #6699ff;">Converts ' + conversionPercent + '% Physical to Cold</div>';
+
+        if (damageInfo.synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+        }
+
+        // Display cold damage (converted + skill cold)
+        html += '<div style="margin: 5px 0; color: #6699ff;">Cold Damage: ' + damageInfo.coldMin + '-' + damageInfo.coldMax + '</div>';
+
+        // Display remaining physical damage (50%)
+        if (damageInfo.physicalMin > 0 || damageInfo.physicalMax > 0) {
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+        }
+
+        // Show elemental damages if they exist
+        var elem = damageInfo.elementalDamages;
+        if (elem.fire.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+        }
+        if (elem.lightning.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+        }
+        if (elem.poison.max > 0) {
+          html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+        }
+
+        html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.totalMin + '-' + damageInfo.totalMax + '</div>';
+        html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+
+        if (skill.arrows) {
+          var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+          var arrowIndex = Math.min(baseSkillLevel, skill.arrows.length - 1);
+          var arrowCount = skill.arrows[arrowIndex] || 1;
+          html += '<div style="margin: 5px 0; color: #cccccc;">Arrows: ' + arrowCount + '</div>';
+        }
+
+        if (skill.manaCost) {
+          var manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        }
+
+        var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+        if (combinedCriticalStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
+        }
+        if (damageInfo.deadlyStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+        }
+        if (damageInfo.critMultiplier > 1) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
+        }
+      } // End of weaponUsable check for cold_converted skills
+    } else if (skill.type === 'cold') {
+      // Pure cold damage skill (Ice Arrow, Freezing Arrow)
+      var damageInfo = this.calculateColdDamage(skill, totalSkillLevel, skillId);
+
+      // Display Attack Rating if available
+      if (skill.attackRating) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+        var attackRatingBonus = skill.attackRating[levelIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      if (damageInfo.synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+
+      html += '<div style="margin: 5px 0; color: #6699ff;">Cold Damage: ' + damageInfo.coldMin + '-' + damageInfo.coldMax + '</div>';
+      html += '<div style="margin: 5px 0;">Average: ' + damageInfo.averageCold + '</div>';
+
+      // Display explosion radius if available (Freezing Arrow)
+      if (skill.radius) {
+        var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+        var radiusIndex = Math.min(baseSkillLevel, skill.radius.length - 1);
+        var radius = skill.radius[radiusIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #99ccff;">Freezing Radius: ' + radius + ' yards</div>';
+      }
+
+      if (skill.manaCost) {
+        var manaCost = typeof skill.manaCost === 'number' ? skill.manaCost : skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
+    } else if (skill.type === 'fire') {
+      // Pure fire damage skill (Exploding Arrow, Immolation Arrow)
+      var damageInfo = this.calculateFireDamage(skill, totalSkillLevel, skillId);
+
+      // Display Attack Rating if available
+      if (skill.attackRating) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+        var attackRatingBonus = skill.attackRating[levelIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      if (damageInfo.synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+
+      html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + damageInfo.fireMin + '-' + damageInfo.fireMax + '</div>';
+
+      // Display burning damage if available (Immolation Arrow)
+      if (damageInfo.burningMin !== undefined && damageInfo.burningMax !== undefined) {
+        html += '<div style="margin: 5px 0; color: #ff9933;">Burning Damage: ' + damageInfo.burningMin + '-' + damageInfo.burningMax + '/sec</div>';
+      }
+
+      html += '<div style="margin: 5px 0;">Average: ' + damageInfo.averageFire + '</div>';
+
+      // Display explosion radius if available
+      if (skill.radius) {
+        var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+        var radiusIndex = Math.min(baseSkillLevel, skill.radius.length - 1);
+        var radius = skill.radius[radiusIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Explosion Radius: ' + radius + ' yards</div>';
+      }
+
+      if (skill.manaCost) {
+        var manaCost = typeof skill.manaCost === 'number' ? skill.manaCost : skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
+    } else if (skill.type === 'physical_magic_hybrid') {
+      // Guided Arrow - physical with optional magic conversion based on Magic Arrow synergy
+      if (!weaponUsable) {
+        html += '<div style="margin: 10px 0; color: #ff6666; font-weight: bold;">Cannot use this skill</div>';
+        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level, strength, or dexterity requirement not met</div>';
+      } else {
+        var damageInfo = this.calculatePhysicalMagicHybridDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
+
+        html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+        html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+        html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
+        if (damageInfo.masteryDamageBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+        }
+
+        var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+        var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+        var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+        var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+        if (toMinDmg > 0) {
+          var toMinDmgActual = Math.floor(toMinDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ffcc99;">to Min Dmg: +' + toMinDmgActual + ' (' + toMinDmg + ' base)</div>';
+        }
+        if (toMaxDmg > 0) {
+          var toMaxDmgActual = Math.floor(toMaxDmg * (1 + damageInfo.skillBonus / 100 + damageInfo.masteryDamageBonus / 100 + damageInfo.statBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ffcc99;">to Max Dmg: +' + toMaxDmgActual + ' (' + toMaxDmg + ' base)</div>';
+        }
+
+        // Show magic conversion if any
+        if (damageInfo.conversionPercent > 0) {
+          html += '<div style="margin: 5px 0; color: #ff66ff;">Magic Conversion: ' + damageInfo.conversionPercent + '% (from Magic Arrow synergy)</div>';
+          html += '<div style="margin: 5px 0; color: #ff66ff;">Magic Damage: ' + damageInfo.magicMin + '-' + damageInfo.magicMax + '</div>';
+        }
+
+        // Show physical damage
+        if (damageInfo.physicalMin > 0 || damageInfo.physicalMax > 0) {
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+        }
+
+        // Show elemental damages if they exist
+        var elem = damageInfo.elementalDamages;
+        if (elem.fire.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+        }
+        if (elem.cold.max > 0) {
+          html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+        }
+        if (elem.lightning.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+        }
+        if (elem.poison.max > 0) {
+          html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+        }
+
+        html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.totalMin + '-' + damageInfo.totalMax + '</div>';
+        html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+
+        if (skill.manaCost) {
+          var manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        }
+
+        var combinedCriticalStrike = damageInfo.criticalStrike + damageInfo.weaponMastery;
+        if (combinedCriticalStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Critical Strike: ' + combinedCriticalStrike + '%</div>';
+        }
+        if (damageInfo.deadlyStrike > 0) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Deadly Strike: ' + damageInfo.deadlyStrike + '%</div>';
+        }
+        if (damageInfo.critMultiplier > 1) {
+          html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x (physical only)</div>';
+        }
+      }
     } else if (skillId === 'decoycontainer') {
       // Display Decoy summon information
       var levelIndex = Math.min(totalSkillLevel - 1, skill.damage.min.length - 1);
@@ -1855,6 +2186,102 @@ class SkillSystem {
     };
   }
 
+  calculateColdConversionDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
+    // Cold Arrow converts 50% of BASE weapon damage to cold
+    // Then applies Dex/Mastery bonuses only to the remaining 50% physical
+
+    var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+    var statBonus = Math.floor(dexterity * 1);
+
+    // Get flat damage bonuses from socketed items
+    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+    var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+    var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+    // Convert 50% of BASE weapon damage to cold (no bonuses applied yet)
+    var conversionPercent = skill.convertsPhysical || 50;
+    var convertedColdMin = Math.floor(weaponDamage.min * (conversionPercent / 100));
+    var convertedColdMax = Math.floor(weaponDamage.max * (conversionPercent / 100));
+
+    // Remaining 50% stays as physical
+    var remainingPhysicalMin = weaponDamage.min - convertedColdMin;
+    var remainingPhysicalMax = weaponDamage.max - convertedColdMax;
+
+    // Apply Dex/Mastery bonuses ONLY to the remaining physical damage
+    var bonusedPhysicalMin = Math.floor(remainingPhysicalMin * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    var bonusedPhysicalMax = Math.floor(remainingPhysicalMax * (1 + masteryDamageBonus / 100 + statBonus / 100));
+
+    // Apply bonuses to flat damage and add to physical
+    var toMinDmgWithBonuses = Math.floor(toMinDmg * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    var toMaxDmgWithBonuses = Math.floor(toMaxDmg * (1 + masteryDamageBonus / 100 + statBonus / 100));
+    bonusedPhysicalMin += toMinDmgWithBonuses;
+    bonusedPhysicalMax += toMaxDmgWithBonuses;
+
+    // Get skill's base cold damage
+    var levelIndex = Math.min(skillLevel - 1, 59);
+    var skillColdMin = skill.coldDamage.min[levelIndex] || 0;
+    var skillColdMax = skill.coldDamage.max[levelIndex] || 0;
+
+    // Apply synergies ONLY to skill's cold damage, NOT to converted weapon damage
+    var synergyBonus = this.calculateSynergyBonus(skillId, 'cold');
+    var skillColdWithSynergiesMin = Math.floor(skillColdMin * (1 + synergyBonus / 100));
+    var skillColdWithSynergiesMax = Math.floor(skillColdMax * (1 + synergyBonus / 100));
+
+    // Total cold = converted physical (no synergies) + skill cold (with synergies)
+    var coldMin = convertedColdMin + skillColdWithSynergiesMin;
+    var coldMax = convertedColdMax + skillColdWithSynergiesMax;
+
+    // Get elemental damages from equipment
+    var elementalDamages = this.getWeaponElementalDamages();
+
+    // Get critical strike chances
+    var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
+    var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
+    var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
+
+    // Calculate total crit chance
+    var totalCritChance = 1 - ((1 - deadlyStrike / 100) * (1 - criticalStrike / 100) * (1 - weaponMastery / 100));
+    totalCritChance = Math.floor(totalCritChance * 100);
+    totalCritChance = Math.min(totalCritChance, 95);
+
+    // Apply crit multiplier (1.5x on crit)
+    var critMultiplier = 1 + (totalCritChance / 100) * 0.5;
+
+    // CRITICAL STRIKES ONLY APPLY TO PHYSICAL DAMAGE
+    // Apply crit to converted physical BEFORE it becomes cold, and to remaining physical
+    var convertedColdWithCritsMin = Math.floor(convertedColdMin * critMultiplier);
+    var convertedColdWithCritsMax = Math.floor(convertedColdMax * critMultiplier);
+    var finalPhysicalMin = Math.floor(bonusedPhysicalMin * critMultiplier);
+    var finalPhysicalMax = Math.floor(bonusedPhysicalMax * critMultiplier);
+
+    // Total cold = converted physical (with crits) + skill cold (no crits)
+    var finalColdMin = convertedColdWithCritsMin + skillColdWithSynergiesMin;
+    var finalColdMax = convertedColdWithCritsMax + skillColdWithSynergiesMax;
+
+    // Total damage = cold + remaining physical + other elemental
+    var totalMin = finalColdMin + finalPhysicalMin + elementalDamages.fire.min + elementalDamages.lightning.min + elementalDamages.poison.min;
+    var totalMax = finalColdMax + finalPhysicalMax + elementalDamages.fire.max + elementalDamages.lightning.max + elementalDamages.poison.max;
+
+    return {
+      coldMin: finalColdMin,
+      coldMax: finalColdMax,
+      physicalMin: finalPhysicalMin,
+      physicalMax: finalPhysicalMax,
+      totalMin: totalMin,
+      totalMax: totalMax,
+      average: Math.floor((totalMin + totalMax) / 2),
+      synergyBonus: synergyBonus,
+      masteryDamageBonus: masteryDamageBonus,
+      statBonus: statBonus,
+      criticalStrike: criticalStrike,
+      deadlyStrike: deadlyStrike,
+      weaponMastery: weaponMastery,
+      critMultiplier: critMultiplier.toFixed(2),
+      elementalDamages: elementalDamages
+    };
+  }
+
   calculateElementalDamage(skill, skillLevel, skillId) {
     // Get base damages from tables
     var levelIndex = Math.min(skillLevel - 1, 59);
@@ -1901,6 +2328,148 @@ class SkillSystem {
     }
 
     return result;
+  }
+
+  calculateColdDamage(skill, skillLevel, skillId) {
+    // Get base cold damages from tables
+    var levelIndex = Math.min(skillLevel - 1, 59);
+    var baseColdMin = skill.coldDamage.min[levelIndex] || 0;
+    var baseColdMax = skill.coldDamage.max[levelIndex] || 0;
+
+    // Calculate synergy bonus for cold
+    var coldSynergyBonus = this.calculateSynergyBonus(skillId, 'cold');
+
+    // Apply synergies to cold damage
+    var coldMin = Math.floor(baseColdMin * (1 + coldSynergyBonus / 100));
+    var coldMax = Math.floor(baseColdMax * (1 + coldSynergyBonus / 100));
+
+    return {
+      coldMin: coldMin,
+      coldMax: coldMax,
+      averageCold: Math.floor((coldMin + coldMax) / 2),
+      synergyBonus: coldSynergyBonus
+    };
+  }
+
+  calculateFireDamage(skill, skillLevel, skillId) {
+    // Get base fire damages from tables
+    var levelIndex = Math.min(skillLevel - 1, 59);
+    var baseFireMin = skill.fireDamage.min[levelIndex] || 0;
+    var baseFireMax = skill.fireDamage.max[levelIndex] || 0;
+
+    // Calculate synergy bonus for fire
+    var fireSynergyBonus = this.calculateSynergyBonus(skillId, 'fire');
+
+    // Apply synergies to fire damage
+    var fireMin = Math.floor(baseFireMin * (1 + fireSynergyBonus / 100));
+    var fireMax = Math.floor(baseFireMax * (1 + fireSynergyBonus / 100));
+
+    var result = {
+      fireMin: fireMin,
+      fireMax: fireMax,
+      averageFire: Math.floor((fireMin + fireMax) / 2),
+      synergyBonus: fireSynergyBonus
+    };
+
+    // Check if this skill has burning damage (Immolation Arrow)
+    if (skill.burningDamage) {
+      var baseBurningMin = skill.burningDamage.min[levelIndex] || 0;
+      var baseBurningMax = skill.burningDamage.max[levelIndex] || 0;
+
+      // Apply synergies to burning damage
+      var burningMin = Math.floor(baseBurningMin * (1 + fireSynergyBonus / 100));
+      var burningMax = Math.floor(baseBurningMax * (1 + fireSynergyBonus / 100));
+
+      result.burningMin = burningMin;
+      result.burningMax = burningMax;
+      result.averageBurning = Math.floor((burningMin + burningMax) / 2);
+    }
+
+    return result;
+  }
+
+  calculatePhysicalMagicHybridDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
+    // Guided Arrow: Physical skill with optional magic conversion based on Magic Arrow synergy
+    // Magic Arrow synergy: +1% magic conversion per 2 levels (0.5% per level)
+
+    var masteryDamageBonus = this.getWeaponMasteryDamageBonus();
+    var statBonus = Math.floor(dexterity * 1);
+
+    // Get flat damage bonuses from socketed items
+    var toMinDmgContainer = document.getElementById('tomindmgcontainer');
+    var toMaxDmgContainer = document.getElementById('tomaxdmgcontainer');
+    var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
+    var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
+
+    // Get skill damage bonus
+    var levelIndex = Math.min(skillLevel - 1, 59);
+    var skillBonus = skill.damage[levelIndex] || 0;
+
+    // Calculate magic conversion percentage from Magic Arrow synergy
+    var magicArrowInput = document.getElementById('magicarrowcontainer');
+    var magicArrowLevel = magicArrowInput ? (parseInt(magicArrowInput.value) || 0) : 0;
+    var conversionPercent = Math.floor(magicArrowLevel * 0.5); // 1% per 2 levels
+    conversionPercent = Math.min(conversionPercent, 100); // Cap at 100%
+
+    // Calculate base weapon damage with bonuses
+    var baseMin = weaponDamage.min + toMinDmg;
+    var baseMax = weaponDamage.max + toMaxDmg;
+
+    // Apply skill bonus, dex bonus, and mastery to base damage
+    var totalBonusPercent = skillBonus + statBonus + masteryDamageBonus;
+    var bonusedMin = Math.floor(baseMin * (1 + totalBonusPercent / 100));
+    var bonusedMax = Math.floor(baseMax * (1 + totalBonusPercent / 100));
+
+    // Split into physical and magic based on conversion
+    var convertedMagicMin = Math.floor(bonusedMin * (conversionPercent / 100));
+    var convertedMagicMax = Math.floor(bonusedMax * (conversionPercent / 100));
+    var remainingPhysicalMin = bonusedMin - convertedMagicMin;
+    var remainingPhysicalMax = bonusedMax - convertedMagicMax;
+
+    // Get elemental damages from equipment
+    var elementalDamages = this.getWeaponElementalDamages();
+
+    // Get critical strike chances
+    var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);
+    var deadlyStrike = Math.min(this.getDeadlyStrikeChance(), 75);
+    var weaponMastery = Math.min(this.getWeaponMasteryChance(), 75);
+
+    // Calculate total crit chance
+    var totalCritChance = 1 - ((1 - deadlyStrike / 100) * (1 - criticalStrike / 100) * (1 - weaponMastery / 100));
+    totalCritChance = Math.floor(totalCritChance * 100);
+    totalCritChance = Math.min(totalCritChance, 95);
+
+    // Apply crit multiplier (1.5x on crit) - only to physical portion
+    var critMultiplier = 1 + (totalCritChance / 100) * 0.5;
+    var finalPhysicalMin = Math.floor(remainingPhysicalMin * critMultiplier);
+    var finalPhysicalMax = Math.floor(remainingPhysicalMax * critMultiplier);
+
+    // Magic damage doesn't get crit
+    var finalMagicMin = convertedMagicMin;
+    var finalMagicMax = convertedMagicMax;
+
+    // Total damage
+    var totalMin = finalPhysicalMin + finalMagicMin + elementalDamages.fire.min + elementalDamages.cold.min + elementalDamages.lightning.min + elementalDamages.poison.min;
+    var totalMax = finalPhysicalMax + finalMagicMax + elementalDamages.fire.max + elementalDamages.cold.max + elementalDamages.lightning.max + elementalDamages.poison.max;
+
+    return {
+      physicalMin: finalPhysicalMin,
+      physicalMax: finalPhysicalMax,
+      magicMin: finalMagicMin,
+      magicMax: finalMagicMax,
+      totalMin: totalMin,
+      totalMax: totalMax,
+      average: Math.floor((totalMin + totalMax) / 2),
+      skillBonus: skillBonus,
+      masteryDamageBonus: masteryDamageBonus,
+      statBonus: statBonus,
+      conversionPercent: conversionPercent,
+      criticalStrike: criticalStrike,
+      deadlyStrike: deadlyStrike,
+      weaponMastery: weaponMastery,
+      critMultiplier: critMultiplier.toFixed(2),
+      elementalDamages: elementalDamages
+    };
   }
 
   restrictInput(e) {
