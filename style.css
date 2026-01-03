@@ -1160,6 +1160,83 @@ label {
   box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.9);
 }
 
+/* Party Menu Buttons (Login, Craft, Save) */
+.party-menu-btn {
+  background: #000000;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.party-menu-btn img {
+  width: 28px;
+  height: 28px;
+  transition: all 0.3s ease;
+}
+
+.party-menu-btn:hover {
+  background: linear-gradient(135deg, #000447, #00ff88);
+  border-color: #00ff88;
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.6);
+  transform: translateY(-3px);
+}
+
+.party-menu-btn:hover img {
+  transform: scale(1.1);
+}
+
+.party-menu-btn.disabled {
+  opacity: 1;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #000000;
+  border-color: rgba(100, 100, 100, 0.3);
+}
+
+.party-menu-btn.disabled img {
+  opacity: 0.4;
+  filter: grayscale(100%);
+}
+
+.party-menu-btn.disabled:hover {
+  transform: none;
+  background: #000000;
+  border-color: rgba(100, 100, 100, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Tooltip for party menu buttons */
+.party-menu-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  background: rgba(0, 0, 0, 0.9);
+  color: #00ff88;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  border: 1px solid rgba(0, 255, 136, 0.5);
+}
+
+.party-menu-btn:hover::after {
+  opacity: 1;
+}
+
 /* Removed title style */
 .party-settings-btn {
   background: none;

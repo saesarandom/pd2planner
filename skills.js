@@ -310,8 +310,14 @@ class SkillSystem {
       }
     };
 
-    // Backward compatibility - keep amazonSkills as reference to Amazon tree
+    // Backward compatibility - keep class-specific skill references
     this.amazonSkills = this.classSkillTrees['Amazon'];
+    this.assassinSkills = this.classSkillTrees['Assassin'];
+    this.barbarianSkills = this.classSkillTrees['Barbarian'];
+    this.druidSkills = this.classSkillTrees['Druid'];
+    this.necromancerSkills = this.classSkillTrees['Necromancer'];
+    this.paladinSkills = this.classSkillTrees['Paladin'];
+    this.sorceressSkills = this.classSkillTrees['Sorceress'];
 
     this.skillData = {
       jabcontainer: {
@@ -649,6 +655,48 @@ class SkillSystem {
           { skillId: 'icearrowcontainer', bonusPerLevel: 6, damageType: 'cold' }
         ],
         prerequisites: []
+      },
+      // Barbarian Skills
+      bashcontainer: {
+        name: "Bash",
+        type: "physical",
+        attackRating: [27, 39, 51, 63, 75, 87, 99, 111, 123, 135, 147, 159, 171, 183, 195, 207, 219, 231, 243, 255, 267, 279, 291, 303, 315, 327, 339, 351, 363, 375, 387, 399, 411, 423, 435, 447, 459, 471, 483, 495, 507, 519, 531, 543, 555, 567, 579, 591, 603, 615, 627, 639, 651, 663, 675, 687, 699, 711, 723, 735],
+        damage: [50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525],
+        flatDamage: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60],
+        manaCost: [2, 2.2, 2.5, 2.7, 3, 3.2, 3.5, 3.7, 4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7],
+        synergies: [
+          { skillId: 'stuncontainer', bonusPerLevel: 18, damageType: 'physical' },
+          { skillId: 'concentratecontainer', bonusPerLevel: 18, damageType: 'physical' }
+        ]
+      },
+      doubleswingcontainer: {
+        name: "Double Swing",
+        type: "physical",
+        attackRating: [20, 35, 50, 65, 80, 95, 110, 125, 140, 155, 170, 185, 200, 215, 230, 245, 260, 275, 290, 305, 320, 335, 350, 365, 380, 395, 410, 425, 440, 455, 470, 485, 500, 515, 530, 545, 560, 575, 590, 605, 620, 635, 650, 665, 680, 695, 710, 725, 740, 755, 770, 785, 800, 815, 830, 845, 860, 875, 890, 905],
+        damage: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480, 510, 540, 570, 600, 630, 660, 690, 720, 750, 780, 810, 840, 870, 900, 930, 960, 990, 1020, 1050, 1080, 1110, 1140, 1170, 1200, 1230, 1260, 1290, 1320, 1350, 1380, 1410, 1440, 1470, 1500, 1530, 1560, 1590, 1620, 1650, 1680, 1710, 1740, 1770, 1800],
+        manaCost: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15],
+        synergies: [
+          { skillId: 'frenzycontainer', bonusPerLevel: 20, damageType: 'physical' },
+          { skillId: 'stuncontainer', bonusPerLevel: 20, damageType: 'physical' }
+        ]
+      },
+      frenzycontainer: {
+        name: "Frenzy",
+        type: "physical",
+        attackRating: [30, 42, 54, 66, 78, 90, 102, 114, 126, 138, 150, 162, 174, 186, 198, 210, 222, 234, 246, 258, 270, 282, 294, 306, 318, 330, 342, 354, 366, 378, 390, 402, 414, 426, 438, 450, 462, 474, 486, 498, 510, 522, 534, 546, 558, 570, 582, 594, 606, 618, 630, 642, 654, 666, 678, 690, 702, 714, 726, 738],
+        damage: [25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500],
+        attackSpeedMin: [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+        attackSpeedMax: [7, 13, 18, 22, 25, 27, 29, 31, 33, 34, 35, 36, 37, 38, 39, 40, 40, 41, 41, 42, 42, 43, 43, 44, 44, 44, 45, 45, 45, 45, 46, 46, 46, 46, 46, 47, 47, 47, 47, 47, 47, 48, 48, 48, 48, 48, 48, 48, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 50],
+        movementSpeedMin: [27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27],
+        movementSpeedMax: [32, 34, 36, 38, 40, 42, 44, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98],
+        meleeSplashRadiusMin: [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+        meleeSplashRadiusMax: [6, 12, 16, 19, 22, 24, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 36, 36, 37, 37, 38, 38, 39, 39, 39, 40, 40, 40, 40, 40, 41, 41, 41, 41, 41, 42, 42, 42, 42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 45],
+        manaCost: [1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31],
+        duration: [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35],
+        synergies: [
+          { skillId: 'doubleswingcontainer', bonusPerLevel: 20, damageType: 'physical' },
+          { skillId: 'stuncontainer', bonusPerLevel: 20, damageType: 'physical' }
+        ]
       }
     };
 
@@ -1153,6 +1201,41 @@ class SkillSystem {
           var manaCost = skill.manaCost[manaCostIndex] || 0;
           html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
         }
+
+        // Special handling for Frenzy
+        if (skillId === 'frenzycontainer') {
+          var levelIndex = Math.min(totalSkillLevel - 1, 59);
+          var investedIndex = Math.min(baseSkillLevel, 20);
+
+          // Attack Speed (stacking bonus)
+          var attackSpeedMin = skill.attackSpeedMin[levelIndex] || 7;
+          var attackSpeedMax = skill.attackSpeedMax[levelIndex] || 7;
+          html += '<div style="margin: 5px 0; color: #ffaa66;">Attack Speed: +' + attackSpeedMin + '% to +' + attackSpeedMax + '% (stacking)</div>';
+
+          // Movement Speed (stacking bonus)
+          var movementSpeedMin = skill.movementSpeedMin[levelIndex] || 27;
+          var movementSpeedMax = skill.movementSpeedMax[levelIndex] || 32;
+          html += '<div style="margin: 5px 0; color: #66ff66;">Movement Speed: +' + movementSpeedMin + '% to +' + movementSpeedMax + '% (stacking)</div>';
+
+          // Melee Splash Radius (stacking bonus)
+          var splashMin = skill.meleeSplashRadiusMin[levelIndex] || 6;
+          var splashMax = skill.meleeSplashRadiusMax[levelIndex] || 6;
+          html += '<div style="margin: 5px 0; color: #ff9966;">Melee Splash Radius: +' + splashMin + '% to +' + splashMax + '% (stacking)</div>';
+
+          // Duration
+          var duration = skill.duration[investedIndex] || 15;
+          html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + duration + ' seconds</div>';
+        }
+
+        // Special handling for Bash - flat damage bonus
+        if (skillId === 'bashcontainer' && skill.flatDamage) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.flatDamage.length - 1);
+          var flatDmg = skill.flatDamage[levelIndex] || 0;
+          if (flatDmg > 0) {
+            html += '<div style="margin: 5px 0; color: #ffcc99;">Adds +' + flatDmg + ' Flat Damage</div>';
+          }
+        }
+
       } // End of weaponUsable check for physical skills
     } else if (skill.type === 'poison') {
       var damageInfo = this.calculatePoisonDamage(skill, totalSkillLevel, skillId);
@@ -1722,13 +1805,21 @@ class SkillSystem {
     var toMinDmg = toMinDmgContainer ? (parseInt(toMinDmgContainer.textContent) || 0) : 0;
     var toMaxDmg = toMaxDmgContainer ? (parseInt(toMaxDmgContainer.textContent) || 0) : 0;
 
+    // Add Bash's flat damage bonus to weapon damage (before percentage bonuses)
+    var bashFlatDamage = 0;
+    if (skillId === 'bashcontainer' && skill.flatDamage) {
+      var levelIndex = Math.min(skillLevel - 1, skill.flatDamage.length - 1);
+      bashFlatDamage = skill.flatDamage[levelIndex] || 0;
+    }
+
     // Apply percentage bonuses to flat damage (so +15 max dmg becomes +60 with 300% damage)
     var toMinDmgWithBonuses = Math.floor(toMinDmg * (1 + totalDamageBonus / 100 + statBonus / 100));
     var toMaxDmgWithBonuses = Math.floor(toMaxDmg * (1 + totalDamageBonus / 100 + statBonus / 100));
 
     // Calculate base physical damage with all bonuses
-    var baseMinDamage = Math.floor((weaponDamage.min) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMinDmgWithBonuses;
-    var baseMaxDamage = Math.floor((weaponDamage.max) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMaxDmgWithBonuses;
+    // Bash's flat damage is added to weapon damage, then percentage bonuses are applied
+    var baseMinDamage = Math.floor((weaponDamage.min + bashFlatDamage) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMinDmgWithBonuses;
+    var baseMaxDamage = Math.floor((weaponDamage.max + bashFlatDamage) * (1 + totalDamageBonus / 100 + statBonus / 100)) + toMaxDmgWithBonuses;
 
     // Get individual critical chances (each capped at 75%)
     var criticalStrike = Math.min(this.getCriticalStrikeChance(), 75);

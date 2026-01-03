@@ -1,19 +1,8 @@
 // Auth UI Components for PD2 Planner
 
 function createAuthUI() {
-    // Create profile button (bright green, middle-right)
-    const profileBtn = document.createElement('div');
-    profileBtn.id = 'profile-btn';
-    profileBtn.innerHTML = `
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-        <span id="profile-username"></span>
-    `;
-    document.body.appendChild(profileBtn);
 
-    // Create auth modal
+    // Create auth modal only (no profile button - using party bar instead)
     const modal = document.createElement('div');
     modal.id = 'auth-modal';
     modal.className = 'auth-modal';
@@ -86,18 +75,7 @@ function createAuthUI() {
 
 function setupAuthListeners() {
     const modal = document.getElementById('auth-modal');
-    const profileBtn = document.getElementById('profile-btn');
     const closeBtn = document.querySelector('.auth-close');
-
-    // Open modal
-    profileBtn.addEventListener('click', () => {
-        modal.style.display = 'flex';
-        if (auth.isLoggedIn()) {
-            showLoggedInView();
-        } else {
-            showLoginForm();
-        }
-    });
 
     // Close modal
     closeBtn.addEventListener('click', () => {
@@ -137,9 +115,12 @@ function setupAuthListeners() {
 
         const result = await auth.login(username, password);
         if (result.success) {
-            updateProfileButton();
             showLoggedInView();
             errorEl.textContent = '';
+            // Update party menu buttons
+            if (window.partyManager && typeof window.partyManager.updateMenuButtons === 'function') {
+                window.partyManager.updateMenuButtons();
+            }
             // Load crafted items from backend
             if (typeof handleLogin === 'function') {
                 await handleLogin();
@@ -177,9 +158,12 @@ function setupAuthListeners() {
 
         const result = await auth.register(username, password, email || null);
         if (result.success) {
-            updateProfileButton();
             showLoggedInView();
             errorEl.textContent = '';
+            // Update party menu buttons
+            if (window.partyManager && typeof window.partyManager.updateMenuButtons === 'function') {
+                window.partyManager.updateMenuButtons();
+            }
             // Load crafted items from backend
             if (typeof handleLogin === 'function') {
                 await handleLogin();
@@ -196,6 +180,10 @@ function setupAuthListeners() {
     // Logout
     document.getElementById('logout-btn').addEventListener('click', () => {
         auth.logout();
+        // Update party menu buttons
+        if (window.partyManager && typeof window.partyManager.updateMenuButtons === 'function') {
+            window.partyManager.updateMenuButtons();
+        }
     });
 
     // View builds
@@ -235,11 +223,11 @@ function setupAuthListeners() {
         input.value = value;
     };
 
-    document.getElementById('login-username').addEventListener('input', function() {
+    document.getElementById('login-username').addEventListener('input', function () {
         validateUsername(this);
     });
 
-    document.getElementById('register-username').addEventListener('input', function() {
+    document.getElementById('register-username').addEventListener('input', function () {
         validateUsername(this);
     });
 }
@@ -408,19 +396,6 @@ async function showAchievementsView() {
             </div>
         `;
     }).join('');
-}
-
-function updateProfileButton() {
-    const profileBtn = document.getElementById('profile-btn');
-    const usernameSpan = document.getElementById('profile-username');
-
-    if (auth.isLoggedIn()) {
-        profileBtn.classList.add('logged-in');
-        usernameSpan.textContent = auth.user.username;
-    } else {
-        profileBtn.classList.remove('logged-in');
-        usernameSpan.textContent = 'Login';
-    }
 }
 
 // Function to load character data - will be implemented by integrating with existing CharacterManager

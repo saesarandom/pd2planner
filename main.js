@@ -2626,14 +2626,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7. Initialize crit display
   setTimeout(updateCritDisplay, 500);
 
-  // 8. Initialize other systems if available
+  // 9. Initialize other systems if available
   if (typeof updatePolyLife === 'function') updatePolyLife();
 
-  // 9. Create save button
-  setTimeout(createSaveButton, 500);
+  // 9. Create save button - REMOVED (now in party bar)
+  // setTimeout(createSaveButton, 500);
 
-  // 9.5. Create crafting button
-  setTimeout(createCraftingButton, 600);
+  // 9.5. Create crafting button - REMOVED (now in party bar)
+  // setTimeout(createCraftingButton, 600);
 
   // 9.7. Setup crafting modal handlers
   setTimeout(setupCraftingModalHandlers, 700);

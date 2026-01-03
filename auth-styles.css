@@ -39,6 +39,7 @@
     white-space: nowrap;
 }
 
+
 /* Modal */
 .auth-modal {
     display: none;
@@ -157,7 +158,8 @@
     text-align: center;
 }
 
-.auth-submit, .auth-button {
+.auth-submit,
+.auth-button {
     width: 100%;
     padding: 15px;
     background: linear-gradient(135deg, black, #000447);
@@ -171,13 +173,15 @@
     margin-bottom: 10px;
 }
 
-.auth-submit:hover, .auth-button:hover {
+.auth-submit:hover,
+.auth-button:hover {
     background: linear-gradient(135deg, #00ff88, #00dd77);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
 }
 
-.auth-submit:active, .auth-button:active {
+.auth-submit:active,
+.auth-button:active {
     transform: translateY(0);
 }
 
@@ -315,7 +319,8 @@
     background: rgba(255, 68, 68, 0.3);
 }
 
-.loading, .no-builds {
+.loading,
+.no-builds {
     text-align: center;
     color: #888;
     padding: 40px;
@@ -413,13 +418,27 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    #profile-btn {
-        right: 10px;
-        padding: 10px 15px;
-        font-size: 12px;
+    .left-menu-bar {
+        left: 10px;
+        gap: 10px;
     }
 
-    #profile-btn svg {
+    .menu-button {
+        width: 50px;
+        height: 50px;
+    }
+
+    .menu-button img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .menu-button.small {
+        width: 40px;
+        height: 40px;
+    }
+
+    .menu-button.small img {
         width: 20px;
         height: 20px;
     }

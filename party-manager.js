@@ -17,6 +17,15 @@ class PartyManager {
         document.addEventListener('DOMContentLoaded', () => {
             this.createUI();
             this.updateUI();
+            // Update menu buttons after auth is loaded
+            const checkAuth = () => {
+                if (typeof auth !== 'undefined') {
+                    this.updateMenuButtons();
+                } else {
+                    setTimeout(checkAuth, 200);
+                }
+            };
+            setTimeout(checkAuth, 500);
         });
     }
 
@@ -25,14 +34,78 @@ class PartyManager {
         partyBar.className = 'party-bar';
         partyBar.id = 'party-bar';
 
-        // Settings button on the left
+        // Login button
+        const loginBtn = document.createElement('button');
+        loginBtn.className = 'party-menu-btn';
+        loginBtn.id = 'login-party-btn';
+        loginBtn.setAttribute('data-tooltip', 'Login');
+        const loginImg = document.createElement('img');
+        loginImg.src = './img/login.png';
+        loginImg.alt = 'Login';
+        loginBtn.appendChild(loginImg);
+        loginBtn.onclick = () => {
+            const authModal = document.getElementById('auth-modal');
+            if (authModal) {
+                authModal.style.display = 'flex';
+                if (typeof auth !== 'undefined' && auth.isLoggedIn()) {
+                    if (typeof showLoggedInView === 'function') showLoggedInView();
+                } else {
+                    if (typeof showLoginForm === 'function') showLoginForm();
+                }
+            }
+        };
+        partyBar.appendChild(loginBtn);
+
+        // Craft button
+        const craftBtn = document.createElement('button');
+        craftBtn.className = 'party-menu-btn disabled';
+        craftBtn.id = 'craft-party-btn';
+        craftBtn.setAttribute('data-tooltip', 'Craft Item');
+        const craftImg = document.createElement('img');
+        craftImg.src = './img/crafted.png';
+        craftImg.alt = 'Craft';
+        craftBtn.appendChild(craftImg);
+        craftBtn.onclick = () => {
+            if (typeof auth !== 'undefined' && auth.isLoggedIn() && typeof openCraftingModal === 'function') {
+                openCraftingModal();
+            }
+        };
+        partyBar.appendChild(craftBtn);
+
+        // Save button
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'party-menu-btn disabled';
+        saveBtn.id = 'save-party-btn';
+        saveBtn.setAttribute('data-tooltip', 'Save Build');
+        const saveImg = document.createElement('img');
+        saveImg.src = './img/save.png';
+        saveImg.alt = 'Save';
+        saveBtn.appendChild(saveImg);
+        saveBtn.onclick = async () => {
+            if (typeof auth !== 'undefined' && auth.isLoggedIn() && typeof saveCurrentBuild === 'function') {
+                await saveCurrentBuild();
+            }
+        };
+        partyBar.appendChild(saveBtn);
+
+        // Settings button - opens profile (only when logged in)
         const settingsBtn = document.createElement('button');
-        settingsBtn.className = 'party-settings-btn';
+        settingsBtn.className = 'party-menu-btn disabled';
+        settingsBtn.id = 'settings-party-btn';
+        settingsBtn.setAttribute('data-tooltip', 'Profile');
         const settingsImg = document.createElement('img');
         settingsImg.src = './img/settings.png';
         settingsImg.alt = 'Settings';
         settingsBtn.appendChild(settingsImg);
-        // settingsBtn.onclick = () => { /* Open settings */ }; 
+        settingsBtn.onclick = () => {
+            if (typeof auth !== 'undefined' && auth.isLoggedIn()) {
+                const authModal = document.getElementById('auth-modal');
+                if (authModal) {
+                    authModal.style.display = 'flex';
+                    if (typeof showLoggedInView === 'function') showLoggedInView();
+                }
+            }
+        };
         partyBar.appendChild(settingsBtn);
 
         // Buttons container
@@ -105,6 +178,27 @@ class PartyManager {
         };
         if (window.loadCharacterFromData) {
             window.loadCharacterFromData(defaultData, true); // true = silent
+        }
+    }
+
+    updateMenuButtons() {
+        const craftBtn = document.getElementById('craft-party-btn');
+        const saveBtn = document.getElementById('save-party-btn');
+        const settingsBtn = document.getElementById('settings-party-btn');
+        const loginBtn = document.getElementById('login-party-btn');
+
+        if (typeof auth !== 'undefined' && auth.isLoggedIn()) {
+            // Enable craft, save, and settings buttons when logged in
+            if (craftBtn) craftBtn.classList.remove('disabled');
+            if (saveBtn) saveBtn.classList.remove('disabled');
+            if (settingsBtn) settingsBtn.classList.remove('disabled');
+            if (loginBtn) loginBtn.setAttribute('data-tooltip', auth.user.username);
+        } else {
+            // Disable craft, save, and settings buttons when not logged in
+            if (craftBtn) craftBtn.classList.add('disabled');
+            if (saveBtn) saveBtn.classList.add('disabled');
+            if (settingsBtn) settingsBtn.classList.add('disabled');
+            if (loginBtn) loginBtn.setAttribute('data-tooltip', 'Login / Profile');
         }
     }
 
