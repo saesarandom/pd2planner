@@ -110,7 +110,7 @@ class SkillSystem {
           { id: 'fireblastcontainer', name: 'Fire Blast', level: 1 },
           { id: 'shockwebcontainer', name: 'Shock Web', level: 6 },
           { id: 'bladesentinelcontainer', name: 'Blade Sentinel', level: 12 },
-          { id: 'chargedboltssentrycontainer', name: 'Charged Bolt Sentry', level: 12 },
+          { id: 'chargedboltsentrycontainer', name: 'Charged Bolt Sentry', level: 12 },
           { id: 'wakeoffirecontainer', name: 'Wake of Fire', level: 12 },
           { id: 'bladefurycontainer', name: 'Blade Fury', level: 18 },
           { id: 'bladeshieldcontainer', name: 'Blade Shield', level: 24 },
@@ -778,7 +778,195 @@ class SkillSystem {
         manaCost: [12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32, 33, 33, 34, 34, 35, 35, 36, 36, 37, 37, 38, 38, 39, 39, 40, 40, 41, 41, 42],
         synergies: []
       },
+      // Barbarian War Cries Skills
+      findpotioncontainer: {
+        name: "Find Potion",
+        type: "utility",
+        potionChance: [15, 27, 36, 44, 50, 55, 59, 62, 66, 68, 71, 73, 75, 77, 78, 80, 81, 82, 83, 84, 85, 86, 87, 88, 88, 89, 90, 90, 91, 91, 92, 92, 93, 93, 93, 94, 94, 95, 95, 95, 95, 96, 96, 96, 97, 97, 97, 97, 98, 98, 98, 98, 98, 99, 99, 99, 99, 99, 99, 100],
+        manaCost: 2
+      },
+      shoutcontainer: {
+        name: "Shout",
+        type: "buff",
+        defenseBonus: [25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 155, 165, 175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315, 325, 335, 345, 355, 365, 375, 385, 395, 405, 415, 425, 435, 445, 455, 465, 475, 485, 495, 505, 515, 525, 535, 545, 555, 565, 575, 585, 595, 605, 615],
+        duration: 300,
+        manaCost: 6
+      },
+      warcrycontainer: {
+        name: "War Cry",
+        type: "physical_cry",
+        physicalDamageMin: [2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18, 21, 24, 27, 30, 33, 43, 53, 63, 73, 83, 93, 110, 127, 144, 161, 178, 195, 219, 243, 267, 291, 315, 339, 363, 387, 411, 435, 459, 483, 507, 531, 555, 579, 603, 627, 651, 675, 699, 723, 747, 771, 795, 819, 843, 867, 891, 915, 939, 963],
+        physicalDamageMax: [4, 5, 6, 7, 8, 9, 10, 11, 14, 17, 20, 23, 26, 29, 32, 35, 45, 55, 65, 75, 85, 95, 112, 129, 146, 163, 180, 197, 221, 245, 269, 293, 317, 341, 365, 389, 413, 437, 461, 485, 509, 533, 557, 581, 605, 629, 653, 677, 701, 725, 749, 773, 797, 821, 845, 869, 893, 917, 941, 965],
+        radius: [4.6, 4.6, 4.6, 4.6, 4.6, 4.6, 5.6, 5.6, 5.6, 5.6, 5.6, 5.6, 5.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 7.6, 7.6, 7.6, 7.6, 7.6, 7.6, 7.6, 8.6, 8.6, 8.6, 8.6, 8.6, 8.6, 8.6, 9.6, 9.6, 9.6, 9.6, 9.6, 9.6, 9.6, 10.6, 10.6, 10.6, 10.6, 10.6, 10.6, 10.6, 11.6, 11.6, 11.6, 11.6, 11.6, 11.6, 11.6, 12.6, 12.6, 12.6, 12.6, 12.6],
+        manaCost: [2, 2.2, 2.5, 2.7, 3, 3.2, 3.5, 3.7, 4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7],
+        synergies: [
+          { skillId: 'howlcontainer', bonusPerLevel: 16, damageType: 'physical' },
+          { skillId: 'battlecrycontainer', bonusPerLevel: 16, damageType: 'physical' },
+          { skillId: 'tauntcontainer', bonusPerLevel: 12, damageType: 'physical' },
+          { skillId: 'shoutcontainer', bonusPerLevel: 12, damageType: 'physical' },
+          { skillId: 'battlecommandcontainer', bonusPerLevel: 12, damageType: 'physical' },
+          { skillId: 'battleorderscontainer', bonusPerLevel: 12, damageType: 'physical' }
+        ]
+      },
+      finditemcontainer: {
+        name: "Find Item",
+        type: "utility",
+        itemChance: [6, 10, 14, 17, 20, 22, 23, 24, 26, 27, 28, 29, 30, 30, 31, 32, 32, 32, 33, 33, 34, 34, 34, 35, 35, 35, 36, 36, 36, 36, 36, 36, 37, 37, 37, 37, 37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 40],
+        manaCost: 7
+      },
+      tauntcontainer: {
+        name: "Taunt",
+        type: "debuff",
+        enemyDamage: [-5, -7, -9, -11, -13, -15, -17, -19, -21, -23, -25, -27, -29, -31, -33, -35, -37, -39, -41, -43, -45, -47, -49, -51, -53, -55, -57, -59, -61, -63, -65, -67, -69, -71, -73, -75, -77, -79, -81, -83, -85, -87, -89, -91, -93, -95, -97, -99, -101, -103, -105, -107, -109, -111, -113, -115, -117, -119, -121, -123],
+        enemyAttackRating: [-5, -7, -9, -11, -13, -15, -17, -19, -21, -23, -25, -27, -29, -31, -33, -35, -37, -39, -41, -43, -45, -47, -49, -51, -53, -55, -57, -59, -61, -63, -65, -67, -69, -71, -73, -75, -77, -79, -81, -83, -85, -87, -89, -91, -93, -95, -97, -99, -101, -103, -105, -107, -109, -111, -113, -115, -117, -119, -121, -123],
+        duration: [2, 2.2, 2.4, 2.7, 3, 3.2, 3.4, 3.7, 4, 4.2, 4.4, 4.7, 5, 5.2, 5.4, 5.7, 6, 6.2, 6.4, 6.7, 7],
+        radius: 8,
+        manaCost: 3
+      },
+      battleorderscontainer: {
+        name: "Battle Orders",
+        type: "buff",
+        lifeBonus: [50, 65, 80, 95, 110, 125, 140, 155, 170, 185, 200, 215, 230, 245, 260, 275, 290, 305, 320, 335, 350, 365, 380, 395, 410, 425, 440, 455, 470, 485, 500, 515, 530, 545, 560, 575, 590, 605, 620, 635, 650, 665, 680, 695, 710, 725, 740, 755, 770, 785, 800, 815, 830, 845, 860, 875, 890, 905, 920, 935],
+        manaBonus: [25, 32, 40, 47, 55, 62, 70, 77, 85, 92, 100, 107, 115, 122, 130, 137, 145, 152, 160, 167, 175, 182, 190, 197, 205, 212, 220, 227, 235, 242, 250, 257, 265, 272, 280, 287, 295, 302, 310, 317, 325, 332, 340, 347, 355, 362, 370, 377, 385, 392, 400, 407, 415, 422, 430, 437, 445, 452, 460, 467],
+        duration: 300,
+        manaCost: 7
+      },
+      grimwardcontainer: {
+        name: "Grim Ward",
+        type: "buff",
+        attackRating: [120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710],
+        damageBonus: [50, 65, 80, 95, 110, 125, 140, 155, 170, 185, 200, 215, 230, 245, 260, 275, 290, 305, 320, 335, 350, 365, 380, 395, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 805, 820, 835, 850, 865, 880, 895, 910, 925],
+        radius: [10.6, 11.3, 12, 12.6, 13.3, 14, 14.6, 15.3, 16, 16.6, 17.3, 18, 18.6, 19.3, 20, 20.6, 21.3, 22, 22.6, 23.3, 24, 24.6, 25.3, 26, 26.6, 27.3, 28, 28.6, 29.3, 30, 30.6, 31.3, 32, 32.6, 33.3, 34, 34.6, 35.3, 36, 36.6, 37.3, 38, 38.6, 39.3, 40, 40.6, 41.3, 42, 42.6, 43.3, 44, 44.6, 45.3, 46, 46.6, 47.3, 48, 48.6, 49.3, 50],
+        duration: 40
+      },
+      battlecommandcontainer: {
+        name: "Battle Command",
+        type: "buff",
+        damageBonus: [20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107, 110, 113, 116, 119, 122, 125, 128, 131, 134, 137, 140, 143, 146, 149, 152, 155, 158, 161, 164, 167, 170, 173, 176, 179, 182, 185, 188, 191, 194, 197],
+        bonusSkills: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3],
+        duration: 300,
+        manaCost: 11
+      },
+      battlecrycontainer: {
+        name: "Battle Cry",
+        type: "debuff",
+        enemyDefense: [-15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30, -30],
+        enemyPhysicalResist: [-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -26, -27, -27, -28, -28, -29, -29, -30, -30, -31, -31, -32, -32, -33, -33, -34, -34, -35, -35, -36, -36, -37, -37, -38, -38, -39, -39, -40, -40, -41, -41, -42, -42, -43, -43, -44, -44, -45],
+        duration: 12,
+        manaCost: 5
+      },
       // Assassin Skills
+      tigerstrikecontainer: {
+        name: "Tiger Strike",
+        type: "charge_up",
+        charge1Damage: [50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525],
+        charge2Damage: [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 1850, 1900, 1950, 2000, 2050, 2100, 2150, 2200, 2250, 2300, 2350, 2400, 2450, 2500, 2550, 2600, 2650, 2700, 2750, 2800, 2850, 2900, 2950, 3000, 3050],
+        charge3Damage: [150, 225, 300, 375, 450, 525, 600, 675, 750, 825, 900, 975, 1050, 1125, 1200, 1275, 1350, 1425, 1500, 1575, 1650, 1725, 1800, 1875, 1950, 2025, 2100, 2175, 2250, 2325, 2400, 2475, 2550, 2625, 2700, 2775, 2850, 2925, 3000, 3075, 3150, 3225, 3300, 3375, 3450, 3525, 3600, 3675, 3750, 3825, 3900, 3975, 4050, 4125, 4200, 4275, 4350, 4425, 4500, 4575],
+        attackRating: [25, 40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910],
+        meleeSplashBonus2: 20,
+        meleeSplashBonus3: 40,
+        duration: 300,
+        manaCost: 1
+      },
+      dragontaloncontainer: {
+        name: "Dragon Talon",
+        type: "kick",
+        kicks: [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        damage: [50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525],
+        attackRating: [20, 45, 70, 95, 120, 145, 170, 195, 220, 245, 270, 295, 320, 345, 370, 395, 420, 445, 470, 495, 520, 545, 570, 595, 620, 645, 670, 695, 720, 745, 770, 795, 820, 845, 870, 895, 920, 945, 970, 995, 1020, 1045, 1070, 1095, 1120, 1145, 1170, 1195, 1220, 1245, 1270, 1295, 1320, 1345, 1370, 1395, 1420, 1445, 1470, 1495],
+        manaCost: 6,
+        synergies: [
+          { skillId: 'dragontailcontainer', bonusPerLevel: 22, damageType: 'physical' },
+          { skillId: 'dragonflightcontainer', bonusPerLevel: 22, damageType: 'physical' }
+        ]
+      },
+      dragonclawcontainer: {
+        name: "Dragon Claw",
+        type: "physical",
+        damage: [50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525],
+        attackRating: [40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500, 520, 540, 560, 580, 600, 620, 640, 660, 680, 700, 720, 740, 760, 780, 800, 820, 840, 860, 880, 900, 920, 940, 960, 980, 1000, 1020, 1040, 1060, 1080, 1100, 1120, 1140, 1160, 1180, 1200, 1220],
+        hitsPerAttack: 2,
+        manaCost: 2,
+        synergies: [
+          { skillId: 'clawanddaggermasterycontainer', bonusPerLevel: 20, damageType: 'physical' },
+          { skillId: 'weaponblockcontainer', bonusPerLevel: 20, damageType: 'physical' }
+        ]
+      },
+      fistsoffirecontainer: {
+        name: "Fists of Fire",
+        type: "charge_up",
+        burningDamage: {
+          min: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 34, 44, 54, 64, 74, 84, 102, 120, 138, 156, 174, 192, 218, 244, 270, 296, 322, 348, 374, 400, 426, 452, 478, 504, 530, 556, 582, 608, 634, 660, 686, 712, 738, 764, 790, 816, 842, 868, 894, 920, 946, 972, 998, 1024],
+          max: [2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18, 21, 24, 27, 30, 33, 48, 63, 78, 93, 108, 123, 150, 177, 204, 231, 258, 285, 324, 363, 402, 441, 480, 519, 558, 597, 636, 675, 714, 753, 792, 831, 870, 909, 948, 987, 1026, 1065, 1104, 1143, 1182, 1221, 1260, 1299, 1338, 1377, 1416, 1455, 1494, 1533]
+        },
+        novaFireDamage: {
+          min: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 39, 54, 69, 84, 99, 114, 143, 172, 201, 230, 259, 288, 332, 376, 420, 464, 508, 552, 596, 640, 684, 728, 772, 816, 860, 904, 948, 992, 1036, 1080, 1124, 1168, 1212, 1256, 1300, 1344, 1388, 1432, 1476, 1520, 1564, 1608, 1652, 1696],
+          max: [2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18, 21, 24, 27, 30, 33, 51, 69, 87, 105, 123, 141, 175, 209, 243, 277, 311, 345, 396, 447, 498, 549, 600, 651, 702, 753, 804, 855, 906, 957, 1008, 1059, 1110, 1161, 1212, 1263, 1314, 1365, 1416, 1467, 1518, 1569, 1620, 1671, 1722, 1773, 1824, 1875, 1926, 1977]
+        },
+        meteorDamage: {
+          min: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 50, 68, 86, 104, 122, 140, 176, 212, 248, 284, 320, 356, 412, 468, 524, 580, 636, 692, 748, 804, 860, 916, 972, 1028, 1084, 1140, 1196, 1252, 1308, 1364, 1420, 1476, 1532, 1588, 1644, 1700, 1756, 1812, 1868, 1924, 1980, 2036, 2092, 2148],
+          max: [4, 6, 8, 10, 12, 14, 16, 18, 22, 26, 30, 34, 38, 42, 46, 50, 70, 90, 110, 130, 150, 170, 208, 246, 284, 322, 360, 398, 456, 514, 572, 630, 688, 746, 804, 862, 920, 978, 1036, 1094, 1152, 1210, 1268, 1326, 1384, 1442, 1500, 1558, 1616, 1674, 1732, 1790, 1848, 1906, 1964, 2022, 2080, 2138, 2196, 2254]
+        },
+        attackRating: [35, 50, 65, 80, 95, 110, 125, 140, 155, 170, 185, 200, 215, 230, 245, 260, 275, 290, 305, 320, 335, 350, 365, 380, 395, 410, 425, 440, 455, 470, 485, 500, 515, 530, 545, 560, 575, 590, 605, 620, 635, 650, 665, 680, 695, 710, 725, 740, 755, 770, 785, 800, 815, 830, 845, 860, 875, 890, 905, 920],
+        manaCost: [3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8, 9, 9.1, 9.2, 9.3, 9.5, 9.6, 9.7, 9.8, 10, 10.1, 10.2, 10.3],
+        synergies: [
+          { skillId: 'tigerstrikecontainer', bonusPerLevel: 26, damageType: 'fire' },
+          { skillId: 'dragonflightcontainer', bonusPerLevel: 26, damageType: 'fire' }
+        ]
+      },
+      cobrastrikecontainer: {
+        name: "Cobra Strike",
+        type: "charge_up",
+        poisonBoltDamage: {
+          min: [3, 9, 15, 21, 28, 34, 40, 46, 65, 84, 103, 121, 140, 159, 178, 196, 228, 259, 290, 321, 353, 384, 462, 540, 618, 696, 775, 853, 1009, 1165, 1321, 1478, 1634, 1790, 1946, 2103, 2259, 2415, 2571, 2728, 2884, 3040, 3196, 3353, 3509, 3665, 3821, 3978, 4134, 4290, 4446, 4603, 4759, 4915, 5071, 5228, 5384, 5540, 5696, 5853],
+          max: [12, 18, 25, 31, 37, 43, 50, 56, 75, 93, 112, 131, 150, 168, 187, 206, 237, 268, 300, 331, 362, 393, 471, 550, 628, 706, 784, 862, 1018, 1175, 1331, 1487, 1643, 1800, 1956, 2112, 2268, 2425, 2581, 2737, 2893, 3050, 3206, 3362, 3518, 3675, 3831, 3987, 4143, 4300, 4456, 4612, 4768, 4925, 5081, 5237, 5393, 5550, 5706, 5862]
+        },
+        enhancedDamage: [90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480, 510, 540, 570, 600, 630, 660, 690, 720, 750, 780, 810, 840, 870, 900, 930, 960, 990, 1020, 1050, 1080, 1110, 1140, 1170, 1200, 1230, 1260, 1290, 1320, 1350, 1380, 1410, 1440, 1470, 1500, 1530, 1560, 1590, 1620, 1650, 1680, 1710, 1740, 1770, 1800, 1830, 1860],
+        lifeManaSteal: [16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 244, 248, 252],
+        poisonCloudDamage: {
+          min: [6, 15, 25, 34, 43, 53, 62, 71, 96, 121, 146, 171, 196, 221, 246, 271, 309, 346, 384, 421, 459, 496, 590, 684, 778, 871, 965, 1059, 1265, 1471, 1678, 1884, 2090, 2296, 2503, 2709, 2915, 3121, 3328, 3534, 3740, 3946, 4153, 4359, 4565, 4771, 4978, 5184, 5390, 5596, 5803, 6009, 6215, 6421, 6628, 6834, 7040, 7246, 7453, 7659],
+          max: [18, 28, 37, 46, 56, 65, 75, 84, 109, 134, 159, 184, 209, 234, 259, 284, 321, 359, 396, 434, 471, 509, 603, 696, 790, 884, 978, 1071, 1278, 1484, 1690, 1896, 2103, 2309, 2515, 2721, 2928, 3134, 3340, 3546, 3753, 3959, 4165, 4371, 4578, 4784, 4990, 5196, 5403, 5609, 5815, 6021, 6228, 6434, 6640, 6846, 7053, 7259, 7465, 7671]
+        },
+        attackRating: [60, 74, 88, 102, 116, 130, 144, 158, 172, 186, 200, 214, 228, 242, 256, 270, 284, 298, 312, 326, 340, 354, 368, 382, 396, 410, 424, 438, 452, 466, 480, 494, 508, 522, 536, 550, 564, 578, 592, 606, 620, 634, 648, 662, 676, 690, 704, 718, 732, 746, 760, 774, 788, 802, 816, 830, 844, 858, 872, 886],
+        poisonDuration: 1,
+        manaCost: 2,
+        synergies: [
+          { skillId: 'venomcontainer', bonusPerLevel: 20, damageType: 'poison' }
+        ]
+      },
+      clawsofthundercontainer: {
+        name: "Claws of Thunder",
+        type: "charge_up",
+        lightningDamage: {
+          min: new Array(60).fill(1),
+          max: [80, 100, 120, 140, 160, 180, 200, 220, 260, 300, 340, 380, 420, 460, 500, 540, 600, 660, 720, 780, 840, 900, 980, 1060, 1140, 1220, 1300, 1380, 1480, 1580, 1680, 1780, 1880, 1980, 2080, 2180, 2280, 2380, 2480, 2580, 2680, 2780, 2880, 2980, 3080, 3180, 3280, 3380, 3480, 3580, 3680, 3780, 3880, 3980, 4080, 4180, 4280, 4380, 4480, 4580]
+        },
+        novaDamage: {
+          min: [5, 10, 15, 20, 25, 30, 35, 40, 60, 80, 100, 120, 140, 160, 180, 200, 235, 270, 305, 340, 375, 410, 460, 510, 560, 610, 660, 710, 775, 840, 905, 970, 1035, 1100, 1165, 1230, 1295, 1360, 1425, 1490, 1555, 1620, 1685, 1750, 1815, 1880, 1945, 2010, 2075, 2140, 2205, 2270, 2335, 2400, 2465, 2530, 2595, 2660, 2725, 2790],
+          max: [30, 40, 50, 60, 70, 80, 90, 100, 130, 160, 190, 220, 250, 280, 310, 340, 390, 440, 490, 540, 590, 640, 710, 780, 850, 920, 990, 1060, 1150, 1240, 1330, 1420, 1510, 1600, 1690, 1780, 1870, 1960, 2050, 2140, 2230, 2320, 2410, 2500, 2590, 2680, 2770, 2860, 2950, 3040, 3130, 3220, 3310, 3400, 3490, 3580, 3670, 3760, 3850, 3940]
+        },
+        chargedBoltDamage: {
+          min: [10, 15, 20, 25, 30, 35, 40, 45, 55, 65, 75, 85, 95, 105, 115, 125, 140, 155, 170, 185, 200, 215, 235, 255, 275, 295, 315, 335, 360, 385, 410, 435, 460, 485, 510, 535, 560, 585, 610, 635, 660, 685, 710, 735, 760, 785, 810, 835, 860, 885, 910, 935, 960, 985, 1010, 1035, 1060, 1085, 1110, 1135],
+          max: [40, 60, 80, 100, 120, 140, 160, 180, 220, 260, 300, 340, 380, 420, 460, 500, 560, 620, 680, 740, 800, 860, 940, 1020, 1100, 1180, 1260, 1340, 1440, 1540, 1640, 1740, 1840, 1940, 2040, 2140, 2240, 2340, 2440, 2540, 2640, 2740, 2840, 2940, 3040, 3140, 3240, 3340, 3440, 3540, 3640, 3740, 3840, 3940, 4040, 4140, 4240, 4340, 4440, 4540]
+        },
+        attackRating: [80, 92, 104, 116, 128, 140, 152, 164, 176, 188, 200, 212, 224, 236, 248, 260, 272, 284, 296, 308, 320, 332, 344, 356, 368, 380, 392, 404, 416, 428, 440, 452, 464, 476, 488, 500, 512, 524, 536, 548, 560, 572, 584, 596, 608, 620, 632, 644, 656, 668, 680, 692, 704, 716, 728, 740, 752, 764, 776, 788],
+        manaCost: 4,
+        synergies: [
+          { skillId: 'dragonclawcontainer', bonusPerLevel: 16, damageType: 'lightning' }
+        ]
+      },
+      dragontailcontainer: {
+        name: "Dragon Tail",
+        type: "kick",
+        fireDamage: [40, 53, 66, 79, 92, 105, 118, 131, 144, 157, 170, 183, 196, 209, 222, 235, 248, 261, 274, 287, 300, 313, 326, 339, 352, 365, 378, 391, 404, 417, 430, 443, 456, 469, 482, 495, 508, 521, 534, 547, 560, 573, 586, 599, 612, 625, 638, 651, 664, 677, 690, 703, 716, 729, 742, 755, 768, 781, 794, 807],
+        attackRating: [210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 740, 750, 760, 770, 780, 790, 800],
+        radius: 4,
+        manaCost: 10,
+        synergies: [
+          { skillId: 'dragontaloncontainer', bonusPerLevel: 8, damageType: 'fire' },
+          { skillId: 'dragonflightcontainer', bonusPerLevel: 8, damageType: 'fire' }
+        ]
+      },
       fireblastcontainer: {
         name: "Fire Blast",
         type: "fire",
@@ -875,6 +1063,67 @@ class SkillSystem {
         synergies: [
           { skillId: 'bladesentinelcontainer', bonusPerLevel: 15, damageType: 'physical' },
           { skillId: 'bladeshieldcontainer', bonusPerLevel: 15, damageType: 'physical' }
+        ]
+      },
+      lightningsentrycontainer: {
+        name: "Lightning Sentry",
+        type: "lightning",
+        lightningDamage: {
+          min: new Array(60).fill(1),
+          max: [30, 45, 60, 75, 90, 105, 120, 135, 156, 177, 198, 219, 240, 261, 282, 303, 330, 357, 384, 411, 438, 465, 498, 531, 564, 597, 630, 663, 702, 741, 780, 819, 858, 897, 936, 975, 1014, 1053, 1092, 1131, 1170, 1209, 1248, 1287, 1326, 1365, 1404, 1443, 1482, 1521, 1560, 1599, 1638, 1677, 1716, 1755, 1794, 1833, 1872, 1911]
+        },
+        manaCost: [7, 7.125, 7.25, 7.375, 7.5, 7.625, 7.75, 7.875, 8, 8.125, 8.25, 8.375, 8.5, 8.625, 8.75, 8.875, 9, 9.125, 9.25, 9.375, 9.5, 9.625, 9.75, 9.875, 10, 10.125, 10.25, 10.375, 10.5, 10.625, 10.75, 10.875, 11, 11.125, 11.25, 11.375, 11.5, 11.625, 11.75, 11.875, 12, 12.125, 12.25, 12.375, 12.5, 12.625, 12.75, 12.875, 13, 13.125, 13.25, 13.375, 13.5, 13.625, 13.75, 13.875, 14, 14.125, 14.25, 14.375],
+        synergies: [
+          { skillId: 'fireblastcontainer', bonusPerLevel: 16, damageType: 'lightning' },
+          { skillId: 'chargedboltsentrycontainer', bonusPerLevel: 16, damageType: 'lightning' },
+          { skillId: 'chainlightningsentrycontainer', bonusPerLevel: 16, damageType: 'lightning' }
+        ]
+      },
+      wakeofinfernocontainer: {
+        name: "Wake of Inferno",
+        type: "fire",
+        fireDamage: {
+          min: [31, 48, 66, 84, 102, 119, 137, 155, 190, 226, 261, 296, 332, 367, 403, 438, 491, 544, 597, 651, 704, 757, 828, 898, 969, 1040, 1111, 1182, 1270, 1359, 1447, 1536, 1625, 1713, 1802, 1890, 1979, 2067, 2156, 2244, 2333, 2421, 2510, 2598, 2687, 2776, 2864, 2953, 3041, 3130, 3218, 3307, 3395, 3484, 3572, 3661, 3749, 3838, 3927, 4015],
+          max: [52, 72, 93, 114, 135, 156, 177, 197, 239, 281, 322, 364, 406, 447, 489, 531, 593, 656, 718, 781, 843, 906, 989, 1072, 1156, 1239, 1322, 1406, 1510, 1614, 1718, 1822, 1927, 2031, 2135, 2239, 2343, 2447, 2552, 2656, 2760, 2864, 2968, 3072, 3177, 3281, 3385, 3489, 3593, 3697, 3802, 3906, 4010, 4114, 4218, 4322, 4427, 4531, 4635, 4739]
+        },
+        manaCost: [8, 8.125, 8.25, 8.375, 8.5, 8.625, 8.75, 8.875, 9, 9.125, 9.25, 9.375, 9.5, 9.625, 9.75, 9.875, 10, 10.125, 10.25, 10.375, 10.5, 10.625, 10.75, 10.875, 11, 11.125, 11.25, 11.375, 11.5, 11.625, 11.75, 11.875, 12, 12.125, 12.25, 12.375, 12.5, 12.625, 12.75, 12.875, 13, 13.125, 13.25, 13.375, 13.5, 13.625, 13.75, 13.875, 14, 14.125, 14.25, 14.375, 14.5, 14.625, 14.75, 14.875, 15, 15.125, 15.25, 15.375],
+        synergies: [
+          { skillId: 'fireblastcontainer', bonusPerLevel: 10, damageType: 'fire' },
+          { skillId: 'wakeoffirecontainer', bonusPerLevel: 10, damageType: 'fire' }
+        ]
+      },
+      chainlightningsentrycontainer: {
+        name: "Chain Lightning Sentry",
+        type: "lightning",
+        lightningDamage: {
+          min: new Array(60).fill(1),
+          max: [50, 58, 66, 74, 82, 90, 98, 106, 118, 130, 142, 154, 166, 178, 190, 202, 220, 238, 256, 274, 292, 310, 336, 362, 388, 414, 440, 466, 502, 538, 574, 610, 646, 682, 718, 754, 790, 826, 862, 898, 934, 970, 1006, 1042, 1078, 1114, 1150, 1186, 1222, 1258, 1294, 1330, 1366, 1402, 1438, 1474, 1510, 1546, 1582, 1618]
+        },
+        manaCost: [7, 7.125, 7.25, 7.375, 7.5, 7.625, 7.75, 7.875, 8, 8.125, 8.25, 8.375, 8.5, 8.625, 8.75, 8.875, 9, 9.125, 9.25, 9.375, 9.5, 9.625, 9.75, 9.875, 10, 10.125, 10.25, 10.375, 10.5, 10.625, 10.75, 10.875, 11, 11.125, 11.25, 11.375, 11.5, 11.625, 11.75, 11.875, 12, 12.125, 12.25, 12.375, 12.5, 12.625, 12.75, 12.875, 13, 13.125, 13.25, 13.375, 13.5, 13.625, 13.75, 13.875, 14, 14.125, 14.25, 14.375],
+        synergies: [
+          { skillId: 'fireblastcontainer', bonusPerLevel: 13, damageType: 'lightning' },
+          { skillId: 'chargedboltsentrycontainer', bonusPerLevel: 13, damageType: 'lightning' },
+          { skillId: 'lightningsentrycontainer', bonusPerLevel: 13, damageType: 'lightning' }
+        ]
+      },
+      deathsentrycontainer: {
+        name: "Death Sentry",
+        type: "death_sentry",
+        lightningDamage: {
+          min: [16, 21, 26, 31, 36, 41, 46, 51, 58, 65, 72, 79, 86, 93, 100, 107, 116, 125, 134, 143, 152, 161, 172, 183, 194, 205, 216, 227, 240, 253, 266, 279, 292, 305, 318, 331, 344, 357, 370, 383, 396, 409, 422, 435, 448, 461, 474, 487, 500, 513, 526, 539, 552, 565, 578, 591, 604, 617, 630, 643],
+          max: [20, 26, 32, 38, 44, 50, 56, 62, 70, 78, 86, 94, 102, 110, 118, 126, 136, 146, 156, 166, 176, 186, 198, 210, 222, 234, 246, 258, 272, 286, 300, 314, 328, 342, 356, 370, 384, 398, 412, 426, 440, 454, 468, 482, 496, 510, 524, 538, 552, 566, 580, 594, 608, 622, 636, 650, 664, 678, 692, 706]
+        },
+        fireDamage: {
+          min: [16, 21, 26, 31, 36, 41, 46, 51, 58, 65, 72, 79, 86, 93, 100, 107, 116, 125, 134, 143, 152, 161, 172, 183, 194, 205, 216, 227, 240, 253, 266, 279, 292, 305, 318, 331, 344, 357, 370, 383, 396, 409, 422, 435, 448, 461, 474, 487, 500, 513, 526, 539, 552, 565, 578, 591, 604, 617, 630, 643],
+          max: [20, 26, 32, 38, 44, 50, 56, 62, 70, 78, 86, 94, 102, 110, 118, 126, 136, 146, 156, 166, 176, 186, 198, 210, 222, 234, 246, 258, 272, 286, 300, 314, 328, 342, 356, 370, 384, 398, 412, 426, 440, 454, 468, 482, 496, 510, 524, 538, 552, 566, 580, 594, 608, 622, 636, 650, 664, 678, 692, 706]
+        },
+        manaCost: [8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7, 20, 20.2, 20.5, 20.7, 21, 21.2, 21.5, 21.7, 22, 22.2, 22.5, 22.7],
+        shots: [5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11],
+        corpseExplosionPercent: { min: 3, max: 5 },
+        radius: 12,
+        synergies: [
+          { skillId: 'wakeofinfernocontainer', bonusPerLevel: 8, damageType: 'both' },
+          { skillId: 'fireblastcontainer', bonusPerLevel: 8, damageType: 'both' }
         ]
       }
     };
@@ -1481,6 +1730,21 @@ class SkillSystem {
           html += '<div style="margin: 5px 0; color: #cccccc;">Min Mana required to cast: ' + skill.minMana + '</div>';
         }
 
+        // Special handling for Dragon Talon - kicks
+        if (skillId === 'dragontaloncontainer' && skill.kicks) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.kicks.length - 1);
+          var kickCount = skill.kicks[levelIndex] || 1;
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Kicks: ' + kickCount + '</div>';
+        }
+
+        // Special handling for Dragon Claw - hits per attack
+        if (skillId === 'dragonclawcontainer') {
+          if (skill.hitsPerAttack) {
+            html += '<div style="margin: 5px 0; color: #ffaa00;">Hits: ' + skill.hitsPerAttack + ' (once per claw)</div>';
+          }
+          html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic; color: #888;">Cannot be interrupted</div>';
+        }
+
       } // End of weaponUsable check for physical skills
     } else if (skill.type === 'utility') {
       // Handle utility skills like Leap (no damage calculations)
@@ -1499,9 +1763,503 @@ class SkillSystem {
         html += '<div style="margin: 5px 0; color: #ffaa66;">Knockback Radius: ' + radius + ' yards</div>';
       }
 
+      // Display potion chance for Find Potion
+      if (skillId === 'findpotioncontainer' && skill.potionChance) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.potionChance.length - 1);
+        var chance = skill.potionChance[levelIndex] || 15;
+        html += '<div style="margin: 5px 0; color: #00ff00;">Chance to Find Potion: ' + chance + '%</div>';
+      }
+
+      // Display item chance for Find Item
+      if (skillId === 'finditemcontainer' && skill.itemChance) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.itemChance.length - 1);
+        var chance = skill.itemChance[levelIndex] || 6;
+        html += '<div style="margin: 5px 0; color: #00ff00;">Chance to Find Item: ' + chance + '%</div>';
+      }
+
       // Display mana cost
       if (skill.manaCost) {
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
+      }
+    } else if (skill.type === 'buff') {
+      // Handle buff skills like Shout, Battle Orders, Grim Ward, Battle Command
+
+      // Display defense bonus for Shout
+      if (skillId === 'shoutcontainer' && skill.defenseBonus) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.defenseBonus.length - 1);
+        var defBonus = skill.defenseBonus[levelIndex] || 25;
+        html += '<div style="margin: 5px 0; color: #aaddff;">Defense: +' + defBonus + '%</div>';
+      }
+
+      // Display life and mana bonus for Battle Orders
+      if (skillId === 'battleorderscontainer') {
+        if (skill.lifeBonus) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.lifeBonus.length - 1);
+          var lifeBonus = skill.lifeBonus[levelIndex] || 50;
+          html += '<div style="margin: 5px 0; color: #ff6666;">Life: +' + lifeBonus + '</div>';
+        }
+        if (skill.manaBonus) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.manaBonus.length - 1);
+          var manaBonus = skill.manaBonus[levelIndex] || 25;
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana: +' + manaBonus + '</div>';
+        }
+      }
+
+      // Display attack rating, damage, and radius for Grim Ward
+      if (skillId === 'grimwardcontainer') {
+        if (skill.attackRating) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          var ar = skill.attackRating[levelIndex] || 120;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + ar + '</div>';
+        }
+        if (skill.damageBonus) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.damageBonus.length - 1);
+          var dmgBonus = skill.damageBonus[levelIndex] || 50;
+          html += '<div style="margin: 5px 0; color: #ff9966;">Damage: +' + dmgBonus + '%</div>';
+        }
+        if (skill.radius) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.radius.length - 1);
+          var radius = skill.radius[levelIndex] || 10.6;
+          html += '<div style="margin: 5px 0; color: #cccccc;">Radius: ' + radius + ' yards</div>';
+        }
+      }
+
+      // Display damage bonus and bonus skills for Battle Command
+      if (skillId === 'battlecommandcontainer') {
+        if (skill.damageBonus) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.damageBonus.length - 1);
+          var dmgBonus = skill.damageBonus[levelIndex] || 20;
+          html += '<div style="margin: 5px 0; color: #ff9966;">Damage: +' + dmgBonus + '% (Physical & Elemental)</div>';
+        }
+        if (skill.bonusSkills) {
+          var investedIndex = Math.min(baseSkillLevel, skill.bonusSkills.length - 1);
+          var bonusSkills = skill.bonusSkills[investedIndex] || 1;
+          html += '<div style="margin: 5px 0; color: #00ff00;">Bonus to All Skills: +' + bonusSkills + '</div>';
+        }
+      }
+
+      // Display duration
+      if (skill.duration) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + skill.duration + ' seconds</div>';
+      }
+
+      // Display mana cost
+      if (skill.manaCost) {
+        var manaCost;
+        if (Array.isArray(skill.manaCost)) {
+          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        } else if (typeof skill.manaCost === 'object') {
+          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+        } else {
+          manaCost = skill.manaCost;
+        }
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
+    } else if (skill.type === 'debuff') {
+      // Handle debuff skills like Taunt
+
+      // Display enemy damage reduction for Taunt
+      if (skillId === 'tauntcontainer' && skill.enemyDamage) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.enemyDamage.length - 1);
+        var enemyDmg = skill.enemyDamage[levelIndex] || -5;
+        html += '<div style="margin: 5px 0; color: #ff6666;">Enemy Damage: ' + enemyDmg + '%</div>';
+      }
+
+      // Display enemy attack rating reduction for Taunt
+      if (skillId === 'tauntcontainer' && skill.enemyAttackRating) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.enemyAttackRating.length - 1);
+        var enemyAR = skill.enemyAttackRating[levelIndex] || -5;
+        html += '<div style="margin: 5px 0; color: #ffaa66;">Enemy Attack Rating: ' + enemyAR + '%</div>';
+      }
+
+      // Display enemy defense reduction for Battle Cry
+      if (skillId === 'battlecrycontainer' && skill.enemyDefense) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.enemyDefense.length - 1);
+        var enemyDef = skill.enemyDefense[levelIndex] || -15;
+        html += '<div style="margin: 5px 0; color: #aaddff;">Enemy Defense: ' + enemyDef + '%</div>';
+      }
+
+      // Display enemy physical resistance reduction for Battle Cry
+      if (skillId === 'battlecrycontainer' && skill.enemyPhysicalResist) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.enemyPhysicalResist.length - 1);
+        var enemyPhysRes = skill.enemyPhysicalResist[levelIndex] || -5;
+        html += '<div style="margin: 5px 0; color: #ff9966;">Enemy Physical Resistance: ' + enemyPhysRes + '%</div>';
+      }
+
+      // Display duration (based on invested points for Taunt, fixed for Battle Cry)
+      if (skill.duration) {
+        if (Array.isArray(skill.duration)) {
+          var investedIndex = Math.min(baseSkillLevel, skill.duration.length - 1);
+          var duration = skill.duration[investedIndex] || 2;
+          html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + duration + ' seconds</div>';
+        } else {
+          html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + skill.duration + ' seconds</div>';
+        }
+      }
+
+      // Display radius
+      if (skill.radius) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Radius: ' + skill.radius + ' yards</div>';
+      }
+
+      // Display mana cost
+      if (skill.manaCost) {
+        var manaCost;
+        if (Array.isArray(skill.manaCost)) {
+          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        } else if (typeof skill.manaCost === 'object') {
+          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+        } else {
+          manaCost = skill.manaCost;
+        }
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
+    } else if (skill.type === 'physical_cry') {
+      // Handle War Cry - pure base damage skill (no weapon, no dex, no ED%)
+      // Only affected by synergies
+
+      var levelIndex = Math.min(totalSkillLevel - 1, skill.physicalDamageMin.length - 1);
+      var baseDamageMin = skill.physicalDamageMin[levelIndex] || 0;
+      var baseDamageMax = skill.physicalDamageMax[levelIndex] || 0;
+
+      // Calculate synergy bonus
+      var synergyBonus = this.calculateSynergyBonus(skillId, 'physical');
+
+      // Apply synergies to base damage
+      var damageMin = Math.floor(baseDamageMin * (1 + synergyBonus / 100));
+      var damageMax = Math.floor(baseDamageMax * (1 + synergyBonus / 100));
+      var averageDamage = Math.floor((damageMin + damageMax) / 2);
+
+      // Display damage
+      html += '<div style="margin: 5px 0; color: #ffaa00;">Physical Damage: ' + damageMin + '-' + damageMax + '</div>';
+      html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + averageDamage + '</div>';
+
+      if (synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+      }
+
+      // Display radius
+      if (skill.radius) {
+        var radiusIndex = Math.min(totalSkillLevel - 1, skill.radius.length - 1);
+        var radius = skill.radius[radiusIndex] || 4.6;
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Radius: ' + radius + ' yards</div>';
+      }
+
+      // Display mana cost
+      if (skill.manaCost) {
+        var manaCost;
+        if (Array.isArray(skill.manaCost)) {
+          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        } else if (typeof skill.manaCost === 'object') {
+          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+        } else {
+          manaCost = skill.manaCost;
+        }
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
+    } else if (skill.type === 'charge_up') {
+      // Handle charge-up skills like Tiger Strike
+      // Show damage based on charge 3 only (as requested)
+
+      if (!weaponUsable) {
+        html += '<div style="margin: 10px 0; color: #ff6666; font-weight: bold;">Cannot use this skill</div>';
+        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level, strength, or dexterity requirement not met</div>';
+      } else {
+        // Use charge 3 damage for calculation
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.charge3Damage.length - 1);
+        var charge3DamageBonus = skill.charge3Damage[levelIndex] || 150;
+
+        // Create a temporary skill object with charge 3 damage for calculation
+        var tempSkill = {
+          damage: [charge3DamageBonus], // Use charge 3 damage as the skill bonus
+          synergies: skill.synergies || []
+        };
+
+        var damageInfo = this.calculatePhysicalDamage(tempSkill, totalSkillLevel, weaponDamage, dexterity, skillId);
+
+        html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+        // Display Attack Rating
+        if (skill.attackRating) {
+          var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          var attackRatingBonus = skill.attackRating[arIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+        }
+
+        html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+        html += '<div style="margin: 5px 0;">Charge 3 Damage: +' + charge3DamageBonus + '%</div>';
+
+        if (damageInfo.synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+        }
+        if (damageInfo.masteryDamageBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+        }
+
+        // Show elemental damages
+        var elem = damageInfo.elementalDamages;
+        if (elem.fire.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+        }
+        if (elem.cold.max > 0) {
+          html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+        }
+        if (elem.lightning.max > 0) {
+          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+        }
+        if (elem.poison.max > 0) {
+          html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+        }
+
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+        html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
+        html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+
+        // Display melee splash bonuses
+        if (skill.meleeSplashBonus2 || skill.meleeSplashBonus3) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Melee Splash: +' + skill.meleeSplashBonus2 + '% (2 charges), +' + skill.meleeSplashBonus3 + '% (3 charges)</div>';
+        }
+
+        // Display duration
+        if (skill.duration) {
+          html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + skill.duration + ' seconds</div>';
+        }
+
+        // Display mana cost
+        if (skill.manaCost) {
+          var manaCost;
+          if (Array.isArray(skill.manaCost)) {
+            manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          } else {
+            manaCost = skill.manaCost;
+          }
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        }
+      }
+
+      // Fists of Fire - fire damage charge-up
+      if (skillId === 'fistsoffirecontainer') {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var synergyBonus = this.calculateSynergyBonus(skillId, 'fire');
+
+        if (skill.attackRating) {
+          var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          var attackRatingBonus = skill.attackRating[arIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+        }
+
+        if (skill.burningDamage) {
+          var burnMin = skill.burningDamage.min[levelIndex] || 1;
+          var burnMax = skill.burningDamage.max[levelIndex] || 2;
+          burnMin = Math.floor(burnMin * (1 + synergyBonus / 100));
+          burnMax = Math.floor(burnMax * (1 + synergyBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ff6600;">Burning Damage: ' + burnMin + '-' + burnMax + '</div>';
+        }
+        if (skill.novaFireDamage) {
+          var novaMin = skill.novaFireDamage.min[levelIndex] || 1;
+          var novaMax = skill.novaFireDamage.max[levelIndex] || 2;
+          novaMin = Math.floor(novaMin * (1 + synergyBonus / 100));
+          novaMax = Math.floor(novaMax * (1 + synergyBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ff9933;">Nova Fire Damage: ' + novaMin + '-' + novaMax + '</div>';
+        }
+        if (skill.meteorDamage) {
+          var meteorMin = skill.meteorDamage.min[levelIndex] || 2;
+          var meteorMax = skill.meteorDamage.max[levelIndex] || 4;
+          meteorMin = Math.floor(meteorMin * (1 + synergyBonus / 100));
+          meteorMax = Math.floor(meteorMax * (1 + synergyBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Meteor Damage: ' + meteorMin + '-' + meteorMax + '</div>';
+        }
+        if (synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+        }
+        if (skill.manaCost) {
+          var manaCost = Array.isArray(skill.manaCost) ? skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] : skill.manaCost;
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        }
+      }
+
+      // Cobra Strike - poison damage charge-up
+      if (skillId === 'cobrastrikecontainer') {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var synergyBonus = this.calculateSynergyBonus(skillId, 'poison');
+
+        if (skill.attackRating) {
+          var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          var attackRatingBonus = skill.attackRating[arIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+        }
+
+        if (skill.poisonBoltDamage) {
+          var boltMin = skill.poisonBoltDamage.min[levelIndex] || 3;
+          var boltMax = skill.poisonBoltDamage.max[levelIndex] || 12;
+          boltMin = Math.floor(boltMin * (1 + synergyBonus / 100));
+          boltMax = Math.floor(boltMax * (1 + synergyBonus / 100));
+          html += '<div style="margin: 5px 0; color: #00ff00;">Poison Bolt Damage: ' + boltMin + '-' + boltMax + '</div>';
+        }
+        if (skill.poisonCloudDamage) {
+          var cloudMin = skill.poisonCloudDamage.min[levelIndex] || 6;
+          var cloudMax = skill.poisonCloudDamage.max[levelIndex] || 18;
+          cloudMin = Math.floor(cloudMin * (1 + synergyBonus / 100));
+          cloudMax = Math.floor(cloudMax * (1 + synergyBonus / 100));
+          html += '<div style="margin: 5px 0; color: #66ff66;">Poison Cloud Damage: ' + cloudMin + '-' + cloudMax + '</div>';
+        }
+        if (skill.enhancedDamage) {
+          var edBonus = skill.enhancedDamage[levelIndex] || 90;
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Enhanced Damage: +' + edBonus + '%</div>';
+        }
+        if (skill.lifeManaSteal) {
+          var steal = skill.lifeManaSteal[levelIndex] || 16;
+          html += '<div style="margin: 5px 0; color: #ff6666;">Life/Mana Steal: +' + steal + '%</div>';
+        }
+        if (skill.poisonDuration) {
+          html += '<div style="margin: 5px 0; color: #cccccc;">Poison Duration: ' + skill.poisonDuration + ' second</div>';
+        }
+        if (synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+        }
+        if (skill.manaCost) {
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
+        }
+      }
+
+      // Claws of Thunder - lightning damage charge-up
+      if (skillId === 'clawsofthundercontainer') {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var synergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
+
+        if (skill.attackRating) {
+          var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+          var attackRatingBonus = skill.attackRating[arIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+        }
+
+        if (skill.lightningDamage) {
+          var lightMin = skill.lightningDamage.min[levelIndex] || 1;
+          var lightMax = skill.lightningDamage.max[levelIndex] || 80;
+          lightMin = Math.floor(lightMin * (1 + synergyBonus / 100));
+          lightMax = Math.floor(lightMax * (1 + synergyBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning Damage: ' + lightMin + '-' + lightMax + '</div>';
+        }
+        if (skill.novaDamage) {
+          var novaMin = skill.novaDamage.min[levelIndex] || 5;
+          var novaMax = skill.novaDamage.max[levelIndex] || 30;
+          novaMin = Math.floor(novaMin * (1 + synergyBonus / 100));
+          novaMax = Math.floor(novaMax * (1 + synergyBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ffee00;">Nova Damage: ' + novaMin + '-' + novaMax + '</div>';
+        }
+        if (skill.chargedBoltDamage) {
+          var boltMin = skill.chargedBoltDamage.min[levelIndex] || 10;
+          var boltMax = skill.chargedBoltDamage.max[levelIndex] || 40;
+          boltMin = Math.floor(boltMin * (1 + synergyBonus / 100));
+          boltMax = Math.floor(boltMax * (1 + synergyBonus / 100));
+          html += '<div style="margin: 5px 0; color: #ffdd00;">Charged Bolt Damage: ' + boltMin + '-' + boltMax + '</div>';
+        }
+        if (synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+        }
+        if (skill.manaCost) {
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
+        }
+      }
+    } else if (skill.type === 'kick') {
+      // Handle kick skills like Dragon Talon and Dragon Tail
+      // Dragon Talon uses physical damage, Dragon Tail uses fire damage
+
+      if (!weaponUsable) {
+        html += '<div style="margin: 10px 0; color: #ff6666; font-weight: bold;">Cannot use this skill</div>';
+        html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level, strength, or dexterity requirement not met</div>';
+      } else {
+        // Check if this is Dragon Tail (fire damage) or Dragon Talon (physical)
+        if (skillId === 'dragontailcontainer' && skill.fireDamage) {
+          // Dragon Tail - fire damage kick
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.fireDamage.length - 1);
+          var fireDamageBonus = skill.fireDamage[levelIndex] || 40;
+
+          // Calculate synergy bonus for fire
+          var synergyBonus = this.calculateSynergyBonus(skillId, 'fire');
+
+          // Apply synergies to fire damage bonus
+          var totalFireBonus = Math.floor(fireDamageBonus * (1 + synergyBonus / 100));
+
+          html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+          // Display Attack Rating
+          if (skill.attackRating) {
+            var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+            var attackRatingBonus = skill.attackRating[arIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+          }
+
+          html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: +' + totalFireBonus + '%</div>';
+
+          if (synergyBonus > 0) {
+            html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+          }
+
+          // Display radius
+          if (skill.radius) {
+            html += '<div style="margin: 5px 0; color: #cccccc;">Radius: ' + skill.radius + ' yards</div>';
+          }
+        } else {
+          // Dragon Talon - physical damage kick
+          var damageInfo = this.calculatePhysicalDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
+
+          html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+
+          // Display Attack Rating
+          if (skill.attackRating) {
+            var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+            var attackRatingBonus = skill.attackRating[arIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+          }
+
+          html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+          html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
+
+          if (damageInfo.synergyBonus > 0) {
+            html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+          }
+          if (damageInfo.masteryDamageBonus > 0) {
+            html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+          }
+
+          // Show elemental damages
+          var elem = damageInfo.elementalDamages;
+          if (elem.fire.max > 0) {
+            html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+          }
+          if (elem.cold.max > 0) {
+            html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+          }
+          if (elem.lightning.max > 0) {
+            html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+          }
+          if (elem.poison.max > 0) {
+            html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+          }
+
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+          html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
+          html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+
+          // Display number of kicks for Dragon Talon
+          if (skillId === 'dragontaloncontainer' && skill.kicks) {
+            var kickIndex = Math.min(totalSkillLevel - 1, skill.kicks.length - 1);
+            var kickCount = skill.kicks[kickIndex] || 1;
+            html += '<div style="margin: 5px 0; color: #ffaa00;">Kicks: ' + kickCount + '</div>';
+          }
+        }
+
+        // Display mana cost
+        if (skill.manaCost) {
+          var manaCost;
+          if (Array.isArray(skill.manaCost)) {
+            manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          } else {
+            manaCost = skill.manaCost;
+          }
+          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        }
       }
     } else if (skill.type === 'poison') {
       var damageInfo = this.calculatePoisonDamage(skill, totalSkillLevel, skillId);
@@ -1622,6 +2380,51 @@ class SkillSystem {
       // Display bolts (Charged Bolt Sentry)
       if (damageInfo.bolts) {
         html += '<div style="margin: 5px 0; color: #cccccc;">Bolts Fired: ' + damageInfo.bolts + '</div>';
+      }
+
+      // Display mana cost
+      if (skill.manaCost) {
+        var manaCost;
+        if (Array.isArray(skill.manaCost)) {
+          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        } else if (typeof skill.manaCost === 'object') {
+          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+        } else {
+          manaCost = skill.manaCost;
+        }
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
+    } else if (skill.type === 'death_sentry') {
+      var damageInfo = this.calculateElementalDamage(skill, totalSkillLevel, skillId);
+
+      // Display Lightning Damage
+      html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
+
+      // Display Fire Damage (from corpse explosion)
+      html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + damageInfo.fireMin + '-' + damageInfo.fireMax + '</div>';
+
+      // Display average damage
+      html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+
+      if (damageInfo.synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+
+      // Display shots
+      if (skill.shots) {
+        var investedIndex = Math.min(baseSkillLevel, skill.shots.length - 1);
+        var shotCount = skill.shots[investedIndex] || 5;
+        html += '<div style="margin: 5px 0; color: #cccccc;">Shots: ' + shotCount + '</div>';
+      }
+
+      // Display corpse explosion percentage
+      if (skill.corpseExplosionPercent) {
+        html += '<div style="margin: 5px 0; color: #ff9966;">Corpse Explosion: ' + skill.corpseExplosionPercent.min + '-' + skill.corpseExplosionPercent.max + '% of corpse life</div>';
+      }
+
+      // Display radius
+      if (skill.radius) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Radius: ' + skill.radius + ' yards</div>';
       }
 
       // Display mana cost
