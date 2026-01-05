@@ -27,7 +27,7 @@ function isWeaponUsable() {
   });
 
   return currentLevel >= actualRequiredLevel;
-}// skills-clean-fixed.js - Fixed Skills System
+} // skills-clean-fixed.js - Fixed Skills System
 
 
 
@@ -45,267 +45,1158 @@ class SkillSystem {
     // Define all class skill trees
     this.classSkillTrees = {
       'Amazon': {
-        'javelinandspearskillscontainer': [
-          { id: 'jabcontainer', name: 'Jab', level: 1, prerequisites: [] },
-          { id: 'poisonjavelincontainer', name: 'Poison Javelin', level: 1, prerequisites: [] },
-          { id: 'powerstrikecontainer', name: 'Power Strike', level: 6, prerequisites: ['jabcontainer'] },
-          { id: 'javelinandspearmasterycontainer', name: 'Javelin and Spear Mastery', level: 6, prerequisites: ['jabcontainer'] },
-          { id: 'lightningboltcontainer', name: 'Lightning Bolt', level: 12, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer'] },
-          { id: 'fendcontainer', name: 'Fend', level: 18, prerequisites: ['jabcontainer', 'javelinandspearmasterycontainer'] },
-          { id: 'chargedstrikecontainer', name: 'Charged Strike', level: 18, prerequisites: ['jabcontainer', 'powerstrikecontainer'] },
-          { id: 'plaguejavelincontainer', name: 'Plague Javelin', level: 18, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer'] },
-          { id: 'lightningstrikecontainer', name: 'Lightning Strike', level: 30, prerequisites: ['jabcontainer', 'powerstrikecontainer', 'chargedstrikecontainer'] },
-          { id: 'lightningfurycontainer', name: 'Lightning Fury', level: 30, prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer', 'plaguejavelincontainer'] }
+        'javelinandspearskillscontainer': [{
+          id: 'jabcontainer',
+          name: 'Jab',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'poisonjavelincontainer',
+          name: 'Poison Javelin',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'powerstrikecontainer',
+          name: 'Power Strike',
+          level: 6,
+          prerequisites: ['jabcontainer']
+        },
+        {
+          id: 'javelinandspearmasterycontainer',
+          name: 'Javelin and Spear Mastery',
+          level: 6,
+          prerequisites: ['jabcontainer']
+        },
+        {
+          id: 'lightningboltcontainer',
+          name: 'Lightning Bolt',
+          level: 12,
+          prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer']
+        },
+        {
+          id: 'fendcontainer',
+          name: 'Fend',
+          level: 18,
+          prerequisites: ['jabcontainer', 'javelinandspearmasterycontainer']
+        },
+        {
+          id: 'chargedstrikecontainer',
+          name: 'Charged Strike',
+          level: 18,
+          prerequisites: ['jabcontainer', 'powerstrikecontainer']
+        },
+        {
+          id: 'plaguejavelincontainer',
+          name: 'Plague Javelin',
+          level: 18,
+          prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer']
+        },
+        {
+          id: 'lightningstrikecontainer',
+          name: 'Lightning Strike',
+          level: 30,
+          prerequisites: ['jabcontainer', 'powerstrikecontainer', 'chargedstrikecontainer']
+        },
+        {
+          id: 'lightningfurycontainer',
+          name: 'Lightning Fury',
+          level: 30,
+          prerequisites: ['jabcontainer', 'poisonjavelincontainer', 'powerstrikecontainer', 'lightningboltcontainer', 'plaguejavelincontainer']
+        }
         ],
-        'passiveskillscontainer': [
-          { id: 'innersightcontainer', name: 'Inner Sight', level: 1, prerequisites: [] },
-          { id: 'criticalstrikecontainer', name: 'Critical Strike', level: 1, prerequisites: [] },
-          { id: 'evadecontainer', name: 'Evade', level: 6, prerequisites: [] },
-          { id: 'slowmovementcontainer', name: 'Slow Movement', level: 12, prerequisites: ['innersightcontainer'] },
-          { id: 'piercecontainer', name: 'Pierce', level: 12, prerequisites: ['criticalstrikecontainer'] },
-          { id: 'dodgecontainer', name: 'Dodge', level: 18, prerequisites: ['innersightcontainer', 'evadecontainer', 'slowmovementcontainer'] },
-          { id: 'decoycontainer', name: 'Decoy', level: 18, prerequisites: ['innersightcontainer', 'slowmovementcontainer'] },
-          { id: 'penetratecontainer', name: 'Penetrate', level: 24, prerequisites: ['criticalstrikecontainer', 'piercecontainer'] },
-          { id: 'valkyriecontainer', name: 'Valkyrie', level: 30, prerequisites: ['innersightcontainer', 'slowmovementcontainer', 'decoycontainer'] }
+        'passiveskillscontainer': [{
+          id: 'innersightcontainer',
+          name: 'Inner Sight',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'criticalstrikecontainer',
+          name: 'Critical Strike',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'evadecontainer',
+          name: 'Evade',
+          level: 6,
+          prerequisites: []
+        },
+        {
+          id: 'slowmovementcontainer',
+          name: 'Slow Movement',
+          level: 12,
+          prerequisites: ['innersightcontainer']
+        },
+        {
+          id: 'piercecontainer',
+          name: 'Pierce',
+          level: 12,
+          prerequisites: ['criticalstrikecontainer']
+        },
+        {
+          id: 'dodgecontainer',
+          name: 'Dodge',
+          level: 18,
+          prerequisites: ['innersightcontainer', 'evadecontainer', 'slowmovementcontainer']
+        },
+        {
+          id: 'decoycontainer',
+          name: 'Decoy',
+          level: 18,
+          prerequisites: ['innersightcontainer', 'slowmovementcontainer']
+        },
+        {
+          id: 'penetratecontainer',
+          name: 'Penetrate',
+          level: 24,
+          prerequisites: ['criticalstrikecontainer', 'piercecontainer']
+        },
+        {
+          id: 'valkyriecontainer',
+          name: 'Valkyrie',
+          level: 30,
+          prerequisites: ['innersightcontainer', 'slowmovementcontainer', 'decoycontainer']
+        }
         ],
-        'bowandcrossbowskillscontainer': [
-          { id: 'magicarrowcontainer', name: 'Magic Arrow', level: 1, prerequisites: [] },
-          { id: 'multipleshotcontainer', name: 'Multiple Shot', level: 6, prerequisites: ['magicarrowcontainer'] },
-          { id: 'firearrowcontainer', name: 'Fire Arrow', level: 1, prerequisites: ['magicarrowcontainer'] },
-          { id: 'coldarrowcontainer', name: 'Cold Arrow', level: 6, prerequisites: ['magicarrowcontainer'] },
-          { id: 'icearrowcontainer', name: 'Ice Arrow', level: 12, prerequisites: ['magicarrowcontainer', 'coldarrowcontainer'] },
-          { id: 'guidedarrowcontainer', name: 'Guided Arrow', level: 18, prerequisites: ['magicarrowcontainer', 'multipleshotcontainer'] },
-          { id: 'explodingarrowcontainer', name: 'Exploding Arrow', level: 18, prerequisites: ['magicarrowcontainer', 'firearrowcontainer'] },
-          { id: 'strafecontainer', name: 'Strafe', level: 24, prerequisites: ['magicarrowcontainer', 'multipleshotcontainer', 'guidedarrowcontainer'] },
-          { id: 'immolationarrowcontainer', name: 'Immolation Arrow', level: 18, prerequisites: ['magicarrowcontainer', 'firearrowcontainer', 'explodingarrowcontainer'] },
-          { id: 'freezingarrowcontainer', name: 'Freezing Arrow', level: 30, prerequisites: ['magicarrowcontainer', 'coldarrowcontainer', 'icearrowcontainer'] }
+        'bowandcrossbowskillscontainer': [{
+          id: 'magicarrowcontainer',
+          name: 'Magic Arrow',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'multipleshotcontainer',
+          name: 'Multiple Shot',
+          level: 6,
+          prerequisites: ['magicarrowcontainer']
+        },
+        {
+          id: 'firearrowcontainer',
+          name: 'Fire Arrow',
+          level: 1,
+          prerequisites: ['magicarrowcontainer']
+        },
+        {
+          id: 'coldarrowcontainer',
+          name: 'Cold Arrow',
+          level: 6,
+          prerequisites: ['magicarrowcontainer']
+        },
+        {
+          id: 'icearrowcontainer',
+          name: 'Ice Arrow',
+          level: 12,
+          prerequisites: ['magicarrowcontainer', 'coldarrowcontainer']
+        },
+        {
+          id: 'guidedarrowcontainer',
+          name: 'Guided Arrow',
+          level: 18,
+          prerequisites: ['magicarrowcontainer', 'multipleshotcontainer']
+        },
+        {
+          id: 'explodingarrowcontainer',
+          name: 'Exploding Arrow',
+          level: 18,
+          prerequisites: ['magicarrowcontainer', 'firearrowcontainer']
+        },
+        {
+          id: 'strafecontainer',
+          name: 'Strafe',
+          level: 24,
+          prerequisites: ['magicarrowcontainer', 'multipleshotcontainer', 'guidedarrowcontainer']
+        },
+        {
+          id: 'immolationarrowcontainer',
+          name: 'Immolation Arrow',
+          level: 18,
+          prerequisites: ['magicarrowcontainer', 'firearrowcontainer', 'explodingarrowcontainer']
+        },
+        {
+          id: 'freezingarrowcontainer',
+          name: 'Freezing Arrow',
+          level: 30,
+          prerequisites: ['magicarrowcontainer', 'coldarrowcontainer', 'icearrowcontainer']
+        }
         ]
       },
       'Assassin': {
-        'martialartscontainer': [
-          { id: 'tigerstrikecontainer', name: 'Tiger Strike', level: 1 },
-          { id: 'dragonntaloncontainer', name: 'Dragon Talon', level: 1 },
-          { id: 'dragonclawcontainer', name: 'Dragon Claw', level: 1 },
-          { id: 'fistsoffirecontainer', name: 'Fists of Fire', level: 6 },
-          { id: 'cobrastrikecontainer', name: 'Cobra Strike', level: 12 },
-          { id: 'clawsofthundercontainer', name: 'Claws of Thunder', level: 18 },
-          { id: 'dragontailcontainer', name: 'Dragon Tail', level: 18 },
-          { id: 'dragonflightcontainer', name: 'Dragon Flight', level: 24 },
-          { id: 'bladesoficecontainer', name: 'Blades of Ice', level: 24 },
-          { id: 'phoenixstrikecontainer', name: 'Phoenix Strike', level: 30 }
+        'martialartscontainer': [{
+          id: 'tigerstrikecontainer',
+          name: 'Tiger Strike',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'dragontaloncontainer',
+          name: 'Dragon Talon',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'dragonclawcontainer',
+          name: 'Dragon Claw',
+          level: 1,
+          prerequisites: ['dragontaloncontainer']
+        },
+        {
+          id: 'fistsoffirecontainer',
+          name: 'Fists of Fire',
+          level: 6,
+          prerequisites: []
+        },
+        {
+          id: 'cobrastrikecontainer',
+          name: 'Cobra Strike',
+          level: 12,
+          prerequisites: ['tigerstrikecontainer']
+        },
+        {
+          id: 'clawsofthundercontainer',
+          name: 'Claws of Thunder',
+          level: 18,
+          prerequisites: ['fistsoffirecontainer']
+        },
+        {
+          id: 'dragontailcontainer',
+          name: 'Dragon Tail',
+          level: 18,
+          prerequisites: ['dragontaloncontainer', 'dragonclawcontainer']
+        },
+        {
+          id: 'dragonflightcontainer',
+          name: 'Dragon Flight',
+          level: 24,
+          prerequisites: ['dragontaloncontainer', 'dragonclawcontainer', 'dragontailcontainer']
+        },
+        {
+          id: 'bladesoficecontainer',
+          name: 'Blades of Ice',
+          level: 24,
+          prerequisites: ['fistsoffirecontainer', 'clawsofthundercontainer']
+        },
+        {
+          id: 'phoenixstrikecontainer',
+          name: 'Phoenix Strike',
+          level: 30,
+          prerequisites: ['tigerstrikecontainer', 'fistsoffirecontainer', 'cobrastrikecontainer', 'clawsofthundercontainer', 'bladesoficecontainer']
+        }
         ],
-        'shadowdisciplinescontainer': [
-          { id: 'clawanddaggermasterycontainer', name: 'Claw and Dagger Mastery', level: 1 },
-          { id: 'psychichammcontainer', name: 'Psychic Hammer', level: 1 },
-          { id: 'burstofspeedcontainer', name: 'Burst of Speed', level: 6 },
-          { id: 'weaponblockcontainer', name: 'Weapon Block', level: 12 },
-          { id: 'cloakofshadowscontainer', name: 'Cloak of Shadows', level: 12 },
-          { id: 'mindblastcontainer', name: 'Mind Blast', level: 12 },
-          { id: 'fadecontainer', name: 'Fade', level: 18 },
-          { id: 'shadowwarriorcontainer', name: 'Shadow Warrior', level: 18 },
-          { id: 'shadowmastercontainer', name: 'Shadow Master', level: 30 },
-          { id: 'venomcontainer', name: 'Venom', level: 12 }
+        'shadowdisciplinescontainer': [{
+          id: 'clawanddaggermasterycontainer',
+          name: 'Claw and Dagger Mastery',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'psychichammercontainer',
+          name: 'Psychic Hammer',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'burstofspeedcontainer',
+          name: 'Burst of Speed',
+          level: 6,
+          prerequisites: ['clawanddaggermasterycontainer']
+        },
+        {
+          id: 'weaponblockcontainer',
+          name: 'Weapon Block',
+          level: 12,
+          prerequisites: ['clawanddaggermasterycontainer']
+        },
+        {
+          id: 'cloakofshadowscontainer',
+          name: 'Cloak of Shadows',
+          level: 12,
+          prerequisites: ['psychichammercontainer']
+        },
+        {
+          id: 'mindblastcontainer',
+          name: 'Mind Blast',
+          level: 12,
+          prerequisites: ['psychichammercontainer', 'cloakofshadowscontainer']
+        },
+        {
+          id: 'fadecontainer',
+          name: 'Fade',
+          level: 18,
+          prerequisites: ['clawanddaggermasterycontainer', 'burstofspeedcontainer']
+        },
+        {
+          id: 'shadowwarriorcontainer',
+          name: 'Shadow Warrior',
+          level: 18,
+          prerequisites: ['clawanddaggermasterycontainer', 'psychichammercontainer', 'weaponblockcontainer', 'cloakofshadowscontainer']
+        },
+        {
+          id: 'shadowmastercontainer',
+          name: 'Shadow Master',
+          level: 30,
+          prerequisites: ['clawanddaggermasterycontainer', 'psychichammercontainer', 'weaponblockcontainer', 'cloakofshadowscontainer', 'shadowwarriorcontainer']
+        },
+        {
+          id: 'venomcontainer',
+          name: 'Venom',
+          level: 12,
+          prerequisites: ['clawanddaggermasterycontainer', 'burstofspeedcontainer', 'fadecontainer']
+        }
         ],
-        'trapscontainer': [
-          { id: 'fireblastcontainer', name: 'Fire Blast', level: 1 },
-          { id: 'shockwebcontainer', name: 'Shock Web', level: 6 },
-          { id: 'bladesentinelcontainer', name: 'Blade Sentinel', level: 12 },
-          { id: 'chargedboltsentrycontainer', name: 'Charged Bolt Sentry', level: 12 },
-          { id: 'wakeoffirecontainer', name: 'Wake of Fire', level: 12 },
-          { id: 'bladefurycontainer', name: 'Blade Fury', level: 18 },
-          { id: 'bladeshieldcontainer', name: 'Blade Shield', level: 24 },
-          { id: 'lightningsentrycontainer', name: 'Lightning Sentry', level: 24 },
-          { id: 'wakeofinfernocontainer', name: 'Wake of Inferno', level: 24 },
-          { id: 'chainlightningsentrycontainer', name: 'Chain Lightning Sentry', level: 30 },
-          { id: 'deathsentrycontainer', name: 'Death Sentry', level: 30 }
+        'trapscontainer': [{
+          id: 'fireblastcontainer',
+          name: 'Fire Blast',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'shockwebcontainer',
+          name: 'Shock Web',
+          level: 6,
+          prerequisites: ['fireblastcontainer']
+        },
+        {
+          id: 'bladesentinelcontainer',
+          name: 'Blade Sentinel',
+          level: 12,
+          prerequisites: []
+        },
+        {
+          id: 'chargedboltsentrycontainer',
+          name: 'Charged Bolt Sentry',
+          level: 12,
+          prerequisites: ['fireblastcontainer', 'shockwebcontainer']
+        },
+        {
+          id: 'wakeoffirecontainer',
+          name: 'Wake of Fire',
+          level: 12,
+          prerequisites: ['fireblastcontainer']
+        },
+        {
+          id: 'bladefurycontainer',
+          name: 'Blade Fury',
+          level: 18,
+          prerequisites: ['bladesentinelcontainer']
+        },
+        {
+          id: 'bladeshieldcontainer',
+          name: 'Blade Shield',
+          level: 24,
+          prerequisites: ['bladesentinelcontainer', 'bladefurycontainer']
+        },
+        {
+          id: 'lightningsentrycontainer',
+          name: 'Lightning Sentry',
+          level: 24,
+          prerequisites: ['fireblastcontainer', 'shockwebcontainer', 'chargedboltsentrycontainer']
+        },
+        {
+          id: 'wakeofinfernocontainer',
+          name: 'Wake of Inferno',
+          level: 24,
+          prerequisites: ['fireblastcontainer', 'wakeoffirecontainer']
+        },
+        {
+          id: 'chainlightningsentrycontainer',
+          name: 'Chain Lightning Sentry',
+          level: 30,
+          prerequisites: ['fireblastcontainer', 'shockwebcontainer', 'chargedboltsentrycontainer', 'lightningsentrycontainer']
+        },
+        {
+          id: 'deathsentrycontainer',
+          name: 'Death Sentry',
+          level: 30,
+          prerequisites: ['fireblastcontainer', 'shockwebcontainer', 'chargedboltsentrycontainer', 'wakeoffirecontainer', 'lightningsentrycontainer', 'wakeofinfernocontainer']
+        }
         ]
       },
       'Barbarian': {
-        'warcriescontainer': [
-          { id: 'howlcontainer', name: 'Howl', level: 1 },
-          { id: 'findpotioncontainer', name: 'Find Potion', level: 1 },
-          { id: 'shoutcontainer', name: 'Shout', level: 6 },
-          { id: 'warcrycontainer', name: 'War Cry', level: 6 },
-          { id: 'finditemcontainer', name: 'Find Item', level: 12 },
-          { id: 'tauncontainer', name: 'Taunt', level: 18 },
-          { id: 'battleorderscontainer', name: 'Battle Orders', level: 24 },
-          { id: 'grimwardcontainer', name: 'Grim Ward', level: 24 },
-          { id: 'battlecommandcontainer', name: 'Battle Command', level: 30 },
-          { id: 'battlecrycontainer', name: 'Battle Cry', level: 30 }
+        'warcriescontainer': [{
+          id: 'howlcontainer',
+          name: 'Howl',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'findpotioncontainer',
+          name: 'Find Potion',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'shoutcontainer',
+          name: 'Shout',
+          level: 6,
+          prerequisites: ['howlcontainer']
+        },
+        {
+          id: 'warcrycontainer',
+          name: 'War Cry',
+          level: 6,
+          prerequisites: ['howlcontainer']
+        },
+        {
+          id: 'finditemcontainer',
+          name: 'Find Item',
+          level: 12,
+          prerequisites: ['findpotioncontainer']
+        },
+        {
+          id: 'tauncontainer',
+          name: 'Taunt',
+          level: 18,
+          prerequisites: ['howlcontainer', 'warcrycontainer']
+        },
+        {
+          id: 'battleorderscontainer',
+          name: 'Battle Orders',
+          level: 24,
+          prerequisites: ['howlcontainer', 'shoutcontainer']
+        },
+        {
+          id: 'grimwardcontainer',
+          name: 'Grim Ward',
+          level: 24,
+          prerequisites: ['howlcontainer', 'warcrycontainer', 'tauncontainer']
+        },
+        {
+          id: 'battlecommandcontainer',
+          name: 'Battle Command',
+          level: 30,
+          prerequisites: ['howlcontainer', 'shoutcontainer', 'battleorderscontainer']
+        },
+        {
+          id: 'battlecrycontainer',
+          name: 'Battle Cry',
+          level: 30,
+          prerequisites: ['howlcontainer', 'shoutcontainer', 'warcrycontainer', 'tauncontainer', 'battleorderscontainer']
+        }
         ],
-        'combatmasteriescontainer': [
-          { id: 'generalmasterycontainer', name: 'General Mastery', level: 1 },
-          { id: 'throwingmasterycontainer', name: 'Throwing Mastery', level: 1 },
-          { id: 'polearmandspearmasterycontainer', name: 'Polearm and Spear Mastery', level: 6 },
-          { id: 'combatreflexescontainer', name: 'Combat Reflexes', level: 12 },
-          { id: 'ironskinscontainer', name: 'Iron Skin', level: 18 },
-          { id: 'increasedspeedcontainer', name: 'Increased Speed', level: 24 },
-          { id: 'naturalresistancecontainer', name: 'Natural Resistance', level: 30 },
-          { id: 'deepwoundscontainer', name: 'Deep Wounds', level: 30 }
+        'combatmasteriescontainer': [{
+          id: 'generalmasterycontainer',
+          name: 'General Mastery',
+          level: 1
+        },
+        {
+          id: 'throwingmasterycontainer',
+          name: 'Throwing Mastery',
+          level: 1
+        },
+        {
+          id: 'polearmandspearmasterycontainer',
+          name: 'Polearm and Spear Mastery',
+          level: 6
+        },
+        {
+          id: 'combatreflexescontainer',
+          name: 'Combat Reflexes',
+          level: 12
+        },
+        {
+          id: 'ironskinscontainer',
+          name: 'Iron Skin',
+          level: 18
+        },
+        {
+          id: 'increasedspeedcontainer',
+          name: 'Increased Speed',
+          level: 24
+        },
+        {
+          id: 'naturalresistancecontainer',
+          name: 'Natural Resistance',
+          level: 30
+        },
+        {
+          id: 'deepwoundscontainer',
+          name: 'Deep Wounds',
+          level: 30
+        }
         ],
-        'combatskillsbarcontainer': [
-          { id: 'bashcontainer', name: 'Bash', level: 1 },
-          { id: 'doubleswingcontainer', name: 'Double Swing', level: 1 },
-          { id: 'frenzycontainer', name: 'Frenzy', level: 6 },
-          { id: 'stuncontainer', name: 'Stun', level: 6 },
-          { id: 'concentratecontainer', name: 'Concentrate', level: 12 },
-          { id: 'doublethrowcontainer', name: 'Double Throw', level: 12 },
-          { id: 'leapcontainer', name: 'Leap', level: 12 },
-          { id: 'leapattackcontainer', name: 'Leap Attack', level: 24 },
-          { id: 'berserkcontainer', name: 'Berserk', level: 30 },
-          { id: 'whirlwindcontainer', name: 'Whirlwind', level: 30 }
+        'combatskillsbarcontainer': [{
+          id: 'bashcontainer',
+          name: 'Bash',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'doubleswingcontainer',
+          name: 'Double Swing',
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'frenzycontainer',
+          name: 'Frenzy',
+          level: 6,
+          prerequisites: ['doubleswingcontainer']
+        },
+        {
+          id: 'stuncontainer',
+          name: 'Stun',
+          level: 6,
+          prerequisites: ['bashcontainer']
+        },
+        {
+          id: 'concentratecontainer',
+          name: 'Concentrate',
+          level: 12,
+          prerequisites: ['doubleswingcontainer']
+        },
+        {
+          id: 'doublethrowcontainer',
+          name: 'Double Throw',
+          level: 12,
+          prerequisites: ['doubleswingcontainer', 'frenzycontainer']
+        },
+        {
+          id: 'leapcontainer',
+          name: 'Leap',
+          level: 12,
+          prerequisites: ['bashcontainer', 'stuncontainer']
+        },
+        {
+          id: 'leapattackcontainer',
+          name: 'Leap Attack',
+          level: 24,
+          prerequisites: ['bashcontainer', 'doubleswingcontainer', 'stuncontainer', 'leapcontainer', 'concentratecontainer']
+        },
+        {
+          id: 'berserkcontainer',
+          name: 'Berserk',
+          level: 30,
+          prerequisites: ['doubleswingcontainer', 'concentratecontainer']
+        },
+        {
+          id: 'whirlwindcontainer',
+          name: 'Whirlwind',
+          level: 30,
+          prerequisites: ['doubleswingcontainer', 'concentratecontainer', 'berserkcontainer']
+        }
         ]
       },
       'Druid': {
-        'elementalskillscontainer': [
-          { id: 'firestormcontainer', name: 'Firestorm', level: 1 },
-          { id: 'moltenbouldcontainer', name: 'Molten Boulder', level: 6 },
-          { id: 'arcticblastcontainer', name: 'Arctic Blast', level: 6 },
-          { id: 'fissurecontainer', name: 'Fissure', level: 12 },
-          { id: 'cyclonearmorcontainer', name: 'Cyclone Armor', level: 1 },
-          { id: 'twistercontainer', name: 'Twister', level: 18 },
-          { id: 'volcanocontainer', name: 'Volcano', level: 18 },
-          { id: 'tornadocontainer', name: 'Tornado', level: 24 },
-          { id: 'armageddoncontainer', name: 'Armageddon', level: 24 },
-          { id: 'hurricanecontainer', name: 'Hurricane', level: 30 }
+        'elementalskillscontainer': [{
+          id: 'firestormcontainer',
+          name: 'Firestorm',
+          level: 1
+        },
+        {
+          id: 'moltenbouldcontainer',
+          name: 'Molten Boulder',
+          level: 6
+        },
+        {
+          id: 'arcticblastcontainer',
+          name: 'Arctic Blast',
+          level: 6
+        },
+        {
+          id: 'fissurecontainer',
+          name: 'Fissure',
+          level: 12
+        },
+        {
+          id: 'cyclonearmorcontainer',
+          name: 'Cyclone Armor',
+          level: 1
+        },
+        {
+          id: 'twistercontainer',
+          name: 'Twister',
+          level: 18
+        },
+        {
+          id: 'volcanocontainer',
+          name: 'Volcano',
+          level: 18
+        },
+        {
+          id: 'tornadocontainer',
+          name: 'Tornado',
+          level: 24
+        },
+        {
+          id: 'armageddoncontainer',
+          name: 'Armageddon',
+          level: 24
+        },
+        {
+          id: 'hurricanecontainer',
+          name: 'Hurricane',
+          level: 30
+        }
         ],
-        'shapeshiftingskillscontainer': [
-          { id: 'werewolfcontainer', name: 'Werewolf', level: 1 },
-          { id: 'lycantropycontainer', name: 'Lycanthropy', level: 1 },
-          { id: 'werebearcontainer', name: 'Werebear', level: 6 },
-          { id: 'feralragecontainer', name: 'Feral Rage', level: 12 },
-          { id: 'maulcontainer', name: 'Maul', level: 6 },
-          { id: 'fireclawscontainer', name: 'Fire Claws', level: 18 },
-          { id: 'rabiescontainer', name: 'Rabies', level: 18 },
-          { id: 'shockwavecontainer', name: 'Shock Wave', level: 24 },
-          { id: 'hungercontainer', name: 'Hunger', level: 24 },
-          { id: 'furycontainer', name: 'Fury', level: 30 }
+        'shapeshiftingskillscontainer': [{
+          id: 'werewolfcontainer',
+          name: 'Werewolf',
+          level: 1
+        },
+        {
+          id: 'lycantropycontainer',
+          name: 'Lycanthropy',
+          level: 1
+        },
+        {
+          id: 'werebearcontainer',
+          name: 'Werebear',
+          level: 6
+        },
+        {
+          id: 'feralragecontainer',
+          name: 'Feral Rage',
+          level: 12
+        },
+        {
+          id: 'maulcontainer',
+          name: 'Maul',
+          level: 6
+        },
+        {
+          id: 'fireclawscontainer',
+          name: 'Fire Claws',
+          level: 18
+        },
+        {
+          id: 'rabiescontainer',
+          name: 'Rabies',
+          level: 18
+        },
+        {
+          id: 'shockwavecontainer',
+          name: 'Shock Wave',
+          level: 24
+        },
+        {
+          id: 'hungercontainer',
+          name: 'Hunger',
+          level: 24
+        },
+        {
+          id: 'furycontainer',
+          name: 'Fury',
+          level: 30
+        }
         ],
-        'summoningskillscontainer': [
-          { id: 'ravencontainer', name: 'Raven', level: 1 },
-          { id: 'poisoncreepercontainer', name: 'Poison Creeper', level: 1 },
-          { id: 'oaksagecontainer', name: 'Oak Sage', level: 6 },
-          { id: 'summonspiritw wolfcontainer', name: 'Summon Spirit Wolf', level: 1 },
-          { id: 'carrionvinecontainer', name: 'Carrion Vine', level: 12 },
-          { id: 'heartofwolverinecontainer', name: 'Heart of Wolverine', level: 18 },
-          { id: 'summondirewolfcontainer', name: 'Summon Dire Wolf', level: 18 },
-          { id: 'solarcreepercontainer', name: 'Solar Creeper', level: 24 },
-          { id: 'spiritofbarbscontainer', name: 'Spirit of Barbs', level: 30 },
-          { id: 'summongrizzlycontainer', name: 'Summon Grizzly', level: 30 }
+        'summoningskillscontainer': [{
+          id: 'ravencontainer',
+          name: 'Raven',
+          level: 1
+        },
+        {
+          id: 'poisoncreepercontainer',
+          name: 'Poison Creeper',
+          level: 1
+        },
+        {
+          id: 'oaksagecontainer',
+          name: 'Oak Sage',
+          level: 6
+        },
+        {
+          id: 'summonspiritw wolfcontainer',
+          name: 'Summon Spirit Wolf',
+          level: 1
+        },
+        {
+          id: 'carrionvinecontainer',
+          name: 'Carrion Vine',
+          level: 12
+        },
+        {
+          id: 'heartofwolverinecontainer',
+          name: 'Heart of Wolverine',
+          level: 18
+        },
+        {
+          id: 'summondirewolfcontainer',
+          name: 'Summon Dire Wolf',
+          level: 18
+        },
+        {
+          id: 'solarcreepercontainer',
+          name: 'Solar Creeper',
+          level: 24
+        },
+        {
+          id: 'spiritofbarbscontainer',
+          name: 'Spirit of Barbs',
+          level: 30
+        },
+        {
+          id: 'summongrizzlycontainer',
+          name: 'Summon Grizzly',
+          level: 30
+        }
         ]
       },
       'Necromancer': {
-        'summoningspellsneccontainer': [
-          { id: 'skeletonmasterycontainer', name: 'Skeleton Mastery', level: 1 },
-          { id: 'raiseskeletoncontainer', name: 'Raise Skeleton', level: 1 },
-          { id: 'claygolemneccontainer', name: 'Clay Golem', level: 6 },
-          { id: 'golemmasterneccontainer', name: 'Golem Mastery', level: 12 },
-          { id: 'raiseskeletalmagecontainer', name: 'Raise Skeletal Mage', level: 12 },
-          { id: 'bloodgolemneccontainer', name: 'Blood Golem', level: 18 },
-          { id: 'summonnecroncontainer', name: 'Summon Resist', level: 24 },
-          { id: 'irongolemneccontainer', name: 'Iron Golem', level: 24 },
-          { id: 'firegolemneccontainer', name: 'Fire Golem', level: 30 },
-          { id: 'revivecontainer', name: 'Revive', level: 30 }
+        'summoningspellsneccontainer': [{
+          id: 'skeletonmasterycontainer',
+          name: 'Skeleton Mastery',
+          level: 1
+        },
+        {
+          id: 'raiseskeletoncontainer',
+          name: 'Raise Skeleton',
+          level: 1
+        },
+        {
+          id: 'claygolemneccontainer',
+          name: 'Clay Golem',
+          level: 6
+        },
+        {
+          id: 'golemmasterneccontainer',
+          name: 'Golem Mastery',
+          level: 12
+        },
+        {
+          id: 'raiseskeletalmagecontainer',
+          name: 'Raise Skeletal Mage',
+          level: 12
+        },
+        {
+          id: 'bloodgolemneccontainer',
+          name: 'Blood Golem',
+          level: 18
+        },
+        {
+          id: 'summonnecroncontainer',
+          name: 'Summon Resist',
+          level: 24
+        },
+        {
+          id: 'irongolemneccontainer',
+          name: 'Iron Golem',
+          level: 24
+        },
+        {
+          id: 'firegolemneccontainer',
+          name: 'Fire Golem',
+          level: 30
+        },
+        {
+          id: 'revivecontainer',
+          name: 'Revive',
+          level: 30
+        }
         ],
-        'poisonandbonespellscontainer': [
-          { id: 'teethcontainer', name: 'Teeth', level: 1 },
-          { id: 'bonearmorcontainer', name: 'Bone Armor', level: 1 },
-          { id: 'poisondaggercontainer', name: 'Poison Dagger', level: 6 },
-          { id: 'corpseexplosioncontainer', name: 'Corpse Explosion', level: 6 },
-          { id: 'bonewallcontainer', name: 'Bone Wall', level: 12 },
-          { id: 'poisonexplosioncontainer', name: 'Poison Explosion', level: 18 },
-          { id: 'bonespearcontainer', name: 'Bone Spear', level: 18 },
-          { id: 'boneprisoncontainer', name: 'Bone Prison', level: 24 },
-          { id: 'poisonnovacontainer', name: 'Poison Nova', level: 24 },
-          { id: 'bonespiritcontainer', name: 'Bone Spirit', level: 30 }
+        'poisonandbonespellscontainer': [{
+          id: 'teethcontainer',
+          name: 'Teeth',
+          level: 1
+        },
+        {
+          id: 'bonearmorcontainer',
+          name: 'Bone Armor',
+          level: 1
+        },
+        {
+          id: 'poisondaggercontainer',
+          name: 'Poison Dagger',
+          level: 6
+        },
+        {
+          id: 'corpseexplosioncontainer',
+          name: 'Corpse Explosion',
+          level: 6
+        },
+        {
+          id: 'bonewallcontainer',
+          name: 'Bone Wall',
+          level: 12
+        },
+        {
+          id: 'poisonexplosioncontainer',
+          name: 'Poison Explosion',
+          level: 18
+        },
+        {
+          id: 'bonespearcontainer',
+          name: 'Bone Spear',
+          level: 18
+        },
+        {
+          id: 'boneprisoncontainer',
+          name: 'Bone Prison',
+          level: 24
+        },
+        {
+          id: 'poisonnovacontainer',
+          name: 'Poison Nova',
+          level: 24
+        },
+        {
+          id: 'bonespiritcontainer',
+          name: 'Bone Spirit',
+          level: 30
+        }
         ],
-        'cursescontainer': [
-          { id: 'amplifycontainer', name: 'Amplify Damage', level: 1 },
-          { id: 'dimvisioncontainer', name: 'Dim Vision', level: 6 },
-          { id: 'weakencontainer', name: 'Weaken', level: 6 },
-          { id: 'ironmaidencontainer', name: 'Iron Maiden', level: 12 },
-          { id: 'terrorcontainer', name: 'Terror', level: 12 },
-          { id: 'confusecontainer', name: 'Confuse', level: 18 },
-          { id: 'lifetapcontainer', name: 'Life Tap', level: 18 },
-          { id: 'attractcontainer', name: 'Attract', level: 24 },
-          { id: 'decrepifycontainer', name: 'Decrepify', level: 24 },
-          { id: 'lowerresistcontainer', name: 'Lower Resist', level: 30 }
+        'cursescontainer': [{
+          id: 'amplifycontainer',
+          name: 'Amplify Damage',
+          level: 1
+        },
+        {
+          id: 'dimvisioncontainer',
+          name: 'Dim Vision',
+          level: 6
+        },
+        {
+          id: 'weakencontainer',
+          name: 'Weaken',
+          level: 6
+        },
+        {
+          id: 'ironmaidencontainer',
+          name: 'Iron Maiden',
+          level: 12
+        },
+        {
+          id: 'terrorcontainer',
+          name: 'Terror',
+          level: 12
+        },
+        {
+          id: 'confusecontainer',
+          name: 'Confuse',
+          level: 18
+        },
+        {
+          id: 'lifetapcontainer',
+          name: 'Life Tap',
+          level: 18
+        },
+        {
+          id: 'attractcontainer',
+          name: 'Attract',
+          level: 24
+        },
+        {
+          id: 'decrepifycontainer',
+          name: 'Decrepify',
+          level: 24
+        },
+        {
+          id: 'lowerresistcontainer',
+          name: 'Lower Resist',
+          level: 30
+        }
         ]
       },
       'Paladin': {
-        'defensiveaurascontainer': [
-          { id: 'prayercontainer', name: 'Prayer', level: 1 },
-          { id: 'resistfirecontainer', name: 'Resist Fire', level: 1 },
-          { id: 'defiancecontainer', name: 'Defiance', level: 6 },
-          { id: 'resistcoldcontainer', name: 'Resist Cold', level: 6 },
-          { id: 'cleansingcontainer', name: 'Cleansing', level: 12 },
-          { id: 'resistlightningcontainer', name: 'Resist Lightning', level: 12 },
-          { id: 'vigorcontainer', name: 'Vigor', level: 18 },
-          { id: 'meditationcontainer', name: 'Meditation', level: 24 },
-          { id: 'redemptioncontainer', name: 'Redemption', level: 30 },
-          { id: 'salvationcontainer', name: 'Salvation', level: 30 }
+        'defensiveaurascontainer': [{
+          id: 'prayercontainer',
+          name: 'Prayer',
+          level: 1
+        },
+        {
+          id: 'resistfirecontainer',
+          name: 'Resist Fire',
+          level: 1
+        },
+        {
+          id: 'defiancecontainer',
+          name: 'Defiance',
+          level: 6
+        },
+        {
+          id: 'resistcoldcontainer',
+          name: 'Resist Cold',
+          level: 6
+        },
+        {
+          id: 'cleansingcontainer',
+          name: 'Cleansing',
+          level: 12
+        },
+        {
+          id: 'resistlightningcontainer',
+          name: 'Resist Lightning',
+          level: 12
+        },
+        {
+          id: 'vigorcontainer',
+          name: 'Vigor',
+          level: 18
+        },
+        {
+          id: 'meditationcontainer',
+          name: 'Meditation',
+          level: 24
+        },
+        {
+          id: 'redemptioncontainer',
+          name: 'Redemption',
+          level: 30
+        },
+        {
+          id: 'salvationcontainer',
+          name: 'Salvation',
+          level: 30
+        }
         ],
-        'offensiveaurascontainer': [
-          { id: 'mightcontainer', name: 'Might', level: 1 },
-          { id: 'holyfirecontainer', name: 'Holy Fire', level: 6 },
-          { id: 'thornscontainer', name: 'Thorns', level: 6 },
-          { id: 'blessedaimcontainer', name: 'Blessed Aim', level: 12 },
-          { id: 'concentrationcontainer', name: 'Concentration', level: 18 },
-          { id: 'holyfrostcontainer', name: 'Holy Freeze', level: 18 },
-          { id: 'holyshockcontainer', name: 'Holy Shock', level: 24 },
-          { id: 'sanctuarycontainer', name: 'Sanctuary', level: 24 },
-          { id: 'fanatcontainer', name: 'Fanaticism', level: 30 },
-          { id: 'convictioncontainer', name: 'Conviction', level: 30 }
+        'offensiveaurascontainer': [{
+          id: 'mightcontainer',
+          name: 'Might',
+          level: 1
+        },
+        {
+          id: 'holyfirecontainer',
+          name: 'Holy Fire',
+          level: 6
+        },
+        {
+          id: 'thornscontainer',
+          name: 'Thorns',
+          level: 6
+        },
+        {
+          id: 'blessedaimcontainer',
+          name: 'Blessed Aim',
+          level: 12
+        },
+        {
+          id: 'concentrationcontainer',
+          name: 'Concentration',
+          level: 18
+        },
+        {
+          id: 'holyfrostcontainer',
+          name: 'Holy Freeze',
+          level: 18
+        },
+        {
+          id: 'holyshockcontainer',
+          name: 'Holy Shock',
+          level: 24
+        },
+        {
+          id: 'sanctuarycontainer',
+          name: 'Sanctuary',
+          level: 24
+        },
+        {
+          id: 'fanatcontainer',
+          name: 'Fanaticism',
+          level: 30
+        },
+        {
+          id: 'convictioncontainer',
+          name: 'Conviction',
+          level: 30
+        }
         ],
-        'combatskillspalcontainer': [
-          { id: 'sacrificecontainer', name: 'Sacrifice', level: 1 },
-          { id: 'smitecontainer', name: 'Smite', level: 1 },
-          { id: 'holyboltcontainer', name: 'Holy Bolt', level: 6 },
-          { id: 'zeal', name: 'Zeal', level: 12 },
-          { id: 'chargecontainer', name: 'Charge', level: 12 },
-          { id: 'vengeancecontainer', name: 'Vengeance', level: 18 },
-          { id: 'blessedhammcontainer', name: 'Blessed Hammer', level: 18 },
-          { id: 'conversioncontainer', name: 'Conversion', level: 24 },
-          { id: 'holyshieldcontainer', name: 'Holy Shield', level: 24 },
-          { id: 'focontainer', name: 'Fist of the Heavens', level: 30 }
+        'combatskillspalcontainer': [{
+          id: 'sacrificecontainer',
+          name: 'Sacrifice',
+          level: 1
+        },
+        {
+          id: 'smitecontainer',
+          name: 'Smite',
+          level: 1
+        },
+        {
+          id: 'holyboltcontainer',
+          name: 'Holy Bolt',
+          level: 6
+        },
+        {
+          id: 'zeal',
+          name: 'Zeal',
+          level: 12
+        },
+        {
+          id: 'chargecontainer',
+          name: 'Charge',
+          level: 12
+        },
+        {
+          id: 'vengeancecontainer',
+          name: 'Vengeance',
+          level: 18
+        },
+        {
+          id: 'blessedhammcontainer',
+          name: 'Blessed Hammer',
+          level: 18
+        },
+        {
+          id: 'conversioncontainer',
+          name: 'Conversion',
+          level: 24
+        },
+        {
+          id: 'holyshieldcontainer',
+          name: 'Holy Shield',
+          level: 24
+        },
+        {
+          id: 'focontainer',
+          name: 'Fist of the Heavens',
+          level: 30
+        }
         ]
       },
       'Sorceress': {
-        'coldspellscontainer': [
-          { id: 'iceboltcontainer', name: 'Ice Bolt', level: 1 },
-          { id: 'frozenarmorcontainer', name: 'Frozen Armor', level: 1 },
-          { id: 'frostnovacontainer', name: 'Frost Nova', level: 6 },
-          { id: 'iceblastcontainer', name: 'Ice Blast', level: 6 },
-          { id: 'shivercontainer', name: 'Shiver Armor', level: 12 },
-          { id: 'glacialspikecontainer', name: 'Glacial Spike', level: 18 },
-          { id: 'blizzardcontainer', name: 'Blizzard', level: 24 },
-          { id: 'chillingarmorcontainer', name: 'Chilling Armor', level: 18 },
-          { id: 'frozenorbcontainer', name: 'Frozen Orb', level: 30 },
-          { id: 'coldmasterycontainer', name: 'Cold Mastery', level: 30 }
+        'coldspellscontainer': [{
+          id: 'iceboltcontainer',
+          name: 'Ice Bolt',
+          level: 1
+        },
+        {
+          id: 'frozenarmorcontainer',
+          name: 'Frozen Armor',
+          level: 1
+        },
+        {
+          id: 'frostnovacontainer',
+          name: 'Frost Nova',
+          level: 6
+        },
+        {
+          id: 'iceblastcontainer',
+          name: 'Ice Blast',
+          level: 6
+        },
+        {
+          id: 'shivercontainer',
+          name: 'Shiver Armor',
+          level: 12
+        },
+        {
+          id: 'glacialspikecontainer',
+          name: 'Glacial Spike',
+          level: 18
+        },
+        {
+          id: 'blizzardcontainer',
+          name: 'Blizzard',
+          level: 24
+        },
+        {
+          id: 'chillingarmorcontainer',
+          name: 'Chilling Armor',
+          level: 18
+        },
+        {
+          id: 'frozenorbcontainer',
+          name: 'Frozen Orb',
+          level: 30
+        },
+        {
+          id: 'coldmasterycontainer',
+          name: 'Cold Mastery',
+          level: 30
+        }
         ],
-        'lightningspellscontainer': [
-          { id: 'chargedboltcontainer', name: 'Charged Bolt', level: 1 },
-          { id: 'staticfieldcontainer', name: 'Static Field', level: 6 },
-          { id: 'telekinesicontainer', name: 'Telekinesis', level: 6 },
-          { id: 'novcontainer', name: 'Nova', level: 12 },
-          { id: 'lightningcontainer', name: 'Lightning', level: 12 },
-          { id: 'chainlightningcontainer', name: 'Chain Lightning', level: 18 },
-          { id: 'teleportcontainer', name: 'Teleport', level: 18 },
-          { id: 'thunderstormcontainer', name: 'Thunder Storm', level: 24 },
-          { id: 'energyshieldcontainer', name: 'Energy Shield', level: 24 },
-          { id: 'lightningmasterycontainer', name: 'Lightning Mastery', level: 30 }
+        'lightningspellscontainer': [{
+          id: 'chargedboltcontainer',
+          name: 'Charged Bolt',
+          level: 1
+        },
+        {
+          id: 'staticfieldcontainer',
+          name: 'Static Field',
+          level: 6
+        },
+        {
+          id: 'telekinesicontainer',
+          name: 'Telekinesis',
+          level: 6
+        },
+        {
+          id: 'novcontainer',
+          name: 'Nova',
+          level: 12
+        },
+        {
+          id: 'lightningcontainer',
+          name: 'Lightning',
+          level: 12
+        },
+        {
+          id: 'chainlightningcontainer',
+          name: 'Chain Lightning',
+          level: 18
+        },
+        {
+          id: 'teleportcontainer',
+          name: 'Teleport',
+          level: 18
+        },
+        {
+          id: 'thunderstormcontainer',
+          name: 'Thunder Storm',
+          level: 24
+        },
+        {
+          id: 'energyshieldcontainer',
+          name: 'Energy Shield',
+          level: 24
+        },
+        {
+          id: 'lightningmasterycontainer',
+          name: 'Lightning Mastery',
+          level: 30
+        }
         ],
-        'firespellscontainer': [
-          { id: 'fireboltcontainer', name: 'Fire Bolt', level: 1 },
-          { id: 'warmthcontainer', name: 'Warmth', level: 1 },
-          { id: 'inferncontainer', name: 'Inferno', level: 6 },
-          { id: 'blaze', name: 'Blaze', level: 12 },
-          { id: 'fireballcontainer', name: 'Fire Ball', level: 12 },
-          { id: 'firewallcontainer', name: 'Fire Wall', level: 18 },
-          { id: 'enchantcontainer', name: 'Enchant', level: 18 },
-          { id: 'meteorcontainer', name: 'Meteor', level: 24 },
-          { id: 'firemasterycontainer', name: 'Fire Mastery', level: 30 },
-          { id: 'hydracontainer', name: 'Hydra', level: 30 }
+        'firespellscontainer': [{
+          id: 'fireboltcontainer',
+          name: 'Fire Bolt',
+          level: 1
+        },
+        {
+          id: 'warmthcontainer',
+          name: 'Warmth',
+          level: 1
+        },
+        {
+          id: 'inferncontainer',
+          name: 'Inferno',
+          level: 6
+        },
+        {
+          id: 'blaze',
+          name: 'Blaze',
+          level: 12
+        },
+        {
+          id: 'fireballcontainer',
+          name: 'Fire Ball',
+          level: 12
+        },
+        {
+          id: 'firewallcontainer',
+          name: 'Fire Wall',
+          level: 18
+        },
+        {
+          id: 'enchantcontainer',
+          name: 'Enchant',
+          level: 18
+        },
+        {
+          id: 'meteorcontainer',
+          name: 'Meteor',
+          level: 24
+        },
+        {
+          id: 'firemasterycontainer',
+          name: 'Fire Mastery',
+          level: 30
+        },
+        {
+          id: 'hydracontainer',
+          name: 'Hydra',
+          level: 30
+        }
         ]
       }
     };
@@ -321,37 +1212,64 @@ class SkillSystem {
 
     this.skillData = {
       jabcontainer: {
-        name: "Jab", type: "physical",
-        damage: { base: 30, perLevel: 20 },
-        attackRating: { base: 25, perLevel: 12 },
-        manaCost: { base: 1.5, perLevel: 0.2 },
-        synergies: [
-          { skillId: 'fendcontainer', bonusPerLevel: 18, damageType: 'physical' }
-        ]
+        name: "Jab",
+        type: "physical",
+        damage: {
+          base: 30,
+          perLevel: 20
+        },
+        attackRating: {
+          base: 25,
+          perLevel: 12
+        },
+        manaCost: {
+          base: 1.5,
+          perLevel: 0.2
+        },
+        synergies: [{
+          skillId: 'fendcontainer',
+          bonusPerLevel: 18,
+          damageType: 'physical'
+        }]
       },
       fendcontainer: {
-        name: "Fend", type: "physical",
+        name: "Fend",
+        type: "physical",
         damage: [100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525, 1550, 1575],
         attackRating: [80, 86, 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, 164, 170, 176, 182, 188, 194, 200, 206, 212, 218, 224, 230, 236, 242, 248, 254, 260, 266, 272, 278, 284, 290, 296, 302, 308, 314, 320, 326, 332, 338, 344, 350, 356, 362, 368, 374, 380, 386, 392, 398, 404, 410, 416, 422, 428, 434],
         manaCost: 5,
-        synergies: [
-          { skillId: 'jabcontainer', bonusPerLevel: 20, damageType: 'physical' }
-        ]
+        synergies: [{
+          skillId: 'jabcontainer',
+          bonusPerLevel: 20,
+          damageType: 'physical'
+        }]
       },
       poisonjavelincontainer: {
-        name: "Poison Javelin", type: "poison",
+        name: "Poison Javelin",
+        type: "poison",
         poisonDamage: {
           min: [2, 4, 6, 9, 11, 13, 16, 18, 25, 32, 39, 46, 53, 60, 67, 74, 88, 102, 116, 131],
           max: [5, 7, 10, 12, 15, 17, 19, 22, 29, 37, 44, 51, 58, 66, 73, 80, 95, 110, 124, 139]
         },
-        manaCost: { base: 2, perLevel: 0.25 },
-        synergies: [
-          { skillId: 'plaguejavelincontainer', bonusPerLevel: 24, damageType: 'poison' },
-          { skillId: 'javelinandspearmasterycontainer', bonusPerLevel: 24, damageType: 'poison' }
+        manaCost: {
+          base: 2,
+          perLevel: 0.25
+        },
+        synergies: [{
+          skillId: 'plaguejavelincontainer',
+          bonusPerLevel: 24,
+          damageType: 'poison'
+        },
+        {
+          skillId: 'javelinandspearmasterycontainer',
+          bonusPerLevel: 24,
+          damageType: 'poison'
+        }
         ]
       },
       powerstrikecontainer: {
-        name: "Power Strike", type: "lightning",
+        name: "Power Strike",
+        type: "lightning",
         lightningDamage: {
           min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
           max: [1, 4, 7, 10, 13, 16, 19, 22, 27, 32, 37, 42, 47, 52, 57, 62, 75, 88, 101, 114, 127, 140, 162, 184, 206, 228, 250, 272, 304, 336, 368, 400, 432, 464, 496, 528, 560, 592, 624, 656, 688, 720, 752, 784, 816, 848, 880, 912, 944, 976, 1008, 1040, 1072, 1104, 1136, 1168, 1200, 1232, 1264, 1296]
@@ -360,120 +1278,186 @@ class SkillSystem {
           min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
           max: [3, 7, 11, 15, 19, 23, 27, 31, 39, 47, 55, 63, 71, 79, 87, 95, 123, 151, 179, 207, 235, 263, 308, 353, 398, 443, 488, 533, 595, 657, 719, 781, 843, 905, 967, 1029, 1091, 1153, 1215, 1277, 1339, 1401, 1463, 1525, 1587, 1649, 1711, 1773, 1835, 1897, 1959, 2021, 2083, 2145, 2207, 2269, 2331, 2393, 2455, 2517]
         },
-        attackRating: { base: 20, perLevel: 12 },
+        attackRating: {
+          base: 20,
+          perLevel: 12
+        },
         manaCost: [2, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1, 3.3, 3.5, 3.6, 3.8, 4, 4.2, 4.4, 4.6, 4.8, 5, 5.1, 5.3, 5.5, 5.7, 5.9, 6.1, 6.3, 6.5, 6.6, 6.8, 7, 7.2, 7.4, 7.6, 7.8, 8, 8.1, 8.3, 8.5, 8.7, 8.9, 9.1, 9.3, 9.5, 9.6, 9.8, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.1, 11.3, 11.5, 11.7, 11.9, 12.1, 12.3, 12.5, 12.6, 12.8, 13],
-        synergies: [
-          { skillId: 'lightningstrikecontainer', bonusPerLevel: 20, damageType: 'lightning' },
-          { skillId: 'lightningstrikecontainer', bonusPerLevel: 20, damageType: 'nova' },
-          { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'lightning' },
-          { skillId: 'lightningboltcontainer', bonusPerLevel: 20, damageType: 'nova' }
+        synergies: [{
+          skillId: 'lightningstrikecontainer',
+          bonusPerLevel: 20,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'lightningstrikecontainer',
+          bonusPerLevel: 20,
+          damageType: 'nova'
+        },
+        {
+          skillId: 'lightningboltcontainer',
+          bonusPerLevel: 20,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'lightningboltcontainer',
+          bonusPerLevel: 20,
+          damageType: 'nova'
+        }
         ]
       },
       lightningboltcontainer: {
-        name: "Lightning Bolt", type: "placeholder"
+        name: "Lightning Bolt",
+        type: "placeholder"
 
       },
 
       chargedstrikecontainer: {
-        name: "Charged Strike", type: "lightning",
+        name: "Charged Strike",
+        type: "lightning",
         chargedBolts: [3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
         lightningDamage: {
           min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
           max: [40, 52, 64, 76, 88, 100, 112, 124, 140, 156, 172, 188, 204, 220, 236, 252, 272, 292, 312, 332, 352, 372, 396, 420, 444, 468, 492, 516, 544, 572, 600, 628, 656, 684, 712, 740, 768, 796, 824, 852, 880, 908, 936, 964, 992, 1020, 1048, 1076, 1104, 1132, 1160, 1188, 1216, 1244, 1272, 1300, 1328, 1356, 1384, 1412]
         },
         manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
-        synergies: [
-          { skillId: 'powerstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' },
-          { skillId: 'lightningstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' },
+        synergies: [{
+          skillId: 'powerstrikecontainer',
+          bonusPerLevel: 8,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'lightningstrikecontainer',
+          bonusPerLevel: 8,
+          damageType: 'lightning'
+        },
         ]
       },
       lightningstrikecontainer: {
-        name: "Lightning Strike", type: "lightning",
+        name: "Lightning Strike",
+        type: "lightning",
         hits: [4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
         lightningDamage: {
           min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
           max: [25, 35, 45, 55, 65, 75, 85, 95, 115, 135, 155, 175, 195, 215, 235, 255, 290, 325, 360, 395, 430, 465, 520, 575, 630, 685, 740, 795, 870, 945, 1020, 1095, 1170, 1245, 1320, 1395, 1470, 1545, 1620, 1695, 1770, 1845, 1920, 1995, 2070, 2145, 2220, 2295, 2370, 2445, 2520, 2595, 2670, 2745, 2820, 2895, 2970, 3045, 3120, 3195]
         },
         manaCost: [6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7, 20, 20.2, 20.5, 20.7],
-        synergies: [
-          { skillId: 'powerstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' },
-          { skillId: 'chargedstrikecontainer', bonusPerLevel: 8, damageType: 'lightning' }
+        synergies: [{
+          skillId: 'powerstrikecontainer',
+          bonusPerLevel: 8,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'chargedstrikecontainer',
+          bonusPerLevel: 8,
+          damageType: 'lightning'
+        }
         ]
       },
       lightningboltcontainer: {
-        name: "Lightning Bolt", type: "lightning_conversion",
+        name: "Lightning Bolt",
+        type: "lightning_conversion",
         lightningDamage: {
           min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
           max: [40, 52, 64, 76, 88, 100, 112, 124, 150, 176, 202, 228, 254, 280, 306, 332, 386, 440, 494, 548, 602, 656, 738, 820, 902, 984, 1066, 1148, 1258, 1368, 1478, 1588, 1698, 1808, 1918, 2028, 2138, 2248, 2358, 2468, 2578, 2688, 2798, 2908, 3018, 3128, 3238, 3348, 3458, 3568, 3678, 3788, 3898, 4008, 4118, 4228, 4338, 4448, 4558, 4668]
         },
         manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
         convertsPhysical: true,
-        synergies: [
-          { skillId: 'powerstrikecontainer', bonusPerLevel: 15, damageType: 'lightning' },
-          { skillId: 'lightningfurycontainer', bonusPerLevel: 15, damageType: 'lightning' }
+        synergies: [{
+          skillId: 'powerstrikecontainer',
+          bonusPerLevel: 15,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'lightningfurycontainer',
+          bonusPerLevel: 15,
+          damageType: 'lightning'
+        }
         ]
       },
       plaguejavelincontainer: {
-        name: "Plague Javelin", type: "poison",
+        name: "Plague Javelin",
+        type: "poison",
         poisonDamage: {
           min: [23, 37, 51, 65, 79, 93, 107, 121, 150, 178, 206, 234, 262, 290, 318, 346, 393, 440, 487, 534, 581, 628, 721, 815, 909, 1003, 1096, 1190, 1378, 1565, 1753, 1940, 2128, 2315, 2503, 2690, 2878, 3065, 3253, 3440, 3628, 3815, 4003, 4190, 4378, 4565, 4753, 4940, 5128, 5315, 5503, 5690, 5878, 6065, 6253, 6440, 6628, 6815, 7003, 7190],
           max: [37, 51, 65, 79, 93, 107, 121, 135, 164, 192, 220, 248, 276, 304, 332, 360, 407, 454, 501, 548, 595, 642, 735, 829, 923, 1017, 1110, 1204, 1392, 1579, 1767, 1954, 2142, 2329, 2517, 2704, 2892, 3079, 3267, 3454, 3642, 3829, 4017, 4204, 4392, 4579, 4767, 4954, 5142, 5329, 5517, 5704, 5892, 6079, 6267, 6454, 6642, 6829, 7017, 7204]
         },
         attackRating: [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640],
         manaCost: [7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 30, 30.5, 31, 31.5, 32, 32.5, 33, 33.5, 34, 34.5, 35, 35.5, 36, 36.5],
-        synergies: [
-          { skillId: 'poisonjavelincontainer', bonusPerLevel: 12, damageType: 'poison' },
-          { skillId: 'javelinandspearmasterycontainer', bonusPerLevel: 6, damageType: 'poison' }
+        synergies: [{
+          skillId: 'poisonjavelincontainer',
+          bonusPerLevel: 12,
+          damageType: 'poison'
+        },
+        {
+          skillId: 'javelinandspearmasterycontainer',
+          bonusPerLevel: 6,
+          damageType: 'poison'
+        }
         ]
       },
       lightningfurycontainer: {
-        name: "Lightning Fury", type: "lightning",
+        name: "Lightning Fury",
+        type: "lightning",
         bolts: [10, 10, 10, 10, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15, 16, 16, 16, 16, 16, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 22],
         lightningDamage: {
           min: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
           max: [65, 73, 81, 89, 97, 105, 113, 121, 130, 139, 148, 157, 166, 175, 184, 193, 203, 213, 223, 233, 243, 253, 264, 275, 286, 297, 308, 319, 331, 343, 355, 367, 379, 391, 403, 415, 427, 439, 451, 463, 475, 487, 499, 511, 523, 535, 547, 559, 571, 583, 595, 607, 619, 631, 643, 655, 667, 679, 691, 703]
         },
         manaCost: [5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7],
-        synergies: [
-          { skillId: 'powerstrikecontainer', bonusPerLevel: 3, damageType: 'lightning' },
-          { skillId: 'lightningboltcontainer', bonusPerLevel: 3, damageType: 'lightning' }
+        synergies: [{
+          skillId: 'powerstrikecontainer',
+          bonusPerLevel: 3,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'lightningboltcontainer',
+          bonusPerLevel: 3,
+          damageType: 'lightning'
+        }
         ]
       },
       javelinandspearmasterycontainer: {
-        name: "Javelin and Spear Mastery", type: "passive",
+        name: "Javelin and Spear Mastery",
+        type: "passive",
         damage: [40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910, 925],
         criticalStrike: [5, 9, 12, 15, 17, 19, 20, 21, 23, 23, 24, 25, 26, 26, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
       },
       innersightcontainer: {
-        name: "Inner Sight", type: "passive",
+        name: "Inner Sight",
+        type: "passive",
         duration: [8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 244],
         enemyAttackRating: [-10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40, -40],
         enemyDefense: [-40, -65, -90, -115, -140, -165, -190, -215, -260, -305, -350, -395, -440, -485, -530, -575, -635, -695, -755, -815, -875, -935, -1015, -1095, -1175, -1255, -1335, -1415, -1515, -1615, -1715, -1815, -1915, -2015, -2115, -2215, -2315, -2415, -2515, -2615, -2715, -2815, -2915, -3015, -3115, -3215, -3315, -3415, -3515, -3615, -3715, -3815, -3915, -4015, -4115, -4215, -4315, -4415, -4515, -4615],
         radius: [6.6, 7.3, 8, 8.6, 9.3, 10, 10.6, 11.3, 12, 12.6, 13.3, 14, 14.6, 15.3, 16, 16.6, 17.3, 18, 18.6, 19.3, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
       },
       evadecontainer: {
-        name: "Evade", type: "passive",
+        name: "Evade",
+        type: "passive",
         dodgeChance: [6, 11, 15, 18, 20, 22, 24, 25, 26, 27, 28, 29, 30, 31, 31, 32, 32, 32, 33, 33, 34, 34, 34, 35, 35, 36, 36, 36, 36, 36, 36, 36, 37, 37, 37, 37, 37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 40],
         movementSpeed: [15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65]
       },
       slowmovementcontainer: {
-        name: "Slow Movement", type: "passive",
+        name: "Slow Movement",
+        type: "passive",
         enemyMovementSpeed: [-20, -22, -24, -26, -28, -30, -32, -34, -36, -38, -40, -42, -44, -46, -48, -50, -52, -54, -56, -58, -60, -62, -64, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65, -65],
         enemyRangedAttacksSlowed: [75, 73, 71, 69, 67, 65, 63, 61, 59, 57, 55, 53, 51, 49, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
         radius: [12, 12.6, 13.3, 14, 14.6, 15.3, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
         duration: [10, 10.2, 10.4, 10.6, 10.8, 11, 11.2, 11.4, 11.6, 11.8, 12, 12.2, 12.4, 12.6, 12.8, 13, 13.2, 13.4, 13.6, 13.8, 14, 14.2, 14.4, 14.6, 14.8, 15, 15.2, 15.4, 15.6, 15.8, 16, 16.2, 16.4, 16.6, 16.8, 17, 17.2, 17.4, 17.6, 17.8, 18, 18.2, 18.4, 18.6, 18.8, 19, 19.2, 19.4, 19.6, 19.8, 20, 20.2, 20.4, 20.6, 20.8, 21, 21.2, 21.4, 21.6, 21.8]
       },
       piercecontainer: {
-        name: "Pierce", type: "passive",
+        name: "Pierce",
+        type: "passive",
         pierceChance: [20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
       },
       dodgecontainer: {
-        name: "Dodge", type: "passive",
+        name: "Dodge",
+        type: "passive",
         dodgeChance: [6, 11, 15, 18, 20, 22, 24, 25, 26, 27, 28, 29, 30, 31, 31, 32, 32, 32, 33, 33, 34, 34, 34, 35, 35, 36, 36, 36, 36, 36, 36, 36, 37, 37, 37, 37, 37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 40],
         fasterHitRecovery: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24]
       },
       decoycontainer: {
-        name: "Decoy", type: "active",
+        name: "Decoy",
+        type: "active",
         damage: {
           min: [35, 39, 43, 47, 51, 55, 59, 63, 69, 75, 81, 87, 93, 99, 105, 111, 120, 129, 138, 147, 156, 165, 177, 189, 201, 213, 225, 237, 252, 267, 282, 297, 312, 327, 342, 357, 372, 387, 402, 417, 432, 447, 462, 477, 492, 507, 522, 537, 552, 567, 582, 597, 612, 627, 642, 657, 672, 687, 702, 717],
           max: [50, 56, 62, 68, 74, 80, 86, 92, 100, 108, 116, 124, 132, 140, 148, 156, 167, 178, 189, 200, 211, 222, 236, 250, 264, 278, 292, 306, 323, 340, 357, 374, 391, 408, 425, 442, 459, 476, 493, 510, 527, 544, 561, 578, 595, 612, 629, 646, 663, 680, 697, 714, 731, 748, 765, 782, 799, 816, 833, 850]
@@ -485,12 +1469,14 @@ class SkillSystem {
         decoys: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
       },
       penetratecontainer: {
-        name: "Penetrate", type: "passive",
+        name: "Penetrate",
+        type: "passive",
         attackRatingPercent: [35, 45, 55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 155, 165, 175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315, 325, 335, 345, 355, 365, 375, 385, 395, 405, 415, 425, 435, 445, 455, 465, 475, 485, 495, 505, 515, 525, 535, 545, 555, 565, 575, 585, 595, 605, 615, 625],
         enemyPhysicalResistance: [0, 0, -1, -1, -2, -2, -3, -3, -4, -4, -5, -5, -6, -6, -7, -7, -8, -8, -9, -9, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10]
       },
       valkyriecontainer: {
-        name: "Valkyrie", type: "active",
+        name: "Valkyrie",
+        type: "active",
         life: {
           normal: [240, 256, 273, 290, 307, 324, 340, 357, 374, 391, 408, 424, 441, 458, 475, 492, 508, 525, 542, 559, 576, 592, 609, 626, 643, 660, 676, 693, 710, 727, 744, 760, 777, 794, 811, 828, 844, 861, 878, 895, 912, 928, 945, 962, 979, 996, 1012, 1029, 1046, 1063, 1080, 1096, 1113, 1130, 1147, 1164, 1180, 1197, 1214, 1231],
           nightmare: [340, 363, 387, 411, 435, 459, 482, 506, 530, 554, 578, 601, 625, 649, 673, 697, 720, 744, 768, 792, 816, 839, 863, 887, 911, 935, 958, 982, 1006, 1030, 1054, 1077, 1101, 1125, 1149, 1173, 1196, 1220, 1244, 1268, 1292, 1315, 1339, 1363, 1387, 1411, 1434, 1458, 1482, 1506, 1530, 1553, 1577, 1601, 1625, 1649, 1672, 1696, 1720, 1744],
@@ -515,10 +1501,21 @@ class SkillSystem {
         arrows: [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5],
         pierceChance: 100,
         convertsPhysical: 75, // Converts 75% Physical Damage to Magic Damage
-        synergies: [
-          { skillId: 'innersightcontainer', bonusPerLevel: 20, damageType: 'magic' },
-          { skillId: 'slowmovementcontainer', bonusPerLevel: 20, damageType: 'magic' },
-          { skillId: 'guidedarrowcontainer', bonusPerLevel: 20, damageType: 'magic' }
+        synergies: [{
+          skillId: 'innersightcontainer',
+          bonusPerLevel: 20,
+          damageType: 'magic'
+        },
+        {
+          skillId: 'slowmovementcontainer',
+          bonusPerLevel: 20,
+          damageType: 'magic'
+        },
+        {
+          skillId: 'guidedarrowcontainer',
+          bonusPerLevel: 20,
+          damageType: 'magic'
+        }
         ],
         prerequisites: []
       },
@@ -543,9 +1540,16 @@ class SkillSystem {
         arrows: [2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
         manaCost: [1.5, 1.6, 1.7, 1.8, 2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8],
         convertsPhysical: 50, // Converts 50% Physical Damage to Fire Damage
-        synergies: [
-          { skillId: 'magicarrowcontainer', bonusPerLevel: 18, damageType: 'fire' },
-          { skillId: 'immolationarrowcontainer', bonusPerLevel: 18, damageType: 'fire' }
+        synergies: [{
+          skillId: 'magicarrowcontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'immolationarrowcontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        }
         ],
         prerequisites: []
       },
@@ -560,9 +1564,16 @@ class SkillSystem {
         arrows: [2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
         manaCost: [1.5, 1.6, 1.7, 1.8, 2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8],
         convertsPhysical: 50, // Converts 50% Physical Damage to Cold Damage
-        synergies: [
-          { skillId: 'magicarrowcontainer', bonusPerLevel: 17, damageType: 'cold' },
-          { skillId: 'icearrowcontainer', bonusPerLevel: 17, damageType: 'cold' }
+        synergies: [{
+          skillId: 'magicarrowcontainer',
+          bonusPerLevel: 17,
+          damageType: 'cold'
+        },
+        {
+          skillId: 'icearrowcontainer',
+          bonusPerLevel: 17,
+          damageType: 'cold'
+        }
         ],
         prerequisites: []
       },
@@ -575,10 +1586,21 @@ class SkillSystem {
           max: [36, 47, 58, 69, 80, 91, 102, 113, 129, 145, 161, 177, 193, 209, 225, 241, 267, 293, 319, 345, 371, 397, 433, 469, 505, 541, 577, 613, 659, 705, 751, 797, 843, 889, 935, 981, 1027, 1073, 1119, 1165, 1211, 1257, 1303, 1349, 1395, 1441, 1487, 1533, 1579, 1625, 1671, 1717, 1763, 1809, 1855, 1901, 1947, 1993, 2039, 2085]
         },
         manaCost: 3,
-        synergies: [
-          { skillId: 'magicarrowcontainer', bonusPerLevel: 16, damageType: 'cold' },
-          { skillId: 'coldarrowcontainer', bonusPerLevel: 10, damageType: 'cold' },
-          { skillId: 'freezingarrowcontainer', bonusPerLevel: 10, damageType: 'cold' }
+        synergies: [{
+          skillId: 'magicarrowcontainer',
+          bonusPerLevel: 16,
+          damageType: 'cold'
+        },
+        {
+          skillId: 'coldarrowcontainer',
+          bonusPerLevel: 10,
+          damageType: 'cold'
+        },
+        {
+          skillId: 'freezingarrowcontainer',
+          bonusPerLevel: 10,
+          damageType: 'cold'
+        }
         ],
         prerequisites: []
       },
@@ -587,8 +1609,11 @@ class SkillSystem {
         type: "physical_magic_hybrid", // Physical with optional magic conversion based on Magic Arrow synergy
         damage: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295],
         manaCost: [8, 7.7, 7.5, 7.2, 7, 6.7, 6.5, 6.2, 6, 5.7, 5.5, 5.2, 5, 4.7, 4.5, 4.2, 4, 3.7, 3.5, 3.2, 3, 2.7, 2.5, 2.2, 2, 1.7, 1.5, 1.2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        synergies: [
-          { skillId: 'magicarrowcontainer', bonusPerLevel: 0.5, damageType: 'magic_conversion' } // 1% conversion per 2 levels
+        synergies: [{
+          skillId: 'magicarrowcontainer',
+          bonusPerLevel: 0.5,
+          damageType: 'magic_conversion'
+        } // 1% conversion per 2 levels
         ],
         prerequisites: []
       },
@@ -602,9 +1627,16 @@ class SkillSystem {
         },
         radius: [2, 2, 2, 2, 2.6, 2.6, 2.6, 2.6, 3.3, 3.3, 3.3, 3.3, 4, 4, 4, 4, 4.6, 4.6, 4.6, 4.6, 5.3],
         manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
-        synergies: [
-          { skillId: 'magicarrowcontainer', bonusPerLevel: 18, damageType: 'fire' },
-          { skillId: 'immolationarrowcontainer', bonusPerLevel: 18, damageType: 'fire' }
+        synergies: [{
+          skillId: 'magicarrowcontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'immolationarrowcontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        }
         ],
         prerequisites: []
       },
@@ -615,9 +1647,11 @@ class SkillSystem {
         damage: [100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910, 925, 940, 955, 970, 985],
         targets: [3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
         manaCost: 11,
-        synergies: [
-          { skillId: 'penetratecontainer', bonusPerLevel: 12, damageType: 'physical' }
-        ],
+        synergies: [{
+          skillId: 'penetratecontainer',
+          bonusPerLevel: 12,
+          damageType: 'physical'
+        }],
         prerequisites: []
       },
       immolationarrowcontainer: {
@@ -633,10 +1667,21 @@ class SkillSystem {
           max: [12, 19, 26, 34, 41, 48, 55, 63, 77, 92, 107, 122, 136, 151, 165, 181, 202, 225, 246, 269, 290, 313, 343, 371, 401, 430, 460, 490, 525, 563, 599, 636, 673, 710, 746, 783, 820, 856, 893, 929, 966, 1003, 1039, 1076, 1113, 1149, 1186, 1222, 1259, 1296, 1332, 1369, 1406, 1442, 1479, 1515, 1552, 1589, 1625, 1662]
         },
         manaCost: [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 30, 30.5, 31, 31.5, 32, 32.5, 33, 33.5, 34, 34.5, 35, 35.5],
-        synergies: [
-          { skillId: 'magicarrowcontainer', bonusPerLevel: 5, damageType: 'fire' },
-          { skillId: 'explodingarrowcontainer', bonusPerLevel: 5, damageType: 'fire' },
-          { skillId: 'firearrowcontainer', bonusPerLevel: 5, damageType: 'fire' }
+        synergies: [{
+          skillId: 'magicarrowcontainer',
+          bonusPerLevel: 5,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'explodingarrowcontainer',
+          bonusPerLevel: 5,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'firearrowcontainer',
+          bonusPerLevel: 5,
+          damageType: 'fire'
+        }
         ],
         prerequisites: []
       },
@@ -650,13 +1695,72 @@ class SkillSystem {
         },
         radius: [2.6, 2.6, 2.6, 2.6, 3.3, 3.3, 3.3, 3.3, 4, 4, 4, 4, 4.6, 4.6, 4.6, 4.6, 5.3, 5.3, 5.3, 5.3, 6],
         manaCost: [4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2],
-        synergies: [
-          { skillId: 'coldarrowcontainer', bonusPerLevel: 6, damageType: 'cold' },
-          { skillId: 'icearrowcontainer', bonusPerLevel: 6, damageType: 'cold' }
+        synergies: [{
+          skillId: 'coldarrowcontainer',
+          bonusPerLevel: 6,
+          damageType: 'cold'
+        },
+        {
+          skillId: 'icearrowcontainer',
+          bonusPerLevel: 6,
+          damageType: 'cold'
+        }
         ],
         prerequisites: []
       },
       // Barbarian Skills
+      generalmasterycontainer: {
+        name: "General Mastery",
+        type: "passive",
+        damage: [30, 38, 46, 54, 62, 70, 78, 86, 94, 102, 110, 118, 126, 134, 142, 150, 158, 166, 174, 182, 190, 198, 206, 214, 222, 230, 238, 246, 254, 262, 270, 278, 286, 294, 302, 310, 318, 326, 334, 342, 350, 358, 366, 374, 382, 390, 398, 406, 414, 422, 430, 438, 446, 454, 462, 470, 478, 486, 494, 502],
+        attackRating: [28, 38, 48, 58, 68, 78, 88, 98, 108, 118, 128, 138, 148, 158, 168, 178, 188, 198, 208, 218, 228, 238, 248, 258, 268, 278, 288, 298, 308, 318, 328, 338, 348, 358, 368, 378, 388, 398, 408, 418, 428, 438, 448, 458, 468, 478, 488, 498, 508, 518, 528, 538, 548, 558, 568, 578, 588, 598, 608, 618],
+        criticalStrike: [5, 9, 12, 15, 17, 19, 20, 21, 23, 23, 24, 25, 26, 26, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
+      },
+      throwingmasterycontainer: {
+        name: "Throwing Mastery",
+        type: "passive",
+        pierceChance: [15, 17, 19, 21, 23, 25, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81],
+        damage: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300, 305, 310, 315, 320, 325],
+        attackRating: [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620],
+        criticalStrike: [5, 9, 12, 15, 17, 19, 20, 21, 23, 23, 24, 25, 26, 26, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
+      },
+      polearmandspearmasterycontainer: {
+        name: "Polearm and Spear Mastery",
+        type: "passive",
+        damage: [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620],
+        attackRating: [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620],
+        criticalStrike: [5, 9, 12, 15, 17, 19, 20, 21, 23, 23, 24, 25, 26, 26, 27, 28, 28, 28, 29, 29, 29, 30, 30, 30, 30, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35]
+      },
+      combatreflexescontainer: {
+        name: "Combat Reflexes",
+        type: "passive",
+        life: [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620],
+        stamina: [30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915],
+        fasterHitRecovery: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
+      },
+      ironskinscontainer: {
+        name: "Iron Skin",
+        type: "passive",
+        defense: [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620],
+        physicalDamageReduction: [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+      },
+      increasedspeedcontainer: {
+        name: "Increased Speed",
+        type: "passive",
+        movementSpeed: [13, 18, 22, 25, 28, 30, 32, 33, 35, 36, 37, 38, 39, 40, 40, 41, 41, 42, 42, 43, 43, 43, 44, 44, 44, 45, 45, 45, 46, 46, 46, 46, 46, 46, 46, 47, 47, 47, 47, 47, 47, 48, 48, 48, 48, 48, 48, 48, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 50],
+        increasedAttackSpeed: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
+      },
+      naturalresistancecontainer: {
+        name: "Natural Resistance",
+        type: "passive",
+        allResistances: [11, 20, 27, 33, 37, 41, 44, 46, 49, 51, 53, 54, 56, 57, 58, 60, 60, 61, 62, 63, 63, 64, 65, 66, 66, 66, 67, 67, 68, 68, 69, 69, 69, 69, 69, 70, 70, 71, 71, 71, 71, 72, 72, 72, 72, 72, 72, 72, 73, 73, 73, 73, 73, 74, 74, 74, 74, 74, 74, 75]
+      },
+      deepwoundscontainer: {
+        name: "Deep Wounds",
+        type: "passive",
+        openWoundsDamage: [80, 100, 120, 140, 160, 180, 200, 220, 248, 276, 304, 332, 360, 388, 416, 444, 480, 516, 552, 588, 624, 660, 704, 748, 792, 836, 880, 924, 976, 1028, 1080, 1132, 1184, 1236, 1288, 1340, 1392, 1444, 1496, 1548, 1600, 1652, 1704, 1756, 1808, 1860, 1912, 1964, 2016, 2068, 2120, 2172, 2224, 2276, 2328, 2380, 2432, 2484, 2536, 2588],
+        openWoundsChance: [5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32, 33, 33, 34, 34, 35]
+      },
       bashcontainer: {
         name: "Bash",
         type: "physical",
@@ -664,9 +1768,16 @@ class SkillSystem {
         damage: [50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525],
         flatDamage: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60],
         manaCost: [2, 2.2, 2.5, 2.7, 3, 3.2, 3.5, 3.7, 4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7],
-        synergies: [
-          { skillId: 'stuncontainer', bonusPerLevel: 18, damageType: 'physical' },
-          { skillId: 'concentratecontainer', bonusPerLevel: 18, damageType: 'physical' }
+        synergies: [{
+          skillId: 'stuncontainer',
+          bonusPerLevel: 18,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'concentratecontainer',
+          bonusPerLevel: 18,
+          damageType: 'physical'
+        }
         ]
       },
       doubleswingcontainer: {
@@ -675,9 +1786,16 @@ class SkillSystem {
         attackRating: [20, 35, 50, 65, 80, 95, 110, 125, 140, 155, 170, 185, 200, 215, 230, 245, 260, 275, 290, 305, 320, 335, 350, 365, 380, 395, 410, 425, 440, 455, 470, 485, 500, 515, 530, 545, 560, 575, 590, 605, 620, 635, 650, 665, 680, 695, 710, 725, 740, 755, 770, 785, 800, 815, 830, 845, 860, 875, 890, 905],
         damage: [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480, 510, 540, 570, 600, 630, 660, 690, 720, 750, 780, 810, 840, 870, 900, 930, 960, 990, 1020, 1050, 1080, 1110, 1140, 1170, 1200, 1230, 1260, 1290, 1320, 1350, 1380, 1410, 1440, 1470, 1500, 1530, 1560, 1590, 1620, 1650, 1680, 1710, 1740, 1770, 1800],
         manaCost: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15],
-        synergies: [
-          { skillId: 'frenzycontainer', bonusPerLevel: 20, damageType: 'physical' },
-          { skillId: 'stuncontainer', bonusPerLevel: 20, damageType: 'physical' }
+        synergies: [{
+          skillId: 'frenzycontainer',
+          bonusPerLevel: 20,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'stuncontainer',
+          bonusPerLevel: 20,
+          damageType: 'physical'
+        }
         ]
       },
       frenzycontainer: {
@@ -693,9 +1811,16 @@ class SkillSystem {
         meleeSplashRadiusMax: [6, 12, 16, 19, 22, 24, 26, 27, 29, 30, 31, 32, 33, 34, 35, 36, 36, 36, 37, 37, 38, 38, 39, 39, 39, 40, 40, 40, 40, 40, 41, 41, 41, 41, 41, 42, 42, 42, 42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 45],
         manaCost: [1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31],
         duration: [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35],
-        synergies: [
-          { skillId: 'doubleswingcontainer', bonusPerLevel: 20, damageType: 'physical' },
-          { skillId: 'stuncontainer', bonusPerLevel: 20, damageType: 'physical' }
+        synergies: [{
+          skillId: 'doubleswingcontainer',
+          bonusPerLevel: 20,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'stuncontainer',
+          bonusPerLevel: 20,
+          damageType: 'physical'
+        }
         ]
       },
       stuncontainer: {
@@ -707,9 +1832,11 @@ class SkillSystem {
         attackRating: [55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910, 925, 940],
         stunDuration: [1, 1.1, 1.3, 1.4, 1.6, 1.8, 1.9, 2.1, 2.2, 2.4, 2.6, 2.7, 2.9, 3, 3.2, 3.4, 3.4, 3.5, 3.6, 3.7, 3.8, 3.8, 3.9, 4, 4.1, 4.2, 4.2, 4.3, 4.4, 4.5, 4.6, 4.6, 4.7, 4.8, 4.9, 5, 5, 5.1, 5.2, 5.3, 5.4, 5.4, 5.5, 5.6, 5.7, 5.8, 5.8, 5.9, 6, 6.1, 6.2, 6.2, 6.3, 6.4, 6.5, 6.6, 6.6, 6.7, 6.8, 6.9],
         manaCost: 2,
-        synergies: [
-          { skillId: 'concentratecontainer', bonusPerLevel: 10, damageType: 'attackRating' }
-        ]
+        synergies: [{
+          skillId: 'concentratecontainer',
+          bonusPerLevel: 10,
+          damageType: 'attackRating'
+        }]
       },
       concentratecontainer: {
         name: "Concentrate",
@@ -719,9 +1846,16 @@ class SkillSystem {
         defenseBonus: [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300, 305, 310, 315],
         magicConversion: [30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70],
         manaCost: 2,
-        synergies: [
-          { skillId: 'bashcontainer', bonusPerLevel: 25, damageType: 'physical' },
-          { skillId: 'battlecommandcontainer', bonusPerLevel: 25, damageType: 'physical' }
+        synergies: [{
+          skillId: 'bashcontainer',
+          bonusPerLevel: 25,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'battlecommandcontainer',
+          bonusPerLevel: 25,
+          damageType: 'physical'
+        }
         ]
       },
       doublethrowcontainer: {
@@ -731,9 +1865,16 @@ class SkillSystem {
         damage: [45, 53, 61, 69, 77, 85, 93, 101, 109, 117, 125, 133, 141, 149, 157, 165, 173, 181, 189, 197, 205, 213, 221, 229, 237, 245, 253, 261, 269, 277, 285, 293, 301, 309, 317, 325, 333, 341, 349, 357, 365, 373, 381, 389, 397, 405, 413, 421, 429, 437, 445, 453, 461, 469, 477, 485, 493, 501, 509, 517],
         bounces: [3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
         manaCost: [3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32],
-        synergies: [
-          { skillId: 'doubleswingcontainer', bonusPerLevel: 6, damageType: 'physical' },
-          { skillId: 'frenzycontainer', bonusPerLevel: 6, damageType: 'physical' }
+        synergies: [{
+          skillId: 'doubleswingcontainer',
+          bonusPerLevel: 6,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'frenzycontainer',
+          bonusPerLevel: 6,
+          damageType: 'physical'
+        }
         ]
       },
       leapcontainer: {
@@ -749,9 +1890,16 @@ class SkillSystem {
         attackRating: [30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915],
         damage: [80, 95, 110, 125, 140, 155, 170, 185, 200, 215, 230, 245, 260, 275, 290, 305, 320, 335, 350, 365, 380, 395, 410, 425, 440, 455, 470, 485, 500, 515, 530, 545, 560, 575, 590, 605, 620, 635, 650, 665, 680, 695, 710, 725, 740, 755, 770, 785, 800, 815, 830, 845, 860, 875, 890, 905, 920, 935, 950, 965],
         manaCost: [7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7, 20, 20.2, 20.5, 20.7, 21, 21.2, 21.5, 21.7],
-        synergies: [
-          { skillId: 'leapcontainer', bonusPerLevel: 8, damageType: 'physical' },
-          { skillId: 'bashcontainer', bonusPerLevel: 8, damageType: 'physical' }
+        synergies: [{
+          skillId: 'leapcontainer',
+          bonusPerLevel: 8,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'bashcontainer',
+          bonusPerLevel: 8,
+          damageType: 'physical'
+        }
         ]
       },
       berserkcontainer: {
@@ -764,9 +1912,16 @@ class SkillSystem {
         defensePenalty: -25,
         duration: 0.5,
         manaCost: 4,
-        synergies: [
-          { skillId: 'tauntcontainer', bonusPerLevel: 12, damageType: 'physical' },
-          { skillId: 'combatreflexescontainer', bonusPerLevel: 12, damageType: 'physical' }
+        synergies: [{
+          skillId: 'tauntcontainer',
+          bonusPerLevel: 12,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'combatreflexescontainer',
+          bonusPerLevel: 12,
+          damageType: 'physical'
+        }
         ]
       },
       whirlwindcontainer: {
@@ -799,13 +1954,36 @@ class SkillSystem {
         physicalDamageMax: [4, 5, 6, 7, 8, 9, 10, 11, 14, 17, 20, 23, 26, 29, 32, 35, 45, 55, 65, 75, 85, 95, 112, 129, 146, 163, 180, 197, 221, 245, 269, 293, 317, 341, 365, 389, 413, 437, 461, 485, 509, 533, 557, 581, 605, 629, 653, 677, 701, 725, 749, 773, 797, 821, 845, 869, 893, 917, 941, 965],
         radius: [4.6, 4.6, 4.6, 4.6, 4.6, 4.6, 5.6, 5.6, 5.6, 5.6, 5.6, 5.6, 5.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 7.6, 7.6, 7.6, 7.6, 7.6, 7.6, 7.6, 8.6, 8.6, 8.6, 8.6, 8.6, 8.6, 8.6, 9.6, 9.6, 9.6, 9.6, 9.6, 9.6, 9.6, 10.6, 10.6, 10.6, 10.6, 10.6, 10.6, 10.6, 11.6, 11.6, 11.6, 11.6, 11.6, 11.6, 11.6, 12.6, 12.6, 12.6, 12.6, 12.6],
         manaCost: [2, 2.2, 2.5, 2.7, 3, 3.2, 3.5, 3.7, 4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7],
-        synergies: [
-          { skillId: 'howlcontainer', bonusPerLevel: 16, damageType: 'physical' },
-          { skillId: 'battlecrycontainer', bonusPerLevel: 16, damageType: 'physical' },
-          { skillId: 'tauntcontainer', bonusPerLevel: 12, damageType: 'physical' },
-          { skillId: 'shoutcontainer', bonusPerLevel: 12, damageType: 'physical' },
-          { skillId: 'battlecommandcontainer', bonusPerLevel: 12, damageType: 'physical' },
-          { skillId: 'battleorderscontainer', bonusPerLevel: 12, damageType: 'physical' }
+        synergies: [{
+          skillId: 'howlcontainer',
+          bonusPerLevel: 16,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'battlecrycontainer',
+          bonusPerLevel: 16,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'tauntcontainer',
+          bonusPerLevel: 12,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'shoutcontainer',
+          bonusPerLevel: 12,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'battlecommandcontainer',
+          bonusPerLevel: 12,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'battleorderscontainer',
+          bonusPerLevel: 12,
+          damageType: 'physical'
+        }
         ]
       },
       finditemcontainer: {
@@ -856,6 +2034,13 @@ class SkillSystem {
         manaCost: 5
       },
       // Assassin Skills
+      clawanddaggermasterycontainer: {
+        name: "Claw and Dagger Mastery",
+        type: "passive",
+        damage: [40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910, 925],
+        attackRating: [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620],
+        criticalStrike: [3, 6, 9, 11, 12, 13, 14, 15, 16, 17, 17, 18, 18, 19, 19, 20, 20, 20, 20, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 25]
+      },
       tigerstrikecontainer: {
         name: "Tiger Strike",
         type: "charge_up",
@@ -875,9 +2060,16 @@ class SkillSystem {
         damage: [50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525],
         attackRating: [20, 45, 70, 95, 120, 145, 170, 195, 220, 245, 270, 295, 320, 345, 370, 395, 420, 445, 470, 495, 520, 545, 570, 595, 620, 645, 670, 695, 720, 745, 770, 795, 820, 845, 870, 895, 920, 945, 970, 995, 1020, 1045, 1070, 1095, 1120, 1145, 1170, 1195, 1220, 1245, 1270, 1295, 1320, 1345, 1370, 1395, 1420, 1445, 1470, 1495],
         manaCost: 6,
-        synergies: [
-          { skillId: 'dragontailcontainer', bonusPerLevel: 22, damageType: 'physical' },
-          { skillId: 'dragonflightcontainer', bonusPerLevel: 22, damageType: 'physical' }
+        synergies: [{
+          skillId: 'dragontailcontainer',
+          bonusPerLevel: 22,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'dragonflightcontainer',
+          bonusPerLevel: 22,
+          damageType: 'physical'
+        }
         ]
       },
       dragonclawcontainer: {
@@ -887,9 +2079,16 @@ class SkillSystem {
         attackRating: [40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500, 520, 540, 560, 580, 600, 620, 640, 660, 680, 700, 720, 740, 760, 780, 800, 820, 840, 860, 880, 900, 920, 940, 960, 980, 1000, 1020, 1040, 1060, 1080, 1100, 1120, 1140, 1160, 1180, 1200, 1220],
         hitsPerAttack: 2,
         manaCost: 2,
-        synergies: [
-          { skillId: 'clawanddaggermasterycontainer', bonusPerLevel: 20, damageType: 'physical' },
-          { skillId: 'weaponblockcontainer', bonusPerLevel: 20, damageType: 'physical' }
+        synergies: [{
+          skillId: 'clawanddaggermasterycontainer',
+          bonusPerLevel: 20,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'weaponblockcontainer',
+          bonusPerLevel: 20,
+          damageType: 'physical'
+        }
         ]
       },
       fistsoffirecontainer: {
@@ -909,9 +2108,16 @@ class SkillSystem {
         },
         attackRating: [35, 50, 65, 80, 95, 110, 125, 140, 155, 170, 185, 200, 215, 230, 245, 260, 275, 290, 305, 320, 335, 350, 365, 380, 395, 410, 425, 440, 455, 470, 485, 500, 515, 530, 545, 560, 575, 590, 605, 620, 635, 650, 665, 680, 695, 710, 725, 740, 755, 770, 785, 800, 815, 830, 845, 860, 875, 890, 905, 920],
         manaCost: [3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8, 9, 9.1, 9.2, 9.3, 9.5, 9.6, 9.7, 9.8, 10, 10.1, 10.2, 10.3],
-        synergies: [
-          { skillId: 'tigerstrikecontainer', bonusPerLevel: 26, damageType: 'fire' },
-          { skillId: 'dragonflightcontainer', bonusPerLevel: 26, damageType: 'fire' }
+        synergies: [{
+          skillId: 'tigerstrikecontainer',
+          bonusPerLevel: 26,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'dragonflightcontainer',
+          bonusPerLevel: 26,
+          damageType: 'fire'
+        }
         ]
       },
       cobrastrikecontainer: {
@@ -930,9 +2136,11 @@ class SkillSystem {
         attackRating: [60, 74, 88, 102, 116, 130, 144, 158, 172, 186, 200, 214, 228, 242, 256, 270, 284, 298, 312, 326, 340, 354, 368, 382, 396, 410, 424, 438, 452, 466, 480, 494, 508, 522, 536, 550, 564, 578, 592, 606, 620, 634, 648, 662, 676, 690, 704, 718, 732, 746, 760, 774, 788, 802, 816, 830, 844, 858, 872, 886],
         poisonDuration: 1,
         manaCost: 2,
-        synergies: [
-          { skillId: 'venomcontainer', bonusPerLevel: 20, damageType: 'poison' }
-        ]
+        synergies: [{
+          skillId: 'venomcontainer',
+          bonusPerLevel: 20,
+          damageType: 'poison'
+        }]
       },
       clawsofthundercontainer: {
         name: "Claws of Thunder",
@@ -951,9 +2159,11 @@ class SkillSystem {
         },
         attackRating: [80, 92, 104, 116, 128, 140, 152, 164, 176, 188, 200, 212, 224, 236, 248, 260, 272, 284, 296, 308, 320, 332, 344, 356, 368, 380, 392, 404, 416, 428, 440, 452, 464, 476, 488, 500, 512, 524, 536, 548, 560, 572, 584, 596, 608, 620, 632, 644, 656, 668, 680, 692, 704, 716, 728, 740, 752, 764, 776, 788],
         manaCost: 4,
-        synergies: [
-          { skillId: 'dragonclawcontainer', bonusPerLevel: 16, damageType: 'lightning' }
-        ]
+        synergies: [{
+          skillId: 'dragonclawcontainer',
+          bonusPerLevel: 16,
+          damageType: 'lightning'
+        }]
       },
       dragontailcontainer: {
         name: "Dragon Tail",
@@ -962,9 +2172,156 @@ class SkillSystem {
         attackRating: [210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 740, 750, 760, 770, 780, 790, 800],
         radius: 4,
         manaCost: 10,
-        synergies: [
-          { skillId: 'dragontaloncontainer', bonusPerLevel: 8, damageType: 'fire' },
-          { skillId: 'dragonflightcontainer', bonusPerLevel: 8, damageType: 'fire' }
+        synergies: [{
+          skillId: 'dragontaloncontainer',
+          bonusPerLevel: 8,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'dragonflightcontainer',
+          bonusPerLevel: 8,
+          damageType: 'fire'
+        }
+        ]
+      },
+      dragonflightcontainer: {
+        name: "Dragon Flight",
+        type: "physical",
+        damage: [100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525, 1550, 1575],
+        attackRating: [180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065],
+        manaCost: 15,
+        cooldown: 2
+      },
+      bladesoficecontainer: {
+        name: "Blades of Ice",
+        type: "charge_up",
+        charge1IceDamage: {
+          min: [13, 20, 27, 34, 41, 48, 55, 62, 72, 82, 92, 102, 112, 122, 132, 142, 165, 188, 211, 234, 257, 280, 317, 354, 391, 428, 465, 502, 551, 600, 649, 698, 747, 796, 845, 894, 943, 992, 1041, 1090, 1139, 1188, 1237, 1286, 1335, 1384, 1433, 1482, 1531, 1580, 1629, 1678, 1727, 1776, 1825, 1874, 1923, 1972, 2021, 2070],
+          max: [30, 39, 48, 57, 66, 75, 84, 93, 105, 117, 129, 141, 153, 165, 177, 189, 214, 239, 264, 289, 314, 339, 376, 413, 450, 487, 524, 561, 611, 661, 711, 761, 811, 861, 911, 961, 1011, 1061, 1111, 1161, 1211, 1261, 1311, 1361, 1411, 1461, 1511, 1561, 1611, 1661, 1711, 1761, 1811, 1861, 1911, 1961, 2011, 2061, 2111, 2161]
+        },
+        charge2WaveDamage: {
+          min: [15, 23, 31, 39, 47, 55, 63, 71, 82, 95, 107, 119, 131, 143, 155, 167, 194, 221, 248, 275, 302, 329, 372, 415, 458, 501, 544, 587, 645, 703, 761, 819, 877, 935, 993, 1051, 1109, 1167, 1225, 1283, 1341, 1399, 1457, 1515, 1573, 1631, 1689, 1747, 1805, 1863, 1921, 1979, 2037, 2095, 2153, 2211, 2269, 2327, 2385, 2443],
+          max: [35, 45, 55, 65, 75, 85, 95, 105, 119, 133, 147, 161, 175, 189, 203, 217, 246, 275, 304, 333, 362, 391, 435, 479, 523, 567, 611, 655, 714, 773, 832, 891, 950, 1009, 1068, 1127, 1186, 1245, 1304, 1363, 1422, 1481, 1540, 1599, 1658, 1717, 1776, 1835, 1894, 1953, 2012, 2071, 2130, 2189, 2248, 2307, 2366, 2425, 2484, 2543]
+        },
+        charge3BoltDamage: {
+          min: [11, 17, 23, 29, 35, 41, 47, 53, 62, 71, 80, 89, 98, 107, 116, 125, 145, 165, 185, 205, 225, 245, 277, 309, 341, 373, 405, 437, 481, 525, 569, 613, 657, 701, 745, 789, 833, 877, 921, 965, 1009, 1053, 1097, 1141, 1185, 1229, 1273, 1317, 1361, 1405, 1449, 1493, 1537, 1581, 1625, 1669, 1713, 1757, 1801, 1845],
+          max: [26, 34, 42, 50, 58, 66, 74, 82, 93, 104, 115, 126, 137, 148, 159, 170, 192, 214, 236, 258, 280, 302, 335, 368, 401, 434, 467, 500, 544, 588, 632, 676, 720, 764, 808, 852, 896, 940, 984, 1028, 1072, 1116, 1160, 1204, 1248, 1292, 1336, 1380, 1424, 1468, 1512, 1556, 1600, 1644, 1688, 1732, 1776, 1820, 1864, 1908]
+        },
+        attackRating: [160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 740, 750],
+        manaCost: 3
+      },
+      phoenixstrikecontainer: {
+        name: "Phoenix Strike",
+        type: "charge_up",
+        meteorDamage: {
+          min: [20, 30, 40, 50, 60, 70, 80, 90, 109, 128, 147, 166, 185, 204, 223, 242, 271, 300, 329, 358, 387, 416, 454, 492, 530, 568, 606, 644, 690, 736, 782, 828, 874, 920, 966, 1012, 1058, 1104, 1150, 1196, 1242, 1288, 1334, 1380, 1426, 1472, 1518, 1564, 1610, 1656, 1702, 1748, 1794, 1840, 1886, 1932, 1978, 2024, 2070, 2116],
+          max: [40, 50, 60, 70, 80, 90, 100, 110, 131, 152, 173, 194, 215, 236, 257, 278, 311, 344, 377, 410, 443, 476, 518, 560, 602, 644, 686, 728, 778, 828, 878, 928, 978, 1028, 1078, 1128, 1178, 1228, 1278, 1328, 1378, 1428, 1478, 1528, 1578, 1628, 1678, 1728, 1778, 1828, 1878, 1928, 1978, 2028, 2078, 2128, 2178, 2228, 2278, 2328]
+        },
+        burningDamage: {
+          min: [14, 25, 37, 49, 60, 72, 84, 96, 119, 142, 166, 189, 213, 236, 260, 283, 321, 358, 396, 433, 471, 508, 560, 611, 663, 714, 766, 817, 888, 958, 1028, 1099, 1169, 1239, 1310, 1380, 1450, 1521, 1591, 1661, 1732, 1802, 1872, 1943, 2013, 2083, 2154, 2224, 2294, 2365, 2435, 2505, 2576, 2646, 2716, 2787, 2857, 2927, 2998, 3068],
+          max: [23, 35, 46, 58, 70, 82, 93, 105, 128, 152, 175, 199, 222, 246, 269, 292, 332, 372, 412, 452, 492, 532, 588, 644, 700, 757, 813, 869, 944, 1019, 1094, 1169, 1244, 1319, 1394, 1469, 1544, 1619, 1694, 1769, 1844, 1919, 1994, 2069, 2144, 2219, 2294, 2369, 2444, 2519, 2594, 2669, 2744, 2819, 2894, 2969, 3044, 3119, 3194, 3269]
+        },
+        lightningDamage: {
+          min: new Array(60).fill(1),
+          max: [40, 60, 80, 100, 120, 140, 160, 180, 220, 260, 300, 340, 380, 420, 460, 500, 560, 620, 680, 740, 800, 860, 940, 1020, 1100, 1180, 1260, 1340, 1440, 1540, 1640, 1740, 1840, 1940, 2040, 2140, 2240, 2340, 2440, 2540, 2640, 2740, 2840, 2940, 3040, 3140, 3240, 3340, 3440, 3540, 3640, 3740, 3840, 3940, 4040, 4140, 4240, 4340, 4440, 4540]
+        },
+        coldDamage: {
+          min: [16, 20, 24, 28, 32, 36, 40, 44, 52, 60, 68, 76, 84, 92, 100, 108, 120, 132, 144, 156, 168, 180, 200, 220, 240, 260, 280, 300, 328, 356, 384, 412, 440, 468, 496, 524, 552, 580, 608, 636, 664, 692, 720, 748, 776, 804, 832, 860, 888, 916, 944, 972, 1000, 1028, 1056, 1084, 1112, 1140, 1168, 1196],
+          max: [32, 36, 40, 44, 48, 52, 56, 60, 68, 76, 84, 92, 100, 108, 116, 124, 137, 150, 163, 176, 189, 202, 223, 244, 265, 286, 307, 328, 357, 386, 415, 444, 473, 502, 531, 560, 589, 618, 647, 676, 705, 734, 763, 792, 821, 850, 879, 908, 937, 966, 995, 1024, 1053, 1082, 1111, 1140, 1169, 1198, 1227, 1256]
+        },
+        attackRating: [160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 740, 750],
+        manaCost: 4,
+        synergies: [{
+          skillId: 'fistsoffirecontainer',
+          bonusPerLevel: 14,
+          damageType: 'fire'
+        }, // Meteor damage
+        {
+          skillId: 'fistsoffirecontainer',
+          bonusPerLevel: 10,
+          damageType: 'fire'
+        }, // Fire damage per second
+        {
+          skillId: 'clawsofthundercontainer',
+          bonusPerLevel: 10,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'bladesoficecontainer',
+          bonusPerLevel: 14,
+          damageType: 'cold'
+        }
+        ]
+      },
+      psychichammercontainer: {
+        name: "Psychic Hammer",
+        type: "magic",
+        magicDamage: {
+          min: [4, 7, 10, 13, 16, 19, 22, 25, 31, 37, 43, 49, 55, 61, 67, 73, 85, 97, 109, 121, 133, 145, 169, 193, 217, 241, 265, 289, 325, 361, 397, 433, 469, 505, 541, 577, 613, 649, 685, 721, 757, 793, 829, 865, 901, 937, 973, 1009, 1045, 1081, 1117, 1153, 1189, 1225, 1261, 1297, 1333, 1369, 1405, 1441],
+          max: [6, 10, 14, 18, 22, 26, 30, 34, 42, 50, 58, 66, 74, 82, 90, 98, 112, 126, 140, 154, 168, 182, 208, 234, 260, 286, 312, 338, 376, 414, 452, 490, 528, 566, 604, 642, 680, 718, 756, 794, 832, 870, 908, 946, 984, 1022, 1060, 1098, 1136, 1174, 1212, 1250, 1288, 1326, 1364, 1402, 1440, 1478, 1516, 1554]
+        },
+        bounces: [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+        manaCost: [1.5, 1.7, 2, 2.2, 2.5, 2.7, 3, 3.2, 3.5, 3.7, 4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2],
+        synergies: [{
+          skillId: 'mindblastcontainer',
+          bonusPerLevel: 20,
+          damageType: 'magic'
+        },
+        {
+          skillId: 'cloakofshadowscontainer',
+          bonusPerLevel: 20,
+          damageType: 'magic'
+        },
+        {
+          skillId: 'shadowwarriorcontainer',
+          bonusPerLevel: 20,
+          damageType: 'magic'
+        }
+        ]
+      },
+      burstofspeedcontainer: {
+        name: "Burst of Speed",
+        type: "buff",
+        movementSpeed: [20, 22, 24, 26, 28, 30, 32, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86],
+        attackSpeed: [15, 22, 27, 31, 34, 37, 39, 41, 43, 44, 45, 47, 48, 48, 49, 50, 51, 51, 52, 52, 53],
+        duration: [300, 305, 310, 315, 320, 325, 330, 335, 340, 345, 350, 355, 360, 365, 370, 375, 380, 385, 390, 395, 400, 405, 410, 415, 420, 425, 430, 435, 440, 445, 450, 455, 460, 465, 470, 475, 480, 485, 490, 495, 500, 505, 510, 515, 520, 525, 530, 535, 540, 545, 550, 555, 560, 565, 570, 575, 580, 585, 590, 595],
+        manaCost: 10
+      },
+      cloakofshadowscontainer: {
+        name: "Cloak of Shadows",
+        type: "buffdebuff",
+        defenseBonus: [5, 6, 8, 9, 11, 12, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29, 30, 32, 33, 35, 36, 38, 39, 41, 42, 44, 45, 47, 48, 50, 51, 53, 54, 56, 57, 59, 60, 62, 63, 65, 66, 68, 69, 71, 72, 74, 75, 77, 78, 80, 81, 83, 84, 86, 87, 89, 90, 92, 93],
+        enemyDefenseBonus: [-15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -41, -42, -43, -44, -45, -46, -47, -48, -49, -50, -51, -52, -53, -54, -55, -56, -57, -58, -59, -60, -61, -62, -63, -64, -65, -66, -67, -68, -69, -70, -71, -72, -73, -74],
+        range: 20,
+        manaCost: 13,
+        duration: 5,
+        cooldown: 5
+      },
+      mindblastcontainer: {
+        name: "Mind Blast",
+        type: "pure_physical",
+        physicalDamage: {
+          min: [10, 13, 16, 19, 22, 25, 28, 31, 38, 45, 52, 59, 66, 73, 80, 87, 104, 121, 138, 155, 172, 189, 223, 257, 291, 325, 359, 393, 444, 495, 546, 597, 648, 699, 750, 801, 852, 903, 954, 1005, 1056, 1107, 1158, 1209, 1260, 1311, 1362, 1413, 1464, 1515, 1566, 1617, 1668, 1719, 1770, 1821, 1872, 1923, 1974, 2025],
+          max: [20, 23, 26, 29, 32, 35, 38, 41, 48, 55, 62, 69, 76, 83, 90, 97, 114, 131, 148, 165, 182, 199, 233, 267, 301, 335, 369, 403, 454, 505, 556, 607, 658, 709, 760, 811, 862, 913, 964, 1015, 1066, 1117, 1168, 1219, 1270, 1321, 1372, 1423, 1474, 1525, 1576, 1627, 1678, 1729, 1780, 1831, 1882, 1933, 1984, 2035]
+        },
+        radius: [2.6, 2.6, 3.3, 3.3, 4, 4, 4.6, 4.6, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3],
+        stunLength: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        manaCost: 9,
+        synergies: [{
+          skillId: 'psychichammercontainer',
+          bonusPerLevel: 13,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'cloakofshadowscontainer',
+          bonusPerLevel: 13,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'shadowwarriorcontainer',
+          bonusPerLevel: 13,
+          damageType: 'physical'
+        }
         ]
       },
       fireblastcontainer: {
@@ -976,13 +2333,36 @@ class SkillSystem {
         },
         bombs: [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7],
         manaCost: [2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8, 9, 9.1, 9.2, 9.3],
-        synergies: [
-          { skillId: 'shockwebcontainer', bonusPerLevel: 18, damageType: 'fire' },
-          { skillId: 'chargedboltsentrycontainer', bonusPerLevel: 18, damageType: 'fire' },
-          { skillId: 'lightningsentrycontainer', bonusPerLevel: 18, damageType: 'fire' },
-          { skillId: 'chainlightningsentrycontainer', bonusPerLevel: 18, damageType: 'fire' },
-          { skillId: 'wakeoffirecontainer', bonusPerLevel: 18, damageType: 'fire' },
-          { skillId: 'wakeofinfernocontainer', bonusPerLevel: 18, damageType: 'fire' }
+        synergies: [{
+          skillId: 'shockwebcontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'chargedboltsentrycontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'lightningsentrycontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'chainlightningsentrycontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'wakeoffirecontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'wakeofinfernocontainer',
+          bonusPerLevel: 18,
+          damageType: 'fire'
+        }
         ]
       },
       shockwebcontainer: {
@@ -996,13 +2376,36 @@ class SkillSystem {
         duration: 3.6,
         manaCost: 6,
         cooldown: 1,
-        synergies: [
-          { skillId: 'chargedboltsentrycontainer', bonusPerLevel: 17, damageType: 'lightning' },
-          { skillId: 'wakeoffirecontainer', bonusPerLevel: 17, damageType: 'lightning' },
-          { skillId: 'chainlightningsentrycontainer', bonusPerLevel: 17, damageType: 'lightning' },
-          { skillId: 'fireblastcontainer', bonusPerLevel: 17, damageType: 'lightning' },
-          { skillId: 'lightningsentrycontainer', bonusPerLevel: 17, damageType: 'lightning' },
-          { skillId: 'wakeofinfernocontainer', bonusPerLevel: 17, damageType: 'lightning' }
+        synergies: [{
+          skillId: 'chargedboltsentrycontainer',
+          bonusPerLevel: 17,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'wakeoffirecontainer',
+          bonusPerLevel: 17,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'chainlightningsentrycontainer',
+          bonusPerLevel: 17,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'fireblastcontainer',
+          bonusPerLevel: 17,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'lightningsentrycontainer',
+          bonusPerLevel: 17,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'wakeofinfernocontainer',
+          bonusPerLevel: 17,
+          damageType: 'lightning'
+        }
         ]
       },
       bladesentinelcontainer: {
@@ -1016,9 +2419,16 @@ class SkillSystem {
         attackRating: [40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325, 340, 355, 370, 385, 400, 415, 430, 445, 460, 475, 490, 505, 520, 535, 550, 565, 580, 595, 610, 625, 640, 655, 670, 685, 700, 715, 730, 745, 760, 775, 790, 805, 820, 835, 850, 865, 880, 895, 910, 925],
         weaponDamageBonus: 75, // +75% weapon damage
         manaCost: 3.5,
-        synergies: [
-          { skillId: 'bladefurycontainer', bonusPerLevel: 15, damageType: 'physical' },
-          { skillId: 'bladeshieldcontainer', bonusPerLevel: 15, damageType: 'physical' }
+        synergies: [{
+          skillId: 'bladefurycontainer',
+          bonusPerLevel: 15,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'bladeshieldcontainer',
+          bonusPerLevel: 15,
+          damageType: 'physical'
+        }
         ]
       },
       chargedboltsentrycontainer: {
@@ -1030,10 +2440,21 @@ class SkillSystem {
         },
         manaCost: [4, 4.125, 4.25, 4.375, 4.5, 4.625, 4.75, 4.875, 5, 5.125, 5.25, 5.375, 5.5, 5.625, 5.75, 5.875, 6, 6.125, 6.25, 6.375, 6.5, 6.625, 6.75, 6.875, 7, 7.125, 7.25, 7.375, 7.5, 7.625, 7.75, 7.875, 8, 8.125, 8.25, 8.375, 8.5, 8.625, 8.75, 8.875, 9, 9.125, 9.25, 9.375, 9.5, 9.625, 9.75, 9.875, 10, 10.125, 10.25, 10.375, 10.5, 10.625, 10.75, 10.875, 11, 11.125, 11.25, 11.375],
         bolts: [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9],
-        synergies: [
-          { skillId: 'fireblastcontainer', bonusPerLevel: 8, damageType: 'lightning' },
-          { skillId: 'lightningsentrycontainer', bonusPerLevel: 8, damageType: 'lightning' },
-          { skillId: 'chainlightningsentrycontainer', bonusPerLevel: 8, damageType: 'lightning' }
+        synergies: [{
+          skillId: 'fireblastcontainer',
+          bonusPerLevel: 8,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'lightningsentrycontainer',
+          bonusPerLevel: 8,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'chainlightningsentrycontainer',
+          bonusPerLevel: 8,
+          damageType: 'lightning'
+        }
         ]
       },
       wakeoffirecontainer: {
@@ -1044,9 +2465,16 @@ class SkillSystem {
           max: [4, 6, 8, 10, 12, 14, 16, 18, 24, 30, 36, 42, 48, 54, 60, 66, 82, 98, 114, 130, 146, 162, 188, 214, 240, 266, 292, 318, 344, 370, 396, 422, 448, 474, 500, 526, 552, 578, 604, 630, 656, 682, 708, 734, 760, 786, 812, 838, 864, 890, 916, 942, 968, 994, 1020, 1046, 1072, 1098, 1124, 1150]
         },
         manaCost: [5, 5.125, 5.25, 5.375, 5.5, 5.625, 5.75, 5.875, 6, 6.125, 6.25, 6.375, 6.5, 6.625, 6.75, 6.875, 7, 7.125, 7.25, 7.375, 7.5, 7.625, 7.75, 7.875, 8, 8.125, 8.25, 8.375, 8.5, 8.625, 8.75, 8.875, 9, 9.125, 9.25, 9.375, 9.5, 9.625, 9.75, 9.875, 10, 10.125, 10.25, 10.375, 10.5, 10.625, 10.75, 10.875, 11, 11.125, 11.25, 11.375, 11.5, 11.625, 11.75, 11.875, 12, 12.125, 12.25, 12.375],
-        synergies: [
-          { skillId: 'fireblastcontainer', bonusPerLevel: 8, damageType: 'fire' },
-          { skillId: 'wakeofinfernocontainer', bonusPerLevel: 8, damageType: 'fire' }
+        synergies: [{
+          skillId: 'fireblastcontainer',
+          bonusPerLevel: 8,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'wakeofinfernocontainer',
+          bonusPerLevel: 8,
+          damageType: 'fire'
+        }
         ]
       },
       bladefurycontainer: {
@@ -1060,9 +2488,16 @@ class SkillSystem {
         manaCost: [1, 1.1, 1.2, 1.3, 1.5, 1.6, 1.7, 1.8, 2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3],
         startupFrames: 3,
         minMana: 3,
-        synergies: [
-          { skillId: 'bladesentinelcontainer', bonusPerLevel: 15, damageType: 'physical' },
-          { skillId: 'bladeshieldcontainer', bonusPerLevel: 15, damageType: 'physical' }
+        synergies: [{
+          skillId: 'bladesentinelcontainer',
+          bonusPerLevel: 15,
+          damageType: 'physical'
+        },
+        {
+          skillId: 'bladeshieldcontainer',
+          bonusPerLevel: 15,
+          damageType: 'physical'
+        }
         ]
       },
       lightningsentrycontainer: {
@@ -1073,10 +2508,21 @@ class SkillSystem {
           max: [30, 45, 60, 75, 90, 105, 120, 135, 156, 177, 198, 219, 240, 261, 282, 303, 330, 357, 384, 411, 438, 465, 498, 531, 564, 597, 630, 663, 702, 741, 780, 819, 858, 897, 936, 975, 1014, 1053, 1092, 1131, 1170, 1209, 1248, 1287, 1326, 1365, 1404, 1443, 1482, 1521, 1560, 1599, 1638, 1677, 1716, 1755, 1794, 1833, 1872, 1911]
         },
         manaCost: [7, 7.125, 7.25, 7.375, 7.5, 7.625, 7.75, 7.875, 8, 8.125, 8.25, 8.375, 8.5, 8.625, 8.75, 8.875, 9, 9.125, 9.25, 9.375, 9.5, 9.625, 9.75, 9.875, 10, 10.125, 10.25, 10.375, 10.5, 10.625, 10.75, 10.875, 11, 11.125, 11.25, 11.375, 11.5, 11.625, 11.75, 11.875, 12, 12.125, 12.25, 12.375, 12.5, 12.625, 12.75, 12.875, 13, 13.125, 13.25, 13.375, 13.5, 13.625, 13.75, 13.875, 14, 14.125, 14.25, 14.375],
-        synergies: [
-          { skillId: 'fireblastcontainer', bonusPerLevel: 16, damageType: 'lightning' },
-          { skillId: 'chargedboltsentrycontainer', bonusPerLevel: 16, damageType: 'lightning' },
-          { skillId: 'chainlightningsentrycontainer', bonusPerLevel: 16, damageType: 'lightning' }
+        synergies: [{
+          skillId: 'fireblastcontainer',
+          bonusPerLevel: 16,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'chargedboltsentrycontainer',
+          bonusPerLevel: 16,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'chainlightningsentrycontainer',
+          bonusPerLevel: 16,
+          damageType: 'lightning'
+        }
         ]
       },
       wakeofinfernocontainer: {
@@ -1087,9 +2533,16 @@ class SkillSystem {
           max: [52, 72, 93, 114, 135, 156, 177, 197, 239, 281, 322, 364, 406, 447, 489, 531, 593, 656, 718, 781, 843, 906, 989, 1072, 1156, 1239, 1322, 1406, 1510, 1614, 1718, 1822, 1927, 2031, 2135, 2239, 2343, 2447, 2552, 2656, 2760, 2864, 2968, 3072, 3177, 3281, 3385, 3489, 3593, 3697, 3802, 3906, 4010, 4114, 4218, 4322, 4427, 4531, 4635, 4739]
         },
         manaCost: [8, 8.125, 8.25, 8.375, 8.5, 8.625, 8.75, 8.875, 9, 9.125, 9.25, 9.375, 9.5, 9.625, 9.75, 9.875, 10, 10.125, 10.25, 10.375, 10.5, 10.625, 10.75, 10.875, 11, 11.125, 11.25, 11.375, 11.5, 11.625, 11.75, 11.875, 12, 12.125, 12.25, 12.375, 12.5, 12.625, 12.75, 12.875, 13, 13.125, 13.25, 13.375, 13.5, 13.625, 13.75, 13.875, 14, 14.125, 14.25, 14.375, 14.5, 14.625, 14.75, 14.875, 15, 15.125, 15.25, 15.375],
-        synergies: [
-          { skillId: 'fireblastcontainer', bonusPerLevel: 10, damageType: 'fire' },
-          { skillId: 'wakeoffirecontainer', bonusPerLevel: 10, damageType: 'fire' }
+        synergies: [{
+          skillId: 'fireblastcontainer',
+          bonusPerLevel: 10,
+          damageType: 'fire'
+        },
+        {
+          skillId: 'wakeoffirecontainer',
+          bonusPerLevel: 10,
+          damageType: 'fire'
+        }
         ]
       },
       chainlightningsentrycontainer: {
@@ -1100,10 +2553,21 @@ class SkillSystem {
           max: [50, 58, 66, 74, 82, 90, 98, 106, 118, 130, 142, 154, 166, 178, 190, 202, 220, 238, 256, 274, 292, 310, 336, 362, 388, 414, 440, 466, 502, 538, 574, 610, 646, 682, 718, 754, 790, 826, 862, 898, 934, 970, 1006, 1042, 1078, 1114, 1150, 1186, 1222, 1258, 1294, 1330, 1366, 1402, 1438, 1474, 1510, 1546, 1582, 1618]
         },
         manaCost: [7, 7.125, 7.25, 7.375, 7.5, 7.625, 7.75, 7.875, 8, 8.125, 8.25, 8.375, 8.5, 8.625, 8.75, 8.875, 9, 9.125, 9.25, 9.375, 9.5, 9.625, 9.75, 9.875, 10, 10.125, 10.25, 10.375, 10.5, 10.625, 10.75, 10.875, 11, 11.125, 11.25, 11.375, 11.5, 11.625, 11.75, 11.875, 12, 12.125, 12.25, 12.375, 12.5, 12.625, 12.75, 12.875, 13, 13.125, 13.25, 13.375, 13.5, 13.625, 13.75, 13.875, 14, 14.125, 14.25, 14.375],
-        synergies: [
-          { skillId: 'fireblastcontainer', bonusPerLevel: 13, damageType: 'lightning' },
-          { skillId: 'chargedboltsentrycontainer', bonusPerLevel: 13, damageType: 'lightning' },
-          { skillId: 'lightningsentrycontainer', bonusPerLevel: 13, damageType: 'lightning' }
+        synergies: [{
+          skillId: 'fireblastcontainer',
+          bonusPerLevel: 13,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'chargedboltsentrycontainer',
+          bonusPerLevel: 13,
+          damageType: 'lightning'
+        },
+        {
+          skillId: 'lightningsentrycontainer',
+          bonusPerLevel: 13,
+          damageType: 'lightning'
+        }
         ]
       },
       deathsentrycontainer: {
@@ -1119,11 +2583,21 @@ class SkillSystem {
         },
         manaCost: [8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7, 20, 20.2, 20.5, 20.7, 21, 21.2, 21.5, 21.7, 22, 22.2, 22.5, 22.7],
         shots: [5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11],
-        corpseExplosionPercent: { min: 3, max: 5 },
+        corpseExplosionPercent: {
+          min: 3,
+          max: 5
+        },
         radius: 12,
-        synergies: [
-          { skillId: 'wakeofinfernocontainer', bonusPerLevel: 8, damageType: 'both' },
-          { skillId: 'fireblastcontainer', bonusPerLevel: 8, damageType: 'both' }
+        synergies: [{
+          skillId: 'wakeofinfernocontainer',
+          bonusPerLevel: 8,
+          damageType: 'both'
+        },
+        {
+          skillId: 'fireblastcontainer',
+          bonusPerLevel: 8,
+          damageType: 'both'
+        }
         ]
       }
     };
@@ -1137,48 +2611,104 @@ class SkillSystem {
     this.setupEvents();
     this.createPointsDisplay();
     this.createSkillCalculator();
-    this.updateSkillMaxValues();  // Set initial max values based on starting level
-    this.updateSkillVisuals();  // Set initial visual state based on prerequisites
+    this.updateSkillMaxValues(); // Set initial max values based on starting level
+    this.updateSkillVisuals(); // Set initial visual state based on prerequisites
     //('✅ Skills System ready');
   }
 
   createContainers() {
     // Define container titles for each class
     var classTitles = {
-      'Amazon': [
-        { id: 'javelinandspearskillscontainer', title: 'Javelin & Spear Skills' },
-        { id: 'passiveskillscontainer', title: 'Passive & Magic Skills' },
-        { id: 'bowandcrossbowskillscontainer', title: 'Bow & Crossbow Skills' }
+      'Amazon': [{
+        id: 'javelinandspearskillscontainer',
+        title: 'Javelin & Spear Skills'
+      },
+      {
+        id: 'passiveskillscontainer',
+        title: 'Passive & Magic Skills'
+      },
+      {
+        id: 'bowandcrossbowskillscontainer',
+        title: 'Bow & Crossbow Skills'
+      }
       ],
-      'Assassin': [
-        { id: 'martialartscontainer', title: 'Martial Arts' },
-        { id: 'shadowdisciplinescontainer', title: 'Shadow Disciplines' },
-        { id: 'trapscontainer', title: 'Traps' }
+      'Assassin': [{
+        id: 'martialartscontainer',
+        title: 'Martial Arts'
+      },
+      {
+        id: 'shadowdisciplinescontainer',
+        title: 'Shadow Disciplines'
+      },
+      {
+        id: 'trapscontainer',
+        title: 'Traps'
+      }
       ],
-      'Barbarian': [
-        { id: 'warcriescontainer', title: 'Warcries' },
-        { id: 'combatmasteriescontainer', title: 'Combat Masteries' },
-        { id: 'combatskillsbarcontainer', title: 'Combat Skills' }
+      'Barbarian': [{
+        id: 'warcriescontainer',
+        title: 'Warcries'
+      },
+      {
+        id: 'combatmasteriescontainer',
+        title: 'Combat Masteries'
+      },
+      {
+        id: 'combatskillsbarcontainer',
+        title: 'Combat Skills'
+      }
       ],
-      'Druid': [
-        { id: 'elementalskillscontainer', title: 'Elemental Skills' },
-        { id: 'shapeshiftingskillscontainer', title: 'Shapeshifting Skills' },
-        { id: 'summoningskillscontainer', title: 'Summoning Skills' }
+      'Druid': [{
+        id: 'elementalskillscontainer',
+        title: 'Elemental Skills'
+      },
+      {
+        id: 'shapeshiftingskillscontainer',
+        title: 'Shapeshifting Skills'
+      },
+      {
+        id: 'summoningskillscontainer',
+        title: 'Summoning Skills'
+      }
       ],
-      'Necromancer': [
-        { id: 'summoningspellsneccontainer', title: 'Summoning Spells' },
-        { id: 'poisonandbonespellscontainer', title: 'Poison & Bone Spells' },
-        { id: 'cursescontainer', title: 'Curses' }
+      'Necromancer': [{
+        id: 'summoningspellsneccontainer',
+        title: 'Summoning Spells'
+      },
+      {
+        id: 'poisonandbonespellscontainer',
+        title: 'Poison & Bone Spells'
+      },
+      {
+        id: 'cursescontainer',
+        title: 'Curses'
+      }
       ],
-      'Paladin': [
-        { id: 'defensiveaurascontainer', title: 'Defensive Auras' },
-        { id: 'offensiveaurascontainer', title: 'Offensive Auras' },
-        { id: 'combatskillspalcontainer', title: 'Combat Skills' }
+      'Paladin': [{
+        id: 'defensiveaurascontainer',
+        title: 'Defensive Auras'
+      },
+      {
+        id: 'offensiveaurascontainer',
+        title: 'Offensive Auras'
+      },
+      {
+        id: 'combatskillspalcontainer',
+        title: 'Combat Skills'
+      }
       ],
-      'Sorceress': [
-        { id: 'coldspellscontainer', title: 'Cold Spells' },
-        { id: 'lightningspellscontainer', title: 'Lightning Spells' },
-        { id: 'firespellscontainer', title: 'Fire Spells' }
+      'Sorceress': [{
+        id: 'coldspellscontainer',
+        title: 'Cold Spells'
+      },
+      {
+        id: 'lightningspellscontainer',
+        title: 'Lightning Spells'
+      },
+      {
+        id: 'firespellscontainer',
+        title: 'Fire Spells'
+      }
       ]
     };
 
@@ -1332,7 +2862,7 @@ class SkillSystem {
       levelInput.addEventListener('input', function (e) {
         self.currentLevel = parseInt(e.target.value) || 1;
         self.maxSkillPoints = self.currentLevel + 11;
-        self.updateSkillMaxValues();  // Update all skill input max attributes immediately
+        self.updateSkillMaxValues(); // Update all skill input max attributes immediately
         self.validateAllSkillInputs(); // Validate and adjust existing values if needed
         self.updatePointsDisplay();
         self.scheduleCalculation();
@@ -1354,7 +2884,9 @@ class SkillSystem {
     document.addEventListener('input', function (e) {
       if (e.target && e.target.matches && e.target.matches('[id$="container"] input[type="number"]')) {
         self.handleSkillInput(e.target);
-        setTimeout(function () { self.updateSkillDropdown(); }, 100);
+        setTimeout(function () {
+          self.updateSkillDropdown();
+        }, 100);
         self.scheduleCalculation();
       }
     });
@@ -1388,7 +2920,9 @@ class SkillSystem {
       }
     });
 
-    setTimeout(function () { self.updateSkillDropdown(); }, 333);
+    setTimeout(function () {
+      self.updateSkillDropdown();
+    }, 333);
   }
 
   // Lightweight calculation scheduler to avoid spam
@@ -1418,7 +2952,16 @@ class SkillSystem {
       'slowmovementcontainer', // Slow Movement
       'piercecontainer', // Pierce
       'dodgecontainer', // Dodge
-      'penetratecontainer' // Penetrate
+      'penetratecontainer', // Penetrate
+      'clawanddaggermasterycontainer', // Claw and Dagger Mastery
+      'generalmasterycontainer', // General Mastery
+      'throwingmasterycontainer', // Throwing Mastery
+      'polearmandspearmasterycontainer', // Polearm and Spear Mastery
+      'combatreflexescontainer', // Combat Reflexes
+      'ironskinscontainer', // Iron Skin
+      'increasedspeedcontainer', // Increased Speed
+      'naturalresistancecontainer', // Natural Resistance
+      'deepwoundscontainer' // Deep Wounds
     ];
 
     var self = this;
@@ -1443,7 +2986,9 @@ class SkillSystem {
 
         Object.keys(currentClassSkills).forEach(function (containerId) {
           var skillsInTree = currentClassSkills[containerId];
-          var isSkillInTree = skillsInTree.some(function (s) { return s.id === skillId; });
+          var isSkillInTree = skillsInTree.some(function (s) {
+            return s.id === skillId;
+          });
           if (isSkillInTree) {
             treeBonus = self.skillBonuses.treeSkills[containerId] || 0;
           }
@@ -1745,6 +3290,11 @@ class SkillSystem {
           html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic; color: #888;">Cannot be interrupted</div>';
         }
 
+        // Special handling for Dragon Flight - cooldown
+        if (skillId === 'dragonflightcontainer' && skill.cooldown) {
+          html += '<div style="margin: 5px 0; color: #cccccc;">Cooldown: ' + skill.cooldown + ' seconds</div>';
+        }
+
       } // End of weaponUsable check for physical skills
     } else if (skill.type === 'utility') {
       // Handle utility skills like Leap (no damage calculations)
@@ -1781,14 +3331,21 @@ class SkillSystem {
       if (skill.manaCost) {
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
       }
-    } else if (skill.type === 'buff') {
-      // Handle buff skills like Shout, Battle Orders, Grim Ward, Battle Command
+    } else if (skill.type === 'buff' || skill.type === 'buffdebuff') {
+      // Handle buff and hybrid buff/debuff skills (Shout, Battle Orders, Cloak of Shadows, etc.)
 
-      // Display defense bonus for Shout
-      if (skillId === 'shoutcontainer' && skill.defenseBonus) {
+      // Generic defense bonus handling
+      if (skill.defenseBonus && skillId !== 'grimwardcontainer') { // Grim Ward handled separately if needed, but defense is usually Shout/Cloak
         var levelIndex = Math.min(totalSkillLevel - 1, skill.defenseBonus.length - 1);
-        var defBonus = skill.defenseBonus[levelIndex] || 25;
+        var defBonus = skill.defenseBonus[levelIndex] || 0;
         html += '<div style="margin: 5px 0; color: #aaddff;">Defense: +' + defBonus + '%</div>';
+      }
+
+      // Enemy defense bonus (debuff part)
+      if (skill.enemyDefenseBonus) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.enemyDefenseBonus.length - 1);
+        var enemyDefBonus = skill.enemyDefenseBonus[levelIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ff6666;">Enemy Defense: ' + enemyDefBonus + '%</div>';
       }
 
       // Display life and mana bonus for Battle Orders
@@ -1838,9 +3395,42 @@ class SkillSystem {
         }
       }
 
+      // Display movement speed if available
+      if (skill.movementSpeed) {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.movementSpeed.length - 1);
+        var moveSpeed = skill.movementSpeed[levelIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffffff;">Movement Speed: +' + moveSpeed + '%</div>';
+      }
+
+      // Display attack speed if available
+      if (skill.attackSpeed) {
+        var asIndex = Math.min(baseSkillLevel, skill.attackSpeed.length - 1);
+        if (skill.attackSpeed.length > 30) {
+          asIndex = Math.min(totalSkillLevel - 1, skill.attackSpeed.length - 1);
+        }
+        var attackSpeed = skill.attackSpeed[asIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffffff;">Attack Speed: +' + attackSpeed + '%</div>';
+      }
+
+      // Range handling
+      if (skill.range) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Range: ' + skill.range + ' yards</div>';
+      }
+
+      // Cooldown handling
+      if (skill.cooldown) {
+        html += '<div style="margin: 5px 0; color: #ff6666;">Cooldown: ' + skill.cooldown + ' seconds</div>';
+      }
+
       // Display duration
       if (skill.duration) {
-        html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + skill.duration + ' seconds</div>';
+        var duration;
+        if (Array.isArray(skill.duration)) {
+          duration = skill.duration[Math.min(totalSkillLevel - 1, skill.duration.length - 1)] || 0;
+        } else {
+          duration = skill.duration;
+        }
+        html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + duration + ' seconds</div>';
       }
 
       // Display mana cost
@@ -1965,203 +3555,377 @@ class SkillSystem {
         html += '<div style="margin: 10px 0; color: #ff6666; font-weight: bold;">Cannot use this skill</div>';
         html += '<div style="margin: 5px 0; color: #888; font-style: italic;">Weapon level, strength, or dexterity requirement not met</div>';
       } else {
-        // Use charge 3 damage for calculation
-        var levelIndex = Math.min(totalSkillLevel - 1, skill.charge3Damage.length - 1);
-        var charge3DamageBonus = skill.charge3Damage[levelIndex] || 150;
+        // Use charge 3 damage for calculation (Tiger Strike only)
+        if (skill.charge3Damage) {
+          var levelIndex = Math.min(totalSkillLevel - 1, skill.charge3Damage.length - 1);
+          var charge3DamageBonus = skill.charge3Damage[levelIndex] || 150;
 
-        // Create a temporary skill object with charge 3 damage for calculation
-        var tempSkill = {
-          damage: [charge3DamageBonus], // Use charge 3 damage as the skill bonus
-          synergies: skill.synergies || []
-        };
+          // Create a temporary skill object with charge 3 damage for calculation
+          var tempSkill = {
+            damage: [charge3DamageBonus], // Use charge 3 damage as the skill bonus
+            synergies: skill.synergies || []
+          };
 
-        var damageInfo = this.calculatePhysicalDamage(tempSkill, totalSkillLevel, weaponDamage, dexterity, skillId);
+          var damageInfo = this.calculatePhysicalDamage(tempSkill, totalSkillLevel, weaponDamage, dexterity, skillId);
 
-        html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
+          html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
 
-        // Display Attack Rating
-        if (skill.attackRating) {
-          var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
-          var attackRatingBonus = skill.attackRating[arIndex] || 0;
-          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
-        }
-
-        html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
-        html += '<div style="margin: 5px 0;">Charge 3 Damage: +' + charge3DamageBonus + '%</div>';
-
-        if (damageInfo.synergyBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
-        }
-        if (damageInfo.masteryDamageBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
-        }
-
-        // Show elemental damages
-        var elem = damageInfo.elementalDamages;
-        if (elem.fire.max > 0) {
-          html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
-        }
-        if (elem.cold.max > 0) {
-          html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
-        }
-        if (elem.lightning.max > 0) {
-          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
-        }
-        if (elem.poison.max > 0) {
-          html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
-        }
-
-        html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
-        html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
-        html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
-
-        // Display melee splash bonuses
-        if (skill.meleeSplashBonus2 || skill.meleeSplashBonus3) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Melee Splash: +' + skill.meleeSplashBonus2 + '% (2 charges), +' + skill.meleeSplashBonus3 + '% (3 charges)</div>';
-        }
-
-        // Display duration
-        if (skill.duration) {
-          html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + skill.duration + ' seconds</div>';
-        }
-
-        // Display mana cost
-        if (skill.manaCost) {
-          var manaCost;
-          if (Array.isArray(skill.manaCost)) {
-            manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
-          } else {
-            manaCost = skill.manaCost;
+          // Display Attack Rating
+          if (skill.attackRating) {
+            var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+            var attackRatingBonus = skill.attackRating[arIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
           }
-          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+
+          html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
+          html += '<div style="margin: 5px 0;">Charge 3 Damage: +' + charge3DamageBonus + '%</div>';
+
+          if (damageInfo.synergyBonus > 0) {
+            html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+          }
+          if (damageInfo.masteryDamageBonus > 0) {
+            html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+          }
+
+          // Show elemental damages
+          var elem = damageInfo.elementalDamages;
+          if (elem.fire.max > 0) {
+            html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + elem.fire.min + '-' + elem.fire.max + '</div>';
+          }
+          if (elem.cold.max > 0) {
+            html += '<div style="margin: 5px 0; color: #6699ff;">Cold: ' + elem.cold.min + '-' + elem.cold.max + '</div>';
+          }
+          if (elem.lightning.max > 0) {
+            html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + elem.lightning.min + '-' + elem.lightning.max + '</div>';
+          }
+          if (elem.poison.max > 0) {
+            html += '<div style="margin: 5px 0; color: #00ff00;">Poison: ' + elem.poison.min + '-' + elem.poison.max + '/sec</div>';
+          }
+
+          html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+          html += '<div style="margin: 5px 0; color: #ffffff; font-weight: bold;">Total: ' + damageInfo.min + '-' + damageInfo.max + '</div>';
+          html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
+
+          // Display melee splash bonuses
+          if (skill.meleeSplashBonus2 || skill.meleeSplashBonus3) {
+            html += '<div style="margin: 5px 0; color: #ff9966;">Melee Splash: +' + skill.meleeSplashBonus2 + '% (2 charges), +' + skill.meleeSplashBonus3 + '% (3 charges)</div>';
+          }
+
+          // Display duration
+          if (skill.duration) {
+            html += '<div style="margin: 5px 0; color: #cccccc;">Duration: ' + skill.duration + ' seconds</div>';
+          }
+
+          // Display mana cost
+          if (skill.manaCost) {
+            var manaCost;
+            if (Array.isArray(skill.manaCost)) {
+              manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+            } else {
+              manaCost = skill.manaCost;
+            }
+            html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+          }
+        }
+      }
+    }
+
+    // Fists of Fire - fire damage charge-up
+    if (skillId === 'fistsoffirecontainer') {
+      var levelIndex = Math.min(totalSkillLevel - 1, 59);
+      var synergyBonus = this.calculateSynergyBonus(skillId, 'fire');
+
+      if (skill.attackRating) {
+        var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+        var attackRatingBonus = skill.attackRating[arIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      if (skill.burningDamage) {
+        var burnMin = skill.burningDamage.min[levelIndex] || 1;
+        var burnMax = skill.burningDamage.max[levelIndex] || 2;
+        burnMin = Math.floor(burnMin * (1 + synergyBonus / 100));
+        burnMax = Math.floor(burnMax * (1 + synergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ff6600;">Burning Damage: ' + burnMin + '-' + burnMax + '</div>';
+      }
+      if (skill.novaFireDamage) {
+        var novaMin = skill.novaFireDamage.min[levelIndex] || 1;
+        var novaMax = skill.novaFireDamage.max[levelIndex] || 2;
+        novaMin = Math.floor(novaMin * (1 + synergyBonus / 100));
+        novaMax = Math.floor(novaMax * (1 + synergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ff9933;">Nova Fire Damage: ' + novaMin + '-' + novaMax + '</div>';
+      }
+      if (skill.meteorDamage) {
+        var meteorMin = skill.meteorDamage.min[levelIndex] || 2;
+        var meteorMax = skill.meteorDamage.max[levelIndex] || 4;
+        meteorMin = Math.floor(meteorMin * (1 + synergyBonus / 100));
+        meteorMax = Math.floor(meteorMax * (1 + synergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Meteor Damage: ' + meteorMin + '-' + meteorMax + '</div>';
+      }
+      if (synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+      }
+      if (skill.manaCost) {
+        var manaCost = Array.isArray(skill.manaCost) ? skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] : skill.manaCost;
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
+    }
+
+    // Cobra Strike - poison damage charge-up
+    if (skillId === 'cobrastrikecontainer') {
+      var levelIndex = Math.min(totalSkillLevel - 1, 59);
+      var synergyBonus = this.calculateSynergyBonus(skillId, 'poison');
+
+      if (skill.attackRating) {
+        var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+        var attackRatingBonus = skill.attackRating[arIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      if (skill.poisonBoltDamage) {
+        var boltMin = skill.poisonBoltDamage.min[levelIndex] || 3;
+        var boltMax = skill.poisonBoltDamage.max[levelIndex] || 12;
+        boltMin = Math.floor(boltMin * (1 + synergyBonus / 100));
+        boltMax = Math.floor(boltMax * (1 + synergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #00ff00;">Poison Bolt Damage: ' + boltMin + '-' + boltMax + '</div>';
+      }
+      if (skill.poisonCloudDamage) {
+        var cloudMin = skill.poisonCloudDamage.min[levelIndex] || 6;
+        var cloudMax = skill.poisonCloudDamage.max[levelIndex] || 18;
+        cloudMin = Math.floor(cloudMin * (1 + synergyBonus / 100));
+        cloudMax = Math.floor(cloudMax * (1 + synergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #66ff66;">Poison Cloud Damage: ' + cloudMin + '-' + cloudMax + '</div>';
+      }
+      if (skill.enhancedDamage) {
+        var edBonus = skill.enhancedDamage[levelIndex] || 90;
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Enhanced Damage: +' + edBonus + '%</div>';
+      }
+      if (skill.lifeManaSteal) {
+        var steal = skill.lifeManaSteal[levelIndex] || 16;
+        html += '<div style="margin: 5px 0; color: #ff6666;">Life/Mana Steal: +' + steal + '%</div>';
+      }
+      if (skill.poisonDuration) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Poison Duration: ' + skill.poisonDuration + ' second</div>';
+      }
+      if (synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+      }
+      if (skill.manaCost) {
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
+      }
+    }
+
+    // Claws of Thunder - lightning damage charge-up
+    if (skillId === 'clawsofthundercontainer') {
+      var levelIndex = Math.min(totalSkillLevel - 1, 59);
+      var synergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
+
+      if (skill.attackRating) {
+        var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+        var attackRatingBonus = skill.attackRating[arIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      if (skill.lightningDamage) {
+        var lightMin = skill.lightningDamage.min[levelIndex] || 1;
+        var lightMax = skill.lightningDamage.max[levelIndex] || 80;
+        lightMin = Math.floor(lightMin * (1 + synergyBonus / 100));
+        lightMax = Math.floor(lightMax * (1 + synergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ffff00;">Lightning Damage: ' + lightMin + '-' + lightMax + '</div>';
+      }
+      if (skill.novaDamage) {
+        var novaMin = skill.novaDamage.min[levelIndex] || 5;
+        var novaMax = skill.novaDamage.max[levelIndex] || 30;
+        novaMin = Math.floor(novaMin * (1 + synergyBonus / 100));
+        novaMax = Math.floor(novaMax * (1 + synergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ffee00;">Nova Damage: ' + novaMin + '-' + novaMax + '</div>';
+      }
+      if (skill.chargedBoltDamage) {
+        var boltMin = skill.chargedBoltDamage.min[levelIndex] || 10;
+        var boltMax = skill.chargedBoltDamage.max[levelIndex] || 40;
+        boltMin = Math.floor(boltMin * (1 + synergyBonus / 100));
+        boltMax = Math.floor(boltMax * (1 + synergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ffdd00;">Charged Bolt Damage: ' + boltMin + '-' + boltMax + '</div>';
+      }
+      if (synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+      }
+      if (skill.manaCost) {
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
+      }
+    }
+
+    // Blades of Ice - cold damage charge-up
+    if (skillId === 'bladesoficecontainer') {
+      var levelIndex = Math.min(totalSkillLevel - 1, 59);
+      // Note: Blades of Ice doesn't have synergies in the data provided
+
+      if (skill.attackRating) {
+        var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+        var attackRatingBonus = skill.attackRating[arIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      if (skill.charge1IceDamage) {
+        var iceMin = skill.charge1IceDamage.min[levelIndex] || 13;
+        var iceMax = skill.charge1IceDamage.max[levelIndex] || 30;
+        html += '<div style="margin: 5px 0; color: #6699ff;">Charge 1 Ice Damage: ' + iceMin + '-' + iceMax + '</div>';
+      }
+      if (skill.charge2WaveDamage) {
+        var waveMin = skill.charge2WaveDamage.min[levelIndex] || 15;
+        var waveMax = skill.charge2WaveDamage.max[levelIndex] || 35;
+        html += '<div style="margin: 5px 0; color: #99ccff;">Charge 2 Wave Damage: ' + waveMin + '-' + waveMax + '</div>';
+      }
+      if (skill.charge3BoltDamage) {
+        var boltMin = skill.charge3BoltDamage.min[levelIndex] || 11;
+        var boltMax = skill.charge3BoltDamage.max[levelIndex] || 26;
+        html += '<div style="margin: 5px 0; color: #aaddff;">Charge 3 Bolt Damage: ' + boltMin + '-' + boltMax + '</div>';
+      }
+      if (skill.manaCost) {
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
+      }
+    }
+
+    // Phoenix Strike - multi-element charge-up
+    if (skillId === 'phoenixstrikecontainer') {
+      var levelIndex = Math.min(totalSkillLevel - 1, 59);
+
+      if (skill.attackRating) {
+        var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
+        var attackRatingBonus = skill.attackRating[arIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
+      }
+
+      // Calculate synergies for each element
+      var fireSynergyBonus = this.calculateSynergyBonus(skillId, 'fire');
+      var lightningSynergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
+      var coldSynergyBonus = this.calculateSynergyBonus(skillId, 'cold');
+
+      if (skill.meteorDamage) {
+        var meteorMin = skill.meteorDamage.min[levelIndex] || 20;
+        var meteorMax = skill.meteorDamage.max[levelIndex] || 40;
+        meteorMin = Math.floor(meteorMin * (1 + fireSynergyBonus / 100));
+        meteorMax = Math.floor(meteorMax * (1 + fireSynergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Meteor Damage: ' + meteorMin + '-' + meteorMax + '</div>';
+      }
+      if (skill.burningDamage) {
+        var burnMin = skill.burningDamage.min[levelIndex] || 14;
+        var burnMax = skill.burningDamage.max[levelIndex] || 23;
+        burnMin = Math.floor(burnMin * (1 + fireSynergyBonus / 100));
+        burnMax = Math.floor(burnMax * (1 + fireSynergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ff6600;">Burning Damage: ' + burnMin + '-' + burnMax + '</div>';
+      }
+      if (skill.lightningDamage) {
+        var lightMin = skill.lightningDamage.min[levelIndex] || 1;
+        var lightMax = skill.lightningDamage.max[levelIndex] || 40;
+        lightMin = Math.floor(lightMin * (1 + lightningSynergyBonus / 100));
+        lightMax = Math.floor(lightMax * (1 + lightningSynergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #ffff00;">Lightning Damage: ' + lightMin + '-' + lightMax + '</div>';
+      }
+      if (skill.coldDamage) {
+        var coldMin = skill.coldDamage.min[levelIndex] || 16;
+        var coldMax = skill.coldDamage.max[levelIndex] || 32;
+        coldMin = Math.floor(coldMin * (1 + coldSynergyBonus / 100));
+        coldMax = Math.floor(coldMax * (1 + coldSynergyBonus / 100));
+        html += '<div style="margin: 5px 0; color: #6699ff;">Cold Damage: ' + coldMin + '-' + coldMax + '</div>';
+      }
+
+      // Show synergy bonuses if any
+      if (fireSynergyBonus > 0 || lightningSynergyBonus > 0 || coldSynergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonuses Applied</div>';
+      }
+
+      if (skill.manaCost) {
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
+      }
+    } else if (skill.type === 'magic') {
+      // Handle pure magic damage skills like Psychic Hammer
+      var levelIndex = Math.min(totalSkillLevel - 1, 59);
+
+      // Get base magic damage
+      var baseMagicMin = skill.magicDamage.min[levelIndex] || 0;
+      var baseMagicMax = skill.magicDamage.max[levelIndex] || 0;
+
+      // Calculate synergy bonus for magic
+      var magicSynergyBonus = this.calculateSynergyBonus(skillId, 'magic');
+
+      // Apply synergies to magic damage
+      var magicMin = Math.floor(baseMagicMin * (1 + magicSynergyBonus / 100));
+      var magicMax = Math.floor(baseMagicMax * (1 + magicSynergyBonus / 100));
+
+      html += '<div style="margin: 5px 0; color: #ff66ff;">Magic Damage: ' + magicMin + '-' + magicMax + '</div>';
+      html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + Math.floor((magicMin + magicMax) / 2) + '</div>';
+
+      if (magicSynergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + magicSynergyBonus + '%</div>';
+      }
+
+      // Display bounces if available
+      if (skill.bounces) {
+        var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+        var bounceIndex = Math.min(baseSkillLevel, skill.bounces.length - 1);
+        var bounceCount = skill.bounces[bounceIndex] || 1;
+        html += '<div style="margin: 5px 0; color: #cccccc;">Bounces: ' + bounceCount + '</div>';
+        html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic; color: #999;">Deals 20% less damage per bounce</div>';
+      }
+
+      // Display mana cost
+      if (skill.manaCost) {
+        var manaCost;
+        if (Array.isArray(skill.manaCost)) {
+          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        } else {
+          manaCost = skill.manaCost;
+        }
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
+    } else if (skill.type === 'pure_physical') {
+      // Handle non-weapon based physical skills like Mind Blast or War Cry
+      var levelIndex = Math.min(totalSkillLevel - 1, 59);
+
+      // Get base physical damage
+      var basePhysMin = skill.physicalDamage.min[levelIndex] || 0;
+      var basePhysMax = skill.physicalDamage.max[levelIndex] || 0;
+
+      // Calculate synergy bonus (using 'physical' as damageType for synergy calculation)
+      var synergyBonus = this.calculateSynergyBonus(skillId, 'physical');
+
+      // Apply synergies
+      var physMin = Math.floor(basePhysMin * (1 + synergyBonus / 100));
+      var physMax = Math.floor(basePhysMax * (1 + synergyBonus / 100));
+
+      html += '<div style="margin: 5px 0; color: #ffcc99;">Physical Damage: ' + physMin + '-' + physMax + '</div>';
+      html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + Math.floor((physMin + physMax) / 2) + '</div>';
+
+      if (synergyBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+      }
+
+      // Radius handling (often scales with hard points in PD2)
+      if (skill.radius) {
+        var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+        var rIndex = Math.min(baseSkillLevel, skill.radius.length - 1);
+        var radius = skill.radius[rIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #cccccc;">Radius: ' + radius + ' yards</div>';
+      }
+
+      // Stun length handling
+      if (skill.stunLength) {
+        var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+        var sIndex = Math.min(baseSkillLevel, skill.stunLength.length - 1);
+        var stun = skill.stunLength[sIndex] || 0;
+        if (stun > 0) {
+          html += '<div style="margin: 5px 0; color: #cccccc;">Stun Length: ' + stun + ' seconds</div>';
         }
       }
 
-      // Fists of Fire - fire damage charge-up
-      if (skillId === 'fistsoffirecontainer') {
-        var levelIndex = Math.min(totalSkillLevel - 1, 59);
-        var synergyBonus = this.calculateSynergyBonus(skillId, 'fire');
-
-        if (skill.attackRating) {
-          var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
-          var attackRatingBonus = skill.attackRating[arIndex] || 0;
-          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
-        }
-
-        if (skill.burningDamage) {
-          var burnMin = skill.burningDamage.min[levelIndex] || 1;
-          var burnMax = skill.burningDamage.max[levelIndex] || 2;
-          burnMin = Math.floor(burnMin * (1 + synergyBonus / 100));
-          burnMax = Math.floor(burnMax * (1 + synergyBonus / 100));
-          html += '<div style="margin: 5px 0; color: #ff6600;">Burning Damage: ' + burnMin + '-' + burnMax + '</div>';
-        }
-        if (skill.novaFireDamage) {
-          var novaMin = skill.novaFireDamage.min[levelIndex] || 1;
-          var novaMax = skill.novaFireDamage.max[levelIndex] || 2;
-          novaMin = Math.floor(novaMin * (1 + synergyBonus / 100));
-          novaMax = Math.floor(novaMax * (1 + synergyBonus / 100));
-          html += '<div style="margin: 5px 0; color: #ff9933;">Nova Fire Damage: ' + novaMin + '-' + novaMax + '</div>';
-        }
-        if (skill.meteorDamage) {
-          var meteorMin = skill.meteorDamage.min[levelIndex] || 2;
-          var meteorMax = skill.meteorDamage.max[levelIndex] || 4;
-          meteorMin = Math.floor(meteorMin * (1 + synergyBonus / 100));
-          meteorMax = Math.floor(meteorMax * (1 + synergyBonus / 100));
-          html += '<div style="margin: 5px 0; color: #ffaa00;">Meteor Damage: ' + meteorMin + '-' + meteorMax + '</div>';
-        }
-        if (synergyBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
-        }
-        if (skill.manaCost) {
-          var manaCost = Array.isArray(skill.manaCost) ? skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] : skill.manaCost;
-          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
-        }
+      // Display mana cost
+      if (skill.manaCost) {
+        var manaCost = Array.isArray(skill.manaCost) ? (skill.manaCost[levelIndex] || 0) : skill.manaCost;
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
-
-      // Cobra Strike - poison damage charge-up
-      if (skillId === 'cobrastrikecontainer') {
-        var levelIndex = Math.min(totalSkillLevel - 1, 59);
-        var synergyBonus = this.calculateSynergyBonus(skillId, 'poison');
-
-        if (skill.attackRating) {
-          var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
-          var attackRatingBonus = skill.attackRating[arIndex] || 0;
-          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
-        }
-
-        if (skill.poisonBoltDamage) {
-          var boltMin = skill.poisonBoltDamage.min[levelIndex] || 3;
-          var boltMax = skill.poisonBoltDamage.max[levelIndex] || 12;
-          boltMin = Math.floor(boltMin * (1 + synergyBonus / 100));
-          boltMax = Math.floor(boltMax * (1 + synergyBonus / 100));
-          html += '<div style="margin: 5px 0; color: #00ff00;">Poison Bolt Damage: ' + boltMin + '-' + boltMax + '</div>';
-        }
-        if (skill.poisonCloudDamage) {
-          var cloudMin = skill.poisonCloudDamage.min[levelIndex] || 6;
-          var cloudMax = skill.poisonCloudDamage.max[levelIndex] || 18;
-          cloudMin = Math.floor(cloudMin * (1 + synergyBonus / 100));
-          cloudMax = Math.floor(cloudMax * (1 + synergyBonus / 100));
-          html += '<div style="margin: 5px 0; color: #66ff66;">Poison Cloud Damage: ' + cloudMin + '-' + cloudMax + '</div>';
-        }
-        if (skill.enhancedDamage) {
-          var edBonus = skill.enhancedDamage[levelIndex] || 90;
-          html += '<div style="margin: 5px 0; color: #ffaa00;">Enhanced Damage: +' + edBonus + '%</div>';
-        }
-        if (skill.lifeManaSteal) {
-          var steal = skill.lifeManaSteal[levelIndex] || 16;
-          html += '<div style="margin: 5px 0; color: #ff6666;">Life/Mana Steal: +' + steal + '%</div>';
-        }
-        if (skill.poisonDuration) {
-          html += '<div style="margin: 5px 0; color: #cccccc;">Poison Duration: ' + skill.poisonDuration + ' second</div>';
-        }
-        if (synergyBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
-        }
-        if (skill.manaCost) {
-          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
-        }
-      }
-
-      // Claws of Thunder - lightning damage charge-up
-      if (skillId === 'clawsofthundercontainer') {
-        var levelIndex = Math.min(totalSkillLevel - 1, 59);
-        var synergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
-
-        if (skill.attackRating) {
-          var arIndex = Math.min(totalSkillLevel - 1, skill.attackRating.length - 1);
-          var attackRatingBonus = skill.attackRating[arIndex] || 0;
-          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRatingBonus + '%</div>';
-        }
-
-        if (skill.lightningDamage) {
-          var lightMin = skill.lightningDamage.min[levelIndex] || 1;
-          var lightMax = skill.lightningDamage.max[levelIndex] || 80;
-          lightMin = Math.floor(lightMin * (1 + synergyBonus / 100));
-          lightMax = Math.floor(lightMax * (1 + synergyBonus / 100));
-          html += '<div style="margin: 5px 0; color: #ffff00;">Lightning Damage: ' + lightMin + '-' + lightMax + '</div>';
-        }
-        if (skill.novaDamage) {
-          var novaMin = skill.novaDamage.min[levelIndex] || 5;
-          var novaMax = skill.novaDamage.max[levelIndex] || 30;
-          novaMin = Math.floor(novaMin * (1 + synergyBonus / 100));
-          novaMax = Math.floor(novaMax * (1 + synergyBonus / 100));
-          html += '<div style="margin: 5px 0; color: #ffee00;">Nova Damage: ' + novaMin + '-' + novaMax + '</div>';
-        }
-        if (skill.chargedBoltDamage) {
-          var boltMin = skill.chargedBoltDamage.min[levelIndex] || 10;
-          var boltMax = skill.chargedBoltDamage.max[levelIndex] || 40;
-          boltMin = Math.floor(boltMin * (1 + synergyBonus / 100));
-          boltMax = Math.floor(boltMax * (1 + synergyBonus / 100));
-          html += '<div style="margin: 5px 0; color: #ffdd00;">Charged Bolt Damage: ' + boltMin + '-' + boltMax + '</div>';
-        }
-        if (synergyBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
-        }
-        if (skill.manaCost) {
-          html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
-        }
-      }
-    } else if (skill.type === 'kick') {
+    }
+    else if (skill.type === 'kick') {
       // Handle kick skills like Dragon Talon and Dragon Tail
       // Dragon Talon uses physical damage, Dragon Tail uses fire damage
 
@@ -2898,19 +4662,28 @@ class SkillSystem {
   getWeaponDamage() {
     var weaponDropdown = document.getElementById('weapons-dropdown');
     if (!weaponDropdown || !weaponDropdown.value || typeof itemList === 'undefined') {
-      return { min: 1, max: 2 };
+      return {
+        min: 1,
+        max: 2
+      };
     }
 
     // Use window.getItemData to support both regular and crafted items
     var weapon = window.getItemData ? window.getItemData(weaponDropdown.value) : itemList[weaponDropdown.value];
     if (!weapon || !weapon.properties) {
-      return { min: 1, max: 2 };
+      return {
+        min: 1,
+        max: 2
+      };
     }
 
     var min = weapon.properties.onehandmin || weapon.properties.twohandmin || 1;
     var max = weapon.properties.onehandmax || weapon.properties.twohandmax || 2;
 
-    return { min: min, max: max };
+    return {
+      min: min,
+      max: max
+    };
   }
 
   calculatePhysicalDamage(skill, skillLevel, weaponDamage, dexterity, skillId) {
@@ -3284,10 +5057,22 @@ class SkillSystem {
 
   getWeaponElementalDamages() {
     var elementalDamages = {
-      fire: { min: 0, max: 0 },
-      cold: { min: 0, max: 0 },
-      lightning: { min: 0, max: 0 },
-      poison: { min: 0, max: 0 }
+      fire: {
+        min: 0,
+        max: 0
+      },
+      cold: {
+        min: 0,
+        max: 0
+      },
+      lightning: {
+        min: 0,
+        max: 0
+      },
+      poison: {
+        min: 0,
+        max: 0
+      }
     };
 
     // Fire damage
@@ -4038,7 +5823,7 @@ class SkillSystem {
       var input = inputs[i];
       var skillLevel = parseInt(input.getAttribute('data-skill-level')) || 1;
       var maxAllowed = this.getMaxAllowed(skillLevel);
-      input.max = maxAllowed;  // Update the HTML max attribute for instant visual feedback
+      input.max = maxAllowed; // Update the HTML max attribute for instant visual feedback
     }
   }
 
@@ -4130,7 +5915,9 @@ class SkillSystem {
 
     warning.textContent = message;
     warning.style.display = 'block';
-    setTimeout(function () { warning.style.display = 'none'; }, 3000);
+    setTimeout(function () {
+      warning.style.display = 'none';
+    }, 3000);
   }
 
   getSkillValue(skillId) {
@@ -4181,7 +5968,9 @@ class SkillSystem {
     this.updateSkillVisuals();
 
     // Re-populate skill dropdown
-    setTimeout(() => { this.updateSkillDropdown(); }, 100);
+    setTimeout(() => {
+      this.updateSkillDropdown();
+    }, 100);
   }
 
   // Update skill bonuses from item equipment
