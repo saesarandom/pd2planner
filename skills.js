@@ -2065,7 +2065,7 @@ class SkillSystem {
         name: "Battle Command",
         type: "buff",
         damageBonus: [20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107, 110, 113, 116, 119, 122, 125, 128, 131, 134, 137, 140, 143, 146, 149, 152, 155, 158, 161, 164, 167, 170, 173, 176, 179, 182, 185, 188, 191, 194, 197],
-        bonusSkills: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3],
+        bonusSkills: [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3],
         duration: 300,
         manaCost: 11
       },
@@ -3599,6 +3599,29 @@ class SkillSystem {
     var level = this.getSkillTotalLevel('battleorderscontainer');
     if (level === 0) return 0;
     var data = this.skillData.battleorderscontainer.manaBonus;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
+  getBattleCommandSkills() {
+    var totalLevel = this.getSkillTotalLevel('battlecommandcontainer');
+    if (totalLevel === 0) return 0;
+
+    var levelInput = document.getElementById('battlecommandcontainer');
+    var baseLevel = levelInput ? (parseInt(levelInput.value) || 0) : 0;
+    var data = this.skillData.battlecommandcontainer.bonusSkills;
+
+    // PD2 Battle Command bonus depends strictly on base points: 
+    // - Always +1 if skill is active (even from Oskills)
+    // - +2 at level 10 base
+    // - +3 at level 20 base
+    var effectiveLookupLevel = Math.max(1, baseLevel);
+    return data[Math.min(effectiveLookupLevel - 1, data.length - 1)] || 1;
+  }
+
+  getBattleCommandDamageBonus() {
+    var level = this.getSkillTotalLevel('battlecommandcontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.battlecommandcontainer.damageBonus;
     return data[Math.min(level - 1, data.length - 1)] || 0;
   }
 

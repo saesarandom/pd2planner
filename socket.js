@@ -3128,8 +3128,12 @@ class UnifiedSocketSystem {
         });
       }
 
+      // Add charm bonuses 
+      this.stats.strength = (this.stats.strength || 0) + (charmBonuses.str || 0);
+      this.stats.dexterity = (this.stats.dexterity || 0) + (charmBonuses.dex || 0);
+      this.stats.vitality = (this.stats.vitality || 0) + (charmBonuses.vit || 0);
+      this.stats.energy = (this.stats.energy || 0) + (charmBonuses.enr || 0);
 
-      // Add charm bonuses (EXCEPT str/dex/vit/enr which are handled by character.js)
       this.stats.life = (this.stats.life || 0) + (charmBonuses.life || 0);
       this.stats.mana = (this.stats.mana || 0) + (charmBonuses.mana || 0);
       this.stats.defense = (this.stats.defense || 0) + (charmBonuses.defense || 0);
@@ -3155,11 +3159,28 @@ class UnifiedSocketSystem {
 
     // INTEGRATION: Add bonuses from passive skills (Barbarian masteries, etc.)
     if (window.skillSystem) {
-      // CRITICAL: Internal skill bonuses must be updated BEFORE calling get bonuses CRITICAL FIX BONUS
-      // This ensures skills like Natural Resistance or Deep Wounds use the latest +All Skills
-      window.skillSystem.skillBonuses.allSkills = this.stats.allSkills || 0;
+      // 1. Initial update with gear/charms only (needed for BC itself to calculate its level)
+      const gearAllSkills = this.stats.allSkills || 0;
+      window.skillSystem.skillBonuses.allSkills = gearAllSkills;
       window.skillSystem.skillBonuses.classSkills = this.stats.classSkills || 0;
       window.skillSystem.skillBonuses.treeSkills = this.stats.treeSkills || {};
+
+      // 2. Battle Command integration (adds to allSkills)
+      // We do a small two-pass check to account for BC self-buffing into a new breakpoint
+      let bcSkills = window.skillSystem.getBattleCommandSkills?.() || 0;
+      this.stats.allSkills = gearAllSkills + bcSkills;
+
+      // Update SkillSystem with the first-pass total and check if BC bonus increased
+      window.skillSystem.skillBonuses.allSkills = this.stats.allSkills;
+      bcSkills = window.skillSystem.getBattleCommandSkills?.() || 0;
+
+      // Final allSkills total (Gear + BC bonus)
+      this.stats.allSkills = gearAllSkills + bcSkills;
+      this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + (window.skillSystem.getBattleCommandDamageBonus?.() || 0);
+
+      // 3. Update SkillSystem one last time with the absolute total allSkills
+      // This ensures skills like Natural Resistance or Battle Orders use the latest level
+      window.skillSystem.skillBonuses.allSkills = this.stats.allSkills || 0;
 
       // Natural Resistance (All Res)
       const natRes = window.skillSystem.getNaturalResistanceBonus?.() || 0;
@@ -4686,7 +4707,12 @@ class UnifiedSocketSystem {
 
 
     // Core stats
-    this.updateElement('allskillscontainer', this.stats.allSkills);
+    const bcBonus = window.skillSystem?.getBattleCommandSkills?.() || 0;
+    const allSkillsContainer = document.getElementById('allskillscontainer');
+    if (allSkillsContainer) {
+      allSkillsContainer.textContent = this.stats.allSkills;
+      allSkillsContainer.style.color = bcBonus > 0 ? '#d0d007ff' : '';
+    }
 
     // Update skill bonus indicators if skill system is available (include both all skills and class skills)
     if (window.skillSystem) {

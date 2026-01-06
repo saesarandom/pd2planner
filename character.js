@@ -766,23 +766,23 @@ class CharacterManager {
   }
 
   updateTotalStats() {
+    const charClass = document.getElementById('selectClass')?.value || 'Amazon';
     const baseStats = {
-      str: parseInt(document.getElementById('str')?.value) || 0,
-      dex: parseInt(document.getElementById('dex')?.value) || 0,
-      vit: parseInt(document.getElementById('vit')?.value) || 0,
-      enr: parseInt(document.getElementById('enr')?.value) || 0
+      str: parseInt(document.getElementById('str')?.value) || this.classStats[charClass].str,
+      dex: parseInt(document.getElementById('dex')?.value) || this.classStats[charClass].dex,
+      vit: parseInt(document.getElementById('vit')?.value) || this.classStats[charClass].vit,
+      enr: parseInt(document.getElementById('enr')?.value) || this.classStats[charClass].enr
     };
 
-    const itemBonuses = this.getAllItemBonuses();
-    const socketBonuses = this.getSocketBonuses();
-    const charmBonuses = this.getCharmBonuses();
+    let totalBonuses = { str: 0, dex: 0, vit: 0, enr: 0 };
 
-    const totalBonuses = {
-      str: itemBonuses.str + socketBonuses.str + charmBonuses.str,
-      dex: itemBonuses.dex + socketBonuses.dex + charmBonuses.dex,
-      vit: itemBonuses.vit + socketBonuses.vit + charmBonuses.vit,
-      enr: itemBonuses.enr + socketBonuses.enr + charmBonuses.enr
-    };
+    if (window.unifiedSocketSystem && window.unifiedSocketSystem.stats) {
+      const stats = window.unifiedSocketSystem.stats;
+      totalBonuses.str = stats.strength || 0;
+      totalBonuses.dex = stats.dexterity || 0;
+      totalBonuses.vit = stats.vitality || 0;
+      totalBonuses.enr = stats.energy || 0;
+    }
 
     this.updateTotalDisplay('str', baseStats.str + totalBonuses.str);
     this.updateTotalDisplay('dex', baseStats.dex + totalBonuses.dex);
