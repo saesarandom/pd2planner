@@ -3181,17 +3181,21 @@ class UnifiedSocketSystem {
       this.stats.fhr += (window.skillSystem.getCombatReflexesFHR?.() || 0);
       this.stats.life += (window.skillSystem.getCombatReflexesLifeBonus?.() || 0);
 
-      // Deep Wounds (Open Wounds Chance and Flat Damage)
-      this.stats.openWounds += (window.skillSystem.getDeepWoundsChance?.() || 0);
-      this.stats.openWoundsDamage += (window.skillSystem.getDeepWoundsDamage?.() || 0);
+      // Deep Wounds / Hunger Open Wounds
+      this.stats.openWoundsChance = (this.stats.openWoundsChance || 0) + (window.skillSystem.getDeepWoundsChance?.() || 0) + (window.skillSystem.getHungerChance?.() || 0);
+      this.stats.openWoundsDamage = (this.stats.openWoundsDamage || 0) + (window.skillSystem.getDeepWoundsDamage?.() || 0) + (window.skillSystem.getHungerDamage?.() || 0);
 
-      // Hunger (Open Wounds Chance and Flat Damage)
-      this.stats.openWounds += (window.skillSystem.getHungerChance?.() || 0);
-      this.stats.openWoundsDamage += (window.skillSystem.getHungerDamage?.() || 0);
-    }
+      // Druid Spirit Buffs
+      this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + (window.skillSystem.getHeartOfWolverineDamageBonus?.() || 0);
+      this.stats.attackRatingPercent = (this.stats.attackRatingPercent || 0) + (window.skillSystem.getHeartOfWolverineARBonus?.() || 0);
+      this.stats.lifePercent = (this.stats.lifePercent || 0) + (window.skillSystem.getOakSageLifeBonus?.() || 0);
+      this.stats.replenishLife = (this.stats.replenishLife || 0) + (window.skillSystem.getOakSageLifeReplenish?.() || 0);
+      this.stats.damageReturn = (this.stats.damageReturn || 0) + (window.skillSystem.getSpiritOfBarbsReturn?.() || 0);
 
-    if (window.characterManager) {
-      window.characterManager.updateTotalStats();
+      // Re-calculate Final Basic Stats (Life, Mana, etc.) incorporating Skill Bonuses
+      if (window.characterManager) {
+        window.characterManager.updateTotalStats();
+      }
     }
   }
 

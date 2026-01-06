@@ -662,15 +662,15 @@ class SkillSystem {
           prerequisites: []
         },
         {
-          id: 'lycantropycontainer',
-          name: 'Lycanthropy',
-          level: 1,
-          prerequisites: []
-        },
-        {
           id: 'werebearcontainer',
           name: 'Werebear',
           level: 6,
+          prerequisites: []
+        },
+        {
+          id: 'lycantropycontainer',
+          name: 'Lycanthropy',
+          level: 1,
           prerequisites: []
         },
         {
@@ -686,10 +686,10 @@ class SkillSystem {
           prerequisites: ['werebearcontainer']
         },
         {
-          id: 'fireclawscontainer',
-          name: 'Fire Claws',
-          level: 24,
-          prerequisites: []
+          id: 'hungercontainer',
+          name: 'Hunger',
+          level: 12,
+          prerequisites: ['werebearcontainer', 'maulcontainer']
         },
         {
           id: 'rabiescontainer',
@@ -704,10 +704,10 @@ class SkillSystem {
           prerequisites: ['werebearcontainer', 'maulcontainer']
         },
         {
-          id: 'hungercontainer',
-          name: 'Hunger',
-          level: 12,
-          prerequisites: ['werebearcontainer', 'maulcontainer']
+          id: 'fireclawscontainer',
+          name: 'Fire Claws',
+          level: 24,
+          prerequisites: []
         },
         {
           id: 'furycontainer',
@@ -729,34 +729,10 @@ class SkillSystem {
           prerequisites: []
         },
         {
-          id: 'carrionvinecontainer',
-          name: 'Carrion Vine',
-          level: 12,
-          prerequisites: ['poisoncreepercontainer']
-        },
-        {
-          id: 'solarcreepercontainer',
-          name: 'Solar Creeper',
-          level: 24,
-          prerequisites: ['poisoncreepercontainer', 'carrionvinecontainer']
-        },
-        {
           id: 'heartofwolverinecontainer',
           name: 'Heart of Wolverine',
           level: 18,
           prerequisites: []
-        },
-        {
-          id: 'spiritofbarbscontainer',
-          name: 'Spirit of Barbs',
-          level: 24,
-          prerequisites: ['heartofwolverinecontainer']
-        },
-        {
-          id: 'oaksagecontainer',
-          name: 'Oak Sage',
-          level: 30,
-          prerequisites: ['heartofwolverinecontainer', 'spiritofbarbscontainer']
         },
         {
           id: 'summonspiritwolfcontainer',
@@ -765,10 +741,34 @@ class SkillSystem {
           prerequisites: ['ravencontainer', 'heartofwolverinecontainer']
         },
         {
+          id: 'carrionvinecontainer',
+          name: 'Carrion Vine',
+          level: 12,
+          prerequisites: ['poisoncreepercontainer']
+        },
+        {
+          id: 'spiritofbarbscontainer',
+          name: 'Spirit of Barbs',
+          level: 24,
+          prerequisites: ['heartofwolverinecontainer']
+        },
+        {
           id: 'summondirewolfcontainer',
           name: 'Summon Dire Wolf',
           level: 24,
           prerequisites: ['ravencontainer', 'heartofwolverinecontainer', 'summonspiritwolfcontainer']
+        },
+        {
+          id: 'solarcreepercontainer',
+          name: 'Solar Creeper',
+          level: 24,
+          prerequisites: ['poisoncreepercontainer', 'carrionvinecontainer']
+        },
+        {
+          id: 'oaksagecontainer',
+          name: 'Oak Sage',
+          level: 30,
+          prerequisites: ['heartofwolverinecontainer', 'spiritofbarbscontainer']
         },
         {
           id: 'summongrizzlycontainer',
@@ -2730,7 +2730,7 @@ class SkillSystem {
       },
       spiritofbarbscontainer: {
         name: "Spirit of Barbs",
-        type: "utility",
+        type: "buff",
         damageReturned: [15, 23, 31, 39, 47, 55, 63, 71, 87, 103, 119, 135, 151, 167, 183, 199, 231, 263, 295, 327, 359, 391, 439, 487, 535, 583, 631, 679, 743, 807, 871, 935, 999, 1063, 1127, 1191, 1255, 1319, 1383, 1447, 1511, 1575, 1639, 1703, 1767, 1831, 1895, 1959, 2023, 2087, 2151, 2215, 2279, 2343, 2407, 2471, 2535, 2599, 2663, 2727],
         radius: [20, 21.3, 22.6, 24, 25.3, 26.6, 28, 29.3, 30.6, 32, 33.3, 34.6, 36, 37.3, 38.6, 40, 41.3, 42.6, 44, 45.3, 46.6, 48, 49.3, 50.6, 52, 53.3, 54.6, 56, 57.3, 58.6, 60, 61.3, 62.6, 64, 65.3, 66.6, 68, 69.3, 70.6, 72, 73.3, 74.6, 76, 77.3, 78.6, 80, 81.3, 82.6, 84, 85.3, 86.6, 88, 89.3, 90.6, 92, 93.3, 94.6, 96, 97.3, 98.6],
         manaCost: [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84],
@@ -2738,6 +2738,83 @@ class SkillSystem {
           { skillId: 'carrionvinecontainer', bonusPerLevel: 7, damageType: 'return' }
         ]
       },
+      summondirewolfcontainer: {
+        name: "Summon Dire Wolf",
+        type: "summon",
+        defenseBonus: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300],
+        life: {
+          normal: [171, 216, 262, 307, 353, 399, 444, 490, 535, 581, 627, 672, 718, 763, 809, 855, 900, 946, 991, 1037, 1083, 1128, 1174, 1219, 1265, 1311, 1356, 1402, 1447, 1493, 1539, 1584, 1630, 1675, 1721, 1767, 1812, 1858, 1903, 1949, 1995, 2040, 2086, 2131, 2177, 2223, 2268, 2314, 2359, 2405, 2451, 2496, 2542, 2587, 2633, 2679, 2724, 2770, 2815, 2861],
+          nightmare: [193, 245, 296, 348, 399, 451, 503, 555, 606, 657, 709, 761, 812, 864, 915, 967, 1019, 1070, 1122, 1173, 1225, 1277, 1328, 1380, 1431, 1483, 1535, 1586, 1638, 1689, 1741, 1793, 1844, 1896, 1947, 1999, 2051, 2102, 2154, 2205, 2257, 2309, 2360, 2412, 2463, 2515, 2567, 2618, 2670, 2721, 2773, 2825, 2876, 2928, 2979, 3031, 3083, 3134, 3186, 3237],
+          hell: [216, 273, 331, 388, 446, 504, 562, 619, 677, 734, 792, 849, 907, 964, 1022, 1080, 1138, 1195, 1253, 1310, 1368, 1425, 1483, 1540, 1598, 1656, 1714, 1771, 1829, 1886, 1944, 2001, 2059, 2116, 2174, 2232, 2290, 2347, 2405, 2462, 2520, 2577, 2635, 2692, 2750, 2808, 2866, 2923, 2981, 3038, 3096, 3153, 3211, 3268, 3326, 3384, 3442, 3499, 3557, 3614]
+        },
+        damage: {
+          min: [33, 36, 39, 42, 45, 48, 51, 54, 58, 62, 66, 70, 74, 78, 82, 86, 91, 96, 101, 106, 111, 116, 122, 128, 134, 140, 146, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 264, 272, 280, 288, 296, 304, 312, 320, 328, 336, 344, 352, 360, 368, 376, 384, 392, 400, 408],
+          max: [38, 42, 46, 50, 54, 58, 62, 66, 71, 76, 81, 86, 91, 96, 101, 106, 112, 118, 124, 130, 136, 142, 149, 156, 163, 170, 177, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 264, 272, 280, 288, 296, 304, 312, 320, 328, 336, 344, 352, 360, 368, 376, 384, 400, 408, 416, 424, 432, 440]
+        },
+        totalDireWolves: [1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        lifeBonus: [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 1850, 1900, 1950, 2000, 2050, 2100, 2150, 2200, 2250, 2300, 2350, 2400, 2450, 2500, 2550, 2600, 2650, 2700, 2750, 2800, 2850, 2900, 2950, 3000],
+        allResist: [20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80],
+        manaCost: 20,
+        baseAttackRatingBonus: 25,
+        synergies: [
+          { skillId: 'ravencontainer', bonusPerLevel: 7, damageType: 'physical' },
+          { skillId: 'summonspiritwolfcontainer', bonusPerLevel: 7, damageType: 'physical' },
+          { skillId: 'summonspiritwolfcontainer', bonusPerLevel: 25, damageType: 'attackRating' }
+        ]
+      },
+      solarcreepercontainer: {
+        name: "Solar Creeper",
+        type: "utility",
+        manaRecovered: {
+          min: [18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120, 123, 126, 129, 132, 135, 138, 141, 144, 147, 150, 153, 156, 159, 162, 165, 168, 171, 174, 177, 180, 183, 186, 189, 192, 195],
+          max: [28, 31, 34, 37, 40, 43, 46, 49, 52, 55, 58, 61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 97, 100, 103, 106, 109, 112, 115, 118, 121, 124, 127, 130, 133, 136, 139, 142, 145, 148, 151, 154, 157, 160, 163, 166, 169, 172, 175, 178, 181, 184, 187, 190, 193, 196, 199, 202, 205]
+        },
+        manaCost: [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73],
+        cooldown: 1,
+        synergies: [
+          { skillId: 'oaksagecontainer', bonusPerLevel: 2, damageType: 'manaRecovered' }, // 1-3 mana recovered, using 2
+          { skillId: 'carrionvinecontainer', bonusPerLevel: 2, damageType: 'manaRecovered' }
+        ]
+      },
+      oaksagecontainer: {
+        name: "Oak Sage",
+        type: "buff",
+        lifeReplenish: [12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122, 127, 132, 137, 142, 147, 152, 157, 162, 167, 172, 177, 182, 187, 192, 197, 202, 207, 212, 217, 222, 227, 232, 237, 242, 247, 252, 257, 262, 267, 272, 277, 282, 287, 292],
+        maxLifeBonus: [50, 62, 74, 86, 98, 110, 122, 134, 148, 162, 176, 190, 204, 218, 232, 246, 262, 278, 294, 310, 326, 342, 360, 378, 396, 414, 432, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630, 650, 670, 690, 710, 730, 750, 770, 790, 810, 830, 850, 870, 890, 910, 930, 950, 970, 990, 1010, 1030, 1050, 1070, 1090],
+        radius: [20, 21.3, 22.6, 24, 25.3, 26.6, 28, 29.3, 30.6, 32, 33.3, 34.6, 36, 37.3, 38.6, 40, 41.3, 42.6, 44, 45.3, 46.6, 48, 49.3, 50.6, 52, 53.3, 54.6, 56, 57.3, 58.6, 60, 61.3, 62.6, 64, 65.3, 66.6, 68, 69.3, 70.6, 72, 73.3, 74.6, 76, 77.3, 78.6, 80, 81.3, 82.6, 84, 85.3, 86.6, 88, 89.3, 90.6, 92, 93.3, 94.6, 96, 97.3, 98.6],
+        manaCost: [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74],
+        synergies: [
+          { skillId: 'carrionvinecontainer', bonusPerLevel: 12, damageType: 'healing' },
+          { skillId: 'solarcreepercontainer', bonusPerLevel: 12, damageType: 'healing' }
+        ]
+      },
+      summongrizzlycontainer: {
+        name: "Summon Grizzly",
+        type: "summon",
+        life: {
+          normal: [676, 730, 784, 838, 892, 946, 1000, 1055, 1109, 1163, 1217, 1271, 1325, 1379, 1433, 1487, 1541, 1595, 1649, 1704, 1758, 1812, 1866, 1920, 1974, 2028, 2082, 2136, 2190, 2244, 2298, 2352, 2407, 2461, 2515, 2569, 2623, 2677, 2731, 2785, 2839, 2893, 2947, 3001, 3056, 3110, 3164, 3218, 3272, 3326, 3380, 3434, 3488, 3542, 3596, 3650, 3704, 3759, 3813, 3867],
+          nightmare: [1352, 1460, 1568, 1676, 1785, 1893, 2001, 2109, 2217, 2325, 2434, 2542, 2650, 2758, 2866, 2974, 3083, 3191, 3299, 3407, 3515, 3623, 3732, 3840, 3948, 4056, 4164, 4272, 4380, 4489, 4597, 4705, 4813, 4921, 5029, 5138, 5246, 5354, 5462, 5570, 5678, 5787, 5895, 6003, 6111, 6219, 6327, 6436, 6544, 6652, 6760, 6868, 6976, 7084, 7193, 7301, 7409, 7517, 7625, 7733],
+          hell: [2027, 2189, 2352, 2515, 2677, 2839, 3001, 3164, 3326, 3488, 3650, 3813, 3975, 4137, 4299, 4462, 4624, 4786, 4946, 5111, 5273, 5435, 5597, 5760, 5922, 6084, 6246, 6408, 6571, 6733, 6895, 7057, 7220, 7382, 7544, 7706, 7869, 8031, 8193, 8355, 8518, 8680, 8842, 9004, 9167, 9329, 9491, 9653, 9816, 9978, 10140, 10302, 10464, 10627, 10789, 10951, 11113, 11276, 11438, 11600]
+        },
+        defenseBonus: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 300],
+        allResist: [20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80],
+        damage: {
+          min: [20, 27, 34, 41, 48, 55, 62, 69, 78, 87, 96, 105, 114, 123, 132, 141, 152, 163, 174, 185, 196, 207, 221, 235, 249, 263, 277, 291, 308, 325, 342, 359, 376, 393, 410, 427, 444, 461, 478, 495, 512, 529, 546, 563, 580, 597, 614, 631, 648, 665, 682, 699, 716, 733, 750, 767, 784, 801, 818, 835],
+          max: [30, 37, 44, 51, 58, 65, 72, 79, 88, 97, 106, 115, 124, 133, 142, 151, 162, 173, 184, 195, 206, 217, 231, 245, 259, 273, 287, 301, 318, 335, 352, 369, 386, 403, 420, 437, 454, 471, 488, 505, 522, 539, 556, 573, 590, 607, 624, 641, 658, 675, 692, 709, 726, 743, 760, 777, 794, 811, 828, 845]
+        },
+        damageBonus: [25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 155, 165, 175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315, 325, 335, 345, 355, 365, 375, 385, 395, 405, 415, 425, 435, 445, 455, 465, 475, 485, 495, 505, 515, 525, 535, 545, 555, 565, 575, 585, 595, 605, 615],
+        totalGrizzlyBears: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], // Scales based on hard points
+        manaCost: 40,
+        cooldown: 2,
+        baseAttackRatingBonus: 25,
+        synergies: [
+          { skillId: 'ravencontainer', bonusPerLevel: 4, damageType: 'physical' },
+          { skillId: 'summonspiritwolfcontainer', bonusPerLevel: 25, damageType: 'attackRating' },
+          { skillId: 'summonspiritwolfcontainer', bonusPerLevel: 4, damageType: 'physical' }
+        ]
+      },
+
+
       firestormcontainer: {
         name: "Firestorm",
         type: "fire",
@@ -3496,6 +3573,43 @@ class SkillSystem {
     return data[Math.min(level - 1, data.length - 1)] || 0;
   }
 
+  getOakSageLifeBonus() {
+    var level = this.getSkillTotalLevel('oaksagecontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.oaksagecontainer.maxLifeBonus;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
+  getOakSageLifeReplenish() {
+    var level = this.getSkillTotalLevel('oaksagecontainer');
+    if (level === 0) return 0;
+    var base = this.skillData.oaksagecontainer.lifeReplenish[Math.min(level - 1, 59)] || 0;
+    var synergy = this.calculateSynergyBonus('oaksagecontainer', 'healing') || 0;
+    return base + synergy;
+  }
+
+  getHeartOfWolverineDamageBonus() {
+    var level = this.getSkillTotalLevel('heartofwolverinecontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.heartofwolverinecontainer.damageBonus;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
+  getHeartOfWolverineARBonus() {
+    var level = this.getSkillTotalLevel('heartofwolverinecontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.heartofwolverinecontainer.attackRatingBonus;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
+  getSpiritOfBarbsReturn() {
+    var level = this.getSkillTotalLevel('spiritofbarbscontainer');
+    if (level === 0) return 0;
+    var base = this.skillData.spiritofbarbscontainer.damageReturned[Math.min(level - 1, 59)] || 0;
+    var synergy = this.calculateSynergyBonus('spiritofbarbscontainer', 'return') || 0;
+    return Math.floor(base * (1 + synergy / 100));
+  }
+
   calculateSkillDamage() {
     var dropdown = document.getElementById('active-skill-dropdown');
     var display = document.getElementById('damage-results');
@@ -3807,9 +3921,60 @@ class SkillSystem {
         html += '<div style="margin: 5px 0; color: #00ff00;">Chance to Find Item: ' + chance + '%</div>';
       }
 
+      // Handle Carrion Vine Heals
+      if (skillId === 'carrionvinecontainer' && skill.heals) {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var bMin = skill.heals.min[levelIndex] || 0;
+        var bMax = skill.heals.max[levelIndex] || 0;
+
+        // Calculate synergies for healing
+        var synergyPoints = 0;
+        if (skill.synergies) {
+          skill.synergies.forEach(function (syn) {
+            var synInput = document.getElementById(syn.skillId);
+            if (synInput) {
+              var synLevel = parseInt(synInput.value) || 0;
+              synergyPoints += (synLevel * syn.bonusPerLevel);
+            }
+          });
+        }
+
+        var healMin = bMin + synergyPoints;
+        var healMax = bMax + synergyPoints;
+
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Heals: ' + healMin + '-' + healMax + ' Life</div>';
+        if (synergyPoints > 0) {
+          html += '<div style="margin: 5px 0; color: #88ff88;">Synergy Bonus: +' + synergyPoints + ' Life</div>';
+        }
+      }
+
+      // Handle Solar Creeper Mana Recovered
+      if (skillId === 'solarcreepercontainer' && skill.manaRecovered) {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var baseMana = skill.manaRecovered.min[levelIndex] || 0;
+        var synergyMana = this.calculateSynergyBonus(skillId, 'manaRecovered') || 0;
+        var totalMana = baseMana + synergyMana;
+
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Recovered: +' + totalMana + '</div>';
+        if (synergyMana > 0) {
+          html += '<div style="margin: 5px 0; color: #88ccff; font-size: 11px;">(Base: ' + baseMana + ' + Synergy: ' + synergyMana + ')</div>';
+        }
+      }
+
+      // Range handling
+      if (skill.range) {
+        html += '<div style="margin: 5px 0; color: #cccccc;">Range: ' + skill.range + ' yards</div>';
+      }
+
+      // Cooldown handling
+      if (skill.cooldown) {
+        html += '<div style="margin: 5px 0; color: #ff6666;">Cooldown: ' + skill.cooldown + 's</div>';
+      }
+
       // Display mana cost
       if (skill.manaCost) {
-        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + skill.manaCost + '</div>';
+        var manaCost = Array.isArray(skill.manaCost) ? (skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0) : skill.manaCost;
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
     } else if (skill.type === 'buff' || skill.type === 'buffdebuff') {
       // Handle buff and hybrid buff/debuff skills (Shout, Battle Orders, Cloak of Shadows, etc.)
@@ -3887,6 +4052,35 @@ class SkillSystem {
           var arBonus = skill.attackRatingBonus[levelIndex] || 0;
           html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + arBonus + '%</div>';
         }
+      }
+
+      // Special handling for Spirit of Barbs
+      if (skillId === 'spiritofbarbscontainer' && skill.damageReturned) {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var bRet = skill.damageReturned[levelIndex] || 0;
+        var synergyBonus = this.calculateSynergyBonus(skillId, 'return') || 0;
+        var totalRet = Math.floor(bRet * (1 + synergyBonus / 100));
+
+        html += '<div style="margin: 5px 0; color: #ff9966;">Damage Returned: ' + totalRet + '</div>';
+        if (synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+        }
+      }
+
+      // Special handling for Oak Sage
+      if (skillId === 'oaksagecontainer') {
+        var levelIndex = Math.min(totalSkillLevel - 1, skill.lifeReplenish.length - 1);
+        var baseReplenish = skill.lifeReplenish[levelIndex] || 0;
+        var synergyHeal = this.calculateSynergyBonus(skillId, 'healing') || 0;
+        var totalReplenish = baseReplenish + synergyHeal;
+
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Life Replenish: +' + totalReplenish + '</div>';
+        if (synergyHeal > 0) {
+          html += '<div style="margin: 5px 0; color: #88ff88; font-size: 11px;">(Base: ' + baseReplenish + ' + Synergy: ' + synergyHeal + ')</div>';
+        }
+
+        var lifeBonus = skill.maxLifeBonus[levelIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ff6666;">Maximum Life: +' + lifeBonus + '%</div>';
       }
 
       // Display movement speed if available
@@ -5230,6 +5424,27 @@ class SkillSystem {
         html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Can summon additional Valkyrie at levels 20 and 30</div>';
       }
 
+      // Special handling for Dire Wolf and Grizzly defense/AR
+      if (skill.defenseBonus) {
+        var defBonus = skill.defenseBonus[levelIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #aaddff;">Defense: +' + defBonus + '%</div>';
+      }
+      if (skill.baseAttackRatingBonus) {
+        html += '<div style="margin: 5px 0; color: #ffcc66;">Base Attack Rating: +' + skill.baseAttackRatingBonus + '%</div>';
+      }
+      if (skill.damageBonus) {
+        var dmgBonusArr = skill.damageBonus;
+        var dBonus = Array.isArray(dmgBonusArr) ? (dmgBonusArr[levelIndex] || 0) : dmgBonusArr;
+        html += '<div style="margin: 5px 0; color: #ffaa66;">Damage: +' + dBonus + '%</div>';
+      }
+      if (skill.totalGrizzlyBears) {
+        // Use hard points for grizzly bear count
+        var grizzlyInput = document.getElementById('summongrizzlycontainer');
+        var grizzlyHardPoints = parseInt(grizzlyInput ? grizzlyInput.value : '0') || 0;
+        var grizzlyCount = skill.totalGrizzlyBears[Math.min(grizzlyHardPoints, skill.totalGrizzlyBears.length - 1)] || 1;
+        html += '<div style="margin: 5px 0; color: #cccccc;">Total Grizzly Bears: ' + grizzlyCount + '</div>';
+      }
+
       // 5. Meta Info
       if (skill.manaCost) {
         var mana = Array.isArray(skill.manaCost) ? (skill.manaCost[levelIndex] || 0) : skill.manaCost;
@@ -5238,58 +5453,6 @@ class SkillSystem {
       if (skill.cooldown) {
         html += '<div style="margin: 5px 0; color: #ff6666;">Cooldown: ' + skill.cooldown + 's</div>';
       }
-    } else if (skill.type === 'utility') {
-      var levelIndex = Math.min(totalSkillLevel - 1, 59);
-
-      // Handle Carrion Vine Heals
-      if (skill.heals) {
-        var bMin = skill.heals.min[levelIndex] || 0;
-        var bMax = skill.heals.max[levelIndex] || 0;
-
-        // Calculate synergies for healing
-        var synergyPoints = 0;
-        if (skill.synergies) {
-          var self = this;
-          skill.synergies.forEach(function (syn) {
-            var synInput = document.getElementById(syn.skillId);
-            if (synInput) {
-              var synLevel = parseInt(synInput.value) || 0;
-              synergyPoints += (synLevel * syn.bonusPerLevel);
-            }
-          });
-        }
-
-        var healMin = bMin + synergyPoints;
-        var healMax = bMax + synergyPoints;
-
-        html += '<div style="margin: 5px 0; color: #aaffaa;">Heals: ' + healMin + '-' + healMax + ' Life</div>';
-        if (synergyPoints > 0) {
-          html += '<div style="margin: 5px 0; color: #88ff88;">Synergy Bonus: +' + synergyPoints + ' Life</div>';
-        }
-      }
-
-      // Handle Spirit of Barbs Damage Returned
-      if (skill.damageReturned) {
-        var bRet = skill.damageReturned[levelIndex] || 0;
-        var synergyBonus = this.calculateSynergyBonus(skillId, 'return') || 0;
-        var totalRet = Math.floor(bRet * (1 + synergyBonus / 100));
-
-        html += '<div style="margin: 5px 0; color: #ff9966;">Damage Returned: ' + totalRet + '</div>';
-        if (synergyBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
-        }
-      }
-
-      if (skill.radius) {
-        var rad = Array.isArray(skill.radius) ? (skill.radius[levelIndex] || 0) : skill.radius;
-        html += '<div style="margin: 5px 0; color: #cccccc;">Radius: ' + rad + ' yards</div>';
-      }
-
-      if (skill.manaCost) {
-        var mana = Array.isArray(skill.manaCost) ? (skill.manaCost[levelIndex] || 0) : skill.manaCost;
-        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + mana + '</div>';
-      }
-
       if (skill.cooldown) {
         html += '<div style="margin: 5px 0; color: #ff6666;">Cooldown: ' + skill.cooldown + 's</div>';
       }
