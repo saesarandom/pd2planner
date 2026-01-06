@@ -3188,9 +3188,13 @@ class UnifiedSocketSystem {
       // Druid Spirit Buffs
       this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + (window.skillSystem.getHeartOfWolverineDamageBonus?.() || 0);
       this.stats.attackRatingPercent = (this.stats.attackRatingPercent || 0) + (window.skillSystem.getHeartOfWolverineARBonus?.() || 0);
-      this.stats.lifePercent = (this.stats.lifePercent || 0) + (window.skillSystem.getOakSageLifeBonus?.() || 0);
+      this.stats.life = (this.stats.life || 0) + (window.skillSystem.getOakSageLifeBonus?.() || 0);
       this.stats.replenishLife = (this.stats.replenishLife || 0) + (window.skillSystem.getOakSageLifeReplenish?.() || 0);
       this.stats.damageReturn = (this.stats.damageReturn || 0) + (window.skillSystem.getSpiritOfBarbsReturn?.() || 0);
+
+      // Battle Orders / Buffs
+      this.stats.life = (this.stats.life || 0) + (window.skillSystem.getBattleOrdersLifeBonus?.() || 0);
+      this.stats.mana = (this.stats.mana || 0) + (window.skillSystem.getBattleOrdersManaBonus?.() || 0);
 
       // Re-calculate Final Basic Stats (Life, Mana, etc.) incorporating Skill Bonuses
       if (window.characterManager) {

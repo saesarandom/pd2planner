@@ -270,20 +270,29 @@ class CharacterManager {
     const baseLife = this.classBaseLifeMana[charClass].life;
     const baseMana = this.classBaseLifeMana[charClass].mana;
 
-    // FIXED: Get base stat values from inputs, not total displays
+    // Get hard points from inputs
     const baseVit = parseInt(document.getElementById('vit')?.value) || this.classStats[charClass].vit;
     const baseEnr = parseInt(document.getElementById('enr')?.value) || this.classStats[charClass].enr;
 
-    // Get item/socket bonuses for vitality and energy
-    const itemBonuses = this.getAllItemBonuses();
-    const socketBonuses = this.getSocketBonuses();
-    const charmBonuses = this.getCharmBonuses();
+    // Initialize bonuses from unified system
+    let extraLife = 0;
+    let extraMana = 0;
+    let extraVit = 0;
+    let extraEnr = 0;
+    let lifePercent = 0;
+    let manaPercent = 0;
 
-    // Calculate TOTAL vitality and energy (base + bonuses)
-    const totalVit = baseVit + (itemBonuses.vit || 0) + (socketBonuses.vit || 0) + (charmBonuses.vit || 0);
-    const totalEnr = baseEnr + (itemBonuses.enr || 0) + (socketBonuses.enr || 0) + (charmBonuses.enr || 0);
+    if (window.unifiedSocketSystem && window.unifiedSocketSystem.stats) {
+      const stats = window.unifiedSocketSystem.stats;
+      extraLife = stats.life || 0;
+      extraMana = stats.mana || 0;
+      extraVit = stats.vitality || 0;
+      extraEnr = stats.energy || 0;
+      lifePercent = stats.lifePercent || 0;
+      manaPercent = stats.manaPercent || 0;
+    }
 
-    // Starting stats for this class
+    // Starting stats for this class (to calculate gain from added vit/enr)
     const startingVit = this.classStats[charClass].vit;
     const startingEnr = this.classStats[charClass].enr;
 
@@ -300,24 +309,21 @@ class CharacterManager {
 
     const gains = classGains[charClass] || classGains['Amazon'];
 
-    // Calculate base life/mana from character level and stats
-    let calculatedLife = baseLife;
-    calculatedLife += (level - 1) * gains.lifePerLevel;
-    calculatedLife += (totalVit - startingVit) * gains.lifePerVit;
+    // 1. Calculate life/mana from level
+    let calculatedLife = baseLife + (level - 1) * gains.lifePerLevel;
+    let calculatedMana = baseMana + (level - 1) * gains.manaPerLevel;
 
-    let calculatedMana = baseMana;
-    calculatedMana += (level - 1) * gains.manaPerLevel;
-    calculatedMana += (totalEnr - startingEnr) * gains.manaPerEnr;
+    // 2. Add gain from total vitality/energy (including gear/charms/skills)
+    calculatedLife += (baseVit + extraVit - startingVit) * gains.lifePerVit;
+    calculatedMana += (baseEnr + extraEnr - startingEnr) * gains.manaPerEnr;
 
-    // Add direct life/mana bonuses from items/sockets
-    const directLifeMana = this.getDirectLifeManaFromItems();
-    calculatedLife += directLifeMana.life;
-    calculatedMana += directLifeMana.mana;
+    // 3. Add flat life/mana bonuses (Gear + Charms + Battle Orders + Oak Sage + passive life etc)
+    calculatedLife += extraLife;
+    calculatedMana += extraMana;
 
-    // Add charm life/mana bonuses
-    const charmBonuses_LifeMana = this.getCharmLifeManaBonus();
-    calculatedLife += charmBonuses_LifeMana.life;
-    calculatedMana += charmBonuses_LifeMana.mana;
+    // 4. Apply percentage bonuses (e.g. Life +% from other sources if any)
+    if (lifePercent > 0) calculatedLife = Math.floor(calculatedLife * (1 + lifePercent / 100));
+    if (manaPercent > 0) calculatedMana = Math.floor(calculatedMana * (1 + manaPercent / 100));
 
     // Final totals
     const totalLife = Math.floor(calculatedLife);
@@ -329,132 +335,36 @@ class CharacterManager {
 
 
 
-    // Style life container if charm bonus exists
+    // Style containers if any bonus exists
     const lifeContainer = document.getElementById('lifecontainer');
     if (lifeContainer) {
-      if (charmBonuses_LifeMana.life > 0) {
-        lifeContainer.style.color = '#d0d007ff'; // Same yellow color as other charm bonuses
+      if (extraLife > 0 || extraVit > 0 || lifePercent > 0) {
+        lifeContainer.style.color = '#d0d007ff'; // Yellow color for bonuses
       } else {
-        lifeContainer.style.color = ''; // Reset to default
-      }
-
-
-      // Style mana container if charm bonus exists
-      const manaContainer = document.getElementById('manacontainer');
-      if (manaContainer) {
-        if (charmBonuses_LifeMana.mana > 0) {
-          manaContainer.style.color = '#d0d007ff'; // Same yellow color as other charm bonuses
-        } else {
-          manaContainer.style.color = ''; // Reset to default
-        }
+        lifeContainer.style.color = '';
       }
     }
 
-    //(`🔢 Life: ${totalLife}, Mana: ${totalMana} (Class: ${charClass}, Level: ${level})`);
+    const manaContainer = document.getElementById('manacontainer');
+    if (manaContainer) {
+      if (extraMana > 0 || extraEnr > 0 || manaPercent > 0) {
+        manaContainer.style.color = '#d0d007ff'; // Yellow color for bonuses
+      } else {
+        manaContainer.style.color = '';
+      }
+    }
+
     return { life: totalLife, mana: totalMana };
   }
 
   getDirectLifeManaFromItems() {
-    const bonuses = { life: 0, mana: 0 };
-    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-
-    // Player equipment only (mercenary items don't affect player stats)
-    const equipmentSections = [
-      { dropdown: 'weapons-dropdown', section: 'weapon' },
-      { dropdown: 'helms-dropdown', section: 'helm' },
-      { dropdown: 'armors-dropdown', section: 'armor' },
-      { dropdown: 'offs-dropdown', section: 'shield' },
-      { dropdown: 'gloves-dropdown', section: 'gloves' },
-      { dropdown: 'belts-dropdown', section: 'belts' },
-      { dropdown: 'boots-dropdown', section: 'boots' },
-      { dropdown: 'ringsone-dropdown', section: 'ringone' },
-      { dropdown: 'ringstwo-dropdown', section: 'ringtwo' },
-      { dropdown: 'amulets-dropdown', section: 'amulet' }
-    ];
-
-    //('🔍 Checking equipment for life/mana bonuses:');
-
-    equipmentSections.forEach(({ dropdown, section }) => {
-      const dropdownElement = document.getElementById(dropdown);
-      if (!dropdownElement || !dropdownElement.value) {
-        //(`  ❌ ${section}: No item selected`);
-        return;
-      }
-
-      // Use global item lookup to support both regular and crafted items
-      const item = window.getItemData(dropdownElement.value);
-      if (!item) {
-        //(`  ❌ ${section}: Item not found in itemList`);
-        return;
-      }
-
-      const actualRequiredLevel = this.getActualRequiredLevel(section, dropdownElement.value);
-
-      if (currentLevel >= actualRequiredLevel) {
-        // Check multiple possible property names for life/mana
-        let itemLife = 0;
-        let itemMana = 0;
-
-        if (item.properties) {
-          // Try different property names and handle variable stats
-          itemLife = getPropertyValue(item.properties.tolife) || getPropertyValue(item.properties.life) || 0;
-          itemMana = getPropertyValue(item.properties.tomana) || getPropertyValue(item.properties.mana) || 0;
-        }
-
-        // Also parse from description if not in properties
-        if (item.description && (itemLife === 0 || itemMana === 0)) {
-          const lifeMatch = item.description.match(/\+(\d+)\s+(?:to\s+)?Life/i);
-          if (lifeMatch && itemLife === 0) {
-            itemLife = parseInt(lifeMatch[1]);
-          }
-
-          const manaMatch = item.description.match(/\+(\d+)\s+(?:to\s+)?Mana/i);
-          if (manaMatch && itemMana === 0) {
-            itemMana = parseInt(manaMatch[1]);
-          }
-        }
-
-        bonuses.life += itemLife;
-        bonuses.mana += itemMana;
-
-        //(`  ✅ ${section} (${dropdownElement.value}): +${itemLife} life, +${itemMana} mana`);
-      } else {
-        //(`  ⚠️ ${section}: Level requirement not met (${actualRequiredLevel} > ${currentLevel})`);
-      }
-    });
-
-    // Get life/mana from sockets (player only)
-    const socketSections = ['weapon', 'helm', 'armor', 'shield', 'gloves', 'belts', 'boots', 'ringone', 'ringtwo', 'amulet'];
-
-    socketSections.forEach(section => {
-      const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-
-      sockets.forEach(socket => {
-        const socketLevel = parseInt(socket.dataset.levelReq) || 1;
-
-        if (currentLevel >= socketLevel) {
-          const stats = socket.dataset.stats;
-          if (stats) {
-            const lifeMatch = stats.match(/\+(\d+)\s+(?:to\s+)?Life/i);
-            if (lifeMatch) {
-              const socketLife = parseInt(lifeMatch[1]);
-              bonuses.life += socketLife;
-              //(`  🔷 ${section} socket: +${socketLife} life`);
-            }
-
-            const manaMatch = stats.match(/\+(\d+)\s+(?:to\s+)?Mana/i);
-            if (manaMatch) {
-              const socketMana = parseInt(manaMatch[1]);
-              bonuses.mana += socketMana;
-              //(`  🔷 ${section} socket: +${socketMana} mana`);
-            }
-          }
-        }
-      });
-    });
-
-    //(`  🎯 Total from equipment+sockets: +${bonuses.life} life, +${bonuses.mana} mana`);
-    return bonuses;
+    if (window.unifiedSocketSystem && window.unifiedSocketSystem.stats) {
+      return {
+        life: (window.unifiedSocketSystem.stats.life || 0),
+        mana: (window.unifiedSocketSystem.stats.mana || 0)
+      };
+    }
+    return { life: 0, mana: 0 };
   }
 
   updateElement(elementId, value) {

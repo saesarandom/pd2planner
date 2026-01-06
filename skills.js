@@ -2780,7 +2780,7 @@ class SkillSystem {
         name: "Oak Sage",
         type: "buff",
         lifeReplenish: [12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122, 127, 132, 137, 142, 147, 152, 157, 162, 167, 172, 177, 182, 187, 192, 197, 202, 207, 212, 217, 222, 227, 232, 237, 242, 247, 252, 257, 262, 267, 272, 277, 282, 287, 292],
-        maxLifeBonus: [50, 62, 74, 86, 98, 110, 122, 134, 148, 162, 176, 190, 204, 218, 232, 246, 262, 278, 294, 310, 326, 342, 360, 378, 396, 414, 432, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630, 650, 670, 690, 710, 730, 750, 770, 790, 810, 830, 850, 870, 890, 910, 930, 950, 970, 990, 1010, 1030, 1050, 1070, 1090],
+        lifeBonus: [50, 62, 74, 86, 98, 110, 122, 134, 148, 162, 176, 190, 204, 218, 232, 246, 262, 278, 294, 310, 326, 342, 360, 378, 396, 414, 432, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630, 650, 670, 690, 710, 730, 750, 770, 790, 810, 830, 850, 870, 890, 910, 930, 950, 970, 990, 1010, 1030, 1050, 1070, 1090],
         radius: [20, 21.3, 22.6, 24, 25.3, 26.6, 28, 29.3, 30.6, 32, 33.3, 34.6, 36, 37.3, 38.6, 40, 41.3, 42.6, 44, 45.3, 46.6, 48, 49.3, 50.6, 52, 53.3, 54.6, 56, 57.3, 58.6, 60, 61.3, 62.6, 64, 65.3, 66.6, 68, 69.3, 70.6, 72, 73.3, 74.6, 76, 77.3, 78.6, 80, 81.3, 82.6, 84, 85.3, 86.6, 88, 89.3, 90.6, 92, 93.3, 94.6, 96, 97.3, 98.6],
         manaCost: [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74],
         synergies: [
@@ -3576,7 +3576,7 @@ class SkillSystem {
   getOakSageLifeBonus() {
     var level = this.getSkillTotalLevel('oaksagecontainer');
     if (level === 0) return 0;
-    var data = this.skillData.oaksagecontainer.maxLifeBonus;
+    var data = this.skillData.oaksagecontainer.lifeBonus;
     return data[Math.min(level - 1, data.length - 1)] || 0;
   }
 
@@ -3586,6 +3586,20 @@ class SkillSystem {
     var base = this.skillData.oaksagecontainer.lifeReplenish[Math.min(level - 1, 59)] || 0;
     var synergy = this.calculateSynergyBonus('oaksagecontainer', 'healing') || 0;
     return base + synergy;
+  }
+
+  getBattleOrdersLifeBonus() {
+    var level = this.getSkillTotalLevel('battleorderscontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.battleorderscontainer.lifeBonus;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
+  getBattleOrdersManaBonus() {
+    var level = this.getSkillTotalLevel('battleorderscontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.battleorderscontainer.manaBonus;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
   }
 
   getHeartOfWolverineDamageBonus() {
@@ -4079,8 +4093,8 @@ class SkillSystem {
           html += '<div style="margin: 5px 0; color: #88ff88; font-size: 11px;">(Base: ' + baseReplenish + ' + Synergy: ' + synergyHeal + ')</div>';
         }
 
-        var lifeBonus = skill.maxLifeBonus[levelIndex] || 0;
-        html += '<div style="margin: 5px 0; color: #ff6666;">Maximum Life: +' + lifeBonus + '%</div>';
+        var lifeBonus = skill.lifeBonus[levelIndex] || 0;
+        html += '<div style="margin: 5px 0; color: #ff6666;">Life: +' + lifeBonus + '</div>';
       }
 
       // Display movement speed if available
