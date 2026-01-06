@@ -15,6 +15,11 @@ function createAuthUI() {
                 <button class="auth-tab" data-tab="register">Register</button>
             </div>
 
+            <!-- User Count Display -->
+            <div id="user-count-display" class="user-count">
+                <span id="user-count-text">Loading...</span>
+            </div>
+
             <!-- Login Form -->
             <div id="login-form" class="auth-form active">
                 <h2>Login to PD2 Planner</h2>
@@ -231,6 +236,22 @@ function setupAuthListeners() {
         validateUsername(this);
     });
 }
+
+async function updateUserCount() {
+    const userCountText = document.getElementById('user-count-text');
+    if (!userCountText) return;
+
+    const count = await auth.getUserCount();
+    if (count !== null) {
+        userCountText.textContent = `Registered users: ${count}`;
+    } else {
+        userCountText.textContent = 'Registered users: ???';
+    }
+}
+
+// Make updateUserCount globally accessible
+window.updateUserCount = updateUserCount;
+
 
 function showLoginForm() {
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));

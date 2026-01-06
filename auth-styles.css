@@ -111,6 +111,24 @@
     color: #00ff88;
 }
 
+/* User Count Display */
+.user-count {
+    text-align: center;
+    padding: 12px;
+    margin-bottom: 20px;
+    background: rgba(0, 255, 136, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 136, 0.15);
+}
+
+.user-count span {
+    color: #00ff88;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+
 /* Forms */
 .auth-form {
     display: none;

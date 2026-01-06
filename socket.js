@@ -50,7 +50,7 @@ class UnifiedSocketSystem {
       allSkills: 0, classSkills: 0, magicFind: 0, goldFind: 0, defense: 0,
       ias: 0, fcr: 0, frw: 0, fhr: 0, plr: 0,
       fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
-      allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0,
+      allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0, openWoundsDamage: 0,
       life: 0, mana: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
       toatt: 0, toattPercent: 0, lightRadius: 0,
       toMinDmg: 0, toMaxDmg: 0,
@@ -3153,6 +3153,33 @@ class UnifiedSocketSystem {
       this.stats.poisonDmgMax = (this.stats.poisonDmgMax || 0) + (charmBonuses.poisonDmgMax || 0);
     }
 
+    // INTEGRATION: Add bonuses from passive skills (Barbarian masteries, etc.)
+    if (window.skillSystem) {
+      // Natural Resistance (All Res)
+      const natRes = window.skillSystem.getNaturalResistanceBonus?.() || 0;
+      this.stats.fireResist += natRes;
+      this.stats.coldResist += natRes;
+      this.stats.lightResist += natRes;
+      this.stats.poisonResist += natRes;
+
+      // Iron Skin (Defense % and PDR %)
+      const ironSkinDef = window.skillSystem.getIronSkinDefenseBonus?.() || 0;
+      this.stats.defense = Math.floor(this.stats.defense * (1 + ironSkinDef / 100));
+      this.stats.dr += (window.skillSystem.getIronSkinPDRBonus?.() || 0);
+
+      // Increased Speed (FRW and IAS)
+      this.stats.frw += (window.skillSystem.getIncreasedSpeedFRW?.() || 0);
+      this.stats.ias += (window.skillSystem.getIncreasedSpeedIAS?.() || 0);
+
+      // Combat Reflexes (FHR, Life, Stamina)
+      this.stats.fhr += (window.skillSystem.getCombatReflexesFHR?.() || 0);
+      this.stats.life += (window.skillSystem.getCombatReflexesLifeBonus?.() || 0);
+
+      // Deep Wounds (Open Wounds Chance and Flat Damage)
+      this.stats.openWounds += (window.skillSystem.getDeepWoundsChance?.() || 0);
+      this.stats.openWoundsDamage += (window.skillSystem.getDeepWoundsDamage?.() || 0);
+    }
+
     if (window.characterStatManager) {
       window.characterStatManager.updateAllStatDisplays();
     }
@@ -4622,7 +4649,9 @@ class UnifiedSocketSystem {
 
     // Combat stats - using correct HTML IDs
     this.updateElement('owcontainer', this.stats.openWounds);
-    this.updateElement('owdmgcontainer', this.stats.openWounds * 5);
+    // PD2 Open Wounds damage: (Level-based damage) + Deep Wounds flat damage
+    // For simplicity, if we don't have the level-based formula handy, we just show the flat damage from the skill
+    this.updateElement('owdmgcontainer', this.stats.openWoundsDamage);
     this.updateElement('cbcontainer', this.stats.crushingBlow);
     this.updateElement('cbdmgcontainer', this.stats.crushingBlow);
     this.updateElement('deadlystrikecontainer', this.stats.deadlyStrike);

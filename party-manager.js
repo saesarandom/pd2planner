@@ -52,6 +52,8 @@ class PartyManager {
                 } else {
                     if (typeof showLoginForm === 'function') showLoginForm();
                 }
+                // Update user count when modal opens
+                if (typeof updateUserCount === 'function') updateUserCount();
             }
         };
         partyBar.appendChild(loginBtn);
@@ -103,6 +105,8 @@ class PartyManager {
                 if (authModal) {
                     authModal.style.display = 'flex';
                     if (typeof showLoggedInView === 'function') showLoggedInView();
+                    // Update user count when modal opens
+                    if (typeof updateUserCount === 'function') updateUserCount();
                 }
             }
         };
