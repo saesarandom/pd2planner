@@ -3155,6 +3155,12 @@ class UnifiedSocketSystem {
 
     // INTEGRATION: Add bonuses from passive skills (Barbarian masteries, etc.)
     if (window.skillSystem) {
+      // CRITICAL: Internal skill bonuses must be updated BEFORE calling get bonuses CRITICAL FIX BONUS
+      // This ensures skills like Natural Resistance or Deep Wounds use the latest +All Skills
+      window.skillSystem.skillBonuses.allSkills = this.stats.allSkills || 0;
+      window.skillSystem.skillBonuses.classSkills = this.stats.classSkills || 0;
+      window.skillSystem.skillBonuses.treeSkills = this.stats.treeSkills || {};
+
       // Natural Resistance (All Res)
       const natRes = window.skillSystem.getNaturalResistanceBonus?.() || 0;
       this.stats.fireResist += natRes;
@@ -3178,10 +3184,14 @@ class UnifiedSocketSystem {
       // Deep Wounds (Open Wounds Chance and Flat Damage)
       this.stats.openWounds += (window.skillSystem.getDeepWoundsChance?.() || 0);
       this.stats.openWoundsDamage += (window.skillSystem.getDeepWoundsDamage?.() || 0);
+
+      // Hunger (Open Wounds Chance and Flat Damage)
+      this.stats.openWounds += (window.skillSystem.getHungerChance?.() || 0);
+      this.stats.openWoundsDamage += (window.skillSystem.getHungerDamage?.() || 0);
     }
 
-    if (window.characterStatManager) {
-      window.characterStatManager.updateAllStatDisplays();
+    if (window.characterManager) {
+      window.characterManager.updateTotalStats();
     }
   }
 

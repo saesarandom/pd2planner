@@ -576,7 +576,7 @@ class SkillSystem {
         {
           id: 'berserkcontainer',
           name: 'Berserk',
-          level: 30,
+          level: 24,
           prerequisites: ['doubleswingcontainer', 'concentratecontainer']
         },
         {
@@ -591,103 +591,129 @@ class SkillSystem {
         'elementalskillscontainer': [{
           id: 'firestormcontainer',
           name: 'Firestorm',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'moltenbouldcontainer',
           name: 'Molten Boulder',
-          level: 6
+          level: 6,
+          prerequisites: ['firestormcontainer']
         },
         {
           id: 'arcticblastcontainer',
           name: 'Arctic Blast',
-          level: 6
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'fissurecontainer',
           name: 'Fissure',
-          level: 12
+          level: 12,
+          prerequisites: ['firestormcontainer', 'moltenbouldcontainer']
         },
         {
           id: 'cyclonearmorcontainer',
           name: 'Cyclone Armor',
-          level: 1
+          level: 6,
+          prerequisites: ['arcticblastcontainer']
         },
         {
           id: 'twistercontainer',
           name: 'Twister',
-          level: 18
+          level: 12,
+          prerequisites: ['arcticblastcontainer', 'cyclonearmorcontainer']
+        },
+        {
+          id: 'gustcontainer',
+          name: 'Gust',
+          level: 18,
+          prerequisites: ['arcticblastcontainer', 'cyclonearmorcontainer']
         },
         {
           id: 'volcanocontainer',
           name: 'Volcano',
-          level: 18
+          level: 24,
+          prerequisites: ['firestormcontainer', 'moltenbouldcontainer', 'fissurecontainer']
         },
         {
           id: 'tornadocontainer',
           name: 'Tornado',
-          level: 24
+          level: 24,
+          prerequisites: ['arcticblastcontainer', 'cyclonearmorcontainer', 'twistercontainer']
         },
         {
           id: 'armageddoncontainer',
           name: 'Armageddon',
-          level: 24
+          level: 30,
+          prerequisites: ['firestormcontainer', 'moltenbouldcontainer', 'fissurecontainer', 'volcanocontainer']
         },
         {
           id: 'hurricanecontainer',
           name: 'Hurricane',
-          level: 30
+          level: 30,
+          prerequisites: ['arcticblastcontainer', 'cyclonearmorcontainer', 'twistercontainer', 'tornadocontainer']
         }
         ],
         'shapeshiftingskillscontainer': [{
           id: 'werewolfcontainer',
           name: 'Werewolf',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'lycantropycontainer',
           name: 'Lycanthropy',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'werebearcontainer',
           name: 'Werebear',
-          level: 6
+          level: 6,
+          prerequisites: []
         },
         {
           id: 'feralragecontainer',
           name: 'Feral Rage',
-          level: 12
+          level: 6,
+          prerequisites: ['werewolfcontainer']
         },
         {
           id: 'maulcontainer',
           name: 'Maul',
-          level: 6
+          level: 6,
+          prerequisites: ['werebearcontainer']
         },
         {
           id: 'fireclawscontainer',
           name: 'Fire Claws',
-          level: 18
+          level: 24,
+          prerequisites: []
         },
         {
           id: 'rabiescontainer',
           name: 'Rabies',
-          level: 18
+          level: 18,
+          prerequisites: ['werewolfcontainer', 'feralragecontainer']
         },
         {
           id: 'shockwavecontainer',
           name: 'Shock Wave',
-          level: 24
+          level: 18,
+          prerequisites: ['werebearcontainer', 'maulcontainer']
         },
         {
           id: 'hungercontainer',
           name: 'Hunger',
-          level: 24
+          level: 12,
+          prerequisites: ['werebearcontainer', 'maulcontainer']
         },
         {
           id: 'furycontainer',
           name: 'Fury',
-          level: 30
+          level: 30,
+          prerequisites: ['werewolfcontainer', 'feralragecontainer', 'rabiescontainer']
         }
         ],
         'summoningskillscontainer': [{
@@ -2711,6 +2737,240 @@ class SkillSystem {
         synergies: [
           { skillId: 'carrionvinecontainer', bonusPerLevel: 7, damageType: 'return' }
         ]
+      },
+      firestormcontainer: {
+        name: "Firestorm",
+        type: "fire",
+        burningDamage: {
+          min: [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 22, 24, 26, 29, 31, 33, 38, 43, 48, 52, 57, 62, 70, 78, 86, 94, 103, 111, 119, 127, 135, 144, 152, 160, 168, 176, 185, 193, 201, 209, 217, 226, 234, 242, 250, 258, 267, 275, 283, 291, 300, 308, 316, 324],
+          max: [4, 7, 9, 11, 14, 16, 18, 21, 23, 25, 28, 30, 32, 35, 37, 39, 43, 46, 50, 53, 57, 60, 66, 72, 78, 84, 90, 96, 105, 114, 124, 133, 142, 152, 161, 171, 180, 189, 199, 208, 217, 227, 236, 246, 255, 264, 274, 283, 292, 302, 311, 321, 330, 339, 349, 358, 367, 377, 386, 396]
+        },
+        fireTendrils: [3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7],
+        manaCost: 4,
+        synergies: [
+          { skillId: 'moltenbouldcontainer', bonusPerLevel: 26, damageType: 'fire' },
+          { skillId: 'fissurecontainer', bonusPerLevel: 26, damageType: 'fire' }
+        ]
+      },
+      arcticblastcontainer: {
+        name: "Arctic Blast",
+        type: "cold",
+        coldDamage: {
+          min: [6, 12, 17, 23, 29, 35, 41, 47, 58, 70, 82, 94, 105, 117, 129, 141, 164, 187, 211, 234, 258, 281, 322, 363, 404, 445, 486, 527, 592, 656, 721, 785, 850, 914, 978, 1043, 1107, 1172, 1236, 1301, 1365, 1430, 1494, 1558, 1623, 1687, 1752, 1816, 1881, 1945, 2010, 2074, 2139, 2203, 2267, 2332, 2396, 2461, 2525, 2590],
+          max: [11, 17, 23, 29, 35, 41, 46, 52, 64, 76, 87, 99, 111, 123, 134, 146, 169, 193, 216, 240, 263, 287, 328, 369, 410, 451, 492, 533, 597, 662, 726, 791, 855, 919, 984, 1048, 1113, 1177, 1242, 1306, 1371, 1435, 1500, 1564, 1628, 1693, 1757, 1822, 1886, 1951, 2015, 2080, 2144, 2208, 2273, 2337, 2402, 2466, 2531, 2595]
+        },
+        enemyColdResist: [-6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -41, -42, -43, -44, -45, -46, -47, -48, -49, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50],
+        coldLength: [4, 4.6, 5.2, 5.8, 6.4, 7, 7.6, 8.2, 8.8, 9.4, 10, 10.6, 11.2, 11.8, 12.4, 13, 13.6, 14.2, 14.8, 15.4, 16, 16.6, 17.2, 17.8, 18.4, 19, 19.6, 20.2, 20.8, 21.4, 22, 22.6, 23.2, 23.8, 24.4, 25, 25.6, 26.2, 26.8, 27.4, 28, 28.6, 29.2, 29.8, 30.4, 31, 31.6, 32.2, 32.8, 33.4, 34, 34.6, 35.2, 35.8, 36.4, 37, 37.6, 38.2, 38.8, 39.4],
+        range: [3.3, 3.3, 3.3, 3.3, 4, 4, 4, 4, 4.6, 4.6, 4.6, 4.6, 5.3, 5.3, 5.3, 5.3, 6, 6, 6, 6, 6.6, 6.6, 6.6, 6.6, 7.3, 7.3, 7.3, 7.3, 8, 8, 8, 8, 8.6, 8.6, 8.6, 8.6, 9.3, 9.3, 9.3, 9.3, 10, 10, 10, 10, 10.6, 10.6, 10.6, 10.6, 11.3, 11.3, 11.3, 11.3, 12, 12, 12, 12, 12.6, 12.6, 12.6, 12.6],
+        manaCost: [1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 10, 10, 10, 11, 11, 12, 12, 12, 13, 13, 14, 14, 14, 15, 15, 16, 16, 16, 17, 17, 18, 18, 18, 19, 19, 20, 20, 20, 21, 21, 22, 22, 22, 23, 23, 24, 24, 24],
+        synergies: [
+          { skillId: 'hurricanecontainer', bonusPerLevel: 16, damageType: 'cold' },
+          { skillId: 'tornadocontainer', bonusPerLevel: 10, damageType: 'cold' },
+          { skillId: 'cyclonearmorcontainer', bonusPerLevel: 10, damageType: 'cold' }
+        ]
+      },
+      moltenbouldcontainer: {
+        name: "Molten Boulder",
+        type: "fire",
+        physicalDamage: {
+          min: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 30, 36, 42, 48, 54, 60, 70, 80, 90, 100, 110, 120, 134, 148, 162, 176, 190, 204, 218, 232, 246, 260, 274, 288, 302, 316, 330, 344, 358, 372, 386, 400, 414, 428, 442, 456, 470, 484, 498, 512, 526, 540, 554, 568],
+          max: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 31, 38, 45, 52, 59, 66, 79, 92, 105, 118, 131, 144, 163, 182, 201, 220, 239, 258, 277, 296, 315, 334, 353, 372, 391, 410, 429, 448, 467, 486, 505, 524, 543, 562, 581, 600, 619, 638, 657, 676, 695, 714, 733, 752]
+        },
+        fireDamage: {
+          min: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 30, 36, 42, 48, 54, 60, 70, 80, 90, 100, 110, 120, 134, 148, 162, 176, 190, 204, 218, 232, 246, 260, 274, 288, 302, 316, 330, 344, 358, 372, 386, 400, 414, 428, 442, 456, 470, 484, 498, 512, 526, 540, 554, 568],
+          max: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 31, 38, 45, 52, 59, 66, 79, 92, 105, 118, 131, 144, 163, 182, 201, 220, 239, 258, 277, 296, 315, 334, 353, 372, 391, 410, 429, 448, 467, 486, 505, 524, 543, 562, 581, 600, 619, 638, 657, 676, 695, 714, 733, 752]
+        },
+        burningDamage: {
+          min: [2, 3, 4, 5, 7, 8, 9, 10, 12, 15, 17, 19, 22, 24, 26, 29, 36, 43, 50, 57, 64, 71, 83, 94, 106, 118, 130, 141, 155, 169, 183, 198, 212, 226, 240, 254, 268, 282, 296, 310, 324, 338, 352, 366, 380, 394, 408, 423, 437, 451, 465, 479, 493, 507, 521, 535, 549, 563, 577, 591],
+          max: [4, 5, 7, 8, 9, 10, 11, 12, 15, 17, 19, 22, 24, 26, 29, 31, 38, 45, 52, 59, 66, 73, 85, 97, 108, 120, 132, 144, 158, 172, 186, 200, 214, 228, 242, 256, 270, 284, 298, 312, 326, 341, 355, 369, 383, 397, 411, 425, 439, 453, 467, 481, 495, 509, 523, 537, 551, 566, 580, 594]
+        },
+        manaCost: [5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8, 9, 9.1, 9.2, 9.3, 9.5, 9.6, 9.7, 9.8, 10, 10.1, 10.2, 10.3, 10.5, 10.6, 10.7, 10.8, 11, 11.1, 11.2, 11.3, 11.5, 11.6, 11.7, 11.8, 12, 12.1, 12.2, 12.3],
+        synergies: [
+          { skillId: 'fissurecontainer', bonusPerLevel: 12, damageType: 'both' },
+          { skillId: 'volcanocontainer', bonusPerLevel: 12, damageType: 'both' },
+          { skillId: 'armageddoncontainer', bonusPerLevel: 12, damageType: 'both' }
+        ]
+      },
+      cyclonearmorcontainer: {
+        name: "Cyclone Armor",
+        type: "buff",
+        elementalAbsorb: [15, 31, 47, 63, 79, 95, 111, 127, 144, 161, 178, 195, 212, 229, 246, 263, 281, 299, 317, 335, 353, 371, 390, 409, 428, 447, 466, 485, 505, 525, 545, 565, 585, 605, 625, 645, 665, 685, 705, 725, 745, 765, 785, 805, 825, 845, 865, 885, 905, 925, 945, 965, 985, 1005, 1025, 1045, 1065, 1085, 1105, 1125],
+        manaCost: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64],
+        cooldown: 2,
+        // TODO: Implement Energy-based synergy - Gains +3 Additional Absorb per Energy point
+        synergies: []
+      },
+      fissurecontainer: {
+        name: "Fissure",
+        type: "fire",
+        fireDamage: {
+          min: [15, 19, 23, 27, 31, 35, 39, 43, 51, 59, 67, 75, 83, 91, 99, 107, 119, 131, 143, 155, 167, 179, 199, 219, 239, 259, 279, 299, 331, 363, 395, 427, 459, 491, 523, 555, 587, 619, 651, 683, 715, 747, 779, 811, 843, 875, 907, 939, 971, 1003, 1035, 1067, 1099, 1131, 1163, 1195, 1227, 1259, 1291, 1323],
+          max: [25, 31, 37, 43, 49, 55, 61, 67, 77, 87, 97, 107, 117, 127, 137, 147, 161, 175, 189, 203, 217, 231, 253, 275, 297, 319, 341, 363, 397, 431, 465, 499, 533, 567, 601, 635, 669, 703, 737, 771, 805, 839, 873, 907, 941, 975, 1009, 1043, 1077, 1111, 1145, 1179, 1213, 1247, 1281, 1315, 1349, 1383, 1417, 1451]
+        },
+        duration: 2.2,
+        cooldown: 0.5,
+        manaCost: 10,
+        synergies: [
+          { skillId: 'firestormcontainer', bonusPerLevel: 10, damageType: 'fire' },
+          { skillId: 'moltenbouldcontainer', bonusPerLevel: 10, damageType: 'fire' }
+        ]
+      },
+      twistercontainer: {
+        name: "Twister",
+        type: "physical",
+        physicalDamage: {
+          min: [6, 8, 10, 12, 14, 16, 18, 20, 23.5, 27, 30.5, 34, 37.5, 41, 44.5, 48, 57.5, 67, 76.5, 86, 95.5, 105, 122.5, 140, 157.5, 175, 192.5, 210, 240.5, 271, 301.5, 332, 362.5, 393, 423.5, 454, 484.5, 515, 545.5, 576, 606.5, 637, 667.5, 698, 728.5, 759, 789.5, 820, 850.5, 881, 911.5, 942, 972.5, 1003, 1033.5, 1064, 1094.5, 1125, 1155.5, 1186],
+          max: [8, 11, 14, 17, 20, 23, 26, 29, 33.5, 38, 42.5, 47, 51.5, 56, 60.5, 65, 75.5, 86, 96.5, 107, 117.5, 128, 146.5, 165, 183.5, 202, 220.5, 239, 270.5, 302, 333.5, 365, 396.5, 428, 459.5, 491, 522.5, 554, 585.5, 617, 648.5, 680, 711.5, 743, 774.5, 806, 837.5, 869, 900.5, 932, 963.5, 995, 1026.5, 1058, 1089.5, 1121, 1152.5, 1184, 1215.5, 1247]
+        },
+        twisters: [2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
+        manaCost: [2, 2.1, 2.2, 2.4, 2.5, 2.6, 2.7, 2.9, 3, 3.1, 3.2, 3.4, 3.5, 3.6, 3.7, 3.9, 4, 4.1, 4.2, 4.4, 4.5, 4.6, 4.7, 4.9, 5, 5.1, 5.2, 5.4, 5.5, 5.6, 5.7, 5.9, 6, 6.1, 6.2, 6.4, 6.5, 6.6, 6.7, 6.9, 7, 7.1, 7.2, 7.4, 7.5, 7.6, 7.7, 7.9, 8, 8.1, 8.2, 8.4, 8.5, 8.6, 8.7, 8.9, 9, 9.1, 9.2, 9.4],
+        synergies: [
+          { skillId: 'hurricanecontainer', bonusPerLevel: 24, damageType: 'physical' },
+          { skillId: 'tornadocontainer', bonusPerLevel: 24, damageType: 'physical' },
+          { skillId: 'arcticblastcontainer', bonusPerLevel: 24, damageType: 'physical' }
+        ]
+      },
+      gustcontainer: {
+        name: "Gust",
+        type: "utility",
+        cooldown: [6.3, 6.1, 5.9, 5.7, 5.5, 5.3, 5.1, 4.9, 4.7, 4.5, 4.3, 4.1, 3.9, 3.7, 3.5, 3.3, 3.1, 2.9, 2.7, 2.5, 2.3, 2.1, 1.9, 1.7, 1.5, 1.3, 1.1, 0.9, 0.7, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+        manaCost: 20
+      },
+      volcanocontainer: {
+        name: "Volcano",
+        type: "fire",
+        physicalDamage: {
+          min: [8, 11, 14, 17, 20, 23, 26, 29, 34, 39, 44, 49, 54, 59, 64, 69, 76, 83, 90, 97, 104, 111, 119, 127, 135, 143, 151, 159, 168, 177, 186, 195, 204, 213, 222, 231, 240, 249, 258, 267, 276, 285, 294, 303, 312, 321, 330, 339, 348, 357, 366, 375, 384, 393, 402, 411, 420, 429, 438, 447],
+          max: [10, 13, 16, 19, 22, 25, 28, 31, 36, 41, 46, 51, 56, 61, 66, 71, 78, 85, 92, 99, 106, 113, 121, 129, 137, 145, 153, 161, 170, 179, 188, 197, 206, 215, 224, 233, 242, 251, 260, 269, 278, 287, 296, 305, 314, 323, 332, 341, 350, 359, 368, 377, 386, 395, 404, 413, 422, 431, 440, 449]
+        },
+        fireDamage: {
+          min: [8, 11, 14, 17, 20, 23, 26, 29, 34, 39, 44, 49, 54, 59, 64, 69, 76, 83, 90, 97, 104, 111, 119, 127, 135, 143, 151, 159, 168, 177, 186, 195, 204, 213, 222, 231, 240, 249, 258, 267, 276, 285, 294, 303, 312, 321, 330, 339, 348, 357, 366, 375, 384, 393, 402, 411, 420, 429, 438, 447],
+          max: [10, 13, 16, 19, 22, 25, 28, 31, 36, 41, 46, 51, 56, 61, 66, 71, 78, 85, 92, 99, 106, 113, 121, 129, 137, 145, 153, 161, 170, 179, 188, 197, 206, 215, 224, 233, 242, 251, 260, 269, 278, 287, 296, 305, 314, 323, 332, 341, 350, 359, 368, 377, 386, 395, 404, 413, 422, 431, 440, 449]
+        },
+        cooldown: 0.5,
+        manaCost: 12,
+        synergies: [
+          { skillId: 'moltenbouldcontainer', bonusPerLevel: 10, damageType: 'both' },
+          { skillId: 'fissurecontainer', bonusPerLevel: 10, damageType: 'both' },
+          { skillId: 'armageddoncontainer', bonusPerLevel: 10, damageType: 'both' }
+        ]
+      },
+      tornadocontainer: {
+        name: "Tornado",
+        type: "physical",
+        physicalDamage: {
+          min: [32, 38, 44, 50, 56, 62, 68, 74, 88, 102, 116, 130, 144, 158, 172, 186, 208, 230, 252, 274, 296, 318, 346, 374, 402, 430, 458, 486, 520, 554, 588, 622, 656, 690, 724, 758, 792, 826, 860, 894, 928, 962, 996, 1030, 1064, 1098, 1132, 1166, 1200, 1234, 1268, 1302, 1336, 1370, 1404, 1438, 1472, 1506, 1540, 1574],
+          max: [35, 43, 51, 59, 67, 75, 83, 91, 107, 123, 139, 155, 171, 187, 203, 219, 243, 267, 291, 315, 339, 363, 393, 423, 453, 483, 513, 543, 579, 615, 651, 687, 723, 759, 795, 831, 867, 903, 939, 975, 1011, 1047, 1083, 1119, 1155, 1191, 1227, 1263, 1299, 1335, 1371, 1407, 1443, 1479, 1515, 1551, 1587, 1623, 1659, 1695]
+        },
+        manaCost: [2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8, 9, 9.1, 9.2, 9.3],
+        synergies: [
+          { skillId: 'arcticblastcontainer', bonusPerLevel: 16, damageType: 'physical' },
+          { skillId: 'twistercontainer', bonusPerLevel: 16, damageType: 'physical' },
+          { skillId: 'hurricanecontainer', bonusPerLevel: 16, damageType: 'physical' }
+        ]
+      },
+      hurricanecontainer: {
+        name: "Hurricane",
+        type: "cold",
+        coldDamage: {
+          min: [25, 29, 33, 37, 41, 45, 49, 53, 61, 69, 77, 85, 93, 101, 109, 117, 129, 141, 153, 165, 177, 189, 205, 221, 237, 253, 269, 285, 305, 325, 345, 365, 385, 405, 425, 445, 465, 485, 505, 525, 545, 565, 585, 605, 625, 645, 665, 685, 705, 725, 745, 765, 785, 805, 825, 845, 865, 885, 905, 925],
+          max: [50, 54, 58, 62, 66, 70, 74, 78, 86, 94, 102, 110, 118, 126, 134, 142, 154, 166, 178, 190, 202, 214, 230, 246, 262, 278, 294, 310, 330, 350, 370, 390, 410, 430, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630, 650, 670, 690, 710, 730, 750, 770, 790, 810, 830, 850, 870, 890, 910, 930, 950]
+        },
+        duration: [60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120, 123, 126, 129, 132, 135, 138, 141, 144, 147, 150, 153, 156, 159, 162, 165, 168, 171, 174, 177, 180, 183, 186, 189, 192, 195, 198, 201, 204, 207, 210, 213, 216, 219, 222, 225, 228, 231, 234, 237],
+        radius: 6,
+        coldLength: 8,
+        manaCost: 30,
+        synergies: [
+          { skillId: 'arcticblastcontainer', bonusPerLevel: 12, damageType: 'cold' },
+          { skillId: 'tornadocontainer', bonusPerLevel: 12, damageType: 'cold' }
+        ]
+      },
+      armageddoncontainer: {
+        name: "Armageddon",
+        type: "fire",
+        physicalDamage: {
+          min: [15, 25, 35, 45, 55, 65, 75, 85, 98, 111, 124, 137, 150, 163, 176, 189, 206, 223, 240, 257, 274, 291, 312, 333, 354, 375, 396, 417, 442, 467, 492, 517, 542, 567, 592, 617, 642, 667, 692, 717, 742, 767, 792, 817, 842, 867, 892, 917, 942, 967, 992, 1017, 1042, 1067, 1092, 1117, 1142, 1167, 1192, 1217],
+          max: [45, 56, 67, 78, 89, 100, 111, 122, 137, 152, 167, 182, 197, 212, 227, 242, 261, 280, 299, 318, 337, 356, 379, 402, 425, 448, 471, 494, 521, 548, 575, 602, 629, 656, 683, 710, 737, 764, 791, 818, 845, 872, 899, 926, 953, 980, 1007, 1034, 1061, 1088, 1115, 1142, 1169, 1196, 1223, 1250, 1277, 1304, 1331, 1358]
+        },
+        fireDamage: {
+          min: [15, 25, 35, 45, 55, 65, 75, 85, 98, 111, 124, 137, 150, 163, 176, 189, 206, 223, 240, 257, 274, 291, 312, 333, 354, 375, 396, 417, 442, 467, 492, 517, 542, 567, 592, 617, 642, 667, 692, 717, 742, 767, 792, 817, 842, 867, 892, 917, 942, 967, 992, 1017, 1042, 1067, 1092, 1117, 1142, 1167, 1192, 1217],
+          max: [45, 56, 67, 78, 89, 100, 111, 122, 137, 152, 167, 182, 197, 212, 227, 242, 261, 280, 299, 318, 337, 356, 379, 402, 425, 448, 471, 494, 521, 548, 575, 602, 629, 656, 683, 710, 737, 764, 791, 818, 845, 872, 899, 926, 953, 980, 1007, 1034, 1061, 1088, 1115, 1142, 1169, 1196, 1223, 1250, 1277, 1304, 1331, 1358]
+        },
+        burningDamage: {
+          min: [11, 18, 25, 32, 39, 46, 53, 60, 69, 77, 85, 93, 101, 110, 118, 126, 135, 145, 154, 164, 173, 182, 193, 203, 214, 225, 235, 246, 257, 269, 281, 292, 304, 316, 328, 339, 351, 363, 375, 386, 398, 410, 421, 433, 445, 457, 468, 480, 492, 503, 515, 527, 539, 550, 562, 574, 585, 597, 609, 621],
+          max: [16, 23, 30, 37, 44, 51, 58, 65, 73, 82, 90, 98, 106, 114, 123, 131, 140, 150, 159, 168, 178, 187, 198, 208, 219, 229, 240, 250, 262, 274, 285, 297, 309, 321, 332, 344, 356, 367, 379, 391, 403, 414, 426, 438, 450, 461, 473, 485, 496, 508, 520, 532, 543, 555, 567, 578, 590, 602, 614, 625]
+        },
+        duration: [60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120, 123, 126, 129, 132, 135, 138, 141, 144, 147, 150, 153, 156, 159, 162, 165, 168, 171, 174, 177, 180, 183, 186, 189, 192, 195, 198, 201, 204, 207, 210, 213, 216, 219, 222, 225, 228, 231, 234, 237],
+        radius: 6,
+        manaCost: 35,
+        synergies: [
+          { skillId: 'moltenbouldcontainer', bonusPerLevel: 12, damageType: 'both' },
+          { skillId: 'volcanocontainer', bonusPerLevel: 12, damageType: 'both' }
+        ]
+      },
+      werewolfcontainer: {
+        name: "Werewolf",
+        type: "utility",
+        magicDamageReduction: [1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15, 16, 16, 16, 17, 17, 17, 18, 18, 18, 19, 19, 19, 20, 20, 20, 21],
+        physicalDamageReduction: [1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14, 15, 15, 15, 16, 16, 16, 17, 17, 17, 18, 18, 18, 19, 19, 19, 20, 20, 20, 21],
+        damageBonus: [20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200, 204, 208, 212, 216, 220, 224, 228, 232, 236, 240, 244, 248, 252, 256],
+        attackSpeed: [20, 28, 35, 40, 45, 48, 51, 53, 56, 57, 59, 61, 62, 63, 64, 66, 66, 67, 68, 68, 69, 70, 70, 71, 71, 72, 73, 73, 73, 73, 74, 74, 75, 75, 75, 75, 75, 76, 76, 76, 76, 77, 77, 77, 77, 77, 77, 77, 78, 78, 78, 78, 78, 79, 79, 79, 79, 79, 79, 80],
+        cooldown: 0.5,
+        manaCost: 15,
+        // TODO: Display Lycanthropy bonuses (Life% and Attack Rating) in tooltip when invested
+        synergies: []
+      },
+      werebearcontainer: {
+        name: "Werebear",
+        type: "utility",
+        damageBonus: [55, 75, 95, 115, 135, 155, 175, 195, 215, 235, 255, 275, 295, 315, 335, 355, 375, 395, 415, 435, 455, 475, 495, 515, 535, 555, 575, 595, 615, 635, 655, 675, 695, 715, 735, 755, 775, 795, 815, 835, 855, 875, 895, 915, 935, 955, 975, 995, 1015, 1035, 1055, 1075, 1095, 1115, 1135, 1155, 1175, 1195, 1215, 1235],
+        defenseBonus: [75, 85, 95, 105, 115, 125, 135, 145, 155, 165, 175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315, 325, 335, 345, 355, 365, 375, 385, 395, 405, 415, 425, 435, 445, 455, 465, 475, 485, 495, 505, 515, 525, 535, 545, 555, 565, 575, 585, 595, 605, 615, 625, 635, 645, 655, 665],
+        uninterruptedAttack: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69],
+        lifeBonus: 10,
+        meleeSplashBonus: 20,
+        manaCost: 15,
+        // TODO: Display Lycanthropy bonuses (Life% and Attack Rating) in tooltip when invested
+        synergies: []
+      },
+      lycantropycontainer: {
+        name: "Lycanthropy",
+        type: "passive",
+        lifeBonus: [5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85],
+        attackRatingBonus: [50, 62, 74, 86, 98, 110, 122, 134, 146, 158, 170, 182, 194, 206, 218, 230, 242, 254, 266, 278, 290, 302, 314, 326, 338, 350, 362, 374, 386, 398, 410, 422, 434, 446, 458, 470, 482, 494, 506, 518, 530, 542, 554, 566, 578, 590, 602, 614, 626, 638, 650, 662, 674, 686, 698, 710, 722, 734, 746, 758]
+      },
+      feralragecontainer: {
+        name: "Feral Rage",
+        type: "physical",
+        damage: [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640],
+        attackRating: [25, 33, 41, 49, 57, 65, 73, 81, 89, 97, 105, 113, 121, 129, 137, 145, 153, 161, 169, 177, 185, 193, 201, 209, 217, 225, 233, 241, 249, 257, 265, 273, 281, 289, 297, 305, 313, 321, 329, 337, 345, 353, 361, 369, 377, 385, 393, 401, 409, 417, 425, 433, 441, 449, 457, 465, 473, 481, 489, 497],
+        movementSpeedMin: [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
+        movementSpeedMax: [35, 47, 56, 64, 70, 75, 79, 82, 86, 88, 91, 93, 95, 97, 98, 100, 101, 102, 103, 104, 105, 106, 107, 108, 108, 109, 110, 110, 111, 111, 112, 112, 113, 113, 113, 114, 114, 115, 115, 115, 115, 116, 116, 116, 117, 117, 117, 118, 118, 118, 119, 119, 119, 120, 120, 120, 120, 120, 120, 120],
+        lifeStealMin: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        lifeStealMax: [4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+        duration: 30,
+        manaCost: 3,
+        synergies: [
+          { skillId: 'furycontainer', bonusPerLevel: 6, damageType: 'physical' }
+        ]
+      },
+      maulcontainer: {
+        name: "Maul",
+        type: "physical",
+        // TODO: Implement Maul skill damage calculation and display logic
+        manaCost: 3
+      },
+      hungercontainer: {
+        name: "Hunger",
+        type: "physical",
+        duration: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79],
+        movementSpeed: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79],
+        openWoundsChance: [24, 28, 31, 34, 37, 38, 40, 41, 42, 43, 44, 45, 46, 46, 47, 47, 48, 48, 48, 49, 49, 49, 50, 50, 50, 50, 51, 51, 51, 51, 52, 52, 52, 52, 52, 53, 53, 53, 53, 53, 54, 54, 54, 54, 54, 54, 55, 55, 55, 55, 55, 55, 56, 56, 56, 56, 56, 56, 56, 56],
+        openWoundsDamage: [40, 50, 60, 70, 80, 90, 101, 110, 127, 143, 159, 175, 191, 207, 223, 240, 263, 288, 312, 337, 361, 385, 419, 454, 488, 522, 557, 590, 637, 683, 730, 777, 824, 871, 918, 965, 1012, 1059, 1106, 1153, 1200, 1247, 1294, 1341, 1388, 1435, 1482, 1529, 1576, 1623, 1670, 1717, 1763, 1810, 1857, 1904, 1951, 1998, 2045, 2092],
+        lifeSteal: [3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8],
+        manaCost: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62],
+        synergies: [
+          { skillId: 'maulcontainer', bonusPerLevel: 16, damageType: 'physical' }
+        ]
       }
     };
 
@@ -3077,7 +3337,8 @@ class SkillSystem {
       'ironskinscontainer', // Iron Skin
       'increasedspeedcontainer', // Increased Speed
       'naturalresistancecontainer', // Natural Resistance
-      'deepwoundscontainer' // Deep Wounds
+      'deepwoundscontainer', // Deep Wounds
+      'lycantropycontainer' // Lycanthropy (passive - bonuses shown in Werewolf/Werebear tooltips)
     ];
 
     var self = this;
@@ -3170,6 +3431,19 @@ class SkillSystem {
     var level = this.getSkillTotalLevel('deepwoundscontainer');
     if (level === 0) return 0;
     var data = this.skillData.deepwoundscontainer.openWoundsDamage;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
+  getHungerChance() {
+    var level = this.getSkillTotalLevel('hungercontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.hungercontainer.openWoundsChance;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+  getHungerDamage() {
+    var level = this.getSkillTotalLevel('hungercontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.hungercontainer.openWoundsDamage;
     return data[Math.min(level - 1, data.length - 1)] || 0;
   }
 
@@ -5018,6 +5292,91 @@ class SkillSystem {
 
       if (skill.cooldown) {
         html += '<div style="margin: 5px 0; color: #ff6666;">Cooldown: ' + skill.cooldown + 's</div>';
+      }
+
+      // Handle Werewolf and Werebear transformations
+      if (skillId === 'werewolfcontainer' || skillId === 'werebearcontainer') {
+        var baseSkillLevel = parseInt(skillInput && skillInput.value ? skillInput.value : '0') || 0;
+
+        // Get Lycanthropy bonuses
+        var lycanthropyBonusElement = document.getElementById('lycantropycontainer_bonus');
+        var lycanthropySkillInput = document.getElementById('lycantropycontainer');
+        var lycanthropyLevel = 0;
+        if (lycanthropyBonusElement && lycanthropyBonusElement.textContent.trim() !== '') {
+          // If _bonus element exists AND has content, it contains the TOTAL level (invested + bonuses)
+          lycanthropyLevel = parseInt(lycanthropyBonusElement.textContent) || 0;
+        } else if (lycanthropySkillInput) {
+          // Otherwise, fall back to reading just the invested points
+          lycanthropyLevel = parseInt(lycanthropySkillInput.value) || 0;
+        }
+        var lycanthropyData = this.skillData['lycantropycontainer'];
+
+        if (skillId === 'werewolfcontainer') {
+          // Display Werewolf bonuses
+          if (skill.magicDamageReduction) {
+            var magicDR = skill.magicDamageReduction[levelIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ff66ff;">Magic Damage Reduction: ' + magicDR + '</div>';
+          }
+          if (skill.physicalDamageReduction) {
+            var physDR = skill.physicalDamageReduction[levelIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ffcc99;">Physical Damage Reduction: ' + physDR + '</div>';
+          }
+          if (skill.damageBonus) {
+            var dmgBonus = skill.damageBonus[levelIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ff9966;">Damage: +' + dmgBonus + '%</div>';
+          }
+          if (skill.attackSpeed) {
+            var atkSpeed = skill.attackSpeed[levelIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Speed: +' + atkSpeed + '%</div>';
+          }
+        } else if (skillId === 'werebearcontainer') {
+          // Display Werebear bonuses
+          if (skill.damageBonus) {
+            var dmgBonus = skill.damageBonus[levelIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ff9966;">Damage: +' + dmgBonus + '%</div>';
+          }
+          if (skill.defenseBonus) {
+            var defBonus = skill.defenseBonus[levelIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #aaddff;">Defense: +' + defBonus + '%</div>';
+          }
+          if (skill.uninterruptedAttack) {
+            var unint = skill.uninterruptedAttack[levelIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #cccccc;">Uninterrupted Attack: ' + unint + '%</div>';
+          }
+
+          // Combine Life bonus from Werebear + Lycanthropy
+          var totalLifeBonus = skill.lifeBonus || 0;
+          if (lycanthropyLevel > 0 && lycanthropyData) {
+            var lycIndex = Math.min(lycanthropyLevel - 1, 59);
+            var lycLifeBonus = lycanthropyData.lifeBonus[lycIndex] || 0;
+            totalLifeBonus += lycLifeBonus;
+          }
+          if (totalLifeBonus > 0) {
+            html += '<div style="margin: 5px 0; color: #ff6666;">Life: +' + totalLifeBonus + '%</div>';
+          }
+
+          if (skill.meleeSplashBonus) {
+            html += '<div style="margin: 5px 0; color: #ff9966;">Increased Melee Splash Radius: +' + skill.meleeSplashBonus + '%</div>';
+          }
+        }
+
+        // Display Lycanthropy bonuses if invested
+        if (lycanthropyLevel > 0 && lycanthropyData) {
+          var lycIndex = Math.min(lycanthropyLevel - 1, 59);
+          var arBonus = lycanthropyData.attackRatingBonus[lycIndex] || 0;
+
+          html += '<div style="margin: 10px 0; border-top: 1px solid #666; padding-top: 5px;"></div>';
+          html += '<div style="margin: 5px 0; color: #88ff88; font-style: italic;">From Lycanthropy (Level ' + lycanthropyLevel + '):</div>';
+
+          // For Werewolf, show Life bonus from Lycanthropy
+          if (skillId === 'werewolfcontainer') {
+            var lifeBonus = lycanthropyData.lifeBonus[lycIndex] || 0;
+            html += '<div style="margin: 5px 0; color: #ff6666;">Life: +' + lifeBonus + '%</div>';
+          }
+
+          // Show Attack Rating for both forms
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + arBonus + '%</div>';
+        }
       }
     } else if (skillId === 'decoycontainer') {
       // Display Decoy summon information
