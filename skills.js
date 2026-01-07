@@ -779,56 +779,57 @@ class SkillSystem {
         ]
       },
       'Necromancer': {
-        'summoningspellsneccontainer': [{
-          id: 'skeletonmasterycontainer',
-          name: 'Skeleton Mastery',
-          level: 1
-        },
-        {
-          id: 'raiseskeletoncontainer',
-          name: 'Raise Skeleton',
-          level: 1
-        },
-        {
-          id: 'claygolemneccontainer',
-          name: 'Clay Golem',
-          level: 6
-        },
-        {
-          id: 'golemmasterneccontainer',
-          name: 'Golem Mastery',
-          level: 12
-        },
-        {
-          id: 'raiseskeletalmagecontainer',
-          name: 'Raise Skeletal Mage',
-          level: 12
-        },
-        {
-          id: 'bloodgolemneccontainer',
-          name: 'Blood Golem',
-          level: 18
-        },
-        {
-          id: 'summonnecroncontainer',
-          name: 'Summon Resist',
-          level: 24
-        },
-        {
-          id: 'irongolemneccontainer',
-          name: 'Iron Golem',
-          level: 24
-        },
-        {
-          id: 'firegolemneccontainer',
-          name: 'Fire Golem',
-          level: 30
-        },
-        {
-          id: 'revivecontainer',
-          name: 'Revive',
-          level: 30
-        }
+        'summoningspellsneccontainer': [
+          {
+            id: 'raiseskeletonwarriorcontainer',
+            name: 'Raise Skeleton Warrior',
+            level: 1
+          },
+          {
+            id: 'skeletonmasterycontainer',
+            name: 'Skeleton Mastery',
+            level: 1
+          },
+          {
+            id: 'claygolemneccontainer',
+            name: 'Clay Golem',
+            level: 6
+          },
+          {
+            id: 'golemmasterneccontainer',
+            name: 'Golem Mastery',
+            level: 12
+          },
+          {
+            id: 'raiseskeletalmagecontainer',
+            name: 'Raise Skeletal Mage',
+            level: 12
+          },
+          {
+            id: 'bloodgolemneccontainer',
+            name: 'Blood Golem',
+            level: 18
+          },
+          {
+            id: 'summonnecroncontainer',
+            name: 'Summon Resist',
+            level: 24
+          },
+          {
+            id: 'irongolemneccontainer',
+            name: 'Iron Golem',
+            level: 24
+          },
+          {
+            id: 'firegolemneccontainer',
+            name: 'Fire Golem',
+            level: 30
+          },
+          {
+            id: 'revivecontainer',
+            name: 'Revive',
+            level: 30
+          }
         ],
         'poisonandbonespellscontainer': [{
           id: 'teethcontainer',
@@ -1292,8 +1293,8 @@ class SkillSystem {
         name: "Poison Javelin",
         type: "poison",
         poisonDamage: {
-          min: [2, 4, 6, 9, 11, 13, 16, 18, 25, 32, 39, 46, 53, 60, 67, 74, 88, 102, 116, 131],
-          max: [5, 7, 10, 12, 15, 17, 19, 22, 29, 37, 44, 51, 58, 66, 73, 80, 95, 110, 124, 139]
+          min: [2, 4, 6, 9, 11, 13, 16, 18, 25, 32, 39, 46, 53, 60, 67, 74, 88, 102, 116, 131, 145, 159, 187, 215, 243, 271, 299, 327, 384, 440, 496, 552, 609, 665, 721, 777, 834, 890, 946, 1002, 1059, 1115, 1171, 1227, 1284, 1340, 1396, 1452, 1509, 1565, 1621, 1677, 1734, 1790, 1846, 1902, 1959, 2015, 2071, 2127],
+          max: [5, 7, 10, 12, 15, 17, 19, 22, 29, 37, 44, 51, 58, 66, 73, 80, 95, 110, 124, 139, 154, 168, 198, 227, 256, 286, 315, 344, 403, 461, 520, 579, 637, 696, 754, 813, 871, 930, 989, 1047, 1106, 1164, 1223, 1282, 1340, 1399, 1457, 1516, 1575, 1633, 1692, 1750, 1809, 1868, 1926, 1985, 2043, 2102, 2161, 2219]
         },
         manaCost: {
           base: 2,
@@ -1803,7 +1804,12 @@ class SkillSystem {
         name: "Deep Wounds",
         type: "passive",
         openWoundsDamage: [80, 100, 120, 140, 160, 180, 200, 220, 248, 276, 304, 332, 360, 388, 416, 444, 480, 516, 552, 588, 624, 660, 704, 748, 792, 836, 880, 924, 976, 1028, 1080, 1132, 1184, 1236, 1288, 1340, 1392, 1444, 1496, 1548, 1600, 1652, 1704, 1756, 1808, 1860, 1912, 1964, 2016, 2068, 2120, 2172, 2224, 2276, 2328, 2380, 2432, 2484, 2536, 2588],
-        openWoundsChance: [5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32, 33, 33, 34, 34, 35]
+        openWoundsChance: [5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32, 33, 33, 34, 34, 35],
+        synergies: [{
+          skillId: 'grimwardcontainer',
+          bonusPerLevel: 4,
+          damageType: 'owdmg'
+        }]
       },
       bashcontainer: {
         name: "Bash",
@@ -3048,7 +3054,36 @@ class SkillSystem {
         synergies: [
           { skillId: 'maulcontainer', bonusPerLevel: 16, damageType: 'physical' }
         ]
-      }
+      },
+      raiseskeletonwarriorcontainer: {
+        name: "Raise Skeleton Warrior",
+        type: "summon",
+        life: {
+          normal: [21, 21, 21, 31, 42, 52, 63, 73, 84, 94, 105, 115, 126, 136, 147, 157, 168, 178, 189, 199, 210, 220, 231, 241, 252, 262, 273, 283, 294, 304, 315, 325, 336, 346, 357, 367, 378, 388, 399, 409, 420, 430, 441, 451, 462, 472, 483, 493, 504, 514, 525, 535, 546, 556, 567, 577, 588, 598, 609, 619],
+          nightmare: [30, 30, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885],
+          hell: [42, 42, 42, 63, 84, 105, 126, 147, 168, 189, 210, 231, 252, 273, 294, 315, 336, 357, 378, 399, 420, 441, 462, 483, 504, 525, 546, 567, 588, 609, 630, 651, 672, 693, 714, 735, 756, 777, 798, 819, 840, 861, 882, 903, 924, 945, 966, 987, 1008, 1029, 1050, 1071, 1092, 1113, 1134, 1155, 1176, 1197, 1218, 1239]
+        },
+        damage: {
+          min: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 27, 30, 33, 36, 39, 42, 46, 50, 54, 58, 62, 66, 71, 76, 81, 86, 91, 96, 101, 106, 111, 116, 121, 126, 131, 136, 141, 146, 151, 156, 161, 166, 171, 176, 181, 186, 191, 196, 201, 206, 211, 216, 221, 226],
+          max: [2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 17, 19, 21, 23, 25, 28, 31, 34, 37, 40, 43, 47, 51, 55, 59, 63, 67, 72, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122, 127, 132, 137, 142, 147, 152, 157, 162, 167, 172, 177, 182, 187, 192, 197, 202, 207, 212, 217, 222, 227],
+          damageBonus: [0, 0, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570]
+        },
+        attackRating: [50, 60, 70, 80, 90, 100, 110, 120, 135, 150, 165, 180, 195, 210, 225, 240, 260, 280, 300, 320, 340, 360, 385, 410, 435, 460, 485, 510, 545, 580, 615, 650, 685, 720, 755, 790, 825, 860, 895, 930, 965, 1000, 1035, 1070, 1105, 1140, 1175, 1210, 1245, 1280, 1315, 1350, 1385, 1420, 1455, 1490, 1525, 1560, 1595, 1630],
+        totalSummons: [1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        manaCost: [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 30, 30.5, 31, 31.5, 32, 32.5, 33, 33.5],
+        synergies: [
+          { skillId: 'skeletonmasterycontainer', bonusPerLevel: 6, damageType: 'all' },
+          { skillId: 'raiseskeletalmagecontainer', bonusPerLevel: 2, damageType: 'all' }
+        ]
+      },
+      skeletonmasterycontainer: {
+        name: "Skeleton Mastery",
+        type: "passive",
+        skeletonVelocity: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+        skeletonLife: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900],
+        physicalDamageBonus: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120],
+        elementalDamageBonus: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120]
+      },
     };
 
     this.init();
@@ -3415,7 +3450,8 @@ class SkillSystem {
       'increasedspeedcontainer', // Increased Speed
       'naturalresistancecontainer', // Natural Resistance
       'deepwoundscontainer', // Deep Wounds
-      'lycantropycontainer' // Lycanthropy (passive - bonuses shown in Werewolf/Werebear tooltips)
+      'lycantropycontainer', // Lycanthropy
+      'skeletonmasterycontainer' // Skeleton Mastery
     ];
 
     var self = this;
@@ -3508,7 +3544,11 @@ class SkillSystem {
     var level = this.getSkillTotalLevel('deepwoundscontainer');
     if (level === 0) return 0;
     var data = this.skillData.deepwoundscontainer.openWoundsDamage;
-    return data[Math.min(level - 1, data.length - 1)] || 0;
+    var baseDamage = data[Math.min(level - 1, data.length - 1)] || 0;
+
+    // Apply synergies (e.g. Grim Ward +4% per level)
+    var synergyBonus = this.calculateSynergyBonus('deepwoundscontainer', 'owdmg');
+    return Math.floor(baseDamage * (1 + synergyBonus / 100));
   }
 
   getHungerChance() {
@@ -3535,6 +3575,20 @@ class SkillSystem {
     var level = this.getSkillTotalLevel('ironskinscontainer');
     if (level === 0) return 0;
     var data = this.skillData.ironskinscontainer.defense;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
+  getShoutDefenseBonus() {
+    var level = this.getSkillTotalLevel('shoutcontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.shoutcontainer.defenseBonus;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
+  getCloakOfShadowsDefenseBonus() {
+    var level = this.getSkillTotalLevel('cloakofshadowscontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.cloakofshadowscontainer.defenseBonus;
     return data[Math.min(level - 1, data.length - 1)] || 0;
   }
 
@@ -3811,11 +3865,11 @@ class SkillSystem {
           var manaCost;
           if (Array.isArray(skill.manaCost)) {
             var manaCostIndex = Math.min(totalSkillLevel - 1, skill.manaCost.length - 1);
-            manaCost = skill.manaCost[manaCostIndex] || 0;
+            manaCost = parseFloat((skill.manaCost[manaCostIndex] || 0).toFixed(1));
           } else if (typeof skill.manaCost === 'object') {
-            manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+            manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
           } else {
-            manaCost = skill.manaCost;
+            manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
           }
           html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
         }
@@ -4010,8 +4064,8 @@ class SkillSystem {
 
       // Display mana cost
       if (skill.manaCost) {
-        var manaCost = Array.isArray(skill.manaCost) ? (skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0) : skill.manaCost;
-        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+        var manaCost = Array.isArray(skill.manaCost) ? parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1)) : parseFloat((skill.manaCost || 0).toFixed(1));
+        html += '<div style="font-size: 14px; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
     } else if (skill.type === 'buff' || skill.type === 'buffdebuff') {
       // Handle buff and hybrid buff/debuff skills (Shout, Battle Orders, Cloak of Shadows, etc.)
@@ -4162,11 +4216,11 @@ class SkillSystem {
       if (skill.manaCost) {
         var manaCost;
         if (Array.isArray(skill.manaCost)) {
-          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
         } else if (typeof skill.manaCost === 'object') {
-          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+          manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
         } else {
-          manaCost = skill.manaCost;
+          manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
         }
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
@@ -4221,11 +4275,11 @@ class SkillSystem {
       if (skill.manaCost) {
         var manaCost;
         if (Array.isArray(skill.manaCost)) {
-          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
         } else if (typeof skill.manaCost === 'object') {
-          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+          manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
         } else {
-          manaCost = skill.manaCost;
+          manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
         }
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
@@ -4264,11 +4318,11 @@ class SkillSystem {
       if (skill.manaCost) {
         var manaCost;
         if (Array.isArray(skill.manaCost)) {
-          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
         } else if (typeof skill.manaCost === 'object') {
-          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+          manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
         } else {
-          manaCost = skill.manaCost;
+          manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
         }
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
@@ -4743,9 +4797,11 @@ class SkillSystem {
         if (skill.manaCost) {
           var manaCost;
           if (Array.isArray(skill.manaCost)) {
-            manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+            manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
+          } else if (skill.manaCost && typeof skill.manaCost === 'object') {
+            manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
           } else {
-            manaCost = skill.manaCost;
+            manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
           }
           html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
         }
@@ -4769,6 +4825,19 @@ class SkillSystem {
       html += '<div style="margin: 5px 0;">Per Second: ' + damageInfo.average + '</div>';
       if (damageInfo.synergyBonus > 0) {
         html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+
+      // Display mana cost
+      if (skill.manaCost) {
+        var manaCost;
+        if (Array.isArray(skill.manaCost)) {
+          manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
+        } else if (typeof skill.manaCost === 'object') {
+          manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
+        } else {
+          manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
+        }
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
     } else if (skill.type === 'lightning_conversion') {
       var damageInfo = this.calculateLightningConversionDamage(skill, totalSkillLevel, weaponDamage, dexterity, skillId);
@@ -4798,6 +4867,19 @@ class SkillSystem {
       if (damageInfo.critMultiplier > 1) {
         html += '<div style="margin: 5px 0; font-size: 12px;">Crit Multiplier: ' + damageInfo.critMultiplier + 'x</div>';
       }
+
+      // Display mana cost
+      if (skill.manaCost) {
+        var manaCost;
+        if (Array.isArray(skill.manaCost)) {
+          manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
+        } else if (typeof skill.manaCost === 'object') {
+          manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
+        } else {
+          manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
+        }
+        html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
+      }
     } else if (skill.type === 'fire') {
       var damageInfo = this.calculateElementalDamage(skill, totalSkillLevel, skillId);
 
@@ -4818,11 +4900,11 @@ class SkillSystem {
       if (skill.manaCost) {
         var manaCost;
         if (Array.isArray(skill.manaCost)) {
-          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
         } else if (typeof skill.manaCost === 'object') {
-          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+          manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
         } else {
-          manaCost = skill.manaCost;
+          manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
         }
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
@@ -4875,11 +4957,11 @@ class SkillSystem {
       if (skill.manaCost) {
         var manaCost;
         if (Array.isArray(skill.manaCost)) {
-          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
         } else if (typeof skill.manaCost === 'object') {
-          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+          manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
         } else {
-          manaCost = skill.manaCost;
+          manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
         }
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
@@ -4920,11 +5002,11 @@ class SkillSystem {
       if (skill.manaCost) {
         var manaCost;
         if (Array.isArray(skill.manaCost)) {
-          manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
         } else if (typeof skill.manaCost === 'object') {
-          manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+          manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
         } else {
-          manaCost = skill.manaCost;
+          manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
         }
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
@@ -5016,11 +5098,11 @@ class SkillSystem {
         if (skill.manaCost) {
           var manaCost;
           if (Array.isArray(skill.manaCost)) {
-            manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+            manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
           } else if (typeof skill.manaCost === 'object') {
-            manaCost = skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1));
+            manaCost = parseFloat((skill.manaCost.base + (skill.manaCost.perLevel * (totalSkillLevel - 1))).toFixed(1));
           } else {
-            manaCost = skill.manaCost;
+            manaCost = parseFloat((skill.manaCost || 0).toFixed(1));
           }
           html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
         }
@@ -5109,7 +5191,7 @@ class SkillSystem {
         }
 
         if (skill.manaCost) {
-          var manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          var manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
           html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
         }
 
@@ -5184,7 +5266,7 @@ class SkillSystem {
         }
 
         if (skill.manaCost) {
-          var manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          var manaCost = parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
           html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
         }
 
@@ -5226,7 +5308,7 @@ class SkillSystem {
       }
 
       if (skill.manaCost) {
-        var manaCost = typeof skill.manaCost === 'number' ? skill.manaCost : skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        var manaCost = typeof skill.manaCost === 'number' ? parseFloat(skill.manaCost.toFixed(1)) : parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
     } else if (skill.type === 'fire') {
@@ -5262,7 +5344,7 @@ class SkillSystem {
       }
 
       if (skill.manaCost) {
-        var manaCost = typeof skill.manaCost === 'number' ? skill.manaCost : skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+        var manaCost = typeof skill.manaCost === 'number' ? parseFloat(skill.manaCost.toFixed(1)) : parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1));
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
     } else if (skill.type === 'physical_magic_hybrid') {
@@ -5325,7 +5407,7 @@ class SkillSystem {
         html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
 
         if (skill.manaCost) {
-          var manaCost = skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0;
+          var manaCost = Array.isArray(skill.manaCost) ? parseFloat((skill.manaCost[Math.min(totalSkillLevel - 1, skill.manaCost.length - 1)] || 0).toFixed(1)) : parseFloat((skill.manaCost || 0).toFixed(1));
           html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
         }
 
@@ -5343,6 +5425,33 @@ class SkillSystem {
     } else if (skill.type === 'summon') {
       // Generic summon handling (Ravens, Poison Creeper, Spirit Wolf, Valkyrie, Decoy, etc.)
       var levelIndex = Math.min(totalSkillLevel - 1, 59);
+
+      // --- Start Skeleton Mastery Integration ---
+      var masteryLevel = 0;
+      var masteryData = null;
+      var masteryVelocity = 0;
+      var masteryLife = 0;
+      var masteryPhysDmg = 0;
+      var masteryElemDmg = 0;
+
+      if (skillId === 'raiseskeletonwarriorcontainer' || skillId === 'raiseskeletalmagecontainer') {
+        var smInput = document.getElementById('skeletonmasterycontainer');
+        var smBonus = document.getElementById('skeletonmasterycontainer_bonus');
+        if (smBonus && smBonus.textContent.trim() !== '') {
+          masteryLevel = parseInt(smBonus.textContent) || 0;
+        } else if (smInput) {
+          masteryLevel = parseInt(smInput.value) || 0;
+        }
+        masteryData = this.skillData['skeletonmasterycontainer'];
+        if (masteryLevel > 0 && masteryData) {
+          var mIdx = Math.min(masteryLevel - 1, 59);
+          masteryVelocity = masteryData.skeletonVelocity[mIdx] || 0;
+          masteryLife = masteryData.skeletonLife[mIdx] || 0;
+          masteryPhysDmg = masteryData.physicalDamageBonus[mIdx] || 0;
+          masteryElemDmg = masteryData.elementalDamageBonus[mIdx] || 0;
+        }
+      }
+      // --- End Skeleton Mastery Integration ---
 
       // 1. Damage Handling
       // Physical + Cold (e.g., Raven, Spirit Wolf)
@@ -5370,15 +5479,41 @@ class SkillSystem {
       var synergyBoth = this.calculateSynergyBonus(skillId, 'both') || 0;
       var synergyPhys = this.calculateSynergyBonus(skillId, 'physical') || 0;
       var synergyPoi = this.calculateSynergyBonus(skillId, 'poison') || 0;
+      var synergyAll = this.calculateSynergyBonus(skillId, 'all') || 0;
 
-      var physBonus = (synergyBoth || synergyPhys);
+      var physBonus = (synergyBoth || synergyPhys || 0) + synergyAll;
+      if (skill.damage && skill.damage.damageBonus) {
+        physBonus += (skill.damage.damageBonus[levelIndex] || 0);
+      }
+      var coldBonus = synergyBoth + synergyAll;
+      if (skillId === 'raiseskeletonwarriorcontainer' || skillId === 'raiseskeletalmagecontainer') coldBonus += masteryElemDmg;
 
-      var physMin = Math.floor(bPhysMin * (1 + physBonus / 100));
-      var physMax = Math.floor(bPhysMax * (1 + physBonus / 100));
-      var coldMin = Math.floor(bColdMin * (1 + synergyBoth / 100));
-      var coldMax = Math.floor(bColdMax * (1 + synergyBoth / 100));
-      var poiMin = Math.floor(bPoiMin * (1 + synergyPoi / 100));
-      var poiMax = Math.floor(bPoiMax * (1 + synergyPoi / 100));
+      var poiBonus = synergyPoi + synergyAll;
+      if (skillId === 'raiseskeletonwarriorcontainer' || skillId === 'raiseskeletalmagecontainer') poiBonus += masteryElemDmg;
+
+      var physSumED = (synergyBoth || synergyPhys || 0) + synergyAll + masteryPhysDmg;
+      var inherentED = 0;
+      if (skill.damage && skill.damage.damageBonus) {
+        inherentED = (skill.damage.damageBonus[levelIndex] || 0);
+      }
+
+      var physMin = Math.floor(bPhysMin * (1 + inherentED / 100));
+      physMin = Math.floor(physMin * (1 + physSumED / 100));
+
+      var physMax = Math.floor(bPhysMax * (1 + inherentED / 100));
+      physMax = Math.floor(physMax * (1 + physSumED / 100));
+
+      var coldSumED = coldBonus;
+      var coldMin = Math.floor(bColdMin * (1 + coldSumED / 100));
+      var coldMax = Math.floor(bColdMax * (1 + coldSumED / 100));
+
+      var poiSumED = poiBonus;
+      var poiMin = Math.floor(bPoiMin * (1 + poiSumED / 100));
+      var poiMax = Math.floor(bPoiMax * (1 + poiSumED / 100));
+
+      if (masteryVelocity > 0) {
+        html += '<div style="margin: 5px 0; color: #ffffff;">Skeleton Velocity: +' + masteryVelocity + '%</div>';
+      }
 
       // Display Damage
       if (physMax > 0) html += '<div style="margin: 5px 0; color: #ffcc99;">Physical Damage: ' + physMin + '-' + physMax + '</div>';
@@ -5396,9 +5531,11 @@ class SkillSystem {
       }
 
       // Display Synergies
-      var totalSyn = Math.max(synergyBoth, synergyPhys, synergyPoi);
+      var totalSyn = Math.max(synergyBoth, synergyPhys, synergyPoi, synergyAll);
       if (totalSyn > 0) {
-        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + totalSyn + '%</div>';
+        // If 'all' is the primary or added to others, we should reflect the total physical bonus or max synergy
+        var displayBonus = synergyAll + Math.max(synergyBoth, synergyPhys, synergyPoi);
+        html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + displayBonus + '%</div>';
       }
 
       // 2. Stats Handling
@@ -5427,7 +5564,7 @@ class SkillSystem {
       if (skill.life) {
         var lifeValue = 0;
         if (typeof skill.life === 'object' && skill.life.hell) {
-          lifeValue = skill.life.hell[levelIndex] || 0;
+          lifeValue = (skill.life.hell[levelIndex] || 0) + masteryLife;
           html += '<div style="margin: 5px 0; color: #ff6666;">Life (Hell): ' + lifeValue + '</div>';
         } else if (Array.isArray(skill.life)) {
           lifeValue = skill.life[levelIndex] || 0;
@@ -5484,7 +5621,7 @@ class SkillSystem {
 
       // 5. Meta Info
       if (skill.manaCost) {
-        var mana = Array.isArray(skill.manaCost) ? (skill.manaCost[levelIndex] || 0) : skill.manaCost;
+        var mana = Array.isArray(skill.manaCost) ? parseFloat((skill.manaCost[levelIndex] || 0).toFixed(1)) : parseFloat((skill.manaCost || 0).toFixed(1));
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + mana + '</div>';
       }
       if (skill.cooldown) {
@@ -5586,7 +5723,7 @@ class SkillSystem {
       var life = skill.life[levelIndex] || 0;
       var attackRating = skill.attackRating[levelIndex] || 0;
       var allRes = skill.allResistances[levelIndex] || 0;
-      var manaCost = skill.manaCost[levelIndex] || 0;
+      var manaCost = parseFloat((skill.manaCost[levelIndex] || 0).toFixed(1));
       var decoyCount = skill.decoys[Math.min(totalSkillLevel - 1, skill.decoys.length - 1)] || 1;
 
       html += '<div style="margin: 5px 0;">Damage: ' + damageMin + '-' + damageMax + '</div>';
@@ -5594,7 +5731,7 @@ class SkillSystem {
       html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: ' + attackRating + '</div>';
       html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '%</div>';
       html += '<div style="margin: 5px 0;">Number of Decoys: ' + decoyCount + '</div>';
-      html += '<div style="margin: 5px 0; color: #ffff00;">Mana Cost: ' + manaCost + '</div>';
+      html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
     } else if (skillId === 'valkyriecontainer') {
       // Display Valkyrie summon information
       var levelIndex = Math.min(totalSkillLevel - 1, skill.powerStrikeLevel.length - 1);
@@ -5603,14 +5740,14 @@ class SkillSystem {
       var attackRating = skill.attackRating[levelIndex] || 0;
       var defense = skill.defense[levelIndex] || 0;
       var allRes = skill.allResistances[levelIndex] || 0;
-      var manaCost = skill.manaCost[levelIndex] || 0;
+      var manaCost = parseFloat((skill.manaCost[levelIndex] || 0).toFixed(1));
 
       html += '<div style="margin: 5px 0;">Life (Hell): ' + lifeHell + '</div>';
       html += '<div style="margin: 5px 0; color: #cccccc;">Power Strike Level: ' + powerStrikeLevel + '</div>';
       html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + attackRating + '%</div>';
       html += '<div style="margin: 5px 0;">Defense: +' + defense + '%</div>';
-      html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '%</div>';
-      html += '<div style="margin: 5px 0; color: #ffff00;">Mana Cost: ' + manaCost + '</div>';
+      html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '</div>';
+      html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       html += '<div style="margin: 5px 0;">Cooldown: ' + skill.cooldown + 's</div>';
       html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Can summon additional Valkyrie at levels 20 and 30</div>';
     }

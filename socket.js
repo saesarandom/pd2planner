@@ -11,6 +11,14 @@ class UnifiedSocketSystem {
     this.currentSocket = null;
     this.targetSocket = null;
 
+    // PD2 Open Wounds damage per second by Character Level (1-99)
+    this.openWoundsBaseDamage = [
+      3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 23, 25, 26, 28, 30, 32, 33,
+      35, 37, 39, 40, 42, 45, 47, 50, 53, 55, 58, 61, 63, 66, 68, 71, 74, 76, 79, 82, 85, 89, 92, 96, 99,
+      103, 106, 110, 113, 117, 120, 124, 127, 131, 134, 139, 143, 148, 152, 156, 161, 165, 170, 174, 178, 183, 187, 191, 196, 200,
+      205, 209, 213, 218, 222, 227, 231, 235, 240, 244, 249, 253, 257, 262, 266, 271, 275, 279, 284, 288, 293, 297, 301, 306
+    ];
+
     // Character base stats by class
     this.classStats = {
       'Amazon': { str: 20, dex: 25, vit: 20, enr: 15 },
@@ -3203,8 +3211,11 @@ class UnifiedSocketSystem {
       this.stats.life += (window.skillSystem.getCombatReflexesLifeBonus?.() || 0);
 
       // Deep Wounds / Hunger Open Wounds
-      this.stats.openWoundsChance = (this.stats.openWoundsChance || 0) + (window.skillSystem.getDeepWoundsChance?.() || 0) + (window.skillSystem.getHungerChance?.() || 0);
-      this.stats.openWoundsDamage = (this.stats.openWoundsDamage || 0) + (window.skillSystem.getDeepWoundsDamage?.() || 0) + (window.skillSystem.getHungerDamage?.() || 0);
+      this.stats.openWounds = (this.stats.openWounds || 0) + (window.skillSystem.getDeepWoundsChance?.() || 0) + (window.skillSystem.getHungerChance?.() || 0);
+
+      // PD2 Open Wounds damage Calculation: Base(from Level) + Skills + Items
+      const baseOWDamage = this.openWoundsBaseDamage[Math.min(this.currentLevel - 1, 98)] || 0;
+      this.stats.openWoundsDamage = baseOWDamage + (this.stats.openWoundsDamage || 0) + (window.skillSystem.getDeepWoundsDamage?.() || 0) + (window.skillSystem.getHungerDamage?.() || 0);
 
       // Druid Spirit Buffs
       this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + (window.skillSystem.getHeartOfWolverineDamageBonus?.() || 0);
@@ -3903,6 +3914,9 @@ class UnifiedSocketSystem {
       const owMatch = cleanLine.match(/(\d+)%\s+Chance\s+of\s+Open\s+Wounds/i);
       if (owMatch) { this.stats.openWounds += parseInt(owMatch[1]); return; }
 
+      const owdmgMatch = cleanLine.match(/(\d+)\s+Open\s+Wounds\s+Damage\s+per\s+Second/i);
+      if (owdmgMatch) { this.stats.openWoundsDamage += parseInt(owdmgMatch[1]); return; }
+
       // Speed stats
       const iasMatch = cleanLine.match(/(\d+)%\s+Increased\s+Attack\s+Speed/i);
       if (iasMatch) { this.stats.ias += parseInt(iasMatch[1]); return; }
@@ -4279,6 +4293,13 @@ class UnifiedSocketSystem {
       if (owMatch) {
         const value = parseInt(owMatch[1]);
         this.addToStatsMap(statsMap, 'open_wounds', { value });
+        return;
+      }
+
+      const owdmgMatch = cleanLine.match(/(\d+)\s+Open\s+Wounds\s+Damage\s+per\s+Second/i);
+      if (owdmgMatch) {
+        const value = parseInt(owdmgMatch[1]);
+        this.addToStatsMap(statsMap, 'open_wounds_damage', { value });
         return;
       }
 
@@ -4688,9 +4709,10 @@ class UnifiedSocketSystem {
 
     // Combat stats - using correct HTML IDs
     this.updateElement('owcontainer', this.stats.openWounds);
-    // PD2 Open Wounds damage: (Level-based damage) + Deep Wounds flat damage
-    // For simplicity, if we don't have the level-based formula handy, we just show the flat damage from the skill
-    this.updateElement('owdmgcontainer', this.stats.openWoundsDamage);
+
+    // PD2 Open Wounds damage: Display only if chance > 0
+    const finalOWDamage = this.stats.openWounds > 0 ? this.stats.openWoundsDamage : 0;
+    this.updateElement('owdmgcontainer', finalOWDamage);
     this.updateElement('cbcontainer', this.stats.crushingBlow);
     this.updateElement('cbdmgcontainer', this.stats.crushingBlow);
     this.updateElement('deadlystrikecontainer', this.stats.deadlyStrike);
@@ -4724,8 +4746,21 @@ class UnifiedSocketSystem {
 
     // Calculate total defense including dexterity bonus (totalDex / 4)
     const dexDefenseBonus = Math.floor(totalDex / 4);
-    const totalDefense = this.stats.defense + dexDefenseBonus;
-    this.updateElement('defensecontainer', totalDefense);
+    let totalDefense = this.stats.defense + dexDefenseBonus;
+
+    // Apply Shout and Cloak of Shadows bonuses to the total defense
+    const shoutBonus = window.skillSystem?.getShoutDefenseBonus?.() || 0;
+    const cloakBonus = window.skillSystem?.getCloakOfShadowsDefenseBonus?.() || 0;
+
+    if (shoutBonus > 0 || cloakBonus > 0) {
+      totalDefense = Math.floor(totalDefense * (1 + (shoutBonus + cloakBonus) / 100));
+    }
+
+    const defenseContainer = document.getElementById('defensecontainer');
+    if (defenseContainer) {
+      defenseContainer.textContent = totalDefense;
+      defenseContainer.style.color = (shoutBonus > 0 || cloakBonus > 0) ? '#d0d007ff' : '';
+    }
 
     // Boolean stats
     this.updateElement('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');

@@ -1101,6 +1101,8 @@ class CharmInventory {
       'Oflife': { min: 5, max: 10, text: '+{value} to Life' },
       'Ofsustenance': { min: 11, max: 15, text: '+{value} to Life' },
       'Ofvita': { min: 16, max: 20, text: '+{value} to Life' },
+      'Oflifegrand': { min: 21, max: 25, text: '+{value} to Life' },
+      'Ofvitagrand': { min: 41, max: 45, text: '+{value} to Life' },
 
       // Attribute suffixes
       'Ofstrength': { min: 1, max: 1, text: '+{value} to Strength' },
@@ -1116,10 +1118,12 @@ class CharmInventory {
 
       // Other suffixes
       'Ofinertia': { min: 3, max: 3, text: '+{value}% Faster Run/Walk' },
+      'Ofinertiagrand': { min: 7, max: 7, text: '+{value}% Faster Run/Walk' },
       'Ofgreed': { min: 5, max: 10, text: '+{value}% Extra Gold from Monsters' },
       'Offortune': { min: 3, max: 5, text: '+{value}% Better Chance of Getting Magic Items' },
       'Ofgoodluck': { min: 6, max: 73, text: '+{value}% Better Chance of Getting Magic Items' },
       'Ofbalance': { min: 5, max: 5, text: '+{value}% Faster Hit Recovery' },
+      'Ofbalancegrand': { min: 12, max: 12, text: '+{value}% Faster Hit Recovery' },
       'Offrost': {
         minRange: { min: 1, max: 1 },
         maxRange: { min: 2, max: 2 },
@@ -1458,7 +1462,7 @@ class CharmInventory {
         ],
         suffixes: [
           'Oflifegrand', 'Ofvitagrand', 'Ofstrengthgrand', 'Ofdexteritygrand',
-          'Ofineriagrand', 'Ofbalancegrand'
+          'Ofinertiagrand', 'Ofbalancegrand'
         ]
       }
     };

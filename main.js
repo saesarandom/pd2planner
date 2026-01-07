@@ -1133,7 +1133,7 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       // Speed stats
       'ias', 'fcr', 'frw', 'fhr',
       // Combat stats
-      'ow', 'cb', 'deadly', 'critchance', 'lleech', 'mleech',
+      'ow', 'owdmg', 'cb', 'deadly', 'critchance', 'lleech', 'mleech',
       // Defensive stats
       'dr', 'pdr', 'mdr', 'physdr', 'plr', 'blockchance', 'block',
       // Core stats
