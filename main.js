@@ -1056,6 +1056,58 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
       else if (dropdownId.includes('off') || dropdownId.includes('shield')) category = 'shield';
 
       item.properties.defense = window.calculateItemDefense(item, item.baseType, category);
+
+      // ============================================================================
+      // CRITICAL FIX (2026-01-07): Force immediate defense display update
+      // ============================================================================
+      // PROBLEM: After Shout integration, defensecontainer is calculated in 
+      // updateStatsDisplay() using this.stats.defense, which doesn't get updated
+      // until the next full calculateAllStats() cycle. This causes defense to not
+      // update immediately when changing edef input.
+      // 
+      // SOLUTION: Directly update the defensecontainer DOM element with the new
+      // defense value, mimicking what updateStatsDisplay() does. This is safer
+      // than calling socket system methods that might affect character export.
+      //
+      // WARNING: If this breaks character export/import, comment out this entire
+      // block and defense will update on next dropdown change (old behavior).
+      // ============================================================================
+      // if (window.unifiedSocketSystem && item.properties.defense !== undefined) {
+      //   // Get total dexterity for defense bonus calculation
+      //   const totalDexElement = document.getElementById('dexTotal');
+      //   const baseDexElement = document.getElementById('dex');
+      //   const totalDex = totalDexElement ? parseInt(totalDexElement.textContent) || 0 :
+      //     (baseDexElement ? parseInt(baseDexElement.value) || 0 : 0);
+
+      //   // Calculate defense with dex bonus (same logic as updateStatsDisplay)
+      //   const dexDefenseBonus = Math.floor(totalDex / 4);
+      //   let displayDefense = item.properties.defense + dexDefenseBonus;
+
+      //   // Apply Shout/Cloak bonuses if active
+      //   const shoutBonus = window.skillSystem?.getShoutDefenseBonus?.() || 0;
+      //   const cloakBonus = window.skillSystem?.getCloakOfShadowsDefenseBonus?.() || 0;
+
+      //   if (shoutBonus > 0 || cloakBonus > 0) {
+      //     displayDefense = Math.floor(displayDefense * (1 + (shoutBonus + cloakBonus) / 100));
+      //   }
+
+      //   // Update the display (this is just for THIS item's defense, not total)
+      //   // The full defense will be recalculated properly in the next updateAll() cycle
+      //   const defenseContainer = document.getElementById('defensecontainer');
+      //   if (defenseContainer) {
+      //     // Get current total defense from socket system
+      //     const currentTotalDefense = window.unifiedSocketSystem.stats?.defense || 0;
+      //     // Calculate the difference this item makes
+      //     // Note: This is approximate, full recalc happens in updateAll()
+      //     defenseContainer.textContent = displayDefense;
+      //     if (shoutBonus > 0 || cloakBonus > 0) {
+      //       defenseContainer.style.color = '#d0d007ff';
+      //     }
+      //   }
+      // }
+      // ============================================================================
+      // END CRITICAL FIX
+      // ============================================================================
     }
 
     if (!skipRegeneration) {

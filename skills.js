@@ -3084,6 +3084,225 @@ class SkillSystem {
         physicalDamageBonus: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120],
         elementalDamageBonus: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120]
       },
+      teethcontainer: {
+        name: "Teeth",
+        type: "magic",
+        teeth: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24],
+        magicDamage: {
+          min: [3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 30, 34, 38, 42, 46, 50, 57.5, 65, 72.5, 80, 87.5, 95, 106, 117, 128, 139, 150, 161, 172, 183, 194, 205, 216, 227, 238, 249, 260, 271, 282, 293, 304, 315, 326, 337, 348, 359, 370, 381, 392, 403, 414, 425, 436, 447],
+          max: [5, 7, 9, 11, 13, 15, 17, 19, 22, 25, 28, 31, 34, 37, 40, 43, 48, 53, 58, 63, 68, 73, 81.5, 90, 98.5, 107, 115.5, 124, 136.5, 149, 161.5, 174, 186.5, 199, 211.5, 224, 236.5, 249, 261.5, 274, 286.5, 299, 311.5, 324, 336.5, 349, 361.5, 374, 386.5, 399, 411.5, 424, 436.5, 449, 461.5, 474, 486.5, 499, 511.5, 524]
+        },
+        manaCost: [2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 30, 30.5, 31, 31.5],
+        synergies: [
+          { skillId: 'bonearmorcontainer', bonusPerLevel: 24, damageType: 'magic' },
+          { skillId: 'bonespearcontainer', bonusPerLevel: 24, damageType: 'magic' },
+          { skillId: 'bonespiritcontainer', bonusPerLevel: 24, damageType: 'magic' }
+        ]
+      },
+      poisonstrikecontainer: {
+        name: "Poison Strike",
+        type: "poison",
+        enemyPoisonResist: [-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -41, -42, -43, -44, -45, -46, -47, -48, -49, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50],
+        poisonDamage: {
+          min: [3, 6, 9, 12, 15, 18, 21, 25, 37, 50, 62, 75, 87, 100, 112, 125, 162, 200, 237, 275, 312, 350, 412, 475, 537, 600, 662, 725, 812, 900, 987, 1075, 1162, 1250, 1337, 1425, 1512, 1600, 1687, 1775, 1862, 1950, 2037, 2125, 2212, 2300, 2387, 2475, 2562, 2650, 2737, 2825, 2912, 3000, 3087, 3175, 3262, 3350, 3437, 3525],
+          max: [6, 9, 12, 15, 18, 21, 25, 28, 40, 53, 65, 78, 90, 103, 115, 128, 165, 203, 240, 278, 315, 353, 415, 478, 540, 603, 665, 728, 815, 903, 990, 1078, 1165, 1253, 1340, 1428, 1515, 1603, 1690, 1778, 1865, 1953, 2040, 2128, 2215, 2303, 2390, 2478, 2565, 2653, 2740, 2828, 2915, 3003, 3090, 3178, 3265, 3353, 3440, 3528]
+        },
+        attackRating: [50, 80, 110, 140, 170, 200, 230, 260, 290, 320, 350, 380, 410, 440, 470, 500, 530, 560, 590, 620, 650, 680, 710, 740, 770, 800, 830, 860, 890, 920, 950, 980, 1010, 1040, 1070, 1100, 1130, 1160, 1190, 1220, 1250, 1280, 1310, 1340, 1370, 1400, 1430, 1460, 1490, 1520, 1550, 1580, 1610, 1640, 1670, 1700, 1730, 1760, 1790, 1820],
+        poisonDuration: 2,
+        manaCost: [1.5, 1.6, 1.7, 1.8, 2, 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 3, 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 4, 4.1, 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 5, 5.1, 5.2, 5.3, 5.5, 5.6, 5.7, 5.8, 6, 6.1, 6.2, 6.3, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 7.3, 7.5, 7.6, 7.7, 7.8, 8, 8.1, 8.2, 8.3, 8.5, 8.6, 8.7, 8.8],
+        synergies: [
+          { skillId: 'desecratecontainer', bonusPerLevel: 25, damageType: 'poison' },
+          { skillId: 'bonearmorcontainer', bonusPerLevel: 25, damageType: 'poison' }
+        ]
+      },
+      bonearmorcontainer: {
+        name: "Bone Armor",
+        type: "buff",
+        physicalDamageAbsorbed: [0, 10, 20, 30, 40, 50, 60, 70, 81, 92, 103, 114, 125, 136, 147, 158, 170, 182, 194, 206, 218, 230, 243, 256, 269, 282, 295, 308, 322, 336, 350, 364, 378, 392, 406, 420, 434, 448, 462, 476, 490, 504, 518, 532, 546, 560, 574, 588, 602, 616, 630, 644, 658, 672, 686, 700, 714, 728, 742, 756],
+        defenseBonus: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200],
+        manaCost: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70],
+        cooldown: 2,
+        // TODO: Implement Energy-based synergy - Gains +3 Additional Absorb per Energy point
+        synergies: [
+          { skillId: 'bonewallcontainer', bonusPerLevel: 15, damageType: 'absorption' },
+          { skillId: 'boneprisoncontainer', bonusPerLevel: 15, damageType: 'absorption' }
+        ]
+      },
+      corpseexplosioncontainer: {
+        name: "Corpse Explosion",
+        // NOTE: This skill deals both Physical and Fire damage (similar to Death Sentry)
+        // Currently marked as "fire" type for general categorization
+        // TODO: Future implementation should handle dual damage types (physical + fire)
+        type: "fire",
+        physicalDamage: {
+          min: [2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18, 21, 24, 27, 30, 33, 39, 45, 51, 57, 63, 69, 81, 93, 105, 117, 129, 141, 156, 171, 186, 201, 216, 231, 246, 261, 276, 291, 306, 321, 336, 351, 366, 381, 396, 411, 426, 441, 456, 471, 486, 501, 516, 531, 546, 561, 576, 591, 606, 621],
+          max: [5, 7, 9, 11, 13, 15, 17, 19, 24, 29, 34, 39, 44, 49, 54, 59, 69, 79, 89, 99, 109, 119, 133, 147, 161, 175, 189, 203, 221, 239, 257, 275, 293, 311, 329, 347, 365, 383, 401, 419, 437, 455, 473, 491, 509, 527, 545, 563, 581, 599, 617, 635, 653, 671, 689, 707, 725, 743, 761, 779]
+        },
+        fireDamage: {
+          min: [2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18, 21, 24, 27, 30, 33, 39, 45, 51, 57, 63, 69, 81, 93, 105, 117, 129, 141, 156, 171, 186, 201, 216, 231, 246, 261, 276, 291, 306, 321, 336, 351, 366, 381, 396, 411, 426, 441, 456, 471, 486, 501, 516, 531, 546, 561, 576, 591, 606, 621],
+          max: [5, 7, 9, 11, 13, 15, 17, 19, 24, 29, 34, 39, 44, 49, 54, 59, 69, 79, 89, 99, 109, 119, 133, 147, 161, 175, 189, 203, 221, 239, 257, 275, 293, 311, 329, 347, 365, 383, 401, 419, 437, 455, 473, 491, 509, 527, 545, 563, 581, 599, 617, 635, 653, 671, 689, 707, 725, 743, 761, 779]
+        },
+        radius: [5, 5, 5.6, 5.6, 6.3, 6.3, 7, 7, 7.6, 7.6, 8.3, 8.3, 9, 9, 9.6, 9.6, 10.3, 10.3, 11, 11, 11.6, 11.6, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+        manaCost: [5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7, 20],
+        corpseLifePercent: { min: 5, max: 10 }, // Additional damage: 5-10% of corpse life
+        synergies: [
+          { skillId: 'amplifydamagecontainer', bonusPerLevel: 10, damageType: 'both' },
+          { skillId: 'desecratecontainer', bonusPerLevel: 10, damageType: 'both' },
+          { skillId: 'revivecontainer', bonusPerLevel: 10, damageType: 'both' }
+        ]
+      },
+      bonewallcontainer: {
+        name: "Bone Wall",
+        // NOTE: This is a summon skill but marked as "magic" for general categorization
+        // Unlike typical summons, it only has life and damage return (no offensive damage)
+        type: "summon",
+        life: {
+          normal: [147, 183, 220, 257, 294, 330, 367, 404, 441, 477, 514, 551, 588, 624, 661, 698, 735, 771, 808, 845, 882, 918, 955, 992, 1029, 1065, 1102, 1139, 1176, 1212, 1249, 1286, 1323, 1359, 1396, 1433, 1470, 1506, 1543, 1580, 1617, 1653, 1690, 1727, 1764, 1800, 1837, 1874, 1911, 1947, 1984, 2021, 2058, 2094, 2131, 2168, 2205, 2241, 2278, 2315],
+          nightmare: [147, 183, 220, 257, 294, 330, 367, 404, 441, 477, 514, 551, 588, 624, 661, 698, 735, 771, 808, 845, 882, 918, 955, 992, 1029, 1065, 1102, 1139, 1176, 1212, 1249, 1286, 1323, 1359, 1396, 1433, 1470, 1506, 1543, 1580, 1617, 1653, 1690, 1727, 1764, 1800, 1837, 1874, 1911, 1947, 1984, 2021, 2058, 2094, 2131, 2168, 2205, 2241, 2278, 2315],
+          hell: [431, 538, 646, 754, 862, 970, 1077, 1185, 1293, 1401, 1509, 1616, 1724, 1831, 1939, 2047, 2154, 2262, 2370, 2478, 2586, 2693, 2801, 2909, 3017, 3124, 3232, 3340, 3448, 3555, 3663, 3771, 3879, 3986, 4094, 4202, 4310, 4417, 4525, 4633, 4741, 4848, 4956, 5064, 5172, 5279, 5387, 5495, 5603, 5710, 5818, 5926, 6034, 6141, 6249, 6357, 6465, 6572, 6680, 6788]
+        },
+        damageReturned: [15, 23, 31, 39, 47, 55, 63, 71, 87, 103, 119, 135, 151, 167, 183, 199, 231, 263, 295, 327, 359, 391, 439, 487, 535, 583, 631, 679, 743, 807, 871, 935, 999, 1063, 1127, 1191, 1255, 1319, 1383, 1447, 1511, 1575, 1639, 1703, 1767, 1831, 1895, 1959, 2023, 2087, 2151, 2215, 2279, 2343, 2407, 2471, 2535, 2599, 2663, 2727],
+        duration: 24,
+        manaCost: 17,
+        cooldown: 1,
+        synergies: [
+          { skillId: 'bonearmorcontainer', bonusPerLevel: 5, damageType: 'life' },
+          { skillId: 'boneprisoncontainer', bonusPerLevel: 5, damageType: 'life' }
+        ]
+      },
+      desecratecontainer: {
+        name: "Desecrate",
+        type: "poison",
+        poisonDamage: {
+          min: [14, 18, 23, 28, 32, 37, 42, 46, 65, 84, 103, 121, 140, 159, 178, 196, 262, 328, 393, 459, 525, 590, 679, 768, 857, 946, 1035, 1125, 1237, 1350, 1462, 1575, 1687, 1800, 1912, 2025, 2137, 2250, 2362, 2475, 2587, 2700, 2812, 2925, 3037, 3150, 3262, 3375, 3487, 3600, 3712, 3825, 3937, 4050, 4162, 4275, 4387, 4500, 4612, 4725],
+          max: [18, 23, 28, 32, 37, 42, 46, 51, 70, 89, 107, 126, 145, 164, 182, 201, 267, 332, 398, 464, 529, 595, 684, 773, 862, 951, 1040, 1129, 1242, 1354, 1467, 1579, 1692, 1804, 1917, 2029, 2142, 2254, 2367, 2479, 2592, 2704, 2817, 2929, 3042, 3154, 3267, 3379, 3492, 3604, 3717, 3829, 3942, 4054, 4167, 4279, 4392, 4504, 4617, 4729]
+        },
+        poisonDuration: 3,
+        manaCost: [12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 30, 30.5, 31, 31.5, 32, 32.5, 33, 33.5, 34, 34.5, 35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5],
+        synergies: [
+          { skillId: 'poisondaggercontainer', bonusPerLevel: 20, damageType: 'poison' },
+          { skillId: 'poisonnovacontainer', bonusPerLevel: 20, damageType: 'poison' }
+        ]
+      },
+      bonespearcontainer: {
+        name: "Bone Spear",
+        type: "magic",
+        boneSpears: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        magicDamage: {
+          min: [12, 19, 26, 33, 40, 47, 54, 61, 70, 79, 88, 97, 106, 115, 124, 133, 145, 157, 169, 181, 193, 205, 231, 257, 283, 309, 335, 361, 407, 453, 499, 545, 591, 637, 683, 729, 775, 821, 867, 913, 959, 1005, 1051, 1097, 1143, 1189, 1235, 1281, 1327, 1373, 1419, 1465, 1511, 1557, 1603, 1649, 1695, 1741, 1787, 1833],
+          max: [18, 25, 32, 39, 46, 53, 60, 67, 76, 85, 94, 103, 112, 121, 130, 139, 152, 165, 178, 191, 204, 217, 245, 273, 301, 329, 357, 385, 435, 485, 535, 585, 635, 685, 735, 785, 835, 885, 935, 985, 1035, 1085, 1135, 1185, 1235, 1285, 1335, 1385, 1435, 1485, 1535, 1585, 1635, 1685, 1735, 1785, 1835, 1885, 1935, 1985]
+        },
+        manaCost: [7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7, 20, 20.2, 20.5, 20.7, 21, 21.2, 21.5, 21.7],
+        synergies: [
+          { skillId: 'teethcontainer', bonusPerLevel: 15, damageType: 'magic' },
+          { skillId: 'bonespiritcontainer', bonusPerLevel: 15, damageType: 'magic' },
+          { skillId: 'bonearmorcontainer', bonusPerLevel: 15, damageType: 'magic' }
+        ]
+      },
+      boneprisoncontainer: {
+        name: "Bone Prison",
+        // NOTE: This is a summon skill (similar to Bone Wall)
+        // It only has life and damage return (no offensive damage)
+        type: "summon",
+        life: {
+          normal: [147, 183, 220, 257, 294, 330, 367, 404, 441, 477, 514, 551, 588, 624, 661, 698, 735, 771, 808, 845, 882, 918, 955, 992, 1029, 1065, 1102, 1139, 1176, 1212, 1249, 1286, 1323, 1359, 1396, 1433, 1470, 1506, 1543, 1580, 1617, 1653, 1690, 1727, 1764, 1800, 1837, 1874, 1911, 1947, 1984, 2021, 2058, 2094, 2131, 2168, 2205, 2241, 2278, 2315],
+          nightmare: [147, 183, 220, 257, 294, 330, 367, 404, 441, 477, 514, 551, 588, 624, 661, 698, 735, 771, 808, 845, 882, 918, 955, 992, 1029, 1065, 1102, 1139, 1176, 1212, 1249, 1286, 1323, 1359, 1396, 1433, 1470, 1506, 1543, 1580, 1617, 1653, 1690, 1727, 1764, 1800, 1837, 1874, 1911, 1947, 1984, 2021, 2058, 2094, 2131, 2168, 2205, 2241, 2278, 2315],
+          hell: [431, 538, 646, 754, 862, 970, 1077, 1185, 1293, 1401, 1509, 1616, 1724, 1831, 1939, 2047, 2154, 2262, 2370, 2478, 2586, 2693, 2801, 2909, 3017, 3124, 3232, 3340, 3448, 3555, 3663, 3771, 3879, 3986, 4094, 4202, 4310, 4417, 4525, 4633, 4741, 4848, 4956, 5064, 5172, 5279, 5387, 5495, 5603, 5710, 5818, 5926, 6034, 6141, 6249, 6357, 6465, 6572, 6680, 6788]
+        },
+        damageReturned: [30, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 200, 220, 240, 260, 300, 340, 380, 420, 460, 500, 560, 620, 680, 740, 800, 860, 940, 1020, 1100, 1180, 1260, 1340, 1420, 1500, 1580, 1660, 1740, 1820, 1900, 1980, 2060, 2140, 2220, 2300, 2380, 2460, 2540, 2620, 2700, 2780, 2860, 2940, 3020, 3100, 3180, 3260, 3340, 3420],
+        duration: 24,
+        manaCost: [27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        cooldown: 5,
+        synergies: [
+          { skillId: 'bonearmorcontainer', bonusPerLevel: 5, damageType: 'life' },
+          { skillId: 'bonewallcontainer', bonusPerLevel: 5, damageType: 'life' }
+        ]
+      },
+      poisonnovacontainer: {
+        name: "Poison Nova",
+        type: "poison",
+        poisonDamage: {
+          min: [50, 68, 87, 106, 125, 143, 162, 181, 203, 225, 246, 268, 290, 312, 334, 356, 381, 406, 431, 456, 481, 506, 534, 562, 590, 618, 646, 675, 706, 737, 768, 800, 831, 862, 893, 925, 956, 987, 1018, 1050, 1081, 1112, 1143, 1175, 1206, 1237, 1268, 1300, 1331, 1362, 1393, 1425, 1456, 1487, 1518, 1550, 1581, 1612, 1643, 1675],
+          max: [90, 109, 128, 146, 165, 184, 203, 221, 243, 265, 287, 309, 331, 353, 375, 396, 421, 446, 471, 496, 521, 546, 575, 603, 631, 659, 687, 715, 746, 778, 809, 840, 871, 903, 934, 965, 996, 1028, 1059, 1090, 1121, 1153, 1184, 1215, 1246, 1278, 1309, 1340, 1371, 1403, 1434, 1465, 1496, 1528, 1559, 1590, 1621, 1653, 1684, 1715]
+        },
+        poisonDuration: 2,
+        manaCost: 20,
+        synergies: [
+          { skillId: 'poisonstrikecontainer', bonusPerLevel: 10, damageType: 'poison' },
+          { skillId: 'desecratecontainer', bonusPerLevel: 10, damageType: 'poison' }
+        ]
+      },
+      bonespiritcontainer: {
+        name: "Bone Spirit",
+        type: "magic",
+        magicDamage: {
+          min: [20, 36, 52, 68, 84, 100, 116, 132, 149, 166, 183, 200, 217, 234, 251, 268, 286, 304, 322, 340, 358, 376, 406, 436, 466, 496, 526, 556, 616, 676, 736, 796, 856, 916, 976, 1036, 1096, 1156, 1216, 1276, 1336, 1396, 1456, 1516, 1576, 1636, 1696, 1756, 1816, 1876, 1936, 1996, 2056, 2116, 2176, 2236, 2296, 2356, 2416, 2476],
+          max: [30, 47, 64, 81, 98, 115, 132, 149, 167, 185, 203, 221, 239, 257, 275, 293, 312, 331, 350, 369, 388, 407, 438, 469, 500, 531, 562, 593, 655, 717, 779, 841, 903, 965, 1027, 1089, 1151, 1213, 1275, 1337, 1399, 1461, 1523, 1585, 1647, 1709, 1771, 1833, 1895, 1957, 2019, 2081, 2143, 2205, 2267, 2329, 2391, 2453, 2515, 2577]
+        },
+        manaCost: [12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 30, 30.5, 31, 31.5, 32, 32.5, 33, 33.5, 34, 34.5, 35, 35.5, 36, 36.5, 37, 37.5, 38, 38.5, 39, 39.5, 40, 40.5, 41, 41.5],
+        synergies: [
+          { skillId: 'teethcontainer', bonusPerLevel: 15, damageType: 'magic' },
+          { skillId: 'bonespearcontainer', bonusPerLevel: 15, damageType: 'magic' },
+          { skillId: 'bonearmorcontainer', bonusPerLevel: 15, damageType: 'magic' }
+        ]
+      },
+      amplifydamagecontainer: {
+        name: "Amplify Damage",
+        type: "curse",
+        enemyPhysicalResist: [-11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -41, -42, -43, -44, -45, -46, -47, -48, -49, -50, -51, -52, -53, -54, -55, -56, -57, -58, -59, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60],
+        duration: [4, 4.2, 4.4, 4.6, 4.8, 5, 5.2, 5.4, 5.6, 5.8, 6, 6.2, 6.4, 6.6, 6.8, 7, 7.2, 7.4, 7.6, 7.8, 8, 8.2, 8.4, 8.6, 8.8, 9, 9.2, 9.4, 9.6, 9.8, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.2, 11.4, 11.6, 11.8, 12, 12.2, 12.4, 12.6, 12.8, 13, 13.2, 13.4, 13.6, 13.8, 14, 14.2, 14.4, 14.6, 14.8, 15, 15.2, 15.4, 15.6, 15.8],
+        manaCost: [2, 2.2, 2.5, 2.7, 3, 3.2, 3.5, 3.7, 4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7],
+        radius: [6, 6, 6, 6.6, 6.6, 6.6, 7.3, 7.3, 7.3, 8, 8, 8, 8.6, 8.6, 8.6, 9.3, 9.3, 9.3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+        // Curse Mastery bonuses:
+        // - Reduces enemy physical resistance by additional 1% per 2 hard points
+        // - Increases radius by 0.6 per 3 hard points
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.5, damageType: 'physicalResist' }, // 1% per 2 levels
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.2, damageType: 'radius' } // 0.6 per 3 levels
+        ]
+      },
+      cursemasterycontainer: {
+        name: "Curse Mastery",
+        type: "passive",
+        // Maximum number of curses that can be active on targets
+        maxCurses: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        // This passive skill enhances other curse skills
+        // Bonuses are applied through synergies in individual curse skills
+      },
+      dimvisioncontainer: {
+        name: "Dim Vision",
+        type: "curse",
+        enemyAttackRating: [-50, -65, -80, -95, -110, -125, -140, -155, -170, -185, -200, -215, -230, -245, -260, -275, -290, -305, -320, -335, -350, -365, -380, -395, -410, -425, -440, -455, -470, -485, -500, -515, -530, -545, -560, -575, -590, -605, -620, -635, -650, -665, -680, -695, -710, -725, -740, -755, -770, -785, -800, -815, -830, -845, -860, -875, -890, -905, -920, -935],
+        duration: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65],
+        // NOTE: Duration is 1/2 in Nightmare, and 1/4 in Hell
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
+        // Curse Mastery bonus: +10 Reduced Attack Rating per Level
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 10, damageType: 'attackRating' }
+        ]
+      },
+      darkpactcontainer: {
+        name: "Dark Pact",
+        type: "magic",
+        magicDamage: {
+          min: [3, 5, 7, 9, 11, 13, 15, 17, 20, 23, 26, 29, 32, 35, 38, 41, 45, 49, 53, 57, 61, 65, 71, 77, 83, 89, 95, 101, 109, 117, 125, 133, 141, 149, 157, 165, 173, 181, 189, 197, 205, 213, 221, 229, 237, 245, 253, 261, 269, 277, 285, 293, 301, 309, 317, 325, 333, 341, 349, 357],
+          max: [4, 7, 10, 13, 16, 19, 22, 25, 29, 33, 37, 41, 45, 49, 53, 57, 63, 69, 75, 81, 87, 93, 101, 109, 117, 125, 133, 141, 151, 161, 171, 181, 191, 201, 211, 221, 231, 241, 251, 261, 271, 281, 291, 301, 311, 321, 331, 341, 351, 361, 371, 381, 391, 401, 411, 421, 431, 441, 451, 461]
+        },
+        manaCost: [1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 8.25, 8.5, 8.75, 9, 9.25, 9.5, 9.75, 10, 10.25, 10.5, 10.75, 11, 11.25, 11.5, 11.75, 12, 12.25, 12.5, 12.75, 13, 13.25, 13.5, 13.75, 14, 14.25, 14.5, 14.75, 15, 15.25, 15.5, 15.75],
+        baseRadius: 4,
+        explosionRadiusBonusPerCurse: 33, // +33% radius per curse consumed
+        damageBonusPerCurse: 10, // +10% damage per curse consumed
+        // Curse Mastery bonuses:
+        // - +16% Magic Damage per Level
+        // - +0.6 Radius per 3 Levels
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 16, damageType: 'magic' },
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.2, damageType: 'radius' }, // 0.6 per 3 levels
+          { skillId: 'ironmaidencontainer', bonusPerLevel: 16, damageType: 'magic' }
+          // TODO: Add synergies for "All Other Curses: +12% Magic Damage per Level"
+          // This would require dynamically detecting all curse-type skills
+        ]
+      },
     };
 
     this.init();
@@ -3451,7 +3670,8 @@ class SkillSystem {
       'naturalresistancecontainer', // Natural Resistance
       'deepwoundscontainer', // Deep Wounds
       'lycantropycontainer', // Lycanthropy
-      'skeletonmasterycontainer' // Skeleton Mastery
+      'skeletonmasterycontainer', // Skeleton Mastery
+      'cursemasterycontainer' // Curse Mastery (passive skill)
     ];
 
     var self = this;
@@ -3585,6 +3805,13 @@ class SkillSystem {
     return data[Math.min(level - 1, data.length - 1)] || 0;
   }
 
+  getBoneArmorDefenseBonus() {
+    var level = this.getSkillTotalLevel('bonearmorcontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.bonearmorcontainer.defenseBonus;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
   getCloakOfShadowsDefenseBonus() {
     var level = this.getSkillTotalLevel('cloakofshadowscontainer');
     if (level === 0) return 0;
@@ -3598,6 +3825,14 @@ class SkillSystem {
     var data = this.skillData.ironskinscontainer.physicalDamageReduction;
     return data[Math.min(level - 1, data.length - 1)] || 0;
   }
+
+  getBoneArmorAbsorption() {
+    var level = this.getSkillTotalLevel('bonearmorcontainer');
+    if (level === 0) return 0;
+    var data = this.skillData.bonearmorcontainer.physicalDamageAbsorbed;
+    return data[Math.min(level - 1, data.length - 1)] || 0;
+  }
+
 
   getIncreasedSpeedFRW() {
     var level = this.getSkillTotalLevel('increasedspeedcontainer');
@@ -3788,7 +4023,8 @@ class SkillSystem {
           html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
         }
         if (damageInfo.masteryDamageBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+          var masteryName = this.getWeaponMasteryName();
+          html += '<div style="margin: 5px 0; color: #ff9966;">' + masteryName + ': +' + damageInfo.masteryDamageBonus + '%</div>';
         }
 
         var toMinDmgContainer = document.getElementById('tomindmgcontainer');
@@ -4363,7 +4599,8 @@ class SkillSystem {
             html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
           }
           if (damageInfo.masteryDamageBonus > 0) {
-            html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+            var masteryName = this.getWeaponMasteryName();
+            html += '<div style="margin: 5px 0; color: #ff9966;">' + masteryName + ': +' + damageInfo.masteryDamageBonus + '%</div>';
           }
 
           // Show elemental damages
@@ -4763,7 +5000,8 @@ class SkillSystem {
             html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
           }
           if (damageInfo.masteryDamageBonus > 0) {
-            html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+            var masteryName = this.getWeaponMasteryName();
+            html += '<div style="margin: 5px 0; color: #ff9966;">' + masteryName + ': +' + damageInfo.masteryDamageBonus + '%</div>';
           }
 
           // Show elemental damages
@@ -4846,7 +5084,8 @@ class SkillSystem {
       html += '<div style="margin: 5px 0;">Weapon: ' + weaponDamage.min + '-' + weaponDamage.max + '</div>';
       html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
       if (damageInfo.masteryDamageBonus > 0) {
-        html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+        var masteryName = this.getWeaponMasteryName();
+        html += '<div style="margin: 5px 0; color: #ff9966;">' + masteryName + ': +' + damageInfo.masteryDamageBonus + '%</div>';
       }
       html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: 0-0 (Converted to Lightning)</div>';
       html += '<div style="margin: 5px 0; color: #ffff00;">Lightning: ' + damageInfo.lightningMin + '-' + damageInfo.lightningMax + '</div>';
@@ -5038,7 +5277,8 @@ class SkillSystem {
 
         html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
         if (damageInfo.masteryDamageBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+          var masteryName = this.getWeaponMasteryName();
+          html += '<div style="margin: 5px 0; color: #ff9966;">' + masteryName + ': +' + damageInfo.masteryDamageBonus + '%</div>';
         }
 
         // Display conversion info
@@ -5153,7 +5393,8 @@ class SkillSystem {
 
         html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
         if (damageInfo.masteryDamageBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+          var masteryName = this.getWeaponMasteryName();
+          html += '<div style="margin: 5px 0; color: #ff9966;">' + masteryName + ': +' + damageInfo.masteryDamageBonus + '%</div>';
         }
 
         var conversionPercent = skill.convertsPhysical || 50;
@@ -5225,7 +5466,8 @@ class SkillSystem {
 
         html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
         if (damageInfo.masteryDamageBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+          var masteryName = this.getWeaponMasteryName();
+          html += '<div style="margin: 5px 0; color: #ff9966;">' + masteryName + ': +' + damageInfo.masteryDamageBonus + '%</div>';
         }
 
         var conversionPercent = skill.convertsPhysical || 50;
@@ -5360,7 +5602,8 @@ class SkillSystem {
         html += '<div style="margin: 5px 0;">Dex Bonus: +' + damageInfo.statBonus + '%</div>';
         html += '<div style="margin: 5px 0;">Skill Bonus: +' + damageInfo.skillBonus + '%</div>';
         if (damageInfo.masteryDamageBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Physical Damage: +' + damageInfo.masteryDamageBonus + '%</div>';
+          var masteryName = this.getWeaponMasteryName();
+          html += '<div style="margin: 5px 0; color: #ff9966;">' + masteryName + ': +' + damageInfo.masteryDamageBonus + '%</div>';
         }
 
         var toMinDmgContainer = document.getElementById('tomindmgcontainer');
@@ -5749,7 +5992,89 @@ class SkillSystem {
       html += '<div style="margin: 5px 0; color: #aaffaa;">All Resistances: +' + allRes + '</div>';
       html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       html += '<div style="margin: 5px 0;">Cooldown: ' + skill.cooldown + 's</div>';
-      html += '<div style="margin: 5px 0; font-size: 11px; font-style: italic;">Can summon additional Valkyrie at levels 20 and 30</div>';
+      html += '\u003cdiv style=\"margin: 5px 0; font-size: 11px; font-style: italic;\"\u003eCan summon additional Valkyrie at levels 20 and 30\u003c/div\u003e';
+    }
+
+    // Handle Curse skills
+    if (skill.type === 'curse') {
+      var levelIndex = Math.min(totalSkillLevel - 1, 59);
+
+      // Enemy Physical Resistance Reduction
+      if (skill.enemyPhysicalResist) {
+        var physResist = skill.enemyPhysicalResist[levelIndex] || 0;
+
+        // Add Curse Mastery bonus if applicable
+        var curseMasteryInput = document.getElementById('cursemasterycontainer');
+        var curseMasteryLevel = parseInt(curseMasteryInput && curseMasteryInput.value ? curseMasteryInput.value : '0') || 0;
+
+        if (curseMasteryLevel > 0 && skill.synergies) {
+          var physResistSynergy = skill.synergies.find(s => s.skillId === 'cursemasterycontainer' && s.damageType === 'physicalResist');
+          if (physResistSynergy) {
+            var bonus = curseMasteryLevel * physResistSynergy.bonusPerLevel;
+            physResist -= bonus; // More negative = more reduction
+            html += '\u003cdiv style=\"margin: 5px 0; color: #ff6666;\"\u003eEnemy Physical Resistance: ' + Math.floor(physResist) + '% (' + (skill.enemyPhysicalResist[levelIndex] || 0) + '% + ' + Math.floor(bonus) + '% Curse Mastery)\u003c/div\u003e';
+          } else {
+            html += '\u003cdiv style=\"margin: 5px 0; color: #ff6666;\"\u003eEnemy Physical Resistance: ' + physResist + '%\u003c/div\u003e';
+          }
+        } else {
+          html += '\u003cdiv style=\"margin: 5px 0; color: #ff6666;\"\u003eEnemy Physical Resistance: ' + physResist + '%\u003c/div\u003e';
+        }
+      }
+
+      // Enemy Attack Rating Reduction
+      if (skill.enemyAttackRating) {
+        var attackRating = skill.enemyAttackRating[levelIndex] || 0;
+
+        // Add Curse Mastery bonus if applicable
+        var curseMasteryInput = document.getElementById('cursemasterycontainer');
+        var curseMasteryLevel = parseInt(curseMasteryInput && curseMasteryInput.value ? curseMasteryInput.value : '0') || 0;
+
+        if (curseMasteryLevel > 0 && skill.synergies) {
+          var arSynergy = skill.synergies.find(s => s.skillId === 'cursemasterycontainer' && s.damageType === 'attackRating');
+          if (arSynergy) {
+            var bonus = curseMasteryLevel * arSynergy.bonusPerLevel;
+            attackRating -= bonus; // More negative = more reduction
+            html += '\u003cdiv style=\"margin: 5px 0; color: #ffcc66;\"\u003eEnemy Attack Rating: ' + Math.floor(attackRating) + ' (' + (skill.enemyAttackRating[levelIndex] || 0) + ' + ' + Math.floor(bonus) + ' Curse Mastery)\u003c/div\u003e';
+          } else {
+            html += '\u003cdiv style=\"margin: 5px 0; color: #ffcc66;\"\u003eEnemy Attack Rating: ' + attackRating + '\u003c/div\u003e';
+          }
+        } else {
+          html += '\u003cdiv style=\"margin: 5px 0; color: #ffcc66;\"\u003eEnemy Attack Rating: ' + attackRating + '\u003c/div\u003e';
+        }
+      }
+
+      // Duration
+      if (skill.duration) {
+        var duration = Array.isArray(skill.duration) ? (skill.duration[levelIndex] || 0) : skill.duration;
+        html += '\u003cdiv style=\"margin: 5px 0; color: #aaffaa;\"\u003eDuration: ' + duration + ' seconds\u003c/div\u003e';
+      }
+
+      // Radius
+      if (skill.radius) {
+        var radius = Array.isArray(skill.radius) ? (skill.radius[levelIndex] || 0) : skill.radius;
+
+        // Add Curse Mastery radius bonus if applicable
+        var curseMasteryInput = document.getElementById('cursemasterycontainer');
+        var curseMasteryLevel = parseInt(curseMasteryInput && curseMasteryInput.value ? curseMasteryInput.value : '0') || 0;
+
+        if (curseMasteryLevel > 0 && skill.synergies) {
+          var radiusSynergy = skill.synergies.find(s => s.skillId === 'cursemasterycontainer' && s.damageType === 'radius');
+          if (radiusSynergy) {
+            var bonus = curseMasteryLevel * radiusSynergy.bonusPerLevel;
+            html += '\u003cdiv style=\"margin: 5px 0; color: #aaddff;\"\u003eRadius: ' + (radius + bonus).toFixed(1) + ' yards (' + radius + ' + ' + bonus.toFixed(1) + ' Curse Mastery)\u003c/div\u003e';
+          } else {
+            html += '\u003cdiv style=\"margin: 5px 0; color: #aaddff;\"\u003eRadius: ' + radius + ' yards\u003c/div\u003e';
+          }
+        } else {
+          html += '\u003cdiv style=\"margin: 5px 0; color: #aaddff;\"\u003eRadius: ' + radius + ' yards\u003c/div\u003e';
+        }
+      }
+
+      // Mana Cost
+      if (skill.manaCost) {
+        var mana = Array.isArray(skill.manaCost) ? parseFloat((skill.manaCost[levelIndex] || 0).toFixed(1)) : parseFloat((skill.manaCost || 0).toFixed(1));
+        html += '\u003cdiv style=\"margin: 5px 0; color: #6699ff;\"\u003eMana Cost: ' + mana + '\u003c/div\u003e';
+      }
     }
 
     if (damageInfo && damageInfo.critMultiplier > 1) {
@@ -6167,6 +6492,32 @@ class SkillSystem {
       }
     });
     return maxBonus;
+  }
+
+  getWeaponMasteryName() {
+    const masteries = [
+      { id: 'javelinandspearmasterycontainer', name: 'Javelin Mastery' },
+      { id: 'clawanddaggermasterycontainer', name: 'Claw Mastery' },
+      { id: 'polearmandspearmasterycontainer', name: 'Spear Mastery' },
+      { id: 'throwingmasterycontainer', name: 'Throwing Mastery' },
+      { id: 'generalmasterycontainer', name: 'General Mastery' }
+    ];
+    let maxBonus = -1;
+    let bestName = 'Weapon Mastery';
+    masteries.forEach(m => {
+      const level = this.getSkillTotalLevel(m.id);
+      if (level > 0) {
+        const data = this.skillData[m.id]?.damage;
+        if (data && Array.isArray(data)) {
+          const bonus = data[Math.min(level - 1, data.length - 1)] || 0;
+          if (bonus > maxBonus) {
+            maxBonus = bonus;
+            bestName = m.name;
+          }
+        }
+      }
+    });
+    return bestName;
   }
 
   getWeaponMasteryARBonus() {

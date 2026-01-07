@@ -1107,8 +1107,10 @@ class CharmInventory {
       // Attribute suffixes
       'Ofstrength': { min: 1, max: 1, text: '+{value} to Strength' },
       'Ofstrength2': { min: 2, max: 2, text: '+{value} to Strength' },
+      'Ofstrength2grand': { min: 5, max: 6, text: '+{value} to Strength' },
       'Ofdexterity': { min: 1, max: 1, text: '+{value} to Dexterity' },
       'Ofdexterity2': { min: 2, max: 2, text: '+{value} to Dexterity' },
+      'Ofdexterity2grand': { min: 5, max: 6, text: '+{value} to Dexterity' },
       'Ofstrengthlarge': { min: 2, max: 3, text: '+{value} to Strength' },
       'Ofstrength2large': { min: 4, max: 5, text: '+{value} to Strength' },
       'Ofdexteritylarge': { min: 2, max: 3, text: '+{value} to Dexterity' },
@@ -1461,7 +1463,7 @@ class CharmInventory {
           'Redgrand', 'Jaggedgrand', 'Bronzegrand', 'Sharpgrand', 'Fletchersgrand', 'Acrobatsgrand', 'Harpoonistsgrand', 'Burninggrand', 'Sparkinggrand', 'Chillinggrand', 'Hexinggrand', 'Fungalgrand', 'Graverobbersgrand', 'Lionbrandedgrand', 'Captainsgrand', 'Preserversgrand', 'Expertsgrand', 'Fanaticgrand', 'Soundinggrand', 'Trainersgrand', 'Spiritualgrand', 'Naturesgrand', 'Entrappinggrand', 'Mentalistsgrand', 'Shogukushasgrand'
         ],
         suffixes: [
-          'Oflifegrand', 'Ofvitagrand', 'Ofstrengthgrand', 'Ofdexteritygrand',
+          'Oflifegrand', 'Ofvitagrand', 'Ofstrength2grand', 'Ofdexterity2grand',
           'Ofinertiagrand', 'Ofbalancegrand'
         ]
       }
