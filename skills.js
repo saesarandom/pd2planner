@@ -883,8 +883,13 @@ class SkillSystem {
         }
         ],
         'cursescontainer': [{
-          id: 'amplifycontainer',
+          id: 'amplifydamagecontainer',
           name: 'Amplify Damage',
+          level: 1
+        },
+        {
+          id: 'cursemasterycontainer',
+          name: 'Curse Mastery',
           level: 1
         },
         {
@@ -3301,6 +3306,121 @@ class SkillSystem {
           { skillId: 'ironmaidencontainer', bonusPerLevel: 16, damageType: 'magic' }
           // TODO: Add synergies for "All Other Curses: +12% Magic Damage per Level"
           // This would require dynamically detecting all curse-type skills
+        ]
+      },
+      ironmaidencontainer: {
+        name: "Iron Maiden",
+        type: "curse",
+        damageReturned: [200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500, 525, 550, 575, 600, 625, 650, 675, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000, 1025, 1050, 1075, 1100, 1125, 1150, 1175, 1200, 1225, 1250, 1275, 1300, 1325, 1350, 1375, 1400, 1425, 1450, 1475, 1500, 1525, 1550, 1575, 1600, 1625, 1650, 1675],
+        duration: [6, 7.2, 8.4, 9.6, 10.8, 12, 13.2, 14.4, 15.6, 16.8, 18, 19.2, 20.4, 21.6, 22.8, 24, 25.2, 26.4, 27.6, 28.8, 30, 31.2, 32.4, 33.6, 34.8, 36, 37.2, 38.4, 39.6, 40.8, 42, 43.2, 44.4, 45.6, 46.8, 48, 49.2, 50.4, 51.6, 52.8, 54, 55.2, 56.4, 57.6, 58.8, 60, 61.2, 62.4, 63.6, 64.8, 66, 67.2, 68.4, 69.6, 70.8, 72, 73.2, 74.4, 75.6, 76.8],
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
+        radius: [8, 8, 8, 8.6, 8.6, 8.6, 9.3, 9.3, 9.3, 10, 10, 10, 10.6, 10.6, 10.6, 11.3, 11.3, 11.3, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+        // Curse Mastery bonuses:
+        // - +6% Increased Damage Returned per Level
+        // - +0.6 Radius per 3 Levels
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 6, damageType: 'damageReturn' },
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.2, damageType: 'radius' } // 0.6 per 3 levels
+        ]
+      },
+      lifetapcontainer: {
+        name: "Life Tap",
+        type: "curse",
+        lifeSteal: [8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48],
+        duration: [7, 8.4, 9.8, 11.2, 12.6, 14, 15.4, 16.8, 18.2, 19.6, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
+        manaCost: [5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7],
+        radius: [4, 4, 4, 4.6, 4.6, 4.6, 5.3, 5.3, 5.3, 6, 6, 6, 6.6, 6.6, 6.6, 7.3, 7.3, 7.3, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        // Curse Mastery bonuses:
+        // - +1% Increased Life Steal per 2 Levels
+        // - +0.6 Radius per 3 Levels
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.5, damageType: 'lifeSteal' }, // 1% per 2 levels
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.2, damageType: 'radius' } // 0.6 per 3 levels
+        ]
+      },
+      terrorcontainer: {
+        name: "Terror",
+        type: "curse",
+        enemyMovementSpeed: [-10, -12, -14, -16, -18, -20, -22, -24, -26, -28, -30, -32, -34, -36, -38, -40, -42, -44, -46, -48, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50],
+        duration: 3,
+        radius: 6,
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
+        // Curse Mastery bonus: +1% Reduced Movement Speed per Level
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 1, damageType: 'movementSpeed' }
+        ]
+      },
+      weakencontainer: {
+        name: "Weaken",
+        type: "curse",
+        enemyDefense: [-10, -12, -14, -16, -18, -20, -22, -24, -26, -28, -30, -32, -34, -36, -38, -40, -42, -44, -46, -48, -50, -52, -54, -56, -58, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60],
+        enemyDamage: [-10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -41, -42, -43, -44, -45, -46, -47, -48, -49, -50, -51, -52, -53, -54, -55, -56, -57, -58, -59, -60, -61, -62, -63, -64, -65, -66, -67, -68, -69],
+        duration: [10, 11.4, 12.8, 14.2, 15.6, 17, 18.4, 19.8, 21.2, 22.6, 24, 25.4, 26.8, 28.2, 29.6, 31, 32.4, 33.8, 35.2, 36.6, 38, 39.4, 40.8, 42.2, 43.6, 45, 46.4, 47.8, 49.2, 50.6, 52, 53.4, 54.8, 56.2, 57.6, 59, 60.4, 61.8, 63.2, 64.6, 66, 67.4, 68.8, 70.2, 71.6, 73, 74.4, 75.8, 77.2, 78.6, 80, 81.4, 82.8, 84.2, 85.6, 87, 88.4, 89.8, 91.2, 92.6],
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
+        radius: [8, 8, 8, 8.6, 8.6, 8.6, 9.3, 9.3, 9.3, 10, 10, 10, 10.6, 10.6, 10.6, 11.3, 11.3, 11.3, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+        // Curse Mastery bonuses:
+        // - +1% Reduced Damage Per Two Levels
+        // - +0.6 Radius Per Three Levels
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.5, damageType: 'enemyDamage' }, // 1% per 2 levels
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.2, damageType: 'radius' } // 0.6 per 3 levels
+        ]
+      },
+      confusecontainer: {
+        name: "Confuse",
+        type: "curse",
+        enemyAttackSpeed: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210],
+        duration: 5,
+        radius: [6, 6, 6, 6.6, 6.6, 6.6, 7.3, 7.3, 7.3, 8, 8, 8, 8.6, 8.6, 8.6, 9.3, 9.3, 9.3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+        manaCost: [4, 4.2, 4.5, 4.7, 5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7],
+        // Curse Mastery bonus: +5% Increased Attack Speed per Level
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 5, damageType: 'attackSpeed' }
+        ]
+      },
+      attractcontainer: {
+        name: "Attract",
+        type: "curse",
+        enemyDefense: [-120, -130, -140, -150, -160, -170, -180, -190, -200, -210, -220, -230, -240, -250, -260, -270, -280, -290, -300, -310, -320, -330, -340, -350, -360, -370, -380, -390, -400, -410, -420, -430, -440, -450, -460, -470, -480, -490, -500, -510, -520, -530, -540, -550, -560, -570, -580, -590, -600, -610, -620, -630, -640, -650, -660, -670, -680, -690, -700, -710],
+        duration: [8, 8.2, 8.4, 8.6, 8.8, 9, 9.2, 9.4, 9.6, 9.8, 10, 10.2, 10.4, 10.6, 10.8, 11, 11.2, 11.4, 11.6, 11.8, 12, 12.2, 12.4, 12.6, 12.8, 13, 13.2, 13.4, 13.6, 13.8, 14, 14.2, 14.4, 14.6, 14.8, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15],
+        manaCost: 10,
+        radius: [2.6, 2.6, 2.6, 3.3, 3.3, 3.3, 4, 4, 4, 4.6, 4.6, 4.6, 5.3, 5.3, 5.3, 6, 6, 6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6, 6.6],
+        // Curse Mastery bonus: +5 Reduced Enemy Defense per Level
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 5, damageType: 'enemyDefense' }
+        ]
+      },
+      decrepifycontainer: {
+        name: "Decrepify",
+        type: "curse",
+        enemyPhysicalResist: [-10, -10, -11, -11, -11, -12, -12, -12, -13, -13, -13, -14, -14, -14, -15, -15, -15, -16, -16, -16, -17, -17, -17, -18, -18, -18, -19, -19, -19, -20, -20, -20, -21, -21, -21, -22, -22, -22, -23, -23, -23, -24, -24, -24, -25, -25, -25, -26, -26, -26, -27, -27, -27, -28, -28, -28, -29, -29, -29, -30],
+        enemyMovementSpeed: [-11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -41, -42, -43, -44, -45, -46, -47, -48, -49, -50, -51, -52, -53, -54, -55, -56, -57, -58, -59, -60, -61, -62, -63, -64, -65, -66, -67, -68, -69, -70],
+        enemyAttackCastSpeed: [-10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -41, -42, -43, -44, -45, -46, -47, -48, -49, -50, -51, -52, -53, -54, -55, -56, -57, -58, -59, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60],
+        duration: [4, 4.4, 4.8, 5.2, 5.6, 6, 6.4, 6.8, 7.2, 7.6, 8, 8.4, 8.8, 9.2, 9.6, 10, 10.4, 10.8, 11.2, 11.6, 12, 12.4, 12.8, 13.2, 13.6, 14, 14.4, 14.8, 15.2, 15.6, 16, 16.4, 16.8, 17.2, 17.6, 18, 18.4, 18.8, 19.2, 19.6, 20, 20.4, 20.8, 21.2, 21.6, 22, 22.4, 22.8, 23.2, 23.6, 24, 24.4, 24.8, 25.2, 25.6, 26, 26.4, 26.8, 27.2, 27.6],
+        manaCost: [5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7],
+        radius: [8, 8, 8, 8.6, 8.6, 8.6, 9.3, 9.3, 9.3, 10, 10, 10, 10.6, 10.6, 10.6, 11.3, 11.3, 11.3, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
+        // Curse Mastery bonuses:
+        // - +1% Reduced Attack and Cast Rate per Level
+        // - +0.6 Radius Per Three Levels
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 1, damageType: 'attackCastSpeed' },
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.2, damageType: 'radius' } // 0.6 per 3 levels
+        ]
+      },
+      lowerresistcontainer: {
+        name: "Lower Resist",
+        type: "curse",
+        // NOTE: Lower Resist, including Curse Mastery synergy, is capped at -65%
+        enemyElementalResist: [-11, -12, -13, -14, -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32, -33, -34, -35, -36, -37, -38, -39, -40, -41, -42, -43, -44, -45, -46, -47, -48, -49, -50, -51, -52, -53, -54, -55, -56, -57, -58, -59, -60, -61, -62, -63, -64, -65, -65, -65, -65, -65, -65],
+        duration: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67],
+        manaCost: [5, 5.2, 5.5, 5.7, 6, 6.2, 6.5, 6.7, 7, 7.2, 7.5, 7.7, 8, 8.2, 8.5, 8.7, 9, 9.2, 9.5, 9.7, 10, 10.2, 10.5, 10.7, 11, 11.2, 11.5, 11.7, 12, 12.2, 12.5, 12.7, 13, 13.2, 13.5, 13.7, 14, 14.2, 14.5, 14.7, 15, 15.2, 15.5, 15.7, 16, 16.2, 16.5, 16.7, 17, 17.2, 17.5, 17.7, 18, 18.2, 18.5, 18.7, 19, 19.2, 19.5, 19.7],
+        radius: [6, 6, 6, 6.6, 6.6, 6.6, 7.3, 7.3, 7.3, 8, 8, 8, 8.6, 8.6, 8.6, 9.3, 9.3, 9.3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+        // Curse Mastery bonuses:
+        // - +1% Lowered Resistances Per Two Levels
+        // - +0.6 Radius Per Three Levels
+        synergies: [
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.5, damageType: 'elementalResist' }, // 1% per 2 levels
+          { skillId: 'cursemasterycontainer', bonusPerLevel: 0.2, damageType: 'radius' } // 0.6 per 3 levels
         ]
       },
     };
@@ -6040,6 +6160,51 @@ class SkillSystem {
           }
         } else {
           html += '\u003cdiv style=\"margin: 5px 0; color: #ffcc66;\"\u003eEnemy Attack Rating: ' + attackRating + '\u003c/div\u003e';
+        }
+      }
+
+
+      // Damage Returned (Iron Maiden)
+      if (skill.damageReturned) {
+        var damageReturn = skill.damageReturned[levelIndex] || 0;
+
+        // Add Curse Mastery bonus if applicable
+        var curseMasteryInput = document.getElementById('cursemasterycontainer');
+        var curseMasteryLevel = parseInt(curseMasteryInput && curseMasteryInput.value ? curseMasteryInput.value : '0') || 0;
+
+        if (curseMasteryLevel > 0 && skill.synergies) {
+          var damageReturnSynergy = skill.synergies.find(s => s.skillId === 'cursemasterycontainer' && s.damageType === 'damageReturn');
+          if (damageReturnSynergy) {
+            var bonus = curseMasteryLevel * damageReturnSynergy.bonusPerLevel;
+            var totalReturn = damageReturn + bonus;
+            html += '\u003cdiv style=\"margin: 5px 0; color: #ff9966;\"\u003eDamage Returned: ' + Math.floor(totalReturn) + '% (' + damageReturn + '% + ' + Math.floor(bonus) + '% Curse Mastery)\u003c/div\u003e';
+          } else {
+            html += '\u003cdiv style=\"margin: 5px 0; color: #ff9966;\"\u003eDamage Returned: ' + damageReturn + '%\u003c/div\u003e';
+          }
+        } else {
+          html += '\u003cdiv style=\"margin: 5px 0; color: #ff9966;\"\u003eDamage Returned: ' + damageReturn + '%\u003c/div\u003e';
+        }
+      }
+
+      // Life Steal (Life Tap)
+      if (skill.lifeSteal) {
+        var lifeSteal = skill.lifeSteal[levelIndex] || 0;
+
+        // Add Curse Mastery bonus if applicable
+        var curseMasteryInput = document.getElementById('cursemasterycontainer');
+        var curseMasteryLevel = parseInt(curseMasteryInput && curseMasteryInput.value ? curseMasteryInput.value : '0') || 0;
+
+        if (curseMasteryLevel > 0 && skill.synergies) {
+          var lifeStealSynergy = skill.synergies.find(s => s.skillId === 'cursemasterycontainer' && s.damageType === 'lifeSteal');
+          if (lifeStealSynergy) {
+            var bonus = curseMasteryLevel * lifeStealSynergy.bonusPerLevel;
+            var totalSteal = lifeSteal + bonus;
+            html += '\u003cdiv style=\"margin: 5px 0; color: #ff6699;\"\u003eLife Steal: +' + Math.floor(totalSteal) + '% (' + lifeSteal + '% + ' + Math.floor(bonus) + '% Curse Mastery)\u003c/div\u003e';
+          } else {
+            html += '\u003cdiv style=\"margin: 5px 0; color: #ff6699;\"\u003eLife Steal: +' + lifeSteal + '%\u003c/div\u003e';
+          }
+        } else {
+          html += '\u003cdiv style=\"margin: 5px 0; color: #ff6699;\"\u003eLife Steal: +' + lifeSteal + '%\u003c/div\u003e';
         }
       }
 
