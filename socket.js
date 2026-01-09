@@ -3210,12 +3210,12 @@ class UnifiedSocketSystem {
       this.stats.fhr += (window.skillSystem.getCombatReflexesFHR?.() || 0);
       this.stats.life += (window.skillSystem.getCombatReflexesLifeBonus?.() || 0);
 
-      // Deep Wounds / Hunger Open Wounds
-      this.stats.openWounds = (this.stats.openWounds || 0) + (window.skillSystem.getDeepWoundsChance?.() || 0) + (window.skillSystem.getHungerChance?.() || 0);
+      // Deep Wounds / Hunger / Thorns Open Wounds
+      this.stats.openWounds = (this.stats.openWounds || 0) + (window.skillSystem.getDeepWoundsChance?.() || 0) + (window.skillSystem.getHungerChance?.() || 0) + (window.skillSystem.getThornsOpenWoundsChance?.() || 0);
 
       // PD2 Open Wounds damage Calculation: Base(from Level) + Skills + Items
       const baseOWDamage = this.openWoundsBaseDamage[Math.min(this.currentLevel - 1, 98)] || 0;
-      this.stats.openWoundsDamage = baseOWDamage + (this.stats.openWoundsDamage || 0) + (window.skillSystem.getDeepWoundsDamage?.() || 0) + (window.skillSystem.getHungerDamage?.() || 0);
+      this.stats.openWoundsDamage = baseOWDamage + (this.stats.openWoundsDamage || 0) + (window.skillSystem.getDeepWoundsDamage?.() || 0) + (window.skillSystem.getHungerDamage?.() || 0) + (window.skillSystem.getThornsOpenWoundsDamage?.() || 0);
 
       // Druid Spirit Buffs
       this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + (window.skillSystem.getHeartOfWolverineDamageBonus?.() || 0);
