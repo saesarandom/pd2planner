@@ -170,6 +170,21 @@ class BuffSystem {
       this.removeBuff('party-shout');
     }
 
+    const grimward = window.partyManager.getBestBuff('grim-ward');
+    if (grimward) {
+      this.addBuff({
+        id: 'party-grimward',
+        name: 'Grim Ward',
+        image: 'grimward.png',
+        type: 'Buff',
+        level: grimward.level,
+        description: `+${grimward.attackRating} Attack Rating<br>+${grimward.damageBonus}% Damage`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-grimward');
+    }
+
     // 4. Oak Sage
     const oak = window.partyManager.getBestBuff('oak-sage');
     if (oak) {
@@ -222,7 +237,7 @@ class BuffSystem {
     if (fireEnchant) {
       this.addBuff({
         id: 'party-fire-enchant',
-        name: 'Fire Enchant',
+        name: 'Enchant Fire',
         image: 'enchant.png',
         type: 'Buff',
         level: fireEnchant.level,

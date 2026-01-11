@@ -152,11 +152,19 @@ function loadSingleCharacter(data, silent = false) {
         }
 
         // 4. Set Anya & Mode
-        if (data.anya) {
-            if (document.querySelector('input[value="anya-n"]')) document.querySelector('input[value="anya-n"]').checked = !!data.anya.n;
-            if (document.querySelector('input[value="anya-nm"]')) document.querySelector('input[value="anya-nm"]').checked = !!data.anya.nm;
-            if (document.querySelector('input[value="anya-h"]')) document.querySelector('input[value="anya-h"]').checked = !!data.anya.h;
-        }
+        // IMPORTANT: Always set checkbox states explicitly, even if data.anya is missing
+        // This prevents checkboxes from "bleeding" between party members
+        const anyaN = data.anya?.n || false;
+        const anyaNm = data.anya?.nm || false;
+        const anyaH = data.anya?.h || false;
+
+        if (document.querySelector('input[value="anya-n"]')) document.querySelector('input[value="anya-n"]').checked = anyaN;
+        if (document.querySelector('input[value="anya-nm"]')) document.querySelector('input[value="anya-nm"]').checked = anyaNm;
+        if (document.querySelector('input[value="anya-h"]')) document.querySelector('input[value="anya-h"]').checked = anyaH;
+
+        // Manually update resist bonus since programmatic checkbox changes don't trigger events
+        window.checkboxResistBonus = document.querySelectorAll('.checkbox:checked').length * 10;
+
         const modeDropdown = document.querySelector('.modedropdown');
         if (modeDropdown && data.mode) modeDropdown.value = data.mode;
 

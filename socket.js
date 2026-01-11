@@ -3283,6 +3283,18 @@ class UnifiedSocketSystem {
           };
         }
 
+        // Grim Ward
+        const grimWardLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('grimwardcontainer') : 0;
+        if (grimWardLevel > 0) {
+          const levelIndex = Math.min(grimWardLevel - 1, 59);
+          const skill = window.skillSystem.skillData.grimwardcontainer;
+          pkBuffs['grim-ward'] = {
+            level: grimWardLevel,
+            attackRating: skill.attackRating[levelIndex] || 0,
+            damageBonus: skill.damageBonus[levelIndex] || 0
+          };
+        }
+
         // Heart of Wolverine
         const howLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('heartofwolverinecontainer') : 0;
         if (howLevel > 0) {
