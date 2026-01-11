@@ -1101,8 +1101,8 @@ class SkillSystem {
           level: 1
         },
         {
-          id: 'frozenarmorcontainer',
-          name: 'Frozen Armor',
+          id: 'coldenchantcontainer',
+          name: 'Cold Enchant',
           level: 1
         },
         {
@@ -1228,8 +1228,8 @@ class SkillSystem {
           level: 18
         },
         {
-          id: 'enchantcontainer',
-          name: 'Enchant',
+          id: 'enchantfirecontainer',
+          name: 'Enchant Fire',
           level: 18
         },
         {
@@ -5650,6 +5650,94 @@ class SkillSystem {
         if (skill.cooldown) {
           var cooldown = skill.cooldown[Math.min(baseSkillLevel, skill.cooldown.length - 1)] || 0;
           html += '<div style="margin: 5px 0; color: #ff6666;">Cooldown: ' + cooldown.toFixed(1) + ' seconds</div>';
+        }
+      }
+
+      // Display Fire Enchant specific properties
+      if (skillId === 'enchantfirecontainer') {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var baseFireMin = skill.fireDamageMin[levelIndex] || 0;
+        var baseFireMax = skill.fireDamageMax[levelIndex] || 0;
+        var synergyBonus = this.calculateSynergyBonus(skillId, 'fire') || 0;
+
+        var fireMin = Math.floor(baseFireMin * (1 + synergyBonus / 100));
+        var fireMax = Math.floor(baseFireMax * (1 + synergyBonus / 100));
+
+        html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + fireMin + '-' + fireMax + '</div>';
+
+        if (skill.attackRating) {
+          var ar = skill.attackRating[levelIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + ar + '%</div>';
+        }
+
+        if (synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+        }
+      }
+
+      // Display Cold Enchant specific properties
+      if (skillId === 'coldenchantcontainer') {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var baseColdMin = skill.coldDamageMin[levelIndex] || 0;
+        var baseColdMax = skill.coldDamageMax[levelIndex] || 0;
+        var synergyBonus = this.calculateSynergyBonus(skillId, 'cold') || 0;
+
+        var coldMin = Math.floor(baseColdMin * (1 + synergyBonus / 100));
+        var coldMax = Math.floor(baseColdMax * (1 + synergyBonus / 100));
+
+        html += '<div style="margin: 5px 0; color: #6699ff;">Cold Damage: ' + coldMin + '-' + coldMax + '</div>';
+
+        if (skill.attackRating) {
+          var ar = skill.attackRating[levelIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + ar + '%</div>';
+        }
+
+        if (synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+        }
+      }
+
+      // Display Fire Enchant specific properties
+      if (skillId === 'enchantfirecontainer') {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var baseFireMin = skill.fireDamageMin[levelIndex] || 0;
+        var baseFireMax = skill.fireDamageMax[levelIndex] || 0;
+        var synergyBonus = this.calculateSynergyBonus(skillId, 'fire') || 0;
+
+        var fireMin = Math.floor(baseFireMin * (1 + synergyBonus / 100));
+        var fireMax = Math.floor(baseFireMax * (1 + synergyBonus / 100));
+
+        html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + fireMin + '-' + fireMax + '</div>';
+
+        if (skill.attackRating) {
+          var ar = skill.attackRating[levelIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + ar + '%</div>';
+        }
+
+        if (synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+        }
+      }
+
+      // Display Cold Enchant specific properties
+      if (skillId === 'coldenchantcontainer') {
+        var levelIndex = Math.min(totalSkillLevel - 1, 59);
+        var baseColdMin = skill.coldDamageMin[levelIndex] || 0;
+        var baseColdMax = skill.coldDamageMax[levelIndex] || 0;
+        var synergyBonus = this.calculateSynergyBonus(skillId, 'cold') || 0;
+
+        var coldMin = Math.floor(baseColdMin * (1 + synergyBonus / 100));
+        var coldMax = Math.floor(baseColdMax * (1 + synergyBonus / 100));
+
+        html += '<div style="margin: 5px 0; color: #6699ff;">Cold Damage: ' + coldMin + '-' + coldMax + '</div>';
+
+        if (skill.attackRating) {
+          var ar = skill.attackRating[levelIndex] || 0;
+          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + ar + '%</div>';
+        }
+
+        if (synergyBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
         }
       }
 

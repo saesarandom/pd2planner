@@ -34,7 +34,6 @@ class SetTracker {
       "Cow King's": "Cow King's Leathers",
       "Sander's": "Sander's Folly",
       "Hwanin's": "Hwanin's Majesty",
-      "Orphan's": "Orphan's Call",
       "The Disciple": "The Disciple",
       "Naj's": "Naj's Ancient Vestige",
       "Sazabi's": "Sazabi's Grand Tribute",
@@ -61,9 +60,7 @@ class SetTracker {
       "Guillaume's Face": "Orphan's",
       "Wilhelm's Pride": "Orphan's",
       "Whitstan's Guard": "Orphan's",
-
-      // Arctic Gear set
-      "Magnus' Skin": "Arctic",
+      "Magnus' Skin": "Orphan's",
     };
 
     this.setupItemListeners();

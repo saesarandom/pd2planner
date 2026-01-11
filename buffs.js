@@ -144,7 +144,7 @@ class BuffSystem {
       this.addBuff({
         id: 'party-bc',
         name: 'Battle Command',
-        image: 'battleorders2.png', // Reuse BO icon for now as BC image is missing
+        image: 'battlecommand.png', // Reuse BO icon for now as BC image is missing
         type: 'Buff',
         level: bc.level,
         description: `+${bc.allSkills} to All Skills<br>+${bc.damage}% Enhanced Damage`,
@@ -160,7 +160,7 @@ class BuffSystem {
       this.addBuff({
         id: 'party-shout',
         name: 'Shout',
-        image: 'defiance2.png', // Shout image missing, use Defiance as it matches Defense theme
+        image: 'shout.png', // Shout image missing, use Defiance as it matches Defense theme
         type: 'Buff',
         level: shout.level,
         description: `+${shout.defenseBonus}% Enhanced Defense`,
@@ -176,7 +176,7 @@ class BuffSystem {
       this.addBuff({
         id: 'party-oak',
         name: 'Oak Sage',
-        image: 'prayer2.png', // Healing theme
+        image: 'oaksage.png', // Healing theme
         type: 'Spirit',
         level: oak.level,
         description: `+${oak.lifeBonus} Life<br>+${oak.lifeReplenish} Life Replenish`,
@@ -192,7 +192,7 @@ class BuffSystem {
       this.addBuff({
         id: 'party-how',
         name: 'Heart of Wolverine',
-        image: 'might2.png', // Damage theme
+        image: 'heartofwolverine.png', // Damage theme
         type: 'Spirit',
         level: how.level,
         description: `+${how.damageBonus}% Enhanced Damage<br>+${how.arBonus}% Attack Rating`,
@@ -200,6 +200,53 @@ class BuffSystem {
       });
     } else {
       this.removeBuff('party-how');
+    }
+
+    const sob = window.partyManager.getBestBuff('spirit-of-barbs');
+    if (sob) {
+      this.addBuff({
+        id: 'party-sob',
+        name: 'Spirit of Barbs',
+        image: 'spiritofbarbs.png',
+        type: 'Spirit',
+        level: sob.level,
+        description: `Returns ${sob.damageReturn} Damage to Attackers`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-sob');
+    }
+
+    // Fire Enchant
+    const fireEnchant = window.partyManager.getBestBuff('fire-enchant');
+    if (fireEnchant) {
+      this.addBuff({
+        id: 'party-fire-enchant',
+        name: 'Fire Enchant',
+        image: 'enchant.png',
+        type: 'Buff',
+        level: fireEnchant.level,
+        description: `Fire Damage: ${fireEnchant.fireMin}-${fireEnchant.fireMax}<br>+${fireEnchant.attackRating}% Attack Rating`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-fire-enchant');
+    }
+
+    // Cold Enchant
+    const coldEnchant = window.partyManager.getBestBuff('cold-enchant');
+    if (coldEnchant) {
+      this.addBuff({
+        id: 'party-cold-enchant',
+        name: 'Cold Enchant',
+        image: 'coldenchant.png',
+        type: 'Buff',
+        level: coldEnchant.level,
+        description: `Cold Damage: ${coldEnchant.coldMin}-${coldEnchant.coldMax}<br>+${coldEnchant.attackRating}% Attack Rating`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-cold-enchant');
     }
   }
 
@@ -268,10 +315,25 @@ class BuffSystem {
 
     // Handle image load error
     img.onerror = () => {
+      const line1 = buff.name.slice(0, 3).toUpperCase();
+      const line2 = buff.name.length > 3 ? buff.name.slice(3, 6).toUpperCase() : '';
+
       img.src = 'data:image/svg+xml;base64,' + btoa(`
         <svg width="36" height="36" xmlns="http://www.w3.org/2000/svg">
-          <rect width="36" height="36" fill="#333"/>
-          <text x="18" y="20" text-anchor="middle" fill="#fff" font-size="10">${buff.name.slice(0, 3)}</text>
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <rect width="32" height="32" x="2" y="2" rx="4" fill="#0a2412" stroke="#00ff00" stroke-width="1.5" filter="url(#glow)"/>
+          <text x="18" y="${line2 ? '17' : '22'}" text-anchor="middle" fill="#c9f7c9" font-size="11" font-family="Oswald, sans-serif" font-weight="bold" filter="url(#glow)">
+            <tspan x="18" dy="0">${line1}</tspan>
+            ${line2 ? `<tspan x="18" dy="11">${line2}</tspan>` : ''}
+          </text>
         </svg>
       `);
     };

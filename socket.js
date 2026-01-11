@@ -3312,7 +3312,55 @@ class UnifiedSocketSystem {
           };
         }
 
+        // Fire Enchant
+        const fireEnchantLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('enchantfirecontainer') : 0;
+        if (fireEnchantLevel > 0) {
+          const levelIndex = Math.min(fireEnchantLevel - 1, 59);
+          const skill = window.skillSystem.skillData.enchantfirecontainer;
+          const baseFireMin = skill.fireDamageMin[levelIndex] || 0;
+          const baseFireMax = skill.fireDamageMax[levelIndex] || 0;
+          const synergyBonus = typeof window.skillSystem.calculateSynergyBonus === 'function' ? window.skillSystem.calculateSynergyBonus('enchantfirecontainer', 'fire') : 0;
+
+          pkBuffs['fire-enchant'] = {
+            level: fireEnchantLevel,
+            fireMin: Math.floor(baseFireMin * (1 + synergyBonus / 100)),
+            fireMax: Math.floor(baseFireMax * (1 + synergyBonus / 100)),
+            attackRating: skill.attackRating[levelIndex] || 0
+          };
+        }
+
+        // Cold Enchant
+        const coldEnchantLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('coldenchantcontainer') : 0;
+        if (coldEnchantLevel > 0) {
+          const levelIndex = Math.min(coldEnchantLevel - 1, 59);
+          const skill = window.skillSystem.skillData.coldenchantcontainer;
+          const baseColdMin = skill.coldDamageMin[levelIndex] || 0;
+          const baseColdMax = skill.coldDamageMax[levelIndex] || 0;
+          const synergyBonus = typeof window.skillSystem.calculateSynergyBonus === 'function' ? window.skillSystem.calculateSynergyBonus('coldenchantcontainer', 'cold') : 0;
+
+          pkBuffs['cold-enchant'] = {
+            level: coldEnchantLevel,
+            coldMin: Math.floor(baseColdMin * (1 + synergyBonus / 100)),
+            coldMax: Math.floor(baseColdMax * (1 + synergyBonus / 100)),
+            attackRating: skill.attackRating[levelIndex] || 0
+          };
+        }
+
         window.partyManager.updatePlayerBuffs(idx, pkBuffs);
+      }
+
+      // Add Fire Enchant damage from party (after buff reporting so we get updated values)
+      const partyFireEnchant = window.partyManager?.getBestBuff('fire-enchant');
+      if (partyFireEnchant) {
+        this.stats.fireDmgMin = (this.stats.fireDmgMin || 0) + partyFireEnchant.fireMin;
+        this.stats.fireDmgMax = (this.stats.fireDmgMax || 0) + partyFireEnchant.fireMax;
+      }
+
+      // Add Cold Enchant damage from party (after buff reporting so we get updated values)
+      const partyColdEnchant = window.partyManager?.getBestBuff('cold-enchant');
+      if (partyColdEnchant) {
+        this.stats.coldDmgMin = (this.stats.coldDmgMin || 0) + partyColdEnchant.coldMin;
+        this.stats.coldDmgMax = (this.stats.coldDmgMax || 0) + partyColdEnchant.coldMax;
       }
 
       // Re-calculate Final Basic Stats (Life, Mana, etc.) incorporating Skill Bonuses
