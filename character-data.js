@@ -24,7 +24,7 @@ window.exportCharacterData = function () {
         gloves: 'gloves-dropdown', belt: 'belts-dropdown', boots: 'boots-dropdown',
         ring1: 'ringsone-dropdown', ring2: 'ringstwo-dropdown', amulet: 'amulets-dropdown',
         mercWeapon: 'mercweapons-dropdown', mercHelm: 'merchelms-dropdown', mercArmor: 'mercarmors-dropdown',
-        mercShield: 'mercoffs-dropdown', mercGloves: 'mercgloves-dropdown', mercBelt: 'mercbelt-dropdown', mercBoots: 'mercboots-dropdown'
+        mercShield: 'mercoffs-dropdown', mercGloves: 'mercgloves-dropdown', mercBelt: 'mercbelts-dropdown', mercBoots: 'mercboots-dropdown'
     };
 
     const equipment = {};

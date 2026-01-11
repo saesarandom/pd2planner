@@ -111,66 +111,167 @@ class BuffSystem {
         tooltipType: 'aura'
       });
     }
+
+    // Also refresh party buffs whenever mercenary changes just in case
+    this.refreshPartyBuffs();
+  }
+
+  /**
+   * Refresh icons for buffs provided by any party member (BO, BC, Shout, Spirits, etc.)
+   */
+  refreshPartyBuffs() {
+    if (!window.partyManager) return;
+
+    // 1. Battle Orders
+    const bo = window.partyManager.getBestBuff('battle-orders');
+    if (bo) {
+      this.addBuff({
+        id: 'party-bo',
+        name: 'Battle Orders',
+        image: 'battleorders2.png',
+        type: 'Buff',
+        level: bo.level,
+        description: `+${bo.life} Life<br>+${bo.mana} Mana<br>Party-wide flat Life/Mana bonus`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-bo');
+    }
+
+    // 2. Battle Command
+    const bc = window.partyManager.getBestBuff('battle-command');
+    if (bc) {
+      this.addBuff({
+        id: 'party-bc',
+        name: 'Battle Command',
+        image: 'battleorders2.png', // Reuse BO icon for now as BC image is missing
+        type: 'Buff',
+        level: bc.level,
+        description: `+${bc.allSkills} to All Skills<br>+${bc.damage}% Enhanced Damage`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-bc');
+    }
+
+    // 3. Shout
+    const shout = window.partyManager.getBestBuff('shout');
+    if (shout) {
+      this.addBuff({
+        id: 'party-shout',
+        name: 'Shout',
+        image: 'defiance2.png', // Shout image missing, use Defiance as it matches Defense theme
+        type: 'Buff',
+        level: shout.level,
+        description: `+${shout.defenseBonus}% Enhanced Defense`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-shout');
+    }
+
+    // 4. Oak Sage
+    const oak = window.partyManager.getBestBuff('oak-sage');
+    if (oak) {
+      this.addBuff({
+        id: 'party-oak',
+        name: 'Oak Sage',
+        image: 'prayer2.png', // Healing theme
+        type: 'Spirit',
+        level: oak.level,
+        description: `+${oak.lifeBonus} Life<br>+${oak.lifeReplenish} Life Replenish`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-oak');
+    }
+
+    // 5. Heart of Wolverine
+    const how = window.partyManager.getBestBuff('heart-of-wolverine');
+    if (how) {
+      this.addBuff({
+        id: 'party-how',
+        name: 'Heart of Wolverine',
+        image: 'might2.png', // Damage theme
+        type: 'Spirit',
+        level: how.level,
+        description: `+${how.damageBonus}% Enhanced Damage<br>+${how.arBonus}% Attack Rating`,
+        tooltipType: 'buff'
+      });
+    } else {
+      this.removeBuff('party-how');
+    }
   }
 
   addBuff(buff) {
-    if (this.activeBuffs.has(buff.id)) {
-      return; // Already exists
+    const existing = this.activeBuffs.get(buff.id);
+    if (existing && existing.level == buff.level && existing.description == buff.description) {
+      return; // Already exists and same
     }
 
     this.activeBuffs.set(buff.id, buff);
-    this.renderBuff(buff);
+    this.fullRefresh();
   }
 
-  removeBuff(buffId) {
-    if (this.activeBuffs.has(buffId)) {
-      this.activeBuffs.delete(buffId);
-      const buffElement = document.getElementById(`buff-${buffId}`);
-      if (buffElement) {
-        buffElement.remove();
-      }
+  removeBuff(id) {
+    if (this.activeBuffs.has(id)) {
+      this.activeBuffs.delete(id);
+      this.fullRefresh();
     }
+  }
+
+  /**
+   * Re-renders all active buffs to the container
+   */
+  fullRefresh() {
+    if (!this.buffContainer) return;
+    this.buffContainer.innerHTML = '';
+
+    // Sort buffs maybe? For now just render in insertion order
+    this.activeBuffs.forEach(buff => {
+      this.renderBuff(buff);
+    });
   }
 
   renderBuff(buff) {
     const buffElement = document.createElement('div');
     buffElement.id = `buff-${buff.id}`;
     buffElement.className = 'buff-icon';
-    
+
     const img = document.createElement('img');
     img.src = `img/${buff.image}`;
     img.alt = buff.name;
     img.style.width = '28px';
     img.style.height = '28px';
     img.style.cursor = 'pointer';
-    
+
     // Create tooltip
     const tooltip = document.createElement('div');
     tooltip.className = `buff-tooltip ${buff.tooltipType || ''}`;
-    
+
     // Build tooltip content
     let tooltipHTML = `<span class="buff-name">${buff.name}</span>`;
-    
+
     if (buff.type) {
       tooltipHTML += `<span class="buff-type">${buff.type}</span>`;
     }
-    
+
     if (buff.level) {
       tooltipHTML += `<span class="buff-level">Level ${buff.level}</span>`;
     }
-    
+
     if (buff.description) {
       tooltipHTML += `<span class="buff-description">${buff.description}</span>`;
     }
-    
+
     tooltip.innerHTML = tooltipHTML;
-    
+
     // Handle image load error
     img.onerror = () => {
       img.src = 'data:image/svg+xml;base64,' + btoa(`
         <svg width="36" height="36" xmlns="http://www.w3.org/2000/svg">
           <rect width="36" height="36" fill="#333"/>
-          <text x="18" y="20" text-anchor="middle" fill="#fff" font-size="10">${buff.name.slice(0,3)}</text>
+          <text x="18" y="20" text-anchor="middle" fill="#fff" font-size="10">${buff.name.slice(0, 3)}</text>
         </svg>
       `);
     };
@@ -182,20 +283,20 @@ class BuffSystem {
 
   // Public methods for external use
   addCustomBuff(id, name, image, tooltip, level, type = '', description = '', tooltipType = '') {
-    this.addBuff({ 
-      id, 
-      name, 
-      image, 
-      tooltip, 
-      level, 
-      type, 
-      description, 
-      tooltipType 
+    this.addBuff({
+      id,
+      name,
+      image,
+      tooltip,
+      level,
+      type,
+      description,
+      tooltipType
     });
   }
 
-// buffSystem.addCustomBuff('amplify', 'Amplify Damage', 'amplify.png', '', 1, 'Curse', 
-//   'Cursed enemies take<br>+100% Physical Damage', 'curse');
+  // buffSystem.addCustomBuff('amplify', 'Amplify Damage', 'amplify.png', '', 1, 'Curse', 
+  //   'Cursed enemies take<br>+100% Physical Damage', 'curse');
 
   removeCustomBuff(id) {
     this.removeBuff(id);

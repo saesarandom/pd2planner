@@ -3174,17 +3174,24 @@ class UnifiedSocketSystem {
       window.skillSystem.skillBonuses.treeSkills = this.stats.treeSkills || {};
 
       // 2. Battle Command integration (adds to allSkills)
-      // We do a small two-pass check to account for BC self-buffing into a new breakpoint
-      let bcSkills = window.skillSystem.getBattleCommandSkills?.() || 0;
+      // Check party for better BC
+      const partyBC = window.partyManager?.getBestBuff('battle-command');
+      const partyBCSkills = partyBC ? partyBC.allSkills : 0;
+
+      let ownBCSkills = window.skillSystem.getBattleCommandSkills?.() || 0;
+      let bcSkills = Math.max(ownBCSkills, partyBCSkills);
       this.stats.allSkills = gearAllSkills + bcSkills;
 
       // Update SkillSystem with the first-pass total and check if BC bonus increased
       window.skillSystem.skillBonuses.allSkills = this.stats.allSkills;
-      bcSkills = window.skillSystem.getBattleCommandSkills?.() || 0;
+      ownBCSkills = window.skillSystem.getBattleCommandSkills?.() || 0;
+      bcSkills = Math.max(ownBCSkills, partyBCSkills);
 
       // Final allSkills total (Gear + BC bonus)
       this.stats.allSkills = gearAllSkills + bcSkills;
-      this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + (window.skillSystem.getBattleCommandDamageBonus?.() || 0);
+
+      const partyBCDamage = partyBC ? partyBC.damage : 0;
+      this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + Math.max(partyBCDamage, window.skillSystem.getBattleCommandDamageBonus?.() || 0);
 
       // 3. Update SkillSystem one last time with the absolute total allSkills
       // This ensures skills like Natural Resistance or Battle Orders use the latest level
@@ -3197,9 +3204,8 @@ class UnifiedSocketSystem {
       this.stats.lightResist += natRes;
       this.stats.poisonResist += natRes;
 
-      // Iron Skin (Defense % and PDR %)
-      const ironSkinDef = window.skillSystem.getIronSkinDefenseBonus?.() || 0;
-      this.stats.defense = Math.floor(this.stats.defense * (1 + ironSkinDef / 100));
+      // Defense bonuses (Iron Skin) - Skill-based %Def multipliers are applied in updateStatsDisplay to include Dex bonus
+      const ironSkinBonus = window.skillSystem.getIronSkinDefenseBonus?.() || 0;
       this.stats.dr += (window.skillSystem.getIronSkinPDRBonus?.() || 0);
 
       // Increased Speed (FRW and IAS)
@@ -3217,16 +3223,97 @@ class UnifiedSocketSystem {
       const baseOWDamage = this.openWoundsBaseDamage[Math.min(this.currentLevel - 1, 98)] || 0;
       this.stats.openWoundsDamage = baseOWDamage + (this.stats.openWoundsDamage || 0) + (window.skillSystem.getDeepWoundsDamage?.() || 0) + (window.skillSystem.getHungerDamage?.() || 0) + (window.skillSystem.getThornsOpenWoundsDamage?.() || 0);
 
-      // Druid Spirit Buffs
-      this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + (window.skillSystem.getHeartOfWolverineDamageBonus?.() || 0);
-      this.stats.attackRatingPercent = (this.stats.attackRatingPercent || 0) + (window.skillSystem.getHeartOfWolverineARBonus?.() || 0);
-      this.stats.life = (this.stats.life || 0) + (window.skillSystem.getOakSageLifeBonus?.() || 0);
-      this.stats.replenishLife = (this.stats.replenishLife || 0) + (window.skillSystem.getOakSageLifeReplenish?.() || 0);
-      this.stats.damageReturn = (this.stats.damageReturn || 0) + (window.skillSystem.getSpiritOfBarbsReturn?.() || 0);
+      // Druid Spirit Buffs (Party Aware)
+      const partyHOW = window.partyManager?.getBestBuff('heart-of-wolverine');
+      const howDmg = Math.max(partyHOW?.damageBonus || 0, window.skillSystem.getHeartOfWolverineDamageBonus?.() || 0);
+      const howAR = Math.max(partyHOW?.arBonus || 0, window.skillSystem.getHeartOfWolverineARBonus?.() || 0);
 
-      // Battle Orders / Buffs
-      this.stats.life = (this.stats.life || 0) + (window.skillSystem.getBattleOrdersLifeBonus?.() || 0);
-      this.stats.mana = (this.stats.mana || 0) + (window.skillSystem.getBattleOrdersManaBonus?.() || 0);
+      this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + howDmg;
+      this.stats.attackRatingPercent = (this.stats.attackRatingPercent || 0) + howAR;
+
+      const partyOak = window.partyManager?.getBestBuff('oak-sage');
+      const oakLife = Math.max(partyOak?.lifeBonus || 0, window.skillSystem.getOakSageLifeBonus?.() || 0);
+      const oakReplenish = Math.max(partyOak?.lifeReplenish || 0, window.skillSystem.getOakSageLifeReplenish?.() || 0);
+
+      this.stats.life = (this.stats.life || 0) + oakLife;
+      this.stats.replenishLife = (this.stats.replenishLife || 0) + oakReplenish;
+
+      const partySOB = window.partyManager?.getBestBuff('spirit-of-barbs');
+      this.stats.damageReturn = (this.stats.damageReturn || 0) + Math.max(partySOB?.damageReturn || 0, window.skillSystem.getSpiritOfBarbsReturn?.() || 0);
+
+      // Battle Orders / Buffs (Party Aware)
+      const partyBO = window.partyManager?.getBestBuff('battle-orders');
+      const boLife = Math.max(partyBO?.life || 0, window.skillSystem.getBattleOrdersLifeBonus?.() || 0);
+      const boMana = Math.max(partyBO?.mana || 0, window.skillSystem.getBattleOrdersManaBonus?.() || 0);
+
+      this.stats.life = (this.stats.life || 0) + boLife;
+      this.stats.mana = (this.stats.mana || 0) + boMana;
+
+      // REPORT BUFFS TO PARTY MANAGER - Only if not currently loading a character to prevent inconsistencies
+      if (window.partyManager && !window._isLoadingCharacterData) {
+        const idx = window.partyManager.activeIndex;
+        const pkBuffs = {};
+
+        // BO
+        const boLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('battleorderscontainer') : 0;
+        if (boLevel > 0) {
+          pkBuffs['battle-orders'] = {
+            level: boLevel,
+            life: typeof window.skillSystem.getBattleOrdersLifeBonus === 'function' ? window.skillSystem.getBattleOrdersLifeBonus() : 0,
+            mana: typeof window.skillSystem.getBattleOrdersManaBonus === 'function' ? window.skillSystem.getBattleOrdersManaBonus() : 0
+          };
+        }
+
+        // BC
+        const bcLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('battlecommandcontainer') : 0;
+        if (bcLevel > 0) {
+          pkBuffs['battle-command'] = {
+            level: bcLevel,
+            allSkills: typeof window.skillSystem.getBattleCommandSkills === 'function' ? window.skillSystem.getBattleCommandSkills() : 0,
+            damage: typeof window.skillSystem.getBattleCommandDamageBonus === 'function' ? window.skillSystem.getBattleCommandDamageBonus() : 0
+          };
+        }
+
+        // Shout
+        const shoutLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('shoutcontainer') : 0;
+        if (shoutLevel > 0) {
+          pkBuffs['shout'] = {
+            level: shoutLevel,
+            defenseBonus: typeof window.skillSystem.getShoutDefenseBonus === 'function' ? window.skillSystem.getShoutDefenseBonus() : 0
+          };
+        }
+
+        // Heart of Wolverine
+        const howLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('heartofwolverinecontainer') : 0;
+        if (howLevel > 0) {
+          pkBuffs['heart-of-wolverine'] = {
+            level: howLevel,
+            damageBonus: typeof window.skillSystem.getHeartOfWolverineDamageBonus === 'function' ? window.skillSystem.getHeartOfWolverineDamageBonus() : 0,
+            arBonus: typeof window.skillSystem.getHeartOfWolverineARBonus === 'function' ? window.skillSystem.getHeartOfWolverineARBonus() : 0
+          };
+        }
+
+        // Oak Sage
+        const oakLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('oaksagecontainer') : 0;
+        if (oakLevel > 0) {
+          pkBuffs['oak-sage'] = {
+            level: oakLevel,
+            lifeBonus: typeof window.skillSystem.getOakSageLifeBonus === 'function' ? window.skillSystem.getOakSageLifeBonus() : 0,
+            lifeReplenish: typeof window.skillSystem.getOakSageLifeReplenish === 'function' ? window.skillSystem.getOakSageLifeReplenish() : 0
+          };
+        }
+
+        // Spirit of Barbs
+        const sobLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('spiritofbarbscontainer') : 0;
+        if (sobLevel > 0) {
+          pkBuffs['spirit-of-barbs'] = {
+            level: sobLevel,
+            damageReturn: typeof window.skillSystem.getSpiritOfBarbsReturn === 'function' ? window.skillSystem.getSpiritOfBarbsReturn() : 0
+          };
+        }
+
+        window.partyManager.updatePlayerBuffs(idx, pkBuffs);
+      }
 
       // Re-calculate Final Basic Stats (Life, Mana, etc.) incorporating Skill Bonuses
       if (window.characterManager) {
@@ -4728,12 +4815,40 @@ class UnifiedSocketSystem {
     this.updateElement('blockchancecontainer', this.stats.blockChance || 0);
 
 
+    // Calculate total defense including dexterity bonus (totalDex / 4)
+    const dexDefenseBonus = Math.floor(totalDex / 4);
+    let totalDefense = this.stats.defense + dexDefenseBonus;
+
+    // Apply Shout, Iron Skin, and Cloak of Shadows bonuses to the total defense
+    const ownShoutBonus = window.skillSystem?.getShoutDefenseBonus?.() || 0;
+    const partyShout = window.partyManager?.getBestBuff('shout');
+    const shoutBonus = Math.max(ownShoutBonus, partyShout?.defenseBonus || 0);
+
+    const ironSkinBonus = window.skillSystem?.getIronSkinDefenseBonus?.() || 0;
+    const cloakBonus = window.skillSystem?.getCloakOfShadowsDefenseBonus?.() || 0;
+
+    const totalDefPercent = shoutBonus + ironSkinBonus + cloakBonus;
+
+    if (totalDefPercent > 0) {
+      totalDefense = Math.floor(totalDefense * (1 + totalDefPercent / 100));
+    }
+
+    const defenseContainer = document.getElementById('defensecontainer');
+    if (defenseContainer) {
+      defenseContainer.textContent = totalDefense;
+      defenseContainer.style.color = (totalDefPercent > 0) ? '#d0d007ff' : '';
+    }
+
     // Core stats
-    const bcBonus = window.skillSystem?.getBattleCommandSkills?.() || 0;
+    const ownBCSkills = window.skillSystem?.getBattleCommandSkills?.() || 0;
+    const partyBC = window.partyManager?.getBestBuff('battle-command');
+    const partyBCSkills = partyBC ? partyBC.allSkills : 0;
+    const bestBC = Math.max(ownBCSkills, partyBCSkills);
+
     const allSkillsContainer = document.getElementById('allskillscontainer');
     if (allSkillsContainer) {
       allSkillsContainer.textContent = this.stats.allSkills;
-      allSkillsContainer.style.color = bcBonus > 0 ? '#d0d007ff' : '';
+      allSkillsContainer.style.color = bestBC > 0 ? '#d0d007ff' : '';
     }
 
     // Update skill bonus indicators if skill system is available (include both all skills and class skills)
@@ -4743,24 +4858,6 @@ class UnifiedSocketSystem {
 
     this.updateElement('magicfindcontainer', this.stats.magicFind);
     this.updateElement('goldfindcontainer', this.stats.goldFind);
-
-    // Calculate total defense including dexterity bonus (totalDex / 4)
-    const dexDefenseBonus = Math.floor(totalDex / 4);
-    let totalDefense = this.stats.defense + dexDefenseBonus;
-
-    // Apply Shout and Cloak of Shadows bonuses to the total defense
-    const shoutBonus = window.skillSystem?.getShoutDefenseBonus?.() || 0;
-    const cloakBonus = window.skillSystem?.getCloakOfShadowsDefenseBonus?.() || 0;
-
-    if (shoutBonus > 0 || cloakBonus > 0) {
-      totalDefense = Math.floor(totalDefense * (1 + (shoutBonus + cloakBonus) / 100));
-    }
-
-    const defenseContainer = document.getElementById('defensecontainer');
-    if (defenseContainer) {
-      defenseContainer.textContent = totalDefense;
-      defenseContainer.style.color = (shoutBonus > 0 || cloakBonus > 0) ? '#d0d007ff' : '';
-    }
 
     // Boolean stats
     this.updateElement('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');
@@ -4819,11 +4916,35 @@ class UnifiedSocketSystem {
   }
 
   updateMercenaryStatsDisplay() {
+    // Get party buffs for mercenary
+    const ownShoutBonus = window.skillSystem?.getShoutDefenseBonus?.() || 0;
+    const partyShout = window.partyManager?.getBestBuff('shout');
+    const shoutBonus = Math.max(ownShoutBonus, partyShout?.defenseBonus || 0);
+
+    const cloakBonus = window.skillSystem?.getCloakOfShadowsDefenseBonus?.() || 0;
+    const totalDefBonus = shoutBonus + cloakBonus;
+
+    let finalDef = this.mercenaryStats.defense;
+    if (totalDefBonus > 0) {
+      finalDef = Math.floor(finalDef * (1 + totalDefBonus / 100));
+    }
+
+    const bcBonus = window.skillSystem?.getBattleCommandSkills?.() || 0;
+    const partyBC = window.partyManager?.getBestBuff('battle-command');
+    const totalBC = Math.max(bcBonus, partyBC?.allSkills || 0);
+
     // Update mercenary stats display with values from mercenaryStats object
-    this.updateElement('merc-allskills', this.mercenaryStats.allSkills);
+    this.updateElement('merc-allskills', this.mercenaryStats.allSkills + totalBC);
+    const mercAllSkillsElem = document.getElementById('merc-allskills');
+    if (mercAllSkillsElem) mercAllSkillsElem.style.color = totalBC > 0 ? '#d0d007ff' : '';
+
     this.updateElement('merc-mf', this.mercenaryStats.magicFind);
     this.updateElement('merc-gf', this.mercenaryStats.goldFind);
-    this.updateElement('merc-defense', this.mercenaryStats.defense);
+
+    this.updateElement('merc-defense', finalDef);
+    const mercDefElem = document.getElementById('merc-defense');
+    if (mercDefElem) mercDefElem.style.color = totalDefBonus > 0 ? '#d0d007ff' : '';
+
     this.updateElement('merc-dr', this.mercenaryStats.dr);
     this.updateElement('merc-pdr', this.mercenaryStats.pdr);
     this.updateElement('merc-mdr', this.mercenaryStats.mdr);

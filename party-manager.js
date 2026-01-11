@@ -8,6 +8,9 @@ class PartyManager {
         this.activeIndex = 0;
         this.partyData = new Array(this.playerCount).fill(null);
 
+        // Track what each player contributes to the party (BO, BC, Shout, etc.)
+        this.buffContributions = new Array(this.playerCount).fill(null).map(() => ({}));
+
         // Initialize active slot with current build if we can
         // But we'll wait for DOMContentLoaded to set up listeners
         this.init();
@@ -215,6 +218,39 @@ class PartyManager {
                 else btn.classList.remove('active');
             }
         }
+    }
+
+    /**
+     * Update buff contributions from a specific player slot
+     * @param {number} index - The party index (0-7)
+     * @param {Object} buffs - Map of buffId to its values/level
+     */
+    updatePlayerBuffs(index, buffs) {
+        if (index < 0 || index >= this.playerCount) return;
+        this.buffContributions[index] = buffs || {};
+
+        // After updating buffs, we should signal a buff UI refresh
+        if (window.buffSystem && typeof window.buffSystem.refreshPartyBuffs === 'function') {
+            window.buffSystem.refreshPartyBuffs();
+        }
+    }
+
+    /**
+     * Get the highest level version of a buff available in the party
+     * @param {string} buffId - e.g. 'battle-orders'
+     * @returns {Object|null} The contribution object with highest level
+     */
+    getBestBuff(buffId) {
+        let best = null;
+        for (let i = 0; i < this.playerCount; i++) {
+            const contrib = this.buffContributions[i]?.[buffId];
+            if (!contrib || !contrib.level) continue;
+
+            if (!best || contrib.level > best.level) {
+                best = contrib;
+            }
+        }
+        return best;
     }
 }
 

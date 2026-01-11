@@ -6690,7 +6690,7 @@ class SkillSystem {
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
     } else if (skill.type === 'fire') {
-      var damageInfo = this.calculateElementalDamage(skill, totalSkillLevel, skillId);
+      var damageInfo = this.calculateFireDamage(skill, totalSkillLevel, skillId);
 
       html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + damageInfo.fireMin + '-' + damageInfo.fireMax + '</div>';
       html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
@@ -8910,10 +8910,10 @@ class SkillSystem {
   }
 
   calculateElementalDamage(skill, skillLevel, skillId) {
-    // Get base damages from tables
+    // Get base damages from tables, supporting multiple data formats
     var levelIndex = Math.min(skillLevel - 1, 59);
-    var baseLightningMin = skill.lightningDamage.min[levelIndex] || 1;
-    var baseLightningMax = skill.lightningDamage.max[levelIndex] || 1;
+    var baseLightningMin = (skill.lightningDamage ? skill.lightningDamage.min[levelIndex] : (skill.lightningDamageMin ? skill.lightningDamageMin[levelIndex] : (skill.damage ? skill.damage.min[levelIndex] : 0))) || 1;
+    var baseLightningMax = (skill.lightningDamage ? skill.lightningDamage.max[levelIndex] : (skill.lightningDamageMax ? skill.lightningDamageMax[levelIndex] : (skill.damage ? skill.damage.max[levelIndex] : 0))) || 1;
 
     // Calculate synergy bonus for lightning
     var lightningSynergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
@@ -8925,14 +8925,15 @@ class SkillSystem {
     var result = {
       lightningMin: lightningMin,
       lightningMax: lightningMax,
+      average: Math.floor((lightningMin + lightningMax) / 2),
       averageLightning: Math.floor((lightningMin + lightningMax) / 2),
       synergyBonus: lightningSynergyBonus
     };
 
     // Check if this skill has nova damage (like Power Strike)
-    if (skill.novaDamage) {
-      var baseNovaMin = skill.novaDamage.min[levelIndex] || 1;
-      var baseNovaMax = skill.novaDamage.max[levelIndex] || 1;
+    if (skill.novaDamage || skill.novaDamageMin) {
+      var baseNovaMin = (skill.novaDamage ? skill.novaDamage.min[levelIndex] : (skill.novaDamageMin ? skill.novaDamageMin[levelIndex] : 0)) || 1;
+      var baseNovaMax = (skill.novaDamage ? skill.novaDamage.max[levelIndex] : (skill.novaDamageMax ? skill.novaDamageMax[levelIndex] : 0)) || 1;
       var novaSynergyBonus = this.calculateSynergyBonus(skillId, 'nova');
       var novaMin = Math.floor(baseNovaMin * (1 + novaSynergyBonus / 100));
       var novaMax = Math.floor(baseNovaMax * (1 + novaSynergyBonus / 100));
@@ -8958,10 +8959,10 @@ class SkillSystem {
   }
 
   calculateColdDamage(skill, skillLevel, skillId) {
-    // Get base cold damages from tables
+    // Get base cold damages from tables, supporting multiple data formats
     var levelIndex = Math.min(skillLevel - 1, 59);
-    var baseColdMin = skill.coldDamage.min[levelIndex] || 0;
-    var baseColdMax = skill.coldDamage.max[levelIndex] || 0;
+    var baseColdMin = (skill.coldDamage ? skill.coldDamage.min[levelIndex] : (skill.coldDamageMin ? skill.coldDamageMin[levelIndex] : (skill.damage ? skill.damage.min[levelIndex] : 0))) || 0;
+    var baseColdMax = (skill.coldDamage ? skill.coldDamage.max[levelIndex] : (skill.coldDamageMax ? skill.coldDamageMax[levelIndex] : (skill.damage ? skill.damage.max[levelIndex] : 0))) || 0;
 
     // Calculate synergy bonus for cold
     var coldSynergyBonus = this.calculateSynergyBonus(skillId, 'cold');
@@ -8973,16 +8974,17 @@ class SkillSystem {
     return {
       coldMin: coldMin,
       coldMax: coldMax,
+      average: Math.floor((coldMin + coldMax) / 2),
       averageCold: Math.floor((coldMin + coldMax) / 2),
       synergyBonus: coldSynergyBonus
     };
   }
 
   calculateFireDamage(skill, skillLevel, skillId) {
-    // Get base fire damages from tables
+    // Get base fire damages from tables, supporting multiple data formats
     var levelIndex = Math.min(skillLevel - 1, 59);
-    var baseFireMin = skill.fireDamage.min[levelIndex] || 0;
-    var baseFireMax = skill.fireDamage.max[levelIndex] || 0;
+    var baseFireMin = (skill.fireDamage ? skill.fireDamage.min[levelIndex] : (skill.fireDamageMin ? skill.fireDamageMin[levelIndex] : (skill.damage ? skill.damage.min[levelIndex] : 0))) || 0;
+    var baseFireMax = (skill.fireDamage ? skill.fireDamage.max[levelIndex] : (skill.fireDamageMax ? skill.fireDamageMax[levelIndex] : (skill.damage ? skill.damage.max[levelIndex] : 0))) || 0;
 
     // Calculate synergy bonus for fire
     var fireSynergyBonus = this.calculateSynergyBonus(skillId, 'fire');
@@ -8994,14 +8996,15 @@ class SkillSystem {
     var result = {
       fireMin: fireMin,
       fireMax: fireMax,
+      average: Math.floor((fireMin + fireMax) / 2),
       averageFire: Math.floor((fireMin + fireMax) / 2),
       synergyBonus: fireSynergyBonus
     };
 
-    // Check if this skill has burning damage (Immolation Arrow)
-    if (skill.burningDamage) {
-      var baseBurningMin = skill.burningDamage.min[levelIndex] || 0;
-      var baseBurningMax = skill.burningDamage.max[levelIndex] || 0;
+    // Check if this skill has burning damage (Immolation Arrow, Blaze, Meteor)
+    if (skill.burningDamage || skill.burningDamageMin) {
+      var baseBurningMin = (skill.burningDamage ? skill.burningDamage.min[levelIndex] : (skill.burningDamageMin ? skill.burningDamageMin[levelIndex] : 0)) || 0;
+      var baseBurningMax = (skill.burningDamage ? skill.burningDamage.max[levelIndex] : (skill.burningDamageMax ? skill.burningDamageMax[levelIndex] : 0)) || 0;
 
       // Apply synergies to burning damage
       var burningMin = Math.floor(baseBurningMin * (1 + fireSynergyBonus / 100));
