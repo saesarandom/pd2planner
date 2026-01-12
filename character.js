@@ -84,13 +84,13 @@ class CharacterManager {
 
     // Base stats for each class
     this.classStats = {
-      'Amazon': { str: 20, dex: 25, vit: 20, enr: 15 },
-      'Assassin': { str: 20, dex: 20, vit: 20, enr: 25 },
-      'Barbarian': { str: 30, dex: 20, vit: 25, enr: 10 },
-      'Druid': { str: 15, dex: 20, vit: 25, enr: 20 },
-      'Necromancer': { str: 15, dex: 25, vit: 15, enr: 25 },
-      'Paladin': { str: 25, dex: 20, vit: 25, enr: 15 },
-      'Sorceress': { str: 10, dex: 25, vit: 10, enr: 35 }
+      'Amazon': { str: 20, dex: 25, vit: 20, enr: 15, arConstant: 5 },
+      'Assassin': { str: 20, dex: 20, vit: 20, enr: 25, arConstant: 15 },
+      'Barbarian': { str: 30, dex: 20, vit: 25, enr: 10, arConstant: 20 },
+      'Druid': { str: 15, dex: 20, vit: 25, enr: 20, arConstant: 5 },
+      'Necromancer': { str: 15, dex: 25, vit: 15, enr: 25, arConstant: -10 },
+      'Paladin': { str: 25, dex: 20, vit: 25, enr: 15, arConstant: 20 },
+      'Sorceress': { str: 10, dex: 25, vit: 10, enr: 35, arConstant: -15 }
     };
 
     this.classBaseLifeMana = {

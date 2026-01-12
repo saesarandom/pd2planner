@@ -783,159 +783,208 @@ class SkillSystem {
           {
             id: 'raiseskeletonwarriorcontainer',
             name: 'Raise Skeleton Warrior',
-            level: 1
+            level: 1,
+            prerequisites: []
           },
           {
             id: 'skeletonmasterycontainer',
             name: 'Skeleton Mastery',
-            level: 1
+            level: 1,
+            prerequisites: ['raiseskeletonwarriorcontainer']
           },
           {
             id: 'claygolemneccontainer',
             name: 'Clay Golem',
-            level: 6
+            level: 6,
+            prerequisites: []
           },
           {
             id: 'golemmasterneccontainer',
             name: 'Golem Mastery',
-            level: 12
+            level: 12,
+            prerequisites: ['claygolemneccontainer']
           },
           {
             id: 'raiseskeletalmagecontainer',
             name: 'Raise Skeletal Mage',
-            level: 12
+            level: 12,
+            prerequisites: ['raiseskeletonwarriorcontainer']
           },
           {
             id: 'bloodgolemneccontainer',
             name: 'Blood Golem',
-            level: 18
+            level: 18,
+            prerequisites: ['claygolemneccontainer']
           },
           {
-            id: 'summonnecroncontainer',
-            name: 'Summon Resist',
-            level: 24
+            id: 'bloodwarpcontainer',
+            name: 'Blood Warp',
+            level: 24,
+            prerequisites: ['claygolemneccontainer', 'bloodgolemneccontainer']
+          },
+          {
+            id: 'raiseskeletonarchercontainer',
+            name: 'Raise Skeleton Archer',
+            level: 24,
+            prerequisites: ['raiseskeletonwarriorcontainer', 'raiseskeletalmagecontainer']
           },
           {
             id: 'irongolemneccontainer',
             name: 'Iron Golem',
-            level: 24
+            level: 24,
+            prerequisites: ['claygolemneccontainer', 'bloodgolemneccontainer']
           },
           {
             id: 'firegolemneccontainer',
             name: 'Fire Golem',
-            level: 30
+            level: 30,
+            prerequisites: ['claygolemneccontainer', 'bloodgolemneccontainer', 'irongolemneccontainer']
           },
           {
             id: 'revivecontainer',
             name: 'Revive',
-            level: 30
+            level: 30,
+            prerequisites: ['raiseskeletonwarriorcontainer', 'raiseskeletalmagecontainer', 'raiseskeletonarchercontainer']
           }
         ],
         'poisonandbonespellscontainer': [{
           id: 'teethcontainer',
           name: 'Teeth',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'bonearmorcontainer',
           name: 'Bone Armor',
-          level: 1
+          level: 1,
+          prerequisites: ['teethcontainer']
         },
         {
-          id: 'poisondaggercontainer',
-          name: 'Poison Dagger',
-          level: 6
+          id: 'poisonstrikecontainer',
+          name: 'Poison Strike',
+          level: 6,
+          prerequisites: []
         },
         {
           id: 'corpseexplosioncontainer',
           name: 'Corpse Explosion',
-          level: 6
+          level: 6,
+          prerequisites: ['poisonstrikecontainer']
         },
         {
           id: 'bonewallcontainer',
           name: 'Bone Wall',
-          level: 12
+          level: 12,
+          prerequisites: ['teethcontainer', 'bonearmorcontainer']
+        },
+        {
+          id: 'desecratecontainer',
+          name: 'Desecrate',
+          level: 12,
+          prerequisites: ['poisonstrikecontainer', 'corpseexplosioncontainer']
         },
         {
           id: 'poisonexplosioncontainer',
           name: 'Poison Explosion',
-          level: 18
+          level: 18,
+          prerequisites: []
         },
         {
           id: 'bonespearcontainer',
           name: 'Bone Spear',
-          level: 18
+          level: 18,
+          prerequisites: ['teethcontainer']
         },
         {
           id: 'boneprisoncontainer',
           name: 'Bone Prison',
-          level: 24
+          level: 24,
+          prerequisites: ['teethcontainer', 'bonearmorcontainer', 'bonewallcontainer', 'bonespearcontainer']
         },
         {
           id: 'poisonnovacontainer',
           name: 'Poison Nova',
-          level: 24
+          level: 24,
+          prerequisites: ['poisonstrikecontainer', 'corpseexplosioncontainer', 'desecratecontainer']
         },
         {
           id: 'bonespiritcontainer',
           name: 'Bone Spirit',
-          level: 30
+          level: 30,
+          prerequisites: ['teethcontainer', 'bonespearcontainer']
         }
         ],
         'cursescontainer': [{
           id: 'amplifydamagecontainer',
           name: 'Amplify Damage',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'cursemasterycontainer',
           name: 'Curse Mastery',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'dimvisioncontainer',
           name: 'Dim Vision',
-          level: 6
+          level: 6,
+          prerequisites: []
+        },
+        {
+          id: 'darkpactcontainer',
+          name: 'Dark Pact',
+          level: 6,
+          prerequisites: ['amplifydamagecontainer']
         },
         {
           id: 'weakencontainer',
           name: 'Weaken',
-          level: 6
+          level: 6,
+          prerequisites: ['amplifydamagecontainer', 'lifetapcontainer']
         },
         {
           id: 'ironmaidencontainer',
           name: 'Iron Maiden',
-          level: 12
+          level: 12,
+          prerequisites: ['amplifydamagecontainer', 'darkpactcontainer']
         },
         {
           id: 'terrorcontainer',
           name: 'Terror',
-          level: 12
+          level: 12,
+          prerequisites: ['dimvisioncontainer']
         },
         {
           id: 'confusecontainer',
           name: 'Confuse',
-          level: 18
+          level: 18,
+          prerequisites: ['dimvisioncontainer', 'terrorcontainer']
         },
         {
           id: 'lifetapcontainer',
           name: 'Life Tap',
-          level: 18
+          level: 18,
+          prerequisites: ['amplifydamagecontainer']
         },
         {
           id: 'attractcontainer',
           name: 'Attract',
-          level: 24
+          level: 24,
+          prerequisites: ['dimvisioncontainer', 'terrorcontainer', 'confusecontainer']
         },
         {
           id: 'decrepifycontainer',
           name: 'Decrepify',
-          level: 24
+          level: 24,
+          prerequisites: ['amplifydamagecontainer', 'lifetapcontainer', 'weakencontainer']
         },
         {
           id: 'lowerresistcontainer',
           name: 'Lower Resist',
-          level: 30
+          level: 30,
+          prerequisites: ['amplifydamagecontainer', 'lifetapcontainer', 'weakencontainer']
         }
         ]
       },
@@ -4697,7 +4746,7 @@ class SkillSystem {
     // Dropdown changes
     document.addEventListener('change', function (e) {
       if (e.target && e.target.id === 'active-skill-dropdown') {
-        self.calculateSkillDamage();
+        self.scheduleCalculation();
       }
       if (e.target && e.target.id === 'weapons-dropdown') {
         self.scheduleCalculation();
@@ -8621,6 +8670,74 @@ class SkillSystem {
       }
     });
     return maxBonus;
+  }
+
+  getPassiveARBonus() {
+    let totalBonus = 0;
+
+    // Penetrate (Amazon)
+    const penetrateLevel = this.getSkillTotalLevel('penetratecontainer');
+    if (penetrateLevel > 0) {
+      const skill = this.skillData.penetratecontainer;
+      const data = skill.attackRatingPercent || skill.attackRating;
+      if (data) {
+        totalBonus += data[Math.min(penetrateLevel - 1, data.length - 1)] || 0;
+      }
+    }
+
+    // Weapon Masteries (Barbarian/Assassin/Amazon)
+    totalBonus += this.getWeaponMasteryARBonus();
+
+    return totalBonus;
+  }
+
+  getActiveSkillARBonus() {
+    const dropdown = document.getElementById('active-skill-dropdown');
+    if (!dropdown || !dropdown.value) return 0;
+
+    const skillId = dropdown.value;
+    const skill = this.skillData[skillId];
+    if (!skill) return 0;
+
+    // Some skills have AR%, some have flat AR (which is treated as % bonus in the formula for skill bonuses)
+    const data = skill.attackRatingPercent || skill.attackRating;
+    if (!data) return 0;
+
+    const totalLevel = this.getSkillTotalLevel(skillId);
+    if (totalLevel <= 0) return 0;
+
+    let bonus = 0;
+    if (Array.isArray(data)) {
+      bonus = data[Math.min(totalLevel - 1, data.length - 1)] || 0;
+    } else if (typeof data === 'object') {
+      bonus = (data.base || 0) + ((data.perLevel || 0) * (totalLevel - 1));
+    }
+
+    return bonus;
+  }
+
+  getEnchantARBonus() {
+    let totalBonus = 0;
+
+    // Fire Enchant (Sorceress)
+    const enchantFireLevel = this.getSkillTotalLevel('enchantfirecontainer');
+    if (enchantFireLevel > 0) {
+      const data = this.skillData.enchantfirecontainer.attackRating;
+      if (data) {
+        totalBonus += data[Math.min(enchantFireLevel - 1, data.length - 1)] || 0;
+      }
+    }
+
+    // Cold Enchant (Sorceress)
+    const coldenchantLevel = this.getSkillTotalLevel('coldenchantcontainer');
+    if (coldenchantLevel > 0) {
+      const data = this.skillData.coldenchantcontainer.attackRating;
+      if (data) {
+        totalBonus += data[Math.min(coldenchantLevel - 1, data.length - 1)] || 0;
+      }
+    }
+
+    return totalBonus;
   }
 
   getWeaponElementalDamages() {

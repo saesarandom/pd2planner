@@ -649,6 +649,9 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     block1: (val) => `Chance to Block: ${val}%`,
     edmg: (val, prop) => formatVariableStat('+', val, '% Enhanced Damage', prop, itemName, 'edmg', dropdownId),
     toatt: (val, prop) => formatVariableStat('+', val, ' to Attack Rating', prop, itemName, 'toatt', dropdownId),
+    toattpercent: (val, prop) => formatVariableStat('+', val, '% Bonus to Attack Rating', prop, itemName, 'toattpercent', dropdownId),
+    attpercent: (val, prop) => formatVariableStat('+', val, '% Bonus to Attack Rating', prop, itemName, 'attpercent', dropdownId),
+    attperlevel: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'attperlevel', dropdownId, ' to Attack Rating'),
     todef: (val) => `+${val} Defense`,
     tolife: (val) => `+${val} to Life`,
     tomana: (val) => `+${val} to Mana`,
@@ -709,6 +712,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     owdmg: (val, prop) => formatVariableStat('+', val, ' Open Wounds Damage per Second', prop, itemName, 'owdmg', dropdownId),
     sancaura: (val, prop) => formatVariableStat('Level ', val, ' Sanctuary Aura when Equipped', prop, itemName, 'sancaura', dropdownId),
     maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
+    todeflvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'todeflvl', dropdownId, ' Defense'),
     lleech: (val, prop) => formatVariableStat('', val, '% Life Stolen per Hit', prop, itemName, 'lleech', dropdownId),
     mleech: (val, prop) => formatVariableStat('', val, '% Mana Stolen per Hit', prop, itemName, 'mleech', dropdownId),
     coldres: (val, prop) => formatVariableStat('Cold Resist +', val, '%', prop, itemName, 'coldres', dropdownId),
@@ -900,17 +904,16 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
 /**
  * Format stats that scale with character level (like maxdmgperlvl)
  */
-function formatLevelScaledStat(perLevelValue, prop, itemName, propKey, dropdownId) {
+function formatLevelScaledStat(perLevelValue, prop, itemName, propKey, dropdownId, suffix) {
   const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
   const scaledValue = Math.floor(currentLevel * perLevelValue);
 
   // Calculate min and max range
-  // Assuming min is 2 and max is current value * max level (99)
   const minScaled = Math.floor(1 * perLevelValue); // At level 1
   const maxScaled = Math.floor(99 * perLevelValue); // At level 99
 
-  // For True Silver with 2.25: min=2 (at lvl 1), max=222 (at lvl 99), current=scaled value
-  return `+[${minScaled}-${maxScaled}] to Maximum Damage (+${perLevelValue} per Character Level)`;
+  suffix = suffix || ' to Maximum Damage';
+  return `+[${minScaled}-${maxScaled}]${suffix} (+${perLevelValue} per Character Level)`;
 }
 
 /**

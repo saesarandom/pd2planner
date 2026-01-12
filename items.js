@@ -4674,18 +4674,17 @@ const itemList = {
   },
 
   "Verdungo's Hearty Cord": {
-    description:
-      "Verdungo's Hearty Cord<br>Mithril Coil<br>Defense: 158<br>Required Strength: 106<br>Required Level: 63<br>+10% Faster Hit Recovery<br>+140% Enhanced Defense<br>+40 to Vitality<br>Replenish Life +13<br>+120 Maximum Stamina<br>Physical Damage Taken Reduced by 15%<br>",
+    baseType: "Mithril Coil",
     properties: {
       defense: 158,
       reqstr: 106,
       reqlvl: 63,
       fhr: 10,
-      edef: 140,
-      vit: 40,
-      repl: 13,
-      maxstamina: 120,
-      pdr: 15,
+      edef: { min: 90, max: 140, current: 140 },
+      vit: { min: 30, max: 40, current: 40 },
+      repl: { min: 10, max: 13, current: 13 },
+      maxstamina: { min: 100, max: 120, current: 120 },
+      physdr: { min: 10, max: 15, current: 15 },
     },
   },
 
@@ -5024,8 +5023,7 @@ const itemList = {
   },
 
   "Gore Rider": {
-    description:
-      "Gore Rider<br>War Boots<br>Base Kick Damage: 45 to 90, Avg 67.5<br>Defense: 162<br>Durability: 34<br>Required Strength: 94<br>Required Level: 47<br>+30% Faster Run/Walk<br>15% Chance of Crushing Blow<br>+20% Deadly Strike<br>10% Chance of Open Wounds<br>+200 Open Wounds Damage per Second<br>+200% Enhanced Defense<br>Requirements -25%<br>",
+    baseType: "War Boots", //+10 durability
     properties: {
       kickmin: 45,
       kickmax: 90,
@@ -5034,10 +5032,10 @@ const itemList = {
       reqlvl: 47,
       frw: 30,
       cb: 15,
-      deadly: 20,
+      deadly: { min: 15, max: 20, current: 20 },
       openwounds: 10,
-      owdmg: 200,
-      edef: 200,
+      owdmg: { min: 140, max: 200, current: 200 },
+      edef: { min: 160, max: 200, current: 200 },
       reqreduced: 25,
     },
   },

@@ -21,13 +21,13 @@ class UnifiedSocketSystem {
 
     // Character base stats by class
     this.classStats = {
-      'Amazon': { str: 20, dex: 25, vit: 20, enr: 15 },
-      'Necromancer': { str: 15, dex: 25, vit: 15, enr: 25 },
-      'Barbarian': { str: 30, dex: 20, vit: 25, enr: 10 },
-      'Sorceress': { str: 10, dex: 25, vit: 10, enr: 35 },
-      'Paladin': { str: 25, dex: 20, vit: 25, enr: 15 },
-      'Assassin': { str: 20, dex: 20, vit: 20, enr: 25 },
-      'Druid': { str: 15, dex: 20, vit: 25, enr: 20 }
+      'Amazon': { str: 20, dex: 25, vit: 20, enr: 15, arConstant: 5 },
+      'Necromancer': { str: 15, dex: 25, vit: 15, enr: 25, arConstant: -10 },
+      'Barbarian': { str: 30, dex: 20, vit: 25, enr: 10, arConstant: 20 },
+      'Sorceress': { str: 10, dex: 25, vit: 10, enr: 35, arConstant: -15 },
+      'Paladin': { str: 25, dex: 20, vit: 25, enr: 15, arConstant: 20 },
+      'Assassin': { str: 20, dex: 20, vit: 20, enr: 25, arConstant: 15 },
+      'Druid': { str: 15, dex: 20, vit: 25, enr: 20, arConstant: 5 }
     };
 
     // Equipment mapping for ultra-fast lookups
@@ -3154,6 +3154,9 @@ class UnifiedSocketSystem {
       this.stats.lightResist = (this.stats.lightResist || 0) + (charmBonuses.lightResist || 0);
       this.stats.poisonResist = (this.stats.poisonResist || 0) + (charmBonuses.poisonResist || 0);
 
+      // Add flat AR from charms
+      this.stats.toatt = (this.stats.toatt || 0) + (charmBonuses.attackrating || 0);
+
       // Add damage bonuses from charms
       this.stats.lightDmgMin = (this.stats.lightDmgMin || 0) + (charmBonuses.lightDmgMin || 0);
       this.stats.lightDmgMax = (this.stats.lightDmgMax || 0) + (charmBonuses.lightDmgMax || 0);
@@ -3212,6 +3215,12 @@ class UnifiedSocketSystem {
       this.stats.frw += (window.skillSystem.getIncreasedSpeedFRW?.() || 0);
       this.stats.ias += (window.skillSystem.getIncreasedSpeedIAS?.() || 0);
 
+      // Skill-based AR bonuses (Passives, Active Skill, Enchant)
+      this.stats.toattPercent = (this.stats.toattPercent || 0) +
+        (window.skillSystem.getPassiveARBonus?.() || 0) +
+        (window.skillSystem.getActiveSkillARBonus?.() || 0) +
+        (window.skillSystem.getEnchantARBonus?.() || 0);
+
       // Combat Reflexes (FHR, Life, Stamina)
       this.stats.fhr += (window.skillSystem.getCombatReflexesFHR?.() || 0);
       this.stats.life += (window.skillSystem.getCombatReflexesLifeBonus?.() || 0);
@@ -3229,7 +3238,7 @@ class UnifiedSocketSystem {
       const howAR = Math.max(partyHOW?.arBonus || 0, window.skillSystem.getHeartOfWolverineARBonus?.() || 0);
 
       this.stats.enhancedPhysicalDamage = (this.stats.enhancedPhysicalDamage || 0) + howDmg;
-      this.stats.attackRatingPercent = (this.stats.attackRatingPercent || 0) + howAR;
+      this.stats.toattPercent = (this.stats.toattPercent || 0) + howAR;
 
       const partyOak = window.partyManager?.getBestBuff('oak-sage');
       const oakLife = Math.max(partyOak?.lifeBonus || 0, window.skillSystem.getOakSageLifeBonus?.() || 0);
@@ -4078,6 +4087,21 @@ class UnifiedSocketSystem {
       const lightRadiusMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Light\s+Radius/i);
       if (lightRadiusMatch) { this.stats.lightRadius += parseInt(lightRadiusMatch[1]); return; }
 
+      // Per Level Stats (Attack Rating, Max Damage, Defense)
+      const perLvlMatch = cleanLine.match(/\(\+([0-9.]+)\s+per\s+Character\s+Level\)/i);
+      if (perLvlMatch) {
+        const perLvl = parseFloat(perLvlMatch[1]);
+        const value = Math.floor(perLvl * this.currentLevel);
+        if (cleanLine.includes('Attack Rating')) {
+          this.stats.toatt += value;
+        } else if (cleanLine.includes('Maximum Damage')) {
+          this.stats.toMaxDmg += value;
+        } else if (cleanLine.includes('Defense')) {
+          this.stats.defense += value;
+        }
+        return;
+      }
+
       // All Skills
       const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
       if (allSkillsMatch) { this.stats.allSkills += parseInt(allSkillsMatch[1]); return; }
@@ -4893,6 +4917,7 @@ class UnifiedSocketSystem {
 
   updateStatsDisplay() {
     // Get base character stats
+    const charClass = document.getElementById('selectClass')?.value || 'Amazon';
     const baseStr = parseInt(document.getElementById('str')?.value) || 0;
     const baseDex = parseInt(document.getElementById('dex')?.value) || 0;
     const baseVit = parseInt(document.getElementById('vit')?.value) || 0;
@@ -4932,6 +4957,14 @@ class UnifiedSocketSystem {
 
     // Combat stats - using correct HTML IDs
     this.updateElement('owcontainer', this.stats.openWounds);
+
+    // Attack Rating calculation
+    const classConstant = this.classStats[charClass]?.arConstant || 0;
+    const baseAR = (totalDex - 7) * 5 + classConstant;
+    const gearAR = this.stats.toatt;
+    const arBonus = 1 + (this.stats.toattPercent / 100);
+    const totalAR = Math.floor((baseAR + gearAR) * arBonus);
+    this.updateElement('attackratingcontainer', totalAR);
 
     // PD2 Open Wounds damage: Display only if chance > 0
     const finalOWDamage = this.stats.openWounds > 0 ? this.stats.openWoundsDamage : 0;
