@@ -263,6 +263,54 @@ class BuffSystem {
     } else {
       this.removeBuff('party-cold-enchant');
     }
+
+    // Amplify Damage
+    const amp = window.partyManager.getBestBuff('amplify-damage');
+    if (amp) {
+      this.addBuff({
+        id: 'party-amplify-damage',
+        name: 'Amplify Damage',
+        image: 'amplifydamage2.png',
+        type: 'Curse',
+        level: amp.level,
+        description: `Cursed enemies take<br>+${amp.physicalDamage}% Physical Damage<br>Duration: ${amp.duration}s`,
+        tooltipType: 'curse'
+      });
+    } else {
+      this.removeBuff('party-amplify-damage');
+    }
+
+    // Lower Resist
+    const lr = window.partyManager.getBestBuff('lower-resist');
+    if (lr) {
+      this.addBuff({
+        id: 'party-lower-resist',
+        name: 'Lower Resist',
+        image: 'lowerresist.png',
+        type: 'Curse',
+        level: lr.level,
+        description: `Cursed enemies have<br>-${lr.resistReduction}% to All Resistances<br>Duration: ${lr.duration}s`,
+        tooltipType: 'curse'
+      });
+    } else {
+      this.removeBuff('party-lower-resist');
+    }
+
+    // Curse Mastery (passive bonus indicator)
+    const cm = window.partyManager.getBestBuff('curse-mastery');
+    if (cm) {
+      this.addBuff({
+        id: 'party-curse-mastery',
+        name: 'Curse Mastery',
+        image: 'cursemastery.png',
+        type: 'Passive',
+        level: cm.level,
+        description: `Max active curses: ${cm.maxCurses}<br>All Curses also benefit from<br>increased Radius and Duration`,
+        tooltipType: 'passive'
+      });
+    } else {
+      this.removeBuff('party-curse-mastery');
+    }
   }
 
   addBuff(buff) {

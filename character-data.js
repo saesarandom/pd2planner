@@ -53,7 +53,8 @@ window.exportCharacterData = function () {
         mode, anya: anyaBonuses,
         mercenary: { class: mercClass, level: mercLevel },
         equipment, sockets, corruptions, itemStates, charms, skills,
-        selectedSkill: document.getElementById('active-skill-dropdown')?.value || ''
+        selectedSkill: document.getElementById('active-skill-dropdown')?.value || '',
+        weaponSwap: window.weaponSwapSystem?.export() || null
     };
 };
 
@@ -289,6 +290,11 @@ function loadSingleCharacter(data, silent = false) {
             if (data.selectedSkill && document.getElementById('active-skill-dropdown')) {
                 document.getElementById('active-skill-dropdown').value = data.selectedSkill;
                 document.getElementById('active-skill-dropdown').dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            // Weapon Swap
+            if (data.weaponSwap && window.weaponSwapSystem) {
+                window.weaponSwapSystem.load(data.weaponSwap);
             }
 
             window._isLoadingCharacterData = false;

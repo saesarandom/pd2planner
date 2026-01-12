@@ -1,0 +1,32 @@
+/* Weapon Swap Button */
+.weapon-swap-btn {
+    margin-left: 8px;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: bold;
+    background: #2a2a2a;
+    border: 1px solid #555;
+    color: #aaa;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.weapon-swap-btn:hover {
+    background: #3a3a3a;
+    border-color: #777;
+    color: #fff;
+}
+
+/* White background for Set II (inactive becomes active visually) */
+.groupweapons.weapon-set-2 select,
+.groupoffhand.weapon-set-2 select {
+    background: #f5f5f5 !important;
+    color: #000 !important;
+}
+
+.groupweapons.weapon-set-2 .item-info,
+.groupoffhand.weapon-set-2 .item-info {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ccc;
+}

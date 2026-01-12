@@ -3249,13 +3249,21 @@ class UnifiedSocketSystem {
       this.stats.life = (this.stats.life || 0) + boLife;
       this.stats.mana = (this.stats.mana || 0) + boMana;
 
+      // Update weapon swap buff cache BEFORE reporting (so we have current data)
+      if (window.weaponSwapSystem) {
+        window.weaponSwapSystem.updateCachedBuffs();
+      }
+
       // REPORT BUFFS TO PARTY MANAGER - Only if not currently loading a character to prevent inconsistencies
       if (window.partyManager && !window._isLoadingCharacterData) {
         const idx = window.partyManager.activeIndex;
         const pkBuffs = {};
 
-        // BO
-        const boLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('battleorderscontainer') : 0;
+        // BO - use max level from both weapon sets
+        let boLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('battleorderscontainer') : 0;
+        if (window.weaponSwapSystem) {
+          boLevel = window.weaponSwapSystem.getMaxBuffLevel('bo');
+        }
         if (boLevel > 0) {
           pkBuffs['battle-orders'] = {
             level: boLevel,
@@ -3264,8 +3272,11 @@ class UnifiedSocketSystem {
           };
         }
 
-        // BC
-        const bcLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('battlecommandcontainer') : 0;
+        // BC - use max level from both weapon sets
+        let bcLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('battlecommandcontainer') : 0;
+        if (window.weaponSwapSystem) {
+          bcLevel = window.weaponSwapSystem.getMaxBuffLevel('bc');
+        }
         if (bcLevel > 0) {
           pkBuffs['battle-command'] = {
             level: bcLevel,
@@ -3274,8 +3285,11 @@ class UnifiedSocketSystem {
           };
         }
 
-        // Shout
-        const shoutLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('shoutcontainer') : 0;
+        // Shout - use max level from both weapon sets
+        let shoutLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('shoutcontainer') : 0;
+        if (window.weaponSwapSystem) {
+          shoutLevel = window.weaponSwapSystem.getMaxBuffLevel('shout');
+        }
         if (shoutLevel > 0) {
           pkBuffs['shout'] = {
             level: shoutLevel,
@@ -3283,8 +3297,11 @@ class UnifiedSocketSystem {
           };
         }
 
-        // Grim Ward
-        const grimWardLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('grimwardcontainer') : 0;
+        // Grim Ward - use max level from both weapon sets
+        let grimWardLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('grimwardcontainer') : 0;
+        if (window.weaponSwapSystem) {
+          grimWardLevel = window.weaponSwapSystem.getMaxBuffLevel('grimWard');
+        }
         if (grimWardLevel > 0) {
           const levelIndex = Math.min(grimWardLevel - 1, 59);
           const skill = window.skillSystem.skillData.grimwardcontainer;
@@ -3295,8 +3312,11 @@ class UnifiedSocketSystem {
           };
         }
 
-        // Heart of Wolverine
-        const howLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('heartofwolverinecontainer') : 0;
+        // Heart of Wolverine - use max level from both weapon sets
+        let howLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('heartofwolverinecontainer') : 0;
+        if (window.weaponSwapSystem) {
+          howLevel = window.weaponSwapSystem.getMaxBuffLevel('how');
+        }
         if (howLevel > 0) {
           pkBuffs['heart-of-wolverine'] = {
             level: howLevel,
@@ -3305,8 +3325,11 @@ class UnifiedSocketSystem {
           };
         }
 
-        // Oak Sage
-        const oakLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('oaksagecontainer') : 0;
+        // Oak Sage - use max level from both weapon sets
+        let oakLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('oaksagecontainer') : 0;
+        if (window.weaponSwapSystem) {
+          oakLevel = window.weaponSwapSystem.getMaxBuffLevel('oak');
+        }
         if (oakLevel > 0) {
           pkBuffs['oak-sage'] = {
             level: oakLevel,
@@ -3315,8 +3338,11 @@ class UnifiedSocketSystem {
           };
         }
 
-        // Spirit of Barbs
-        const sobLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('spiritofbarbscontainer') : 0;
+        // Spirit of Barbs - use max level from both weapon sets
+        let sobLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('spiritofbarbscontainer') : 0;
+        if (window.weaponSwapSystem) {
+          sobLevel = window.weaponSwapSystem.getMaxBuffLevel('sob');
+        }
         if (sobLevel > 0) {
           pkBuffs['spirit-of-barbs'] = {
             level: sobLevel,
@@ -3324,8 +3350,11 @@ class UnifiedSocketSystem {
           };
         }
 
-        // Fire Enchant
-        const fireEnchantLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('enchantfirecontainer') : 0;
+        // Fire Enchant - use max level from both weapon sets
+        let fireEnchantLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('enchantfirecontainer') : 0;
+        if (window.weaponSwapSystem) {
+          fireEnchantLevel = window.weaponSwapSystem.getMaxBuffLevel('fireEnchant');
+        }
         if (fireEnchantLevel > 0) {
           const levelIndex = Math.min(fireEnchantLevel - 1, 59);
           const skill = window.skillSystem.skillData.enchantfirecontainer;
@@ -3341,8 +3370,11 @@ class UnifiedSocketSystem {
           };
         }
 
-        // Cold Enchant
-        const coldEnchantLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('coldenchantcontainer') : 0;
+        // Cold Enchant - use max level from both weapon sets
+        let coldEnchantLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('coldenchantcontainer') : 0;
+        if (window.weaponSwapSystem) {
+          coldEnchantLevel = window.weaponSwapSystem.getMaxBuffLevel('coldEnchant');
+        }
         if (coldEnchantLevel > 0) {
           const levelIndex = Math.min(coldEnchantLevel - 1, 59);
           const skill = window.skillSystem.skillData.coldenchantcontainer;
@@ -3355,6 +3387,50 @@ class UnifiedSocketSystem {
             coldMin: Math.floor(baseColdMin * (1 + synergyBonus / 100)),
             coldMax: Math.floor(baseColdMax * (1 + synergyBonus / 100)),
             attackRating: skill.attackRating[levelIndex] || 0
+          };
+        }
+
+        // Amplify Damage
+        let ampLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('amplifydamagecontainer') : 0;
+        if (window.weaponSwapSystem) {
+          ampLevel = window.weaponSwapSystem.getMaxBuffLevel('amplifyDamage');
+        }
+        if (ampLevel > 0) {
+          const levelIndex = Math.min(ampLevel - 1, 59);
+          const skill = window.skillSystem.skillData.amplifydamagecontainer;
+          pkBuffs['amplify-damage'] = {
+            level: ampLevel,
+            physicalDamage: Math.abs(skill?.enemyPhysicalResist?.[levelIndex] || 20),
+            duration: skill?.duration?.[levelIndex] || 20
+          };
+        }
+
+        // Lower Resist
+        let lrLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('lowerresistcontainer') : 0;
+        if (window.weaponSwapSystem) {
+          lrLevel = window.weaponSwapSystem.getMaxBuffLevel('lowerResist');
+        }
+        if (lrLevel > 0) {
+          const levelIndex = Math.min(lrLevel - 1, 59);
+          const skill = window.skillSystem.skillData.lowerresistcontainer;
+          pkBuffs['lower-resist'] = {
+            level: lrLevel,
+            resistReduction: Math.abs(skill?.enemyElementalResist?.[levelIndex] || 31),
+            duration: skill?.duration?.[levelIndex] || 40
+          };
+        }
+
+        // Curse Mastery
+        let cmLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('cursemasterycontainer') : 0;
+        if (window.weaponSwapSystem) {
+          cmLevel = window.weaponSwapSystem.getMaxBuffLevel('curseMastery');
+        }
+        if (cmLevel > 0) {
+          const levelIndex = Math.min(cmLevel - 1, 59);
+          const skill = window.skillSystem.skillData.cursemasterycontainer;
+          pkBuffs['curse-mastery'] = {
+            level: cmLevel,
+            maxCurses: skill?.maxCurses?.[levelIndex] || 1
           };
         }
 
