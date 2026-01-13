@@ -992,154 +992,202 @@ class SkillSystem {
         'defensiveaurascontainer': [{
           id: 'prayercontainer',
           name: 'Prayer',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'resistfirecontainer',
           name: 'Resist Fire',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'defiancecontainer',
           name: 'Defiance',
-          level: 6
+          level: 6,
+          prerequisites: ['prayercontainer']
         },
         {
           id: 'resistcoldcontainer',
           name: 'Resist Cold',
-          level: 6
+          level: 6,
+          prerequisites: []
         },
         {
           id: 'cleansingcontainer',
           name: 'Cleansing',
-          level: 12
+          level: 12,
+          prerequisites: ['prayercontainer']
         },
         {
           id: 'resistlightningcontainer',
           name: 'Resist Lightning',
-          level: 12
+          level: 12,
+          prerequisites: []
         },
         {
           id: 'vigorcontainer',
           name: 'Vigor',
-          level: 18
+          level: 18,
+          prerequisites: ['prayercontainer', 'defiancecontainer']
         },
         {
           id: 'meditationcontainer',
           name: 'Meditation',
-          level: 24
+          level: 24,
+          prerequisites: ['prayercontainer', 'cleansingcontainer']
         },
         {
           id: 'redemptioncontainer',
           name: 'Redemption',
-          level: 30
+          level: 30,
+          prerequisites: ['prayercontainer', 'defiancecontainer', 'vigorcontainer']
         },
         {
           id: 'salvationcontainer',
           name: 'Salvation',
-          level: 30
+          level: 30,
+          prerequisites: []
         }
         ],
         'offensiveaurascontainer': [{
           id: 'mightcontainer',
           name: 'Might',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'holyfirecontainer',
           name: 'Holy Fire',
-          level: 6
+          level: 6,
+          prerequisites: ['mightcontainer']
         },
         {
           id: 'thornscontainer',
           name: 'Thorns',
-          level: 6
+          level: 6,
+          prerequisites: []
         },
         {
           id: 'blessedaimcontainer',
           name: 'Blessed Aim',
-          level: 12
+          level: 12,
+          prerequisites: ['mightcontainer']
         },
         {
           id: 'concentrationcontainer',
           name: 'Concentration',
-          level: 18
+          level: 18,
+          prerequisites: ['mightcontainer', 'blessedaimcontainer']
         },
         {
           id: 'holyfrostcontainer',
           name: 'Holy Freeze',
-          level: 18
+          level: 18,
+          prerequisites: ['mightcontainer', 'holyfirecontainer']
         },
         {
           id: 'holyshockcontainer',
           name: 'Holy Shock',
-          level: 24
+          level: 24,
+          prerequisites: ['mightcontainer', 'holyfirecontainer', 'holyfrostcontainer']
         },
         {
           id: 'sanctuarycontainer',
           name: 'Sanctuary',
-          level: 24
+          level: 24,
+          prerequisites: ['mightcontainer', 'holyfirecontainer', 'thornscontainer', 'holyfrostcontainer']
         },
         {
           id: 'fanatcontainer',
           name: 'Fanaticism',
-          level: 30
+          level: 30,
+          prerequisites: ['mightcontainer', 'blessedaimcontainer', 'concentrationcontainer']
         },
         {
           id: 'convictioncontainer',
           name: 'Conviction',
-          level: 30
+          level: 30,
+          prerequisites: ['mightcontainer', 'thornscontainer', 'holyfirecontainer', 'holyfrostcontainer', 'sanctuarycontainer']
         }
         ],
         'combatskillspalcontainer': [{
-          id: 'sacrificecontainer',
-          name: 'Sacrifice',
-          level: 1
-        },
-        {
           id: 'smitecontainer',
           name: 'Smite',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'holyboltcontainer',
           name: 'Holy Bolt',
-          level: 6
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'zeal',
           name: 'Zeal',
-          level: 12
+          level: 1,
+          prerequisites: []
+        },
+        {
+          id: 'sacrificecontainer',
+          name: 'Sacrifice',
+          level: 6,
+          prerequisites: ['zeal']
+        },
+        {
+          id: 'holylightcontainer',
+          name: 'Holy Light',
+          level: 12,
+          prerequisites: ['holyboltcontainer']
         },
         {
           id: 'chargecontainer',
           name: 'Charge',
-          level: 12
+          level: 12,
+          prerequisites: ['smitecontainer']
         },
         {
           id: 'vengeancecontainer',
           name: 'Vengeance',
-          level: 18
+          level: 18,
+          prerequisites: ['sacrificecontainer', 'zeal']
         },
         {
           id: 'blessedhammcontainer',
           name: 'Blessed Hammer',
-          level: 18
+          level: 18,
+          prerequisites: ['holyboltcontainer', 'holylightcontainer']
         },
         {
-          id: 'conversioncontainer',
-          name: 'Conversion',
-          level: 24
+          id: 'joustcontainer',
+          name: 'Joust',
+          level: 24,
+          prerequisites: ['sacrificecontainer', 'zeal', 'vengeancecontainer']
         },
         {
           id: 'holyshieldcontainer',
           name: 'Holy Shield',
-          level: 24
+          level: 24,
+          prerequisites: ['smitecontainer', 'chargecontainer']
         },
         {
-          id: 'focontainer',
+          id: 'fistoftheheavenscontainer',
           name: 'Fist of the Heavens',
-          level: 30
+          level: 24,
+          prerequisites: ['holyboltcontainer', 'holylightcontainer', 'blessedhammcontainer']
+        },
+        {
+          id: 'holyswordcontainer',
+          name: 'Holy Sword',
+          level: 30,
+          prerequisites: ['smitecontainer', 'chargecontainer']
+        },
+        {
+          id: 'holynovacontainer',
+          name: 'Holy Nova',
+          level: 30,
+          prerequisites: ['holyboltcontainer', 'smitecontainer', 'holylightcontainer', 'chargecontainer', 'blessedhammcontainer', 'holyshieldcontainer', 'fistoftheheavenscontainer', 'holyswordcontainer']
         }
         ]
       },
@@ -1147,154 +1195,202 @@ class SkillSystem {
         'coldspellscontainer': [{
           id: 'iceboltcontainer',
           name: 'Ice Bolt',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'coldenchantcontainer',
           name: 'Cold Enchant',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'frostnovacontainer',
           name: 'Frost Nova',
-          level: 6
+          level: 6,
+          prerequisites: []
         },
         {
           id: 'iceblastcontainer',
           name: 'Ice Blast',
-          level: 6
+          level: 6,
+          prerequisites: ['iceboltcontainer']
         },
         {
-          id: 'shivercontainer',
+          id: 'shiverarmorcontainer',
           name: 'Shiver Armor',
-          level: 12
+          level: 12,
+          prerequisites: ['coldenchantcontainer', 'iceboltcontainer', 'iceblastcontainer']
         },
         {
           id: 'glacialspikecontainer',
           name: 'Glacial Spike',
-          level: 18
+          level: 18,
+          prerequisites: ['iceboltcontainer', 'iceblastcontainer']
         },
         {
           id: 'blizzardcontainer',
           name: 'Blizzard',
-          level: 24
+          level: 24,
+          prerequisites: ['iceboltcontainer', 'iceblastcontainer', 'frostnovacontainer', 'glacialspikecontainer']
         },
         {
           id: 'chillingarmorcontainer',
           name: 'Chilling Armor',
-          level: 18
+          level: 24,
+          prerequisites: ['coldenchantcontainer', 'iceboltcontainer', 'iceblastcontainer', 'shiverarmorcontainer']
+        },
+        {
+          id: 'icebarragecontainer',
+          name: 'Ice Barrage',
+          level: 24,
+          prerequisites: ['iceboltcontainer', 'iceblastcontainer', 'glacialspikecontainer']
         },
         {
           id: 'frozenorbcontainer',
           name: 'Frozen Orb',
-          level: 30
+          level: 30,
+          prerequisites: ['iceboltcontainer', 'iceblastcontainer', 'frostnovacontainer', 'glacialspikecontainer', 'blizzardcontainer']
         },
         {
           id: 'coldmasterycontainer',
           name: 'Cold Mastery',
-          level: 30
+          level: 30,
+          prerequisites: []
         }
         ],
         'lightningspellscontainer': [{
           id: 'chargedboltcontainer',
           name: 'Charged Bolt',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'staticfieldcontainer',
           name: 'Static Field',
-          level: 6
+          level: 6,
+          prerequisites: []
         },
         {
           id: 'telekinesicontainer',
           name: 'Telekinesis',
-          level: 6
+          level: 6,
+          prerequisites: []
         },
         {
-          id: 'novcontainer',
+          id: 'novacontainer',
           name: 'Nova',
-          level: 12
+          level: 12,
+          prerequisites: ['chargedboltcontainer']
         },
         {
           id: 'lightningcontainer',
           name: 'Lightning',
-          level: 12
+          level: 12,
+          prerequisites: ['chargedboltcontainer']
         },
         {
           id: 'chainlightningcontainer',
           name: 'Chain Lightning',
-          level: 18
+          level: 18,
+          prerequisites: ['chargedboltcontainer', 'lightningcontainer']
         },
         {
           id: 'teleportcontainer',
           name: 'Teleport',
-          level: 18
+          level: 18,
+          prerequisites: ['telekinesicontainer']
         },
         {
           id: 'thunderstormcontainer',
           name: 'Thunder Storm',
-          level: 24
+          level: 24,
+          prerequisites: ['chargedboltcontainer', 'lightningcontainer', 'novacontainer']
         },
         {
           id: 'energyshieldcontainer',
           name: 'Energy Shield',
-          level: 24
+          level: 24,
+          prerequisites: ['chargedboltcontainer', 'telekinesicontainer', 'lightningcontainer', 'teleportcontainer', 'chainlightningcontainer']
         },
         {
           id: 'lightningmasterycontainer',
           name: 'Lightning Mastery',
-          level: 30
+          level: 30,
+          prerequisites: []
         }
         ],
         'firespellscontainer': [{
           id: 'fireboltcontainer',
           name: 'Fire Bolt',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
           id: 'warmthcontainer',
           name: 'Warmth',
-          level: 1
+          level: 1,
+          prerequisites: []
         },
         {
-          id: 'inferncontainer',
+          id: 'infernocontainer',
           name: 'Inferno',
-          level: 6
+          level: 1,
+          prerequisites: []
         },
         {
-          id: 'blaze',
+          id: 'blazecontainer',
           name: 'Blaze',
-          level: 12
+          level: 6,
+          prerequisites: ['infernocontainer']
         },
         {
           id: 'fireballcontainer',
           name: 'Fire Ball',
-          level: 12
+          level: 12,
+          prerequisites: ['fireboltcontainer']
+        },
+        {
+          id: 'lesserhydracontainer',
+          name: 'Lesser Hydra',
+          level: 12,
+          prerequisites: ['warmthcontainer']
         },
         {
           id: 'firewallcontainer',
           name: 'Fire Wall',
-          level: 18
+          level: 12,
+          prerequisites: ['infernocontainer', 'blazecontainer']
         },
         {
           id: 'enchantfirecontainer',
           name: 'Enchant Fire',
-          level: 18
+          level: 18,
+          prerequisites: ['fireboltcontainer', 'warmthcontainer', 'fireballcontainer']
         },
         {
           id: 'meteorcontainer',
           name: 'Meteor',
-          level: 24
+          level: 24,
+          prerequisites: ['fireboltcontainer', 'infernocontainer', 'blazecontainer', 'firewallcontainer', 'fireballcontainer']
         },
         {
-          id: 'firemasterycontainer',
-          name: 'Fire Mastery',
-          level: 30
+          id: 'combustioncontainer',
+          name: 'Combustion',
+          level: 24,
+          prerequisites: ['fireboltcontainer', 'warmthcontainer', 'fireballcontainer', 'lesserhydracontainer', 'enchantfirecontainer']
         },
         {
           id: 'hydracontainer',
           name: 'Hydra',
-          level: 30
+          level: 30,
+          prerequisites: ['fireboltcontainer', 'warmthcontainer', 'fireballcontainer', 'enchantfirecontainer']
+        },
+        {
+          id: 'firemasterycontainer',
+          name: 'Fire Mastery',
+          level: 30,
+          prerequisites: []
         }
         ]
       }

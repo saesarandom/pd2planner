@@ -42,12 +42,36 @@ window.weaponSwapSystem = {
         this.weaponSets[this.currentSet].weapon = weaponDropdown.value;
         this.weaponSets[this.currentSet].shield = shieldDropdown.value;
 
+        // CRITICAL FIX: Save item states (corruptions, sockets, variable stats) before switching
+        if (window.saveItemState) {
+            if (this.weaponSets[this.currentSet].weapon) {
+                window.saveItemState('weapons-dropdown', this.weaponSets[this.currentSet].weapon, 'weapon');
+            }
+            if (this.weaponSets[this.currentSet].shield) {
+                window.saveItemState('offs-dropdown', this.weaponSets[this.currentSet].shield, 'shield');
+            }
+        }
+
         // Switch to other set
         this.currentSet = this.currentSet === 1 ? 2 : 1;
 
         // Load other set
         weaponDropdown.value = this.weaponSets[this.currentSet].weapon || '';
         shieldDropdown.value = this.weaponSets[this.currentSet].shield || '';
+
+        // Set previousValue to prevent item state clearing
+        weaponDropdown.dataset.previousValue = this.weaponSets[this.currentSet].weapon || '';
+        shieldDropdown.dataset.previousValue = this.weaponSets[this.currentSet].shield || '';
+
+        // CRITICAL FIX: Restore item states (corruptions, sockets, variable stats) after switching
+        if (window.restoreItemState) {
+            if (this.weaponSets[this.currentSet].weapon) {
+                window.restoreItemState('weapons-dropdown', this.weaponSets[this.currentSet].weapon, 'weapon');
+            }
+            if (this.weaponSets[this.currentSet].shield) {
+                window.restoreItemState('offs-dropdown', this.weaponSets[this.currentSet].shield, 'shield');
+            }
+        }
 
         // Trigger change events to update stats
         weaponDropdown.dispatchEvent(new Event('change', { bubbles: true }));
