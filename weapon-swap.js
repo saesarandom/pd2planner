@@ -89,8 +89,27 @@ window.weaponSwapSystem = {
         const weaponDropdown = document.getElementById('weapons-dropdown');
         const shieldDropdown = document.getElementById('offs-dropdown');
 
-        if (weaponDropdown) weaponDropdown.value = this.weaponSets[this.currentSet].weapon || '';
-        if (shieldDropdown) shieldDropdown.value = this.weaponSets[this.currentSet].shield || '';
+        if (weaponDropdown) {
+            weaponDropdown.value = this.weaponSets[this.currentSet].weapon || '';
+            weaponDropdown.dataset.previousValue = this.weaponSets[this.currentSet].weapon || '';
+            // Restore item state (sockets, corruptions, variable stats)
+            if (window.restoreItemState && this.weaponSets[this.currentSet].weapon) {
+                window.restoreItemState('weapons-dropdown', this.weaponSets[this.currentSet].weapon, 'weapon');
+            }
+            // Trigger change event to sync UI
+            weaponDropdown.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        if (shieldDropdown) {
+            shieldDropdown.value = this.weaponSets[this.currentSet].shield || '';
+            shieldDropdown.dataset.previousValue = this.weaponSets[this.currentSet].shield || '';
+            // Restore item state (sockets, corruptions, variable stats)
+            if (window.restoreItemState && this.weaponSets[this.currentSet].shield) {
+                window.restoreItemState('offs-dropdown', this.weaponSets[this.currentSet].shield, 'shield');
+            }
+            // Trigger change event to sync UI
+            shieldDropdown.dispatchEvent(new Event('change', { bubbles: true }));
+        }
 
         this.updateVisuals();
     },
