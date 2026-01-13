@@ -1142,7 +1142,26 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
         addStatToProp('poisres', stat.value);
         break;
       case 'allres':
-        addStatToProp('allres', stat.value);
+        // SMART LOGIC: Check if item has individual resists or base "All Resistances"
+        // If item has individual resists, expand this corruption into 4 individual lines
+        // If item has "All Resistances" base stat, keep it as allres for single-line stacking
+        const hasIndividualResists = item.properties && (
+          item.properties.firres ||
+          item.properties.coldres ||
+          item.properties.ligres ||
+          item.properties.poisres
+        );
+
+        if (hasIndividualResists) {
+          // Expand into individual resists so they stack properly
+          addStatToProp('firres', stat.value);
+          addStatToProp('coldres', stat.value);
+          addStatToProp('ligres', stat.value);
+          addStatToProp('poisres', stat.value);
+        } else {
+          // Keep as "All Resistances" for cleaner single-line display
+          addStatToProp('allres', stat.value);
+        }
         break;
       case 'physdr':
         addStatToProp('physdr', stat.value);
@@ -1182,6 +1201,30 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
         else if (stat.subtype === 'cold') addStatToProp('maxcoldres', stat.value);
         else if (stat.subtype === 'lightning') addStatToProp('maxligres', stat.value);
         else if (stat.subtype === 'poison') addStatToProp('maxpoisres', stat.value);
+        break;
+      case 'allmaxres':
+        // SMART LOGIC: Same as allres - expand if item has individual max resists
+        const hasIndividualMaxResists = item.properties && (
+          item.properties.maxfirres ||
+          item.properties.maxcoldres ||
+          item.properties.maxligres ||
+          item.properties.maxpoisres
+        );
+
+        if (hasIndividualMaxResists) {
+          // Expand into individual max resists
+          addStatToProp('maxfirres', stat.value);
+          addStatToProp('maxcoldres', stat.value);
+          addStatToProp('maxligres', stat.value);
+          addStatToProp('maxpoisres', stat.value);
+        } else {
+          // Keep as single "All Maximum Resistances" line
+          // Note: We still need to add to all 4, but we'll handle display separately
+          addStatToProp('maxfirres', stat.value);
+          addStatToProp('maxcoldres', stat.value);
+          addStatToProp('maxligres', stat.value);
+          addStatToProp('maxpoisres', stat.value);
+        }
         break;
       case 'ias':
         addStatToProp('ias', stat.value);
@@ -1534,6 +1577,7 @@ function parseCorruptionText(corruptionText) {
     { pattern: /(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)/i, type: 'ar' },
     { pattern: /(\+?\d+)\s+to\s+All\s+Skills/i, type: 'allskills' },
     { pattern: /(\+?\d+)%\s+(?:to\s+)?Maximum\s+(\w+)\s+Resist/i, type: 'maxres' },
+    { pattern: /(\+?\d+)%\s+to\s+All\s+Maximum\s+Resistances/i, type: 'allmaxres' },
     { pattern: /(\w+)\s+Resist\s+\+(\d+)%/i, type: 'resist' },
     { pattern: /All\s+Resistances\s+\+(\d+)/i, type: 'allres' },
     { pattern: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)%/i, type: 'physdr' },
@@ -1636,6 +1680,8 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
     'ar': /(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)/i,
     'allskills': /(\+?\d+)\s+to\s+All\s+Skills/i,
     'allres': /All\s+Resistances\s+\+(\d+)/i,
+    'allmaxres': /(\+?\d+)%\s+to\s+All\s+Maximum\s+Resistances/i,
+    'cbf': /Cannot\s+Be\s+Frozen/i,
     'pdr': /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
     'mdr': /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
     'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i,

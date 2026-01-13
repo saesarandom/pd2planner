@@ -2831,27 +2831,18 @@ class UnifiedSocketSystem {
       }
     });
 
-    // CRITICAL FIX: Merge Corruption Stats for Static Items (Fixes Stacking Issue)
-    // We must parse the corruption text and merge it into baseStats so generateStackedDescription can replace the original lines.
+    // CRITICAL FIX: Use addCorruptionWithStacking for Static Items
+    // This function from corrupt.js properly handles multi-line corruptions
+    // by stacking what can be stacked and displaying the rest in red
     let corruptionMerged = false;
     if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
       const corruption = window.itemCorruptions[dropdownId];
       if (corruption.text && corruption.itemName === dropdown.value) {
-        // Strip HTML from corruption text just in case
-        const cleanCorruptionText = corruption.text.replace(/<[^>]+>/g, '');
-        const corruptionStats = this.parseStatsToMap(cleanCorruptionText);
-
-        // Mark stats as corrupted for coloring
-        corruptionStats.forEach((value, key) => {
-          value.isCorrupted = true;
-        });
-
-        // Merge into baseStats so they stack properly
-        this.mergeStatsMaps(baseStats, corruptionStats);
-
-        // Mark that we have handled corruption via merging
-        // This prevents the fallback logic below from blindly appending the text again
-        corruptionMerged = true;
+        // Use the corruption stacking function from corrupt.js
+        if (typeof window.addCorruptionWithStacking === 'function') {
+          baseDescription = window.addCorruptionWithStacking(baseDescription, corruption.text);
+          corruptionMerged = true;
+        }
       }
     }
 
@@ -3858,12 +3849,47 @@ class UnifiedSocketSystem {
       if (corruption.text && corruption.itemName) {
         const currentName = document.getElementById(dropdownId)?.value;
         if (currentName === corruption.itemName) {
-          // Only append if the corruption text isn't already in the description
-          // (generateItemDescription for dynamic items already includes property-based corruption)
+          // CRITICAL FIX: Smart duplicate detection for identical base + corruption values
+          // Instead of checking if corruption text exists, check if the STACKED value exists
+          // This fixes the bug where "+1 All Skills" base + "+1 All Skills" corruption
+          // would not be appended because the text already exists, even though it should show "+2"
+
           const cleanCorruption = corruption.text.replace(/<[^>]*>/g, '').trim();
           const cleanDescription = (description || '').replace(/<[^>]*>/g, '').trim();
 
-          if (!cleanDescription.includes(cleanCorruption)) {
+          // Extract the numeric value from corruption text (e.g., "+1" from "+1 to All Skills")
+          const corruptionValueMatch = cleanCorruption.match(/[+\-]?\d+/);
+          const corruptionValue = corruptionValueMatch ? parseInt(corruptionValueMatch[0]) : null;
+
+          // Extract the stat type (e.g., "to All Skills", "% Faster Cast Rate")
+          const statTypeMatch = cleanCorruption.match(/(?:[+\-]?\d+\s*)(.+)/);
+          const statType = statTypeMatch ? statTypeMatch[1].trim() : null;
+
+          let shouldAppend = true;
+
+          if (corruptionValue !== null && statType) {
+            // Look for this stat type in the description and check if it has the stacked value
+            // Create a regex that matches the stat type with any numeric value
+            const statPattern = new RegExp(`([+\\-]?\\d+)\\s*${statType.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
+            const descMatch = cleanDescription.match(statPattern);
+
+            if (descMatch) {
+              const descValue = parseInt(descMatch[1]);
+              // If the description already has a value GREATER than the corruption value,
+              // it means the corruption was already merged/stacked
+              // Only skip appending if the value is exactly the stacked amount or higher
+              if (descValue > corruptionValue) {
+                shouldAppend = false;
+              }
+            }
+          } else {
+            // Fallback to simple text matching for non-numeric corruptions
+            if (cleanDescription.includes(cleanCorruption)) {
+              shouldAppend = false;
+            }
+          }
+
+          if (shouldAppend) {
             description = (description ? description + '<br>' : '') + corruption.text;
           }
         }
@@ -4404,6 +4430,16 @@ class UnifiedSocketSystem {
         const value = parseInt(maxResMatch[1]);
         const type = maxResMatch[2].toLowerCase();
         this.addToStatsMap(statsMap, `max_${type}_resist`, { value });
+        return;
+      }
+
+      // All Maximum Resistances: "+2% to All Maximum Resistances"
+      const allMaxResMatch = cleanLine.match(/\+?(\d+)%\s+to\s+All\s+Maximum\s+Resistances/i);
+      if (allMaxResMatch) {
+        const value = parseInt(allMaxResMatch[1]);
+        ['fire', 'cold', 'lightning', 'poison'].forEach(type => {
+          this.addToStatsMap(statsMap, `max_${type}_resist`, { value });
+        });
         return;
       }
 
