@@ -321,19 +321,18 @@ const itemList = {
   },
 
   "Nightwing's Veil": {
-    description:
-      "Nightwing's Veil<br>Spired Helm<br>Defense: 352<br>Required Strength: 96<br>Required Level: 67<br>+2 to All Skills<br>-10% to Enemy Cold Resistance<br>+15% to Cold Skill Damage<br>+120% Enhanced Defense<br>+20 to Dexterity<br>+9 Cold Absorb<br>Half Freeze Duration<br>Requirements -50%<br>",
+    baseType: "Spired Helm",
     properties: {
       defense: 352,
       reqstr: 96,
       reqlvl: 67,
       allsk: 2,
-      coldpierce: 10,
-      coldsk: 15,
+      coldpierce: { min: 5, max: 10, current: 10 },
+      coldskilldmg: { min: 5, max: 10, current: 10 },
       edef: 120,
-      dex: 20,
-      coldabsorb: 9,
-      freezedur: 0.5, //nevim tu
+      dex: { min: 10, max: 20, current: 20 },
+      coldabsorb: { min: 5, max: 9, current: 9 },
+      freezedur: 0.5,
       req: -50,
     },
   },
@@ -398,7 +397,7 @@ const itemList = {
       reqlvl: 76,
       allsk: 1,
       fcr: 25,
-      lightskill: 15, //tu lightskilldmg nevim jak
+      lightskilldmg: 15, //tu lightskilldmg nevim jak
       lightpierce: 20,
       todef: 200,
     },

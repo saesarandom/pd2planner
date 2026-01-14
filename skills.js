@@ -5805,8 +5805,18 @@ class SkillSystem {
         var baseFireMax = skill.fireDamageMax[levelIndex] || 0;
         var synergyBonus = this.calculateSynergyBonus(skillId, 'fire') || 0;
 
-        var fireMin = Math.floor(baseFireMin * (1 + synergyBonus / 100));
-        var fireMax = Math.floor(baseFireMax * (1 + synergyBonus / 100));
+        // Get Fire Mastery bonus
+        var fireMasteryBonus = 0;
+        var fireMasteryInput = document.getElementById('firemasterycontainer');
+        if (fireMasteryInput) {
+          var fireMasteryLevel = this.getSkillTotalLevel('firemasterycontainer');
+          if (fireMasteryLevel > 0 && this.skillData.firemasterycontainer && this.skillData.firemasterycontainer.fireDamage) {
+            fireMasteryBonus = this.skillData.firemasterycontainer.fireDamage[Math.min(fireMasteryLevel - 1, 59)] || 0;
+          }
+        }
+
+        var fireMin = Math.floor(baseFireMin * (1 + (synergyBonus + fireMasteryBonus) / 100));
+        var fireMax = Math.floor(baseFireMax * (1 + (synergyBonus + fireMasteryBonus) / 100));
 
         html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + fireMin + '-' + fireMax + '</div>';
 
@@ -5818,6 +5828,9 @@ class SkillSystem {
         if (synergyBonus > 0) {
           html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
         }
+        if (fireMasteryBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Fire Mastery: +' + fireMasteryBonus + '%</div>';
+        }
       }
 
       // Display Cold Enchant specific properties
@@ -5827,8 +5840,18 @@ class SkillSystem {
         var baseColdMax = skill.coldDamageMax[levelIndex] || 0;
         var synergyBonus = this.calculateSynergyBonus(skillId, 'cold') || 0;
 
-        var coldMin = Math.floor(baseColdMin * (1 + synergyBonus / 100));
-        var coldMax = Math.floor(baseColdMax * (1 + synergyBonus / 100));
+        // Get Cold Mastery bonus
+        var coldMasteryBonus = 0;
+        var coldMasteryInput = document.getElementById('coldmasterycontainer');
+        if (coldMasteryInput) {
+          var coldMasteryLevel = this.getSkillTotalLevel('coldmasterycontainer');
+          if (coldMasteryLevel > 0 && this.skillData.coldmasterycontainer && this.skillData.coldmasterycontainer.coldDamage) {
+            coldMasteryBonus = this.skillData.coldmasterycontainer.coldDamage[Math.min(coldMasteryLevel - 1, 59)] || 0;
+          }
+        }
+
+        var coldMin = Math.floor(baseColdMin * (1 + (synergyBonus + coldMasteryBonus) / 100));
+        var coldMax = Math.floor(baseColdMax * (1 + (synergyBonus + coldMasteryBonus) / 100));
 
         html += '<div style="margin: 5px 0; color: #6699ff;">Cold Damage: ' + coldMin + '-' + coldMax + '</div>';
 
@@ -5840,6 +5863,9 @@ class SkillSystem {
         if (synergyBonus > 0) {
           html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
         }
+        if (coldMasteryBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #99ccff;">Cold Mastery: +' + coldMasteryBonus + '%</div>';
+        }
       }
 
       // Display Fire Enchant specific properties
@@ -5849,8 +5875,18 @@ class SkillSystem {
         var baseFireMax = skill.fireDamageMax[levelIndex] || 0;
         var synergyBonus = this.calculateSynergyBonus(skillId, 'fire') || 0;
 
-        var fireMin = Math.floor(baseFireMin * (1 + synergyBonus / 100));
-        var fireMax = Math.floor(baseFireMax * (1 + synergyBonus / 100));
+        // Get Fire Mastery bonus
+        var fireMasteryBonus = 0;
+        var fireMasteryInput = document.getElementById('firemasterycontainer');
+        if (fireMasteryInput) {
+          var fireMasteryLevel = this.getSkillTotalLevel('firemasterycontainer');
+          if (fireMasteryLevel > 0 && this.skillData.firemasterycontainer && this.skillData.firemasterycontainer.fireDamage) {
+            fireMasteryBonus = this.skillData.firemasterycontainer.fireDamage[Math.min(fireMasteryLevel - 1, 59)] || 0;
+          }
+        }
+
+        var fireMin = Math.floor(baseFireMin * (1 + (synergyBonus + fireMasteryBonus) / 100));
+        var fireMax = Math.floor(baseFireMax * (1 + (synergyBonus + fireMasteryBonus) / 100));
 
         html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + fireMin + '-' + fireMax + '</div>';
 
@@ -5861,6 +5897,9 @@ class SkillSystem {
 
         if (synergyBonus > 0) {
           html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
+        }
+        if (fireMasteryBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Fire Mastery: +' + fireMasteryBonus + '%</div>';
         }
       }
 
@@ -6930,6 +6969,9 @@ class SkillSystem {
       if (damageInfo.synergyBonus > 0) {
         html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
       }
+      if (damageInfo.masteryBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #ff9966;">Fire Mastery: +' + damageInfo.masteryBonus + '%</div>';
+      }
 
       // Special handling for Fire Blast - bombs
       if (skillId === 'fireblastcontainer' && skill.bombs) {
@@ -6973,6 +7015,9 @@ class SkillSystem {
 
       if (damageInfo.synergyBonus > 0) {
         html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+      if (damageInfo.masteryBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #ffff99;">Lightning Mastery: +' + damageInfo.masteryBonus + '%</div>';
       }
 
       // Special handling for Shock Web - spikes, duration, cooldown
@@ -7339,6 +7384,9 @@ class SkillSystem {
 
       if (damageInfo.synergyBonus > 0) {
         html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+      if (damageInfo.masteryBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #99ccff;">Cold Mastery: +' + damageInfo.masteryBonus + '%</div>';
       }
 
       html += '<div style="margin: 5px 0; color: #6699ff;">Cold Damage: ' + damageInfo.coldMin + '-' + damageInfo.coldMax + '</div>';
@@ -9219,16 +9267,27 @@ class SkillSystem {
     // Calculate synergy bonus for lightning
     var lightningSynergyBonus = this.calculateSynergyBonus(skillId, 'lightning');
 
-    // Apply synergies to lightning damage
-    var lightningMin = Math.floor(baseLightningMin * (1 + lightningSynergyBonus / 100));
-    var lightningMax = Math.floor(baseLightningMax * (1 + lightningSynergyBonus / 100));
+    // Get Lightning Mastery bonus
+    var lightningMasteryBonus = 0;
+    var lightningMasteryInput = document.getElementById('lightningmasterycontainer');
+    if (lightningMasteryInput) {
+      var lightningMasteryLevel = this.getSkillTotalLevel('lightningmasterycontainer');
+      if (lightningMasteryLevel > 0 && this.skillData.lightningmasterycontainer && this.skillData.lightningmasterycontainer.lightningDamage) {
+        lightningMasteryBonus = this.skillData.lightningmasterycontainer.lightningDamage[Math.min(lightningMasteryLevel - 1, 59)] || 0;
+      }
+    }
+
+    // Apply synergies and mastery to lightning damage
+    var lightningMin = Math.floor(baseLightningMin * (1 + (lightningSynergyBonus + lightningMasteryBonus) / 100));
+    var lightningMax = Math.floor(baseLightningMax * (1 + (lightningSynergyBonus + lightningMasteryBonus) / 100));
 
     var result = {
       lightningMin: lightningMin,
       lightningMax: lightningMax,
       average: Math.floor((lightningMin + lightningMax) / 2),
       averageLightning: Math.floor((lightningMin + lightningMax) / 2),
-      synergyBonus: lightningSynergyBonus
+      synergyBonus: lightningSynergyBonus,
+      masteryBonus: lightningMasteryBonus
     };
 
     // Check if this skill has nova damage (like Power Strike)
@@ -9268,16 +9327,27 @@ class SkillSystem {
     // Calculate synergy bonus for cold
     var coldSynergyBonus = this.calculateSynergyBonus(skillId, 'cold');
 
-    // Apply synergies to cold damage
-    var coldMin = Math.floor(baseColdMin * (1 + coldSynergyBonus / 100));
-    var coldMax = Math.floor(baseColdMax * (1 + coldSynergyBonus / 100));
+    // Get Cold Mastery bonus
+    var coldMasteryBonus = 0;
+    var coldMasteryInput = document.getElementById('coldmasterycontainer');
+    if (coldMasteryInput) {
+      var coldMasteryLevel = this.getSkillTotalLevel('coldmasterycontainer');
+      if (coldMasteryLevel > 0 && this.skillData.coldmasterycontainer && this.skillData.coldmasterycontainer.coldDamage) {
+        coldMasteryBonus = this.skillData.coldmasterycontainer.coldDamage[Math.min(coldMasteryLevel - 1, 59)] || 0;
+      }
+    }
+
+    // Apply synergies and mastery to cold damage
+    var coldMin = Math.floor(baseColdMin * (1 + (coldSynergyBonus + coldMasteryBonus) / 100));
+    var coldMax = Math.floor(baseColdMax * (1 + (coldSynergyBonus + coldMasteryBonus) / 100));
 
     return {
       coldMin: coldMin,
       coldMax: coldMax,
       average: Math.floor((coldMin + coldMax) / 2),
       averageCold: Math.floor((coldMin + coldMax) / 2),
-      synergyBonus: coldSynergyBonus
+      synergyBonus: coldSynergyBonus,
+      masteryBonus: coldMasteryBonus
     };
   }
 
@@ -9290,16 +9360,27 @@ class SkillSystem {
     // Calculate synergy bonus for fire
     var fireSynergyBonus = this.calculateSynergyBonus(skillId, 'fire');
 
-    // Apply synergies to fire damage
-    var fireMin = Math.floor(baseFireMin * (1 + fireSynergyBonus / 100));
-    var fireMax = Math.floor(baseFireMax * (1 + fireSynergyBonus / 100));
+    // Get Fire Mastery bonus
+    var fireMasteryBonus = 0;
+    var fireMasteryInput = document.getElementById('firemasterycontainer');
+    if (fireMasteryInput) {
+      var fireMasteryLevel = this.getSkillTotalLevel('firemasterycontainer');
+      if (fireMasteryLevel > 0 && this.skillData.firemasterycontainer && this.skillData.firemasterycontainer.fireDamage) {
+        fireMasteryBonus = this.skillData.firemasterycontainer.fireDamage[Math.min(fireMasteryLevel - 1, 59)] || 0;
+      }
+    }
+
+    // Apply synergies and mastery to fire damage
+    var fireMin = Math.floor(baseFireMin * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
+    var fireMax = Math.floor(baseFireMax * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
 
     var result = {
       fireMin: fireMin,
       fireMax: fireMax,
       average: Math.floor((fireMin + fireMax) / 2),
       averageFire: Math.floor((fireMin + fireMax) / 2),
-      synergyBonus: fireSynergyBonus
+      synergyBonus: fireSynergyBonus,
+      masteryBonus: fireMasteryBonus
     };
 
     // Check if this skill has burning damage (Immolation Arrow, Blaze, Meteor)
@@ -9307,9 +9388,9 @@ class SkillSystem {
       var baseBurningMin = (skill.burningDamage ? skill.burningDamage.min[levelIndex] : (skill.burningDamageMin ? skill.burningDamageMin[levelIndex] : 0)) || 0;
       var baseBurningMax = (skill.burningDamage ? skill.burningDamage.max[levelIndex] : (skill.burningDamageMax ? skill.burningDamageMax[levelIndex] : 0)) || 0;
 
-      // Apply synergies to burning damage
-      var burningMin = Math.floor(baseBurningMin * (1 + fireSynergyBonus / 100));
-      var burningMax = Math.floor(baseBurningMax * (1 + fireSynergyBonus / 100));
+      // Apply synergies and mastery to burning damage
+      var burningMin = Math.floor(baseBurningMin * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
+      var burningMax = Math.floor(baseBurningMax * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
 
       result.burningMin = burningMin;
       result.burningMax = burningMax;

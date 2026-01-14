@@ -3249,6 +3249,40 @@ class UnifiedSocketSystem {
       this.stats.life = (this.stats.life || 0) + boLife;
       this.stats.mana = (this.stats.mana || 0) + boMana;
 
+      // Sorceress Mastery Skills (Fire, Cold, Lightning)
+      // Fire Mastery - adds to fire skill damage and enemy fire resistance pierce
+      const fireMasteryLevel = window.skillSystem?.getSkillTotalLevel?.('firemasterycontainer') || 0;
+      if (fireMasteryLevel > 0 && window.skillSystem?.skillData?.firemasterycontainer) {
+        const fireMasteryData = window.skillSystem.skillData.firemasterycontainer;
+        if (fireMasteryData.fireDamage && fireMasteryData.fireDamage[fireMasteryLevel - 1] !== undefined) {
+          this.stats.fireSkillDamage = (this.stats.fireSkillDamage || 0) + fireMasteryData.fireDamage[fireMasteryLevel - 1];
+        }
+        if (fireMasteryData.enemyFireResist && fireMasteryData.enemyFireResist[fireMasteryLevel - 1] !== undefined) {
+          this.stats.pierceFire = (this.stats.pierceFire || 0) + Math.abs(fireMasteryData.enemyFireResist[fireMasteryLevel - 1]);
+        }
+      }
+
+      // Cold Mastery - adds to cold skill damage and enemy cold resistance pierce
+      const coldMasteryLevel = window.skillSystem?.getSkillTotalLevel?.('coldmasterycontainer') || 0;
+      if (coldMasteryLevel > 0 && window.skillSystem?.skillData?.coldmasterycontainer) {
+        const coldMasteryData = window.skillSystem.skillData.coldmasterycontainer;
+        if (coldMasteryData.coldDamage && coldMasteryData.coldDamage[coldMasteryLevel - 1] !== undefined) {
+          this.stats.coldSkillDamage = (this.stats.coldSkillDamage || 0) + coldMasteryData.coldDamage[coldMasteryLevel - 1];
+        }
+        if (coldMasteryData.enemyColdResist && coldMasteryData.enemyColdResist[coldMasteryLevel - 1] !== undefined) {
+          this.stats.pierceCold = (this.stats.pierceCold || 0) + Math.abs(coldMasteryData.enemyColdResist[coldMasteryLevel - 1]);
+        }
+      }
+
+      // Lightning Mastery - adds to lightning skill damage (no pierce in the data)
+      const lightningMasteryLevel = window.skillSystem?.getSkillTotalLevel?.('lightningmasterycontainer') || 0;
+      if (lightningMasteryLevel > 0 && window.skillSystem?.skillData?.lightningmasterycontainer) {
+        const lightningMasteryData = window.skillSystem.skillData.lightningmasterycontainer;
+        if (lightningMasteryData.lightningDamage && lightningMasteryData.lightningDamage[lightningMasteryLevel - 1] !== undefined) {
+          this.stats.lightningSkillDamage = (this.stats.lightningSkillDamage || 0) + lightningMasteryData.lightningDamage[lightningMasteryLevel - 1];
+        }
+      }
+
       // Update weapon swap buff cache BEFORE reporting (so we have current data)
       if (window.weaponSwapSystem) {
         window.weaponSwapSystem.updateCachedBuffs();
@@ -3362,10 +3396,17 @@ class UnifiedSocketSystem {
           const baseFireMax = skill.fireDamageMax[levelIndex] || 0;
           const synergyBonus = typeof window.skillSystem.calculateSynergyBonus === 'function' ? window.skillSystem.calculateSynergyBonus('enchantfirecontainer', 'fire') : 0;
 
+          // Get Fire Mastery bonus
+          let fireMasteryBonus = 0;
+          const fireMasteryLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('firemasterycontainer') : 0;
+          if (fireMasteryLevel > 0 && window.skillSystem.skillData.firemasterycontainer && window.skillSystem.skillData.firemasterycontainer.fireDamage) {
+            fireMasteryBonus = window.skillSystem.skillData.firemasterycontainer.fireDamage[Math.min(fireMasteryLevel - 1, 59)] || 0;
+          }
+
           pkBuffs['fire-enchant'] = {
             level: fireEnchantLevel,
-            fireMin: Math.floor(baseFireMin * (1 + synergyBonus / 100)),
-            fireMax: Math.floor(baseFireMax * (1 + synergyBonus / 100)),
+            fireMin: Math.floor(baseFireMin * (1 + (synergyBonus + fireMasteryBonus) / 100)),
+            fireMax: Math.floor(baseFireMax * (1 + (synergyBonus + fireMasteryBonus) / 100)),
             attackRating: skill.attackRating[levelIndex] || 0
           };
         }
@@ -3382,10 +3423,17 @@ class UnifiedSocketSystem {
           const baseColdMax = skill.coldDamageMax[levelIndex] || 0;
           const synergyBonus = typeof window.skillSystem.calculateSynergyBonus === 'function' ? window.skillSystem.calculateSynergyBonus('coldenchantcontainer', 'cold') : 0;
 
+          // Get Cold Mastery bonus
+          let coldMasteryBonus = 0;
+          const coldMasteryLevel = typeof window.skillSystem.getSkillTotalLevel === 'function' ? window.skillSystem.getSkillTotalLevel('coldmasterycontainer') : 0;
+          if (coldMasteryLevel > 0 && window.skillSystem.skillData.coldmasterycontainer && window.skillSystem.skillData.coldmasterycontainer.coldDamage) {
+            coldMasteryBonus = window.skillSystem.skillData.coldmasterycontainer.coldDamage[Math.min(coldMasteryLevel - 1, 59)] || 0;
+          }
+
           pkBuffs['cold-enchant'] = {
             level: coldEnchantLevel,
-            coldMin: Math.floor(baseColdMin * (1 + synergyBonus / 100)),
-            coldMax: Math.floor(baseColdMax * (1 + synergyBonus / 100)),
+            coldMin: Math.floor(baseColdMin * (1 + (synergyBonus + coldMasteryBonus) / 100)),
+            coldMax: Math.floor(baseColdMax * (1 + (synergyBonus + coldMasteryBonus) / 100)),
             attackRating: skill.attackRating[levelIndex] || 0
           };
         }

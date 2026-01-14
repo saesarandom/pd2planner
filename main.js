@@ -76,7 +76,7 @@ window.BASE_TYPE_CATEGORIES = {
   'Blood Spirit': 'helm', 'Sun Spirit': 'helm', 'Earth Spirit': 'helm',
   'Lion Helm': 'helm', 'Rage Mask': 'helm', 'Fury Visor': 'helm', 'Destroyer Helm': 'helm',
   'Conqueror Crown': 'helm', 'Guardian Crown': 'helm', 'Sacred Mask': 'helm',
-  'Shako': 'helm', 'Corona': 'helm', 'Hydraskull': 'helm', 'Giant Conch': 'helm',
+  'Shako': 'helm', 'Corona': 'helm', 'Hydraskull': 'helm', 'Giant Conch': 'helm', 'Spired Helm': 'helm', 'Demonhead': 'helm',
 
   // Armors
   'Quilted Armor': 'armor', 'Leather Armor': 'armor', 'Hard Leather Armor': 'armor',
@@ -770,6 +770,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     ligrad: (val, prop) => formatVariableStat(val >= 0 ? '+' : '', val, ' to Light Radius', prop, itemName, 'ligrad', dropdownId),
     defvsmiss: (val, prop) => formatVariableStat('+', val, ' Defense vs. Missile', prop, itemName, 'defvsmiss', dropdownId),
     firepierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Fire Resistance', prop, itemName, 'firepierce', dropdownId),
+    coldpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Cold Resistance', prop, itemName, 'coldpierce', dropdownId),
+    coldskilldmg: (val, prop) => formatVariableStat('+', val, '% to Cold Skill Damage', prop, itemName, 'coldskilldmg', dropdownId),
+    coldabsorb: (val, prop) => formatVariableStat('+', val, ' Cold Absorb', prop, itemName, 'coldabsorb', dropdownId),
+    freezedur: (val, prop) => val === 0.5 ? 'Half Freeze Duration' : formatVariableStat('Freeze Duration Reduced by ', val * 100, '%', prop, itemName, 'freezedur', dropdownId),
+    req: (val, prop) => formatVariableStat('Requirements ', val, '%', prop, itemName, 'req', dropdownId),
   };
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere
