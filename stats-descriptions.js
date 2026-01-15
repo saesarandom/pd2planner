@@ -65,6 +65,7 @@ const StatFormats = {
   firepierce: '-{value}% to Enemy Fire Resistance',
   lightpierce: '-{value}% to Enemy Lightning Resistance',
   poisonpierce: '-{value}% to Enemy Poison Resistance',
+  physpierce: '-{value}% to Enemy Physical Resistance',
 
   // === SKILL DAMAGE ===
   lightskilldmg: '+{value}% to Lightning Skill Damage',
@@ -73,7 +74,7 @@ const StatFormats = {
   poisonskilldmg: '+{value}% to Poison Skill Damage',
 
   // === MISC ===
-  curseres: '+{value}% Curse Resistance',
+  curseres: 'Curse Resistance {value}%',
   ligrad: '+{value} to Light Radius'
 };
 
@@ -129,6 +130,7 @@ const StatPatterns = {
   firepierce: /-(\d+)%\s+to\s+Enemy\s+Fire\s+Resistance/i,
   lightpierce: /-(\d+)%\s+to\s+Enemy\s+Lightning\s+Resistance/i,
   poisonpierce: /-(\d+)%\s+to\s+Enemy\s+Poison\s+Resistance/i,
+  physpierce: /-(\d+)%\s+to\s+Enemy\s+Physical\s+Resistance/i,
 
   lightskilldmg: /\+(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i,
   coldskilldmg: /\+(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i,
@@ -179,6 +181,7 @@ const PropertyMapping = {
   firepierce: 'firepierce',
   lightpierce: 'lightpierce',
   poisonpierce: 'poisonpierce',
+  physpierce: 'physpierce',
   lightskilldmg: 'lightskilldmg',
   coldskilldmg: 'coldskilldmg',
   fireskilldmg: 'fireskilldmg',

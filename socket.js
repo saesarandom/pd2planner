@@ -75,6 +75,7 @@ class UnifiedSocketSystem {
       pierceLightning: 0,
       piercePoison: 0,
       piercePhysical: 0,
+      pierceMagic: 0,
 
       // Proc chances (these won't add to totals, just for display)
       levelUpProcs: [],
@@ -3079,6 +3080,7 @@ class UnifiedSocketSystem {
     this.stats.pierceLightning = 0;
     this.stats.piercePoison = 0;
     this.stats.piercePhysical = 0;
+    this.stats.pierceMagic = 0;
 
     // CRITICAL: Reset treeSkills object (not in initial stats, so Object.keys won't reset it)
     this.stats.treeSkills = {};
@@ -3946,8 +3948,12 @@ class UnifiedSocketSystem {
 
     if (!description) return;
 
+    // Check if this item has a base Defense line (e.g., "Defense: 834")
+    // If it does, we should NOT parse "+X Defense" lines because todef is already included in the total
+    const hasBaseDefense = /Defense:\s*\d+/i.test(description);
+
     const lines = description.split('<br>');
-    lines.forEach(line => this.parseStatLine(line.trim()));
+    lines.forEach(line => this.parseStatLine(line.trim(), hasBaseDefense));
   }
 
   // parseSocketStats(statsText, section) {
@@ -3978,7 +3984,7 @@ class UnifiedSocketSystem {
   }
 
 
-  parseStatLine(line) {
+  parseStatLine(line, hasBaseDefense = false) {
     if (!line) return;
 
     const cleanLine = line.replace(/<[^>]*>/g, '').trim();
@@ -4067,6 +4073,24 @@ class UnifiedSocketSystem {
         }
       }
 
+      if (cleanLine.match(/-\d+%\s+to\s+Enemy\s+Physical\s+Resistance/i)) {
+        const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Physical\s+Resistance/i);
+        if (match) {
+          const value = parseInt(match[1]);
+          this.stats.piercePhysical = (this.stats.piercePhysical || 0) + value;
+          return;
+        }
+      }
+
+      if (cleanLine.match(/-\d+%\s+to\s+Enemy\s+Magic\s+Resistance/i)) {
+        const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Magic\s+Resistance/i);
+        if (match) {
+          const value = parseInt(match[1]);
+          this.stats.pierceMagic = (this.stats.pierceMagic || 0) + value;
+          return;
+        }
+      }
+
       // === ELEMENTAL DAMAGE PATTERNS (after Rainbow Facet patterns) ===
 
       // Fire Damage: Adds 17-45 Fire Damage
@@ -4135,6 +4159,32 @@ class UnifiedSocketSystem {
       const defMatch = cleanLine.match(/^Defense:\s*(\d+)/i);
       if (defMatch) {
         this.stats.defense += parseInt(defMatch[1]);
+        return;
+      }
+
+      // Additional defense bonus: +X Defense (but not "Defense: X" which is handled above)
+      // This handles items like amulets/rings that don't have base defense but get +Defense from todef
+      // ONLY parse this if the item doesn't have a "Defense: X" line (hasBaseDefense = false)
+      // For items with base defense (like helms/armor), the +X Defense is already included in the total
+      // Pattern allows for HTML tags and input elements after "Defense" (from dynamic stats)
+      // Negative lookahead (?!\s+vs) excludes "Defense vs. Missile" and "Defense vs. Melee"
+      if (!hasBaseDefense) {
+        const toDefMatch = cleanLine.match(/^\+(\d+)\s+Defense(?!\s+vs)/i);
+        if (toDefMatch) {
+          this.stats.defense += parseInt(toDefMatch[1]);
+          return;
+        }
+      }
+
+      // All Attributes: +2 to All Attributes
+      // This should be parsed BEFORE individual attributes to avoid conflicts
+      const allAttrsMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?All\s+Attributes/i);
+      if (allAttrsMatch) {
+        const value = parseInt(allAttrsMatch[1]);
+        this.stats.strength += value;
+        this.stats.dexterity += value;
+        this.stats.vitality += value;
+        this.stats.energy += value;
         return;
       }
 
@@ -5147,6 +5197,7 @@ class UnifiedSocketSystem {
     this.updateElement('piercelightningcontainer', this.stats.pierceLightning);
     this.updateElement('piercepoisoncontainer', this.stats.piercePoison);
     this.updateElement('piercephyscontainer', this.stats.piercePhysical);
+    this.updateElement('piercemagiccontainer', this.stats.pierceMagic);
 
     // Update crit multiplier when stats change (including deadly strike)
     if (typeof window.updateCritDisplay === 'function') {

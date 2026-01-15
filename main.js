@@ -683,6 +683,13 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     palsk: (val, prop) => formatVariableStat('+', val, ' to Paladin Skill Levels', prop, itemName, 'palsk', dropdownId),
     drusk: (val, prop) => formatVariableStat('+', val, ' to Druid Skill Levels', prop, itemName, 'drusk', dropdownId),
     assk: (val, prop) => formatVariableStat('+', val, ' to Assassin Skill Levels', prop, itemName, 'assk', dropdownId),
+    irongolemoskill: (val, prop) => formatVariableStat('+', val, ' to Iron Golem', prop, itemName, 'irongolemoskill', dropdownId),
+    golemmasteryoskill: (val, prop) => formatVariableStat('+', val, ' to Golem Mastery', prop, itemName, 'golemmasteryoskill', dropdownId),
+    maidencharges: (val, prop) => {
+      const level = props.maidenchargeslevel || 12;
+      return `Level ${level} Iron Maiden (${val} Charges)`;
+    },
+    maidenchargeslevel: () => '', // Skip, handled by maidencharges
     fcr: (val, prop) => formatVariableStat('+', val, '% Faster Cast Rate', prop, itemName, 'fcr', dropdownId),
     // lightrad: (val, prop) => formatVariableStat(val >= 0 ? '+' : '', val, ' to Light Radius', prop, itemName, 'lightrad', dropdownId),
     plr: (val, prop) => formatVariableStat('Poison Length Reduced by ', val, '%', prop, itemName, 'plr', dropdownId),
@@ -720,7 +727,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     firres: (val, prop) => formatVariableStat('Fire Resist +', val, '%', prop, itemName, 'firres', dropdownId),
     ligres: (val, prop) => formatVariableStat('Lightning Resist +', val, '%', prop, itemName, 'ligres', dropdownId),
     poisres: (val, prop) => formatVariableStat('Poison Resist +', val, '%', prop, itemName, 'poisres', dropdownId),
-    curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
+    curseres: (val, prop) => formatVariableStat('Curse Resistance ', val, '%', prop, itemName, 'curseres', dropdownId),
     physdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '%', prop, itemName, 'physdr', dropdownId),
     mdr: (val, prop) => formatVariableStat('Magic Damage Reduced by ', val, '', prop, itemName, 'mdr', dropdownId),
     todefmiss: (val, prop) => formatVariableStat('+', val, ' Defense vs. Melee', prop, itemName, 'todefmiss', dropdownId),
@@ -746,7 +753,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     },
     firedmgmax: () => '', // Skip, handled by firedmgmin
     cbf: (val, prop) => formatVariableStat('', val ? 'Cannot Be Frozen' : '', '', prop, itemName, 'cbf', dropdownId),
-    curseres: (val, prop) => formatVariableStat('+', val, '% Curse Resistance', prop, itemName, 'curseres', dropdownId),
+
 
     // Missing display handlers for dynamic items
     maxfirres: (val, prop) => formatVariableStat('+', val, '% to Maximum Fire Resist', prop, itemName, 'maxfirres', dropdownId),
@@ -773,6 +780,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     firepierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Fire Resistance', prop, itemName, 'firepierce', dropdownId),
     coldpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Cold Resistance', prop, itemName, 'coldpierce', dropdownId),
     lightpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Lightning Resistance', prop, itemName, 'lightpierce', dropdownId),
+    physpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Physical Resistance', prop, itemName, 'physpierce', dropdownId),
     coldskilldmg: (val, prop) => formatVariableStat('+', val, '% to Cold Skill Damage', prop, itemName, 'coldskilldmg', dropdownId),
     lightskilldmg: (val, prop) => formatVariableStat('+', val, '% to Lightning Skill Damage', prop, itemName, 'lightskilldmg', dropdownId),
     coldabsorb: (val, prop) => formatVariableStat('+', val, ' Cold Absorb', prop, itemName, 'coldabsorb', dropdownId),

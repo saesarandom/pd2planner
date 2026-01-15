@@ -356,20 +356,19 @@ const itemList = {
   },
 
   "Overlord's Helm": {
-    description:
-      "Overlord's Helm<br>Giant Conch<br>Defense: 834<br>Required Strength: 142<br>Required Level: 85<br>-10% to Enemy Physical Resistance<br>8% Life Stolen per Hit<br>+680 Defense<br>+30 to Strength<br>+15 to Dexterity<br>+15 to Vitality<br>-30 to Energy<br>Curse Resistance -30%<br>",
+    baseType: "Giant Conch",
     properties: {
       defense: 834,
       reqstr: 142,
       reqlvl: 85,
-      physpierce: 10,
-      lleech: 8,
-      todef: 680,
-      str: 30,
+      physpierce: 15,
+      lleech: { min: 5, max: 8, current: 8 },
+      todef: { min: 460, max: 680, current: 680 },
+      str: { min: 20, max: 30, current: 30 },
       dex: 15,
       vit: 15,
       enr: -30,
-      curseres: -30,
+      curseres: -20,
     },
   },
 
@@ -5605,14 +5604,13 @@ const itemList = {
   },
 
   Metalgrid: {
-    description:
-      "Metalgrid<br> Amulet<br> Required Level: 81<br> +450 to Attack Rating<br> +350 Defense<br> All Resistances +35<br> Attacker Takes Damage of 1000<br> Level 12 Iron Maiden (20 Charges)<br> +25 to Iron Golem<br> +20 to Golem Mastery<br>",
+    baseType: "Amulet",
     properties: {
       reqlvl: 81,
-      toatt: 450,
-      todef: 350,
-      allres: 35,
-      atdmg: 1000,
+      toatt: { min: 400, max: 450, current: 450 },
+      todef: { min: 300, max: 350, current: 350 },
+      allres: { min: 25, max: 35, current: 35 },
+      atdmg: { min: 750, max: 1000, current: 1000 },
       maidencharges: 12,
       maidenchargeslevel: 20,
       irongolemoskill: 25,
