@@ -31,6 +31,7 @@ class CharmInventory {
         name: 'Annihilus',
         type: 'small-charm',
         imagePath: 'img/annihilus.png',
+        reqlvl: 70,
         stats: [
           { label: '+1 to All Skills', key: 'skills', fixed: 1 },
           { label: '+{value} to Vitality', key: 'vitality', min: 30, max: 60, value: 30 },
@@ -43,6 +44,7 @@ class CharmInventory {
         name: 'Hellfire Torch',
         type: 'large-charm',
         imagePath: 'img/hellfiretorch.png',
+        reqlvl: 75,
         stats: [
           { label: '+2 to [Random Class] Skills', key: 'classskills', fixed: 2 },
           { label: '+{value} to Vitality', key: 'vitality', min: 30, max: 60, value: 30 },
@@ -55,6 +57,7 @@ class CharmInventory {
         name: "Gheed's Fortune",
         type: 'grand-charm',
         imagePath: 'img/gheedsfortune.png',
+        reqlvl: 62,
         stats: [
           { label: '+{value}% Extra Gold from Monsters', key: 'gold', min: 80, max: 160, value: 80 },
           { label: '+{value}% Better Chance of Getting Magic Items', key: 'mf', min: 20, max: 40, value: 20 },
@@ -65,6 +68,7 @@ class CharmInventory {
         name: 'Annihilus',
         type: 'small-charm',
         imagePath: 'img/corrannihilus.png',
+        reqlvl: 70,
         stats: [
           { label: '+2 to All Skills', key: 'skills', fixed: 2 },
           { label: '+{value} to Vitality', key: 'vitality', min: 30, max: 60, value: 30 },
@@ -938,38 +942,38 @@ class CharmInventory {
         ]
       },
 
-      'Fletchersgrand': { min: 1, max: 1, text: '+{value} to Bow and Crossbow Skills (Amazon Only)' },
-      'Acrobatsgrand': { min: 1, max: 1, text: '+{value} to Passive and Magic Skills (Amazon Only)' },
-      'Harpoonistsgrand': { min: 1, max: 1, text: '+{value} to Javelin and Spear Skills (Amazon Only)' },
+      'Fletchersgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Bow and Crossbow Skills (Amazon Only)' },
+      'Acrobatsgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Passive and Magic Skills (Amazon Only)' },
+      'Harpoonistsgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Javelin and Spear Skills (Amazon Only)' },
 
-      'Burninggrand': { min: 1, max: 1, text: '+{value} to Fire Spells (Sorceress Only)' },
-      'Sparkinggrand': { min: 1, max: 1, text: '+{value} to Lightning Spells (Sorceress Only)' },
-      'Chillinggrand': { min: 1, max: 1, text: '+{value} to Cold Spells (Sorceress Only)' },
+      'Burninggrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Fire Spells (Sorceress Only)' },
+      'Sparkinggrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Lightning Spells (Sorceress Only)' },
+      'Chillinggrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Cold Spells (Sorceress Only)' },
 
       // NECROMANCER SKILLS (GRAND CHARMS ONLY)
-      'Hexinggrand': { min: 1, max: 1, text: '+{value} to Curses (Necromancer Only)' },
-      'Fungalgrand': { min: 1, max: 1, text: '+{value} to Poison and Bone Spells (Necromancer Only)' },
-      'Graverobbersgrand': { min: 1, max: 1, text: '+{value} to Summoning Spells (Necromancer Only)' },
+      'Hexinggrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Curses (Necromancer Only)' },
+      'Fungalgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Poison and Bone Spells (Necromancer Only)' },
+      'Graverobbersgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Summoning Spells (Necromancer Only)' },
 
       // PALADIN SKILLS (GRAND CHARMS ONLY)
-      'Lionbrandedgrand': { min: 1, max: 1, text: '+{value} to Combat Skills (Paladin Only)' },
-      'Captainsgrand': { min: 1, max: 1, text: '+{value} to Offensive Auras (Paladin Only)' },
-      'Preserversgrand': { min: 1, max: 1, text: '+{value} to Defensive Auras (Paladin Only)' },
+      'Lionbrandedgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Combat Skills (Paladin Only)' },
+      'Captainsgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Offensive Auras (Paladin Only)' },
+      'Preserversgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Defensive Auras (Paladin Only)' },
 
       // BARBARIAN SKILLS (GRAND CHARMS ONLY)
-      'Expertsgrand': { min: 1, max: 1, text: '+{value} to Combat Skills (Barbarian Only)' },
-      'Fanaticgrand': { min: 1, max: 1, text: '+{value} to Combat Masteries (Barbarian Only)' },
-      'Soundinggrand': { min: 1, max: 1, text: '+{value} to Warcries (Barbarian Only)' },
+      'Expertsgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Combat Skills (Barbarian Only)' },
+      'Fanaticgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Combat Masteries (Barbarian Only)' },
+      'Soundinggrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Warcries (Barbarian Only)' },
 
       // DRUID SKILLS (GRAND CHARMS ONLY)
-      'Trainersgrand': { min: 1, max: 1, text: '+{value} to Summoning Skills (Druid Only)' },
-      'Spiritualgrand': { min: 1, max: 1, text: '+{value} to Shape Shifting Skills (Druid Only)' },
-      'Naturesgrand': { min: 1, max: 1, text: '+{value} to Elemental Skills (Druid Only)' },
+      'Trainersgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Summoning Skills (Druid Only)' },
+      'Spiritualgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Shape Shifting Skills (Druid Only)' },
+      'Naturesgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Elemental Skills (Druid Only)' },
 
       // ASSASSIN SKILLS (GRAND CHARMS ONLY)
-      'Entrappinggrand': { min: 1, max: 1, text: '+{value} to Traps (Assassin Only)' },
-      'Mentalistsgrand': { min: 1, max: 1, text: '+{value} to Shadow Disciplines (Assassin Only)' },
-      'Shogukushasgrand': { min: 1, max: 1, text: '+{value} to Martial Arts (Assassin Only)' },
+      'Entrappinggrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Traps (Assassin Only)' },
+      'Mentalistsgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Shadow Disciplines (Assassin Only)' },
+      'Shogukushasgrand': { min: 1, max: 1, reqlvl: 42, text: '+{value} to Martial Arts (Assassin Only)' },
       // Attack Rating
       'Bronze': { min: 2, max: 4, text: '+{value} to Attack Rating' },
       'Bronze2': { min: 6, max: 12, text: '+{value} to Attack Rating' },
@@ -982,11 +986,11 @@ class CharmInventory {
       'Snakes': { min: 8, max: 12, text: '+{value} to Mana' },
       'Serpents': { min: 13, max: 17, text: '+{value} to Mana' },
       'Serpentslarge': { min: 30, max: 34, text: '+{value} to Mana' },
-      'Discharginglarge': { min: 2, max: 3, text: '+{value}% to Lightning Skill Damage' },
-      'Frigidlarge': { min: 2, max: 3, text: '+{value}% to Cold Skill Damage' },
-      'Wildfirelarge': { min: 2, max: 3, text: '+{value}% to Fire Skill Damage' },
-      'Maliciouslarge': { min: 2, max: 3, text: '+{value}% to Poison Skill Damage' },
-      'Effervescentlarge': { min: 2, max: 3, text: '+{value}% to Magic Skill Damage' },
+      'Discharginglarge': { min: 2, max: 3, reqlvl: 28, text: '+{value}% to Lightning Skill Damage' },
+      'Frigidlarge': { min: 2, max: 3, reqlvl: 28, text: '+{value}% to Cold Skill Damage' },
+      'Wildfirelarge': { min: 2, max: 3, reqlvl: 28, text: '+{value}% to Fire Skill Damage' },
+      'Maliciouslarge': { min: 2, max: 3, reqlvl: 28, text: '+{value}% to Poison Skill Damage' },
+      'Effervescentlarge': { min: 2, max: 3, reqlvl: 28, text: '+{value}% to Magic Skill Damage' },
       // 'Conduitlarge' : { min: 3, max: 4, text: '+{value}% to Lightning Skill Damage' },
       // 'Numbinglarge' : { min: 3, max: 4, text: '+{value}% to Cold Skill Damage' },
       // 'Infernolarge' : { min: 3, max: 4, text: '+{value}% to Fire Skill Damage' },
@@ -1308,12 +1312,20 @@ class CharmInventory {
     });
 
     // Create charm data as JSON (consistent with regular charms for URL sharing)
-    const displayText = `${uniqueCharm.name}\n${stats.join('\n')}`;
+    // Build display text with required level if applicable
+    let displayLines = [uniqueCharm.name];
+    if (uniqueCharm.reqlvl && uniqueCharm.reqlvl > 0) {
+      displayLines.push(`Required Level: ${uniqueCharm.reqlvl}`);
+    }
+    displayLines.push(...stats);
+    const displayText = displayLines.join('\n');
+
     const charmData = JSON.stringify({
       name: uniqueCharm.name,
       stats: stats,
       displayText: displayText,
       imagePath: uniqueCharm.imagePath,
+      reqlvl: uniqueCharm.reqlvl || 0,  // Include level requirement
       isUnique: true  // Mark as unique charm for easier identification
     });
 
@@ -1352,6 +1364,7 @@ class CharmInventory {
 
     let charmName = charmTypeNames[this.selectedCharmType];
     let stats = [];
+    let maxReqLvl = 0;  // Track the highest level requirement from affixes
 
     // Handle prefix stats
     if (prefixSelect.value) {
@@ -1359,6 +1372,10 @@ class CharmInventory {
       const prefixStat = this.getStatForAffix(prefixSelect.value);
       const prefixStatLine = this.generateStatLine('prefix', prefixStat);
       if (prefixStatLine) stats.push(prefixStatLine);
+      // Track level requirement from prefix
+      if (prefixStat && prefixStat.reqlvl) {
+        maxReqLvl = Math.max(maxReqLvl, prefixStat.reqlvl);
+      }
     }
 
     // Handle suffix stats
@@ -1367,19 +1384,33 @@ class CharmInventory {
       const suffixStat = this.getStatForAffix(suffixSelect.value);
       const suffixStatLine = this.generateStatLine('suffix', suffixStat);
       if (suffixStatLine) stats.push(suffixStatLine);
+      // Track level requirement from suffix
+      if (suffixStat && suffixStat.reqlvl) {
+        maxReqLvl = Math.max(maxReqLvl, suffixStat.reqlvl);
+      }
     }
 
     // Store charm data as JSON object instead of formatted string
     const imagePath = this.getRandomCharmImage(this.selectedCharmType);
+
+    // Build display text with required level if applicable
+    let displayLines = [charmName];
+    if (maxReqLvl > 0) {
+      displayLines.push(`Required Level: ${maxReqLvl}`);
+    }
+    displayLines.push(...stats);
+    const displayText = displayLines.join('\n');
+
     const charmData = JSON.stringify({
       name: charmName,
       stats: stats,
-      displayText: `${charmName}\n${stats.join('\n')}`,
-      imagePath: imagePath  // Store the exact image path so it can be restored
+      displayText: displayText,
+      imagePath: imagePath,  // Store the exact image path so it can be restored
+      reqlvl: maxReqLvl  // Include highest level requirement from affixes
     });
 
     // Create clean hover text (charm name on first line, then each stat on its own line)
-    const hoverText = stats.length > 0 ? `${charmName}\n${stats.join('\n')}` : charmName;
+    const hoverText = displayText;
 
     const backgroundImage = `url('${imagePath}')`;
     this.placeCharm(position, this.selectedCharmType, backgroundImage, charmData, hoverText);
@@ -1873,10 +1904,16 @@ class CharmInventory {
     let displayText = '';
     try {
       const data = JSON.parse(charmData);
-      displayText = data.name || '';
-      // Add stats if available - each on a new line
-      if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
-        displayText += '\n' + data.stats.join('\n');
+      // Use displayText if available (includes Required Level and all formatting)
+      if (data.displayText) {
+        displayText = data.displayText;
+      } else {
+        // Fallback: build from name and stats (for old charms)
+        displayText = data.name || '';
+        // Add stats if available - each on a new line
+        if (data.stats && Array.isArray(data.stats) && data.stats.length > 0) {
+          displayText += '\n' + data.stats.join('\n');
+        }
       }
     } catch (err) {
       // If not JSON, just show as-is
@@ -2223,6 +2260,7 @@ let charmSystem = {
 function getCharmBonuses() {
   const bonuses = {};
   const charms = document.querySelectorAll('[data-charm-data]');
+  const charLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
 
   charms.forEach(charm => {
     const data = charm.dataset.charmData;
@@ -2231,12 +2269,30 @@ function getCharmBonuses() {
 
     // Parse charm data - handle both JSON and plain text formats
     let linesToParse = [];
+    let charmReqLvl = 0;
     try {
       const jsonData = JSON.parse(data);
+      // Check if charm has a level requirement
+      charmReqLvl = jsonData.reqlvl || 0;
+
+      // If character level is below requirement, gray out the charm and skip parsing stats
+      if (charmReqLvl > 0 && charLevel < charmReqLvl) {
+        charm.style.opacity = '0.5';
+        charm.style.filter = 'grayscale(50%)';
+        return; // Skip this charm's stats
+      } else {
+        // Reset opacity if level requirement is met
+        charm.style.opacity = '1';
+        charm.style.filter = 'none';
+      }
+
       // If JSON, use displayText field which contains the parsed stat strings
       linesToParse = jsonData.displayText ? jsonData.displayText.split('\n') : [];
     } catch (e) {
       // If not JSON, treat as plain text (legacy format)
+      // Legacy charms don't have level requirements
+      charm.style.opacity = '1';
+      charm.style.filter = 'none';
       linesToParse = data.split('\n');
     }
 
@@ -2286,19 +2342,19 @@ function getCharmBonuses() {
 
       // FIXED: Add \+ to match the plus sign in charm text
       if (match = line.match(/\+?(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i)) {
-        bonuses.poisonSkillDmg = (bonuses.poisonSkillDmg || 0) + parseInt(match[1]);
+        bonuses.poisonSkillDamage = (bonuses.poisonSkillDamage || 0) + parseInt(match[1]);
       }
       if (match = line.match(/\+?(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i)) {
-        bonuses.coldSkillDmg = (bonuses.coldSkillDmg || 0) + parseInt(match[1]);
+        bonuses.coldSkillDamage = (bonuses.coldSkillDamage || 0) + parseInt(match[1]);
       }
       if (match = line.match(/\+?(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i)) {
-        bonuses.fireSkillDmg = (bonuses.fireSkillDmg || 0) + parseInt(match[1]);
+        bonuses.fireSkillDamage = (bonuses.fireSkillDamage || 0) + parseInt(match[1]);
       }
       if (match = line.match(/\+?(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i)) {
-        bonuses.lightningSkillDmg = (bonuses.lightningSkillDmg || 0) + parseInt(match[1]);
+        bonuses.lightningSkillDamage = (bonuses.lightningSkillDamage || 0) + parseInt(match[1]);
       }
       if (match = line.match(/\+?(\d+)%\s+to\s+Magic\s+Skill\s+Damage/i)) {
-        bonuses.magicSkillDmg = (bonuses.magicSkillDmg || 0) + parseInt(match[1]);
+        bonuses.magicSkillDamage = (bonuses.magicSkillDamage || 0) + parseInt(match[1]);
       }
       // Cold Resist
       if (match = line.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i)) {

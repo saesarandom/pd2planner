@@ -3159,6 +3159,13 @@ class UnifiedSocketSystem {
       this.stats.coldDmgMax = (this.stats.coldDmgMax || 0) + (charmBonuses.coldDmgMax || 0);
       this.stats.poisonDmgMin = (this.stats.poisonDmgMin || 0) + (charmBonuses.poisonDmgMin || 0);
       this.stats.poisonDmgMax = (this.stats.poisonDmgMax || 0) + (charmBonuses.poisonDmgMax || 0);
+
+      // Add skill damage bonuses from charms
+      this.stats.fireSkillDamage = (this.stats.fireSkillDamage || 0) + (charmBonuses.fireSkillDamage || 0);
+      this.stats.coldSkillDamage = (this.stats.coldSkillDamage || 0) + (charmBonuses.coldSkillDamage || 0);
+      this.stats.lightningSkillDamage = (this.stats.lightningSkillDamage || 0) + (charmBonuses.lightningSkillDamage || 0);
+      this.stats.poisonSkillDamage = (this.stats.poisonSkillDamage || 0) + (charmBonuses.poisonSkillDamage || 0);
+      this.stats.magicSkillDamage = (this.stats.magicSkillDamage || 0) + (charmBonuses.magicSkillDamage || 0);
     }
 
     // INTEGRATION: Add bonuses from passive skills (Barbarian masteries, etc.)
