@@ -5115,15 +5115,21 @@ class UnifiedSocketSystem {
     // Boolean stats
     this.updateElement('cbfcontainer', this.stats.cbf ? 'Yes' : 'No');
 
-    // Damage ranges
-    this.updateElement('flatfiremincontainer', this.stats.fireDmgMin);
-    this.updateElement('flatfiremaxcontainer', this.stats.fireDmgMax);
-    this.updateElement('flatcoldmincontainer', this.stats.coldDmgMin);
-    this.updateElement('flatcoldmaxcontainer', this.stats.coldDmgMax);
-    this.updateElement('flatlightmincontainer', this.stats.lightDmgMin);
-    this.updateElement('flatlightmaxcontainer', this.stats.lightDmgMax);
-    this.updateElement('flatpoisonmincontainer', this.stats.poisonDmgMin);
-    this.updateElement('flatpoisonmaxcontainer', this.stats.poisonDmgMax);
+    // Damage ranges - Apply skill damage % bonuses to flat elemental damage
+    // This makes flat damage from items/gems/jewels benefit from Fire/Cold/Lightning Mastery
+    const fireSkillDmgBonus = this.stats.fireSkillDamage || 0;
+    const coldSkillDmgBonus = this.stats.coldSkillDamage || 0;
+    const lightningSkillDmgBonus = this.stats.lightningSkillDamage || 0;
+    const poisonSkillDmgBonus = this.stats.poisonSkillDamage || 0;
+
+    this.updateElement('flatfiremincontainer', Math.floor(this.stats.fireDmgMin * (1 + fireSkillDmgBonus / 100)));
+    this.updateElement('flatfiremaxcontainer', Math.floor(this.stats.fireDmgMax * (1 + fireSkillDmgBonus / 100)));
+    this.updateElement('flatcoldmincontainer', Math.floor(this.stats.coldDmgMin * (1 + coldSkillDmgBonus / 100)));
+    this.updateElement('flatcoldmaxcontainer', Math.floor(this.stats.coldDmgMax * (1 + coldSkillDmgBonus / 100)));
+    this.updateElement('flatlightmincontainer', Math.floor(this.stats.lightDmgMin * (1 + lightningSkillDmgBonus / 100)));
+    this.updateElement('flatlightmaxcontainer', Math.floor(this.stats.lightDmgMax * (1 + lightningSkillDmgBonus / 100)));
+    this.updateElement('flatpoisonmincontainer', Math.floor(this.stats.poisonDmgMin * (1 + poisonSkillDmgBonus / 100)));
+    this.updateElement('flatpoisonmaxcontainer', Math.floor(this.stats.poisonDmgMax * (1 + poisonSkillDmgBonus / 100)));
 
     // Physical damage bonuses (for skill tooltips)
     this.updateElement('tomindmgcontainer', this.stats.toMinDmg);

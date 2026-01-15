@@ -60,6 +60,18 @@ const StatFormats = {
   pdr: 'Physical Damage Taken Reduced by {value}',
   mdr: 'Magic Damage Reduced by {value}',
 
+  // === ENEMY RESISTANCE PIERCE ===
+  coldpierce: '-{value}% to Enemy Cold Resistance',
+  firepierce: '-{value}% to Enemy Fire Resistance',
+  lightpierce: '-{value}% to Enemy Lightning Resistance',
+  poisonpierce: '-{value}% to Enemy Poison Resistance',
+
+  // === SKILL DAMAGE ===
+  lightskilldmg: '+{value}% to Lightning Skill Damage',
+  coldskilldmg: '+{value}% to Cold Skill Damage',
+  fireskilldmg: '+{value}% to Fire Skill Damage',
+  poisonskilldmg: '+{value}% to Poison Skill Damage',
+
   // === MISC ===
   curseres: '+{value}% Curse Resistance',
   ligrad: '+{value} to Light Radius'
@@ -111,7 +123,17 @@ const StatPatterns = {
 
   physdr: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)%/i,
   pdr: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)(?!%)/i,
-  mdr: /Magic\s+Damage\s+Reduced\s+by\s+(\d+)/i
+  mdr: /Magic\s+Damage\s+Reduced\s+by\s+(\d+)/i,
+
+  coldpierce: /-(\d+)%\s+to\s+Enemy\s+Cold\s+Resistance/i,
+  firepierce: /-(\d+)%\s+to\s+Enemy\s+Fire\s+Resistance/i,
+  lightpierce: /-(\d+)%\s+to\s+Enemy\s+Lightning\s+Resistance/i,
+  poisonpierce: /-(\d+)%\s+to\s+Enemy\s+Poison\s+Resistance/i,
+
+  lightskilldmg: /\+(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i,
+  coldskilldmg: /\+(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i,
+  fireskilldmg: /\+(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i,
+  poisonskilldmg: /\+(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i
 };
 
 /**
@@ -153,6 +175,14 @@ const PropertyMapping = {
   physdr: 'physdr',
   pdr: 'pdr',
   mdr: 'mdr',
+  coldpierce: 'coldpierce',
+  firepierce: 'firepierce',
+  lightpierce: 'lightpierce',
+  poisonpierce: 'poisonpierce',
+  lightskilldmg: 'lightskilldmg',
+  coldskilldmg: 'coldskilldmg',
+  fireskilldmg: 'fireskilldmg',
+  poisonskilldmg: 'poisonskilldmg',
   curseres: 'curseres',
   ligrad: 'ligrad'
 };

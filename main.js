@@ -530,14 +530,15 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     if (window.baseDefenses && window.baseDefenses[item.baseType]) {
       const baseDef = window.baseDefenses[item.baseType];
       const edefValue = getPropertyValue(props.edef || 0);
+      const todefValue = getPropertyValue(props.todef || 0);
 
       // Apply ethereal multiplier to base defense if ethereal
       const ethMult = props.ethereal ? 1.5 : 1;
       const ethBaseDef = Math.floor(baseDef * ethMult);
 
-      // Calculate defense with enhanced defense modifier
-      // Formula: floor(base * (1 + edef/100))
-      const finalDef = Math.floor(ethBaseDef * (1 + edefValue / 100));
+      // Calculate defense with enhanced defense modifier and flat defense bonus
+      // Formula: floor(base * (1 + edef/100)) + todef
+      const finalDef = Math.floor(ethBaseDef * (1 + edefValue / 100)) + todefValue;
 
       // Just set the property - DON'T add html here
       // The propertyDisplay loop will handle displaying it
@@ -570,7 +571,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   if (!isWeapon && props.edef && item.baseType && baseDefenseMap[item.baseType]) {
     const baseItemDefense = baseDefenseMap[item.baseType];
     const edefValue = getPropertyValue(props.edef || 0);
-    const todefValue = props.todef || 0;
+    const todefValue = getPropertyValue(props.todef || 0);
 
     // Apply ethereal multiplier to base defense if ethereal
     const ethMult = props.ethereal ? 1.5 : 1;
@@ -625,7 +626,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
           const ethBase = Math.floor(baseDefense * 1.5);
 
           // Add todef if it exists
-          const todefValue = props.todef || 0;
+          const todefValue = getPropertyValue(props.todef || 0);
           const finalDefense = ethBase + todefValue + defenseBonus;
 
           return `Defense: ${finalDefense}`;
@@ -652,7 +653,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     toattpercent: (val, prop) => formatVariableStat('+', val, '% Bonus to Attack Rating', prop, itemName, 'toattpercent', dropdownId),
     attpercent: (val, prop) => formatVariableStat('+', val, '% Bonus to Attack Rating', prop, itemName, 'attpercent', dropdownId),
     attperlevel: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'attperlevel', dropdownId, ' to Attack Rating'),
-    todef: (val) => `+${val} Defense`,
+    todef: (val, prop) => formatVariableStat('+', val, ' Defense', prop, itemName, 'todef', dropdownId),
     tolife: (val) => `+${val} to Life`,
     tomana: (val) => `+${val} to Mana`,
     tomaxdmg: (val, prop) => formatVariableStat('+', val, ' to Maximum Damage', prop, itemName, 'tomaxdmg', dropdownId),
@@ -771,7 +772,9 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     defvsmiss: (val, prop) => formatVariableStat('+', val, ' Defense vs. Missile', prop, itemName, 'defvsmiss', dropdownId),
     firepierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Fire Resistance', prop, itemName, 'firepierce', dropdownId),
     coldpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Cold Resistance', prop, itemName, 'coldpierce', dropdownId),
+    lightpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Lightning Resistance', prop, itemName, 'lightpierce', dropdownId),
     coldskilldmg: (val, prop) => formatVariableStat('+', val, '% to Cold Skill Damage', prop, itemName, 'coldskilldmg', dropdownId),
+    lightskilldmg: (val, prop) => formatVariableStat('+', val, '% to Lightning Skill Damage', prop, itemName, 'lightskilldmg', dropdownId),
     coldabsorb: (val, prop) => formatVariableStat('+', val, ' Cold Absorb', prop, itemName, 'coldabsorb', dropdownId),
     freezedur: (val, prop) => val === 0.5 ? 'Half Freeze Duration' : formatVariableStat('Freeze Duration Reduced by ', val * 100, '%', prop, itemName, 'freezedur', dropdownId),
     req: (val, prop) => formatVariableStat('Requirements ', val, '%', prop, itemName, 'req', dropdownId),

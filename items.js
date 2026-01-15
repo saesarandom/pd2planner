@@ -374,32 +374,30 @@ const itemList = {
   },
 
   "Kira's Guardian": {
-    description:
-      "Kira's Guardian<br>Tiara<br>Defense: 170<br>Required Level: 77<br>+20% Faster Hit Recovery<br>-15% to Enemy Cold Resistance<br>-15% to Enemy Lightning Resistance<br>-15% to Enemy Fire Resistance<br>+120 Defense<br>All Resistances +40<br>Cannot Be Frozen<br>",
+    baseType: "Tiara",
     properties: {
       defense: 170,
       reqlvl: 77,
       fhr: 20,
-      coldpierce: 15,
-      lightpierce: 15,
-      firepierce: 15,
-      todef: 120,
-      allres: 40,
+      coldpierce: { min: 10, max: 15, current: 15 },
+      lightpierce: { min: 10, max: 15, current: 15 },
+      firepierce: { min: 10, max: 15, current: 15 },
+      todef: { min: 50, max: 120, current: 120 },
+      allres: { min: 25, max: 40, current: 40 },
       cbf: 1,
     },
   },
 
   "Griffon's Eye": {
-    description:
-      "Griffon's Eye<br>Diadem<br>Defense: 260<br>Required Level: 76<br>+1 to All Skills<br>+25% Faster Cast Rate<br>+15% to Lightning Skill Damage<br>-20% to Enemy Lightning Resistance<br>+200 Defense<br>",
+    baseType: "Diadem",
     properties: {
       defense: 260,
       reqlvl: 76,
       allsk: 1,
       fcr: 25,
-      lightskilldmg: 15, //tu lightskilldmg nevim jak
-      lightpierce: 20,
-      todef: 200,
+      lightskilldmg: { min: 10, max: 15, current: 15 }, //tu lightskilldmg nevim jak
+      lightpierce: { min: 15, max: 20, current: 20 },
+      todef: { min: 100, max: 200, current: 200 },
     },
   },
 
