@@ -4252,15 +4252,14 @@ class UnifiedSocketSystem {
       // All Skills
       const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
       if (allSkillsMatch) { this.stats.allSkills += parseInt(allSkillsMatch[1]); return; }
-
       // Individual skill bonuses (e.g., "+3 to Meteor (Sorceress Only)")
       // Pattern: +X to [Skill Name] (optional class restriction)
       // Use lookahead to ensure we capture the full skill name up to the optional parenthesis or end of line
-      const individualSkillMatch = cleanLine.match(/\+(\d+)\s+to\s+([A-Za-z\s]+?)(?=\s+\(|$)/i);
+      const individualSkillMatch = cleanLine.match(/\+(\d+)\s+to\s+([A-Za-z\s\'\-]+?)(?=\s+\(|$)/i);
       if (individualSkillMatch) {
         const bonus = parseInt(individualSkillMatch[1]);
         const skillName = individualSkillMatch[2].trim();
-        // console.log(`Matched individual skill: ${skillName} +${bonus}`);
+        console.log(`Matched individual skill: "${skillName}" +${bonus}`);
 
         // Find the skill container ID from the skill name
         if (window.skillSystem && window.skillSystem.classSkillTrees) {
@@ -4277,6 +4276,7 @@ class UnifiedSocketSystem {
                   }
                   this.stats.individualSkillBonuses[skill.id] =
                     (this.stats.individualSkillBonuses[skill.id] || 0) + bonus;
+                  console.log(`Added bonus to ${skill.id}: +${bonus}`);
                   found = true;
                   break;
                 }

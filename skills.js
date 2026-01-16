@@ -39,7 +39,8 @@ class SkillSystem {
     this.skillBonuses = {
       allSkills: 0,
       classSkills: 0,
-      treeSkills: {} // Store tree-specific bonuses (e.g., {'bowandcrossbowskillscontainer': 3})
+      treeSkills: {}, // Store tree-specific bonuses (e.g., {'bowandcrossbowskillscontainer': 3})
+      individualSkills: {} // Store individual skill bonuses (e.g., {'meteorcontainer': 3})
     };
 
     // Define all class skill trees
@@ -4929,26 +4930,9 @@ class SkillSystem {
         var skill = self.skillData[skillId];
         var baseValue = parseInt(skillInput.value);
 
-        // Combine All Skills, Class Skills, and Tree Skills for the dropdown display
-        var allBonus = self.skillBonuses.allSkills || 0;
-        var classBonus = self.skillBonuses.classSkills || 0;
-
-        // Find if this skill belongs to a tree that has a bonus
-        var treeBonus = 0;
-        var currentClassSkills = self.classSkillTrees[self.currentClass] || self.classSkillTrees['Amazon'];
-
-        Object.keys(currentClassSkills).forEach(function (containerId) {
-          var skillsInTree = currentClassSkills[containerId];
-          var isSkillInTree = skillsInTree.some(function (s) {
-            return s.id === skillId;
-          });
-          if (isSkillInTree) {
-            treeBonus = self.skillBonuses.treeSkills[containerId] || 0;
-          }
-        });
-
-        var totalBonus = allBonus + classBonus + treeBonus;
-        var totalValue = baseValue + totalBonus;
+        // Use getSkillTotalLevel for consistency across the entire system
+        var totalValue = self.getSkillTotalLevel(skillId);
+        var totalBonus = totalValue - baseValue;
 
         var option = document.createElement('option');
         option.value = skillId;
@@ -4996,7 +4980,7 @@ class SkillSystem {
     // Add individual skill bonuses (e.g., +3 to Meteor from items)
     if (this.skillBonuses.individualSkills && this.skillBonuses.individualSkills[skillId]) {
       const bonus = this.skillBonuses.individualSkills[skillId];
-      // console.log(`Applying individual bonus for ${skillId}: +${bonus}`);
+      console.log(`Applying individual bonus for ${skillId}: +${bonus}`);
       total += bonus;
     }
 
@@ -5223,18 +5207,8 @@ class SkillSystem {
       return;
     }
 
-    // Calculate total skill level including ALL bonuses (All Skills + Class Skills)
-    var allBonus = this.skillBonuses.allSkills || 0;
-    var classBonus = this.skillBonuses.classSkills || 0;
-    var totalSkillLevel = baseSkillLevel + allBonus + classBonus;
-
-    // NEW: Add tree-specific bonus
-    var currentClassSkills = this.classSkillTrees[this.currentClass] || {};
-    Object.keys(currentClassSkills).forEach((containerId) => {
-      if (currentClassSkills[containerId].some(s => s.id === skillId)) {
-        totalSkillLevel += (this.skillBonuses.treeSkills[containerId] || 0);
-      }
-    });
+    // Calculate total skill level including ALL bonuses (All Skills, Class Skills, Tree Skills, Individual Skills)
+    var totalSkillLevel = this.getSkillTotalLevel(skillId);
 
     var dexInput = document.getElementById('dex');
     var dexterity = parseInt(dexInput && dexInput.value ? dexInput.value : '0') || 0;
@@ -6971,6 +6945,9 @@ class SkillSystem {
     } else if (skill.type === 'fire') {
       var damageInfo = this.calculateFireDamage(skill, totalSkillLevel, skillId);
 
+      if (damageInfo.physicalMin > 0) {
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+      }
       html += '<div style="margin: 5px 0; color: #ff6600;">Fire: ' + damageInfo.fireMin + '-' + damageInfo.fireMax + '</div>';
       html += '<div style="margin: 5px 0; color: #00ff00;">Average: ' + damageInfo.average + '</div>';
       if (damageInfo.synergyBonus > 0) {
@@ -7426,6 +7403,9 @@ class SkillSystem {
         html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
       }
 
+      if (damageInfo.physicalMin > 0) {
+        html += '<div style="margin: 5px 0; color: #ffaa00;">Physical: ' + damageInfo.physicalMin + '-' + damageInfo.physicalMax + '</div>';
+      }
       html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + damageInfo.fireMin + '-' + damageInfo.fireMax + '</div>';
 
       // Display burning damage if available (Immolation Arrow)
@@ -9361,11 +9341,20 @@ class SkillSystem {
   calculateFireDamage(skill, skillLevel, skillId) {
     // Get base fire damages from tables, supporting multiple data formats
     var levelIndex = Math.min(skillLevel - 1, 59);
+
+    // Check for explicit physical component (e.g. Meteor impact)
+    var basePhysMin = 0;
+    var basePhysMax = 0;
+    if (skill.damageMin && skill.fireDamageMin) {
+      basePhysMin = skill.damageMin[levelIndex] || 0;
+      basePhysMax = skill.damageMax[levelIndex] || 0;
+    }
+
     var baseFireMin = (skill.fireDamage ? skill.fireDamage.min[levelIndex] : (skill.fireDamageMin ? skill.fireDamageMin[levelIndex] : (skill.damage ? skill.damage.min[levelIndex] : 0))) || 0;
     var baseFireMax = (skill.fireDamage ? skill.fireDamage.max[levelIndex] : (skill.fireDamageMax ? skill.fireDamageMax[levelIndex] : (skill.damage ? skill.damage.max[levelIndex] : 0))) || 0;
 
-    // Calculate synergy bonus for fire
-    var fireSynergyBonus = this.calculateSynergyBonus(skillId, 'fire');
+    // Calculate synergy bonus - some fire skills use 'damage' as synergy type for impact (like Meteor)
+    var fireSynergyBonus = this.calculateSynergyBonus(skillId, 'fire') + this.calculateSynergyBonus(skillId, 'damage');
 
     // Get Fire Mastery bonus
     var fireMasteryBonus = 0;
@@ -9377,14 +9366,20 @@ class SkillSystem {
       }
     }
 
+    // Apply synergies to physical part (if present)
+    var physMin = Math.floor(basePhysMin * (1 + fireSynergyBonus / 100));
+    var physMax = Math.floor(basePhysMax * (1 + fireSynergyBonus / 100));
+
     // Apply synergies and mastery to fire damage
     var fireMin = Math.floor(baseFireMin * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
     var fireMax = Math.floor(baseFireMax * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
 
     var result = {
+      physicalMin: physMin,
+      physicalMax: physMax,
       fireMin: fireMin,
       fireMax: fireMax,
-      average: Math.floor((fireMin + fireMax) / 2),
+      average: Math.floor((physMin + physMax + fireMin + fireMax) / 2),
       averageFire: Math.floor((fireMin + fireMax) / 2),
       synergyBonus: fireSynergyBonus,
       masteryBonus: fireMasteryBonus
