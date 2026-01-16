@@ -657,6 +657,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     tolife: (val) => `+${val} to Life`,
     tomana: (val) => `+${val} to Mana`,
     tomaxdmg: (val, prop) => formatVariableStat('+', val, ' to Maximum Damage', prop, itemName, 'tomaxdmg', dropdownId),
+    tomindmg: (val, prop) => formatVariableStat('+', val, ' to Minimum Damage', prop, itemName, 'tomindmg', dropdownId),
+    targetdef: (val, prop) => formatVariableStat('', val, '% Target Defense', prop, itemName, 'targetdef', dropdownId),
     ias: (val, prop) => formatVariableStat('+', val, '% Increased Attack Speed', prop, itemName, 'ias', dropdownId),
     fbr: (val, prop) => formatVariableStat('+', val, '% Faster Block Rate', prop, itemName, 'fbr', dropdownId),
     fhr: (val, prop) => formatVariableStat('+', val, '% Faster Hit Recovery', prop, itemName, 'fhr', dropdownId),
@@ -672,6 +674,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     allres: (val, prop) => formatVariableStat('All Resistances +', val, '', prop, itemName, 'allres', dropdownId),
     cb: (val, prop) => formatVariableStat('', val, '% Chance of Crushing Blow', prop, itemName, 'cb', dropdownId),
     deadly: (val, prop) => formatVariableStat('', val, '% Deadly Strike', prop, itemName, 'deadly', dropdownId),
+    maxdeadly: (val, prop) => formatVariableStat('', val, '% Maximum Deadly Strike', prop, itemName, 'maxdeadly', dropdownId),
     dmgtoun: (val, prop) => formatVariableStat('+', val, '% Damage to Undead', prop, itemName, 'dmgtoun', dropdownId),
     toattun: (val, prop) => formatVariableStat('+', val, ' to Attack Rating against Undead', prop, itemName, 'toattun', dropdownId),
     skmastery: (val, prop) => formatVariableStat('+', val, ' to Skeleton Mastery (Necromancer Only)', prop, itemName, 'skmastery', dropdownId),
@@ -786,6 +789,36 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     coldabsorb: (val, prop) => formatVariableStat('+', val, ' Cold Absorb', prop, itemName, 'coldabsorb', dropdownId),
     freezedur: (val, prop) => val === 0.5 ? 'Half Freeze Duration' : formatVariableStat('Freeze Duration Reduced by ', val * 100, '%', prop, itemName, 'freezedur', dropdownId),
     req: (val, prop) => formatVariableStat('Requirements ', val, '%', prop, itemName, 'req', dropdownId),
+
+    // Random Sorceress skill (Ormus' Robes)
+    randsorc: (val, prop) => {
+      // Cache random skill selection per item to maintain consistency
+      if (!window.randomSorcSkills) window.randomSorcSkills = {};
+
+      if (!window.randomSorcSkills[itemName]) {
+        // Get all Sorceress skills from the skill tree
+        if (window.skillSystem && window.skillSystem.classSkillTrees && window.skillSystem.classSkillTrees['Sorceress']) {
+          const sorceressSkills = [];
+          const skillTrees = window.skillSystem.classSkillTrees['Sorceress'];
+
+          // Collect all Sorceress skill names
+          Object.values(skillTrees).forEach(tree => {
+            tree.forEach(skill => {
+              sorceressSkills.push(skill.name);
+            });
+          });
+
+          // Randomly select one skill and cache it
+          if (sorceressSkills.length > 0) {
+            const randomSkill = sorceressSkills[Math.floor(Math.random() * sorceressSkills.length)];
+            window.randomSorcSkills[itemName] = randomSkill;
+          }
+        }
+      }
+
+      const skillName = window.randomSorcSkills[itemName] || 'Random Sorceress Skill';
+      return `<span style="color: #FFFFFF;">+${val} to ${skillName} (Sorceress Only)</span>`;
+    },
   };
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere

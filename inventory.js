@@ -590,6 +590,7 @@ class CharmInventory {
 
     const prefixSelect = document.getElementById('prefixSelect');
     const suffixSelect = document.getElementById('suffixSelect');
+    const mode = document.querySelector('.modedropdown')?.value || 'pvm';
 
     // Clear existing options
     prefixSelect.innerHTML = '<option value="">None</option>';
@@ -597,6 +598,10 @@ class CharmInventory {
 
     // Populate prefixes
     data.prefixes.forEach(prefix => {
+      const statInfo = this.getStatForAffix(prefix);
+      // Skip PvP-only affixes if mode is PvM
+      if (mode === 'pvm' && statInfo && statInfo.ispvp) return;
+
       const option = document.createElement('option');
       option.value = prefix;
       option.textContent = this.cleanAffixName(prefix);
@@ -605,6 +610,10 @@ class CharmInventory {
 
     // Populate suffixes
     data.suffixes.forEach(suffix => {
+      const statInfo = this.getStatForAffix(suffix);
+      // Skip PvP-only affixes if mode is PvM
+      if (mode === 'pvm' && statInfo && statInfo.ispvp) return;
+
       const option = document.createElement('option');
       option.value = suffix;
       option.textContent = this.cleanAffixName(suffix);
@@ -908,6 +917,13 @@ class CharmInventory {
       'Stout2': { min: 5, max: 8, text: '+{value} Defense' },
       'Burly': { min: 5, max: 8, text: '+{value} Defense' },
       'Stalwart': { min: 9, max: 12, text: '+{value} Defense' },
+      'Dueling': {
+        ispvp: true,
+        stats: [
+          { min: 2, max: 2, text: '+{value} to Maximum Damage' },
+          { min: 10, max: 10, text: '+{value} to Attack Rating' }
+        ]
+      },
 
       // Damage prefixes
       'Red': { min: 1, max: 3, text: '+{value} to Maximum Damage' },
@@ -1107,6 +1123,7 @@ class CharmInventory {
       'Ofvita': { min: 16, max: 20, text: '+{value} to Life' },
       'Oflifegrand': { min: 21, max: 25, text: '+{value} to Life' },
       'Ofvitagrand': { min: 41, max: 45, text: '+{value} to Life' },
+      'Ofduelinglife': { min: 10, max: 10, ispvp: true, text: '+{value} to Life' },
 
       // Attribute suffixes
       'Ofstrength': { min: 1, max: 1, text: '+{value} to Strength' },
@@ -1365,6 +1382,7 @@ class CharmInventory {
     let charmName = charmTypeNames[this.selectedCharmType];
     let stats = [];
     let maxReqLvl = 0;  // Track the highest level requirement from affixes
+    let isPvP = false;  // Track if any affix is PvP-only
 
     // Handle prefix stats
     if (prefixSelect.value) {
@@ -1376,6 +1394,8 @@ class CharmInventory {
       if (prefixStat && prefixStat.reqlvl) {
         maxReqLvl = Math.max(maxReqLvl, prefixStat.reqlvl);
       }
+      // Track PvP flag from prefix
+      if (prefixStat && prefixStat.ispvp) isPvP = true;
     }
 
     // Handle suffix stats
@@ -1388,6 +1408,8 @@ class CharmInventory {
       if (suffixStat && suffixStat.reqlvl) {
         maxReqLvl = Math.max(maxReqLvl, suffixStat.reqlvl);
       }
+      // Track PvP flag from suffix
+      if (suffixStat && suffixStat.ispvp) isPvP = true;
     }
 
     // Store charm data as JSON object instead of formatted string
@@ -1406,7 +1428,8 @@ class CharmInventory {
       stats: stats,
       displayText: displayText,
       imagePath: imagePath,  // Store the exact image path so it can be restored
-      reqlvl: maxReqLvl  // Include highest level requirement from affixes
+      reqlvl: maxReqLvl,  // Include highest level requirement from affixes
+      ispvp: isPvP  // Include PvP-only flag
     });
 
     // Create clean hover text (charm name on first line, then each stat on its own line)
@@ -1469,12 +1492,12 @@ class CharmInventory {
           'Ocher', 'Coral', 'Amber', 'Beryl', 'Viridian', 'Jade', 'Emerald',
           'Snowy', 'Shivering', 'Boreal', 'Hibernal', 'Fiery', 'Smoldering',
           'Smoking', 'Flaming', 'Static', 'Glowing', 'Arcing', 'Shocking',
-          'Septic', 'Foul', 'Toxic', 'Pestilent'
+          'Septic', 'Foul', 'Toxic', 'Pestilent', 'Dueling'
         ],
         suffixes: [
           'Oflife', 'Ofsustenance', 'Ofvita', 'Ofstrength', 'Ofstrength2',
           'Ofdexterity', 'Ofdexterity2', 'Ofinertia', 'Ofgreed', 'Offortune', 'Ofgoodluck',
-          'Ofbalance', 'Ofanthrax', 'Ofpestilence', 'Ofvenom', 'Ofblight', 'Ofcraftsmanship', 'Ofstorms', 'Ofthunder', 'Oflightning', 'Ofshock', 'Ofincineration', 'Ofburning', 'Offire', 'Offlame', 'Ofwinter', 'Ofglacier', 'Oficicle', 'Offrost'
+          'Ofbalance', 'Ofanthrax', 'Ofpestilence', 'Ofvenom', 'Ofblight', 'Ofcraftsmanship', 'Ofstorms', 'Ofthunder', 'Oflightning', 'Ofshock', 'Ofincineration', 'Ofburning', 'Offire', 'Offlame', 'Ofwinter', 'Ofglacier', 'Oficicle', 'Offrost', 'Ofduelinglife'
         ]
       },
       'large-charm': {
@@ -2261,6 +2284,7 @@ function getCharmBonuses() {
   const bonuses = {};
   const charms = document.querySelectorAll('[data-charm-data]');
   const charLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+  const mode = document.querySelector('.modedropdown')?.value || 'pvm';
 
   charms.forEach(charm => {
     const data = charm.dataset.charmData;
@@ -2274,14 +2298,32 @@ function getCharmBonuses() {
       const jsonData = JSON.parse(data);
       // Check if charm has a level requirement
       charmReqLvl = jsonData.reqlvl || 0;
+      let isPvP = jsonData.ispvp || false;
 
-      // If character level is below requirement, gray out the charm and skip parsing stats
+      // Fallback for charms created without ispvp flag
+      if (!isPvP && jsonData.name && (jsonData.name.includes('Dueling'))) {
+        isPvP = true;
+      }
+
+      let isInactive = false;
+
+      // Level requirement check
       if (charmReqLvl > 0 && charLevel < charmReqLvl) {
+        isInactive = true;
+      }
+
+      // PvP mode check
+      if (mode === 'pvm' && isPvP) {
+        isInactive = true;
+      }
+
+      // If character level is below requirement or PvP charm in PvM mode, gray out the charm and skip parsing stats
+      if (isInactive) {
         charm.style.opacity = '0.5';
         charm.style.filter = 'grayscale(50%)';
         return; // Skip this charm's stats
       } else {
-        // Reset opacity if level requirement is met
+        // Reset opacity if requirements are met
         charm.style.opacity = '1';
         charm.style.filter = 'none';
       }
@@ -2303,6 +2345,15 @@ function getCharmBonuses() {
       if (match = line.match(/\+(\d+)\s+Defense/i)) {
         bonuses.defense = (bonuses.defense || 0) + parseInt(match[1]);
       }
+
+      // Physical Damage (+Max / +Min)
+      if (match = line.match(/\+\s*(\d+)\s+to\s+Maximum\s+Damage/i)) {
+        bonuses.toMaxDmg = (bonuses.toMaxDmg || 0) + parseInt(match[1]);
+      }
+      if (match = line.match(/\+\s*(\d+)\s+to\s+Minimum\s+Damage/i)) {
+        bonuses.toMinDmg = (bonuses.toMinDmg || 0) + parseInt(match[1]);
+      }
+      // Attack Rating
 
 
       if (match = line.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i)) {

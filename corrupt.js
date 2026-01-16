@@ -377,7 +377,7 @@ const CORRUPTIONS = {
     { mod: "+[2-3] to Mana after each Kill", type: "numeric", range: [2, 3] },
     { mod: "10% Reduced Curse Duration", type: "fixed" },
     { mod: "+[7-10] to Energy", type: "numeric", range: [7, 10] },
-    { mod: "Physical Damage Taken Reduced by [4-6]", type: "numeric", range: [4, 6] },
+    { mod: "Physical Damage Taken Reduced by [4-6]%", type: "numeric", range: [4, 6] },
     { mod: "[3-4]% Mana Stolen per Hit", type: "numeric", range: [3, 4] },
     { mod: "Fire Resist +[10-15]%", type: "numeric", range: [10, 15] },
     { mod: "Magic Damage Taken Reduced by [4-6]", type: "numeric", range: [4, 6] },

@@ -27,6 +27,7 @@ const StatFormats = {
   edmg: '+{value}% Enhanced Damage',
   mindmg: '+{value} to Minimum Damage',
   maxdmg: '+{value} to Maximum Damage',
+  tomindmg: '+{value} to Minimum Damage',
 
   // === DEFENSE STATS ===
   edef: '+{value}% Enhanced Defense',
@@ -48,8 +49,10 @@ const StatFormats = {
   toatt: '+{value} to Attack Rating',
   cb: '{value}% Chance of Crushing Blow',
   deadly: '{value}% Deadly Strike',
+  maxdeadly: '{value}% Maximum Deadly Strike',
   ow: '{value}% Chance of Open Wounds',
   owdmg: '+{value} Open Wounds Damage per Second',
+  targetdef: '{value}% Target Defense',
 
   // === MAGIC FIND ===
   magicfind: '{value}% Better Chance of Getting Magic Items',
@@ -101,6 +104,7 @@ const StatPatterns = {
   fbr: /(\+?\d+)%\s+Faster\s+Block\s+Rate/i,
 
   edmg: /(\+?\d+)%\s+Enhanced\s+Damage/i,
+  tomindmg: /(\+?\d+)\s+to\s+Minimum\s+Damage/i,
   edef: /(\+?\d+)%\s+Enhanced\s+Defense/i,
   block: /(\+?\d+)%\s+Increased\s+Chance\s+of\s+Blocking/i,
 
@@ -116,8 +120,10 @@ const StatPatterns = {
   toatt: /\+(\d+)\s+(?:to\s+)?Attack\s+Rating/i,
   cb: /(\d+)%\s+Chance\s+of\s+Crushing\s+Blow/i,
   deadly: /(\d+)%\s+Deadly\s+Strike/i,
+  maxdeadly: /(\d+)%\s+Maximum\s+Deadly\s+Strike/i,
   ow: /(\d+)%\s+Chance\s+of\s+Open\s+Wounds/i,
   owdmg: /(\+?\d+)\s+Open\s+Wounds\s+Damage\s+per\s+Second/i,
+  targetdef: /([+-]?\d+)%\s+Target\s+Defense/i,
 
   magicfind: /(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i,
   goldfind: /(\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i,
@@ -158,6 +164,7 @@ const PropertyMapping = {
   frw: 'frw',
   fbr: 'fbr',
   edmg: 'edmg',
+  tomindmg: 'tomindmg',
   edef: 'edef',
   block: 'block',
   coldres: 'coldres',
@@ -170,8 +177,10 @@ const PropertyMapping = {
   toatt: 'toatt',
   cb: 'cb',
   deadly: 'deadly',
+  maxdeadly: 'maxdeadly',
   ow: 'ow',
   owdmg: 'owdmg',
+  targetdef: 'targetdef',
   magicfind: 'magicfind',
   goldfind: 'goldfind',
   physdr: 'physdr',

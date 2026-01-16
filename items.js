@@ -1453,6 +1453,23 @@ const itemList = {
     },
   },
 
+  "Ormus' Robes": {
+    baseType: "Dusk Shroud",
+    properties: {
+      defense: 422,
+      reqstr: 77,
+      reqlvl: 75,
+      fcr: 30,
+      firedamage: { min: 10, max: 15, current: 15 },
+      lightdamage: { min: 10, max: 15, current: 15 },
+      colddamage: { min: 10, max: 15, current: 15 },
+      todef: { min: 100, max: 200, current: 200 },
+      regmana: { min: 20, max: 30, current: 30 },
+      randsorc: 3  // +3 to random Sorceress skill (handled in description generator)
+    }
+  },
+
+
   "Arctic Furs": {
     description:
       "Arctic Furs<br>Quilted Armor<br>Base Maximum Sockets: 2 (3 for upgraded elite versions)<br>Defense: 51<br>Defense (2 Items): 48-348<br>Required Strength: 12<br>Required Level: 2<br>+325% Enhanced Defense<br>All Resistances +10<br>+[3-297] Defense (+3 per Character Level) (2 Items)<br>Cold Resist +15% (3 Items)<br>",
@@ -3461,15 +3478,18 @@ const itemList = {
   },
 
   "Death Cleaver": {
-    description:
-      "Death Cleaver<br>Berserker Axe<br>Base Melee Range: 2<br>One-Hand Damage: 214 to 373, Avg 293.5<br>Required Strength: 138<br>Required Dexterity: 59<br>Required Level: 70<br>+40% Increased Attack Speed<br>+350% Enhanced Damage<br>+30 to Minimum Damage<br>-33% Target Defense<br>60% Deadly Strike<br>5% Maximum Deadly Strike<br>+9 Life after each Kill<br>",
+    baseType: "Berserker Axe",
     properties: {
-      onehandmin: 214, // One-Hand Damage Min
-      onehandmax: 373, // One-Hand Damage Max
-      edmg: 350, // Enhanced Damage (350%)
-      reqstr: 138, // Required Strength
-      reqdex: 59, // Required Dexterity
-      tomindmg: 30,
+      reqstr: 138,
+      reqdex: 59,
+      reqlvl: 70,
+      ias: 40,
+      edmg: { min: 300, max: 350, current: 350 },
+      tomindmg: { min: 20, max: 30, current: 30 },
+      targetdef: -33,
+      deadly: 60,
+      maxdeadly: 15,
+      laek: { min: 6, max: 9, current: 9 },
     },
   },
 

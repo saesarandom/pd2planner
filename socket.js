@@ -58,9 +58,9 @@ class UnifiedSocketSystem {
       allSkills: 0, classSkills: 0, magicFind: 0, goldFind: 0, defense: 0,
       ias: 0, fcr: 0, frw: 0, fhr: 0, plr: 0,
       fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
-      allResistances: 0, crushingBlow: 0, deadlyStrike: 0, openWounds: 0, openWoundsDamage: 0,
+      allResistances: 0, crushingBlow: 0, deadlyStrike: 0, maxDeadlyStrike: 0, openWounds: 0, openWoundsDamage: 0,
       life: 0, mana: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
-      toatt: 0, toattPercent: 0, lightRadius: 0,
+      toatt: 0, toattPercent: 0, targetDefense: 0, lightRadius: 0,
       toMinDmg: 0, toMaxDmg: 0,
       lightDmgMin: 0, lightDmgMax: 0, fireDmgMin: 0, fireDmgMax: 0,
       coldDmgMin: 0, coldDmgMax: 0, poisonDmgMin: 0, poisonDmgMax: 0, fireSkillDamage: 0,
@@ -1484,6 +1484,14 @@ class UnifiedSocketSystem {
         input.addEventListener('input', () => this.updateStatsDisplay());
       }
     });
+
+    // Mode change (PvM/PvP)
+    const modeDropdown = document.querySelector('.modedropdown');
+    if (modeDropdown) {
+      modeDropdown.addEventListener('change', () => {
+        this.updateAll();
+      });
+    }
   }
 
   // === UI CLEARING ===
@@ -3150,6 +3158,12 @@ class UnifiedSocketSystem {
       // Add flat AR from charms
       this.stats.toatt = (this.stats.toatt || 0) + (charmBonuses.attackrating || 0);
 
+      // Add physical damage from charms (preserve equipment/socket values)
+      const equipmentMinDmg = this.stats.toMinDmg || 0;
+      const equipmentMaxDmg = this.stats.toMaxDmg || 0;
+      this.stats.toMinDmg = equipmentMinDmg + (charmBonuses.toMinDmg || 0);
+      this.stats.toMaxDmg = equipmentMaxDmg + (charmBonuses.toMaxDmg || 0);
+
       // Add damage bonuses from charms
       this.stats.lightDmgMin = (this.stats.lightDmgMin || 0) + (charmBonuses.lightDmgMin || 0);
       this.stats.lightDmgMax = (this.stats.lightDmgMax || 0) + (charmBonuses.lightDmgMax || 0);
@@ -4289,6 +4303,10 @@ class UnifiedSocketSystem {
       const dsMatch = cleanLine.match(/(\d+)%\s+Deadly\s+Strike/i);
       if (dsMatch) { this.stats.deadlyStrike += parseInt(dsMatch[1]); return; }
 
+      // Maximum Deadly Strike: "15% Maximum Deadly Strike"
+      const maxDsMatch = cleanLine.match(/(\d+)%\s+Maximum\s+Deadly\s+Strike/i);
+      if (maxDsMatch) { this.stats.maxDeadlyStrike += parseInt(maxDsMatch[1]); return; }
+
       const owMatch = cleanLine.match(/(\d+)%\s+Chance\s+of\s+Open\s+Wounds/i);
       if (owMatch) { this.stats.openWounds += parseInt(owMatch[1]); return; }
 
@@ -4320,10 +4338,9 @@ class UnifiedSocketSystem {
       const toattFlatMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Attack\s+Rating/i);
       if (toattFlatMatch) { this.stats.toatt += parseInt(toattFlatMatch[1]); return; }
 
-      // Target Defense modification (Eth rune: "-25% Target Defense")
-      // Note: This is parsed but not currently used in calculations
+      // Target Defense modification (Eth rune: "-25% Target Defense", Death Cleaver: "-33% Target Defense")
       const targetDefMatch = cleanLine.match(/([+-]?\d+)%\s+Target\s+Defense/i);
-      if (targetDefMatch) { return; } // Recognized but not tracked (special effect)
+      if (targetDefMatch) { this.stats.targetDefense += parseInt(targetDefMatch[1]); return; }
 
       // Flat Physical Damage bonuses (jewels, runes, gems, items)
       // Minimum Damage: "+X to Minimum Damage"
@@ -5123,6 +5140,34 @@ class UnifiedSocketSystem {
     this.updateElement('mdrcontainer', this.stats.mdr);
     this.updateElement('plrcontainer', this.stats.plr || 0);
     this.updateElement('blockchancecontainer', this.stats.blockChance || 0);
+
+    // Calculate real block chance: min(floor((block1 + Holy Shield bonus) × (Dexterity - 15) / (clvl × 2)), 75)
+    let realBlockChance = 0;
+    const shieldDropdown = document.getElementById('offs-dropdown');
+    const charLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+
+    if (shieldDropdown && shieldDropdown.value) {
+      const shieldItem = window.getItemData ? window.getItemData(shieldDropdown.value) : itemList[shieldDropdown.value];
+
+      if (shieldItem && shieldItem.properties && shieldItem.properties.block1) {
+        // Shield's base block value
+        const block1 = shieldItem.properties.block1 || 0;
+
+        // Holy Shield bonus (if available)
+        const holyShieldLevel = window.skillSystem?.getSkillTotalLevel?.('holyshieldcontainer') || 0;
+        const holyShieldBlockBonus = holyShieldLevel > 0 ? (holyShieldLevel * 15) : 0; // +15% per level
+
+        // Apply D2 block formula: min(floor((block1 + holyShieldBonus) * (totalDex - 15) / (clvl * 2)), 75)
+        const dexFactor = Math.max(0, totalDex - 15);
+        const levelDivisor = charLevel * 2;
+
+        if (levelDivisor > 0) {
+          realBlockChance = Math.min(75, Math.floor((block1 + holyShieldBlockBonus) * dexFactor / levelDivisor));
+        }
+      }
+    }
+
+    this.updateElement('realblockcontainer', realBlockChance);
 
 
     // Calculate total defense including dexterity bonus (totalDex / 4)
