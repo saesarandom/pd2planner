@@ -5796,8 +5796,17 @@ class SkillSystem {
           }
         }
 
-        var fireMin = Math.floor(baseFireMin * (1 + (synergyBonus + fireMasteryBonus) / 100));
-        var fireMax = Math.floor(baseFireMax * (1 + (synergyBonus + fireMasteryBonus) / 100));
+        // Get Fire Skill Damage from items
+        var fireSkillDmgFromItems = 0;
+        var fireSkillDmgContainer = document.getElementById('fireskilldmgcontainer');
+        if (fireSkillDmgContainer) {
+          fireSkillDmgFromItems = parseInt(fireSkillDmgContainer.textContent) || 0;
+        }
+
+        var totalFireSkillBonus = fireMasteryBonus + fireSkillDmgFromItems;
+        // Multiplicative formula: Base * (1 + Synergy/100) * (1 + FireSkillDmg/100)
+        var fireMin = Math.floor(baseFireMin * (1 + synergyBonus / 100) * (1 + totalFireSkillBonus / 100));
+        var fireMax = Math.floor(baseFireMax * (1 + synergyBonus / 100) * (1 + totalFireSkillBonus / 100));
 
         html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + fireMin + '-' + fireMax + '</div>';
 
@@ -5809,8 +5818,8 @@ class SkillSystem {
         if (synergyBonus > 0) {
           html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
         }
-        if (fireMasteryBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Fire Mastery: +' + fireMasteryBonus + '%</div>';
+        if (totalFireSkillBonus > 0) {
+          html += '<div style="margin: 5px 0; color: #ff9966;">Fire Skill Damage: +' + totalFireSkillBonus + '%</div>';
         }
       }
 
@@ -5849,40 +5858,7 @@ class SkillSystem {
         }
       }
 
-      // Display Fire Enchant specific properties
-      if (skillId === 'enchantfirecontainer') {
-        var levelIndex = Math.min(totalSkillLevel - 1, 59);
-        var baseFireMin = skill.fireDamageMin[levelIndex] || 0;
-        var baseFireMax = skill.fireDamageMax[levelIndex] || 0;
-        var synergyBonus = this.calculateSynergyBonus(skillId, 'fire') || 0;
 
-        // Get Fire Mastery bonus
-        var fireMasteryBonus = 0;
-        var fireMasteryInput = document.getElementById('firemasterycontainer');
-        if (fireMasteryInput) {
-          var fireMasteryLevel = this.getSkillTotalLevel('firemasterycontainer');
-          if (fireMasteryLevel > 0 && this.skillData.firemasterycontainer && this.skillData.firemasterycontainer.fireDamage) {
-            fireMasteryBonus = this.skillData.firemasterycontainer.fireDamage[Math.min(fireMasteryLevel - 1, 59)] || 0;
-          }
-        }
-
-        var fireMin = Math.floor(baseFireMin * (1 + (synergyBonus + fireMasteryBonus) / 100));
-        var fireMax = Math.floor(baseFireMax * (1 + (synergyBonus + fireMasteryBonus) / 100));
-
-        html += '<div style="margin: 5px 0; color: #ff6600;">Fire Damage: ' + fireMin + '-' + fireMax + '</div>';
-
-        if (skill.attackRating) {
-          var ar = skill.attackRating[levelIndex] || 0;
-          html += '<div style="margin: 5px 0; color: #ffcc66;">Attack Rating: +' + ar + '%</div>';
-        }
-
-        if (synergyBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + synergyBonus + '%</div>';
-        }
-        if (fireMasteryBonus > 0) {
-          html += '<div style="margin: 5px 0; color: #ff9966;">Fire Mastery: +' + fireMasteryBonus + '%</div>';
-        }
-      }
 
       // Display Cold Enchant specific properties
       if (skillId === 'coldenchantcontainer') {
@@ -7389,7 +7365,7 @@ class SkillSystem {
         html += '<div style="margin: 5px 0; color: #6699ff;">Mana Cost: ' + manaCost + '</div>';
       }
     } else if (skill.type === 'fire') {
-      // Pure fire damage skill (Exploding Arrow, Immolation Arrow)
+      // Pure fire damage skill (Exploding Arrow, Immolation Arrow, Meteor)
       var damageInfo = this.calculateFireDamage(skill, totalSkillLevel, skillId);
 
       // Display Attack Rating if available
@@ -7401,6 +7377,10 @@ class SkillSystem {
 
       if (damageInfo.synergyBonus > 0) {
         html += '<div style="margin: 5px 0; color: #aaffaa;">Synergy Bonus: +' + damageInfo.synergyBonus + '%</div>';
+      }
+
+      if (damageInfo.fireSkillDamageBonus > 0) {
+        html += '<div style="margin: 5px 0; color: #ff9966;">Fire Skill Damage: +' + damageInfo.fireSkillDamageBonus + '%</div>';
       }
 
       if (damageInfo.physicalMin > 0) {
@@ -9356,23 +9336,20 @@ class SkillSystem {
     // Calculate synergy bonus - some fire skills use 'damage' as synergy type for impact (like Meteor)
     var fireSynergyBonus = this.calculateSynergyBonus(skillId, 'fire') + this.calculateSynergyBonus(skillId, 'damage');
 
-    // Get Fire Mastery bonus
-    var fireMasteryBonus = 0;
-    var fireMasteryInput = document.getElementById('firemasterycontainer');
-    if (fireMasteryInput) {
-      var fireMasteryLevel = this.getSkillTotalLevel('firemasterycontainer');
-      if (fireMasteryLevel > 0 && this.skillData.firemasterycontainer && this.skillData.firemasterycontainer.fireDamage) {
-        fireMasteryBonus = this.skillData.firemasterycontainer.fireDamage[Math.min(fireMasteryLevel - 1, 59)] || 0;
-      }
+    // Get Total Fire Skill Damage from the stats container (this already includes Fire Mastery + items)
+    var totalFireSkillBonus = 0;
+    var fireSkillDmgContainer = document.getElementById('fireskilldmgcontainer');
+    if (fireSkillDmgContainer) {
+      totalFireSkillBonus = parseInt(fireSkillDmgContainer.textContent) || 0;
     }
 
-    // Apply synergies to physical part (if present)
-    var physMin = Math.floor(basePhysMin * (1 + fireSynergyBonus / 100));
-    var physMax = Math.floor(basePhysMax * (1 + fireSynergyBonus / 100));
+    // Apply synergies and fire skill damage to physical part (if present) - MULTIPLICATIVE
+    var physMin = Math.floor(basePhysMin * (1 + fireSynergyBonus / 100) * (1 + totalFireSkillBonus / 100));
+    var physMax = Math.floor(basePhysMax * (1 + fireSynergyBonus / 100) * (1 + totalFireSkillBonus / 100));
 
-    // Apply synergies and mastery to fire damage
-    var fireMin = Math.floor(baseFireMin * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
-    var fireMax = Math.floor(baseFireMax * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
+    // Apply synergies and fire skill damage to fire damage - MULTIPLICATIVE
+    var fireMin = Math.floor(baseFireMin * (1 + fireSynergyBonus / 100) * (1 + totalFireSkillBonus / 100));
+    var fireMax = Math.floor(baseFireMax * (1 + fireSynergyBonus / 100) * (1 + totalFireSkillBonus / 100));
 
     var result = {
       physicalMin: physMin,
@@ -9382,7 +9359,7 @@ class SkillSystem {
       average: Math.floor((physMin + physMax + fireMin + fireMax) / 2),
       averageFire: Math.floor((fireMin + fireMax) / 2),
       synergyBonus: fireSynergyBonus,
-      masteryBonus: fireMasteryBonus
+      fireSkillDamageBonus: totalFireSkillBonus // Total bonus from character stats
     };
 
     // Check if this skill has burning damage (Immolation Arrow, Blaze, Meteor)
@@ -9390,9 +9367,9 @@ class SkillSystem {
       var baseBurningMin = (skill.burningDamage ? skill.burningDamage.min[levelIndex] : (skill.burningDamageMin ? skill.burningDamageMin[levelIndex] : 0)) || 0;
       var baseBurningMax = (skill.burningDamage ? skill.burningDamage.max[levelIndex] : (skill.burningDamageMax ? skill.burningDamageMax[levelIndex] : 0)) || 0;
 
-      // Apply synergies and mastery to burning damage
-      var burningMin = Math.floor(baseBurningMin * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
-      var burningMax = Math.floor(baseBurningMax * (1 + (fireSynergyBonus + fireMasteryBonus) / 100));
+      // Apply synergies and fire skill damage to burning damage - MULTIPLICATIVE
+      var burningMin = Math.floor(baseBurningMin * (1 + fireSynergyBonus / 100) * (1 + totalFireSkillBonus / 100));
+      var burningMax = Math.floor(baseBurningMax * (1 + fireSynergyBonus / 100) * (1 + totalFireSkillBonus / 100));
 
       result.burningMin = burningMin;
       result.burningMax = burningMax;
