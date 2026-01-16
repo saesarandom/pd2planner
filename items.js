@@ -3874,6 +3874,25 @@ const itemList = {
       socketCount: 2
     }
   },
+
+  "Brimstone Rain": {
+    baseType: "Shillelagh",
+    properties: {
+      reqstr: 65,
+      reqlvl: 75,
+      ctcmeteor: 18,
+      ctcmeteorlevel: 35,
+      allsk: { min: 3, max: 4, current: 4 },
+      physpierce: 10,
+      fcr: 75,
+      firemasterysk: 3,
+      meteorsk: 3,
+      tolife: { min: 50, max: 100, current: 100 },
+      firres: { min: 50, max: 75, current: 75 },
+      dmgtoun: 50
+    }
+  },
+
   // UNIQUE SHIELDS
 
   "Pelta Lunata": {

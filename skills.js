@@ -4993,6 +4993,13 @@ class SkillSystem {
       }
     });
 
+    // Add individual skill bonuses (e.g., +3 to Meteor from items)
+    if (this.skillBonuses.individualSkills && this.skillBonuses.individualSkills[skillId]) {
+      const bonus = this.skillBonuses.individualSkills[skillId];
+      // console.log(`Applying individual bonus for ${skillId}: +${bonus}`);
+      total += bonus;
+    }
+
     return total;
   }
 
@@ -9839,11 +9846,12 @@ class SkillSystem {
   }
 
   // Update skill bonuses from item equipment
-  updateSkillBonuses(allSkillsBonus, classSkillsBonus, treeSkillsBonus) {
+  updateSkillBonuses(allSkillsBonus, classSkillsBonus, treeSkillsBonus, individualSkillsBonus) {
     // Store all types of bonuses separately
     this.skillBonuses.allSkills = allSkillsBonus || 0;
     this.skillBonuses.classSkills = classSkillsBonus || 0;
     this.skillBonuses.treeSkills = treeSkillsBonus || {};
+    this.skillBonuses.individualSkills = individualSkillsBonus || this.skillBonuses.individualSkills || {};
 
     // Update all skill inputs' bonus indicators
     var currentClassSkills = this.classSkillTrees[this.currentClass] || this.classSkillTrees['Amazon'];
@@ -9882,7 +9890,8 @@ class SkillSystem {
         }
       });
 
-      var totalBonus = allSkillsBonus + classSkillsBonus + treeBonus;
+      var individualBonus = (this.skillBonuses.individualSkills && this.skillBonuses.individualSkills[skillId]) || 0;
+      var totalBonus = allSkillsBonus + classSkillsBonus + treeBonus + individualBonus;
       var baseValue = parseInt(skillInput.value) || 0;
 
       // Only show bonus if skill has actual points AND there's a bonus

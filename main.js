@@ -722,6 +722,13 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     firesk: (val, prop) => formatVariableStat('+', val, ' to Fire Skills', prop, itemName, 'firesk', dropdownId),
     owdmg: (val, prop) => formatVariableStat('+', val, ' Open Wounds Damage per Second', prop, itemName, 'owdmg', dropdownId),
     sancaura: (val, prop) => formatVariableStat('Level ', val, ' Sanctuary Aura when Equipped', prop, itemName, 'sancaura', dropdownId),
+    firemasterysk: (val, prop) => formatVariableStat('+', val, ' to Fire Mastery (Sorceress Only)', prop, itemName, 'firemasterysk', dropdownId),
+    meteorsk: (val, prop) => formatVariableStat('+', val, ' to Meteor (Sorceress Only)', prop, itemName, 'meteorsk', dropdownId),
+    ctcmeteor: (val, prop) => {
+      const level = props.ctcmeteorlevel || 1;
+      return `${val}% Chance to Cast Level ${level} Meteor on Casting`;
+    },
+    ctcmeteorlevel: () => '', // Skip, handled by ctcmeteor
     maxdmgperlvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'maxdmgperlvl', dropdownId),
     todeflvl: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'todeflvl', dropdownId, ' Defense'),
     lleech: (val, prop) => formatVariableStat('', val, '% Life Stolen per Hit', prop, itemName, 'lleech', dropdownId),

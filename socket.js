@@ -3092,6 +3092,7 @@ class UnifiedSocketSystem {
 
     // CRITICAL: Reset treeSkills object (not in initial stats, so Object.keys won't reset it)
     this.stats.treeSkills = {};
+    this.stats.individualSkillBonuses = {};
 
     // Reset mercenary stats
     Object.keys(this.mercenaryStats).forEach(key => {
@@ -3189,6 +3190,7 @@ class UnifiedSocketSystem {
       window.skillSystem.skillBonuses.allSkills = gearAllSkills;
       window.skillSystem.skillBonuses.classSkills = this.stats.classSkills || 0;
       window.skillSystem.skillBonuses.treeSkills = this.stats.treeSkills || {};
+      window.skillSystem.skillBonuses.individualSkills = this.stats.individualSkillBonuses || {};
 
       // 2. Battle Command integration (adds to allSkills)
       // Check party for better BC
@@ -4251,6 +4253,42 @@ class UnifiedSocketSystem {
       const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
       if (allSkillsMatch) { this.stats.allSkills += parseInt(allSkillsMatch[1]); return; }
 
+      // Individual skill bonuses (e.g., "+3 to Meteor (Sorceress Only)")
+      // Pattern: +X to [Skill Name] (optional class restriction)
+      // Use lookahead to ensure we capture the full skill name up to the optional parenthesis or end of line
+      const individualSkillMatch = cleanLine.match(/\+(\d+)\s+to\s+([A-Za-z\s]+?)(?=\s+\(|$)/i);
+      if (individualSkillMatch) {
+        const bonus = parseInt(individualSkillMatch[1]);
+        const skillName = individualSkillMatch[2].trim();
+        // console.log(`Matched individual skill: ${skillName} +${bonus}`);
+
+        // Find the skill container ID from the skill name
+        if (window.skillSystem && window.skillSystem.classSkillTrees) {
+          let found = false;
+          for (const className in window.skillSystem.classSkillTrees) {
+            const skillTrees = window.skillSystem.classSkillTrees[className];
+            for (const treeId in skillTrees) {
+              const skills = skillTrees[treeId];
+              for (const skill of skills) {
+                if (skill.name.toLowerCase() === skillName.toLowerCase()) {
+                  // Add to individual skill bonuses
+                  if (!this.stats.individualSkillBonuses) {
+                    this.stats.individualSkillBonuses = {};
+                  }
+                  this.stats.individualSkillBonuses[skill.id] =
+                    (this.stats.individualSkillBonuses[skill.id] || 0) + bonus;
+                  found = true;
+                  break;
+                }
+              }
+              if (found) break;
+            }
+            if (found) break;
+          }
+          if (found) return;
+        }
+      }
+
       // Resistances
       const allResMatch = cleanLine.match(/All\s+Resistances?\s+([+-]?\d+)%?/i);
       if (allResMatch) {
@@ -5208,7 +5246,7 @@ class UnifiedSocketSystem {
 
     // Update skill bonus indicators if skill system is available (include both all skills and class skills)
     if (window.skillSystem) {
-      window.skillSystem.updateSkillBonuses(this.stats.allSkills, this.stats.classSkills, this.stats.treeSkills);
+      window.skillSystem.updateSkillBonuses(this.stats.allSkills, this.stats.classSkills, this.stats.treeSkills, this.stats.individualSkillBonuses);
     }
 
     this.updateElement('magicfindcontainer', this.stats.magicFind);
