@@ -666,6 +666,9 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     block: (val, prop) => formatVariableStat('', val, '% Increased Chance of Blocking', prop, itemName, 'block', dropdownId),
     edef: (val, prop) => formatVariableStat('+', val, '% Enhanced Defense', prop, itemName, 'edef', dropdownId),
     repl: (val, prop) => formatVariableStat('Replenish Life +', val, '', prop, itemName, 'repl', dropdownId),
+    dmgtomana: (val, prop) => formatVariableStat('', val, '% Damage Taken Gained as Mana when Hit', prop, itemName, 'dmgtomana', dropdownId),
+    drainlife: (val, prop) => formatVariableStat('Drain Life ', val, '', prop, itemName, 'drainlife', dropdownId),
+    monstflee: (val, prop) => formatVariableStat('Hit Causes Monsters to Flee ', val, '%', prop, itemName, 'monstflee', dropdownId),
     allsk: (val, prop) => formatVariableStat('+', val, ' to All Skills', prop, itemName, 'allsk', dropdownId),
     str: (val, prop) => formatVariableStat('+', val, ' to Strength', prop, itemName, 'str', dropdownId),
     dex: (val, prop) => formatVariableStat('+', val, ' to Dexterity', prop, itemName, 'dex', dropdownId),
@@ -760,7 +763,10 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     maxdmg: () => '', // Skip, handled by mindmg
     blind: (val, prop) => val ? 'Hit Blinds Target' : '',
     pdr: (val, prop) => formatVariableStat('Physical Damage Taken Reduced by ', val, '', prop, itemName, 'pdr', dropdownId),
+    regenMana: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'regenMana', dropdownId),
+    regenLife: (val, prop) => formatVariableStat('Replenish Life +', val, '', prop, itemName, 'regenLife', dropdownId),
     regmana: (val, prop) => formatVariableStat('Regenerate Mana ', val, '%', prop, itemName, 'regmana', dropdownId),
+    repl: (val, prop) => formatVariableStat('Replenish Life +', val, '', prop, itemName, 'repl', dropdownId),
     firedmgmin: (val, prop) => {
       const maxVal = props.firedmgmax || val;
       return `Adds ${val}-${maxVal} Fire Damage`;
@@ -800,6 +806,18 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     coldabsorb: (val, prop) => formatVariableStat('+', val, ' Cold Absorb', prop, itemName, 'coldabsorb', dropdownId),
     freezedur: (val, prop) => val === 0.5 ? 'Half Freeze Duration' : formatVariableStat('Freeze Duration Reduced by ', val * 100, '%', prop, itemName, 'freezedur', dropdownId),
     req: (val, prop) => formatVariableStat('Requirements ', val, '%', prop, itemName, 'req', dropdownId),
+    lightabsorb: (val, prop) => formatVariableStat('+', val, ' Lightning Absorb', prop, itemName, 'lightabsorb', dropdownId),
+    lightabsorbpercent: (val, prop) => formatVariableStat('Lightning Absorb +', val, '%', prop, itemName, 'lightabsorbpercent', dropdownId),
+    spiritofbarbscharges: (val, prop) => {
+      const level = props.spiritofbarbslevel || 7;
+      return `Level ${level} Spirit of Barbs (${val} Charges)`;
+    },
+    spiritofbarbslevel: () => '',
+    heartofwolwerinecharges: (val, prop) => {
+      const level = props.heartofwolwerinelevel || 2;
+      return `Level ${level} Heart of Wolverine (${val} Charges)`;
+    },
+    heartofwolwerinelevel: () => '',
 
     // Random Sorceress skill (Ormus' Robes)
     randsorc: (val, prop) => {
@@ -833,7 +851,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   };
   // Build description from properties
   // Skip certain properties that are metadata or handled elsewhere
-  const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax', 'maxdmg'];
+  const skipProperties = ['javelin', 'speed', 'onehandmax', 'twohandmax', 'throwmax', 'smitedmgmax', 'maxdmg', 'spiritofbarbslevel', 'heartofwolwerinelevel'];
 
   // Iterate through propertyDisplay keys in order to control display order
   // This ensures damage lines appear in the correct position, not at the end

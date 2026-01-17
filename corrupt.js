@@ -422,16 +422,15 @@ const CORRUPTIONS = {
 
 // Section mapping for dropdowns to item types
 const SECTION_MAP = {
-
   'helms-dropdown': 'helm',
   'armors-dropdown': 'armor',
   'weapons-dropdown': 'weapon',
   'offs-dropdown': 'shield',
   'gloves-dropdown': 'gloves',
-  'belts-dropdown': 'belt',
+  'belts-dropdown': 'belts',
   'boots-dropdown': 'boots',
-  'ringsone-dropdown': 'ring',
-  'ringstwo-dropdown': 'ring',
+  'ringsone-dropdown': 'ringone',
+  'ringstwo-dropdown': 'ringtwo',
   'amulets-dropdown': 'amulet',
   // Mercenary equipment
   'merchelms-dropdown': 'merchelm',
@@ -652,8 +651,16 @@ function openCorruptionModal(dropdownId) {
   }
 
   const itemType = SECTION_MAP[dropdownId];
-  // Strip 'merc' prefix for mercenary items since CORRUPTIONS uses base types
-  const baseItemType = itemType ? itemType.replace(/^merc/, '') : itemType;
+  if (!itemType || !dropdown.value) {
+    alert('Please select an item first!');
+    return;
+  }
+
+  // Map section name to CORRUPTIONS pool key
+  let baseItemType = itemType.replace(/^merc/, '');
+  if (baseItemType === 'ringone' || baseItemType === 'ringtwo') baseItemType = 'ring';
+  if (baseItemType === 'belts') baseItemType = 'belt';
+
   const corruptions = CORRUPTIONS[baseItemType];
   if (!corruptions) {
     alert('No corruptions available for this item type.');

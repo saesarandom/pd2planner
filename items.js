@@ -1543,18 +1543,19 @@ const itemList = {
   },
 
   "Angelic Mantle": {
-    description:
-      "Angelic Mantle<br>Ring Mail<br>Defense: 72<br>Defense (2 Items): 222<br>Required Strength: 36<br>Required Level: 12<br>+[50-80]% Damage to Undead<br>+40% Enhanced Defense<br>Physical Damage Taken Reduced by 3<br>+150 Defense (2 Items)<br>Fire Resist +50% (3 Items)<br>",
+    baseType: "Ring Mail",
     properties: {
       defense: 72,
       reqstr: 36,
       reqlvl: 12,
-      dmgtoundead: 50,
+      dmgtoun: { min: 50, max: 80, current: 80 },
       edef: 40,
       pdr: 3,
-      todef: 150,
-      firres: 50,
     },
+    setBonuses: [
+      "+150 Defense (2 Items)",
+      "Fire Resist +50% (3 Items)",
+    ],
   },
 
   "Vidala's Ambush": {
@@ -1702,7 +1703,7 @@ const itemList = {
       edef: 150,
       defvsmiss: 100,
       poisonres: 40,
-      reqred: -40
+      reqred: -40,
     },
   },
 
@@ -1722,7 +1723,7 @@ const itemList = {
       str: { min: 20, max: 28, current: 28 },
       dex: { min: 10, max: 18, current: 18 },
       fireres: { min: 38, max: 45, current: 45 },
-      poisonres: 40
+      poisres: 40,
     },
   },
 
@@ -3461,7 +3462,7 @@ const itemList = {
       ias: 40, // Increased Attack Speed (40%)
       edmg: 220, // Enhanced Damage (220%)
       toattpercent: 35, // Bonus to Attack Rating (35%)
-      dmgtound: 2.5, // Damage to Undead per Character Level (2.5%)
+      dmgtoun: 2.5, // Damage to Undead per Character Level (2.5%)
       maxdmgperlvl: 2.5, // Maximum Damage to Undead per Character Level (2.5%)
       toattundeadlvl: 5, // Additional Attack Rating against Undead per Character Level (5)
       zealosk: 12,
@@ -4565,6 +4566,24 @@ const itemList = {
     },
   },
   // UNIQUE BELTS
+  "Trang-Oul's Girth": {
+    baseType: "Troll Belt",
+    setBonuses: [
+      "Cold Resist +40% (3 Items)"
+    ],
+    properties: {
+      defense: 66,
+      reqstr: 91,
+      reqlvl: 62,
+      cbf: 1,
+      todef: { min: 75, max: 100, current: 100 },
+      tolife: { min: 56, max: 76, current: 76 },
+      tomana: { min: 25, max: 50, current: 50 },
+      maxstamina: 30,
+      req: -40,
+      repl: { min: 5, max: 10, current: 10 },
+    },
+  },
 
   Lenymo: {
     description:
@@ -5412,15 +5431,14 @@ const itemList = {
   },
 
   "The Stone of Jordan": {
-    description:
-      "The Stone of Jordan<br> Ring<br> Required Level: 29<br> +1 to All Skills<br> Adds 1-120 Lightning Damage<br> +40 to Mana<br> Increase Maximum Mana 20%<br>",
+    baseType: "Ring",
     properties: {
       reqlvl: 29,
       allsk: 1,
       lightdmgmin: 1,
       lightdmgmax: 120,
-      tomana: 40,
-      maxmana: 20,
+      tomana: { min: 20, max: 40, current: 40 },
+      maxmana: { min: 15, max: 20, current: 20 },
     },
   },
 
@@ -5495,15 +5513,16 @@ const itemList = {
   },
 
   "Wisp Projector": {
-    description:
-      "Wisp Projector<br> Ring<br> Required Level: 76<br> +1 to All Skills<br> Lightning Absorb 6%<br> 20% Better Chance of Getting Magic Items<br> Level 7 Spirit of Barbs (11 Charges)<br> Level 5 Heart of Wolverine (13 Charges)<br>",
+    baseType: "Ring",
     properties: {
       reqlvl: 76,
       allsk: 1,
-      lightabs: 6,
-      magicfind: 20,
-      spiritofbarbssk: 7, //charges not implemented
-      heartofwolverinesk: 5, //charges not implemented
+      lightabsorbpercent: { min: 4, max: 6, current: 6 },
+      magicfind: { min: 10, max: 15, current: 15 },
+      spiritofbarbslevel: 7,
+      spiritofbarbscharges: 11,
+      heartofwolwerinelevel: 2,
+      heartofwolwerinecharges: 13,
     },
   },
 
@@ -5535,6 +5554,29 @@ const itemList = {
       vendor: 10, //this ring not implemented, needd to come with 3 versions to fix
     },
   },
+
+  "Constricting Loop": {
+    baseType: "Ring",
+    properties: {
+      reqlvl: 65,
+      fcr: 20,
+      monstflee: 12,
+      str: { min: 12, max: 18, current: 18 },
+      drainlife: -20, //it can be also negative repl
+      laek: { min: 4, max: 6, current: 6 },
+    },
+  },
+
+  "Angelic Halo": {
+    description:
+      "Angelic Halo<br> Ring<br> Required Level: 12<br> +20 to Life<br> Regenerate Life +6<br> +12 to Attack Rating per Character Level (2 Items)<br> 50% Better Chance of Getting Magic Items (3 Items)<br>",
+    properties: {
+      reqlvl: 12,
+      tolife: 20,
+      repl: 6,
+    },
+  },
+
   // UNIQUE AMULETS
 
   "Nokozan Relic": {
@@ -5732,6 +5774,19 @@ const itemList = {
       tolife: 10,
       tomana: 10,
       poisres: 25,
+    },
+  },
+
+
+  //varios set
+
+  "Angelic Wings": {
+    description:
+      "Angelic Wings<br> Amulet<br> Required Level: 12<br> +20% Damage Taken Gained as Mana when Hit<br> +3 to Light Radius<br> +75 to Life (2 Items)<br> +1 to All Skills (3 Items)<br>",
+    properties: {
+      reqlvl: 12,
+      dmgtomana: 20,
+      ligrad: 3,
     },
   },
 

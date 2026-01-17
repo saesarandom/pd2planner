@@ -59,9 +59,12 @@ class UnifiedSocketSystem {
       ias: 0, fcr: 0, frw: 0, fhr: 0, plr: 0,
       fireResist: 0, coldResist: 0, lightResist: 0, poisonResist: 0, curseResist: 0,
       allResistances: 0, crushingBlow: 0, deadlyStrike: 0, maxDeadlyStrike: 0, openWounds: 0, openWoundsDamage: 0,
-      life: 0, mana: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
+      life: 0, mana: 0, lifePercent: 0, manaPercent: 0, lifeSteal: 0, manaSteal: 0, dr: 0, pdr: 0, mdr: 0, cbf: false,
+      dmgtomana: 0,
+      regenMana: 0, regenLife: 0,
       toatt: 0, toattPercent: 0, targetDefense: 0, lightRadius: 0,
       toMinDmg: 0, toMaxDmg: 0,
+      dmgtoundead: 0, dmgtodemon: 0,
       lightDmgMin: 0, lightDmgMax: 0, fireDmgMin: 0, fireDmgMax: 0,
       coldDmgMin: 0, coldDmgMax: 0, poisonDmgMin: 0, poisonDmgMax: 0, fireSkillDamage: 0,
       coldSkillDamage: 0,
@@ -3624,10 +3627,24 @@ class UnifiedSocketSystem {
       if (setBonuses.manaSteal) this.stats.manaLeech += setBonuses.manaSteal;
       if (setBonuses.lifeSteal) this.stats.lifeLeech += setBonuses.lifeSteal;
       if (setBonuses.dr) this.stats.dr += setBonuses.dr;
+      if (setBonuses.regenMana) this.stats.regenMana += setBonuses.regenMana;
+      if (setBonuses.regenLife) this.stats.regenLife += setBonuses.regenLife;
       if (setBonuses.firePierce) this.stats.pierceFire = (this.stats.pierceFire || 0) + setBonuses.firePierce;
       if (setBonuses.coldPierce) this.stats.pierceCold = (this.stats.pierceCold || 0) + setBonuses.coldPierce;
       if (setBonuses.lightPierce) this.stats.pierceLightning = (this.stats.pierceLightning || 0) + setBonuses.lightPierce;
       if (setBonuses.poisonPierce) this.stats.piercePoison = (this.stats.piercePoison || 0) + setBonuses.poisonPierce;
+      if (setBonuses.classSkills) this.stats.classSkills = (this.stats.classSkills || 0) + setBonuses.classSkills;
+      if (setBonuses.toatt) this.stats.toatt += setBonuses.toatt;
+      if (setBonuses.toattPerLevel) {
+        const charLevel = this.currentLevel || 1;
+        this.stats.toatt += setBonuses.toattPerLevel * charLevel;
+      }
+      if (setBonuses.cbf) this.stats.cbf = true;
+      if (setBonuses.individualSkills) {
+        Object.entries(setBonuses.individualSkills).forEach(([skillId, value]) => {
+          this.stats.individualSkillBonuses[skillId] = (this.stats.individualSkillBonuses[skillId] || 0) + value;
+        });
+      }
     }
   }
 
@@ -4253,6 +4270,10 @@ class UnifiedSocketSystem {
           this.stats.toMaxDmg += value;
         } else if (cleanLine.includes('Defense')) {
           this.stats.defense += value;
+        } else if (cleanLine.includes('Life')) {
+          this.stats.life += value;
+        } else if (cleanLine.includes('Mana')) {
+          this.stats.mana += value;
         }
         return;
       }
@@ -4297,6 +4318,13 @@ class UnifiedSocketSystem {
         }
       }
 
+      // Increase Maximum Life/Mana %
+      const lifeMaxMatch = cleanLine.match(/Increase\s+Maximum\s+Life\s+(\d+)%/i);
+      if (lifeMaxMatch) { this.stats.lifePercent += parseInt(lifeMaxMatch[1]); return; }
+
+      const manaMaxMatch = cleanLine.match(/Increase\s+Maximum\s+Mana\s+(\d+)%/i);
+      if (manaMaxMatch) { this.stats.manaPercent += parseInt(manaMaxMatch[1]); return; }
+
       // Resistances
       const allResMatch = cleanLine.match(/All\s+Resistances?\s+([+-]?\d+)%?/i);
       if (allResMatch) {
@@ -4336,6 +4364,10 @@ class UnifiedSocketSystem {
       // Magic Find
       const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
       if (mfMatch) { this.stats.magicFind += parseInt(mfMatch[1]); return; }
+
+      // Damage Taken Gained as Mana when Hit
+      const dtmMatch = cleanLine.match(/(\d+)%\s+Damage\s+Taken\s+Gained\s+as\s+Mana\s+when\s+Hit/i);
+      if (dtmMatch) { this.stats.dmgtomana += parseInt(dtmMatch[1]); return; }
 
       // Gold Find
       // const gfMatch = cleanLine.match(/(\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
@@ -4396,6 +4428,14 @@ class UnifiedSocketSystem {
       // Maximum Damage: "+X to Maximum Damage"
       const toMaxDmgMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Maximum\s+Damage/i);
       if (toMaxDmgMatch) { this.stats.toMaxDmg += parseInt(toMaxDmgMatch[1]); return; }
+
+      // Damage to Undead: "+X% Damage to Undead"
+      const dmgToUndeadMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Damage\s+(?:to|vs)\s+Undead/i);
+      if (dmgToUndeadMatch) { this.stats.dmgtoundead += parseInt(dmgToUndeadMatch[1]); return; }
+
+      // Damage to Demons: "+X% Damage to Demons"
+      const dmgToDemonMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Damage\s+(?:to|vs)\s+Demons/i);
+      if (dmgToDemonMatch) { this.stats.dmgtodemon += parseInt(dmgToDemonMatch[1]); return; }
 
       // Damage Reduction stats
       // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
@@ -5179,6 +5219,8 @@ class UnifiedSocketSystem {
     this.updateElement('criticalhitcontainer', this.stats.criticalHit || 0);
     this.updateElement('lifestealcontainer', this.stats.lifeSteal);
     this.updateElement('manastealcontainer', this.stats.manaSteal);
+    this.updateElement('damagetodemoncontainer', this.stats.dmgtodemon);
+    this.updateElement('damagetoundeadcontainer', this.stats.dmgtoundead);
 
     // Defensive stats - using correct HTML IDs
     this.updateElement('drcontainer', this.stats.dr);

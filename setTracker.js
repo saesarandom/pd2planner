@@ -9,6 +9,8 @@ class SetTracker {
     // Define complete set sizes for each set
     this.SET_SIZES = {
       "Arcanna's": 4,  // Head, Flesh, Deathwand, Sign
+      "Trang-Oul's": 5, // Guise, Scales, Wing, Girth, Claws
+      "Angelic": 4,   // Mantle, Sickle, Halo, Wings
       // Add more sets here as needed
     };
 
@@ -76,6 +78,51 @@ class SetTracker {
             "+30% Faster Cast Rate (Complete Set)",
             "5% Mana Stolen per Hit (Complete Set)",
             "+1 to All Skills (Complete Set)"
+          ]
+        }
+      ],
+      "Trang-Oul's": [
+        {
+          itemCount: 2,
+          bonuses: ["+18 to Fire Ball (2 Items)", "Regenerate Mana 20% (2 Items)"]
+        },
+        {
+          itemCount: 3,
+          bonuses: ["+26 to Fire Wall (3 Items)", "Regenerate Mana 15% (3 Items)"]
+        },
+        {
+          itemCount: 4,
+          bonuses: ["+10 to Fire Ball (4 Items)"]
+        },
+        {
+          itemCount: 'complete',
+          bonuses: [
+            "Regenerate Mana 15% (Complete Set)",
+            "+3 to Necromancer Skills (Complete Set)",
+            "20% Life Stolen per Hit (Complete Set)",
+            "Replenish Life +10 (Complete Set)",
+            "+100 to Mana (Complete Set)",
+            "All Resistances +50 (Complete Set)",
+            "+2 to Vampire Form (Complete Set)"
+          ]
+        }
+      ],
+      "Angelic": [
+        {
+          itemCount: 2,
+          bonuses: ["+10 to Dexterity (2 Items)"]
+        },
+        {
+          itemCount: 3,
+          bonuses: ["+50 to Mana (3 Items)"]
+        },
+        {
+          itemCount: 'complete',
+          bonuses: [
+            "Regenerate Mana 8% (Complete Set)",
+            "All Resistances +25 (Complete Set)",
+            "Cannot Be Frozen (Complete Set)",
+            "40% Better Chance of Getting Magic Items (Complete Set)"
           ]
         }
       ],
@@ -232,6 +279,25 @@ class SetTracker {
     } else if (lowerText.includes('defense')) {
       result.stat = 'defense';
     }
+    // Attack Rating
+    else if (lowerText.includes('to attack rating') && lowerText.includes('per character level')) {
+      result.stat = 'toattPerLevel';
+    } else if (lowerText.includes('to attack rating')) {
+      result.stat = 'toatt';
+    }
+    // Enemy Resistance Pierce (MUST CHECK BEFORE REGULAR RESISTANCES)
+    else if (lowerText.includes('to enemy fire resistance')) {
+      result.stat = 'firePierce';
+    }
+    else if (lowerText.includes('to enemy cold resistance')) {
+      result.stat = 'coldPierce';
+    }
+    else if (lowerText.includes('to enemy lightning resistance')) {
+      result.stat = 'lightPierce';
+    }
+    else if (lowerText.includes('to enemy poison resistance')) {
+      result.stat = 'poisonPierce';
+    }
     // Energy
     else if (lowerText.includes('energy')) {
       result.stat = 'energy';
@@ -304,6 +370,11 @@ class SetTracker {
     else if (lowerText.includes('life stolen per hit') || lowerText.includes('life steal')) {
       result.stat = 'lifeSteal';
     }
+    // Cannot Be Frozen
+    else if (lowerText.includes('cannot be frozen')) {
+      result.stat = 'cbf';
+      result.value = true;
+    }
     // Physical Damage Taken Reduced by X%
     else if (lowerText.includes('physical damage taken reduced by') && lowerText.includes('%')) {
       result.stat = 'dr';
@@ -312,22 +383,30 @@ class SetTracker {
     else if (lowerText.includes('to all skills')) {
       result.stat = 'allSkills';
     }
-    // Enemy Resistance
-    else if (lowerText.includes('to enemy fire resistance')) {
-      result.stat = 'firePierce';
+    // Class Skills (e.g., "+3 to Necromancer Skills")
+    else if (lowerText.includes('to necromancer skills')) {
+      result.stat = 'classSkills';
     }
-    else if (lowerText.includes('to enemy cold resistance')) {
-      result.stat = 'coldPierce';
+    // Individual Skill Bonuses (e.g., "+18 to Fire Ball", "+2 to Vampire Form")
+    else if (lowerText.includes('to fire ball')) {
+      result.stat = 'individualSkill';
+      result.skillId = 'fireballcontainer';
     }
-    else if (lowerText.includes('to enemy lightning resistance')) {
-      result.stat = 'lightPierce';
+    else if (lowerText.includes('to fire wall')) {
+      result.stat = 'individualSkill';
+      result.skillId = 'firewallcontainer';
     }
-    else if (lowerText.includes('to enemy poison resistance')) {
-      result.stat = 'poisonPierce';
+    else if (lowerText.includes('to vampire form')) {
+      result.stat = 'individualSkill';
+      result.skillId = 'vampireformcontainer';
     }
 
     // If we detected a stat, return it
     if (result.stat) {
+      // Enemy resistance reduction is stored as a positive "pierce" value
+      if (result.stat.toLowerCase().includes('pierce') && result.value < 0) {
+        result.value = Math.abs(result.value);
+      }
       return result;
     }
 
@@ -451,6 +530,7 @@ class SetTracker {
     ];
 
     const equippedItems = [];
+    const setItemNames = new Map(); // Track unique item names per set
 
     dropdownIds.forEach(dropdownId => {
       const dropdown = document.getElementById(dropdownId);
@@ -467,15 +547,23 @@ class SetTracker {
           if (meetsLevel && meetsStats) {
             const setName = this.extractSetName(itemName);
             if (setName) {
-              const bonuses = this.parseSetBonuses(item);
+              // PUZZLE FIX: Only count unique item names toward the set count/bonuses
+              if (!setItemNames.has(setName)) {
+                setItemNames.set(setName, new Set());
+              }
 
-              equippedItems.push({
-                name: itemName,
-                setName: setName,
-                slot: dropdownId,
-                item: item,
-                bonuses: bonuses
-              });
+              if (!setItemNames.get(setName).has(itemName)) {
+                setItemNames.get(setName).add(itemName);
+                const bonuses = this.parseSetBonuses(item);
+
+                equippedItems.push({
+                  name: itemName,
+                  setName: setName,
+                  slot: dropdownId,
+                  item: item,
+                  bonuses: bonuses
+                });
+              }
             }
           }
         }
@@ -713,7 +801,12 @@ class SetTracker {
       firePierce: 0,
       coldPierce: 0,
       lightPierce: 0,
-      poisonPierce: 0
+      poisonPierce: 0,
+      classSkills: 0,
+      toatt: 0,
+      toattPerLevel: 0,
+      cbf: false,
+      individualSkills: {} // Map of skillId -> value
     };
 
     // Debug: Log what we're applying
@@ -730,7 +823,9 @@ class SetTracker {
           activeBonus.bonuses.forEach(bonus => {
             // console.log(`[SetTracker] Applying Complete Set bonus: ${bonus.stat} = ${bonus.value}`);
 
-            if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
+            if (bonus.stat === 'individualSkill' && bonus.skillId) {
+              totalBonuses.individualSkills[bonus.skillId] = (totalBonuses.individualSkills[bonus.skillId] || 0) + bonus.value;
+            } else if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
               totalBonuses[bonus.stat] += bonus.value;
             }
           });
@@ -741,7 +836,9 @@ class SetTracker {
         activeBonus.bonuses.forEach(bonus => {
           // console.log(`[SetTracker] Applying bonus: ${bonus.stat} = ${bonus.value}`);
 
-          if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
+          if (bonus.stat === 'individualSkill' && bonus.skillId) {
+            totalBonuses.individualSkills[bonus.skillId] = (totalBonuses.individualSkills[bonus.skillId] || 0) + bonus.value;
+          } else if (bonus.stat && bonus.stat !== 'unknown' && totalBonuses.hasOwnProperty(bonus.stat)) {
             totalBonuses[bonus.stat] += bonus.value;
           }
         });
