@@ -63,6 +63,25 @@ class SetTracker {
       "Magnus' Skin": "Orphan's",
     };
 
+    // Define shared set bonuses (bonuses that apply when wearing multiple items)
+    // These are in ADDITION to individual item bonuses
+    this.SET_BONUSES = {
+      "Arcanna's": [
+        { itemCount: 2, bonuses: ["+25 to Mana (2 Items)"] },
+        { itemCount: 3, bonuses: ["+50 to Life (3 Items)"] },
+        {
+          itemCount: 'complete',
+          bonuses: [
+            "+25 to Mana (Complete Set)",
+            "+30% Faster Cast Rate (Complete Set)",
+            "5% Mana Stolen per Hit (Complete Set)",
+            "+1 to All Skills (Complete Set)"
+          ]
+        }
+      ],
+      // Add more sets here as needed
+    };
+
     this.setupItemListeners();
   }
 
@@ -138,13 +157,14 @@ class SetTracker {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
 
-      // Match patterns like "+100 Defense (2 Items)" or "(2 Items) +100 Defense"
-      const match = line.match(/^(?:\((\d+)\s+Items?\)|.*?)\s*(.*?)\s*\((\d+)\s+Items?\)$/i);
-      const completeSetMatch = line.match(/^(.*?)\s*\(Complete Set\)$/i);
+      // Match patterns like "+100 Defense (2 Items)" or "50% Better Chance of Getting Magic Items (2 Items)"
+      // Capture everything before "(X Items)" as the bonus text
+      const match = line.match(/^(.+?)\s*\((\d+)\s+Items?\)$/i);
+      const completeSetMatch = line.match(/^(.+?)\s*\(Complete Set\)$/i);
 
       if (match) {
-        const itemCount = parseInt(match[1] || match[3]);
-        const bonusText = (match[2] || match[1]).trim();
+        const bonusText = match[1].trim();
+        const itemCount = parseInt(match[2]);
 
         if (bonusText && itemCount) {
           const parsedBonus = this.parseStatBonus(bonusText, line);
@@ -272,9 +292,38 @@ class SetTracker {
     else if (lowerText.includes('faster run/walk') || lowerText.includes('frw')) {
       result.stat = 'frw';
     }
+    // Magic Find
+    else if (lowerText.includes('better chance of getting magic items') || lowerText.includes('magic find')) {
+      result.stat = 'magicFind';
+    }
+    // Mana Steal
+    else if (lowerText.includes('mana stolen per hit') || lowerText.includes('mana steal')) {
+      result.stat = 'manaSteal';
+    }
+    // Life Steal
+    else if (lowerText.includes('life stolen per hit') || lowerText.includes('life steal')) {
+      result.stat = 'lifeSteal';
+    }
+    // Physical Damage Taken Reduced by X%
+    else if (lowerText.includes('physical damage taken reduced by') && lowerText.includes('%')) {
+      result.stat = 'dr';
+    }
     // Skills
     else if (lowerText.includes('to all skills')) {
       result.stat = 'allSkills';
+    }
+    // Enemy Resistance
+    else if (lowerText.includes('to enemy fire resistance')) {
+      result.stat = 'firePierce';
+    }
+    else if (lowerText.includes('to enemy cold resistance')) {
+      result.stat = 'coldPierce';
+    }
+    else if (lowerText.includes('to enemy lightning resistance')) {
+      result.stat = 'lightPierce';
+    }
+    else if (lowerText.includes('to enemy poison resistance')) {
+      result.stat = 'poisonPierce';
     }
 
     // If we detected a stat, return it
@@ -457,6 +506,37 @@ class SetTracker {
       });
     });
 
+    // Add shared set bonuses (defined in SET_BONUSES)
+    this.equippedSets.forEach((setData, setName) => {
+      if (this.SET_BONUSES[setName]) {
+        const sharedBonuses = this.SET_BONUSES[setName];
+
+        sharedBonuses.forEach(bonusGroup => {
+          // Parse each bonus text in the group
+          const parsedBonuses = bonusGroup.bonuses.map(bonusText => {
+            const parsed = this.parseStatBonus(bonusText, bonusText);
+            if (parsed) {
+              parsed.isShared = true; // Mark as shared global bonus
+            }
+            return parsed;
+          }).filter(b => b !== null);
+
+          if (parsedBonuses.length > 0) {
+            const existing = setData.allBonuses.find(b => b.itemCount === bonusGroup.itemCount);
+            if (!existing) {
+              setData.allBonuses.push({
+                itemCount: bonusGroup.itemCount,
+                bonuses: parsedBonuses
+              });
+            } else {
+              // Merge with existing bonuses
+              existing.bonuses.push(...parsedBonuses);
+            }
+          }
+        });
+      }
+    });
+
     // Update buff display
     this.updateBuffDisplay();
 
@@ -572,7 +652,12 @@ class SetTracker {
           const label = count === 'complete' ? 'Complete Set' : `${count} Items`;
           tooltipHTML += `<br><span style="color: #ffff88;">(${label}):</span><br>`;
           byCount[count].forEach(bonus => {
-            tooltipHTML += `${bonus.rawText}<br>`;
+            // Shared global bonuses are green, item-specific bonuses are default (gold)
+            if (bonus.isShared) {
+              tooltipHTML += `<span style="color: #00ff00;">${bonus.rawText}</span><br>`;
+            } else {
+              tooltipHTML += `${bonus.rawText}<br>`;
+            }
           });
         });
       }
@@ -620,7 +705,15 @@ class SetTracker {
       frw: 0,
       regenMana: 0,
       regenLife: 0,
-      allSkills: 0
+      allSkills: 0,
+      magicFind: 0,
+      manaSteal: 0,
+      lifeSteal: 0,
+      dr: 0,
+      firePierce: 0,
+      coldPierce: 0,
+      lightPierce: 0,
+      poisonPierce: 0
     };
 
     // Debug: Log what we're applying

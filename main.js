@@ -107,7 +107,7 @@ window.BASE_TYPE_CATEGORIES = {
   'Akaran Targe': 'shield', 'Akaran Rondache': 'shield', 'Protector Shield': 'shield',
   'Gilded Shield': 'shield', 'Royal Shield': 'shield', 'Sacred Targe': 'shield',
   'Sacred Rondache': 'shield', 'Kurast Shield': 'shield', 'Zakarum Shield': 'shield',
-  'Vortex Shield': 'shield', 'Blunt Arrows': 'shield',
+  'Vortex Shield': 'shield', 'Blunt Arrows': 'shield', 'Cantor Trophy': 'shield',
 
   // Gloves
   'Leather Gloves': 'gloves', 'Heavy Gloves': 'gloves', 'Chain Gloves': 'gloves',
@@ -655,7 +655,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     attperlevel: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'attperlevel', dropdownId, ' to Attack Rating'),
     todef: (val, prop) => formatVariableStat('+', val, ' Defense', prop, itemName, 'todef', dropdownId),
     tolife: (val) => `+${val} to Life`,
-    tomana: (val) => `+${val} to Mana`,
+    tomana: (val, prop) => formatVariableStat('+', val, ' to Mana', prop, itemName, 'tomana', dropdownId),
     tomaxdmg: (val, prop) => formatVariableStat('+', val, ' to Maximum Damage', prop, itemName, 'tomaxdmg', dropdownId),
     tomindmg: (val, prop) => formatVariableStat('+', val, ' to Minimum Damage', prop, itemName, 'tomindmg', dropdownId),
     targetdef: (val, prop) => formatVariableStat('', val, '% Target Defense', prop, itemName, 'targetdef', dropdownId),
@@ -679,6 +679,10 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     toattun: (val, prop) => formatVariableStat('+', val, ' to Attack Rating against Undead', prop, itemName, 'toattun', dropdownId),
     skmastery: (val, prop) => formatVariableStat('+', val, ' to Skeleton Mastery (Necromancer Only)', prop, itemName, 'skmastery', dropdownId),
     raiseskwarrior: (val, prop) => formatVariableStat('+', val, ' to Raise Skeleton Warrior (Necromancer Only)', prop, itemName, 'raiseskwarrior', dropdownId),
+    curseskills: (val, prop) => formatVariableStat('+', val, ' to Curses (Necromancer Only)', prop, itemName, 'curseskills', dropdownId),
+    summoningspellskills: (val, prop) => formatVariableStat('+', val, ' to Summoning Skills (Necromancer Only)', prop, itemName, 'summoningspellskills', dropdownId),
+    bloodwarpsk: (val, prop) => formatVariableStat('+', val, ' to Blood Warp (Necromancer Only)', prop, itemName, 'bloodwarpsk', dropdownId),
+    poisonandboneskills: (val, prop) => formatVariableStat('+', val, ' to Poison and Bone Skills (Necromancer Only)', prop, itemName, 'poisonandboneskills', dropdownId),
     sorsk: (val, prop) => formatVariableStat('+', val, ' to Sorceress Skill Levels', prop, itemName, 'sorsk', dropdownId),
     amask: (val, prop) => formatVariableStat('+', val, ' to Amazon Skill Levels', prop, itemName, 'amask', dropdownId),
     necsk: (val, prop) => formatVariableStat('+', val, ' to Necromancer Skill Levels', prop, itemName, 'necsk', dropdownId),

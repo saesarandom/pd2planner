@@ -625,14 +625,17 @@ const itemList = {
   },
 
   "Arcanna's Head": {
-    description:
-      "Arcanna's Head<br>Skull Cap<br>Defense: 11<br>Defense (2 Items): 11-308<br>Required Strength: 15<br>Required Level: 15<br>Replenish Life +14<br>+40 to Mana<br>Regenerate Mana 20%<br>Attacker Takes Damage of 12<br>+[3-297] Defense (+3 per Character Level) (2 Items)<br>Lightning Resist +25% (3 Items)<br>",
+    baseType: "Skull Cap",
+    setBonuses: [
+      "+[3-297] Defense (+3 per Character Level) (2 Items)",
+      "Lightning Resist +25% (3 Items)"
+    ],
     properties: {
       defense: 11,
       reqstr: 15,
       reqlvl: 15,
-      repl: 14,
-      tomana: 40,
+      repl: { min: 10, max: 14, current: 14 },
+      tomana: { min: 30, max: 40, current: 40 },
       regmana: 20,
       atdmg: 12,
     },
@@ -952,17 +955,19 @@ const itemList = {
   },
 
   "Trang-Oul's Guise": {
-    description:
-      "Trang-Oul's Guise<br>Bone Visage<br>Defense: 257<br>Required Strength: 106<br>Required Level: 65<br>+25% Faster Hit Recovery<br>+100 Defense<br>Replenish Life +30<br>+150 to Mana<br>Attacker Takes Damage of 620<br>",
+    baseType: "Bone Visage",
+    setBonuses: [
+      "+30% Faster Cast Rate (2 Items)"
+    ],
     properties: {
       defense: 257,
       reqstr: 106,
       reqlvl: 65,
       fhr: 25,
-      todef: 100,
-      repl: 30,
+      todef: { min: 80, max: 100, current: 100 },
+      repl: { min: 20, max: 30, current: 30 },
       tomana: 150,
-      atdmg: 620,
+      atdmg: { min: 420, max: 620, current: 620 },
     },
   },
 
@@ -1567,14 +1572,18 @@ const itemList = {
   },
 
   "Arcanna's Flesh": {
-    description:
-      "Arcanna's Flesh<br>Light Plate<br>Defense: 99<br>Defense (2 Items): 199<br>Required Strength: 41<br>Required Level: 15<br>+10% Faster Cast Rate<br>Physical Damage Taken Reduced by 6<br>+2 to Light Radius<br>+100 Defense (2 Items)<br>+20 to Energy (3 Items)<br>Regenerate Mana 20% (Complete Set)<br>",
+    baseType: "Light Plate",
+    setBonuses: [
+      "+100 Defense (2 Items)",
+      "+20 Energy (3 Items)",
+      "Regenerate Mana 20% (Complete Set)"
+    ],
     properties: {
       defense: 99,
       reqstr: 41,
       reqlvl: 15,
       fcr: 10,
-      pdr: 6,
+      pdr: { min: 3, max: 6, current: 6 },
       ligrad: 2,
       // Set bonuses removed - handled by setTracker.js:
       // todef: 100,  // (2 Items)
@@ -1676,6 +1685,47 @@ const itemList = {
       regmana: 20, //fullset
     },
   },
+
+  "Trang-Oul's Scales": {
+    baseType: "Chaos Armor",
+    setBonuses: [
+      "Lightning Resist +50% (3 Items)",
+      "Physical Damage Taken Reduced by 25% (4 Items)"
+    ],
+    properties: {
+      defense: 340,
+      reqstr: 84,
+      reqlvl: 49,
+      summoningspellskills: 2,
+      frw: 40,
+      bloodwarpsk: { min: 2, max: 3, current: 3 },
+      edef: 150,
+      defvsmiss: 100,
+      poisonres: 40,
+      reqred: -40
+    },
+  },
+
+  "Trang-Oul's Wing": {
+    baseType: "Cantor Trophy",
+    setBonuses: [
+      "-25% to Enemy Poison Resistance (3 Items)"
+    ],
+    properties: {
+      defense: 64,
+      reqstr: 50,
+      reqlvl: 54,
+      block: 30, // +30% Increased Chance of Blocking
+      block1: 60, // Base block chance
+      poisonandboneskills: 2,
+      todef: 125,
+      str: { min: 20, max: 28, current: 28 },
+      dex: { min: 10, max: 18, current: 18 },
+      fireres: { min: 38, max: 45, current: 45 },
+      poisonres: 40
+    },
+  },
+
 
   // UNIQUE WEAPONS AXES //
 
@@ -4498,18 +4548,20 @@ const itemList = {
   },
 
   "Trang-Oul's Claws": {
-    description:
-      "Trang-Oul's Claws<br>Heavy Bracers<br>Defense: 74<br>Required Strength: 58<br>Required Level: 45<br>+2 to Curses (Necromancer Only)<br>+20% Faster Cast Rate<br>+15% to Poison Skill Damage<br>+30 Defense<br>Cold Resist +30%<br>+20 to Meteor (4 Items)<br>",
+    baseType: "Heavy Bracers",
+    setBonuses: [
+      "+20 to Meteor (4 Items)"
+    ],
     properties: {
       defense: 74,
       reqstr: 58,
       reqlvl: 45,
-      curseskills: 1,
-      cb: 20,
-      todef: 210,
-      str: 20,
-      atdmg: 250, //vse checkuj, tyhle gloves uplne WRONG
-      meteorosk: 20,
+      curseskills: 2,
+      poisondamage: { min: 10, max: 15, current: 15 },
+      fcr: 20,
+      todef: 30,
+      coldres: 30,
+
     },
   },
   // UNIQUE BELTS
@@ -5708,7 +5760,7 @@ const itemList = {
 
   "Arcanna's Sign": {
     description:
-      "Arcanna's Sign<br> Amulet<br> Required Level:13<br> +35 to Mana<br> Regenerate Mana 10%<br> +50% Better Chance of Getting Magic Items (2 Items)<br> Fire Resist +30% (3 Items)<br>",
+      "Arcanna's Sign<br> Amulet<br> Required Level:13<br> +35 to Mana<br> Regenerate Mana 10%<br>50% Better Chance of Getting Magic Items (2 Items)<br> Fire Resist +30% (3 Items)<br>",
     properties: {
       reqlvl: 15,
       tomana: 35,

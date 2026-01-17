@@ -1891,6 +1891,7 @@ window.baseDefenses = {
   "Round Shield": 55,
   Monarch: 148,
   Heater: 110,
+  "Cantor Trophy": 64,
   "Demonhide Boots": 35,
   "Leather Gloves": 3,
   "Demonhide Gloves": 35,
@@ -2033,6 +2034,7 @@ const baseStrengths = {
   "Tower Shield": 75,
   "Gothic Shield": 60,
   Defender: 38,
+  "Cantor Trophy": 58,
   Heater: 143, //bugged
   "Demonhide Boots": 20, //bugged
   "Leather Gloves": 0,

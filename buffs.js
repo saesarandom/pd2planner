@@ -273,7 +273,7 @@ class BuffSystem {
         image: 'amplifydamage2.png',
         type: 'Curse',
         level: amp.level,
-        description: `Cursed enemies take<br>+${amp.physicalDamage}% Physical Damage<br>Duration: ${amp.duration}s`,
+        description: `Cursed enemies physical resistance is lowered by<br>+${amp.physicalDamage}%<br>Duration: ${amp.duration}s`,
         tooltipType: 'curse'
       });
     } else {

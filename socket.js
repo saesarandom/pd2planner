@@ -3620,6 +3620,14 @@ class UnifiedSocketSystem {
       if (setBonuses.fhr) this.stats.fhr += setBonuses.fhr;
       if (setBonuses.frw) this.stats.frw += setBonuses.frw;
       if (setBonuses.allSkills) this.stats.allSkills += setBonuses.allSkills;
+      if (setBonuses.magicFind) this.stats.magicFind += setBonuses.magicFind;
+      if (setBonuses.manaSteal) this.stats.manaLeech += setBonuses.manaSteal;
+      if (setBonuses.lifeSteal) this.stats.lifeLeech += setBonuses.lifeSteal;
+      if (setBonuses.dr) this.stats.dr += setBonuses.dr;
+      if (setBonuses.firePierce) this.stats.pierceFire = (this.stats.pierceFire || 0) + setBonuses.firePierce;
+      if (setBonuses.coldPierce) this.stats.pierceCold = (this.stats.pierceCold || 0) + setBonuses.coldPierce;
+      if (setBonuses.lightPierce) this.stats.pierceLightning = (this.stats.pierceLightning || 0) + setBonuses.lightPierce;
+      if (setBonuses.poisonPierce) this.stats.piercePoison = (this.stats.piercePoison || 0) + setBonuses.poisonPierce;
     }
   }
 
