@@ -5577,6 +5577,20 @@ const itemList = {
     },
   },
 
+  "Bul-Kathos' Death Band": {
+    baseType: "Ring",
+    setBonuses: [
+      "Cannot Be Frozen (2 Items)",
+    ],
+    properties: {
+      reqlvl: 69,
+      edmg: { min: 20, max: 30, current: 30 },
+      toatt: 100,
+      ligres: { min: 15, max: 25, current: 25 },
+      physdr: { min: 6, max: 8, current: 8 },
+    },
+  },
+
   // UNIQUE AMULETS
 
   "Nokozan Relic": {
