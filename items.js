@@ -5457,16 +5457,16 @@ const itemList = {
   },
 
   "Raven Frost": {
-    description:
-      "Raven Frost<br> Ring<br> Required Level: 45<br> +250 to Attack Rating<br> Adds 15-45 Cold Damage<br> +20 to Dexterity<br> +40 to Mana<br> Cold Absorb 5%<br> Cannot Be Frozen<br>",
+    baseType: "Ring",
     properties: {
       reqlvl: 45,
-      toatt: 250,
+      toatt: { min: 150, max: 250, current: 250 },
       colddmgmin: 15,
       colddmgmax: 45,
-      dex: 20,
+      dex: { min: 15, max: 20, current: 20 },
       tomana: 40,
       coldabsorbpercent: 5,
+      cbf: 1,
     },
   },
 
