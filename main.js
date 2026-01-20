@@ -654,8 +654,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     attpercent: (val, prop) => formatVariableStat('+', val, '% Bonus to Attack Rating', prop, itemName, 'attpercent', dropdownId),
     attperlevel: (val, prop) => formatLevelScaledStat(val, prop, itemName, 'attperlevel', dropdownId, ' to Attack Rating'),
     todef: (val, prop) => formatVariableStat('+', val, ' Defense', prop, itemName, 'todef', dropdownId),
-    tolife: (val) => `+${val} to Life`,
+    tolife: (val, prop) => formatVariableStat('+', val, ' to Life', prop, itemName, 'tolife', dropdownId),
     tomana: (val, prop) => formatVariableStat('+', val, ' to Mana', prop, itemName, 'tomana', dropdownId),
+    maxstamina: (val, prop) => formatVariableStat('+', val, ' Maximum Stamina', prop, itemName, 'maxstamina', dropdownId),
+    fireabsorb: (val, prop) => formatVariableStat('+', val, ' Fire Absorb', prop, itemName, 'fireabsorb', dropdownId),
+    fireabsorbpercent: (val, prop) => formatVariableStat('Fire Absorb +', val, '%', prop, itemName, 'fireabsorbpercent', dropdownId),
     tomaxdmg: (val, prop) => formatVariableStat('+', val, ' to Maximum Damage', prop, itemName, 'tomaxdmg', dropdownId),
     tomindmg: (val, prop) => formatVariableStat('+', val, ' to Minimum Damage', prop, itemName, 'tomindmg', dropdownId),
     targetdef: (val, prop) => formatVariableStat('', val, '% Target Defense', prop, itemName, 'targetdef', dropdownId),
@@ -773,6 +776,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     },
     firedmgmax: () => '', // Skip, handled by firedmgmin
     cbf: (val, prop) => formatVariableStat('', val ? 'Cannot Be Frozen' : '', '', prop, itemName, 'cbf', dropdownId),
+    monheal: (val, prop) => formatVariableStat('', val ? 'Prevent Monster Heal' : '', '', prop, itemName, 'monheal', dropdownId),
+    slainmonstersrip: (val, prop) => formatVariableStat('', val ? 'Slain Monsters Rest in Peace' : '', '', prop, itemName, 'slainmonstersrip', dropdownId),
 
 
     // Missing display handlers for dynamic items
@@ -818,6 +823,21 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       return `Level ${level} Heart of Wolverine (${val} Charges)`;
     },
     heartofwolwerinelevel: () => '',
+    twisterctc: (val, prop) => {
+      const level = props.twisterctclevel || 30;
+      return `${val}% Chance to Cast Level ${level} Twister on Striking`;
+    },
+    twisterctclevel: () => '',
+    poisoncreepercharges: (val, prop) => {
+      const level = props.poisoncreeperlevel || 11;
+      return `Level ${level} Poison Creeper (${val} Charges)`;
+    },
+    poisoncreeperlevel: () => '',
+    oaksagecharges: (val, prop) => {
+      const level = props.oaksagelevel || 2;
+      return `Level ${level} Oak Sage (${val} Charges)`;
+    },
+    oaksagelevel: () => '',
 
     // Random Sorceress skill (Ormus' Robes)
     randsorc: (val, prop) => {

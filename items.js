@@ -5406,26 +5406,24 @@ const itemList = {
   // UNIQUE RINGS
 
   Nagelring: {
-    description:
-      "Nagelring<br> Ring<br> Required Level: 7<br> +75 to Attack Rating<br> Magic Damage Taken Reduced by 3<br> +1 to Mana after each Kill<br> Attacker Takes Damage of 3<br> 40% Better Chance of Getting Magic Items<br>",
+    baseType: "Ring",
     properties: {
       reqlvl: 7,
-      toatt: 75,
+      toatt: { min: 50, max: 75, current: 75 },
       mdr: 3,
       maek: 1,
       atdmg: 3,
-      magicfind: 40,
+      magicfind: { min: 15, max: 40, current: 40 },
     },
   },
 
   "Manald Heal": {
-    description:
-      "Manald Heal<br> Ring<br> Required Level: 15<br> 7% Mana Stolen per Hit<br> +20 to Life<br> Replenish Life +8<br> Regenerate Mana 20%<br>",
+    baseType: "Ring",
     properties: {
       reqlvl: 15,
-      mleech: 7,
+      mleech: { min: 4, max: 7, current: 7 },
       tolife: 20,
-      repl: 8,
+      repl: { min: 5, max: 8, current: 8 },
       regmana: 20,
     },
   },
@@ -5443,15 +5441,14 @@ const itemList = {
   },
 
   "Dwarf Star": {
-    description:
-      "Dwarf Star<br> Ring<br> Required Level: 45<br> 5% Increased Chance of Blocking<br> +5 to Life<br> +50 Maximum Stamina<br> Fire Absorb 6%<br> Magic Damage Taken Reduced by 15<br> 100% Extra Gold from Monsters<br>",
+    baseType: "Ring",
     properties: {
       reqlvl: 45,
-      block1: 5,
-      tolife: 5,
-      maxstamina: 50,
-      fireabs: 6,
-      mdr: 15,
+      block: 5,
+      tolife: { min: 35, max: 50, current: 50 },
+      maxstamina: { min: 35, max: 50, current: 50 },
+      fireabsorbpercent: { min: 4, max: 6, current: 6 },
+      mdr: { min: 12, max: 15, current: 15 },
       goldfind: 100,
     },
   },
@@ -5483,32 +5480,34 @@ const itemList = {
   },
 
   "Carrion Wind": {
-    description:
-      "Carrion Wind<br> Ring<br> Required Level: 60<br> 8% Chance to Cast Level 30 Twister on Striking<br> 6% Life Stolen per Hit<br> +160 Defense vs. Missile<br> Poison Resist +55%<br> Attacker Takes Damage of 300<br> Level 11 Poison Creeper (35 Charges)<br>",
+    baseType: "Ring",
     properties: {
       reqlvl: 60,
-      twisterctcstruck: 8,
-      twisterctcstrucklevel: 30,
-      lleech: 6,
-      defvsmiss: 160,
-      poisres: 55,
-      atdmg: 300, //poison creeper charged not implementd!
+      twisterctc: 8,
+      twisterctclevel: 30,
+      frw: 20,
+      lleech: { min: 6, max: 9, current: 9 },
+      defvsmiss: { min: 100, max: 160, current: 160 },
+      poisres: { min: 40, max: 55, current: 55 },
+      atdmg: { min: 180, max: 300, current: 300 },
+      poisoncreepercharges: 35,
+      poisoncreeperlevel: 11,
     },
   },
 
   "Nature's Peace": {
-    description:
-      "Nature's Peace<br> Ring<br> Required Level: 69<br> Prevent Monster Heal<br> Slain Monsters Rest in Peace<br> +3% to Maximum Poison Resist<br> +3% to Maximum Cold Resist<br> +3% to Maximum Lightning Resist<br> +3% to Maximum Fire Resist<br> Physical Damage Taken Reduced by 11<br> Level 5 Oak Sage (27 Charges)<br>",
+    baseType: "Ring",
     properties: {
       reqlvl: 69,
       monheal: 1,
       slainmonstersrip: 1,
-      maxpoisonres: 3,
-      maxcoldres: 3,
-      maxlightres: 3,
-      maxfirres: 3,
-      pdr: 11,
-      oaksagesk: 5, //charges not implemented
+      maxpoisres: { min: 1, max: 3, current: 3 },
+      maxcoldres: { min: 1, max: 3, current: 3 },
+      maxligres: { min: 1, max: 3, current: 3 },
+      maxfirres: { min: 1, max: 3, current: 3 },
+      pdr: { min: 7, max: 11, current: 11 },
+      oaksagecharges: 27,
+      oaksagelevel: 2,
     },
   },
 
