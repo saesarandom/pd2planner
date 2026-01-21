@@ -677,10 +677,16 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     dex: (val, prop) => formatVariableStat('+', val, ' to Dexterity', prop, itemName, 'dex', dropdownId),
     vit: (val, prop) => formatVariableStat('+', val, ' to Vitality', prop, itemName, 'vit', dropdownId),
     enr: (val, prop) => formatVariableStat('+', val, ' to Energy', prop, itemName, 'enr', dropdownId),
+    allstats: (val, prop) => formatVariableStat('+', val, ' to All Attributes', prop, itemName, 'allstats', dropdownId),
     allres: (val, prop) => formatVariableStat('All Resistances +', val, '', prop, itemName, 'allres', dropdownId),
     cb: (val, prop) => formatVariableStat('', val, '% Chance of Crushing Blow', prop, itemName, 'cb', dropdownId),
     deadly: (val, prop) => formatVariableStat('', val, '% Deadly Strike', prop, itemName, 'deadly', dropdownId),
     maxdeadly: (val, prop) => formatVariableStat('', val, '% Maximum Deadly Strike', prop, itemName, 'maxdeadly', dropdownId),
+    deadlyperlvl: (val, prop) => {
+      const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
+      const totalDeadly = Math.floor(val * currentLevel);
+      return `${totalDeadly}% Deadly Strike (${val}% per Character Level)`;
+    },
     dmgtoun: (val, prop) => formatVariableStat('+', val, '% Damage to Undead', prop, itemName, 'dmgtoun', dropdownId),
     toattun: (val, prop) => formatVariableStat('+', val, ' to Attack Rating against Undead', prop, itemName, 'toattun', dropdownId),
     skmastery: (val, prop) => formatVariableStat('+', val, ' to Skeleton Mastery (Necromancer Only)', prop, itemName, 'skmastery', dropdownId),
@@ -788,6 +794,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     maxlife: (val, prop) => formatVariableStat('Increase Maximum Life ', val, '%', prop, itemName, 'maxlife', dropdownId),
     maxmana: (val, prop) => formatVariableStat('Increase Maximum Mana ', val, '%', prop, itemName, 'maxmana', dropdownId),
     indestructible: (val, prop) => formatVariableStat('', val ? 'Indestructible' : '', '', prop, itemName, 'indestructible', dropdownId),
+    ironoskill: (val, prop) => formatVariableStat('+', val, ' to Iron Skin', prop, itemName, 'ironoskill', dropdownId),
+    repldur: (val, prop) => formatVariableStat('Repairs 1 Durability in ', val, ' Seconds', prop, itemName, 'repldur', dropdownId),
+    stamdrain: (val, prop) => formatVariableStat('', val, '% Slower Stamina Drain', prop, itemName, 'stamdrain', dropdownId),
+
+
 
     //anothjer series
     lightdmgmin: (val, prop) => `Adds ${val}-${props.lightdmgmax || val} Lightning Damage`,

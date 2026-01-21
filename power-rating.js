@@ -242,26 +242,12 @@ class PowerRatingCalculator {
             const curseResist = Math.min(75, parseInt(document.getElementById('curseresistcontainer')?.textContent) || 0);
             const cappedDR = Math.min(50, physicalDR);
 
-            // Separate positive and negative resistances for calculation
+            // Calculate simple average of all resistances (including 0s and negatives)
             const allResists = [fireResist, coldResist, lightResist, poisonResist, curseResist, cappedDR];
-            const positiveResists = allResists.filter(r => r > 0);
-            const negativeResists = allResists.filter(r => r < 0);
+            const averageResist = allResists.reduce((sum, r) => sum + r, 0) / allResists.length;
 
-            // Calculate geometric mean of positive resistances only
-            let geometricMeanResist = 0;
-            if (positiveResists.length > 0) {
-                const product = positiveResists.reduce((prod, resist) => prod * (resist + 1), 1);
-                geometricMeanResist = Math.pow(product, 1 / positiveResists.length) - 1;
-            }
-
-            // Apply negative resistances as penalties (arithmetic mean of negatives)
-            if (negativeResists.length > 0) {
-                const negativeAvg = negativeResists.reduce((sum, r) => sum + r, 0) / negativeResists.length;
-                geometricMeanResist += negativeAvg; // Subtract from the positive mean
-            }
-
-            // Resistance mitigation based on geometric mean (can be negative, which reduces effective life)
-            const resistMitigation = 1 / (1 - (geometricMeanResist / 100));
+            // Resistance mitigation based on average (can be negative, which reduces effective life)
+            const resistMitigation = 1 / (1 - (averageResist / 100));
 
             const effectiveLife = rawLife * blockMitigation * avoidanceMitigation * resistMitigation;
 

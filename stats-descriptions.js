@@ -1,6 +1,7 @@
 const StatFormats = {
   // === SKILLS ===
   allsk: '+{value} to All Skills',
+  ironoskill: '+{value} to Iron Skin',
 
   // === ATTRIBUTES ===
   str: '+{value} to Strength',
@@ -15,6 +16,7 @@ const StatFormats = {
   maxlife: 'Increase Maximum Life {value}%',
   maxmana: 'Increase Maximum Mana {value}%',
   repl: 'Replenish Life +{value}',
+  repldur: 'Repairs 1 Durability in {value} Seconds',
 
   // === SPEED STATS ===
   ias: '+{value}% Increased Attack Speed',
@@ -87,6 +89,7 @@ const StatFormats = {
  */
 const StatPatterns = {
   allsk: /(\+?\d+)\s+(?:to\s+)?All\s+Skills/i,
+  ironoskill: /(\+?\d+)\s+(?:to\s+)?Iron\s+Skin/i,
   str: /(\+?\d+)\s+(?:to\s+)?Strength/i,
   dex: /(\+?\d+)\s+(?:to\s+)?Dexterity/i,
   vit: /(\+?\d+)\s+(?:to\s+)?Vitality/i,
@@ -96,6 +99,7 @@ const StatPatterns = {
   tolife: /(\+?\d+)\s+(?:to\s+)?Life/i,
   tomana: /(\+?\d+)\s+(?:to\s+)?Mana/i,
   repl: /Replenish\s+Life\s+\+(\d+)/i,
+  repldur: /Repairs\s+1\s+Durability\s+in\s+(\d+)\s+Seconds/i,
 
   ias: /(\+?\d+)%\s+Increased\s+Attack\s+Speed/i,
   fcr: /(\+?\d+)%\s+Faster\s+Cast\s+Rate/i,
@@ -150,6 +154,7 @@ const StatPatterns = {
  */
 const PropertyMapping = {
   allsk: 'allsk',
+  ironoskill: 'ironoskill',
   str: 'str',
   dex: 'dex',
   vit: 'vit',
@@ -158,6 +163,7 @@ const PropertyMapping = {
   tolife: 'tolife',
   tomana: 'tomana',
   repl: 'repl',
+  repldur: 'repldur',
   ias: 'ias',
   fcr: 'fcr',
   fhr: 'fhr',

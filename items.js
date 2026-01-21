@@ -3344,7 +3344,7 @@ const itemList = {
       crushingblow: 25, // Crushing Blow Chance (25%)
       fury: 4, // Fury Skill (+4)
       maul: 4, // Maul Skill (+4)
-      allattributes: 10, // All Attributes (+10)
+      allstats: 10, // All Attributes (+10)
     },
   },
 
@@ -4630,17 +4630,16 @@ const itemList = {
   },
 
   Goldwrap: {
-    description:
-      "Goldwrap<br>Heavy Belt<br>Defense: 36<br>Required Strength: 45<br>Required Level: 27<br>+20% Increased Attack Speed<br>+60% Enhanced Defense<br>+25 Defense<br>80% Extra Gold from Monsters<br>40% Better Chance of Getting Magic Items<br>+2 to Light Radius<br>",
+    baseType: "Heavy Belt",
     properties: {
       defense: 36,
       reqstr: 45,
       reqlvl: 27,
       ias: 20,
-      edef: 60,
+      edef: { min: 40, max: 60, current: 60 },
       todef: 25,
-      goldfind: 80,
-      magicfind: 40,
+      goldfind: { min: 50, max: 80, current: 80 },
+      magicfind: { min: 20, max: 40, current: 40 },
       ligrad: 2,
     },
   },
@@ -4791,6 +4790,19 @@ const itemList = {
       repl: { min: 10, max: 13, current: 13 },
       maxstamina: { min: 100, max: 120, current: 120 },
       physdr: { min: 10, max: 15, current: 15 },
+    },
+  },
+
+  "Siggard's Staunch": {
+    baseType: "Colossus Girdle",
+    properties: {
+      reqlvl: 72,
+      cb: 20,
+      ironoskill: { min: 4, max: 6, current: 6 },
+      edef: { min: 300, max: 400, current: 400 },
+      maxlife: { min: 5, max: 8, current: 8 },
+      stamdrain: 50,
+      repldur: 4,
     },
   },
 
@@ -5693,8 +5705,7 @@ const itemList = {
   },
 
   "Highlord's Wrath": {
-    description:
-      "Highlord's Wrath<br>Amulet<br> Required Level: 65<br> +1 to All Skills<br> +20% Increased Attack Speed<br> Adds 1-300 Lightning Damage<br> [0-24]% Deadly Strike (0.25 per Character Level)<br> Lightning Resist +40%<br> Attacker Takes Lightning Damage of 150<br>",
+    baseType: "Amulet",
     properties: {
       reqlvl: 65,
       allsk: 1,
@@ -5702,8 +5713,8 @@ const itemList = {
       lightdmgmin: 1,
       lightdmgmax: 300,
       deadlyperlvl: 0.25,
-      ligres: 40,
-      atligdmg: 450,
+      ligres: { min: 30, max: 40, current: 40 },
+      atligdmg: { min: 100, max: 150, current: 150 },
     },
   },
 
@@ -5739,13 +5750,12 @@ const itemList = {
   },
 
   "Mara's Caleidoscope": {
-    description:
-      "Mara's Kaleidoscope<br> Amulet<br> Required Level: 67<br> +2 to All Skills<br> +8 to All Attributes<br> All Resistances +30<br>",
+    baseType: "Amulet",
     properties: {
       reqlvl: 67,
       allsk: 2,
-      allstats: 8,
-      allres: 30,
+      allstats: { min: 5, max: 8, current: 8 },
+      allres: { min: 20, max: 30, current: 30 },
     },
   },
 
