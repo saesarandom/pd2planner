@@ -5676,15 +5676,14 @@ const itemList = {
   },
 
   "The Cat's Eye": {
-    description:
-      "The Cat's Eye<br> Amulet<br> Required Level: 50<br> +30% Faster Run/Walk<br> +30% Increased Attack Speed<br> +100 Defense<br> +100 Defense vs. Missile<br> +35 to Dexterity<br>",
+    baseType: "Amulet",
     properties: {
       reqlvl: 50,
-      frw: 30,
+      frw: { min: 20, max: 30, current: 30 },
+      pierce: 20,
       ias: 30,
-      todef: 100,
       tomissdef: 100,
-      dex: 35,
+      dex: { min: 25, max: 35, current: 35 },
     },
   },
 

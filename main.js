@@ -813,6 +813,8 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     ravenoskill: (val, prop) => formatVariableStat('+', val, ' to Raven', prop, itemName, 'ravenoskill', dropdownId),
     ligrad: (val, prop) => formatVariableStat(val >= 0 ? '+' : '', val, ' to Light Radius', prop, itemName, 'ligrad', dropdownId),
     defvsmiss: (val, prop) => formatVariableStat('+', val, ' Defense vs. Missile', prop, itemName, 'defvsmiss', dropdownId),
+    tomissdef: (val, prop) => formatVariableStat('+', val, ' Defense vs. Missile', prop, itemName, 'tomissdef', dropdownId),
+    pierce: (val, prop) => formatVariableStat('', val, '% Chance to Pierce', prop, itemName, 'pierce', dropdownId),
     firepierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Fire Resistance', prop, itemName, 'firepierce', dropdownId),
     coldpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Cold Resistance', prop, itemName, 'coldpierce', dropdownId),
     lightpierce: (val, prop) => formatVariableStat('-', val, '% to Enemy Lightning Resistance', prop, itemName, 'lightpierce', dropdownId),
