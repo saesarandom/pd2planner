@@ -1474,6 +1474,18 @@ const itemList = {
     }
   },
 
+  "Cage of the Unsullied": {
+    baseType: "Boneweave",
+    properties: {
+      defense: 489,
+      reqstr: 158,
+      reqlvl: 90,
+      edef: { min: 200, max: 300, current: 300 },
+      allres: { min: 15, max: 20, current: 20 },
+      ligrad: { min: -4, max: -8, current: -8 },
+      sock: 6,
+    },
+  },
 
   "Arctic Furs": {
     description:
@@ -4807,18 +4819,18 @@ const itemList = {
   },
 
   "Band of Skulls": {
-    description:
-      "Band of Skulls<br>Troll Belt<br>Defense: 167<br>Required Strength: 151<br>Required Level: 90<br>6% Chance to Cast Level 28 Bone Armor when Struck<br>+150% Enhanced Defense<br>Physical Damage Taken Reduced by 10%<br>+30% Better Chance of Getting Magic Items<br>-4 to Light Radius<br>Socketed (1)<br>",
+    baseType: "Troll Belt",
     properties: {
       defense: 138,
       reqstr: 50,
-      reqlvl: 80,
-      allsk: 1,
-      fcr: 20,
-      slow: 20,
-      edef: 120,
-      maxmana: 10,
-      venomcharges: 3,
+      reqlvl: 90,
+      edef: { min: 100, max: 150, current: 150 },
+      bonearmorctcstruck: 6,
+      bonearmorctcstrucklevel: 28,
+      physdr: 10,
+      magicfind: { min: 25, max: 30, current: 30 },
+      ligrad: -4,
+      sock: 1, //unfinished, need to put some logic here
     },
   },
 
@@ -5661,17 +5673,16 @@ const itemList = {
   },
 
   "Crescent Moon": {
-    description:
-      "Crescent Moon<br> Amulet<br> Required Level: 50<br> +2 to Cold Skills<br> +10% Increased Attack Speed<br> +10% Faster Cast Rate<br> 8% Mana Stolen per Hit<br> 6% Life Stolen per Hit<br> +45 to Mana<br> Magic Damage Taken Reduced by 10<br>",
+    baseType: "Amulet",
     properties: {
       reqlvl: 50,
       coldsk: 2,
       ias: 10,
       fcr: 10,
-      mleech: 8,
-      lleech: 6,
+      mleech: { min: 4, max: 8, current: 8 },
+      lleech: { min: 3, max: 6, current: 6 },
       tomana: 45,
-      mdr: 10,
+      mdr: { min: 5, max: 10, current: 10 },
     },
   },
 
