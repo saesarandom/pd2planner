@@ -1594,6 +1594,12 @@ class UnifiedSocketSystem {
       return;
     }
 
+    // Prevent adding sockets to items with fixed socket count
+    if (container.dataset.fixedSockets === 'true') {
+      alert('This item has a fixed number of sockets and cannot be modified.');
+      return;
+    }
+
     const socketGrid = container.querySelector('.socket-grid');
     if (!socketGrid) {
       return;
@@ -1634,18 +1640,106 @@ class UnifiedSocketSystem {
     }
 
     const socketGrid = container.querySelector('.socket-grid');
+    const addSocketBtn = container.querySelector('.add-socket-btn');
     if (!socketGrid) {
       return;
     }
 
+    // Get the dropdown for this section to check item properties
+    const dropdownId = this.getSectionDropdownId(section);
+    const dropdown = document.getElementById(dropdownId);
+    const itemName = dropdown?.value;
+
+    // Check if item has fixed sockets (sock property)
+    if (itemName) {
+      const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
+
+      if (item && item.properties && item.properties.sock !== undefined) {
+        // Item has fixed sockets - set exact count and hide Add Socket button
+        const fixedSocketCount = item.properties.sock;
+
+        // CRITICAL: Save current socket contents before clearing
+        const currentSockets = [];
+        const existingSlots = socketGrid.querySelectorAll('.socket-slot');
+        existingSlots.forEach((slot, index) => {
+          if (slot.classList.contains('filled')) {
+            const imgElement = slot.querySelector('img');
+            currentSockets.push({
+              itemName: slot.dataset.itemName,
+              stats: slot.dataset.stats,
+              levelReq: slot.dataset.levelReq,
+              itemKey: slot.dataset.itemKey,
+              category: slot.dataset.category,
+              imgSrc: imgElement ? imgElement.src : null,
+              index: index
+            });
+          }
+        });
+
+        // Clear all existing sockets
+        while (socketGrid.firstChild) {
+          socketGrid.removeChild(socketGrid.firstChild);
+        }
+
+        // Add the exact number of fixed sockets
+        for (let i = 0; i < fixedSocketCount; i++) {
+          const socket = document.createElement('div');
+          socket.className = 'socket-slot empty';
+          socket.dataset.index = i.toString();
+          socketGrid.appendChild(socket);
+        }
+
+        // CRITICAL: Restore socket contents
+        currentSockets.forEach(socketInfo => {
+          if (socketInfo.index < fixedSocketCount) {
+            const socketSlot = socketGrid.children[socketInfo.index];
+            if (socketSlot && socketInfo.imgSrc) {
+              socketSlot.classList.remove('empty');
+              socketSlot.classList.add('filled');
+              socketSlot.dataset.itemName = socketInfo.itemName;
+              socketSlot.dataset.stats = socketInfo.stats;
+              socketSlot.dataset.levelReq = socketInfo.levelReq;
+              if (socketInfo.itemKey) socketSlot.dataset.itemKey = socketInfo.itemKey;
+              if (socketInfo.category) socketSlot.dataset.category = socketInfo.category;
+              socketSlot.innerHTML = `<img src="${socketInfo.imgSrc}" alt="${socketInfo.itemName}">`;
+            }
+          }
+        });
+
+        // Update grid class
+        socketGrid.className = `socket-grid sockets-${fixedSocketCount}`;
+
+        // Hide the Add Socket button for fixed socket items
+        if (addSocketBtn) {
+          addSocketBtn.style.display = 'none';
+        }
+
+        // Mark container as having fixed sockets
+        container.dataset.fixedSockets = 'true';
+
+        this.updateAll();
+        return;
+      }
+    }
+
+    // Not a fixed socket item - show Add Socket button and remove fixed flag
+    if (addSocketBtn) {
+      addSocketBtn.style.display = '';
+    }
+    delete container.dataset.fixedSockets;
+
     const currentSocketCount = socketGrid.children.length;
     const maxSockets = this.getMaxSocketsForSection(section);
 
-    // If current socket count exceeds max for new item, remove excess sockets
-    if (currentSocketCount > maxSockets) {
+    // IMPORTANT: Cap at 2 sockets for normal items (3rd socket requires corruption)
+    // This prevents items from getting 3+ sockets automatically when switching from fixed-socket items
+    const safeMaxSockets = Math.min(maxSockets, 2);
+
+    // If current socket count exceeds safe max for new item, remove excess sockets
+    if (currentSocketCount > safeMaxSockets) {
 
       // Remove sockets from the end (highest indices first)
-      while (socketGrid.children.length > maxSockets) {
+      while (socketGrid.children.length > safeMaxSockets) {
         const lastSocket = socketGrid.lastElementChild;
         socketGrid.removeChild(lastSocket);
       }

@@ -1474,6 +1474,42 @@ const itemList = {
     }
   },
 
+  "Dark Abyss": {
+    baseType: "Lacquered Plate",
+    properties: {
+      defense: 664,
+      reqstr: 166,
+      reqlvl: 85,
+      allsk: 1,
+      fcr: 50,
+      edef: { min: 150, max: 250, current: 250 },
+      coldres: 60,
+      firres: 30,
+      laek: { min: 4, max: 6, current: 6 },
+      maek: { min: 4, max: 6, current: 6 },
+      req: -15,
+    },
+  },
+
+
+
+  "Tyrael's Might": {
+    baseType: "Sacred Armor",
+    properties: {
+      defense: 730,
+      reqlvl: 84,
+      indestructible: 1,
+      frw: 45,
+      dmgtodem: { min: 200, max: 250, current: 250 },
+      dmgtoun: { min: 200, max: 250, current: 250 },
+      edef: { min: 120, max: 150, current: 150 },
+      str: { min: 20, max: 30, current: 30 },
+      allres: { min: 20, max: 30, current: 30 },
+      cbf: 1,
+      req: -100,
+    },
+  },
+
   "Cage of the Unsullied": {
     baseType: "Boneweave",
     properties: {

@@ -688,6 +688,7 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       return `${totalDeadly}% Deadly Strike (${val}% per Character Level)`;
     },
     dmgtoun: (val, prop) => formatVariableStat('+', val, '% Damage to Undead', prop, itemName, 'dmgtoun', dropdownId),
+    dmgtodem: (val, prop) => formatVariableStat('+', val, '% Damage to Demons', prop, itemName, 'dmgtodem', dropdownId),
     toattun: (val, prop) => formatVariableStat('+', val, ' to Attack Rating against Undead', prop, itemName, 'toattun', dropdownId),
     skmastery: (val, prop) => formatVariableStat('+', val, ' to Skeleton Mastery (Necromancer Only)', prop, itemName, 'skmastery', dropdownId),
     raiseskwarrior: (val, prop) => formatVariableStat('+', val, ' to Raise Skeleton Warrior (Necromancer Only)', prop, itemName, 'raiseskwarrior', dropdownId),

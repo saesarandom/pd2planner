@@ -677,7 +677,24 @@ function populateCorruptionList(corruptions) {
   const listContainer = document.getElementById('corruptionList');
   listContainer.innerHTML = '';
 
+  // Check if current item has fixed sockets
+  const dropdown = document.getElementById(currentCorruptionSlot);
+  const itemName = dropdown?.value;
+  let hasFixedSockets = false;
+
+  if (itemName) {
+    const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
+    if (item && item.properties && item.properties.sock !== undefined) {
+      hasFixedSockets = true;
+    }
+  }
+
   corruptions.forEach((corruption, index) => {
+    // Skip socket corruptions for items with fixed sockets
+    if (hasFixedSockets && corruption.type === 'socket') {
+      return; // Don't add this corruption option
+    }
+
     const item = document.createElement('div');
     item.style.cssText = `
       padding: 12px;
@@ -1842,6 +1859,13 @@ window.applySocketCorruption = function (dropdownId, socketCount) {
   // Use global item lookup to support both regular and crafted items
   const item = window.getItemData(itemName);
   if (!itemName || !item) {
+    return;
+  }
+
+  // CRITICAL: Don't apply socket corruption to items with fixed sockets
+  // Items with sock property have inherent sockets, not corrupted sockets
+  if (item.properties && item.properties.sock !== undefined) {
+    console.log(`Skipping socket corruption for ${itemName} - item has fixed sockets (${item.properties.sock})`);
     return;
   }
 
