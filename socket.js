@@ -1633,7 +1633,8 @@ class UnifiedSocketSystem {
   }
 
   // Adjust socket count when item changes to ensure it doesn't exceed new item's max
-  adjustSocketsForItem(section) {
+  // savedSocketCount: optional parameter used when restoring item state
+  adjustSocketsForItem(section, savedSocketCount = null) {
     const container = document.querySelector(`.socket-container[data-section="${section}"]`);
     if (!container) {
       return;
@@ -1731,9 +1732,23 @@ class UnifiedSocketSystem {
     const currentSocketCount = socketGrid.children.length;
     const maxSockets = this.getMaxSocketsForSection(section);
 
-    // IMPORTANT: Cap at 2 sockets for normal items (3rd socket requires corruption)
-    // This prevents items from getting 3+ sockets automatically when switching from fixed-socket items
-    const safeMaxSockets = Math.min(maxSockets, 2);
+    // Check if there's an active socket corruption for this item
+    const hasSocketCorruption = window.itemCorruptions &&
+      window.itemCorruptions[dropdownId] &&
+      window.itemCorruptions[dropdownId].type === 'socket_corruption';
+
+    let safeMaxSockets;
+    if (savedSocketCount !== null) {
+      // PRIORITY 1: If restoring from saved state, use the saved socket count
+      safeMaxSockets = savedSocketCount;
+    } else if (hasSocketCorruption) {
+      // PRIORITY 2: If there's a socket corruption, respect its socket count
+      safeMaxSockets = window.itemCorruptions[dropdownId].socketCount;
+    } else {
+      // PRIORITY 3: Cap at 1 socket for normal items without corruption or saved state
+      // This prevents items from getting 2+ sockets automatically when switching from fixed-socket items
+      safeMaxSockets = Math.min(maxSockets, 1);
+    }
 
     // If current socket count exceeds safe max for new item, remove excess sockets
     if (currentSocketCount > safeMaxSockets) {
@@ -1749,6 +1764,21 @@ class UnifiedSocketSystem {
       socketGrid.className = `socket-grid sockets-${newSocketCount}`;
 
       // Update stats after removing sockets
+      this.updateAll();
+    } else if (currentSocketCount < safeMaxSockets) {
+      // If socket corruption requires more sockets than we have, add them
+      while (socketGrid.children.length < safeMaxSockets) {
+        const newSocket = document.createElement('div');
+        newSocket.className = 'socket-slot empty';
+        newSocket.dataset.index = socketGrid.children.length.toString();
+        socketGrid.appendChild(newSocket);
+      }
+
+      // Update grid class to reflect new socket count
+      const newSocketCount = socketGrid.children.length;
+      socketGrid.className = `socket-grid sockets-${newSocketCount}`;
+
+      // Update stats after adding sockets
       this.updateAll();
     }
   }

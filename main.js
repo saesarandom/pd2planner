@@ -782,6 +782,11 @@ window.generateItemDescription = function generateItemDescription(itemName, item
       return `Adds ${val}-${maxVal} Fire Damage`;
     },
     firedmgmax: () => '', // Skip, handled by firedmgmin
+    colddmgmin: (val, prop) => {
+      const maxVal = props.colddmgmax || val;
+      return `Adds ${val}-${maxVal} Cold Damage`;
+    },
+    colddmgmax: () => '', // Skip, handled by colddmgmin
     cbf: (val, prop) => formatVariableStat('', val ? 'Cannot Be Frozen' : '', '', prop, itemName, 'cbf', dropdownId),
     monheal: (val, prop) => formatVariableStat('', val ? 'Prevent Monster Heal' : '', '', prop, itemName, 'monheal', dropdownId),
     slainmonstersrip: (val, prop) => formatVariableStat('', val ? 'Slain Monsters Rest in Peace' : '', '', prop, itemName, 'slainmonstersrip', dropdownId),

@@ -120,6 +120,15 @@ window.restoreItemState = function (dropdownId, itemName, section) {
     }
   }
 
+  // CRITICAL: Adjust sockets BEFORE restoring socket contents
+  // This ensures the correct number of socket slots exist before we try to fill them
+  // Pass the saved socket count so adjustSocketsForItem knows how many to create
+  const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
+  if (socketableSections.includes(section) && window.unifiedSocketSystem) {
+    const savedSocketCount = savedState.sockets ? savedState.sockets.length : 0;
+    window.unifiedSocketSystem.adjustSocketsForItem(section, savedSocketCount);
+  }
+
   // Restore sockets
   if (savedState.sockets && savedState.sockets.length > 0) {
     savedState.sockets.forEach(socketInfo => {

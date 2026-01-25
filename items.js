@@ -5207,8 +5207,7 @@ const itemList = {
   },
 
   "Merman's Sprocket": {
-    description:
-      "Merman's Sprocket<br>Wyrmhide Boots<br>Base Kick Damage: 75 to 100, Avg 87.5<br>Defense: 162<br>Required Strength: 50<br>Required Level: 45<br>Minimum Item Level: 60<br>+60% Faster Run/Walk<br>Adds 40-80 Cold Damage<br>+100 Defense<br>Regenerate Mana 20%<br>+100 Maximum Stamina<br>50% Slower Stamina Drain<br>",
+    baseType: "Wyrmhide Boots",
     properties: {
       kickmin: 75,
       kickmax: 100,
@@ -5219,9 +5218,9 @@ const itemList = {
       frw: 60,
       colddmgmin: 40,
       colddmgmax: 80,
-      todef: 100,
-      regmana: 20,
-      maxstamina: 100,
+      todef: { min: 50, max: 100, current: 100 },
+      regmana: { min: 10, max: 20, current: 20 },
+      maxstamina: { min: 50, max: 100, current: 100 },
       stamdrain: 50,
     },
   },
