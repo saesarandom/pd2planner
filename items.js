@@ -5131,8 +5131,7 @@ const itemList = {
   },
 
   Waterwalk: {
-    description:
-      "Waterwalk<br>Sharkskin Boots<br>Base Kick Damage: 32 to 72, Avg 52<br>Defense: 124<br>Required Strength: 47<br>Required Level: 32<br>+30% Faster Run/Walk<br>+20% Faster Block Rate<br>+210% Enhanced Defense<br>+15 to Dexterity<br>+65 to Life<br>+40 Maximum Stamina<br>Heal Stamina Plus 50%<br>+5% to Maximum Fire Resist<br>",
+    baseType: "Sharkskin Boots",
     properties: {
       kickmin: 32,
       kickmax: 72,
@@ -5141,9 +5140,9 @@ const itemList = {
       reqlvl: 32,
       frw: 30,
       fbr: 20,
-      edef: 210,
+      edef: { min: 180, max: 210, current: 210 },
       dex: 15,
-      tolife: 65,
+      tolife: { min: 45, max: 65, current: 65 },
       maxstamina: 40,
       healstamina: 50,
       maxfirres: 5,
