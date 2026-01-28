@@ -5121,7 +5121,7 @@ const itemList = {
       frw: 30,
       firedmgmin: 24,
       firedmgmax: 66,
-      edef: 150,
+      edef: 151,
       todef: 15,
       maxfirres: 5,
       firres: 30,
