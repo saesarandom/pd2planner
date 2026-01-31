@@ -1131,7 +1131,6 @@ const itemList = {
     },
   },
 
-  
   Rockfleece: {
     baseType: "Field Plate",
     properties: {
