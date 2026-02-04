@@ -1136,7 +1136,7 @@ const itemList = {
     baseType: "Field Plate",
     properties: {
       defense: 236,
-      reqstr: 51,
+      reqstr: 50,
       reqlvl: 28,
       edef: { min: 100, max: 130, current: 130 },
       str: { min: 10, max: 15, current: 15 },
