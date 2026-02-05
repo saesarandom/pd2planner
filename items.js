@@ -1131,7 +1131,6 @@ const itemList = {
     },
   },
 
-  
   Rockfleece: {
     baseType: "Field Plate",
     properties: {
@@ -1142,7 +1141,7 @@ const itemList = {
       str: { min: 10, max: 15, current: 15 },
       physdr: { min: 10, max: 15, current: 15 },
       pdr: { min: 5, max: 10, current: 10 },
-      req: -10,
+      req: -11,
     },
   },
 
