@@ -1141,7 +1141,7 @@ const itemList = {
       str: { min: 10, max: 15, current: 15 },
       physdr: { min: 10, max: 15, current: 15 },
       pdr: { min: 5, max: 10, current: 10 },
-      req: -11,
+      req: -10,
     },
   },
 
@@ -1304,16 +1304,15 @@ const itemList = {
   },
 
   Shaftstop: {
-    description:
-      "Shaftstop<br>Mesh Armor<br>Defense: 694<br>Required Strength: 92<br>Required Level: 38<br>+220% Enhanced Defense<br>+250 Defense vs. Missile<br>+140 to Life<br>Physical Damage Taken Reduced by 30%<br>",
+    baseType: "Mesh Armor",
     properties: {
       defense: 694,
       reqstr: 92,
       reqlvl: 38,
-      edef: 220,
+      edef: { min: 180, max: 220, current: 220 },
       todefmiss: 250,
-      tolife: 140,
-      physdr: 30,
+      tolife: { min: 100, max: 140, current: 140 },
+      physdr: { min: 20, max: 30, current: 30 },
     },
   },
 
