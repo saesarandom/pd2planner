@@ -21,7 +21,10 @@
 | Object | File | Purpose |
 |:---|:---|:---|
 | `window.characterManager` | `character.js` | Stats (str/dex/vit/enr), level, class |
-| `window.unifiedSocketSystem` | `socket.js` | Equipment, sockets, ALL stat calculations |
+| `window.unifiedSocketSystem` | `socket.js` | Core equipment engine, stat calculations |
+| `window.SocketUI` | `socket-ui.js` | UI rendering, tooltips, modals, event handlers |
+| `window.UnifiedSocketData` | `socket-data.js` | Master data for gems, runes, jewels, and equipment maps |
+| `window.StatParser` | `stat-parser.js` | Regex-based stat parsing and stacking logic |
 | `window.skillSystem` / `window.skillSystemInstance` | `skills.js` | Skills, prerequisites, damage formulas |
 | `window.charmInventory` | `inventory.js` | Charm grid management |
 | `window.craftedItemsSystem` | `craftedItems.js` | Custom crafted item creation |
@@ -52,7 +55,10 @@ DOM Updates
 | File | Size | Purpose |
 |:---|:---|:---|
 | `items.js` | ~200KB | Item database — `itemList` object (ALL game items) |
-| `socket.js` | ~250KB | UnifiedSocketSystem — equipment, sockets, stat engine |
+| `socket.js` | ~130KB | UnifiedSocketSystem — core equipment engine |
+| `socket-ui.js` | ~28KB | SocketUI — UI rendering, modals, and tooltips |
+| `socket-data.js` | ~23KB | UnifiedSocketData — Master data for socket system |
+| `stat-parser.js` | ~22KB | StatParser — Regex engines and stat stacking logic |
 | `skills.js` | ~600KB | SkillSystem — ALL 7 classes, prerequisites, damage |
 | `inventory.js` | ~112KB | CharmInventory — charm grid logic |
 | `itemUpgrade.js` | ~185KB | Item upgrade paths, `window.baseDefenses` |
@@ -125,6 +131,12 @@ if (item.baseType && window.baseDefenses[item.baseType]) {
 ### Property Not Displaying in Tooltip
 Every item property needs a display handler in `main.js`'s `propertyDisplay` object AND properties that are sub-parts of others (e.g. `maxdmg`) must be in `skipProperties` array.
 
+### Static Items Not Stacking Corruption
+- **Problem**: Base stats on unique items (e.g. 20% FCR on Arachnid Mesh) would not combine with corruption bonuses (e.g. 10% FCR), resulting in either the base value or the corruption value showing alone, and the stat calculator showing the wrong total.
+- **Solution**: 
+  1. `socket.js` -> `updateItemDisplay`: Must manually merge `corruptionStats` into the `baseStats` Map before calling `generateStackedDescription`.
+  2. `socket.js` -> `parseItemStats`: MUST always append corruption text to the description for static items so `parseStatLine` can sum them up into the global `stats` object.
+
 ---
 
 ## 🔧 Common Tasks
@@ -175,7 +187,8 @@ setTimeout(() => { dropdown.value = 'lightningfurycontainer'; }, 200);
 2. **Use `setTimeout()`** for async ops that depend on DOM updates
 3. **Call `updateAll()` after bulk changes**, not after each individual change
 4. **Use `window.dropdownItemCache`** for dynamic item properties
-5. **Test save/load** after any changes to export/import logic
+5. **Merge Corruption into Map**: Always parse corruption text and merge it into the active `baseStats` Map before rendering tooltips for static items.
+6. **Test save/load** after any changes to export/import logic
 6. **Skill IDs** always end in `"container"` (e.g., `jabcontainer`)
 7. **Active skill dropdown** uses skill IDs as values, NOT display names
 

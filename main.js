@@ -1006,9 +1006,12 @@ function formatVariableStat(prefix, value, suffix, prop, itemName, propKey, drop
   let isModified = false;
   let corruptionBonus = 0;
 
-  // Check the corruptedProperties set using slot-specific ID
-  if (window.corruptedProperties && window.corruptedProperties[dropdownId]) {
-    isModified = window.corruptedProperties[dropdownId].has(propKey);
+  // Use composite tracking key (matching corrupt.js and other main.js logic)
+  const trackingKey = dropdownId && itemName ? `${dropdownId}_${itemName}` : (dropdownId || itemName);
+  
+  // Check the corruptedProperties set using the consistent tracking key
+  if (window.corruptedProperties && window.corruptedProperties[trackingKey]) {
+    isModified = window.corruptedProperties[trackingKey].has(propKey);
 
     // If corrupted, calculate the corruption bonus
     if (isModified && window.originalItemProperties && window.originalItemProperties[itemName]) {

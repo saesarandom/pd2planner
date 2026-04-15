@@ -1532,7 +1532,7 @@ function applyCorruptionToItem(corruptionText) {
 }
 
 // Add corruption with proper stat stacking (same as before)
-function addCorruptionWithStacking(originalDescription, corruptionText) {
+function addCorruptionWithStacking(originalDescription, corruptionText, statsMap) {
   let description = originalDescription || '';
 
   // Safety check - make sure description is a string
@@ -1542,6 +1542,14 @@ function addCorruptionWithStacking(originalDescription, corruptionText) {
 
   // Parse corruption stats
   const corruptionStats = parseCorruptionText(corruptionText);
+
+  // Update statsMap if provided
+  if (statsMap && window.StatParser) {
+    const corruptionMap = window.StatParser.parseStatsToMap(corruptionText);
+    window.StatParser.mergeStatsMaps(statsMap, corruptionMap);
+    // Mark these stats as corruption-sourced in the Map metadata if possible
+    // Or we'll handle color logic in the UI layer
+  }
 
   // Track what gets stacked vs what needs to be added
   const stackedLines = new Set();
@@ -1561,7 +1569,6 @@ function addCorruptionWithStacking(originalDescription, corruptionText) {
       if (replaced.found) {
         description = replaced.description;
         stackedLines.add(stat.lineIndex); // Mark this line as handled
-
       }
     }
   });
@@ -1582,7 +1589,6 @@ function addCorruptionWithStacking(originalDescription, corruptionText) {
     }
   }
 
-  // Label will be added by socket.js during final rendering
   return description;
 }
 

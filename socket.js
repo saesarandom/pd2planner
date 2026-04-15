@@ -11,46 +11,15 @@ class UnifiedSocketSystem {
     this.currentSocket = null;
     this.targetSocket = null;
 
-    // PD2 Open Wounds damage per second by Character Level (1-99)
-    this.openWoundsBaseDamage = [
-      3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 23, 25, 26, 28, 30, 32, 33,
-      35, 37, 39, 40, 42, 45, 47, 50, 53, 55, 58, 61, 63, 66, 68, 71, 74, 76, 79, 82, 85, 89, 92, 96, 99,
-      103, 106, 110, 113, 117, 120, 124, 127, 131, 134, 139, 143, 148, 152, 156, 161, 165, 170, 174, 178, 183, 187, 191, 196, 200,
-      205, 209, 213, 218, 222, 227, 231, 235, 240, 244, 249, 253, 257, 262, 266, 271, 275, 279, 284, 288, 293, 297, 301, 306
-    ];
-
-    // Character base stats by class
-    this.classStats = {
-      'Amazon': { str: 20, dex: 25, vit: 20, enr: 15, arConstant: 5 },
-      'Necromancer': { str: 15, dex: 25, vit: 15, enr: 25, arConstant: -10 },
-      'Barbarian': { str: 30, dex: 20, vit: 25, enr: 10, arConstant: 20 },
-      'Sorceress': { str: 10, dex: 25, vit: 10, enr: 35, arConstant: -15 },
-      'Paladin': { str: 25, dex: 20, vit: 25, enr: 15, arConstant: 20 },
-      'Assassin': { str: 20, dex: 20, vit: 20, enr: 25, arConstant: 15 },
-      'Druid': { str: 15, dex: 20, vit: 25, enr: 20, arConstant: 5 }
-    };
-
-    // Equipment mapping for ultra-fast lookups
-    this.equipmentMap = {
-      'weapons-dropdown': { info: 'weapon-info', section: 'weapon' },
-      'helms-dropdown': { info: 'helm-info', section: 'helm' },
-      'armors-dropdown': { info: 'armor-info', section: 'armor' },
-      'offs-dropdown': { info: 'off-info', section: 'shield' },
-      'gloves-dropdown': { info: 'glove-info', section: 'gloves' },
-      'belts-dropdown': { info: 'belt-info', section: 'belts' },
-      'boots-dropdown': { info: 'boot-info', section: 'boots' },
-      'ringsone-dropdown': { info: 'ringsone-info', section: 'ringone' },
-      'ringstwo-dropdown': { info: 'ringstwo-info', section: 'ringtwo' },
-      'amulets-dropdown': { info: 'amulet-info', section: 'amulet' },
-      // Mercenary equipment
-      'mercweapons-dropdown': { info: 'merc-weapon-info', section: 'mercweapon' },
-      'merchelms-dropdown': { info: 'merc-helm-info', section: 'merchelm' },
-      'mercarmors-dropdown': { info: 'merc-armor-info', section: 'mercarmor' },
-      'mercoffs-dropdown': { info: 'merc-off-info', section: 'mercoff' },
-      'mercgloves-dropdown': { info: 'merc-glove-info', section: 'mercgloves' },
-      'mercbelts-dropdown': { info: 'merc-belt-info', section: 'mercbelts' },
-      'mercboots-dropdown': { info: 'merc-boot-info', section: 'mercboots' }
-    };
+    // Load static data from global module
+    const data = window.UnifiedSocketData;
+    this.openWoundsBaseDamage = data.openWoundsBaseDamage;
+    this.classStats = data.classStats;
+    this.equipmentMap = data.equipmentMap;
+    this.baseTypeSocketLimits = data.baseTypeSocketLimits;
+    this.socketData = data.socketData;
+    this.jewelPrefixes = data.jewelPrefixes;
+    this.jewelSuffixes = data.jewelSuffixes;
 
     // Fast stats tracking
     this.stats = {
@@ -71,21 +40,11 @@ class UnifiedSocketSystem {
       lightningSkillDamage: 0,
       poisonSkillDamage: 0,
       magicSkillDamage: 0,
-
-      // Enemy resistance pierce
-      pierceFire: 0,
-      pierceCold: 0,
-      pierceLightning: 0,
-      piercePoison: 0,
-      piercePhysical: 0,
-      pierceMagic: 0,
-
-      // Proc chances (these won't add to totals, just for display)
-      levelUpProcs: [],
-      deathProcs: []
+      pierceFire: 0, pierceCold: 0, pierceLightning: 0,
+      piercePoison: 0, piercePhysical: 0, pierceMagic: 0,
+      levelUpProcs: [], deathProcs: []
     };
 
-    // Mercenary stats tracking (separate from player stats)
     this.mercenaryStats = {
       allSkills: 0, magicFind: 0, goldFind: 0, defense: 0,
       ias: 0, fcr: 0, frw: 0, fhr: 0,
@@ -93,1258 +52,73 @@ class UnifiedSocketSystem {
       dr: 0, pdr: 0, mdr: 0, plr: 0, cbf: false
     };
 
-    // Jewel system
-    this.selectedJewelColor = 'white';
-    this.selectedJewelPrefix = null;
-    this.selectedJewelSuffix = null;
-    this.selectedJewelPrefixValue = null;
-    this.selectedJewelSuffixValue = null;
-
-    // Base type socket limits (for corruption)
-    this.baseTypeSocketLimits = {
-      // Helms
-      'Cap': 2,
-      'Skull Cap': 2,
-      'Helm': 3,
-      'Full Helm': 3,
-      'Great Helm': 3,
-      'Crown': 3,
-      'Mask': 3,
-      'Bone Helm': 3,
-      'War Hat': 2,
-      'Sallet': 2,
-      'Casque': 2,
-      'Basinet': 3,
-      'Winged Helm': 3,
-      'Grand Crown': 3,
-      'Death Mask': 3,
-      'Grim Helm': 3,
-      'Bone Visage': 3,
-      'Shako': 2,
-      'Hydraskull': 2,
-      'Armet': 2,
-      'Giant Conch': 3,
-      'Spired Helm': 3,
-      'Corona': 3,
-      'Demonhead': 3,
-      'Circlet': 2,
-      'Coronet': 2,
-      'Tiara': 3,
-      'Diadem': 3,
-
-      // Armors
-      'Quilted Armor': 2,
-      'Leather Armor': 2,
-      'Hard Leather Armor': 2,
-      'Studded Leather': 2,
-      'Ring Mail': 3,
-      'Scale Mail': 2,
-      'Chain Mail': 2,
-      'Breast Plate': 3,
-      'Splint Mail': 2,
-      'Plate Mail': 2,
-      'Field Plate': 2,
-      'Gothic Plate': 4,
-      'Full Plate Mail': 4,
-      'Ancient Armor': 4,
-      'Light Plate': 3,
-      'Mage Plate': 3,
-      'Ghost Armor': 2,
-      'Serpentskin Armor': 2,
-      'Demonhide Armor': 2,
-      'Trellised Armor': 2,
-      'Linked Mail': 3,
-      'Tigulated Mail': 3,
-      'Mesh Armor': 3,
-      'Cuirass': 3,
-      'Russet Armor': 3,
-      'Templar Coat': 3,
-      'Archon Plate': 4,
-      'Dusk Shroud': 4,
-      'Wyrmhide': 4,
-      'Scarab Husk': 4,
-      'Wire Fleece': 4,
-      'Great Hauberk': 4,
-      'Boneweave': 4,
-      'Kraken Shell': 4,
-      'Lacquered Plate': 4,
-      'Shadow Plate': 4,
-      'Sacred Armor': 4,
-
-      // Shields
-      'Buckler': 3,
-      'Small Shield': 3,
-      'Large Shield': 4,
-      'Kite Shield': 4,
-      'Tower Shield': 4,
-      'Gothic Shield': 4,
-      'Bone Shield': 3,
-      'Spiked Shield': 3,
-      'Defender': 4,
-      'Round Shield': 4,
-      'Scutum': 4,
-      'Dragon Shield': 4,
-      'Monarch': 4,
-      'Aegis': 4,
-
-      // Weapons - Swords
-      'Short Sword': 3, 'Scimitar': 3, 'Sabre': 3, 'Falchion': 3, 'Crystal Sword': 6,
-      'Broad Sword': 4, 'Long Sword': 4, 'War Sword': 4, 'Two-Handed Sword': 6,
-      'Claymore': 6, 'Giant Sword': 6, 'Bastard Sword': 5, 'Flamberge': 6, 'Great Sword': 6,
-      'Gladius': 3, 'Cutlass': 3, 'Shamshir': 3, 'Tulwar': 3, 'Dimensional Blade': 6,
-      'Battle Sword': 4, 'Rune Sword': 4, 'Ancient Sword': 4, 'Espandon': 6,
-      'Dacian Falx': 6, 'Tusk Sword': 6, 'Gothic Sword': 5, 'Zweihander': 6, 'Executioner Sword': 6,
-      'Blade': 2, 'Falcata': 3, 'Ataghan': 3, 'Elegant Blade': 3, 'Hydra Edge': 6,
-      'Phase Blade': 6, 'Conquest Sword': 5, 'Cryptic Sword': 4, 'Mythical Sword': 6, 'Legend Sword': 6,
-      'Highland Blade': 6, 'Balrog Blade': 6, 'Champion Sword': 5, 'Colossus Sword': 6, 'Colossus Blade': 6,
-
-      // Weapons - Axes
-      'Hand Axe': 4, 'Axe': 5, 'Double Axe': 6, 'Military Pick': 5, 'War Axe': 6,
-      'Large Axe': 6, 'Broad Axe': 6, 'Battle Axe': 6, 'Great Axe': 6, 'Giant Axe': 6,
-      'Hatchet': 4, 'Cleaver': 5, 'Twin Axe': 6, 'Crowbill': 5, 'Naga': 6,
-      'Military Axe': 6, 'Bearded Axe': 6, 'Tabar': 6, 'Gothic Axe': 6, 'Ancient Axe': 6,
-      'Tomahawk': 4, 'Small Crescent': 5, 'Ettin Axe': 6, 'War Spike': 5, 'Berserker Axe': 6,
-      'Feral Axe': 6, 'Silver-Edged Axe': 6, 'Decapitator': 6, 'Champion Axe': 6, 'Glorious Axe': 6,
-
-      // Weapons - Maces/Clubs/Hammers
-      'Club': 3, 'Spiked Club': 5, 'Mace': 5, 'Morning Star': 5, 'Flail': 5,
-      'War Hammer': 6, 'Maul': 6, 'Great Maul': 6, 'Cudgel': 3, 'Barbed Club': 5,
-      'Flanged Mace': 5, 'Jagged Star': 5, 'Knout': 5, 'Battle Hammer': 6, 'War Club': 6,
-      'Martel de Fer': 6, 'Truncheon': 3, 'Tyrant Club': 5, 'Reinforced Mace': 5,
-      'Devil Star': 5, 'Scourge': 5, 'Legendary Mallet': 6, 'Ogre Maul': 6, 'Thunder Maul': 6,
-
-      // Weapons - Staves
-      'Short Staff': 2, 'Long Staff': 4, 'Gnarled Staff': 4, 'Battle Staff': 6, 'War Staff': 6,
-      'Jo Staff': 2, 'Quarterstaff': 4, 'Cedar Staff': 4, 'Gothic Staff': 6, 'Rune Staff': 6,
-      'Walking Stick': 2, 'Stalagmite': 4, 'Elder Staff': 4, 'Shillelagh': 6, 'Archon Staff': 6,
-
-      // Weapons - Bows/Crossbows
-      'Short Bow': 3, 'Hunter\'s Bow': 4, 'Long Bow': 3, 'Composite Bow': 3, 'Short Battle Bow': 4,
-      'Long Battle Bow': 4, 'Short War Bow': 5, 'Long War Bow': 5, 'Light Crossbow': 3, 'Crossbow': 4,
-      'Heavy Crossbow': 6, 'Repeating Crossbow': 6, 'Edge Bow': 3, 'Razor Bow': 4, 'Cedar Bow': 3,
-      'Double Bow': 3, 'Short Siege Bow': 4, 'Large Siege Bow': 4, 'Rune Bow': 5, 'Gothic Bow': 5,
-      'Arbalest': 3, 'Siege Crossbow': 4, 'Ballista': 6, 'Chu-Ko-Nu': 6, 'Spider Bow': 3,
-      'Blade Bow': 4, 'Shadow Bow': 3, 'Great Bow': 3, 'Diamond Bow': 4, 'Crusader Bow': 4,
-      'Ward Bow': 5, 'Hydra Bow': 5, 'Pellet Bow': 3, 'Gorgon Crossbow': 4, 'Colossus Crossbow': 6,
-      'Demon Crossbow': 6,
-
-      // Weapons - Polearms
-      'Bardiche': 6, 'Voulge': 6, 'Scythe': 6, 'Poleaxe': 6, 'Halberd': 6,
-      'War Scythe': 5, 'Lochaber Axe': 6, 'Bill': 6, 'Battle Scythe': 6, 'Partisan': 6,
-      'Bec-de-Corbin': 6, 'Grim Scythe': 5, 'Ogre Axe': 6, 'Colossus Voulge': 6, 'Thresher': 6,
-      'Cryptic Axe': 6, 'Great Poleaxe': 6, 'Giant Thresher': 6,
-
-      // Weapons - Spears
-      'Spear': 3, 'Trident': 5, 'Brandistock': 5, 'Spetum': 5, 'Pike': 6,
-      'Lance': 6, 'Fuscina': 6, 'War Fork': 6, 'Yari': 6, 'War Spear': 6,
-      'Hyperion Spear': 6, 'Stygian Pike': 6, 'Mancatcher': 6, 'Ghost Spear': 6, 'War Pike': 6,
-
-      // Weapons - Daggers/Throwing
-      'Dagger': 3, 'Dirk': 3, 'Kris': 3, 'Blade': 2, 'Throwing Knife': 2,
-      'Throwing Axe': 4, 'Balanced Knife': 3, 'Poignard': 3, 'Rondel': 3, 'Cinquedeas': 3,
-      'Stiletto': 3, 'Battle Dart': 2, 'Francisca': 4, 'War Dart': 2, 'Bone Knife': 3,
-      'Mithril Point': 3, 'Fanged Knife': 3, 'Legend Spike': 3,
-
-      // Weapons - Javelins FIXED
-      'Javelin': 1, 'Pilum': 2, 'Short Spear': 2, 'Glaive': 3, 'Throwing Spear': 3,
-      'Maiden Javelin': 2, 'Ceremonial Javelin': 2, 'Matriarchal Javelin': 2,
-      'War Javelin': 2, 'Great Pilum': 2, 'Simbilan': 2, 'Spiculum': 3, 'Harpoon': 3,
-      'Hyperion Javelin': 2, 'Stygian Pilum': 2, 'Balrog Spear': 2, 'Ghost Glaive': 3, 'Winged Harpoon': 3,
-
-      // Weapons - Wands
-      'Wand': 2, 'Yew Wand': 2, 'Bone Wand': 2, 'Grim Wand': 2, 'Burnt Wand': 2,
-      'Petrified Wand': 2, 'Tomb Wand': 2, 'Grave Wand': 2, 'Polished Wand': 2, 'Ghost Wand': 2,
-      'Lich Wand': 2, 'Unearthed Wand': 2,
-
-      // Weapons - Scepters
-      'Scepter': 5, 'Grand Scepter': 5, 'War Scepter': 5, 'Rune Scepter': 5, 'Holy Water Sprinkler': 5,
-      'Divine Scepter': 5, 'Barbed Club': 5, 'Caduceus': 5, 'Tyrant Club': 5,
-
-      // Weapons - Orbs
-      'Orb': 2, 'Eldritch Orb': 2, 'Demon Heart': 2, 'Vortex Orb': 2, 'Dimensional Shard': 2,
-      'Heavenly Stone': 2, 'Swirling Crystal': 2,
-
-      // Weapons - Barbarian (cannot socket)
-      // Weapons - Druid (Pelts - cannot socket)
-      // Weapons - Necromancer (Shrunken Heads - cannot socket)
-      // Weapons - Assassin
-      'Katar': 3, 'Wrist Blade': 3, 'Hatchet Hands': 3, 'Cestus': 3, 'Claws': 3,
-      'Blade Talons': 3, 'Scissors Katar': 3, 'Quhab': 3, 'Wrist Spike': 3, 'Fascia': 3,
-      'Hand Scythe': 3, 'Greater Claws': 3, 'Greater Talons': 3, 'Scissors Quhab': 3,
-      'Suwayyah': 3, 'Wrist Sword': 3, 'War Fist': 3, 'Battle Cestus': 3, 'Feral Claws': 3,
-      'Runic Talons': 3, 'Scissors Suwayyah': 3
-
-      // Note: Class-specific items (Barb helms, Druid pelts, Necro heads, Paladin shields, Amazon items)
-      // may have different socket rules - handle via item.properties.maxSockets if needed
-
-      // Note: Only weapons, helms, armors, and shields are socketable
-      // Gloves, belts, boots, rings, and amulets cannot have sockets
-      // (rare exceptions can be handled via item.properties.maxSockets)
-    };
-
-    this.initializeSocketData();
-    this.initializeJewelData();
     this.init();
   }
 
   init() {
-
-
     try {
-      this.addStyles();
-      this.createSocketModal();
-      this.createJewelModal();
+      if (window.SocketUI) {
+        window.SocketUI.addStyles();
+        window.SocketUI.createSocketModal(this);
+      }
       this.initializeSocketContainers();
       this.setupEventListeners();
       this.setInitialCharacterStats();
-
-      // Make addSocket globally available immediately
       window.addSocket = (section) => this.addSocket(section);
-
-
       setTimeout(() => {
         this.isInitializing = false;
         this.updateAll();
-
       }, 100);
-
     } catch (error) {
-
+      console.error("UnifiedSocketSystem init error:", error);
     }
   }
 
-  // === SOCKET DATA INITIALIZATION ===
-  initializeSocketData() {
-    this.socketData = {
-      gems: {
-        'chipped-topaz': {
-          name: 'Chipped Topaz',
-          img: 'img/chippedtopaz.png',
-          levelReq: 1,
-          stats: {
-            weapon: 'Adds 1-8 Lightning Damage',
-            helm: '9% Better Chance of Getting Magic Items',
-            armor: '9% Better Chance of Getting Magic Items',
-            shield: 'Lightning Resist +40%'
-          }
-        },
-        'flawed-topaz': {
-          name: 'Flawed Topaz',
-          img: 'img/flawedtopaz.png',
-          levelReq: 5,
-          stats: {
-            weapon: 'Adds 1-14 Lightning Damage',
-            helm: '13% Better Chance of Getting Magic Items',
-            armor: '13% Better Chance of Getting Magic Items',
-            shield: 'Lightning Resist +40%'
-          }
-        },
-        'topaz': {
-          name: 'Topaz',
-          img: 'img/topaz.png',
-          levelReq: 12,
-          stats: {
-            weapon: 'Adds 1-22 Lightning Damage',
-            helm: '16% Better Chance of Getting Magic Items',
-            armor: '16% Better Chance of Getting Magic Items',
-            shield: 'Lightning Resist +40%'
-          }
-        },
-        'flawless-topaz': {
-          name: 'Flawless Topaz',
-          img: 'img/flawlesstopaz.png',
-          levelReq: 15,
-          stats: {
-            weapon: 'Adds 1-30 Lightning Damage',
-            helm: '20% Better Chance of Getting Magic Items',
-            armor: '20% Better Chance of Getting Magic Items',
-            shield: 'Lightning Resist +40%'
-          }
-        },
-        'perfect-topaz': {
-          name: 'Perfect Topaz',
-          img: 'img/perfecttopaz2.png',
-          levelReq: 18,
-          stats: {
-            weapon: 'Adds 1-40 Lightning Damage',
-            helm: '24% Better Chance of Getting Magic Items',
-            armor: '24% Better Chance of Getting Magic Items',
-            shield: 'Lightning Resist +40%'
-          }
-        },
-        'chipped-ruby': {
-          name: 'Chipped Ruby',
-          img: 'img/chippedruby.png',
-          levelReq: 1,
-          stats: {
-            weapon: 'Adds 3-4 Fire Damage',
-            helm: '+10 to Life',
-            armor: '+10 to Life',
-            shield: 'Fire Resist +12%'
-          }
-        },
-        'flawed-ruby': {
-          name: 'Flawed ruby',
-          img: 'img/flawedruby.png',
-          levelReq: 5,
-          stats: {
-            weapon: 'Adds 5-8 Fire Damage',
-            helm: '+17 to Life',
-            armor: '+17 to Life',
-            shield: 'Fire Resist +16%'
-          }
-        },
-        'ruby': {
-          name: 'ruby',
-          img: 'img/ruby.png',
-          levelReq: 12,
-          stats: {
-            weapon: 'Adds 8-12 Fire Damage',
-            helm: '+24 to Life',
-            armor: '+24 to Life',
-            shield: 'Fire Resist +22%'
-          }
-        },
-        'flawless-ruby': {
-          name: 'Flawless Ruby',
-          img: 'img/flawlessruby.png',
-          levelReq: 15,
-          stats: {
-            weapon: 'Adds 10-16 Fire Damage',
-            helm: '+31 to Life',
-            armor: '+31 to Life',
-            shield: 'Fire Resist +28%'
-          }
-        },
-        'perfect-ruby': {
-          name: 'Perfect Ruby',
-          img: 'img/perfectruby2.png',
-          levelReq: 18,
-          stats: {
-            weapon: 'Adds 15-20 Fire Damage',
-            helm: '+38 to Life',
-            armor: '+38 to Life',
-            shield: 'Fire Resist +40%'
-          }
-        },
-        'chipped-sapphire': {
-          name: 'Chipped Sapphire',
-          img: 'img/chippedsapphire.png',
-          levelReq: 1,
-          stats: {
-            weapon: 'Adds 1-3 Cold Damage',
-            helm: '+10 to Mana',
-            armor: '+10 to Mana',
-            shield: 'Cold Resist +12%'
-          }
-        },
-        'flawed-sapphire': {
-          name: 'Flawed Sapphire',
-          img: 'img/flawedsapphire.png',
-          levelReq: 5,
-          stats: {
-            weapon: 'Adds 3-5 Cold Damage',
-            helm: '+17 to Mana',
-            armor: '+17 to Mana',
-            shield: 'Cold Resist +16%'
-          }
-        },
-        'sapphire': {
-          name: 'Sapphire',
-          img: 'img/sapphire.png',
-          levelReq: 12,
-          stats: {
-            weapon: 'Adds 4-7 Cold Damage',
-            helm: '+24 to Mana',
-            armor: '+24 to Mana',
-            shield: 'Cold Resist +22%'
-          }
-        },
-        'flawless-sapphire': {
-          name: 'Flawless Sapphire',
-          img: 'img/flawlesssapphire.png',
-          levelReq: 15,
-          stats: {
-            weapon: 'Adds 6-10 Cold Damage',
-            helm: '+31 to Mana',
-            armor: '+31 to Mana',
-            shield: 'Cold Resist +28%'
-          }
-        },
-        'perfect-sapphire': {
-          name: 'Perfect Sapphire',
-          img: 'img/perfectsapphire2.png',
-          levelReq: 18,
-          stats: {
-            weapon: 'Adds 10-14 Cold Damage',
-            helm: '+38 to Mana',
-            armor: '+38 to Mana',
-            shield: 'Cold Resist +40%'
-          }
-        },
-        'perfect-emerald': {
-          name: 'Perfect Emerald',
-          img: 'img/perfectemerald.png',
-          levelReq: 18,
-          stats: {
-            weapon: 'Adds 100-100 Poison Damage over 7 Seconds',
-            helm: '+10 to Dexterity',
-            armor: '+10 to Dexterity',
-            shield: 'Poison Resist +40%'
-          }
-        },
-        'perfect-amethyst': {
-          name: 'Perfect Amethyst',
-          img: 'img/perfectamethyst.png',
-          levelReq: 18,
-          stats: {
-            weapon: '+150 to Attack Rating',
-            helm: '+10 to Strength',
-            armor: '+10 to Strength',
-            shield: '+30 Defense'
-          }
-        },
-        'perfect-diamond': {
-          name: 'Perfect Diamond',
-          img: 'img/perfectdiamond.png',
-          levelReq: 18,
-          stats: {
-            weapon: '+68% Damage to Undead',
-            helm: '+100 to Attack Rating',
-            armor: '+100 to Attack Rating',
-            shield: 'All Resistances +19%'
-          }
-        },
-        'perfect-skull': {
-          name: 'Perfect Skull',
-          img: 'img/perfectskull2.png',
-          levelReq: 18,
-          stats: {
-            weapon: '4% Life Stolen per Hit, 3% Mana Stolen per Hit',
-            helm: 'Regenerate Mana 19%, Replenish Life +5',
-            armor: 'Regenerate Mana 19%, Replenish Life +5',
-            shield: 'Attacker Takes Damage of 20'
-          }
-        }
-      },
-      runes: {
-        'el': {
-          name: 'El Rune',
-          img: 'img/elrune.png',
-          levelReq: 11, // Required level
-          stats: {
-            weapon: '+50 Attack Rating, +1 Light Radius',
-            helm: '+15 Defense, +1 Light Radius',
-            armor: '+15 Defense, +1 Light Radius',
-            shield: '+15 Defense, +1 Light Radius'
-          }
-        },
-        'eld': {
-          name: 'Eld Rune',
-          img: 'img/eldrune.png',
-          levelReq: 11, // Required level
-          stats: {
-            weapon: '+75% Damage vs Undead, +50 Attack Rating vs Undead',
-            helm: '15% Slower Stamina Drain',
-            armor: '15% Slower Stamina Drain',
-            shield: '7% Increased Chance of Blocking'
-          }
-        },
-        'tir': {
-          name: 'Tir Rune',
-          img: 'img/tirrune.png',
-          levelReq: 13, // Required level
-          stats: {
-            weapon: '+2 to Mana after each Kill',
-            helm: '+2 to Mana after each Kill',
-            armor: '+2 to Mana after each Kill',
-            shield: '+2 to Mana after each Kill'
-          }
-        },
-        'nef': {
-          name: 'Nef Rune',
-          img: 'img/nefrune.png',
-          levelReq: 13, // Required level
-          stats: {
-            weapon: 'Knockback',
-            helm: '+30 Defense vs. Missile',
-            armor: '+30 Defense vs. Missile',
-            shield: '+30 Defense vs. Missile'
-          }
-        },
-        'eth': {
-          name: 'Eth Rune',
-          img: 'img/ethrune.png',
-          levelReq: 15, // Required level
-          stats: {
-            weapon: '-25% Target Defense',
-            helm: 'Regenerate Mana 15%',
-            armor: 'Regenerate Mana 15%',
-            shield: 'Regenerate Mana 15%'
-          }
-        },
-        'ith': {
-          name: 'Ith Rune',
-          img: 'img/ithrune.png',
-          levelReq: 15,
-          stats: {
-            weapon: '+9 to Maximum Damage',
-            helm: '15% Damage Taken Gained as Mana when Hit',
-            armor: '15% Damage Taken Gained as Mana when Hit',
-            shield: '15% Damage Taken Gained as Mana when Hit'
-          }
-        },
-        'tal': {
-          name: 'Tal Rune',
-          img: 'img/talrune.png',
-          levelReq: 17,
-          stats: {
-            weapon: '+75 Poison Damage over 5 Seconds',
-            helm: 'Poison Resist +30%',
-            armor: 'Poison Resist +30%',
-            shield: 'Poison Resist +35%'
-          }
-        },
-        'ral': {
-          name: 'Ral Rune',
-          img: 'img/ralrune.png',
-          levelReq: 19, // Required level
-          stats: {
-            weapon: 'Adds 5-30 Fire Damage',
-            helm: 'Fire Resist +30%',
-            armor: 'Fire Resist +30%',
-            shield: 'Fire Resist +35%'
-          }
-        },
-        'ort': {
-          name: 'Ort Rune',
-          img: 'img/ortrune.png',
-          levelReq: 21,
-          stats: {
-            weapon: 'Adds 1-50 Lightning Damage',
-            helm: 'Lightning Resist +30%',
-            armor: 'Lightning Resist +30%',
-            shield: 'Lightning Resist +35%'
-          }
-        },
-        'thul': {
-          name: 'Thul Rune',
-          img: 'img/thulrune.png',
-          levelReq: 23,
-          stats: {
-            weapon: 'Adds 3-14 Cold Damage',
-            helm: 'Cold Resist +30%',
-            armor: 'Cold Resist +30%',
-            shield: 'Cold Resist +35%'
-          }
-        },
-        'amn': {
-          name: 'Amn Rune',
-          img: 'img/amnrune.png',
-          levelReq: 25,
-          stats: {
-            weapon: '7% Life Stolen per Hit',
-            helm: 'Attacker Takes Damage of 14',
-            armor: 'Attacker Takes Damage of 14',
-            shield: 'Attacker Takes Damage of 14'
-          }
-        },
-        'sol': {
-          name: 'Sol Rune',
-          img: 'img/solrune.png',
-          levelReq: 27,
-          stats: {
-            weapon: '+9 to Minimum Damage',
-            helm: 'Physical Damage Taken Reduced by 7',
-            armor: 'Physical Damage Taken Reduced by 7',
-            shield: 'Physical Damage Taken Reduced by 7'
-          }
-        },
-        'shael': {
-          name: 'Shael Rune',
-          levelReq: 29,
-          img: 'img/shaelrune.png',
-          stats: {
-            weapon: '+20% Increased Attack Speed',
-            helm: '+20% Faster Hit Recovery',
-            armor: '+20% Faster Hit Recovery',
-            shield: '+20% Faster Block Rate'
-          }
-        },
-        'dol': {
-          name: 'Dol Rune',
-          img: 'img/dolrune.png',
-          levelReq: 31,
-          stats: {
-            weapon: '+20% Enhanced Damage',
-            helm: 'Replenish Life +10',
-            armor: 'Replenish Life +10',
-            shield: 'Replenish Life +10'
-          }
-        },
-        'hel': {
-          name: 'Hel Rune',
-          img: 'img/helrune.png',
-          levelReq: 1,
-          stats: {
-            weapon: 'Requirements -20%',
-            helm: 'Requirements -20%',
-            armor: 'Requirements -20%',
-            shield: 'Requirements -20%'
-          }
-        },
-        'io': {
-          name: 'Io Rune',
-          img: 'img/iorune.png',
-          levelReq: 35,
-          stats: {
-            weapon: '+10 to Vitality',
-            helm: '+10 to Vitality',
-            armor: '+10 to Vitality',
-            shield: '+10 to Vitality'
-          }
-        },
-        'lum': {
-          name: 'Lum Rune',
-          img: 'img/lumrune.png',
-          levelReq: 37,
-          stats: {
-            weapon: '+10 to Energy',
-            helm: '+10 to Energy',
-            armor: '+10 to Energy',
-            shield: '+10 to Energy'
-          }
-        },
-        'ko': {
-          name: 'Ko Rune',
-          img: 'img/korune.png',
-          levelReq: 39,
-          stats: {
-            weapon: '+10 to Dexterity',
-            helm: '+10 to Dexterity',
-            armor: '+10 to Dexterity',
-            shield: '+10 to Dexterity'
-          }
-        },
-        'fal': {
-          name: 'Fal Rune',
-          img: 'img/falrune.png',
-          levelReq: 41,
-          stats: {
-            weapon: '+10 to Strength',
-            helm: '+10 to Strength',
-            armor: '+10 to Strength',
-            shield: '+10 to Strength'
-          }
-        },
-        'lem': {
-          name: 'Lem Rune',
-          img: 'img/lemrune.png',
-          levelReq: 43,
-          stats: {
-            weapon: '75% Extra Gold From Monsters',
-            helm: '50% Extra Gold From Monsters',
-            armor: '50% Extra Gold From Monsters',
-            shield: '50% Extra Gold From Monsters'
-          }
-        },
-        'pul': {
-          name: 'Pul Rune',
-          img: 'img/pulrune.png',
-          levelReq: 45,
-          stats: {
-            weapon: '+75% Damage to Demons, +100 to Attack Rating against Demons',
-            helm: '+30% Enhanced Defense',
-            armor: '+30% Enhanced Defense',
-            shield: '+30% Enhanced Defense'
-          }
-        },
-        'um': {
-          name: 'Um Rune',
-          img: 'img/umrune.png',
-          levelReq: 47,
-          stats: {
-            weapon: '10% Chance of Open Wounds, +120 Open Wounds Damage per Second',
-            helm: 'All Resistances +15',
-            armor: 'All Resistances +15',
-            shield: 'All Resistances +22'
-          }
-        },
-        'mal': {
-          name: 'Mal Rune',
-          img: 'img/malrune.png',
-          levelReq: 49,
-          stats: {
-            weapon: 'Prevent Monster Heal',
-            helm: 'Magic Damage Taken Reduced by 7',
-            armor: 'Magic Damage Taken Reduced by 7',
-            shield: 'Magic Damage Taken Reduced by 7'
-          }
-        },
-        'ist': {
-          name: 'Ist Rune',
-          img: 'img/istrune.png',
-          levelReq: 51,
-          stats: {
-            weapon: '30% Better Chance of Getting Magic Items',
-            helm: '30% Better Chance of Getting Magic Items',
-            armor: '30% Better Chance of Getting Magic Items',
-            shield: '30% Better Chance of Getting Magic Items'
-          }
-        },
-        'gul': {
-          name: 'Gul Rune',
-          img: 'img/gulrune.png',
-          levelReq: 53,
-          stats: {
-            weapon: '20% Bonus to Attack Rating',
-            helm: '+4% to Maximum Poison Resist',
-            armor: '+4% to Maximum Poison Resist',
-            shield: '+4% to Maximum Poison Resist'
-          }
-        },
-        'vex': {
-          name: 'Vex Rune',
-          img: 'img/vexrune.png',
-          levelReq: 55,
-          stats: {
-            weapon: '7% Mana Stolen per Hit',
-            helm: '+4% to Maximum Fire Resist',
-            armor: '+4% to Maximum Fire Resist',
-            shield: '+4% to Maximum Fire Resist'
-          }
-        },
-        'ohm': {
-          name: 'Ohm Rune',
-          img: 'img/ohmrune.png',
-          levelReq: 57,
-          stats: {
-            weapon: '+45% Enhanced Damage',
-            helm: '+4% to Maximum Cold Resist',
-            armor: '+4% to Maximum Cold Resist',
-            shield: '+4% to Maximum Cold Resist'
-          }
-        },
-        'lo': {
-          name: 'Lo Rune',
-          img: 'img/lorune.png',
-          levelReq: 59,
-          stats: {
-            weapon: '20% Deadly Strike',
-            helm: '+4% to Maximum Lightning Resist',
-            armor: '+4% to Maximum Lightning Resist',
-            shield: '+4% to Maximum Lightning Resist'
-          }
-        },
-        'sur': {
-          name: 'Sur Rune',
-          img: 'img/surrune.png',
-          levelReq: 61,
-          stats: {
-            weapon: '+4 Life after each Kill',
-            helm: 'Increase Maximum Mana 5%',
-            armor: 'Increase Maximum Mana 5%',
-            shield: '50 to Mana'
-          }
-        },
-        'ber': {
-          name: 'Ber Rune',
-          img: 'img/berrune.png',
-          levelReq: 63,
-          stats: {
-            weapon: '20% Chance of Crushing Blow',
-            helm: 'Physical Damage Taken Reduced by 5%',
-            armor: 'Physical Damage Taken Reduced by 5%',
-            shield: 'Physical Damage Taken Reduced by 5%'
-          }
-        },
-        'jah': {
-          name: 'Jah Rune',
-          img: 'img/jahrune.png',
-          levelReq: 65,
-          stats: {
-            weapon: 'Ignore Target\'s Defense',
-            helm: 'Increase Maximum Life 5%',
-            armor: 'Increase Maximum Life 5%',
-            shield: '+75 to Life'
-          }
-        },
-        'cham': {
-          name: 'Cham Rune',
-          img: 'img/chamrune.png',
-          levelReq: 67,
-          stats: {
-            weapon: 'Freezes Target +3',
-            helm: 'Cannot Be Frozen',
-            armor: 'Cannot Be Frozen',
-            shield: 'Cannot Be Frozen'
-          }
-        },
-        'zod': {
-          name: 'Zod Rune',
-          img: 'img/zodrune.png',
-          levelReq: 69,
-          stats: {
-            weapon: 'Indestructible',
-            helm: 'Indestructible',
-            armor: 'Indestructible',
-            shield: 'Indestructible'
-          }
-        }
-      },
-      jewels: {
-        'rainbow-facet': {
-          name: 'Rainbow Facet',
-          img: 'img/jewelgreen.png', // Default, will be randomized
-          levelReq: 49,
-          stats: {
-            weapon: 'Dynamic Rainbow Facet Stats',
-            armor: 'Dynamic Rainbow Facet Stats',
-            helm: 'Dynamic Rainbow Facet Stats',
-            shield: 'Dynamic Rainbow Facet Stats'
-          }
-        }
-      }
-    };
-  }
-
-  initializeJewelData() {
-    this.jewelPrefixes = {
-      'Cinnabar': {
-        effect: '+[5-10]% Enhanced Damage',
-        reqLevel: 1,
-        range: [5, 10]
-      },
-      'Rusty': {
-        effect: '+[11-20]% Enhanced Damage',
-        reqLevel: 9,
-        range: [11, 20]
-      },
-      'Realgar': {
-        effect: '+[21-30]% Enhanced Damage',
-        reqLevel: 37,
-        range: [21, 30]
-      },
-      'Ruby': {
-        effect: '+[31-40]% Enhanced Damage',
-        reqLevel: 58,
-        range: [31, 40]
-      },
-      'Stout': {
-        effect: '+[5-8] Defense',
-        reqLevel: 1,
-        range: [5, 8]
-      },
-      'Burly': {
-        effect: '+[9-20] Defense',
-        reqLevel: 12,
-        range: [9, 20]
-      },
-      'Bone': {
-        effect: '+[21-40] Defense',
-        reqLevel: 24,
-        range: [21, 40]
-      },
-      'Ivory': {
-        effect: '+[41-64] Defense', //magic only
-        reqLevel: 56,
-        range: [41, 64]
-      },
-      'Scarlet': {
-        effect: '+[1-4] to Minimum Damage',
-        reqLevel: 6,
-        range: [1, 4]
-      },
-      'Crimson': {
-        effect: '+[5-8] to Minimum Damage',
-        reqLevel: 30,
-        range: [5, 8]
-      },
-      'Cardinal': {
-        effect: '+[10-14] to Minimum Damage',
-        reqLevel: 30,
-        range: [10, 14]
-      },
-      'Carbuncle': {
-        effect: '+[1-5] to Maximum Damage',
-        reqLevel: 9,
-        range: [1, 5]
-      },
-      'Carmine': {
-        effect: '+[6-9] to Maximum Damage',
-        reqLevel: 27,
-        range: [6, 9]
-      },
-      'Vermillion': {
-        effect: '+[11-15] to Maximum Damage',
-        reqLevel: 50,
-        range: [11, 15]
-      },
-      'Dun': {
-        effect: '+[7-12]% Damage Taken Gained as Mana when Hit',
-        reqLevel: 5,
-        range: [7, 12]
-      },
-
-      'Nickel': {
-        effect: '+[10-20] to Attack Rating',
-        reqLevel: 1,
-        range: [10, 20]
-      },
-      'Tin': {
-        effect: '+[21-40] to Attack Rating',
-        reqLevel: 6,
-        range: [21, 40]
-      },
-      'Silver': {
-        effect: '+[41-60] to Attack Rating',
-        reqLevel: 18,
-        range: [41, 60]
-      },
-      'Argent': {
-        effect: '+[61-100] to Attack Rating',
-        reqLevel: 36,
-        range: [61, 100]
-      },
-      'Bright': {
-        effect: '+1 to Light Radius, +10 to Attack Rating',
-        reqLevel: 1,
-        range: [10, 10]
-      },
-      'Emerald': {
-        effect: '[3-7]% Better Chance of Getting Magic Items',
-        reqLevel: 12,
-        range: [3, 7]
-      },
-      'Zircon': {
-        effect: '+[5-10] to Mana',
-        reqLevel: 2,
-        range: [5, 10]
-      },
-      'Jacinth': {
-        effect: '+[11-15] to Mana',
-        reqLevel: 12,
-        range: [11, 15]
-      },
-      'Turquoise': {
-        effect: '+[16-20] to Mana',
-        reqLevel: 21,
-        range: [16, 20]
-      },
-      'Cerulean': {
-        effect: '+[21-30] to Mana',
-        reqLevel: 41,
-        range: [21, 30]
-      },
-      'Shimmering': {
-        effect: 'All Resistances +[5-10]',
-        reqLevel: 12,
-        range: [5, 10]
-      },
-      'Scintillating': {
-        effect: 'All Resistances +[11-15]', //magic only
-        reqLevel: 26,
-        range: [11, 15]
-      },
-      'Lapis': {
-        effect: 'Cold Resist +[5-15]%',
-        reqLevel: 1,
-        range: [5, 15]
-      },
-      'Sapphire': {
-        effect: 'Cold Resist +[16-30]%',
-        reqLevel: 14,
-        range: [16, 30]
-      },
-      'Garnet': {
-        effect: 'Fire Resist +[5-15]%',
-        reqLevel: 1,
-        range: [5, 15]
-      },
-      'Ruby': {
-        effect: 'Fire Resist +[16-30]%',
-        reqLevel: 14,
-        range: [16, 30]
-      },
-      'Camphor': {
-        effect: 'Lightning Resist +[5-15]%',
-        reqLevel: 1,
-        range: [5, 15]
-      },
-      'Ambergris': {
-        effect: 'Lightning Resist +[16-30]%',
-        reqLevel: 14,
-        range: [16, 30]
-      },
-      'Beryl': {
-        effect: 'Poison Resist +[5-15]%',
-        reqLevel: 1,
-        range: [5, 15]
-      },
-      'Jade': {
-        effect: 'Poison Resist +[16-30]%',
-        reqLevel: 14,
-        range: [16, 30]
-      },
-      'Aureolic': {
-        effect: '[1-3] Mana After Each Kill',
-        reqLevel: 9,
-        range: [1, 3]
-      },
-      'Diamond': {
-        effect: '[25-50] to Attack Rating against Demons',
-        reqLevel: 19,
-        range: [25, 50]
-      },
-      'Pearl': {
-        effect: '[25-50] to Attack Rating against Undead',
-        reqLevel: 13,
-        range: [25, 50]
-      },
-      'Cultists': {
-        effect: '5% Chance of Open Wounds, +[30-40] Open Wounds Damage per Second',
-        reqLevel: 25,
-        range: [30, 40]
-      },
-      'Bloodthirsters': {
-        effect: '5% Chance of Open Wounds, +[65-85] Open Wounds Damage per Second',
-        reqLevel: 45,
-        range: [65, 85]
-      },
-      'Gorelusts': {
-        effect: '5% Chance of Open Wounds, +[95-125] Open Wounds Damage per Second',
-        reqLevel: 65,
-        range: [95, 125]
-      },
-      'Blood Sucking': {
-        effect: '[1-3] Life After Each Kill',
-        reqLevel: 26,
-        range: [1, 3]
-      },
-    };
-
-    this.jewelSuffixes = {
-      'Malice': {
-        effect: 'Attacker Takes Damage of [30-40]',
-        reqLevel: 29,
-        range: [30, 40]
-      },
-      'Fervor': {
-        effect: '+15% Increased Attack Speed', //magic only
-        reqLevel: 31,
-        range: [15, 15]  // Fixed value
-      },
-
-      'Frigidity': {
-        effect: 'Adds [1-1] to [3-5] Cold Damage',
-        reqLevel: 12,
-        minRange: [1, 1],
-        maxRange: [3, 5]
-      },
-      'Icicle': {
-        effect: 'Adds [2-3] to [6-10] Cold Damage',
-        reqLevel: 29,
-        minRange: [2, 3],
-        maxRange: [6, 10]
-      },
-      'Glacier': {
-        effect: 'Adds [4-5] to [11-15] Cold Damage', //magiconly
-        reqLevel: 50,
-        minRange: [4, 5],
-        maxRange: [11, 15]
-      },
-      'Passion': {
-        effect: 'Adds [1-3] to [6-10] Fire Damage',
-        reqLevel: 11,
-        minRange: [1, 3],
-        maxRange: [6, 10]
-      },
-      'Fire': {
-        effect: 'Adds [4-10] to [11-30] Fire Damage',
-        reqLevel: 28,
-        minRange: [4, 10],
-        maxRange: [11, 30]
-      },
-      'Burning': {
-        effect: 'Adds [11-25] to [31-50] Fire Damage',
-        reqLevel: 49,
-        minRange: [11, 25],
-        maxRange: [31, 50]
-      },
-      'Ennui': {
-        effect: 'Adds [1-1] to [10-20] Lightning Damage',
-        reqLevel: 11,
-        minRange: [1, 1],
-        maxRange: [10, 20]
-      },
-      'Lightning': {
-        effect: 'Adds [1-1] to [21-60] Lightning Damage',
-        reqLevel: 28,
-        minRange: [1, 1],
-        maxRange: [21, 60]
-      },
-      'Thunder': {
-        effect: 'Adds [1-1] to [61-100] Lightning Damage',
-        reqLevel: 49,
-        minRange: [1, 1],
-        maxRange: [61, 100]
-      },
-      'Ire': {
-        effect: '+[2-5] to Maximum Damage',
-        reqLevel: 3,
-        range: [2, 5]
-      },
-      'Wrath': {
-        effect: '+[6-10] to Maximum Damage',
-        reqLevel: 8,
-        range: [6, 10]
-      },
-      'Carnage': {
-        effect: '+[11-15] to Maximum Damage',
-        reqLevel: 18,
-        range: [11, 15]
-      },
-      'Joyfulness': {
-        effect: '+[1-4] to Minimum Damage',
-        reqLevel: 3,
-        range: [1, 4]
-      },
-      'Bliss': {
-        effect: '+[5-10] to Minimum Damage',
-        reqLevel: 37,
-        range: [5, 10]
-      },
-      'Envy': {
-        effect: 'Adds 20 Poison Damage',
-        reqLevel: 1,
-        range: [20, 20]
-      },
-      'Daring': {
-        effect: '+[1-3] to Dexterity',
-        reqLevel: 1,
-        range: [1, 3]
-      },
-      'Daring2': {
-        effect: '+[4-6] to Dexterity',
-        reqLevel: 14,
-        range: [4, 6]
-      },
-      'Daring3': {
-        effect: '+[7-9] to Dexterity',
-        reqLevel: 28,
-        range: [7, 9]
-      },
-      'Truth': {
-        effect: '+7% Faster Hit Recovery',
-        reqLevel: 36,
-        range: [7, 7]
-      },
-      'Honor': {
-        effect: 'Replenish Life+ [1-4]',
-        reqLevel: 35,
-        range: [1, 4]
-      },
-      'Avarice': {
-        effect: '+[10-30]% Extra Gold from Monsters',
-        reqLevel: 1,
-        range: [10, 30]
-      },
-      'Prosperity': {
-        effect: '+[5-10]% Better Chance of Getting Magic Items',
-        reqLevel: 19,
-        range: [5, 10]
-      },
-      'Knowledge': {
-        effect: '+[1-5] to Energy',
-        reqLevel: 6,
-        range: [1, 5]
-      },
-      'Knowledge2': {
-        effect: '+[4-6] to Energy',
-        reqLevel: 18,
-        range: [4, 6]
-      },
-      'Knowledge3': {
-        effect: '+[7-9] to Energy',
-        reqLevel: 33,
-        range: [7, 9]
-      },
-      'Spirit': {
-        effect: '+[3-8] to Life',
-        reqLevel: 1,
-        range: [3, 8]
-      },
-      'Hope': {
-        effect: '+[9-20] to Life', //maic only
-        reqLevel: 37,
-        range: [9, 20]
-      },
-      'Freedom': {
-        effect: 'Requirements -15%',
-        reqLevel: 33,
-        range: [-15, -15]
-      },
-      'Virility': {
-        effect: '+[1-4] to Strength',
-        reqLevel: 13,
-        range: [1, 4]
-      },
-      'Virility2': {
-        effect: '+[5-6] to Strength',
-        reqLevel: 25,
-        range: [5, 6]
-      },
-      'Virility3': {
-        effect: '+[7-9] to Strength',
-        reqLevel: 42,
-        range: [7, 9]
-      },
-    };
-  }
-
-  // === CHARACTER STATS INITIALIZATION ===
   setInitialCharacterStats() {
     const classDropdown = document.getElementById('selectClass');
-    const currentClass = classDropdown?.value || 'Amazon';
+    if (!classDropdown) return;
+    
+    // Check if stats are already set (not 0)
+    const strVal = parseInt(document.getElementById('str')?.value) || 0;
+    if (strVal > 0) return; // Stats already initialized, don't reset
+
+    const currentClass = classDropdown.value || 'Amazon';
     const baseStats = this.classStats[currentClass];
-
     if (baseStats) {
-      const strInput = document.getElementById('str');
-      const dexInput = document.getElementById('dex');
-      const vitInput = document.getElementById('vit');
-      const enrInput = document.getElementById('enr');
-      const lvlInput = document.getElementById('lvlValue');
-
-      if (strInput) strInput.value = baseStats.str;
-      if (dexInput) dexInput.value = baseStats.dex;
-      if (vitInput) vitInput.value = baseStats.vit;
-      if (enrInput) enrInput.value = baseStats.enr;
-      if (lvlInput) lvlInput.value = 1;
-
+      ['str', 'dex', 'vit', 'enr'].forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.value = baseStats[s];
+      });
+      const lvl = document.getElementById('lvlValue');
+      if (lvl) lvl.value = 1;
       this.currentLevel = 1;
-
     }
   }
 
   // === SOCKET CONTAINER INITIALIZATION ===
   initializeSocketContainers() {
     // Only weapons, helms, armors, and shields can have sockets
-    // (rare exceptions for other slots can be handled via item.properties.maxSockets)
     const sections = ['weapon', 'helm', 'armor', 'shield'];
 
     sections.forEach(section => {
+      // Check if it already exists anywhere in the DOM for this section
+      if (document.querySelector(`.socket-container[data-section="${section}"]`)) {
+        return;
+      }
+
       const infoId = this.getSectionInfoId(section);
       const infoDiv = document.getElementById(infoId);
 
-      if (infoDiv && !infoDiv.querySelector('.socket-container')) {
+      if (infoDiv) {
         const socketContainer = document.createElement('div');
         socketContainer.className = 'socket-container';
         socketContainer.dataset.section = section;
         socketContainer.innerHTML = `
             <div class="socket-grid sockets-0"></div>
-            <button class="add-socket-btn" onclick="addSocket('${section}')">Add Socket</button>
+            <button class="add-socket-btn" onclick="addSocket('${section}')">+</button>
           `;
-        infoDiv.appendChild(socketContainer);
+        // Append as sibling after infoDiv
+        infoDiv.parentNode.insertBefore(socketContainer, infoDiv.nextSibling);
       }
     });
   }
@@ -2634,656 +1408,33 @@ class UnifiedSocketSystem {
     return actualLevel;
   }
 
-  isItemUsableByCharacterClass(itemName) {
-    // Use window.getItemData to support both regular and crafted items
-    const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
-    if (!item) return true;
-
-    // Crafted items have no class restrictions
-    if (item.isCrafted) return true;
-
-    if (!item.description) return true;
-
-    // Look for class restriction pattern: "(ClassName Only)"
-    const classPattern = /\(([A-Za-z]+)\s+Only\)/i;
-    const match = item.description.match(classPattern);
-
-    if (match && match[1]) {
-      const restrictedClass = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
-      const currentClass = document.getElementById('selectClass')?.value || 'Amazon';
-      return restrictedClass === currentClass;
-    }
-
-    return true; // No class restriction
-  }
-
-  doesCharacterMeetStatRequirements(itemName) {
-    // Use window.getItemData to support both regular and crafted items
-    const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
-    if (!item) return true;
-    if (!item.properties) return true;
-
-    const requiredStr = item.properties.reqstr || 0;
-    const requiredDex = item.properties.reqdex || 0;
-
-    // Get current character stats from inputs
-    const strInput = parseInt(document.getElementById('str')?.value);
-    const dexInput = parseInt(document.getElementById('dex')?.value);
-
-    // If inputs are not available, return true (allow display)
-    if (isNaN(strInput) || isNaN(dexInput)) return true;
-
-    return strInput >= requiredStr && dexInput >= requiredDex;
-  }
-
   getItemRequiredStats(itemName) {
-    // Use window.getItemData to support both regular and crafted items
     const item = window.getItemData ? window.getItemData(itemName) : itemList[itemName];
-    if (!item) return { str: 0, dex: 0 };
-    if (!item.properties) return { str: 0, dex: 0 };
-
+    if (!item?.properties) return { str: 0, dex: 0 };
     return {
       str: item.properties.reqstr || 0,
       dex: item.properties.reqdex || 0
     };
   }
 
+  updateStatsDisplay() {
+    if (window.SocketUI) {
+      window.SocketUI.updateStatsDisplay(this);
+    }
+  }
+
   updateAll() {
     if (this.isInitializing) return;
-
-    this.updateAllItemDisplays();
-    this.calculateAllStats();
-    this.updateStatsDisplay();
-
-
-  }
-
-  updateAllItemDisplays() {
-    Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
-      this.updateItemDisplay(config.section);
-    });
-  }
-
-  // Replace your existing updateItemDisplay method with this enhanced version
-
-  // NUCLEAR OPTION: Post-Processing Deduplication to satisfy user request ("Recalculate duplicate text")
-  // This checks if the Red Corruption Text appears elsewhere (as White Text) and removes the Red Text if found.
-  cleanDuplicateCorruptionText(html) {
-    if (!html || !html.includes('corruption-enhanced-stat')) return html;
-
-    let cleanedHtml = html;
-
-    // 1. Remove Exact Red Duplicates (Double Red Lines)
-    const redPattern = /(<div class="corruption-enhanced-stat">[^<]+<\/div>|<span class="corruption-enhanced-stat">[^<]+<\/span>)/gi;
-    const redMatches = cleanedHtml.match(redPattern);
-
-    if (redMatches && redMatches.length > 1) {
-      const uniqueMatches = new Set();
-      for (const match of redMatches) {
-        const content = match.replace(/<[^>]+>/g, '').toLowerCase().trim();
-        if (uniqueMatches.has(content)) {
-          // Replace only the first occurrence found (which effectively removes duplicates one by one)
-          cleanedHtml = cleanedHtml.replace(match, '');
-        } else {
-          uniqueMatches.add(content);
-        }
-      }
-    }
-
-    // 2. Remove Red if Fuzzy Matched in White
-    // Helper to strip tags and normalize
-    const normalize = (s) => s.replace(/<[^>]+>/g, '').replace(/[^a-z0-9]/gi, '').toLowerCase();
-    const tokenize = (s) => s.replace(/<[^>]+>/g, '').toLowerCase().match(/[a-z]+/g) || [];
-
-    const divPattern = /<div class="corruption-enhanced-stat">([^<]+)<\/div>/gi;
-    const spanPattern = /<span class="corruption-enhanced-stat">([^<]+)<\/span>/gi;
-
-    // Function to process matches
-    const processMatches = (pattern) => {
-      let match;
-      // We must reset lastIndex or create new regex loop if reusing global regex, 
-      // but here we create new regex logic or just iterate 'cleanedHtml' which changes.
-      // Iterating a changing string with exec is tricky.
-      // Simpler approach: find all matches first, then process?
-      // No, because removing one might affect others (overlap?). Unlikely for distinct div/span blocks.
-
-      // Let's use a standard while loop but be careful about infinite loops if string doesn't shrink.
-      // But we always replace with '' if match found.
-
-      while ((match = pattern.exec(cleanedHtml)) !== null) {
-        const fullTag = match[0];
-        const textContent = match[1];
-        if (!textContent) continue;
-
-        const corruptTokens = tokenize(textContent);
-        if (corruptTokens.length === 0) continue;
-
-        // Temporarily remove this tag to check the REST of the description
-        const tempHtml = cleanedHtml.replace(fullTag, '');
-        const restTokens = tokenize(tempHtml);
-
-        const significantTokens = corruptTokens.filter(t => t.length > 2);
-        if (significantTokens.length === 0) continue;
-
-        // Check for Magic Find specifically
-        const isMagicFind = significantTokens.includes('magic') && significantTokens.includes('find');
-        const isMFInDescription = restTokens.includes('magic') && restTokens.includes('items') && restTokens.includes('chance');
-
-        // Check all tokens
-        let matchCount = 0;
-        for (const token of significantTokens) {
-          if (restTokens.includes(token)) matchCount++;
-        }
-        const matchRatio = matchCount / significantTokens.length;
-
-        if (matchRatio >= 1.0 || (isMagicFind && isMFInDescription)) {
-          // Duplicate found! Remove it.
-          cleanedHtml = cleanedHtml.replace(fullTag, '');
-          // Since we modified cleanedHtml, the regex index is invalid. Return true to restart loop?
-          return true;
-        }
-      }
-      return false;
-    };
-
-    // Loop until stable
-    let mutated = true;
-    let maxLoops = 5;
-    while (mutated && maxLoops > 0) {
-      // Re-create regexes each pass to ensure clean state
-      const p1 = /<div class="corruption-enhanced-stat">([^<]+)<\/div>/gi;
-      const p2 = /<span class="corruption-enhanced-stat">([^<]+)<\/span>/gi;
-      mutated = processMatches(p1) || processMatches(p2);
-      maxLoops--;
-    }
-
-    return cleanedHtml;
-  }
-
-  updateItemDisplay(section) {
-    const infoId = this.getSectionInfoId(section);
-    const infoDiv = document.getElementById(infoId);
-    if (!infoDiv) {
-      return;
-    }
-
-    const dropdownId = this.getSectionDropdownId(section);
-    const dropdown = document.getElementById(dropdownId);
-
-    if (!dropdown || !dropdown.value) {
-      infoDiv.innerHTML = '';
-      return;
-    }
-
-    let corruptionMerged = false;
-
-    // CRITICAL FIX: Use dropdown-specific cache to get the modified item
-    // This ensures we use the item with updated properties from handleVariableStatChange
-    const cacheKey = `${dropdownId}_${dropdown.value}`;
-    let item = window.dropdownItemCache?.[cacheKey];
-
-    // If not in cache, this is the first time - shouldn't happen if updateItemInfo ran first
-    // but handle it gracefully
-    if (!item) {
-      item = window.getItemData(dropdown.value);
-    }
-
-    if (!item) {
-      infoDiv.innerHTML = '';
-      return;
-    }
-
-    // NOTE: We do NOT reset properties here in socket.js because it would wipe
-    // manual user input changes (e.g. perfect rolls).
-    // The "Reset on Switch" logic is handled in main.js updateItemInfo.
-    const currentLevel = parseInt(document.getElementById('lvlValue')?.value) || 1;
-    const actualRequiredLevel = this.calculateActualRequiredLevel(section, dropdown.value);
-    const meetsRequirement = currentLevel >= actualRequiredLevel;
-    const isUsableByClass = this.isItemUsableByCharacterClass(dropdown.value);
-    const meetsStatRequirements = this.doesCharacterMeetStatRequirements(dropdown.value);
-
-    // Get socket stats
-    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-
-    // Handle dynamic items (no static description, or has baseType)
-    if (!item.description || item.baseType) {
-      // Always regenerate description for dynamic items to re-attach event listeners
-      // (This is critical for items like Arcanna's Deathwand with variable stats)
-      let baseDescription = window.generateItemDescription(dropdown.value, item, dropdownId);
-
-
-      // TODO: Potential fix for skill damage stats resetting to 0 after input changes:
-      // Store the regenerated description back into item.description so that when
-      // calculateAllStats() is called by other systems (setTracker, character manager, etc.),
-      // they parse the UPDATED description with current property values.
-      // However, this currently breaks input box functionality, so it's disabled for now.
-      // item.description = baseDescription;
-
-      // Check if item has corruption applied
-      // NOTE: We do NOT use addCorruptionWithStacking here because properties are already updated via corrupt.js
-      // and socket.js will handle merging them into the base line below.
-      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-        // Mark as merged so the fallback logic at the bottom doesn't append a duplicate line
-        corruptionMerged = true;
-      }
-
-      // Parse base stats from the generated description (strip input elements first)
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = baseDescription;
-      tempDiv.querySelectorAll('.stat-input').forEach(input => input.remove());
-      const cleanBaseDescription = tempDiv.innerHTML;
-
-      const baseStats = this.parseStatsToMap(cleanBaseDescription);
-
-      // Build socket items and merge stats
-      const socketItems = [];
-      sockets.forEach(socket => {
-        const stats = socket.dataset.stats;
-        const itemName = socket.dataset.itemName;
-        const levelReq = parseInt(socket.dataset.levelReq) || 1;
-        const socketUsable = currentLevel >= levelReq;
-
-        if (stats && itemName) {
-          socketItems.push({
-            name: itemName,
-            stats,
-            levelReq,
-            usable: socketUsable && meetsRequirement && isUsableByClass && meetsStatRequirements
-          });
-
-          // Merge stats if usable
-          if (socketUsable && meetsRequirement && isUsableByClass && meetsStatRequirements) {
-            const parsedSocketStats = this.parseStatsToMap(stats);
-            this.mergeStatsMaps(baseStats, parsedSocketStats);
-          }
-        }
-      });
-
-      // For ALL dynamic items, use generateStackedDescription to show merged stats
-      // This function now preserves input boxes while stacking non-variable stats
-      // For example, Biggin's Bonnet will keep edmg/toatt inputs but stack +life from rubies
-      //
-      // TODO: Future enhancement for items where socket bonuses affect the SAME variable stats
-      // (e.g., weapon with variable edmg + jewel with +edmg%). Currently those don't combine.
-      let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems, dropdownId, corruptionMerged);
-
-      // Update Required Level display - only check level requirement
-      const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
-      const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
-      const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
-      if (levelPattern.test(finalDescription)) {
-        finalDescription = finalDescription.replace(levelPattern, newLevelLine);
-      }
-
-      // Update Required Strength and Dexterity colors - check individually
-      finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
-
-      // Update display
-      infoDiv.innerHTML = finalDescription;
-
-      // Re-attach input listeners
-      if (typeof attachStatInputListeners === 'function') {
-        attachStatInputListeners();
-      } else if (typeof window.attachStatInputListeners === 'function') {
-        window.attachStatInputListeners();
-      }
-
-      // Update visual feedback
-      if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
-        infoDiv.style.opacity = '0.6';
-        infoDiv.style.filter = 'grayscale(50%)';
-        if (!meetsRequirement) {
-          infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
-        } else if (!isUsableByClass) {
-          infoDiv.title = `This item is restricted to a different class`;
-        } else {
-          infoDiv.title = `You don't have the required strength or dexterity to use this item`;
-        }
-      } else {
-        infoDiv.style.opacity = '1';
-        infoDiv.style.filter = 'none';
-        infoDiv.title = '';
-      }
-      return;
-    }
-
-    // From here on, handle static description items
-    // CRITICAL FIX: Use the ORIGINAL description as base for merging corruption/sockets
-    // This prevents double-counting if item.description already contains the corruption
-    let baseDescription = (window.originalItemDescriptions && window.originalItemDescriptions[dropdown.value]) || item.description;
-    const baseStats = this.parseStatsToMap(baseDescription);
-
-    // Build socket items array
-    const socketItems = [];
-
-    sockets.forEach(socket => {
-      const stats = socket.dataset.stats;
-      const itemName = socket.dataset.itemName;
-      const levelReq = parseInt(socket.dataset.levelReq) || 1;
-
-      if (stats && itemName) {
-        socketItems.push({
-          name: itemName,
-          stats,
-          levelReq,
-          usable: currentLevel >= levelReq && meetsRequirement && isUsableByClass && meetsStatRequirements
-        });
-
-        // Only merge stats if both item and socket are usable
-        if (meetsRequirement && currentLevel >= levelReq && isUsableByClass && meetsStatRequirements) {
-          const parsedSocketStats = this.parseStatsToMap(stats);
-          this.mergeStatsMaps(baseStats, parsedSocketStats);
-        }
-      }
-    });
-
-    // CRITICAL FIX: Use addCorruptionWithStacking for Static Items
-    // This function from corrupt.js properly handles multi-line corruptions
-    // by stacking what can be stacked and displaying the rest in red
-    corruptionMerged = false;
-    if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-      const corruption = window.itemCorruptions[dropdownId];
-      if (corruption.text && corruption.itemName === dropdown.value) {
-        // Use the corruption stacking function from corrupt.js
-        if (typeof window.addCorruptionWithStacking === 'function') {
-          baseDescription = window.addCorruptionWithStacking(baseDescription, corruption.text);
-          corruptionMerged = true;
-          
-          // ALSO MERGE THE STATS INTO baseStats SO THEY PERSIST IN THE Map
-          const corruptionStats = this.parseStatsToMap(corruption.text);
-          this.mergeStatsMaps(baseStats, corruptionStats);
-        }
-      }
-    }
-
-    // Generate final description with stacked properties
-    let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems, dropdownId);
-
-    // CRITICAL FIX: Smart Corruption Display for Static Items
-    // ONLY run this fallback if we didn't successfully merge the corruption logic above
-    if (!corruptionMerged && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-      const corruption = window.itemCorruptions[dropdownId];
-      if (corruption.text && corruption.itemName === dropdown.value) {
-        // Smart Strip: Preserve input values
-        let plainDescription = finalDescription.replace(/<input[^>]+value=["']([^"']+)["'][^>]*>/gi, '$1');
-        plainDescription = plainDescription.replace(/<[^>]+>/g, '');
-
-        // Normalize for comparison
-        const normalize = (s) => s.replace(/[^a-z0-9]/gi, '').toLowerCase();
-        const plainNorm = normalize(plainDescription);
-        const corruptNorm = normalize(corruption.text);
-
-        if (plainNorm.includes(corruptNorm)) {
-          // Found - Skip append
-        } else {
-          // Corruption text not found - Append new Red Div
-          finalDescription += `<div class="corruption-enhanced-stat">${corruption.text}</div>`;
-        }
-      }
-    }
-
-    // Update Required Level display - only check level requirement
-    const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
-    const newLevelLine = `<span style="color: ${levelColor}; font-weight: bold;">Required Level: ${actualRequiredLevel}</span>`;
-
-    const levelPattern = /(?:<span[^>]*>)?Required Level: \d+(?:<\/span>)?/gi;
-    if (levelPattern.test(finalDescription)) {
-      finalDescription = finalDescription.replace(levelPattern, newLevelLine);
-    }
-
-    // Update Required Strength and Dexterity colors - check individually
-    finalDescription = this.updateStatRequirementColors(finalDescription, dropdown.value);
-
-    // NUCLEAR OPTION: Post-Processing Deduplication
-    finalDescription = this.cleanDuplicateCorruptionText(finalDescription);
-
-    // Visual feedback for unusable items
-    if (!meetsRequirement || !isUsableByClass || !meetsStatRequirements) {
-      infoDiv.style.opacity = '0.6';
-      infoDiv.style.filter = 'grayscale(50%)';
-      if (!meetsRequirement) {
-        infoDiv.title = `You need level ${actualRequiredLevel} to use this item`;
-      } else if (!isUsableByClass) {
-        infoDiv.title = `This item is restricted to a different class`;
-      } else {
-        infoDiv.title = `You don't have the required strength or dexterity to use this item`;
-      }
+    if (window.SocketUI) {
+      window.SocketUI.updateAllItemDisplays(this);
+      this.calculateAllStats();
+      window.SocketUI.updateStatsDisplay(this);
     } else {
-      infoDiv.style.opacity = '1';
-      infoDiv.style.filter = 'none';
-      infoDiv.title = '';
-    }
-
-    infoDiv.innerHTML = finalDescription;
-  }
-
-  getDropdownIdFromDescription(description) {
-    if (!description) return null;
-    const match = description.match(/data-dropdown=["']([^"']+)["']/i);
-    return match ? match[1] : null;
-  }
-
-  // Generate final description with stacked properties and visual indicators
-  generateStackedDescription(originalDescription, mergedStats, socketItems, dropdownId, corruptionMerged) {
-    // Extract ethereal text if present, to re-add at the very end
-    const etherealMatch = originalDescription.match(/\s*<span[^>]*>Ethereal<\/span>/i);
-    const etherealText = etherealMatch ? etherealMatch[0] : '';
-    let finalDescription = etherealText ? originalDescription.replace(/\s*<span[^>]*>Ethereal<\/span>/i, '') : originalDescription;
-
-    // EXTRACT CORRUPTION BUTTON Logic
-    // Socket system would accidentally strip the button because it rebuilds the description
-    // match any button calling openCorruptionModal
-    const buttonMatch = finalDescription.match(/<button[^>]*openCorruptionModal[^>]*>.*?<\/button>/i);
-    const buttonText = buttonMatch ? buttonMatch[0] : '';
-    if (buttonText) {
-      // Temporarily remove it so it doesn't get messed up by regex replacements
-      finalDescription = finalDescription.replace(buttonText, '');
-    }
-
-    const sortedKeys = Array.from(mergedStats.keys()).sort((a, b) => {
-      // Process percentage patterns first (e.g., physical_damage_reduced_percent before physical_damage_reduced)
-      if (a.includes('_percent') && !b.includes('_percent')) return -1;
-      if (!a.includes('_percent') && b.includes('_percent')) return 1;
-      return 0;
-    });
-
-    // Identify which stats are corrupted to maintain red styling
-    const corruptedStats = new Set();
-    // CRITICAL FIX: Use the unique tracking key (dropdownId_itemName)
-    const dropdown = document.getElementById(dropdownId);
-    const itemName = dropdown ? dropdown.value : null;
-    const trackingKey = dropdownId && itemName ? `${dropdownId}_${itemName}` : (dropdownId || itemName);
-    
-    if (trackingKey && window.corruptedProperties && window.corruptedProperties[trackingKey]) {
-      // Use the existing set from the property applier
-      window.corruptedProperties[trackingKey].forEach(key => corruptedStats.add(key));
-      
-      // Also parse the corruption text to ensure we catch everything
-      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-        const corruption = window.itemCorruptions[dropdownId];
-        if (corruption.text) {
-          const parsed = this.parseStatsToMap(corruption.text);
-          parsed.forEach((val, key) => corruptedStats.add(key));
-        }
-      }
-    }
-
-    // Replace stacked stats in original description with colored versions
-    const replacedKeys = new Set();
-    sortedKeys.forEach(key => {
-      const data = mergedStats.get(key);
-      const isCorrupted = corruptedStats.has(key) || !!data.isCorrupted;
-      
-      if (data.stacked || data.fromSocket || isCorrupted) {
-        const replacement = this.formatStackedStat(key, data, isCorrupted);
-        if (replacement) {
-          const pattern = this.getStatPattern(key);
-          const hasMatch = pattern && pattern.test(finalDescription);
-          
-          if (hasMatch) {
-            replacedKeys.add(key);
-            pattern.lastIndex = 0;
-            finalDescription = finalDescription.replace(pattern, (match) => {
-              const inputMatch = match.match(/<input[^>]*class=["']stat-input["'][^>]*>/);
-              const scaleMatch = match.match(/\[[\d\-]+\]/);
-              let result = replacement;
-              if (scaleMatch) result += ' <span style="color: #888;">' + scaleMatch[0] + '</span>';
-              if (inputMatch) result += ' ' + inputMatch[0];
-              return result;
-            });
-          } else if (data.fromSocket) {
-            // New socket-only stat - we'll append these in a controlled way below
-          }
-        }
-      }
-    });
-
-    // BUILD APPEND SECTION (Stats not in base description)
-    let appendSection = "";
-
-    // 1. Add new socket-only stats in blue
-    sortedKeys.forEach(key => {
-      const data = mergedStats.get(key);
-      if (data.fromSocket && !replacedKeys.has(key)) {
-        const pattern = this.getStatPattern(key);
-        // CRITICAL: Reset lastIndex before testing
-        if (pattern) pattern.lastIndex = 0;
-        
-        // Final check: Only append if it wasn't replaced above
-        if (!pattern || !pattern.test(finalDescription)) {
-          const isCorrupted = corruptedStats.has(key);
-          const replacement = this.formatStackedStat(key, data, isCorrupted);
-          if (replacement) appendSection += `${replacement}<br>`;
-        }
-      }
-    });
-
-    // 2. Add unusable socket items in gray
-    const unusableEffects = socketItems.filter(item => !item.usable);
-    unusableEffects.forEach(item => {
-      const lines = item.stats.split(',');
-      lines.forEach(line => {
-        if (line.trim()) {
-          appendSection += `<span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span><br>`;
-        }
-      });
-    });
-
-    // Re-add ethereal if present (should be after stats)
-    if (etherealText) {
-      appendSection += `${etherealText}<br>`;
-    }
-
-    // CRITICAL: Handle the "Corrupted" label (ensure it's after stats but before button)
-    // Check if item has corruption data
-    const hasCorruption = window.itemCorruptions && window.itemCorruptions[dropdownId] && window.itemCorruptions[dropdownId].itemName === itemName;
-    
-    // Use an even more flexible regex that handles potential HTML changes better
-    const corruptedLabelMatch = finalDescription.match(/(?:<br\s*\/?>)?\s*<span[^>]*class=["']corrupted-text["'][^>]*>Corrupted<\/span>(?:<br\s*\/?>)?/i);
-    
-    if (corruptedLabelMatch) {
-      // Remove it from current position and move it to the end of stats
-      finalDescription = finalDescription.replace(corruptedLabelMatch[0], '');
-    }
-    
-    // Always add it to the end of stats if the item is corrupted
-    if (hasCorruption || corruptedLabelMatch) {
-      // Ensure we have exactly one separator before label
-      if (!appendSection.endsWith('<br>') && !finalDescription.endsWith('<br>') && !appendSection.endsWith('</span>')) {
-        // Only add a break if not at the start of the append section
-        if (appendSection.length > 0 || finalDescription.length > 0) {
-          appendSection += '<br>';
-        }
-      }
-      appendSection += `<span class="corrupted-text" style="color: #ff6b6b; font-weight: bold;">Corrupted</span><br>`;
-    }
-
-    // CRITICAL FIX: Re-add the corruption button at the VERY BOTTOM
-    if (buttonText) {
-      appendSection += `${buttonText}`;
-    }
-
-    finalDescription += appendSection;
-    return finalDescription;
-
-    return finalDescription;
-  }
-
-  updateStatRequirementColors(description, itemName) {
-    let updatedDescription = description;
-    const reqStats = this.getItemRequiredStats(itemName);
-
-    // Get current character stats from inputs
-    const strInput = parseInt(document.getElementById('str')?.value) || 0;
-    const dexInput = parseInt(document.getElementById('dex')?.value) || 0;
-
-    // Check each requirement independently
-    const meetsStrRequirement = strInput >= reqStats.str;
-    const meetsDexRequirement = dexInput >= reqStats.dex;
-
-    // Determine color based on EACH requirement independently
-    const strColor = meetsStrRequirement ? '#00ff00' : '#ff5555';
-    const dexColor = meetsDexRequirement ? '#00ff00' : '#ff5555';
-
-    // Replace Required Strength
-    if (reqStats.str > 0) {
-      const strPattern = /(?:<span[^>]*>)?Required Strength: \d+(?:<\/span>)?/gi;
-      const newStrLine = `<span style="color: ${strColor}; font-weight: bold;">Required Strength: ${reqStats.str}</span>`;
-      updatedDescription = updatedDescription.replace(strPattern, newStrLine);
-    }
-
-    // Replace Required Dexterity
-    if (reqStats.dex > 0) {
-      const dexPattern = /(?:<span[^>]*>)?Required Dexterity: \d+(?:<\/span>)?/gi;
-      const newDexLine = `<span style="color: ${dexColor}; font-weight: bold;">Required Dexterity: ${reqStats.dex}</span>`;
-      updatedDescription = updatedDescription.replace(dexPattern, newDexLine);
-    }
-
-    return updatedDescription;
-  }
-
-  // Add stacking styles
-  addStackingStyles() {
-    const styles = `
-      <style id="socket-stacking-styles">
-        .stacked-stat {
-          color: #4a90e2 !important;
-          font-weight: bold !important;
-        }
-        
-        .socket-stat {
-          color: #4a90e2 !important;
-          font-weight: bold !important;
-        }
-        
-        .unusable-socket-stat {
-          color: #888 !important;
-          font-style: italic !important;
-        }
-        
-        .item-unusable {
-          opacity: 0.6;
-          filter: grayscale(50%);
-        }
-      </style>
-    `;
-
-    if (!document.getElementById('socket-stacking-styles')) {
-      document.head.insertAdjacentHTML('beforeend', styles);
+      this.calculateAllStats();
     }
   }
 
-  getSocketEnhancements(section) {
-    const enhancements = [];
-    const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-
-    sockets.forEach(socket => {
-      if (socket.dataset.stats) {
-        enhancements.push(socket.dataset.stats);
-      }
-    });
-    return enhancements;
-  }
+  // Note: Mercenary stats display is handled by SocketUI
 
   calculateAllStats() {
     // Reset stats
@@ -3753,24 +1904,19 @@ class UnifiedSocketSystem {
     const dropdown = document.getElementById(dropdownId);
     if (!dropdown || !dropdown.value) return;
 
-    // Use window.getItemData to support both regular and crafted items
-    // CRITICAL FIX: Check cache first for slot-specific modified items (e.g. corrupted)
     let item = window.dropdownItemCache && window.dropdownItemCache[`${dropdownId}_${dropdown.value}`];
-
     if (!item) {
       item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
     }
     if (!item) return;
 
-    const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
-    const meetsStatRequirements = this.doesCharacterMeetStatRequirements(dropdown.value);
+    const actualLevel = window.SocketUI ? window.SocketUI.calculateActualRequiredLevel(this, section, dropdown.value) : 1;
+    const meetsStats = window.SocketUI ? window.SocketUI.doesCharacterMeetStatRequirements(dropdown.value) : true;
 
-    // Parse item stats if level and stat requirements are met
-    // Check for either properties OR description (description might have corruption stats)
-    if (this.currentLevel >= actualLevel && meetsStatRequirements && (item.properties || item.description)) {
-      this.parseItemStats(item, section);
-
-
+    if (this.currentLevel >= actualLevel && meetsStats) {
+      if (window.StatParser) {
+        window.StatParser.parseItemStats(this, item, section);
+      }
     }
   }
 
@@ -3782,18 +1928,12 @@ class UnifiedSocketSystem {
     sections.forEach(section => {
       const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
 
-
-      sockets.forEach((socket, index) => {
+      sockets.forEach((socket) => {
         const levelReq = parseInt(socket.dataset.levelReq) || 1;
-        const itemName = socket.dataset.itemName;
         const stats = socket.dataset.stats;
 
-
-
-        // Only apply socket stats if level requirement is met
-        if (this.currentLevel >= levelReq && stats) {
-
-          this.parseSocketStats(stats, section);
+        if (this.currentLevel >= levelReq && stats && window.StatParser) {
+          window.StatParser.parseSocketStats(this, stats, section);
         }
       });
     });
@@ -3865,318 +2005,50 @@ class UnifiedSocketSystem {
 
   // Calculate mercenary equipment stats separately from player stats
   calculateMercenaryStats() {
-    // CRITICAL: Check if mercenary exists first - if "No Mercenary" selected, ignore all merc equipment
     const mercClass = document.getElementById('mercclass')?.value;
-    if (!mercClass || mercClass === 'No Mercenary') {
-      return; // Early exit - no mercenary means no mercenary stats
-    }
+    if (!mercClass || mercClass === 'No Mercenary') return;
 
-    // Get mercenary level
     const mercLevel = parseInt(document.getElementById('merclvlValue')?.value) || 1;
-
-    // Only process mercenary equipment
-    Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
-      if (!config.section.startsWith('merc')) return; // Only mercenary items
-
-      const dropdown = document.getElementById(dropdownId);
-      if (!dropdown || !dropdown.value) return;
-
-      // Use window.getItemData to support both regular and crafted items
-      // CRITICAL FIX: Check cache first for slot-specific modified items
-      let item = window.dropdownItemCache && window.dropdownItemCache[`${dropdownId}_${dropdown.value}`];
-
-      if (!item) {
-        item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
-      }
-      if (!item) return;
-
-      // Check if mercenary meets level requirement for this item
-      const actualLevel = this.calculateActualRequiredLevel(config.section, dropdown.value);
-
-      // TODO: Add mercenary strength/dexterity requirements check here in the future
-      // For now, only check level requirement
-
-      // Only apply stats if mercenary level requirement is met
-      if (mercLevel >= actualLevel && item.properties) {
-        this.parseMercenaryItemStats(item, config.section);
-      }
-    });
-
-    // Calculate mercenary socket stats (only from items that meet level req)
-    const mercLevel2 = parseInt(document.getElementById('merclvlValue')?.value) || 1;
-    const mercSections = ['mercweapon', 'merchelm', 'mercarmor', 'mercoff', 'mercgloves', 'mercbelts', 'mercboots'];
-    mercSections.forEach(section => {
-      // Check if the item in this section meets level requirement
-      const dropdownId = Object.entries(this.equipmentMap).find(
-        ([_, config]) => config.section === section
-      )?.[0];
-
-      if (dropdownId) {
-        const dropdown = document.getElementById(dropdownId);
-        if (dropdown && dropdown.value) {
-          const actualLevel = this.calculateActualRequiredLevel(section, dropdown.value);
-
-          // Only add socket stats if item meets level requirement
-          if (mercLevel2 >= actualLevel) {
-            const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-            sockets.forEach((socket) => {
-              const levelReq = parseInt(socket.dataset.levelReq) || 1;
-              // Also check if mercenary meets the socket item's level requirement
-              if (mercLevel2 >= levelReq) {
-                const stats = socket.dataset.stats;
-                if (stats) {
-                  this.parseMercenarySocketStats(stats);
-                }
-              }
-            });
-          }
-        }
-      }
-    });
-  }
-
-  parseMercenaryItemStats(item, section) {
-    let description = item.description;
-
-    // 1. For dynamic items without a static description (or has baseType), generate it FIRST
-    // This provides the base stats (Defense, Damage, etc.) for the parser
-    if (!description || item.baseType) {
-      const dropdownId = Object.entries(this.equipmentMap).find(
-        ([_, config]) => config.section === section
-      )?.[0];
-
-      if (dropdownId) {
-        const itemName = document.getElementById(dropdownId)?.value;
-        if (itemName) {
-          description = window.generateItemDescription(itemName, item, dropdownId);
-        }
-      }
-    }
-
-    // 2. Safely append corruption text for parsing (ONLY for static items)
-    // Dynamic items already have corruption built into their properties and base description
-    const dropdownId = Object.entries(this.equipmentMap).find(
-      ([_, config]) => config.section === section
-    )?.[0];
-
-    if (!item.baseType && dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-      const corruption = window.itemCorruptions[dropdownId];
-      if (corruption.text && corruption.itemName) {
-        const currentName = document.getElementById(dropdownId)?.value;
-        if (currentName === corruption.itemName) {
-          // Only append if the corruption text isn't already in the description
-          const cleanCorruption = corruption.text.replace(/<[^>]*>/g, '').trim();
-          const cleanDescription = (description || '').replace(/<[^>]*>/g, '').trim();
-
-          if (!cleanDescription.includes(cleanCorruption)) {
-            description = (description ? description + '<br>' : '') + corruption.text;
-          }
-        }
-      }
-    }
-
-    if (!description) return;
-
-    const lines = description.split('<br>');
-    lines.forEach(line => this.parseMercenaryStatLine(line.trim()));
-  }
-
-  parseMercenarySocketStats(statsText) {
-    if (!statsText) return;
-    const statLines = statsText.split(',').map(line => line.trim()).filter(line => line);
-    statLines.forEach(line => {
-      this.parseMercenaryStatLine(line);
-    });
-  }
-
-  parseMercenaryStatLine(line) {
-    if (!line) return;
-
-    const cleanLine = line.replace(/<[^>]*>/g, '').trim();
-    if (!cleanLine) return;
-
-    // Skip set bonus lines
-    if (/\(\d+\s+Items?\)|\(Complete Set\)/i.test(cleanLine)) {
-      return;
-    }
+    this.isMercenaryParsing = true;
 
     try {
-      // All Skills
-      const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
-      if (allSkillsMatch) {
-        this.mercenaryStats.allSkills += parseInt(allSkillsMatch[1]);
-        return;
-      }
+      Object.entries(this.equipmentMap).forEach(([dropdownId, config]) => {
+        if (!config.section.startsWith('merc')) return;
 
-      // Defense
-      const defMatch = cleanLine.match(/^Defense:\s*(\d+)/i);
-      if (defMatch) {
-        this.mercenaryStats.defense += parseInt(defMatch[1]);
-        return;
-      }
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown || !dropdown.value) return;
 
-      // Magic Find
-      const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
-      if (mfMatch) {
-        this.mercenaryStats.magicFind += parseInt(mfMatch[1]);
-        return;
-      }
+        let item = window.dropdownItemCache && window.dropdownItemCache[`${dropdownId}_${dropdown.value}`];
+        if (!item) item = window.getItemData ? window.getItemData(dropdown.value) : itemList[dropdown.value];
+        if (!item) return;
 
-      // Gold Find
-      const gfMatch = cleanLine.match(/([+-]?\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
-      if (gfMatch) {
-        this.mercenaryStats.goldFind += parseInt(gfMatch[1]);
-        return;
-      }
+        const actualLevel = window.SocketUI ? window.SocketUI.calculateActualRequiredLevel(this, config.section, dropdown.value) : 1;
+        if (mercLevel >= actualLevel && window.StatParser) {
+          window.StatParser.parseItemStats(this, item, config.section);
+        }
+      });
 
-      // Speed stats
-      const iasMatch = cleanLine.match(/(\d+)%\s+Increased\s+Attack\s+Speed/i);
-      if (iasMatch) {
-        this.mercenaryStats.ias += parseInt(iasMatch[1]);
-        return;
-      }
-
-      const fcrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Cast\s+Rate/i);
-      if (fcrMatch) {
-        this.mercenaryStats.fcr += parseInt(fcrMatch[1]);
-        return;
-      }
-
-      const frwMatch = cleanLine.match(/(\d+)%\s+Faster\s+Run\/Walk/i);
-      if (frwMatch) {
-        this.mercenaryStats.frw += parseInt(frwMatch[1]);
-        return;
-      }
-
-      const fhrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Hit\s+Recovery/i);
-      if (fhrMatch) {
-        this.mercenaryStats.fhr += parseInt(fhrMatch[1]);
-        return;
-      }
-
-      // Resistances
-      const allResMatch = cleanLine.match(/All\s+Resistances?\s+(?:\+)?(\d+)%?/i);
-      if (allResMatch) {
-        const value = parseInt(allResMatch[1]);
-        this.mercenaryStats.fireResist += value;
-        this.mercenaryStats.coldResist += value;
-        this.mercenaryStats.lightResist += value;
-        this.mercenaryStats.poisonResist += value;
-        return;
-      }
-
-      const fireResMatch = cleanLine.match(/Fire\s+Resist\s+(?:\+)?(\d+)%?/i);
-      if (fireResMatch) {
-        this.mercenaryStats.fireResist += parseInt(fireResMatch[1]);
-        return;
-      }
-
-      const coldResMatch = cleanLine.match(/Cold\s+Resist\s+(?:\+)?(\d+)%?/i);
-      if (coldResMatch) {
-        this.mercenaryStats.coldResist += parseInt(coldResMatch[1]);
-        return;
-      }
-
-      const lightResMatch = cleanLine.match(/Lightning\s+Resist\s+(?:\+)?(\d+)%?/i);
-      if (lightResMatch) {
-        this.mercenaryStats.lightResist += parseInt(lightResMatch[1]);
-        return;
-      }
-
-      const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+(?:\+)?(\d+)%?/i);
-      if (poisonResMatch) {
-        this.mercenaryStats.poisonResist += parseInt(poisonResMatch[1]);
-        return;
-      }
-
-      const curseResMatch = cleanLine.match(/Curse\s+Resist\s+(?:\+)?(\d+)%?/i);
-      if (curseResMatch) {
-        this.mercenaryStats.curseResist += parseInt(curseResMatch[1]);
-        return;
-      }
-
-      // Damage Reduction stats
-      // Physical Damage Taken Reduced by X (flat -> PDR)
-      const pdrMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
-      if (pdrMatch) {
-        this.mercenaryStats.pdr += parseInt(pdrMatch[1]);
-        return;
-      }
-
-      // Physical Damage Reduced by X% (percentage -> DR)
-      const drMatch = cleanLine.match(/(?:Physical\s+)?Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)%/i);
-      if (drMatch) {
-        this.mercenaryStats.dr += parseInt(drMatch[1]);
-        return;
-      }
-
-      // Magic Damage Reduced by X (flat -> MDR)
-      const mdrMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)(?!%)/i);
-      if (mdrMatch) {
-        this.mercenaryStats.mdr += parseInt(mdrMatch[1]);
-        return;
-      }
-
-      const plrMatch = cleanLine.match(/Poison\s+Length\s+Reduced\s+by\s+(\d+)%?/i);
-      if (plrMatch) {
-        this.mercenaryStats.plr += parseInt(plrMatch[1]);
-        return;
-      }
-
-      // Cannot be Frozen
-      if (/Cannot\s+be\s+Frozen/i.test(cleanLine)) {
-        this.mercenaryStats.cbf = true;
-        return;
-      }
-    } catch (error) {
-      // Silently skip unparseable lines
+      // Mercenary Socket Stats
+      const mercSections = ['mercweapon', 'merchelm', 'mercarmor', 'mercoff', 'mercgloves', 'mercbelts', 'mercboots'];
+      mercSections.forEach(section => {
+        const sockets = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
+        sockets.forEach(socket => {
+          const levelReq = parseInt(socket.dataset.levelReq) || 1;
+          const stats = socket.dataset.stats;
+          if (mercLevel >= levelReq && stats && window.StatParser) {
+            window.StatParser.parseSocketStats(this, stats, section);
+          }
+        });
+      });
+    } finally {
+      this.isMercenaryParsing = false;
     }
   }
 
+  // Legacy parsing methods removed - now using window.StatParser
+
   parseItemStats(item, section) {
-    let description = item.description;
-
-    // 1. For dynamic items without a static description (or has baseType), generate it FIRST
-    // This provides the base stats (Defense, Damage, etc.) for the parser
-    if (!description || item.baseType) {
-      const dropdownId = Object.entries(this.equipmentMap).find(
-        ([_, config]) => config.section === section
-      )?.[0];
-
-      if (dropdownId) {
-        const itemName = document.getElementById(dropdownId)?.value;
-        if (itemName) {
-          description = window.generateItemDescription(itemName, item, dropdownId);
-        }
-      }
-    }
-
-    // 2. Safely append corruption text for parsing (ONLY for static items)
-    // Dynamic items already have corruption built into their properties and base description
-    const dropdownId = Object.entries(this.equipmentMap).find(
-      ([_, config]) => config.section === section
-    )?.[0];
-
-    if (!item.baseType && dropdownId && window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-      const corruption = window.itemCorruptions[dropdownId];
-      if (corruption.text && corruption.itemName) {
-        const currentName = document.getElementById(dropdownId)?.value;
-        if (currentName === corruption.itemName) {
-          // CRITICAL FIX: Always append corruption text for static items
-          // The stat engine (Map) will handle the combined values via addition in parseStatLine
-          description = (description ? description + '<br>' : '') + corruption.text;
-        }
-      }
-    }
-
-    if (!description) return;
-
-    // Check if this item has a base Defense line (e.g., "Defense: 834")
-    // If it does, we should NOT parse "+X Defense" lines because todef is already included in the total
-    const hasBaseDefense = /Defense:\s*\d+/i.test(description);
-
-    const lines = description.split('<br>');
-    lines.forEach(line => this.parseStatLine(line.trim(), hasBaseDefense));
+    return window.StatParser.parseItemStats(this, item, section);
   }
 
   // parseSocketStats(statsText, section) {
@@ -4187,1154 +2059,35 @@ class UnifiedSocketSystem {
   // }
 
   parseSocketStats(statsText, section) {
-    if (!statsText) return;
-
-
-    // Split by comma and process each stat separately
-    const statLines = statsText.split(',').map(line => line.trim()).filter(line => line);
-
-
-    statLines.forEach((line, index) => {
-      try {
-
-        this.parseStatLine(line);
-
-      } catch (error) {
-        // Silent error - skip invalid stat lines
-      }
-    });
-
+    return window.StatParser.parseSocketStats(this, statsText, section);
   }
 
 
   parseStatLine(line, hasBaseDefense = false) {
-    if (!line) return;
-
-    const cleanLine = line.replace(/<[^>]*>/g, '').trim();
-    if (!cleanLine) return;
-
-    // IMPORTANT: Skip set bonus lines - these are handled by setTracker.js
-    // Set bonuses have patterns like "(2 Items)", "(3 Items)", "(Complete Set)"
-    if (/\(\d+\s+Items?\)|\(Complete Set\)/i.test(cleanLine)) {
-      return; // Skip this line entirely
-    }
-
-    try {
-      // === RAINBOW FACET PATTERNS FIRST (most specific) ===
-
-      // Skill damage bonuses: +5% to Fire Skill Damage
-      if (cleanLine.match(/\+\d+%\s+to\s+Fire\s+Skill\s+Damage/i)) {
-        const match = cleanLine.match(/\+(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.fireSkillDamage = (this.stats.fireSkillDamage || 0) + value;
-          return;
-        }
-      }
-
-      if (cleanLine.match(/\+\d+%\s+to\s+Cold\s+Skill\s+Damage/i)) {
-        const match = cleanLine.match(/\+(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.coldSkillDamage = (this.stats.coldSkillDamage || 0) + value;
-          return;
-        }
-      }
-
-      if (cleanLine.match(/\+\d+%\s+to\s+Lightning\s+Skill\s+Damage/i)) {
-        const match = cleanLine.match(/\+(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.lightningSkillDamage = (this.stats.lightningSkillDamage || 0) + value;
-          return;
-        }
-      }
-
-      if (cleanLine.match(/\+\d+%\s+to\s+Poison\s+Skill\s+Damage/i)) {
-        const match = cleanLine.match(/\+(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.poisonSkillDamage = (this.stats.poisonSkillDamage || 0) + value;
-          return;
-        }
-      }
-
-      // Enemy resistance pierce: -3% to Enemy Fire Resistance
-      if (cleanLine.match(/-\d+%\s+to\s+Enemy\s+Fire\s+Resistance/i)) {
-        const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Fire\s+Resistance/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.pierceFire = (this.stats.pierceFire || 0) + value;
-          return;
-        }
-      }
-
-      if (cleanLine.match(/-\d+%\s+to\s+Enemy\s+Cold\s+Resistance/i)) {
-        const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Cold\s+Resistance/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.pierceCold = (this.stats.pierceCold || 0) + value;
-          return;
-        }
-      }
-
-      if (cleanLine.match(/-\d+%\s+to\s+Enemy\s+Lightning\s+Resistance/i)) {
-        const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Lightning\s+Resistance/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.pierceLightning = (this.stats.pierceLightning || 0) + value;
-          return;
-        }
-      }
-
-      if (cleanLine.match(/-\d+%\s+to\s+Enemy\s+Poison\s+Resistance/i)) {
-        const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Poison\s+Resistance/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.piercePoison = (this.stats.piercePoison || 0) + value;
-          return;
-        }
-      }
-
-      if (cleanLine.match(/-\d+%\s+to\s+Enemy\s+Physical\s+Resistance/i)) {
-        const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Physical\s+Resistance/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.piercePhysical = (this.stats.piercePhysical || 0) + value;
-          return;
-        }
-      }
-
-      if (cleanLine.match(/-\d+%\s+to\s+Enemy\s+Magic\s+Resistance/i)) {
-        const match = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Magic\s+Resistance/i);
-        if (match) {
-          const value = parseInt(match[1]);
-          this.stats.pierceMagic = (this.stats.pierceMagic || 0) + value;
-          return;
-        }
-      }
-
-      // === ELEMENTAL DAMAGE PATTERNS (after Rainbow Facet patterns) ===
-
-      // Fire Damage: Adds 17-45 Fire Damage
-      const fireDmgMatch = cleanLine.match(/(?:Adds\s+)?(\d+)(?:-(\d+))?\s+Fire\s+Damage/i);
-      if (fireDmgMatch) {
-        const min = parseInt(fireDmgMatch[1]);
-        const max = parseInt(fireDmgMatch[2] || fireDmgMatch[1]);
-        this.stats.fireDmgMin += min;
-        this.stats.fireDmgMax += max;
-        return;
-      }
-
-      // Lightning Damage: Adds 1-50 Lightning Damage
-      const lightDmgMatch = cleanLine.match(/(?:Adds\s+)?(\d+)(?:-(\d+))?\s+Lightning\s+Damage/i);
-      if (lightDmgMatch) {
-        const min = parseInt(lightDmgMatch[1]);
-        const max = parseInt(lightDmgMatch[2] || lightDmgMatch[1]);
-        this.stats.lightDmgMin += min;
-        this.stats.lightDmgMax += max;
-        return;
-      }
-
-      // Cold Damage: Adds 25-35 Cold Damage
-      const coldDmgMatch = cleanLine.match(/(?:Adds\s+)?(\d+)(?:-(\d+))?\s+Cold\s+Damage/i);
-      if (coldDmgMatch) {
-        const min = parseInt(coldDmgMatch[1]);
-        const max = parseInt(coldDmgMatch[2] || coldDmgMatch[1]);
-        this.stats.coldDmgMin += min;
-        this.stats.coldDmgMax += max;
-        return;
-      }
-
-      // Poison Damage: Adds 15-25 Poison Damage
-      const poisonDmgMatch = cleanLine.match(/(?:Adds\s+|\+)?(\d+)(?:-(\d+))?\s+Poison\s+Damage/i);
-      if (poisonDmgMatch) {
-        const min = parseInt(poisonDmgMatch[1]);
-        const max = parseInt(poisonDmgMatch[2] || poisonDmgMatch[1]);
-        this.stats.poisonDmgMin += min;
-        this.stats.poisonDmgMax += max;
-        return;
-      }
-
-      // Proc effects (store for display, don't calculate)
-      const levelUpProcMatch = cleanLine.match(/(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+?)\s+when\s+you\s+Level[- ]Up/i);
-      if (levelUpProcMatch) {
-        this.stats.levelUpProcs = this.stats.levelUpProcs || [];
-        this.stats.levelUpProcs.push({
-          chance: parseInt(levelUpProcMatch[1]),
-          level: parseInt(levelUpProcMatch[2]),
-          skill: levelUpProcMatch[3]
-        });
-        return;
-      }
-
-      const deathProcMatch = cleanLine.match(/(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+?)\s+when\s+you\s+Die/i);
-      if (deathProcMatch) {
-        this.stats.deathProcs = this.stats.deathProcs || [];
-        this.stats.deathProcs.push({
-          chance: parseInt(deathProcMatch[1]),
-          level: parseInt(deathProcMatch[2]),
-          skill: deathProcMatch[3]
-        });
-        return;
-      }
-
-      const defMatch = cleanLine.match(/^Defense:\s*(\d+)/i);
-      if (defMatch) {
-        this.stats.defense += parseInt(defMatch[1]);
-        return;
-      }
-
-      // Additional defense bonus: +X Defense (but not "Defense: X" which is handled above)
-      // This handles items like amulets/rings that don't have base defense but get +Defense from todef
-      // ONLY parse this if the item doesn't have a "Defense: X" line (hasBaseDefense = false)
-      // For items with base defense (like helms/armor), the +X Defense is already included in the total
-      // Pattern allows for HTML tags and input elements after "Defense" (from dynamic stats)
-      // Negative lookahead (?!\s+vs) excludes "Defense vs. Missile" and "Defense vs. Melee"
-      if (!hasBaseDefense) {
-        const toDefMatch = cleanLine.match(/^\+(\d+)\s+Defense(?!\s+vs)/i);
-        if (toDefMatch) {
-          this.stats.defense += parseInt(toDefMatch[1]);
-          return;
-        }
-      }
-
-      // All Attributes: +2 to All Attributes
-      // This should be parsed BEFORE individual attributes to avoid conflicts
-      const allAttrsMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?All\s+Attributes/i);
-      if (allAttrsMatch) {
-        const value = parseInt(allAttrsMatch[1]);
-        this.stats.strength += value;
-        this.stats.dexterity += value;
-        this.stats.vitality += value;
-        this.stats.energy += value;
-        return;
-      }
-
-      const strMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(?:Strength|STR)/i);
-      if (strMatch) { this.stats.strength += parseInt(strMatch[1]); return; }
-
-      const dexMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(?:Dexterity|DEX)/i);
-      if (dexMatch) { this.stats.dexterity += parseInt(dexMatch[1]); return; }
-
-      const vitMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(?:Vitality|VIT)/i);
-      if (vitMatch) { this.stats.vitality += parseInt(vitMatch[1]); return; }
-
-      const enrMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(?:Energy|ENR)/i);
-      if (enrMatch) { this.stats.energy += parseInt(enrMatch[1]); return; }
-
-      // Life and Mana
-      const lifeMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?Life/i);
-      if (lifeMatch) { this.stats.life += parseInt(lifeMatch[1]); return; }
-
-      const manaMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?Mana/i);
-      if (manaMatch) { this.stats.mana += parseInt(manaMatch[1]); return; }
-
-      // Light Radius
-      const lightRadiusMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Light\s+Radius/i);
-      if (lightRadiusMatch) { this.stats.lightRadius += parseInt(lightRadiusMatch[1]); return; }
-
-      // Per Level Stats (Attack Rating, Max Damage, Defense)
-      const perLvlMatch = cleanLine.match(/\(\+([0-9.]+)\s+per\s+Character\s+Level\)/i);
-      if (perLvlMatch) {
-        const perLvl = parseFloat(perLvlMatch[1]);
-        const value = Math.floor(perLvl * this.currentLevel);
-        if (cleanLine.includes('Attack Rating')) {
-          this.stats.toatt += value;
-        } else if (cleanLine.includes('Maximum Damage')) {
-          this.stats.toMaxDmg += value;
-        } else if (cleanLine.includes('Defense')) {
-          this.stats.defense += value;
-        } else if (cleanLine.includes('Life')) {
-          this.stats.life += value;
-        } else if (cleanLine.includes('Mana')) {
-          this.stats.mana += value;
-        }
-        return;
-      }
-
-      // All Skills
-      const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
-      if (allSkillsMatch) { this.stats.allSkills += parseInt(allSkillsMatch[1]); return; }
-      // Individual skill bonuses (e.g., "+3 to Meteor (Sorceress Only)")
-      // Pattern: +X to [Skill Name] (optional class restriction)
-      // Use lookahead to ensure we capture the full skill name up to the optional parenthesis or end of line
-      const individualSkillMatch = cleanLine.match(/\+(\d+)\s+to\s+([A-Za-z\s\'\-]+?)(?=\s+\(|$)/i);
-      if (individualSkillMatch) {
-        const bonus = parseInt(individualSkillMatch[1]);
-        const skillName = individualSkillMatch[2].trim();
-        console.log(`Matched individual skill: "${skillName}" +${bonus}`);
-
-        // Find the skill container ID from the skill name
-        if (window.skillSystem && window.skillSystem.classSkillTrees) {
-          let found = false;
-          for (const className in window.skillSystem.classSkillTrees) {
-            const skillTrees = window.skillSystem.classSkillTrees[className];
-            for (const treeId in skillTrees) {
-              const skills = skillTrees[treeId];
-              for (const skill of skills) {
-                if (skill.name.toLowerCase() === skillName.toLowerCase()) {
-                  // Add to individual skill bonuses
-                  if (!this.stats.individualSkillBonuses) {
-                    this.stats.individualSkillBonuses = {};
-                  }
-                  this.stats.individualSkillBonuses[skill.id] =
-                    (this.stats.individualSkillBonuses[skill.id] || 0) + bonus;
-                  console.log(`Added bonus to ${skill.id}: +${bonus}`);
-                  found = true;
-                  break;
-                }
-              }
-              if (found) break;
-            }
-            if (found) break;
-          }
-          if (found) return;
-        }
-      }
-
-      // Increase Maximum Life/Mana %
-      const lifeMaxMatch = cleanLine.match(/Increase\s+Maximum\s+Life\s+(\d+)%/i);
-      if (lifeMaxMatch) { this.stats.lifePercent += parseInt(lifeMaxMatch[1]); return; }
-
-      const manaMaxMatch = cleanLine.match(/Increase\s+Maximum\s+Mana\s+(\d+)%/i);
-      if (manaMaxMatch) { this.stats.manaPercent += parseInt(manaMaxMatch[1]); return; }
-
-      // Resistances
-      const allResMatch = cleanLine.match(/All\s+Resistances?\s+([+-]?\d+)%?/i);
-      if (allResMatch) {
-        const value = parseInt(allResMatch[1]);
-        this.stats.allResistances += value;
-        this.stats.fireResist += value;
-        this.stats.coldResist += value;
-        this.stats.lightResist += value;
-        this.stats.poisonResist += value;
-        // Curse resistance is NOT included in "All Resistances"
-        return;
-      }
-
-      const fireResMatch = cleanLine.match(/Fire\s+Resist\s+([+-]?\d+)%?/i);
-      if (fireResMatch) { this.stats.fireResist += parseInt(fireResMatch[1]); return; }
-
-      const coldResMatch = cleanLine.match(/Cold\s+Resist\s+([+-]?\d+)%?/i);
-      if (coldResMatch) { this.stats.coldResist += parseInt(coldResMatch[1]); return; }
-
-      const lightResMatch = cleanLine.match(/Lightning\s+Resist\s+([+-]?\d+)%?/i);
-      if (lightResMatch) { this.stats.lightResist += parseInt(lightResMatch[1]); return; }
-
-      const poisonResMatch = cleanLine.match(/Poison\s+Resist\s+([+-]?\d+)%?/i);
-      if (poisonResMatch) { this.stats.poisonResist += parseInt(poisonResMatch[1]); return; }
-
-      const curseResMatch = cleanLine.match(/Curse\s+Resist(?:ance)?\s+([+-]?\d+)%?/i);
-      if (curseResMatch) { this.stats.curseResist += parseInt(curseResMatch[1]); return; }
-
-      // Life Steal
-      const lifeStealMatch = cleanLine.match(/(\d+)%\s+Life\s+Stolen\s+per\s+Hit/i);
-      if (lifeStealMatch) { this.stats.lifeSteal += parseInt(lifeStealMatch[1]); return; }
-
-      // Mana Steal
-      const manaStealMatch = cleanLine.match(/(\d+)%\s+Mana\s+Stolen\s+per\s+Hit/i);
-      if (manaStealMatch) { this.stats.manaSteal += parseInt(manaStealMatch[1]); return; }
-
-      // Magic Find
-      const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
-      if (mfMatch) { this.stats.magicFind += parseInt(mfMatch[1]); return; }
-
-      // Damage Taken Gained as Mana when Hit
-      const dtmMatch = cleanLine.match(/(\d+)%\s+Damage\s+Taken\s+Gained\s+as\s+Mana\s+when\s+Hit/i);
-      if (dtmMatch) { this.stats.dmgtomana += parseInt(dtmMatch[1]); return; }
-
-      // Gold Find
-      // const gfMatch = cleanLine.match(/(\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
-      const gfMatch = cleanLine.match(/([+-]?\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
-      if (gfMatch) { this.stats.goldFind += parseInt(gfMatch[1]); return; }
-
-      // Combat stats
-      const cbMatch = cleanLine.match(/(\d+)%\s+Chance\s+of\s+Crushing\s+Blow/i);
-      if (cbMatch) { this.stats.crushingBlow += parseInt(cbMatch[1]); return; }
-
-      const dsMatch = cleanLine.match(/(\d+)%\s+Deadly\s+Strike/i);
-      if (dsMatch) { this.stats.deadlyStrike += parseInt(dsMatch[1]); return; }
-
-      // Maximum Deadly Strike: "15% Maximum Deadly Strike"
-      const maxDsMatch = cleanLine.match(/(\d+)%\s+Maximum\s+Deadly\s+Strike/i);
-      if (maxDsMatch) { this.stats.maxDeadlyStrike += parseInt(maxDsMatch[1]); return; }
-
-      const owMatch = cleanLine.match(/(\d+)%\s+Chance\s+of\s+Open\s+Wounds/i);
-      if (owMatch) { this.stats.openWounds += parseInt(owMatch[1]); return; }
-
-      const owdmgMatch = cleanLine.match(/(\d+)\s+Open\s+Wounds\s+Damage\s+per\s+Second/i);
-      if (owdmgMatch) { this.stats.openWoundsDamage += parseInt(owdmgMatch[1]); return; }
-
-      // Speed stats
-      const iasMatch = cleanLine.match(/(\d+)%\s+Increased\s+Attack\s+Speed/i);
-      if (iasMatch) { this.stats.ias += parseInt(iasMatch[1]); return; }
-
-      const fcrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Cast\s+Rate/i);
-      if (fcrMatch) { this.stats.fcr += parseInt(fcrMatch[1]); return; }
-
-      const frwMatch = cleanLine.match(/(\d+)%\s+Faster\s+Run\/Walk/i);
-      if (frwMatch) { this.stats.frw += parseInt(frwMatch[1]); return; }
-
-      const fhrMatch = cleanLine.match(/(\d+)%\s+Faster\s+Hit\s+Recovery/i);
-      if (fhrMatch) { this.stats.fhr += parseInt(fhrMatch[1]); return; }
-
-      // Cannot Be Frozen
-      if (cleanLine.match(/Cannot\s+Be\s+Frozen/i)) { this.stats.cbf = true; return; }
-
-      // Attack Rating (multiple formats for rune compatibility)
-      // Percentage: "20% Bonus to Attack Rating"
-      const toattPercentMatch = cleanLine.match(/(\d+)%\s+(?:Bonus\s+)?to\s+Attack\s+Rating/i);
-      if (toattPercentMatch) { this.stats.toattPercent += parseInt(toattPercentMatch[1]); return; }
-
-      // Flat: "+50 to Attack Rating" or "+50 Attack Rating"
-      const toattFlatMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Attack\s+Rating/i);
-      if (toattFlatMatch) { this.stats.toatt += parseInt(toattFlatMatch[1]); return; }
-
-      // Target Defense modification (Eth rune: "-25% Target Defense", Death Cleaver: "-33% Target Defense")
-      const targetDefMatch = cleanLine.match(/([+-]?\d+)%\s+Target\s+Defense/i);
-      if (targetDefMatch) { this.stats.targetDefense += parseInt(targetDefMatch[1]); return; }
-
-      // Flat Physical Damage bonuses (jewels, runes, gems, items)
-      // Minimum Damage: "+X to Minimum Damage"
-      const toMinDmgMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Minimum\s+Damage/i);
-      if (toMinDmgMatch) { this.stats.toMinDmg += parseInt(toMinDmgMatch[1]); return; }
-
-      // Maximum Damage: "+X to Maximum Damage"
-      const toMaxDmgMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Maximum\s+Damage/i);
-      if (toMaxDmgMatch) { this.stats.toMaxDmg += parseInt(toMaxDmgMatch[1]); return; }
-
-      // Damage to Undead: "+X% Damage to Undead"
-      const dmgToUndeadMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Damage\s+(?:to|vs)\s+Undead/i);
-      if (dmgToUndeadMatch) { this.stats.dmgtoundead += parseInt(dmgToUndeadMatch[1]); return; }
-
-      // Damage to Demons: "+X% Damage to Demons"
-      const dmgToDemonMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Damage\s+(?:to|vs)\s+Demons/i);
-      if (dmgToDemonMatch) { this.stats.dmgtodemon += parseInt(dmgToDemonMatch[1]); return; }
-
-      // Damage Reduction stats
-      // Physical Damage Reduced by X% OR Physical Damage Taken Reduced by X% (percentage -> DR)
-      // Check percentage first (more specific) before flat patterns
-      const drPercentMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\s*%/i);
-      if (drPercentMatch) {
-        this.stats.dr += parseInt(drPercentMatch[1]);
-        return;
-      }
-
-      // Physical Damage Taken Reduced by X (flat -> PDR)
-      // FIXED: Added \b word boundary
-      const pdrFlatMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\b(?!\s*%)/i);
-      if (pdrFlatMatch) {
-        this.stats.pdr += parseInt(pdrFlatMatch[1]);
-        return;
-      }
-
-      // Magic Damage Reduced by X (flat -> MDR)
-      const mdrMatch = cleanLine.match(/Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)/i);
-      if (mdrMatch) {
-        this.stats.mdr += parseInt(mdrMatch[1]);
-        return;
-      }
-
-      // If we get here, the stat wasn't recognized
-
-    } catch (error) {
-      throw error; // Re-throw to be caught by parseSocketStats
-    }
-
+    return window.StatParser.parseStatLine(this, line, hasBaseDefense);
   }
 
   // Add these methods to your existing socket.js class
 
   // Enhanced stat parsing with stacking support
   parseStatsToMap(statsText) {
-    const statsMap = new Map();
-    let lines;
-    if (statsText.includes('<br>')) {
-      lines = statsText.split('<br>').filter(line => line.trim());
-    } else if (statsText.includes(',')) {
-      lines = statsText.split(',').filter(line => line.trim());
-    } else {
-      lines = [statsText].filter(line => line.trim());
-    }
-
-    lines.forEach(line => {
-      const cleanLine = line.replace(/<[^>]*>/g, '').trim();
-      if (!cleanLine) return;
-
-
-      // Rainbow Facet skill damage patterns
-      const fireSkillDmgMatch = cleanLine.match(/\+(\d+)%\s+to\s+Fire\s+Skill\s+Damage/i);
-      if (fireSkillDmgMatch) {
-        const value = parseInt(fireSkillDmgMatch[1]);
-        this.addToStatsMap(statsMap, 'fire_skill_damage', { value });
-        return;
-      }
-
-      const coldSkillDmgMatch = cleanLine.match(/\+(\d+)%\s+to\s+Cold\s+Skill\s+Damage/i);
-      if (coldSkillDmgMatch) {
-        const value = parseInt(coldSkillDmgMatch[1]);
-        this.addToStatsMap(statsMap, 'cold_skill_damage', { value });
-        return;
-      }
-
-      const lightningSkillDmgMatch = cleanLine.match(/\+(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/i);
-      if (lightningSkillDmgMatch) {
-        const value = parseInt(lightningSkillDmgMatch[1]);
-        this.addToStatsMap(statsMap, 'lightning_skill_damage', { value });
-        return;
-      }
-
-      const poisonSkillDmgMatch = cleanLine.match(/\+(\d+)%\s+to\s+Poison\s+Skill\s+Damage/i);
-      if (poisonSkillDmgMatch) {
-        const value = parseInt(poisonSkillDmgMatch[1]);
-        this.addToStatsMap(statsMap, 'poison_skill_damage', { value });
-        return;
-      }
-
-      // Rainbow Facet resistance pierce patterns
-      const fireResistPierceMatch = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Fire\s+Resistance/i);
-      if (fireResistPierceMatch) {
-        const value = parseInt(fireResistPierceMatch[1]);
-        this.addToStatsMap(statsMap, 'fire_resist_pierce', { value });
-        return;
-      }
-
-      const coldResistPierceMatch = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Cold\s+Resistance/i);
-      if (coldResistPierceMatch) {
-        const value = parseInt(coldResistPierceMatch[1]);
-        this.addToStatsMap(statsMap, 'cold_resist_pierce', { value });
-        return;
-      }
-
-      const lightningResistPierceMatch = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Lightning\s+Resistance/i);
-      if (lightningResistPierceMatch) {
-        const value = parseInt(lightningResistPierceMatch[1]);
-        this.addToStatsMap(statsMap, 'lightning_resist_pierce', { value });
-        return;
-      }
-
-      const poisonResistPierceMatch = cleanLine.match(/-(\d+)%\s+to\s+Enemy\s+Poison\s+Resistance/i);
-      if (poisonResistPierceMatch) {
-        const value = parseInt(poisonResistPierceMatch[1]);
-        this.addToStatsMap(statsMap, 'poison_resist_pierce', { value });
-        return;
-      }
-
-      // Proc effects - store as special non-stackable stats
-
-      const levelUpProcMatch = cleanLine.match(/(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+)\s+when\s+you\s+Level\s+Up/i);
-      if (levelUpProcMatch) {
-        const [, chance, level, skill] = levelUpProcMatch;
-        // Use skill name as key so identical procs stack
-        const skillKey = `level_up_proc_${skill.trim().replace(/\s+/g, '_').toLowerCase()}`;
-        this.addToStatsMap(statsMap, skillKey, {
-          chance: parseInt(chance),
-          level: parseInt(level),
-          skill: skill.trim(),
-          stackable: true,  // Now they can stack
-          fromSocket: true
-        });
-        return;
-      }
-
-      const deathProcMatch = cleanLine.match(/(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+)\s+when\s+you\s+Die/i);
-      if (deathProcMatch) {
-        const [, chance, level, skill] = deathProcMatch;
-        // Use skill name as key so identical procs stack
-        const skillKey = `death_proc_${skill.trim().replace(/\s+/g, '_').toLowerCase()}`;
-        this.addToStatsMap(statsMap, skillKey, {
-          chance: parseInt(chance),
-          level: parseInt(level),
-          skill: skill.trim(),
-          stackable: true,  // Now they can stack
-          fromSocket: true
-        });
-        return;
-      }
-      // Lightning Damage: 1-55, Adds 1-55 Lightning Damage
-      const lightningMatch = cleanLine.match(/(?:Adds\s+)?(\d+)-(\d+)\s+Lightning\s+Damage/i);
-      if (lightningMatch) {
-        const min = parseInt(lightningMatch[1]);
-        const max = parseInt(lightningMatch[2]);
-        this.addToStatsMap(statsMap, 'lightning_damage', { min, max, type: 'lightning' });
-        return;
-      }
-
-      // Fire Damage: 1-6, Adds 1-6 Fire Damage  
-      const fireMatch = cleanLine.match(/(?:Adds\s+)?(\d+)-(\d+)\s+Fire\s+Damage/i);
-      if (fireMatch) {
-        const min = parseInt(fireMatch[1]);
-        const max = parseInt(fireMatch[2]);
-        this.addToStatsMap(statsMap, 'fire_damage', { min, max, type: 'fire' });
-        return;
-      }
-
-      // Cold Damage: 1-3, Adds 1-3 Cold Damage
-      const coldMatch = cleanLine.match(/(?:Adds\s+)?(\d+)-(\d+)\s+Cold\s+Damage/i);
-      if (coldMatch) {
-        const min = parseInt(coldMatch[1]);
-        const max = parseInt(coldMatch[2]);
-        this.addToStatsMap(statsMap, 'cold_damage', { min, max, type: 'cold' });
-        return;
-      }
-
-      // Poison Damage: 1-4 over 2 seconds, +5 Poison Damage over 2 Seconds
-      const poisonMatch = cleanLine.match(/(?:Adds\s+)?(\d+)-(\d+)\s+Poison\s+Damage/i);
-      if (poisonMatch) {
-        const min = parseInt(poisonMatch[1]);
-        const max = parseInt(poisonMatch[2]);
-        this.addToStatsMap(statsMap, 'poison_damage', { min, max, type: 'poison' });
-        return;
-      }
-
-      // Resistances: Fire Resist +30%, Lightning Resist +30%, Curse Resistance +10%
-      const resMatch = cleanLine.match(/(Fire|Cold|Lightning|Poison|Curse)\s+Resist(?:ance)?\s+([+-]?\d+)%?/i);
-      if (resMatch) {
-        const type = resMatch[1].toLowerCase();
-        const value = parseInt(resMatch[2]);
-        this.addToStatsMap(statsMap, `${type}_resist`, { value });
-        return;
-      }
-
-      // All Resistances +15%
-      const allResMatch = cleanLine.match(/All\s+Resistances\s+([+-]?\d+)%?/i);
-      if (allResMatch) {
-        const value = parseInt(allResMatch[1]);
-        ['fire', 'cold', 'lightning', 'poison'].forEach(type => {
-          this.addToStatsMap(statsMap, `${type}_resist`, { value });
-        });
-        return;
-      }
-
-      // Maximum Resistances: "+4% to Maximum Fire Resist", etc. (Vex, Ohm, Lo, Gul runes)
-      const maxResMatch = cleanLine.match(/\+?(\d+)%\s+to\s+Maximum\s+(Fire|Cold|Lightning|Poison)\s+Resist/i);
-      if (maxResMatch) {
-        const value = parseInt(maxResMatch[1]);
-        const type = maxResMatch[2].toLowerCase();
-        this.addToStatsMap(statsMap, `max_${type}_resist`, { value });
-        return;
-      }
-
-      // All Maximum Resistances: "+2% to All Maximum Resistances"
-      const allMaxResMatch = cleanLine.match(/\+?(\d+)%\s+to\s+All\s+Maximum\s+Resistances/i);
-      if (allMaxResMatch) {
-        const value = parseInt(allMaxResMatch[1]);
-        ['fire', 'cold', 'lightning', 'poison'].forEach(type => {
-          this.addToStatsMap(statsMap, `max_${type}_resist`, { value });
-        });
-        return;
-      }
-
-      // Attributes: +10 to Strength, +15 Dexterity, 20 to Vitality
-      const attrMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?(Strength|Dexterity|Vitality|Energy)/i);
-      if (attrMatch) {
-        const value = parseInt(attrMatch[1]);
-        const attr = attrMatch[2].toLowerCase();
-        this.addToStatsMap(statsMap, attr, { value });
-        return;
-      }
-
-      // Attack Rating: +50 to Attack Rating, +120 Attack Rating
-      const arMatch = cleanLine.match(/([+-]?\d+)\s+(?:to\s+)?Attack\s+Rating/i);
-      if (arMatch) {
-        const value = parseInt(arMatch[1]);
-        this.addToStatsMap(statsMap, 'attack_rating', { value });
-        return;
-      }
-
-      // Attack Rating Percentage: "20% Bonus to Attack Rating" (Gul rune)
-      const arPercentMatch = cleanLine.match(/(\d+)%\s+(?:Bonus\s+)?to\s+Attack\s+Rating/i);
-      if (arPercentMatch) {
-        const value = parseInt(arPercentMatch[1]);
-        this.addToStatsMap(statsMap, 'attack_rating_percent', { value });
-        return;
-      }
-
-      // Light Radius: +1 Light Radius, +3 to Light Radius
-      const lightRadiusMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Light\s+Radius/i);
-      if (lightRadiusMatch) {
-        const value = parseInt(lightRadiusMatch[1]);
-        this.addToStatsMap(statsMap, 'lightRadius', { value });
-        return;
-      }
-
-      const fhrMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Faster\s+Hit\s+Recovery/i);
-      if (fhrMatch) {
-        const value = parseInt(fhrMatch[1]);
-        this.addToStatsMap(statsMap, 'faster_hit_recovery', { value });
-        return;
-      }
-
-      // Faster Block Rate: +10% Faster Block Rate
-      const fbrMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Faster\s+Block\s+Rate/i);
-      if (fbrMatch) {
-        const value = parseInt(fbrMatch[1]);
-        this.addToStatsMap(statsMap, 'faster_block_rate', { value });
-        return;
-      }
-
-      // Faster Cast Rate: +10% Faster Cast Rate
-      const fcrMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Faster\s+Cast\s+Rate/i);
-      if (fcrMatch) {
-        const value = parseInt(fcrMatch[1]);
-        this.addToStatsMap(statsMap, 'faster_cast_rate', { value });
-        return;
-      }
-
-      // Increased Attack Speed: +10% Increased Attack Speed
-      const iasMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Increased\s+Attack\s+Speed/i);
-      if (iasMatch) {
-        const value = parseInt(iasMatch[1]);
-        this.addToStatsMap(statsMap, 'increased_attack_speed', { value });
-        return;
-      }
-
-      // Faster Run/Walk: +20% Faster Run/Walk
-      const frwMatch = cleanLine.match(/(?:\+)?(\d+)%?\s+Faster\s+Run\/Walk/i);
-      if (frwMatch) {
-        const value = parseInt(frwMatch[1]);
-        this.addToStatsMap(statsMap, 'faster_run_walk', { value });
-        return;
-      }
-
-      // Magic Find: 25% Better Chance of Getting Magic Items
-      const mfMatch = cleanLine.match(/(\d+)%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/i);
-      if (mfMatch) {
-        const value = parseInt(mfMatch[1]);
-        this.addToStatsMap(statsMap, 'magic_find', { value });
-        return;
-      }
-
-      // Gold Find: 50% Extra Gold from Monsters
-      const gfMatch = cleanLine.match(/(\d+)%\s+Extra\s+Gold\s+from\s+Monsters/i);
-      if (gfMatch) {
-        const value = parseInt(gfMatch[1]);
-        this.addToStatsMap(statsMap, 'gold_find', { value });
-        return;
-      }
-
-      // Life: +20 to Life, 15 to Life
-      const lifeMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?Life/i);
-      if (lifeMatch) {
-        const value = parseInt(lifeMatch[1]);
-        this.addToStatsMap(statsMap, 'life', { value });
-        return;
-      }
-
-      // Mana: +30 to Mana, 25 to Mana
-      const manaMatch = cleanLine.match(/(?:\+)?(\d+)\s+to\s+Mana(?!\s*[a-zA-Z])/i);
-      if (manaMatch) {
-        const value = parseInt(manaMatch[1]);
-        this.addToStatsMap(statsMap, 'mana', { value });
-        return;
-      }
-
-      // All Skills: +1 to All Skills, +2 All Skills
-      const allSkillsMatch = cleanLine.match(/(?:\+)?(\d+)\s+(?:to\s+)?All\s+Skills/i);
-      if (allSkillsMatch) {
-        const value = parseInt(allSkillsMatch[1]);
-        this.addToStatsMap(statsMap, 'all_skills', { value });
-        return;
-      }
-
-      // Crushing Blow: 25% Chance of Crushing Blow
-      const cbMatch = cleanLine.match(/(\d+)%\s+Chance\s+of\s+Crushing\s+Blow/i);
-      if (cbMatch) {
-        const value = parseInt(cbMatch[1]);
-        this.addToStatsMap(statsMap, 'crushing_blow', { value });
-        return;
-      }
-
-      // Deadly Strike: 20% Deadly Strike
-      const dsMatch = cleanLine.match(/(\d+)%\s+Deadly\s+Strike/i);
-      if (dsMatch) {
-        const value = parseInt(dsMatch[1]);
-        this.addToStatsMap(statsMap, 'deadly_strike', { value });
-        return;
-      }
-
-      // Open Wounds: 25% Chance of Open Wounds
-      const owMatch = cleanLine.match(/(\d+)%\s+Chance\s+of\s+Open\s+Wounds/i);
-      if (owMatch) {
-        const value = parseInt(owMatch[1]);
-        this.addToStatsMap(statsMap, 'open_wounds', { value });
-        return;
-      }
-
-      const owdmgMatch = cleanLine.match(/(\d+)\s+Open\s+Wounds\s+Damage\s+per\s+Second/i);
-      if (owdmgMatch) {
-        const value = parseInt(owdmgMatch[1]);
-        this.addToStatsMap(statsMap, 'open_wounds_damage', { value });
-        return;
-      }
-
-      // Minimum Damage: +X to Minimum Damage (Sol rune, jewels)
-      const minDmgMatch = cleanLine.match(/\+(\d+)\s+to\s+Minimum\s+Damage/i);
-      if (minDmgMatch) {
-        const value = parseInt(minDmgMatch[1]);
-        this.addToStatsMap(statsMap, 'minimum_damage', { value });
-        return;
-      }
-
-      // Maximum Damage: +X to Maximum Damage (jewels)
-      const maxDmgMatch = cleanLine.match(/\+(\d+)\s+to\s+Maximum\s+Damage/i);
-      if (maxDmgMatch) {
-        const value = parseInt(maxDmgMatch[1]);
-        this.addToStatsMap(statsMap, 'maximum_damage', { value });
-        return;
-      }
-
-      // Mana after each Kill: +X to Mana after each Kill (Tir rune)
-      const manaKillMatch = cleanLine.match(/\+(\d+)\s+to\s+Mana\s+after\s+each\s+Kill/i);
-      if (manaKillMatch) {
-        const value = parseInt(manaKillMatch[1]);
-        this.addToStatsMap(statsMap, 'mana_after_kill', { value });
-        return;
-      }
-
-      // Replenish Life: Replenish Life +X (Dol rune)
-      const replenishLifeMatch = cleanLine.match(/Replenish\s+Life\s+\+(\d+)/i);
-      if (replenishLifeMatch) {
-        const value = parseInt(replenishLifeMatch[1]);
-        this.addToStatsMap(statsMap, 'replenish_life', { value });
-        return;
-      }
-
-      // Damage vs Undead: +X% Damage vs Undead (Eld rune) OR +X% Damage to Undead (Items)
-      // Expanded regex to catch both "vs" and "to"
-      const dmgUndeadMatch = cleanLine.match(/\+(\d+)%\s+Damage\s+(?:vs|to)\s+Undead/i);
-      if (dmgUndeadMatch) {
-        const value = parseInt(dmgUndeadMatch[1]);
-        this.addToStatsMap(statsMap, 'damage_vs_undead', { value });
-        return;
-      }
-
-      // Attack Rating vs Undead: +X Attack Rating vs Undead (Eld rune)
-      const arUndeadMatch = cleanLine.match(/\+(\d+)\s+Attack\s+Rating\s+(?:vs|to)\s+Undead/i);
-      if (arUndeadMatch) {
-        const value = parseInt(arUndeadMatch[1]);
-        this.addToStatsMap(statsMap, 'ar_vs_undead', { value });
-        return;
-      }
-
-      // Physical Damage Reduced by X% (percentage - String of Ears)
-      const drPercentMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\s*%/i);
-      if (drPercentMapMatch) {
-        const value = parseInt(drPercentMapMatch[1]);
-        this.addToStatsMap(statsMap, 'physical_damage_reduced_percent', { value });
-        return;
-      }
-
-      // Physical Damage Taken Reduced by X (flat - Sol rune in helm/armor/shield)
-      // FIXED: Added \b word boundary to prevent matching "1" in "10%"
-      const pdrFlatMapMatch = cleanLine.match(/Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+(\d+)\b(?!\s*%)/i);
-      if (pdrFlatMapMatch) {
-        const value = parseInt(pdrFlatMapMatch[1]);
-        this.addToStatsMap(statsMap, 'physical_damage_reduced', { value });
-        return;
-      }
-
-
-
-      // Store other stats as non-stackable
-      statsMap.set(`other_${Date.now()}_${Math.random()}`, { text: cleanLine, stackable: false });
-    });
-
-    return statsMap;
+    return window.StatParser.parseStatsToMap(statsText);
   }
 
-  // Helper to add stats to map with proper stacking
-  // Add this to your addToStatsMap function
   addToStatsMap(statsMap, key, data) {
-    if (statsMap.has(key)) {
-      const existing = statsMap.get(key);
-      if (data.min !== undefined && data.max !== undefined) {
-        // Damage ranges - stack them
-        existing.min = (existing.min || 0) + data.min;
-        existing.max = (existing.max || 0) + data.max;
-        existing.stacked = true;
-      } else if (data.value !== undefined) {
-        // Single values - stack them
-        existing.value = (existing.value || 0) + data.value;
-        existing.stacked = true;
-      } else if (data.chance !== undefined && key.includes('_proc_')) {
-        // Proc chances - stack them
-        existing.chance = (existing.chance || 0) + data.chance;
-        existing.stacked = true;
-        // Keep the first skill name and level (they should be the same for stacking)
-        if (!existing.skill) existing.skill = data.skill;
-        if (!existing.level) existing.level = data.level;
-      }
-    } else {
-      statsMap.set(key, { ...data, stacked: false });
-    }
+    return window.StatParser.addToStatsMap(statsMap, key, data);
   }
 
-  // Merge socket stats into base item stats
   mergeStatsMaps(baseStats, socketStats) {
-    socketStats.forEach((socketData, key) => {
-      if (baseStats.has(key)) {
-        const baseData = baseStats.get(key);
-        if (socketData.min !== undefined && socketData.max !== undefined) {
-          // Damage ranges
-          baseData.min = (baseData.min || 0) + socketData.min;
-          baseData.max = (baseData.max || 0) + socketData.max;
-          baseData.stacked = true;
-        } else if (socketData.value !== undefined) {
-          // Single values  
-          baseData.value = (baseData.value || 0) + socketData.value;
-          baseData.stacked = true;
-        }
-
-        // CRITICAL FIX: Preserve corruption flag
-        if (socketData.isCorrupted) {
-          baseData.isCorrupted = true;
-        }
-      } else {
-        // New stat from sockets only
-        baseStats.set(key, { ...socketData, fromSocket: true });
-      }
-    });
+    return window.StatParser.mergeStatsMaps(baseStats, socketStats);
   }
 
-  // Format stacked stat for display with blue color
   formatStackedStat(key, data, isCorrupted) {
-    // CRITICAL FIX: Use Red for Corruption, Blue for Sockets
-    let color = isCorrupted ? '#ff5555' : '#4a90e2';
-    let shadow = isCorrupted ? 'text-shadow: 0 0 3px #ff5555;' : 'text-shadow: 0 0 3px rgba(74, 144, 226, 0.5);';
-
-    // Fallback if data object itself has the flag
-    if (data.isCorrupted) {
-      color = '#ff5555';
-      shadow = 'text-shadow: 0 0 3px #ff5555;';
-    }
-
-    if (key.startsWith('level_up_proc_')) {
-      return `<span style="color: ${color}; font-weight: bold;">${data.chance}% Chance to Cast Level ${data.level} ${data.skill} when you Level Up</span>`;
-    }
-    if (key.startsWith('death_proc_')) {
-      return `<span style="color: ${color}; font-weight: bold;">${data.chance}% Chance to Cast Level ${data.level} ${data.skill} when you Die</span>`;
-    }
-
-
-    switch (key) {
-      case 'lightning_damage':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Adds ${data.min}-${data.max} Lightning Damage</span>`;
-      case 'fire_damage':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Adds ${data.min}-${data.max} Fire Damage</span>`;
-      case 'cold_damage':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Adds ${data.min}-${data.max} Cold Damage</span>`;
-      case 'poison_damage':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Adds ${data.min}-${data.max} Poison Damage</span>`;
-      case 'fire_resist':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Fire Resist +${data.value}%</span>`;
-      case 'cold_resist':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Cold Resist +${data.value}%</span>`;
-      case 'lightning_resist':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Lightning Resist +${data.value}%</span>`;
-      case 'poison_resist':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">Poison Resist +${data.value}%</span>`;
-      case 'max_fire_resist':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Maximum Fire Resist</span>`;
-      case 'max_cold_resist':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Maximum Cold Resist</span>`;
-      case 'max_lightning_resist':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Maximum Lightning Resist</span>`;
-      case 'max_poison_resist':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Maximum Poison Resist</span>`;
-      case 'strength':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Strength</span>`;
-      case 'dexterity':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Dexterity</span>`;
-      case 'vitality':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Vitality</span>`;
-      case 'energy':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Energy</span>`;
-      case 'attack_rating':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Attack Rating</span>`;
-      case 'attack_rating_percent':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% to Attack Rating</span>`;
-      case 'faster_hit_recovery':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Faster Hit Recovery</span>`;
-      case 'faster_block_rate':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Faster Block Rate</span>`;
-      case 'faster_cast_rate':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Faster Cast Rate</span>`;
-      case 'increased_attack_speed':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Increased Attack Speed</span>`;
-      case 'faster_run_walk':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value}% Faster Run/Walk</span>`;
-      case 'magic_find':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Better Chance of Getting Magic Items</span>`;
-      case 'gold_find':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Extra Gold from Monsters</span>`;
-      case 'life':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Life</span>`;
-      case 'mana':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Mana</span>`;
-      case 'all_skills':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to All Skills</span>`;
-      case 'crushing_blow':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Chance of Crushing Blow</span>`;
-      case 'deadly_strike':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Deadly Strike</span>`;
-      case 'open_wounds':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">${data.value}% Chance of Open Wounds</span>`;
-      case 'minimum_damage':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Minimum Damage</span>`;
-      case 'maximum_damage':
-        return `<span style="color: ${color}; font-weight: bold; ${shadow}">+${data.value} to Maximum Damage</span>`;
-      case 'mana_after_kill':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Mana after each Kill</span>`;
-      case 'replenish_life':
-      case 'replenish':
-      case 'repl':
-        return `<span style="color: ${color}; font-weight: bold;">Replenish Life +${data.value}</span>`;
-      case 'damage_vs_undead':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Damage vs Undead</span>`;
-      case 'ar_vs_undead':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} Attack Rating vs Undead</span>`;
-      case 'physical_damage_reduced':
-        return `<span style="color: ${color}; font-weight: bold;">Physical Damage Taken Reduced by ${data.value}</span>`;
-      case 'physical_damage_reduced_percent':
-        return `<span style="color: ${color}; font-weight: bold;">Physical Damage Taken Reduced by ${data.value}%</span>`;
-      case 'magic_damage_reduced':
-        return `<span style="color: ${color}; font-weight: bold;">Magic Damage Reduced by ${data.value}</span>`;
-      case 'fire_skill_damage':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Fire Skill Damage</span>`;
-      case 'cold_skill_damage':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Cold Skill Damage</span>`;
-      case 'lightning_skill_damage':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Lightning Skill Damage</span>`;
-      case 'poison_skill_damage':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value}% to Poison Skill Damage</span>`;
-      case 'fire_resist_pierce':
-        return `<span style="color: ${color}; font-weight: bold;">-${data.value}% to Enemy Fire Resistance</span>`;
-      case 'cold_resist_pierce':
-        return `<span style="color: ${color}; font-weight: bold;">-${data.value}% to Enemy Cold Resistance</span>`;
-      case 'lightning_resist_pierce':
-        return `<span style="color: ${color}; font-weight: bold;">-${data.value}% to Enemy Lightning Resistance</span>`;
-      case 'poison_resist_pierce':
-        return `<span style="color: ${color}; font-weight: bold;">-${data.value}% to Enemy Poison Resistance</span>`;
-      case 'lightRadius':
-        return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Light Radius</span>`;
-
-      default:
-        return data.text || '';
-    }
+    return window.StatParser.formatStackedStat(key, data, isCorrupted);
   }
 
-  // Get regex pattern to find original stat line for replacement
   getStatPattern(key) {
-    switch (key) {
-      case 'lightning_damage':
-        return /(?:Adds\s+)?\d+-\d+\s+Lightning\s+Damage/gi;
-      case 'fire_damage':
-        return /(?:Adds\s+)?\d+-\d+\s+Fire\s+Damage/gi;
-      case 'cold_damage':
-        return /(?:Adds\s+)?\d+-\d+\s+Cold\s+Damage/gi;
-      case 'poison_damage':
-        return /(?:Adds\s+)?\d+-\d+\s+Poison\s+Damage/gi;
-      case 'fire_resist':
-        return /Fire\s+Resist\s+\+?\d+%?/gi;
-      case 'cold_resist':
-        return /Cold\s+Resist\s+\+?\d+%?/gi;
-      case 'lightning_resist':
-        return /Lightning\s+Resist\s+\+?\d+%?/gi;
-      case 'poison_resist':
-        return /Poison\s+Resist\s+\+?\d+%?/gi;
-      case 'max_fire_resist':
-        return /\+?\d+%\s+to\s+Maximum\s+Fire\s+Resist/gi;
-      case 'max_cold_resist':
-        return /\+?\d+%\s+to\s+Maximum\s+Cold\s+Resist/gi;
-      case 'max_lightning_resist':
-        return /\+?\d+%\s+to\s+Maximum\s+Lightning\s+Resist/gi;
-      case 'max_poison_resist':
-        return /\+?\d+%\s+to\s+Maximum\s+Poison\s+Resist/gi;
-      case 'strength':
-        return /(?:\+)?\d+\s+(?:to\s+)?Strength/gi;
-      case 'dexterity':
-        return /(?:\+)?\d+\s+(?:to\s+)?Dexterity/gi;
-      case 'vitality':
-        return /(?:\+)?\d+\s+(?:to\s+)?Vitality/gi;
-      case 'energy':
-        return /(?:\+)?\d+\s+(?:to\s+)?Energy/gi;
-      case 'attack_rating':
-        return /(?:\+)?\d+\s+(?:to\s+)?Attack\s+Rating/gi;
-      case 'attack_rating_percent':
-        return /\d+%\s+(?:Bonus\s+)?to\s+Attack\s+Rating/gi;
-      case 'faster_hit_recovery':
-        return /(?:\+)?\d+%?\s+Faster\s+Hit\s+Recovery/gi;
-      case 'faster_block_rate':
-        return /(?:\+)?\d+%?\s+Faster\s+Block\s+Rate/gi;
-      case 'faster_cast_rate':
-        return /(?:\+)?\d+%?\s+Faster\s+Cast\s+Rate/gi;
-      case 'increased_attack_speed':
-        return /(?:\+)?\d+%?\s+Increased\s+Attack\s+Speed/gi;
-      case 'faster_run_walk':
-        return /(?:\+)?\d+%?\s+Faster\s+Run\/Walk/gi;
-      case 'magic_find':
-        return /\d+%\s+Better\s+Chance\s+of\s+Getting\s+Magic\s+Items/gi;
-      case 'gold_find':
-        return /\d+%\s+Extra\s+Gold\s+from\s+Monsters/gi;
-      case 'life':
-        return /(?:\+)?\d+\s+(?:to\s+)?Life/gi;
-      case 'mana':
-        return /(?:\+)?\d+\s+(?:to\s+)?Mana/gi;
-      case 'all_skills':
-        return /(?:\+)?\d+\s+(?:to\s+)?All\s+Skills/gi;
-      case 'crushing_blow':
-        return /\d+%\s+Chance\s+of\s+Crushing\s+Blow/gi;
-      case 'deadly_strike':
-        return /\d+%\s+Deadly\s+Strike/gi;
-      case 'open_wounds':
-        return /\d+%\s+Chance\s+of\s+Open\s+Wounds/gi;
-      case 'minimum_damage':
-        return /\+\d+\s+to\s+Minimum\s+Damage/gi;
-      case 'maximum_damage':
-        return /\+\d+\s+to\s+Maximum\s+Damage/gi;
-      case 'mana_after_kill':
-        return /\+\d+\s+to\s+Mana\s+after\s+each\s+Kill/gi;
-      case 'replenish_life':
-      case 'replenish':
-      case 'repl':
-        return /Replenish\s+Life\s+[+-]?\d+(?:\s+\[[\d\-]+\])?/gi;
-      case 'damage_vs_undead':
-        return /\+\d+%\s+Damage\s+vs\s+Undead/gi;
-      case 'ar_vs_undead':
-        return /\+\d+\s+Attack\s+Rating\s+vs\s+Undead/gi;
-      case 'physical_damage_reduced_percent':
-        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\s*%/gi;
-      case 'physical_damage_reduced':
-        return /Physical\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\b(?!\s*%)/gi;
-      case 'magic_damage_reduced':
-        return /Magic\s+Damage\s+(?:Taken\s+)?Reduced\s+by\s+\d+\b/gi;
-      case 'fire_skill_damage':
-        return /\+(\d+)%\s+to\s+Fire\s+Skill\s+Damage/gi;
-      case 'cold_skill_damage':
-        return /\+(\d+)%\s+to\s+Cold\s+Skill\s+Damage/gi;
-      case 'lightning_skill_damage':
-        return /\+(\d+)%\s+to\s+Lightning\s+Skill\s+Damage/gi;
-      case 'poison_skill_damage':
-        return /\+(\d+)%\s+to\s+Poison\s+Skill\s+Damage/gi;
-      case 'fire_resist_pierce':
-        return /-(\d+)%\s+to\s+Enemy\s+Fire\s+Resistance/gi;
-      case 'cold_resist_pierce':
-        return /-(\d+)%\s+to\s+Enemy\s+Cold\s+Resistance/gi;
-      case 'lightning_resist_pierce':
-        return /-(\d+)%\s+to\s+Enemy\s+Lightning\s+Resistance/gi;
-      case 'poison_resist_pierce':
-        return /-(\d+)%\s+to\s+Enemy\s+Poison\s+Resistance/gi;
-      case 'level_up_proc':
-        return /(\d+)%\s+Chance\s+to\s+Cast\s+Level\s+(\d+)\s+(.+?)\s+when\s+you\s+Level\s+Up/gi;
-      case 'death_proc':
-        return /(\d+)%\s+Chance\s+to\s+Cast\s+(.+?)\s+when\s+you\s+Die/gi;
-      case 'lightRadius':
-        return /(?:\+)?\d+\s+(?:to\s+)?Light\s+Radius/gi;
-      default:
-        return null;
-    }
+    return window.StatParser.getStatPattern(key);
   }
 
   // Replace the updateStatsDisplay method with this CRAZY DEBUG version:
@@ -5545,88 +2298,7 @@ class UnifiedSocketSystem {
     }
   }
 
-  updateMercenaryStatsDisplay() {
-    // Get party buffs for mercenary
-    const ownShoutBonus = window.skillSystem?.getShoutDefenseBonus?.() || 0;
-    const partyShout = window.partyManager?.getBestBuff('shout');
-    const shoutBonus = Math.max(ownShoutBonus, partyShout?.defenseBonus || 0);
-
-    const cloakBonus = window.skillSystem?.getCloakOfShadowsDefenseBonus?.() || 0;
-    const totalDefBonus = shoutBonus + cloakBonus;
-
-    let finalDef = this.mercenaryStats.defense;
-    if (totalDefBonus > 0) {
-      finalDef = Math.floor(finalDef * (1 + totalDefBonus / 100));
-    }
-
-    const bcBonus = window.skillSystem?.getBattleCommandSkills?.() || 0;
-    const partyBC = window.partyManager?.getBestBuff('battle-command');
-    const totalBC = Math.max(bcBonus, partyBC?.allSkills || 0);
-
-    // Update mercenary stats display with values from mercenaryStats object
-    this.updateElement('merc-allskills', this.mercenaryStats.allSkills + totalBC);
-    const mercAllSkillsElem = document.getElementById('merc-allskills');
-    if (mercAllSkillsElem) mercAllSkillsElem.style.color = totalBC > 0 ? '#d0d007ff' : '';
-
-    this.updateElement('merc-mf', this.mercenaryStats.magicFind);
-    this.updateElement('merc-gf', this.mercenaryStats.goldFind);
-
-    this.updateElement('merc-defense', finalDef);
-    const mercDefElem = document.getElementById('merc-defense');
-    if (mercDefElem) mercDefElem.style.color = totalDefBonus > 0 ? '#d0d007ff' : '';
-
-    this.updateElement('merc-dr', this.mercenaryStats.dr);
-    this.updateElement('merc-pdr', this.mercenaryStats.pdr);
-    this.updateElement('merc-mdr', this.mercenaryStats.mdr);
-    this.updateElement('merc-plr', this.mercenaryStats.plr);
-    this.updateElement('merc-cbf', this.mercenaryStats.cbf ? 'Yes' : 'No');
-    this.updateElement('merc-ias', this.mercenaryStats.ias);
-    this.updateElement('merc-fcr', this.mercenaryStats.fcr);
-    this.updateElement('merc-frw', this.mercenaryStats.frw);
-    this.updateElement('merc-fhr', this.mercenaryStats.fhr);
-    this.updateElement('merc-fire-res', this.mercenaryStats.fireResist);
-    this.updateElement('merc-cold-res', this.mercenaryStats.coldResist);
-    this.updateElement('merc-light-res', this.mercenaryStats.lightResist);
-    this.updateElement('merc-poison-res', this.mercenaryStats.poisonResist);
-    this.updateElement('merc-curse-res', this.mercenaryStats.curseResist);
-  }
-
-
-  updateElement(id, value) {
-    const element = document.getElementById(id);
-    if (element) {
-      element.textContent = value;
-    }
-  }
-
-  // === UTILITY METHODS ===
-  getSectionInfoId(section) {
-    const mapping = {
-      'weapon': 'weapon-info', 'helm': 'helm-info', 'armor': 'armor-info',
-      'shield': 'off-info', 'gloves': 'glove-info', 'belts': 'belt-info',
-      'boots': 'boot-info', 'ringone': 'ringsone-info', 'ringtwo': 'ringstwo-info',
-      'amulet': 'amulet-info',
-      // Mercenary equipment
-      'mercweapon': 'merc-weapon-info', 'merchelm': 'merc-helm-info', 'mercarmor': 'merc-armor-info',
-      'mercoff': 'merc-off-info', 'mercgloves': 'merc-glove-info', 'mercbelts': 'merc-belt-info',
-      'mercboots': 'merc-boot-info'
-    };
-    return mapping[section] || `${section}-info`;
-  }
-
-  getSectionDropdownId(section) {
-    const mapping = {
-      'weapon': 'weapons-dropdown', 'helm': 'helms-dropdown', 'armor': 'armors-dropdown',
-      'shield': 'offs-dropdown', 'gloves': 'gloves-dropdown', 'belts': 'belts-dropdown',
-      'boots': 'boots-dropdown', 'ringone': 'ringsone-dropdown', 'ringtwo': 'ringstwo-dropdown',
-      'amulet': 'amulets-dropdown',
-      // Mercenary equipment
-      'mercweapon': 'mercweapons-dropdown', 'merchelm': 'merchelms-dropdown', 'mercarmor': 'mercarmors-dropdown',
-      'mercoff': 'mercoffs-dropdown', 'mercgloves': 'mercgloves-dropdown', 'mercbelts': 'mercbelts-dropdown',
-      'mercboots': 'mercboots-dropdown'
-    };
-    return mapping[section] || `${section}s-dropdown`;
-  }
+  // UI Utility methods moved to SocketUI
 
 
 
@@ -5997,391 +2669,177 @@ class UnifiedSocketSystem {
 
     document.body.appendChild(modal);
 
-    // Reset selection state
-    this.selectedFacetElement = null;
+    const closeBtn = modal.querySelector('.socket-close');
+    if (closeBtn) closeBtn.onclick = () => modal.remove();
 
-    // SIMPLE CLOSE HANDLERS
-    modal.querySelector('.socket-close').onclick = () => {
-      this.hideRainbowFacetModal();
-    };
-
-    modal.onclick = (e) => {
-      if (e.target === modal) {
-        this.hideRainbowFacetModal();
-      }
-    };
-
-    // SIMPLE ELEMENT SELECTION
     const elementOptions = modal.querySelectorAll('.element-option');
-    elementOptions.forEach(option => {
-      option.onclick = () => {
-        const element = option.dataset.element;
-
-        // Clear previous selections
-        elementOptions.forEach(opt => {
-          opt.style.borderColor = '#333';
-          opt.style.backgroundColor = 'transparent';
-        });
-
-        // Select this one
-        option.style.borderColor = '#ffd700';
-        option.style.backgroundColor = 'rgba(255, 215, 0, 0.2)';
-
-        this.selectedFacetElement = element;
-
-        // Enable button with DIRECT onclick (not addEventListener)
-        const btn = document.getElementById('createRainbowFacetBtn');
-        btn.style.backgroundColor = '#00aa00';
-        btn.style.cursor = 'pointer';
-        btn.style.pointerEvents = 'auto';
-        btn.textContent = 'Create Rainbow Facet';
-
-        // CRITICAL: Use onclick directly, not addEventListener
-        btn.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          this.createRainbowFacet();
-        };
-
-        this.updateRainbowFacetPreview();
+    elementOptions.forEach(opt => {
+      opt.onclick = () => {
+        elementOptions.forEach(o => o.style.borderColor = '#333');
+        opt.style.borderColor = '#ffd700';
+        const element = opt.dataset.element;
+        this.updateFacetPreview(element);
       };
     });
-
-    this.updateRainbowFacetPreview();
   }
 
-  selectRainbowFacetElement(element) {
-
-    // Clear previous selection
-    document.querySelectorAll('.element-option').forEach(opt => {
-      opt.classList.remove('selected');
-      opt.style.borderColor = '#333';
-      opt.style.backgroundColor = 'transparent';
-      opt.style.boxShadow = 'none';
-    });
-
-    // Select new element
-    const selectedOption = document.querySelector(`[data-element="${element}"]`);
-    if (selectedOption) {
-      selectedOption.classList.add('selected');
-      selectedOption.style.borderColor = '#ffd700';
-      selectedOption.style.backgroundColor = 'rgba(255, 215, 0, 0.2)';
-      selectedOption.style.boxShadow = '0 0 15px rgba(255, 215, 0, 0.5)';
-
-      this.selectedFacetElement = element;
-
-      // Enable the create button
-      const createButton = document.getElementById('createRainbowFacetBtn');
-      if (createButton) {
-        createButton.style.backgroundColor = '#00aa00';
-        createButton.style.cursor = 'pointer';
-        createButton.disabled = false;
-        createButton.textContent = 'Create Rainbow Facet';
-      }
-
-      this.updateRainbowFacetPreview();
-    }
-  }
-
-  updateRainbowFacetPreview() {
+  updateFacetPreview(element) {
     const preview = document.getElementById('facetPreview');
-    if (!preview || !this.selectedFacetElement) {
-      if (preview) preview.innerHTML = '<span style="color: #888;">Select an element type</span>';
-      return;
-    }
+    const btn = document.getElementById('createRainbowFacetBtn');
+    if (!preview || !btn) return;
 
-    const facetData = this.getRainbowFacetData(this.selectedFacetElement);
-    const jewelColor = this.getRandomJewelColor();
-
-    preview.innerHTML = `
-      <div style="color: #ffd700; font-weight: bold; margin-bottom: 10px;">
-        ${facetData.name}
-      </div>
-      <div style="color: #4169e1; font-size: 12px; margin-bottom: 8px;">
-        ${facetData.onLevelUp}
-      </div>
-      <div style="color: #4169e1; font-size: 12px; margin-bottom: 8px;">
-        ${facetData.onDeath}
-      </div>
-      <div style="color: #4169e1; font-size: 12px; margin-bottom: 8px;">
-        ${facetData.damage}
-      </div>
-      <div style="color: #4169e1; font-size: 12px; margin-bottom: 8px;">
-        ${facetData.skillDamage}
-      </div>
-      <div style="color: #4169e1; font-size: 12px;">
-        ${facetData.resistance}
-      </div>
-      <div style="color: #888; font-size: 10px; margin-top: 8px;">
-        Jewel Color: ${jewelColor}
-      </div>
-    `;
-  }
-
-  getRainbowFacetData(element) {
-    const facets = {
-      fire: {
-        name: 'Rainbow Facet (Fire)',
-        onLevelUp: '100% Chance to Cast Level 29 Blaze when you Level Up',
-        onDeath: '100% Chance to Cast Level 31 Meteor when you Die',
-        damage: 'Adds 17-45 Fire Damage',
-        skillDamage: `+${this.getRandomValue(3, 5)}% to Fire Skill Damage`,
-        resistance: `-${this.getRandomValue(3, 5)}% to Enemy Fire Resistance`
-      },
-      lightning: {
-        name: 'Rainbow Facet (Lightning)',
-        onLevelUp: '100% Chance to Cast Level 41 Nova when you Level Up',
-        onDeath: '100% Chance to Cast Level 47 Chain Lightning when you Die',
-        damage: 'Adds 1-74 Lightning Damage',
-        skillDamage: `+${this.getRandomValue(3, 5)}% to Lightning Skill Damage`,
-        resistance: `-${this.getRandomValue(3, 5)}% to Enemy Lightning Resistance`
-      },
-      cold: {
-        name: 'Rainbow Facet (Cold)',
-        onLevelUp: '100% Chance to Cast Level 35 Frozen Orb when you Level Up',
-        onDeath: '100% Chance to Cast Level 40 Blizzard when you Die',
-        damage: 'Adds 25-35 Cold Damage',
-        skillDamage: `+${this.getRandomValue(3, 5)}% to Cold Skill Damage`,
-        resistance: `-${this.getRandomValue(3, 5)}% to Enemy Cold Resistance`
-      },
-      poison: {
-        name: 'Rainbow Facet (Poison)',
-        onLevelUp: '100% Chance to Cast Level 33 Poison Nova when you Level Up',
-        onDeath: '100% Chance to Cast Level 38 Poison Explosion when you Die',
-        damage: 'Adds 15-25 Poison Damage',
-        skillDamage: `+${this.getRandomValue(3, 5)}% to Poison Skill Damage`,
-        resistance: `-${this.getRandomValue(3, 5)}% to Enemy Poison Resistance`
+    const stats = this.getFacetStats(element);
+    preview.innerHTML = `<div style="color: #ffd700; font-weight: bold;">Rainbow Facet (Jewel)</div><div style="color: #8888ff;">${stats}</div>`;
+    
+    btn.style.backgroundColor = '#006400';
+    btn.style.cursor = 'pointer';
+    btn.style.pointerEvents = 'auto';
+    btn.textContent = 'Create Facet';
+    btn.onclick = () => {
+      if (window.SocketUI) {
+        // Add jewel to current socket
+        const item = {
+          name: 'Rainbow Facet',
+          img: 'img/jewel_unique.png',
+          levelReq: 49,
+          stats: stats
+        };
+        
+        if (this.currentSocket) {
+             const slot = this.currentSocket;
+             slot.className = 'socket-slot filled';
+             slot.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
+             slot.dataset.itemKey = 'rainbowfacet_' + element;
+             slot.dataset.category = 'jewels';
+             slot.dataset.itemName = item.name;
+             slot.dataset.levelReq = item.levelReq;
+             const section = slot.closest('.socket-container')?.dataset.section || 'weapon';
+             slot.dataset.stats = stats;
+             
+             this.hideSocketModal();
+             document.getElementById('rainbowFacetModal')?.remove();
+             this.updateAll();
+        } else {
+            alert('No active socket slot selected!');
+        }
       }
     };
-
-    return facets[element];
   }
 
-  getRandomValue(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  getFacetStats(element) {
+    const p = { fire: 'Fire', cold: 'Cold', lightning: 'Lightning', poison: 'Poison' }[element];
+    return `+100% to ${p} Skill Damage<br>-100% to Enemy ${p} Resistance`;
   }
 
-  getRandomJewelColor() {
-    const colors = ['red', 'blue', 'yellow', 'green', 'purple', 'white'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
-
-  createRainbowFacet() {
-
-    const socketToUse = this.currentSocket || this.rainbowFacetTargetSocket;
-
-    if (!socketToUse || !this.selectedFacetElement) {
-      alert('Error: Missing socket or element selection');
-      return;
+  showSocketModal() {
+    if (window.SocketUI) {
+      window.SocketUI.createSocketModal(this);
+      const modal = document.getElementById('socketModal');
+      if (modal) modal.style.display = 'flex';
     }
+  }
 
-    const facetData = this.getRainbowFacetData(this.selectedFacetElement);
-    const jewelColor = this.getRandomJewelColor();
-    const imagePath = `img/jewel${jewelColor}.png`;
+  hideSocketModal() {
+    const modal = document.getElementById('socketModal');
+    if (modal) modal.style.display = 'none';
+  }
 
-    // Clear old socket data
-    ['itemKey', 'category', 'itemName', 'stats', 'levelReq'].forEach(attr => {
-      delete socketToUse.dataset[attr];
+  switchSocketTab(category, btn) {
+    document.querySelectorAll('.socket-tab').forEach(t => t.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    this.renderSocketItems(category);
+  }
+
+  renderSocketItems(category) {
+    const grid = document.getElementById('socketItemGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const items = this.socketData[category];
+    if (!items) return;
+
+    Object.entries(items).forEach(([key, item]) => {
+      const itemEl = document.createElement('div');
+      itemEl.className = 'socket-item';
+      itemEl.innerHTML = `
+        <img src="${item.img}" alt="${item.name}">
+        <div class="socket-item-name">${item.name}</div>
+        <div class="socket-item-level">Lvl: ${item.levelReq}</div>
+      `;
+      itemEl.onclick = () => {
+        if (window.SocketUI) window.SocketUI.selectSocketItem(this, category, key);
+      };
+      grid.appendChild(itemEl);
     });
-
-    // Fill the socket
-    socketToUse.className = 'socket-slot filled';
-    socketToUse.innerHTML = `<img src="${imagePath}" alt="Rainbow Facet">`;
-
-    // CRITICAL: Create properly formatted stats string
-    const randomProc = Math.random() < 0.5 ? facetData.onLevelUp : facetData.onDeath;
-
-    const statsArray = [
-      randomProc,  // Only one proc instead of both
-      facetData.damage,
-      facetData.skillDamage,
-      facetData.resistance
-    ];
-
-    const statsText = statsArray.join(', ');
-
-
-    // Set socket data
-    socketToUse.dataset.itemKey = 'rainbow-facet-' + this.selectedFacetElement;
-    socketToUse.dataset.category = 'jewels';
-    socketToUse.dataset.itemName = facetData.name;
-    socketToUse.dataset.stats = statsText;
-    socketToUse.dataset.levelReq = '49';
-
-    // Get section for updates
-    const section = socketToUse.closest('.socket-container')?.dataset.section || 'weapon';
-
-    // Close modal and cleanup
-    this.hideRainbowFacetModal();
-    this.currentSocket = null;
-    this.rainbowFacetTargetSocket = null;
-    this.selectedFacetElement = null;
-
-    // Force immediate update
-    this.updateAll();
-
   }
 
-  hideRainbowFacetModal() {
-    const modal = document.getElementById('rainbowFacetModal');
-    if (modal) {
-      modal.remove();
-    }
-    // Don't clear the socket references here, let createRainbowFacet do it
-    this.selectedFacetElement = null;
+  filterSocketItems(query) {
+    const q = query.toLowerCase();
+    document.querySelectorAll('.socket-item').forEach(el => {
+      const name = el.querySelector('.socket-item-name')?.textContent.toLowerCase() || '';
+      el.style.display = name.includes(q) ? 'flex' : 'none';
+    });
   }
 
-  // === EXPORT/IMPORT METHODS ===
+  // Core system methods used by others
+  getSectionInfoId(section) {
+    return window.SocketUI ? window.SocketUI.getSectionInfoId(section) : '';
+  }
+
+  getSectionDropdownId(section) {
+    return window.SocketUI ? window.SocketUI.getSectionDropdownId(section) : '';
+  }
+
+  calculateActualRequiredLevel(section, itemKey) {
+    return window.SocketUI ? window.SocketUI.calculateActualRequiredLevel(this, section, itemKey) : 1;
+  }
+
+  isItemUsableByCharacterClass(itemKey) {
+    return window.SocketUI ? window.SocketUI.isItemUsableByCharacterClass(itemKey) : true;
+  }
+
+  doesCharacterMeetStatRequirements(itemKey) {
+    return window.SocketUI ? window.SocketUI.doesCharacterMeetStatRequirements(itemKey) : true;
+  }
+
+  // Export/Import (keep these for now as they are core to state)
   exportSocketData() {
-    const socketData = {};
-
-
-
-    // Iterate through all socket containers on the page
-    const containers = document.querySelectorAll('.socket-container');
-
-
-    containers.forEach(container => {
-      const section = container.dataset.section;
-
+    const data = {};
+    document.querySelectorAll('.socket-container').forEach(c => {
+      const section = c.dataset.section;
       if (!section) return;
-
-      socketData[section] = [];
-
-      // Get all socket slots (both filled and empty to understand structure)
-      const allSlots = container.querySelectorAll('.socket-slot');
-
-
-      // Get all filled sockets in this container
-      const filledSockets = container.querySelectorAll('.socket-slot.filled');
-
-
-      filledSockets.forEach((socket, idx) => {
-        const socketInfo = {
-          itemKey: socket.dataset.itemKey || '',
-          category: socket.dataset.category || '',
-          itemName: socket.dataset.itemName || '',
-          stats: socket.dataset.stats || '',
-          levelReq: socket.dataset.levelReq || '1'
-        };
-
-        socketData[section].push(socketInfo);
+      data[section] = [];
+      c.querySelectorAll('.socket-slot.filled').forEach(s => {
+        data[section].push({
+          itemKey: s.dataset.itemKey,
+          category: s.dataset.category,
+          itemName: s.dataset.itemName,
+          stats: s.dataset.stats,
+          levelReq: s.dataset.levelReq
+        });
       });
     });
-
-
-    return socketData;
+    return data;
   }
 
-  importSocketData(socketData) {
-    if (!socketData || typeof socketData !== 'object') {
-      console.warn('Invalid socket data provided for import');
-      return;
-    }
-
-
-
-    // Iterate through each section's sockets
-    for (const [section, sockets] of Object.entries(socketData)) {
+  importSocketData(data) {
+    if (!data) return;
+    Object.entries(data).forEach(([section, sockets]) => {
       const container = document.querySelector(`.socket-container[data-section="${section}"]`);
-      if (!container) {
-        console.warn(`Socket container not found for section: ${section}`);
-        continue;
-      }
-
-      const socketGrid = container.querySelector('.socket-grid');
-      if (!socketGrid) {
-        console.warn(`Socket grid not found for section: ${section}`);
-        continue;
-      }
-
-
-
-      // First, ensure we have enough socket slots
-      const currentSlotCount = socketGrid.children.length;
-      const requiredSlotCount = sockets.length;
-
-      // Add empty sockets if we need more
-      while (socketGrid.children.length < requiredSlotCount) {
-        const newSocket = document.createElement('div');
-        newSocket.className = 'socket-slot empty';
-        newSocket.dataset.index = socketGrid.children.length.toString();
-        socketGrid.appendChild(newSocket);
-
-      }
-
-      // Update the socket grid CSS class to reflect socket count
-      socketGrid.className = `socket-grid sockets-${socketGrid.children.length}`;
-
-      // Get all socket slots in this container
-      const socketSlots = container.querySelectorAll('.socket-slot');
-
-      // Fill each slot with the corresponding data
-      sockets.forEach((socketData, index) => {
-        if (index >= socketSlots.length) {
-          console.warn(`More socket data than slots available for section: ${section}`);
-          return;
+      if (!container) return;
+      if (window.SocketUI) window.SocketUI.updateSocketVisuals(this, container, sockets.length);
+      const slots = container.querySelectorAll('.socket-slot');
+      sockets.forEach((sData, i) => {
+        if (i < slots.length) {
+          const slot = slots[i];
+          const item = this.socketData[sData.category]?.[sData.itemKey];
+          if (item) {
+            slot.className = 'socket-slot filled';
+            slot.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
+            Object.assign(slot.dataset, sData);
+          }
         }
-
-        const slot = socketSlots[index];
-
-        // Clear the slot first
-        slot.className = 'socket-slot empty';
-        slot.innerHTML = '';
-        delete slot.dataset.itemKey;
-        delete slot.dataset.category;
-        delete slot.dataset.itemName;
-        delete slot.dataset.stats;
-        delete slot.dataset.levelReq;
-
-        // Skip empty socket data
-        if (!socketData.itemKey || !socketData.category) {
-
-          return;
-        }
-
-        // Handle custom jewels specially (they're not in the static database)
-        if (socketData.itemKey === 'custom-jewel') {
-          slot.className = 'socket-slot filled';
-          // Extract color from jewel name (e.g., "White Jewel" -> "white")
-          const color = socketData.itemName.split(' ')[0].toLowerCase();
-          slot.innerHTML = `<img src="img/jewel${color}.png" alt="${socketData.itemName}">`;
-          slot.dataset.itemKey = socketData.itemKey;
-          slot.dataset.category = socketData.category;
-          slot.dataset.itemName = socketData.itemName;
-          slot.dataset.stats = socketData.stats;
-          slot.dataset.levelReq = socketData.levelReq || '1';
-          return;
-        }
-
-        // Get the item data from the socket system
-        const item = this.socketData[socketData.category]?.[socketData.itemKey];
-
-        if (!item) {
-          console.warn(`Item not found: ${socketData.category}/${socketData.itemKey}`);
-          return;
-        }
-
-        // Fill the socket
-        slot.className = 'socket-slot filled';
-        slot.innerHTML = `<img src="${item.img}" alt="${item.name}">`;
-        slot.dataset.itemKey = socketData.itemKey;
-        slot.dataset.category = socketData.category;
-        slot.dataset.itemName = socketData.itemName;
-        slot.dataset.levelReq = socketData.levelReq || '1';
-
-        // Set stats based on section
-        const stats = typeof item.stats === 'object' ? item.stats[section] : item.stats;
-        if (stats) {
-          slot.dataset.stats = stats;
-        }
-
-
       });
-    }
-
-
-
+    });
     this.updateAll();
   }
 }
