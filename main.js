@@ -2809,3 +2809,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 800);
 });
+
+/**
+ * Tab/View switching logic for responsive layout
+ * Handles mobile-first tabbed view and desktop layout visibility
+ */
+window.switchView = function(viewId) {
+    // 1. Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => 
+        btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${viewId}'`)
+    );
+    if (activeBtn) activeBtn.classList.add('active');
+
+    // 2. Get main layout elements
+    const left = document.getElementById('sidebar-left');
+    const content = document.getElementById('content-area');
+    const right = document.getElementById('sidebar-right');
+
+    const heroWrap = document.getElementById('hero-view-wrapper');
+    const skillsWrap = document.getElementById('skills-view-wrapper');
+    const invWrap = document.getElementById('inventory-view-wrapper');
+    const statsWrap = document.getElementById('stats-view-wrapper');
+    const mercWrap = document.getElementById('mercenary-view-wrapper');
+
+    // 3. Reset all active states
+    const items = [left, content, right, heroWrap, skillsWrap, invWrap, statsWrap, mercWrap];
+    items.forEach(el => { if (el) el.classList.remove('active'); });
+
+    // 4. Activate relevant sections based on viewId
+    switch(viewId) {
+        case 'hero':
+            if (left) left.classList.add('active');
+            if (content) content.classList.add('active');
+            if (heroWrap) heroWrap.classList.add('active');
+            break;
+        case 'skills':
+            if (content) content.classList.add('active');
+            if (skillsWrap) skillsWrap.classList.add('active');
+            break;
+        case 'merc':
+            if (content) content.classList.add('active');
+            if (mercWrap) mercWrap.classList.add('active');
+            break;
+        case 'inv':
+            if (content) content.classList.add('active');
+            if (invWrap) invWrap.classList.add('active');
+            break;
+        case 'stats':
+            if (right) right.classList.add('active');
+            if (statsWrap) statsWrap.classList.add('active');
+            break;
+    }
+
+    // Scroll to top when switching views on mobile
+    if (window.innerWidth <= 1024) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+};
+
+// Handle initial view on mobile resize
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024) {
+        // Reset desktop view - ensure everything is shown
+        const sidebars = ['sidebar-left', 'content-area', 'sidebar-right'];
+        sidebars.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
+        });
+        
+        // Ensure child wrappers are also showing what they should
+        const wraps = ['hero-view-wrapper', 'skills-view-wrapper', 'inventory-view-wrapper', 'stats-view-wrapper', 'mercenary-view-wrapper'];
+        wraps.forEach(id => {
+            const el = document.getElementById(id);
+            // On desktop we might want multiple showing, but usually hero and stats are primaries
+            if (el) el.classList.add('active');
+        });
+    }
+});

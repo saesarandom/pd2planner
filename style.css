@@ -1,26 +1,33 @@
-/* Equipment container with 3-column grid */
+/* Equipment container with responsive grid */
 .equipment-container {
-  width: 87%;
-  overflow-y: auto;
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin: 0 auto;
 }
 
-.equipment-container>*:nth-child(10) {
-  grid-column: 2 / 3;
-  /* Places the 10th element in the second column */
+@media (min-width: 768px) {
+  .equipment-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .equipment-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .equipment-container>*:nth-child(10) {
+    grid-column: 2 / 3;
+  }
 }
 
 .buffcontainer {
-  position: relative;
-  left: -420px;
-  top: 0px;
   width: 100%;
-  height: 100%;
-  display: block;
-
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
 }
 
 .buff-icon {
@@ -169,7 +176,6 @@
 .groupringstwo,
 .groupamulets {
   display: flex;
-  margin-top: 7%;
   flex-direction: column;
   gap: 10px;
   background-color: rgba(18, 7, 7, 0.9);
@@ -177,7 +183,6 @@
   padding: 15px;
   border-radius: 4px;
   min-width: 0;
-  /* Prevent overflow */
 }
 
 /* Styling for labels */
@@ -261,31 +266,143 @@ button:hover {
 /* Body styling */
 body {
   font-family: "overlock sc", "bahnschrift condensed", sans-serif;
-  font-size: 15px;
-  background-color: var(--background-color);
+  font-size: 16px;
+  background: radial-gradient(circle at 50% 30%, #1a051a 0%, #000 100%) fixed;
   color: var(--text-color);
-  background-color: #000000;
   margin: 0;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 0;
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 200px;
-  /* Main content | Mercenary section */
-  gap: 20px;
-  overflow-x: auto;
+  overflow-x: hidden;
+  padding-bottom: 80px !important; /* Space for party bar */
 }
 
-/* Container layout */
-.container {
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.app-container.wide-layout {
+  max-width: none;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr 380px;
+  gap: 30px;
+  flex: 1;
+  width: 100%;
+}
+
+/* Sidebar navigation and character basics */
+.sidebar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Right area for stats and mercenary */
+.sidebar-right {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 100%;
-  width: 1200px;
-  padding: 20px;
+  max-width: 380px;
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+}
+
+/* Mobile Tab Navigation */
+.view-tabs {
+  display: none; /* Desktop hidden */
+  position: sticky;
+  top: 0;
+  background: rgba(18, 7, 7, 0.98);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  padding: 12px 10px;
+  border-bottom: 2px solid #e00808;
+  margin-bottom: 15px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.view-tabs::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.tab-btn {
+  background: transparent;
+  border: 1px solid #444;
+  color: #aaa;
+  padding: 8px 15px;
+  margin-right: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: auto;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #a41515, #600);
+  color: #fff;
+  border-color: #ffd700;
+}
+
+@media (max-width: 1200px) {
+  .main-layout {
+    grid-template-columns: 250px 1fr;
+  }
+  .sidebar-right {
+    grid-column: 1 / -1;
+    display: none; /* Shown via tabs in mobile */
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-layout {
+    display: block;
+  }
+  .view-tabs {
+    display: flex;
+  }
+  .sidebar-left, .content-area, .sidebar-right {
+    display: none; /* Toggled by JS */
+  }
+  .sidebar-left.active, .content-area.active, .sidebar-right.active {
+    display: flex;
+  }
+
+  /* Only one view wrapper active at a time inside content area on mobile */
+  .view-wrapper {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+  .view-wrapper.active {
+    display: flex;
+  }
+}
+
+/* Visibility for desktop (everything shown) */
+@media (min-width: 1025px) {
+  .view-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
 }
 
 /* Header section */
@@ -295,6 +412,7 @@ body {
   align-items: center;
   gap: 15px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .header select,
@@ -352,8 +470,9 @@ body {
   padding: 15px;
   margin: 20px 0;
   font-family: inherit;
-  border-radius: 4px;
-  width: 200px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 320px;
 }
 
 #str,
@@ -370,16 +489,15 @@ body {
 }
 
 #merclvlValue {
-  display: flex;
-  position: absolute;
-  left: 11vh;
-  margin: 4px;
   width: 46px;
   background-color: rgba(0, 0, 0, 0.8);
   color: rgb(243, 241, 242);
   font-family: 'Oswald', sans-serif;
   font-size: 12px;
   text-align: center;
+  border: 1px solid #e00808;
+  border-radius: 2px;
+  padding: 2px;
 }
 
 .stats-section h3 {
@@ -396,31 +514,49 @@ body {
   color: rgb(241, 37, 37);
 }
 
-/* Mercenary section */
 .mercenary-section {
-  position: absolute;
-  left: 250vh;
-  top: 50px;
-  min-width: 400px;
-  background: rgba(26, 26, 46, 0.9);
-  border: 2px solid #0f3460;
-  border-radius: 10px;
+  width: 100%;
   padding: 20px;
-  height: fit-content;
+  background: rgba(18, 7, 7, 0.4);
+  border: 1px solid #63057a;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.mercenary-items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  width: 100%;
 }
 
 .mercequipment-container {
-  width: 140vh;
-  overflow-y: auto;
+  width: 100%;
+  padding-top: 5px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin: 0 auto;
 }
 
-.mercequipment-container>*:nth-child(7) {
-  grid-column: 2 / 3;
-  /* Places the 7th element in the second column */
+@media (min-width: 768px) {
+  .mercequipment-container {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 700px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .mercequipment-container {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+  }
+  .mercequipment-container>*:nth-child(7) {
+    grid-column: 2 / 3;
+  }
 }
 
 .mercenary-section label {
@@ -483,14 +619,15 @@ body {
 
 .inventorycontainer {
   display: grid;
-  position: absolute;
-  left: 60vw;
-  top: 23%;
-  grid-template-columns: repeat(10, 40px);
-  grid-gap: 1px;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
   background-color: #0f0e0e;
   padding: 10px;
-  width: 428px;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  border: 1px solid #444;
+  position: relative;
 }
 
 .charm1 {
@@ -700,17 +837,14 @@ body {
 }
 
 .stats-display-grid {
-  position: absolute;
-  left: 80%;
-  top: 5%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin: 10px 0;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
   padding: 15px;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 8px;
-  border: 1px solid #666;
+  background: rgba(18, 7, 7, 0.9);
+  border-radius: 4px;
+  border: 1px solid #e00808;
+  width: 100%;
 }
 
 .stat-group {
@@ -767,25 +901,25 @@ body {
 }
 
 
+/* Skill tree layout fix */
+#skills-container-root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
 .skill-tree-container {
-  position: absolute;
-  top: 147px;
-  width: 250px;
-  height: 450px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid #666;
-  border-radius: 8px;
+  width: 260px;
+  height: auto;
+  min-height: 400px;
+  background: rgba(18, 7, 7, 0.95);
+  border: 1px solid #e00808;
+  border-radius: 4px;
   padding: 12px;
   color: white;
   font-family: Oswald, sans-serif;
-  z-index: 5;
-  display: block;
-  box-sizing: border-box;
-  margin: 0;
-  float: none;
-  transform: none;
+  flex-shrink: 0;
 }
 
 .skill-tree-container input[type="number"] {
@@ -802,20 +936,14 @@ body {
 }
 
 .skill-points-display {
-  position: absolute;
-  top: 595px;
-  /* Just above the skill containers at 1500px */
-  right: 110px;
-  /* Same left position as first container */
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 15px;
-  border-radius: 8px;
-  border: 2px solid #666;
+  background: rgba(18, 7, 7, 0.95);
+  color: var(--gold-color);
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #ffd700;
   font-family: Oswald, sans-serif;
-  z-index: 4;
-  min-width: 150px;
-  box-sizing: border-box;
+  text-align: center;
+  margin-bottom: 15px;
 }
 
 #javelinandspearskillscontainer {
@@ -831,19 +959,13 @@ body {
 }
 
 .skill-calculator-container {
-  position: absolute;
-  top: 190px;
-  left: 220px;
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid #666;
-  border-radius: 5px;
-  padding: 3px;
+  background: rgba(18, 7, 7, 0.95);
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 10px;
   color: white;
   font-family: Oswald, sans-serif;
-  font-size: 12px;
-  width: 160px;
-  z-index: 4;
-  box-sizing: border-box;
+  margin-bottom: 10px;
 }
 
 .skill-calculator-container h5 {
@@ -861,25 +983,14 @@ body {
 }
 
 .skill-damage-display {
-  position: absolute;
-  top: 190px;
-  left: 380px;
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid #666;
-  border-radius: 5px;
-  padding: 5px;
+  background: rgba(18, 7, 7, 0.95);
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 15px;
   color: white;
   font-family: Oswald, sans-serif;
-  font-size: 12px;
-  width: 640px;
-  /* Wider to accommodate horizontal layout */
-  max-height: 240px;
-  /* Shorter since content spreads horizontally */
-  overflow-y: auto;
-  overflow-x: hidden;
-  word-wrap: break-word;
-  box-sizing: border-box;
-  z-index: 4;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .skill-damage-display h5 {
@@ -908,17 +1019,12 @@ body {
 
 /* Power Rating Display */
 .power-rating-container {
-  position: absolute;
-  top: 5px;
-  left: 250px;
-  background-color: rgba(0, 0, 0, 0.85);
-  border: 2px solid #ff00ea;
-  border-radius: 6px;
-  padding: 8px 12px;
-  width: auto;
-  min-width: 120px;
-  z-index: 10;
-  box-shadow: 0 0 10px rgba(255, 0, 234, 0.3);
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid #ff00ea;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(255, 0, 234, 0.2);
 }
 
 .power-stat-row {
@@ -945,25 +1051,17 @@ body {
 }
 
 .modecontainer {
-  position: absolute;
-  top: 5px;
-  left: 130px;
   background-color: #2b1b17;
-  border: 1.13px solid #906363;
+  border: 1px solid #906363;
   padding: 3px;
-  width: auto;
+  margin-bottom: 10px;
 }
 
 .anyacontainer {
-  position: absolute;
-  font-size: 9px;
-  top: 5px;
-  right: 680px;
   background-color: #0f0f0f;
-  border: 1.13px solid #7b0e0e;
-  padding: 3px;
-  width: auto;
-  /* z-index: -3; */
+  border: 1px solid #7b0e0e;
+  padding: 5px;
+  margin-bottom: 10px;
 }
 
 .section {
@@ -1126,15 +1224,11 @@ label {
 
 /* Mercenary Stats Display */
 .mercenary-stats-display {
-  position: absolute;
-  left: 235vh;
-  top: 50px;
-  padding: 5px;
-  background: rgba(30, 30, 30, 0.8);
-  border: 2px solid #63057a;
+  padding: 15px;
+  background: rgba(18, 7, 7, 0.9);
+  border: 1px solid #63057a;
   border-radius: 4px;
-  width: 165px;
-  max-width: 400px;
+  width: 100%;
 }
 
 .mercenary-stats-display h4 {
@@ -1146,16 +1240,21 @@ label {
 }
 
 .merc-stats-grid {
-  display: block;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
 }
 
 .merc-stat-row {
   display: flex;
   justify-content: space-between;
-  padding: 3px 23px;
+  padding: 4px 15px;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 4px;
+  width: 100%;
+  max-width: 400px;
 }
 
 .merc-stat-label {

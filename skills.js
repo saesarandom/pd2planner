@@ -4668,29 +4668,22 @@ class SkillSystem {
       oldContainers[i].remove();
     }
 
-    // Create new containers for current class
-    // Position offsets: first column (right: 10px), second (-260px), third (-530px)
-    var rightOffsets = [10, -260, -530];
-
     for (var i = 0; i < positions.length; i++) {
       var pos = positions[i];
       var container = document.createElement('div');
       container.id = pos.id;
       container.className = 'skill-tree-container';
 
-      // Set inline positioning to match Amazon layout
-      container.style.position = 'absolute';
-      container.style.top = '147px';
-      container.style.right = rightOffsets[i] + 'px';
-      container.style.width = '250px';
-      container.style.height = '450px';
-      container.style.overflowY = 'auto';
-
       var title = document.createElement('h3');
       title.textContent = pos.title;
 
       container.appendChild(title);
-      document.body.appendChild(container);
+      const root = document.getElementById('skills-container-root');
+      if (root) {
+        root.appendChild(container);
+      } else {
+        document.body.appendChild(container);
+      }
     }
   }
 
@@ -4780,10 +4773,14 @@ class SkillSystem {
     damageDisplay.innerHTML = '<h5>Damage</h5>' +
       '<div id="damage-results">Select a skill to see damage calculations</div>';
 
-    document.body.appendChild(calcContainer);
-    document.body.appendChild(damageDisplay);
-
-    //('Created skill calculator at top: 1350px');
+    var root = document.getElementById('skill-results-root');
+    if (root) {
+      root.appendChild(calcContainer);
+      root.appendChild(damageDisplay);
+    } else {
+      document.body.appendChild(calcContainer);
+      document.body.appendChild(damageDisplay);
+    }
   }
 
   setupEvents() {
@@ -9654,7 +9651,12 @@ class SkillSystem {
     display.id = 'skill-points-display';
     display.className = 'skill-points-display';
 
-    document.body.appendChild(display);
+    var root = document.getElementById('skill-results-root');
+    if (root) {
+      root.appendChild(display);
+    } else {
+      document.body.appendChild(display);
+    }
     this.updatePointsDisplay();
   }
 
@@ -9744,17 +9746,8 @@ class SkillSystem {
     if (!warning) {
       warning = document.createElement('div');
       warning.id = 'skill-warning';
-      warning.style.position = 'fixed';
-      warning.style.top = '80px';
-      warning.style.right = '20px';
-      warning.style.background = '#ff4444';
-      warning.style.color = 'white';
-      warning.style.padding = '12px';
-      warning.style.borderRadius = '6px';
-      warning.style.zIndex = '20000';
-      warning.style.maxWidth = '300px';
-      warning.style.fontWeight = 'bold';
-      document.body.appendChild(warning);
+      var root = document.getElementById('skill-results-root') || document.body;
+      root.appendChild(warning);
     }
 
     warning.textContent = message;

@@ -69,6 +69,15 @@ function createAuthUI() {
                 </div>
                 <div id="achievements-list"></div>
             </div>
+
+            <!-- Global Display Settings -->
+            <div class="display-settings" style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <h3 style="color: #ffd700; font-size: 16px; margin-bottom: 12px; font-family: 'Overlock SC', cursive;">App Settings</h3>
+                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; color: #fff; font-size: 14px;">
+                    <input type="checkbox" id="wide-mode-checkbox" style="width: auto; margin: 0; cursor: pointer;"> 
+                    <span>Wide UI Mode (Ultrawide monitors)</span>
+                </label>
+            </div>
         </div>
     `;
     document.body.appendChild(modal);
@@ -234,6 +243,26 @@ function setupAuthListeners() {
 
     document.getElementById('register-username').addEventListener('input', function () {
         validateUsername(this);
+    });
+
+    // Wide Mode Toggle
+    const wideModeCheckbox = document.getElementById('wide-mode-checkbox');
+    const appContainer = document.querySelector('.app-container');
+    
+    // Initial state check
+    if (localStorage.getItem('wideMode') === 'true') {
+        if (wideModeCheckbox) wideModeCheckbox.checked = true;
+        appContainer?.classList.add('wide-layout');
+    }
+
+    wideModeCheckbox?.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            appContainer?.classList.add('wide-layout');
+            localStorage.setItem('wideMode', 'true');
+        } else {
+            appContainer?.classList.remove('wide-layout');
+            localStorage.setItem('wideMode', 'false');
+        }
     });
 }
 

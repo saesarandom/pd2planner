@@ -103,14 +103,17 @@ class PartyManager {
         settingsImg.alt = 'Settings';
         settingsBtn.appendChild(settingsImg);
         settingsBtn.onclick = () => {
-            if (typeof auth !== 'undefined' && auth.isLoggedIn()) {
-                const authModal = document.getElementById('auth-modal');
-                if (authModal) {
-                    authModal.style.display = 'flex';
+            const authModal = document.getElementById('auth-modal');
+            if (authModal) {
+                authModal.style.display = 'flex';
+                // If logged in, show profile, otherwise show login/register
+                if (typeof auth !== 'undefined' && auth.isLoggedIn()) {
                     if (typeof showLoggedInView === 'function') showLoggedInView();
-                    // Update user count when modal opens
-                    if (typeof updateUserCount === 'function') updateUserCount();
+                } else {
+                    if (typeof showLoginForm === 'function') showLoginForm();
                 }
+                // Update user count when modal opens
+                if (typeof updateUserCount === 'function') updateUserCount();
             }
         };
         partyBar.appendChild(settingsBtn);
@@ -201,10 +204,10 @@ class PartyManager {
             if (settingsBtn) settingsBtn.classList.remove('disabled');
             if (loginBtn) loginBtn.setAttribute('data-tooltip', auth.user.username);
         } else {
-            // Disable craft, save, and settings buttons when not logged in
+            // Disable craft and save, but keep settings available
             if (craftBtn) craftBtn.classList.add('disabled');
             if (saveBtn) saveBtn.classList.add('disabled');
-            if (settingsBtn) settingsBtn.classList.add('disabled');
+            if (settingsBtn) settingsBtn.classList.remove('disabled');
             if (loginBtn) loginBtn.setAttribute('data-tooltip', 'Login / Profile');
         }
     }

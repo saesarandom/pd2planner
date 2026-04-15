@@ -120,7 +120,12 @@ class CharmInventory {
     if (!container) {
       container = document.createElement('div');
       container.className = 'inventorycontainer';
-      document.body.appendChild(container);
+      const root = document.getElementById('inventory-container-root');
+      if (root) {
+        root.appendChild(container);
+      } else {
+        document.body.appendChild(container);
+      }
     }
 
     // If grid already exists with 40 slots, don't recreate it
@@ -136,11 +141,8 @@ class CharmInventory {
       container.innerHTML = '';
     }
 
-    // Seamless grid without gaps
+    // Responsive grid layout
     container.style.cssText = `
-      position: absolute;
-      margin-top: -120px;
-      left: 60vw;
       display: grid;
       padding: 0;
       background-color: rgb(0, 0, 0);
@@ -153,6 +155,8 @@ class CharmInventory {
       box-sizing: border-box;
       user-select: none;
       gap: 0;
+      margin: 0 auto;
+      position: relative;
     `;
 
     // Create 40 slots
@@ -216,24 +220,25 @@ class CharmInventory {
 
     // Create fresh modal
     const modalHTML = `
-    <div id="charmModal" class="modal" style="display: none; position: fixed; z-index: 10000;">
+    <div id="charmModal" class="modal" style="display: none; position: fixed; z-index: 10000; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;">
       <div class="modal-content" style="
         background: rgb(5, 5, 5);
-        padding: 20px;
-        border-radius: 5px;
+        padding: 25px;
+        border-radius: 8px;
         border: 2px solid rgb(164, 19, 19);
         color: white;
-        font-family: overlock sc;
+        font-family: 'Overlock SC', cursive;
         font-size: 14px;
-        min-width: 400px;
-        max-width: 500px;
-        max-height: 80vh;
+        width: 90%;
+        max-width: 480px;
+        max-height: 85vh;
         overflow-y: auto;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
         display: flex;
         flex-direction: column;
+        position: relative;
       ">
-        <span class="close">&times;</span>
+        <span class="close" style="position: absolute; right: 20px; top: 15px; font-size: 24px; color: #aaa; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#f00'" onmouseout="this.style.color='#aaa'">&times;</span>
         <h3 style="margin: 0 0 20px 0; color: rgb(164, 19, 19);">Create Charm</h3>
 
         <!-- Selection View: UNIFIED, shown at start -->
@@ -2006,15 +2011,13 @@ class CharmInventory {
       this.checkUniqueCharmAvailability();
 
       // Position and show modal
-      let left = this.clickPosition.x + 10;
-      let top = this.clickPosition.y + 10;
-
-      left = Math.max(10, Math.min(left, window.innerWidth - 420));
-      top = Math.max(10, Math.min(top, window.innerHeight - 300));
-
-      modal.style.left = left + 'px';
-      modal.style.top = top + 'px';
-      modal.style.display = 'block';
+      // Show modal as centered overlay
+      modal.style.display = 'flex';
+      // Reset any manual positioning that might have stuck
+      modal.style.left = '0';
+      modal.style.top = '0';
+      modal.style.width = '100vw';
+      modal.style.height = '100vh';
     }
   }
 
