@@ -6,11 +6,11 @@
 window.itemStates = {};
 
 // Refresh saved state for current item (call after any modification)
-window.refreshSavedState = function (dropdownId, section) {
+window.refreshSavedState = function (dropdownId, section, itemNameOverride = null) {
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) return;
 
-  const itemName = dropdown.value;
+  const itemName = itemNameOverride || dropdown.value;
   if (!itemName) return;
 
   // CRITICAL FIX: Use dropdown-specific cache to get the modified item
@@ -29,16 +29,20 @@ window.refreshSavedState = function (dropdownId, section) {
 
   // Get socket data
   const socketData = [];
-  const socketSlots = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot.filled`);
-  socketSlots.forEach((slot, index) => {
-    const imgElement = slot.querySelector('img');
-    socketData.push({
-      itemName: slot.dataset.itemName,
-      stats: slot.dataset.stats,
-      levelReq: slot.dataset.levelReq,
-      imgSrc: imgElement ? imgElement.src : null,
-      index: index
-    });
+  const allSocketSlots = document.querySelectorAll(`.socket-container[data-section="${section}"] .socket-slot`);
+  const socketCount = allSocketSlots.length;
+  
+  allSocketSlots.forEach((slot, index) => {
+    if (slot.classList.contains('filled')) {
+      const imgElement = slot.querySelector('img');
+      socketData.push({
+        itemName: slot.dataset.itemName,
+        stats: slot.dataset.stats,
+        levelReq: slot.dataset.levelReq,
+        imgSrc: imgElement ? imgElement.src : null,
+        index: index
+      });
+    }
   });
 
   // Save complete current state - ethereal is always last/most current
@@ -51,6 +55,7 @@ window.refreshSavedState = function (dropdownId, section) {
       ? JSON.parse(JSON.stringify(window.originalItemProperties[itemName]))
       : null,
     sockets: socketData,
+    socketCount: socketCount,
     ethereal: item.properties?.ethereal || false,
     properties: item.properties ? JSON.parse(JSON.stringify(item.properties)) : null
   };
@@ -59,7 +64,7 @@ window.refreshSavedState = function (dropdownId, section) {
 // Save current item state before switching (just calls refresh)
 window.saveItemState = function (dropdownId, itemName, section) {
   if (!itemName) return;
-  window.refreshSavedState(dropdownId, section);
+  window.refreshSavedState(dropdownId, section, itemName);
 };
 
 // Restore item state after switching
@@ -121,11 +126,13 @@ window.restoreItemState = function (dropdownId, itemName, section) {
   }
 
   // CRITICAL: Adjust sockets BEFORE restoring socket contents
-  // This ensures the correct number of socket slots exist before we try to fill them
-  // Pass the saved socket count so adjustSocketsForItem knows how many to create
   const socketableSections = ['weapon', 'helm', 'armor', 'shield'];
   if (socketableSections.includes(section) && window.unifiedSocketSystem) {
-    const savedSocketCount = savedState.sockets ? savedState.sockets.length : 0;
+    // Priority: saved socketCount, then sockets array length (fallback)
+    const savedSocketCount = (savedState.socketCount !== undefined) ? 
+      savedState.socketCount : 
+      (savedState.sockets ? savedState.sockets.length : 0);
+      
     window.unifiedSocketSystem.adjustSocketsForItem(section, savedSocketCount);
   }
 

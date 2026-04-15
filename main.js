@@ -445,10 +445,35 @@ window.generateItemDescription = function generateItemDescription(itemName, item
   // Items with baseType are dynamic - always regenerate them (includes crafted items)
   const isDynamic = item.baseType || item.isCrafted;
 
+  // Use original description if available to prevent permanent corruption stacking on static items
+  const baseItem = window.getItemData(itemName);
+  let baseDescription = (window.originalItemDescriptions && window.originalItemDescriptions[itemName]) || item.description;
+
   // If item has a static description AND is not dynamic, use it
   // (Dynamic items always regenerate, even if description was set by corruption)
-  if (item.description && !isDynamic) {
-    return item.description;
+  if (baseDescription && !isDynamic) {
+    // If it's a fixed item, we might still need to append the corruption label visually 
+    // if it's not already in the description (handles cross-session persistence)
+    let finalDesc = baseDescription;
+    if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+      const corruption = window.itemCorruptions[dropdownId];
+      if (corruption.itemName === itemName && corruption.text) {
+        // Use slot-based red style for consistency
+        const RED_STYLE = "color: #ff5555; font-weight: bold; text-shadow: 0 0 3px #ff5555";
+        const cleanCorruption = corruption.text.replace(/<[^>]*>/g, '').trim();
+        const cleanDesc = finalDesc.replace(/<[^>]*>/g, '').trim();
+        
+        // Always append the label, and only append text if not redundant
+        if (!cleanDesc.includes(cleanCorruption)) {
+           // Ensure there's a break if needed, but avoid double breaks
+           if (!finalDesc.endsWith('<br>')) finalDesc += '<br>';
+           finalDesc += `<span class="corruption-enhanced-stat" style="${RED_STYLE}">${corruption.text}</span><br>`;
+        } else if (!finalDesc.endsWith('<br>')) {
+           finalDesc += '<br>';
+        }
+      }
+    }
+    return finalDesc;
   }
 
   // Generate dynamic description for items with variable stats
@@ -950,9 +975,24 @@ window.generateItemDescription = function generateItemDescription(itemName, item
     });
   }
 
-  // Add ethereal text if the item is ethereal
-  if (props.ethereal) {
-    html += ' <span style="color: #C0C0C0">Ethereal</span>';
+  const RED_STYLE = "color: #ff5555; font-weight: bold; text-shadow: 0 0 3px #ff5555";
+
+  // Add corruption info for dynamic items
+  if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+    const corruption = window.itemCorruptions[dropdownId];
+    if (corruption.itemName === itemName && corruption.text) {
+      if (corruption.type === 'socket_corruption') {
+        html += `<span class="corruption-enhanced-stat" style="${RED_STYLE}">${corruption.text}</span><br>`;
+      } else {
+        // Only append text if NO property was modified (means it's a new or unknown stat)
+        const trackingKey = dropdownId && itemName ? `${dropdownId}_${itemName}` : (dropdownId || itemName);
+        const corruptedProps = window.corruptedProperties?.[trackingKey];
+        if (!corruptedProps || corruptedProps.size === 0) {
+          html += `<span class="corruption-enhanced-stat" style="${RED_STYLE}">${corruption.text}</span><br>`;
+        }
+      }
+      // Label will be added by socket.js
+    }
   }
 
   return html;
@@ -1065,10 +1105,12 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     // CRITICAL FIX: Check if this property is corrupted using corruptedProperties
     // This prevents infinite value growth by using a FIXED corruption bonus
     // Use slot-specific key to prevent cross-contamination
-    const uniqueKey = dropdownId ? `${dropdownId}_${itemName}` : itemName;
+    // CRITICAL FIX: Use the same tracking key as corrupt.js (dropdownId_itemName)
+    // This allows identifying corrupted stats accurately per-item per-slot
+    const trackingKey = dropdownId && itemName ? `${dropdownId}_${itemName}` : (dropdownId || itemName);
     const isCorrupted = window.corruptedProperties &&
-      window.corruptedProperties[uniqueKey] &&
-      window.corruptedProperties[uniqueKey].has(propKey);
+      window.corruptedProperties[trackingKey] &&
+      window.corruptedProperties[trackingKey].has(propKey);
 
     if (isCorrupted && window.originalItemProperties && window.originalItemProperties[itemName]) {
       const originalVal = window.originalItemProperties[itemName][propKey];
@@ -1093,75 +1135,33 @@ function handleVariableStatChange(itemName, propKey, newValue, dropdownId, skipR
     // UPDATE PERSISTENCE (itemBaseProperties)
     // We must update the base property so it doesn't reset on switch
     // CRITICAL FIX: Use unique key (dropdownId_itemName) to prevent shared state
-    // This ensures changing Mercenary item stats doesn't affect Player item
     const basePropKey = `${dropdownId}_${itemName}`;
+    
+    // Calculate final corruption bonus for persistence
+    let finalCorruptionBonus = 0;
+    if (isCorrupted && window.originalItemProperties && window.originalItemProperties[itemName]) {
+      const originalVal = window.originalItemProperties[itemName][propKey];
+      if (typeof originalVal === 'object' && 'max' in originalVal) {
+        finalCorruptionBonus = prop.max - originalVal.max;
+      }
+    }
 
     if (window.itemBaseProperties) {
       if (!window.itemBaseProperties[basePropKey]) {
-        // If prop missing in base, init it
         window.itemBaseProperties[basePropKey] = {};
       }
-      if (!window.itemBaseProperties[basePropKey][propKey]) {
-        window.itemBaseProperties[basePropKey][propKey] = JSON.parse(JSON.stringify(prop));
+      
+      // CRITICAL FIX: To prevent "Double Stacking" or "Value Bloat", we must save 
+      // the PURE BASE roll without the corruption bonus.
+      const baseProp = JSON.parse(JSON.stringify(prop));
+      if (finalCorruptionBonus > 0) {
+        // Subtract the already-calculated bonus to get the pure base roll
+        baseProp.current = Math.max(0, baseProp.current - finalCorruptionBonus);
+        // We also update min/max in the base persistence so display ranges stay accurate
+        baseProp.min = Math.max(0, baseProp.min - finalCorruptionBonus);
+        baseProp.max = Math.max(0, baseProp.max - finalCorruptionBonus);
       }
-
-      let corruptionValue = 0;
-      // Check for active corruption to subtract
-      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-        const corr = window.itemCorruptions[dropdownId];
-        if (corr.itemName === itemName && corr.text) {
-          // We need to parse corruption to find value for THIS propKey
-          // This is tricky without exposing parseCorruptionText or similar helper
-          // Simplification: If the input is Red, it's modified.
-          // We can try to use the diff between current prop and base to guess? No.
-
-          // Better: Expose a helper or just update Base = (Current - Corruption)
-        }
-      }
-
-      // Simpler approach for now:
-      // Update the base property to match the new current value
-      // BUT if there IS corruption on this property, the User Input includes it.
-      // So Base = UserInput - Corruption.
-
-      // For now, let's assume valid Base Update requires Recalculation logic
-      // But to fix "Returns to Max Range" for NON-CORRUPTED stats, direct update works.
-      // For CORRUPTED stats, if we direct update, we bake in the corruption (Double Stack on Reload).
-
-      // To do this safely: 
-      // 1. Get Corruption Value for this prop.
-      // 2. Base = clampedValue - CorruptionValue.
-
-      // We need to parse!
-      // Let's rely on window.itemCorruptions[dropdownId].text
-      // We can re-parse it locally using regex if needed, or call window.parseCorruptionText if exposed?
-      // Check corrupt.js: parseCorruptionText is NOT exposed.
-
-      // We should expose it in corrupt.js or copy simplistic logic here.
-      // Let's assume for now we update Base = Current. 
-      // RISK: Double Stacking if corruption exists.
-
-      // Let's TRY to respect corruption.
-      // If we can't calculate corruption, we skip updating Base for Corrupted props?
-      // That effectively means User Edits on Corrupted Props don't persist on Switch.
-      // User Edits on Uncorrupted Props DO persist.
-      // This is a good compromise for now.
-
-      // CRITICAL FIX: Use corruptedProperties to check if this property is corrupted
-      // Don't update itemBaseProperties for corrupted properties
-      // Use slot-specific key to prevent cross-contamination
-      const uniqueKeyForCheck = dropdownId ? `${dropdownId}_${itemName}` : itemName;
-      const isPropertyCorrupted = window.corruptedProperties &&
-        window.corruptedProperties[uniqueKeyForCheck] &&
-        window.corruptedProperties[uniqueKeyForCheck].has(propKey);
-
-      if (!isPropertyCorrupted) {
-        if (typeof window.itemBaseProperties[basePropKey][propKey] === 'object') {
-          window.itemBaseProperties[basePropKey][propKey].current = clampedValue;
-        } else {
-          window.itemBaseProperties[basePropKey][propKey] = clampedValue;
-        }
-      }
+      window.itemBaseProperties[basePropKey][propKey] = baseProp;
     }
 
     // If changing edef or todef, recalculate defense property
@@ -1437,11 +1437,13 @@ window.updateItemInfo = function updateItemInfo(event) {
       if (corruption.itemName === selectedItemName && corruption.text) {
         // Only apply to properties if we're NOT currently in the middle of applying corruption
         if (!window.isApplyingCorruption && typeof window.applyCorruptionToProperties === 'function') {
-          // CRITICAL FIX: Pass itemName string instead of item object to ensure correct tracking
-          // CRITICAL FIX: Pass ITEM OBJECT (cached item) instead of name string
-          // This ensures we modify the specific instance for this slot, not the global shared object
-          // Also pass dropdown.id for slot-specific corruption tracking
-          // And pass itemName explicitly since the object reference won't match itemList
+          // CRITICAL FIX: Clear the corrupted properties tracking for this specific item
+          // before re-applying, so the application logic doesn't skip it as a "duplicate"
+          const trackingKey = `${dropdown.id}_${selectedItemName}`;
+          if (window.corruptedProperties && window.corruptedProperties[trackingKey]) {
+            window.corruptedProperties[trackingKey].clear();
+          }
+
           window.applyCorruptionToProperties(item, corruption.text, dropdown.id, selectedItemName);
 
           // CRITICAL FIX: After applying corruption, restore user-modified values
@@ -1456,7 +1458,13 @@ window.updateItemInfo = function updateItemInfo(event) {
             delete window.pendingUserValues[selectedItemName];
           }
         }
+      } else {
+        // WRONG ITEM NAME - clear it!
+        if (window.itemCorruptions) delete window.itemCorruptions[dropdown.id];
       }
+    } else {
+      // NO corruption applied to this slot - clear tracking
+      if (window.itemCorruptions) delete window.itemCorruptions[dropdown.id];
     }
 
     // CRITICAL FIX: Recalculate defense from edef after restoring properties/corruption

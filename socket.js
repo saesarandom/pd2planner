@@ -1739,15 +1739,23 @@ class UnifiedSocketSystem {
 
     let safeMaxSockets;
     if (savedSocketCount !== null) {
-      // PRIORITY 1: If restoring from saved state, use the saved socket count
+      // PRIORITY 1: If restoring from saved state (direct argument), use it
       safeMaxSockets = savedSocketCount;
     } else if (hasSocketCorruption) {
       // PRIORITY 2: If there's a socket corruption, respect its socket count
       safeMaxSockets = window.itemCorruptions[dropdownId].socketCount;
+    } else if (window.itemStates && itemName) {
+      // PRIORITY 3: Check simple item state storage (remembers manual sockets)
+      const stateKey = `${dropdownId}_${itemName}`;
+      const savedState = window.itemStates[stateKey];
+      if (savedState && savedState.socketCount !== undefined) {
+        safeMaxSockets = savedState.socketCount;
+      } else {
+        safeMaxSockets = 0;
+      }
     } else {
-      // PRIORITY 3: Cap at 1 socket for normal items without corruption or saved state
-      // This prevents items from getting 2+ sockets automatically when switching from fixed-socket items
-      safeMaxSockets = Math.min(maxSockets, 1);
+      // PRIORITY 4: New item without any history or corruption starts with 0
+      safeMaxSockets = 0;
     }
 
     // If current socket count exceeds safe max for new item, remove excess sockets
@@ -2807,6 +2815,8 @@ class UnifiedSocketSystem {
       return;
     }
 
+    let corruptionMerged = false;
+
     // CRITICAL FIX: Use dropdown-specific cache to get the modified item
     // This ensures we use the item with updated properties from handleVariableStatChange
     const cacheKey = `${dropdownId}_${dropdown.value}`;
@@ -2851,10 +2861,10 @@ class UnifiedSocketSystem {
 
       // Check if item has corruption applied
       // NOTE: We do NOT use addCorruptionWithStacking here because properties are already updated via corrupt.js
-      // Using it would cause double-counting (e.g. 24% base + 24% corruption text = 48%)
-      // We will handle visual "Red" styling separately if needed
+      // and socket.js will handle merging them into the base line below.
       if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
-        // Handled by main.js formatVariableStat
+        // Mark as merged so the fallback logic at the bottom doesn't append a duplicate line
+        corruptionMerged = true;
       }
 
       // Parse base stats from the generated description (strip input elements first)
@@ -2895,7 +2905,7 @@ class UnifiedSocketSystem {
       //
       // TODO: Future enhancement for items where socket bonuses affect the SAME variable stats
       // (e.g., weapon with variable edmg + jewel with +edmg%). Currently those don't combine.
-      let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
+      let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems, dropdownId, corruptionMerged);
 
       // Update Required Level display - only check level requirement
       const levelColor = meetsRequirement ? '#00ff00' : '#ff5555';
@@ -2970,7 +2980,7 @@ class UnifiedSocketSystem {
     // CRITICAL FIX: Use addCorruptionWithStacking for Static Items
     // This function from corrupt.js properly handles multi-line corruptions
     // by stacking what can be stacked and displaying the rest in red
-    let corruptionMerged = false;
+    corruptionMerged = false;
     if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
       const corruption = window.itemCorruptions[dropdownId];
       if (corruption.text && corruption.itemName === dropdown.value) {
@@ -2978,12 +2988,16 @@ class UnifiedSocketSystem {
         if (typeof window.addCorruptionWithStacking === 'function') {
           baseDescription = window.addCorruptionWithStacking(baseDescription, corruption.text);
           corruptionMerged = true;
+          
+          // ALSO MERGE THE STATS INTO baseStats SO THEY PERSIST IN THE Map
+          const corruptionStats = this.parseStatsToMap(corruption.text);
+          this.mergeStatsMaps(baseStats, corruptionStats);
         }
       }
     }
 
     // Generate final description with stacked properties
-    let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems);
+    let finalDescription = this.generateStackedDescription(baseDescription, baseStats, socketItems, dropdownId);
 
     // CRITICAL FIX: Smart Corruption Display for Static Items
     // ONLY run this fallback if we didn't successfully merge the corruption logic above
@@ -3043,8 +3057,14 @@ class UnifiedSocketSystem {
     infoDiv.innerHTML = finalDescription;
   }
 
+  getDropdownIdFromDescription(description) {
+    if (!description) return null;
+    const match = description.match(/data-dropdown=["']([^"']+)["']/i);
+    return match ? match[1] : null;
+  }
+
   // Generate final description with stacked properties and visual indicators
-  generateStackedDescription(originalDescription, mergedStats, socketItems) {
+  generateStackedDescription(originalDescription, mergedStats, socketItems, dropdownId, corruptionMerged) {
     // Extract ethereal text if present, to re-add at the very end
     const etherealMatch = originalDescription.match(/\s*<span[^>]*>Ethereal<\/span>/i);
     const etherealText = etherealMatch ? etherealMatch[0] : '';
@@ -3067,53 +3087,124 @@ class UnifiedSocketSystem {
       return 0;
     });
 
-    // Replace stacked stats in original description with blue colored versions
+    // Identify which stats are corrupted to maintain red styling
+    const corruptedStats = new Set();
+    // CRITICAL FIX: Use the unique tracking key (dropdownId_itemName)
+    const dropdown = document.getElementById(dropdownId);
+    const itemName = dropdown ? dropdown.value : null;
+    const trackingKey = dropdownId && itemName ? `${dropdownId}_${itemName}` : (dropdownId || itemName);
+    
+    if (trackingKey && window.corruptedProperties && window.corruptedProperties[trackingKey]) {
+      // Use the existing set from the property applier
+      window.corruptedProperties[trackingKey].forEach(key => corruptedStats.add(key));
+      
+      // Also parse the corruption text to ensure we catch everything
+      if (window.itemCorruptions && window.itemCorruptions[dropdownId]) {
+        const corruption = window.itemCorruptions[dropdownId];
+        if (corruption.text) {
+          const parsed = this.parseStatsToMap(corruption.text);
+          parsed.forEach((val, key) => corruptedStats.add(key));
+        }
+      }
+    }
+
+    // Replace stacked stats in original description with colored versions
+    const replacedKeys = new Set();
     sortedKeys.forEach(key => {
       const data = mergedStats.get(key);
-      if (data.stacked || data.fromSocket) {
-        const replacement = this.formatStackedStat(key, data);
+      const isCorrupted = corruptedStats.has(key) || !!data.isCorrupted;
+      
+      if (data.stacked || data.fromSocket || isCorrupted) {
+        const replacement = this.formatStackedStat(key, data, isCorrupted);
         if (replacement) {
           const pattern = this.getStatPattern(key);
-          if (pattern && !data.fromSocket) {
-            // Replace existing stat line with stacked version
-            // BUT preserve any stat-input elements that are in the original line
+          const hasMatch = pattern && pattern.test(finalDescription);
+          
+          if (hasMatch) {
+            replacedKeys.add(key);
+            pattern.lastIndex = 0;
             finalDescription = finalDescription.replace(pattern, (match) => {
-              // Check if the matched text contains a stat-input element
-              const inputMatch = match.match(/<input[^>]*class="stat-input"[^>]*>/);
-              if (inputMatch) {
-                // Keep the input element and append it to the replacement
-                return replacement + ' ' + inputMatch[0];
-              }
-              return replacement;
+              const inputMatch = match.match(/<input[^>]*class=["']stat-input["'][^>]*>/);
+              const scaleMatch = match.match(/\[[\d\-]+\]/);
+              let result = replacement;
+              if (scaleMatch) result += ' <span style="color: #888;">' + scaleMatch[0] + '</span>';
+              if (inputMatch) result += ' ' + inputMatch[0];
+              return result;
             });
           } else if (data.fromSocket) {
-            // Add new socket-only stats in blue
-            finalDescription += `${replacement}<br>`;
+            // New socket-only stat - we'll append these in a controlled way below
           }
         }
       }
     });
 
-    // Add unusable socket items in gray
+    // BUILD APPEND SECTION (Stats not in base description)
+    let appendSection = "";
+
+    // 1. Add new socket-only stats in blue
+    sortedKeys.forEach(key => {
+      const data = mergedStats.get(key);
+      if (data.fromSocket && !replacedKeys.has(key)) {
+        const pattern = this.getStatPattern(key);
+        // CRITICAL: Reset lastIndex before testing
+        if (pattern) pattern.lastIndex = 0;
+        
+        // Final check: Only append if it wasn't replaced above
+        if (!pattern || !pattern.test(finalDescription)) {
+          const isCorrupted = corruptedStats.has(key);
+          const replacement = this.formatStackedStat(key, data, isCorrupted);
+          if (replacement) appendSection += `${replacement}<br>`;
+        }
+      }
+    });
+
+    // 2. Add unusable socket items in gray
     const unusableEffects = socketItems.filter(item => !item.usable);
     unusableEffects.forEach(item => {
       const lines = item.stats.split(',');
       lines.forEach(line => {
         if (line.trim()) {
-          finalDescription += `<br><span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span>`;
+          appendSection += `<span style="color: #888; font-style: italic;">${line.trim()} (Level ${item.levelReq} Required)</span><br>`;
         }
       });
     });
 
-    // Re-add ethereal at the very end if it was present
+    // Re-add ethereal if present (should be after stats)
     if (etherealText) {
-      finalDescription += etherealText;
+      appendSection += `${etherealText}<br>`;
     }
 
-    // CRITICAL FIX: Re-add the corruption button
-    if (buttonText) {
-      finalDescription += `<br>${buttonText}`;
+    // CRITICAL: Handle the "Corrupted" label (ensure it's after stats but before button)
+    // Check if item has corruption data
+    const hasCorruption = window.itemCorruptions && window.itemCorruptions[dropdownId] && window.itemCorruptions[dropdownId].itemName === itemName;
+    
+    // Use an even more flexible regex that handles potential HTML changes better
+    const corruptedLabelMatch = finalDescription.match(/(?:<br\s*\/?>)?\s*<span[^>]*class=["']corrupted-text["'][^>]*>Corrupted<\/span>(?:<br\s*\/?>)?/i);
+    
+    if (corruptedLabelMatch) {
+      // Remove it from current position and move it to the end of stats
+      finalDescription = finalDescription.replace(corruptedLabelMatch[0], '');
     }
+    
+    // Always add it to the end of stats if the item is corrupted
+    if (hasCorruption || corruptedLabelMatch) {
+      // Ensure we have exactly one separator before label
+      if (!appendSection.endsWith('<br>') && !finalDescription.endsWith('<br>') && !appendSection.endsWith('</span>')) {
+        // Only add a break if not at the start of the append section
+        if (appendSection.length > 0 || finalDescription.length > 0) {
+          appendSection += '<br>';
+        }
+      }
+      appendSection += `<span class="corrupted-text" style="color: #ff6b6b; font-weight: bold;">Corrupted</span><br>`;
+    }
+
+    // CRITICAL FIX: Re-add the corruption button at the VERY BOTTOM
+    if (buttonText) {
+      appendSection += `${buttonText}`;
+    }
+
+    finalDescription += appendSection;
+    return finalDescription;
 
     return finalDescription;
   }
@@ -4071,49 +4162,9 @@ class UnifiedSocketSystem {
       if (corruption.text && corruption.itemName) {
         const currentName = document.getElementById(dropdownId)?.value;
         if (currentName === corruption.itemName) {
-          // CRITICAL FIX: Smart duplicate detection for identical base + corruption values
-          // Instead of checking if corruption text exists, check if the STACKED value exists
-          // This fixes the bug where "+1 All Skills" base + "+1 All Skills" corruption
-          // would not be appended because the text already exists, even though it should show "+2"
-
-          const cleanCorruption = corruption.text.replace(/<[^>]*>/g, '').trim();
-          const cleanDescription = (description || '').replace(/<[^>]*>/g, '').trim();
-
-          // Extract the numeric value from corruption text (e.g., "+1" from "+1 to All Skills")
-          const corruptionValueMatch = cleanCorruption.match(/[+\-]?\d+/);
-          const corruptionValue = corruptionValueMatch ? parseInt(corruptionValueMatch[0]) : null;
-
-          // Extract the stat type (e.g., "to All Skills", "% Faster Cast Rate")
-          const statTypeMatch = cleanCorruption.match(/(?:[+\-]?\d+\s*)(.+)/);
-          const statType = statTypeMatch ? statTypeMatch[1].trim() : null;
-
-          let shouldAppend = true;
-
-          if (corruptionValue !== null && statType) {
-            // Look for this stat type in the description and check if it has the stacked value
-            // Create a regex that matches the stat type with any numeric value
-            const statPattern = new RegExp(`([+\\-]?\\d+)\\s*${statType.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
-            const descMatch = cleanDescription.match(statPattern);
-
-            if (descMatch) {
-              const descValue = parseInt(descMatch[1]);
-              // If the description already has a value GREATER than the corruption value,
-              // it means the corruption was already merged/stacked
-              // Only skip appending if the value is exactly the stacked amount or higher
-              if (descValue > corruptionValue) {
-                shouldAppend = false;
-              }
-            }
-          } else {
-            // Fallback to simple text matching for non-numeric corruptions
-            if (cleanDescription.includes(cleanCorruption)) {
-              shouldAppend = false;
-            }
-          }
-
-          if (shouldAppend) {
-            description = (description ? description + '<br>' : '') + corruption.text;
-          }
+          // CRITICAL FIX: Always append corruption text for static items
+          // The stat engine (Map) will handle the combined values via addition in parseStatLine
+          description = (description ? description + '<br>' : '') + corruption.text;
         }
       }
     }
@@ -5048,14 +5099,15 @@ class UnifiedSocketSystem {
   }
 
   // Format stacked stat for display with blue color
-  formatStackedStat(key, data) {
+  formatStackedStat(key, data, isCorrupted) {
     // CRITICAL FIX: Use Red for Corruption, Blue for Sockets
-    let color = '#4a90e2'; // Default Blue
-    let shadow = '';
+    let color = isCorrupted ? '#ff5555' : '#4a90e2';
+    let shadow = isCorrupted ? 'text-shadow: 0 0 3px #ff5555;' : 'text-shadow: 0 0 3px rgba(74, 144, 226, 0.5);';
 
+    // Fallback if data object itself has the flag
     if (data.isCorrupted) {
-      color = '#ff5555'; // Red for Corruption
-      shadow = 'text-shadow: 0 0 3px #ff5555;'; // Add Glow
+      color = '#ff5555';
+      shadow = 'text-shadow: 0 0 3px #ff5555;';
     }
 
     if (key.startsWith('level_up_proc_')) {
@@ -5136,6 +5188,8 @@ class UnifiedSocketSystem {
       case 'mana_after_kill':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value} to Mana after each Kill</span>`;
       case 'replenish_life':
+      case 'replenish':
+      case 'repl':
         return `<span style="color: ${color}; font-weight: bold;">Replenish Life +${data.value}</span>`;
       case 'damage_vs_undead':
         return `<span style="color: ${color}; font-weight: bold;">+${data.value}% Damage vs Undead</span>`;
@@ -5243,7 +5297,9 @@ class UnifiedSocketSystem {
       case 'mana_after_kill':
         return /\+\d+\s+to\s+Mana\s+after\s+each\s+Kill/gi;
       case 'replenish_life':
-        return /Replenish\s+Life\s+\+\d+/gi;
+      case 'replenish':
+      case 'repl':
+        return /Replenish\s+Life\s+[+-]?\d+(?:\s+\[[\d\-]+\])?/gi;
       case 'damage_vs_undead':
         return /\+\d+%\s+Damage\s+vs\s+Undead/gi;
       case 'ar_vs_undead':

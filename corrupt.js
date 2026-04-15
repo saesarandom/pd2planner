@@ -985,7 +985,7 @@ function applySocketCorruptionFromModal(corruption) {
 
   // Add corruption text to item description
   const originalDescription = window.originalItemDescriptions[itemName];
-  const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.mod}</span><br>`;
+  const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruption.mod}</span><br><span class="corrupted-text" style="color: #ff6b6b; font-weight: bold;">Corrupted</span>`;
   item.description = enhancedDescription;
 
   // Set the socket count to the specified number
@@ -1013,7 +1013,13 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
 
   if (typeof itemOrName === 'string') {
     itemName = itemOrName;
-    item = window.getItemData(itemOrName);
+    // CRITICAL: Check cache first to avoid modifying shared itemList
+    const cacheKey = dropdownId ? `${dropdownId}_${itemName}` : null;
+    if (cacheKey && window.dropdownItemCache && window.dropdownItemCache[cacheKey]) {
+      item = window.dropdownItemCache[cacheKey];
+    } else {
+      item = window.getItemData(itemName);
+    }
   } else if (!itemName) {
     // It's an item object - need to find its name
     // Search in itemList to find the matching item
@@ -1045,11 +1051,22 @@ function applyCorruptionToProperties(itemOrName, corruptionText, dropdownId, ite
 
     // Track that this property was corrupted for red styling
     if (!window.corruptedProperties) window.corruptedProperties = {};
-    if (dropdownId) {
-      if (!window.corruptedProperties[dropdownId]) {
-        window.corruptedProperties[dropdownId] = new Set();
+    
+    // CRITICAL FIX: Use a UNIQUE KEY for tracking corrupted properties (dropdownId + itemName)
+    // Using just dropdownId causes stats to be lost when switching between different items in the same slot
+    const trackingKey = dropdownId && itemName ? `${dropdownId}_${itemName}` : (dropdownId || itemName);
+    
+    if (trackingKey) {
+      if (!window.corruptedProperties[trackingKey]) {
+        window.corruptedProperties[trackingKey] = new Set();
       }
-      window.corruptedProperties[dropdownId].add(key);
+      
+      // CRITICAL FIX: Prevent double-application of the same corruption value
+      if (window.corruptedProperties[trackingKey].has(key)) {
+        return;
+      }
+      
+      window.corruptedProperties[trackingKey].add(key);
     }
 
     // If property doesn't exist, just set it
@@ -1426,7 +1443,6 @@ function applyCorruptionToItem(corruptionText) {
   */
 
   // Apply corruption stats to item properties (this is what matters for dynamic items)
-  // Apply corruption stats to item properties (this is what matters for dynamic items)
   // CRITICAL FIX: Pass the ITEM OBJECT (our cached copy), not the name
   applyCorruptionToProperties(item, corruptionText, currentCorruptionSlot, itemName);
 
@@ -1566,7 +1582,7 @@ function addCorruptionWithStacking(originalDescription, corruptionText) {
     }
   }
 
-  description += '';
+  // Label will be added by socket.js during final rendering
   return description;
 }
 
@@ -1581,46 +1597,46 @@ function parseCorruptionText(corruptionText) {
 
   // Define stackable stat patterns
   const stackablePatterns = [
-    { pattern: /(\+?\d+)%\s+(Increased Attack Speed)/i, type: 'ias' },
-    { pattern: /(\+?\d+)%\s+(Enhanced Damage)/i, type: 'edmg' },
-    { pattern: /(\+?\d+)%\s+(Faster Cast Rate)/i, type: 'fcr' },
-    { pattern: /(\+?\d+)%\s+(Faster Hit Recovery)/i, type: 'fhr' },
-    { pattern: /(\+?\d+)%\s+(Faster Run\/Walk)/i, type: 'frw' },
-    { pattern: /(\+?\d+)%\s+(Enhanced Defense)/i, type: 'edef' },
-    { pattern: /(\+?\d+)%\s+(Faster Block Rate)/i, type: 'fbr' },
-    { pattern: /(\+?\d+)%\s+(Increased Chance of Blocking)/i, type: 'block' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Life\s+after\s+each\s+Kill/i, type: 'laek' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Mana\s+after\s+each\s+Kill/i, type: 'maek' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Life/i, type: 'life' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Mana/i, type: 'mana' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Vitality/i, type: 'vit' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Energy/i, type: 'enr' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?All\s+Attributes/i, type: 'allattributes' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Strength/i, type: 'str' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?Dexterity/i, type: 'dex' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)/i, type: 'ar' },
-    { pattern: /(\+?\d+)\s+to\s+All\s+Skills/i, type: 'allskills' },
-    { pattern: /(\+?\d+)%\s+(?:to\s+)?Maximum\s+(\w+)\s+Resist/i, type: 'maxres' },
-    { pattern: /(\+?\d+)%\s+to\s+All\s+Maximum\s+Resistances/i, type: 'allmaxres' },
-    { pattern: /(\w+)\s+Resist\s+\+(\d+)%/i, type: 'resist' },
-    { pattern: /All\s+Resistances\s+\+(\d+)/i, type: 'allres' },
-    { pattern: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)%/i, type: 'physdr' },
-    { pattern: /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'pdr' },
-    { pattern: /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i, type: 'mdr' },
-    { pattern: /(\+?\d+)%\s+(Chance of Crushing Blow)/i, type: 'cb' },
-    { pattern: /(\+?\d+)%\s+(Deadly Strike)/i, type: 'deadly' },
-    { pattern: /(\+?\d+)%\s+(Chance of Open Wounds)/i, type: 'ow' },
-    { pattern: /(\+?\d+)\s+(?:to\s+)?(Open Wounds Damage per Second)/i, type: 'owdmg' }, //added new
-    { pattern: /Replenish\s+Life\s+\+(\d+)/i, type: 'replenish' },
-    { pattern: /Regenerate\s+Mana\s+(\d+)%/i, type: 'manarecovery' },
+    { pattern: /(?:(\+?\d+)%\s+(Increased Attack Speed)|(Increased Attack Speed)\s+\+(\d+)%)/i, type: 'ias' },
+    { pattern: /(?:(\+?\d+)%\s+(Enhanced Damage)|(Enhanced Damage)\s+\+(\d+)%)/i, type: 'edmg' },
+    { pattern: /(?:(\+?\d+)%\s+(Faster Cast Rate)|(Faster Cast Rate)\s+\+(\d+)%)/i, type: 'fcr' },
+    { pattern: /(?:(\+?\d+)%\s+(Faster Hit Recovery)|(Faster Hit Recovery)\s+\+(\d+)%)/i, type: 'fhr' },
+    { pattern: /(?:(\+?\d+)%\s+(Faster Run\/Walk)|(Faster Run\/Walk)\s+\+(\d+)%)/i, type: 'frw' },
+    { pattern: /(?:(\+?\d+)%\s+(Enhanced Defense)|(Enhanced Defense)\s+\+(\d+)%)/i, type: 'edef' },
+    { pattern: /(?:(\+?\d+)%\s+(Faster Block Rate)|(Faster Block Rate)\s+\+(\d+)%)/i, type: 'fbr' },
+    { pattern: /(?:(\+?\d+)%\s+(Increased Chance of Blocking)|(Increased Chance of Blocking)\s+\+(\d+)%)/i, type: 'block' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Life\s+after\s+each\s+Kill|(?:Life\s+after\s+each\s+Kill)\s+\+(\d+))/i, type: 'laek' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Mana\s+after\s+each\s+Kill|(?:Mana\s+after\s+each\s+Kill)\s+\+(\d+))/i, type: 'maek' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Life|(?:Life)\s+\+(\d+))/i, type: 'life' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Mana|(?:Mana)\s+\+(\d+))/i, type: 'mana' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Vitality|(?:Vitality)\s+\+(\d+))/i, type: 'vit' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Energy|(?:Energy)\s+\+(\d+))/i, type: 'enr' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?All\s+Attributes|(?:All\s+Attributes)\s+\+(\d+))/i, type: 'allattributes' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Strength|(?:Strength)\s+\+(\d+))/i, type: 'str' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Dexterity|(?:Dexterity)\s+\+(\d+))/i, type: 'dex' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)|(?:Attack Rating)\s+\+(\d+))/i, type: 'ar' },
+    { pattern: /(?:(\+?\d+)\s+to\s+All\s+Skills|(?:All\s+Skills)\s+\+(\d+))/i, type: 'allskills' },
+    { pattern: /(?:(\+?\d+)%\s+(?:to\s+)?Maximum\s+(\w+)\s+Resist|(?:Maximum\s+(\w+)\s+Resist)\s+\+(\d+)%)/i, type: 'maxres' },
+    { pattern: /(?:(\+?\d+)%\s+to\s+All\s+Maximum\s+Resistances|(?:All\s+Maximum\s+Resistances)\s+\+(\d+)%)/i, type: 'allmaxres' },
+    { pattern: /(?:(\w+)\s+Resist\s+\+(\d+)%|(\+?\d+)%\s+(\w+)\s+Resist)/i, type: 'resist' },
+    { pattern: /(?:All\s+Resistances\s+\+(\d+)|(\+?\d+)\s+to\s+All\s+Resistances)/i, type: 'allres' },
+    { pattern: /(?:Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)%|(\d+)%\s+Physical\s+Damage\s+Taken\s+Reduced)/i, type: 'physdr' },
+    { pattern: /(?:Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)|(\d+)\s+Physical\s+Damage\s+Taken\s+Reduced)/i, type: 'pdr' },
+    { pattern: /(?:Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)|(\d+)\s+Magic\s+Damage\s+Taken\s+Reduced)/i, type: 'mdr' },
+    { pattern: /(?:(\+?\d+)%\s+(Chance of Crushing Blow)|(Chance of Crushing Blow)\s+\+(\d+)%)/i, type: 'cb' },
+    { pattern: /(?:(\+?\d+)%\s+(Deadly Strike)|(Deadly Strike)\s+\+(\d+)%)/i, type: 'deadly' },
+    { pattern: /(?:(\+?\d+)%\s+(Chance of Open Wounds)|(Chance of Open Wounds)\s+\+(\d+)%)/i, type: 'ow' },
+    { pattern: /(?:(\+?\d+)\s+(?:to\s+)?Internal\s+Open\s+Wounds\s+Damage|Internal\s+Open\s+Wounds\s+Damage\s+\+(\d+))/i, type: 'owdmg' },
+    { pattern: /(?:Replenish\s+Life\s+\+(\d+)|(\+?\d+)\s+Replenish\s+Life)/i, type: 'replenish' },
+    { pattern: /(?:Regenerate\s+Mana\s+(\d+)%|(\+?\d+)%\s+Regenerate\s+Mana)/i, type: 'manarecovery' },
     { pattern: /Cannot\s+Be\s+Frozen/i, type: 'cbf', value: 1 },
-    { pattern: /(\+?\d+)%\s+(Curse Resistance)/i, type: 'curseres' },
-    { pattern: /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i, type: 'magicfind' },
-    { pattern: /(\+?\d+)%\s+(Extra Gold from Monsters)/i, type: 'goldfind' },
-    { pattern: /(\+?\d+)%\s+(Life Stolen per Hit)/i, type: 'lleech' },
-    { pattern: /(\+?\d+)%\s+(Mana Stolen per Hit)/i, type: 'mleech' },
-    { pattern: /Increase\s+Maximum\s+Life\s+(\d+)%/i, type: 'maxlife' },
-    { pattern: /Increase\s+Maximum\s+Mana\s+(\d+)%/i, type: 'maxmana' },
+    { pattern: /(?:(\+?\d+)%\s+(Curse Resistance)|(Curse Resistance)\s+\+(\d+)%)/i, type: 'curseres' },
+    { pattern: /(?:(\+?\d+)%\s+(Better Chance of Getting Magic Items)|(Better Chance of Getting Magic Items)\s+\+(\d+)%)/i, type: 'magicfind' },
+    { pattern: /(?:(\+?\d+)%\s+(Extra Gold from Monsters)|(Extra Gold from Monsters)\s+\+(\d+)%)/i, type: 'goldfind' },
+    { pattern: /(?:(\+?\d+)%\s+(Life Stolen per Hit)|(Life Stolen per Hit)\s+\+(\d+)%)/i, type: 'lleech' },
+    { pattern: /(?:(\+?\d+)%\s+(Mana Stolen per Hit)|(Mana Stolen per Hit)\s+\+(\d+)%)/i, type: 'mleech' },
+    { pattern: /(?:Increase\s+Maximum\s+Life\s+(\d+)%|(\+?\d+)%\s+Increase\s+Maximum\s+Life)/i, type: 'maxlife' },
+    { pattern: /(?:Increase\s+Maximum\s+Mana\s+(\d+)%|(\+?\d+)%\s+Increase\s+Maximum\s+Mana)/i, type: 'maxmana' },
     { pattern: /Indestructible/i, type: 'indestructible' }
 
   ];
@@ -1639,17 +1655,23 @@ function parseCorruptionText(corruptionText) {
         let value;
         let subtype = '';
 
-        // Handle special cases
+        // Handle special cases with flexible capture groups
         if (type === 'maxres') {
-          value = parseInt(match[1]);
-          subtype = match[2].toLowerCase();
+          value = parseInt(match[1] || match[4]);
+          subtype = (match[2] || match[3]).toLowerCase();
         } else if (type === 'resist') {
-          value = parseInt(match[2]);
-          subtype = match[1].toLowerCase();
+          value = parseInt(match[2] || match[3]);
+          subtype = (match[1] || match[4]).toLowerCase();
         } else if (type === 'cbf') {
           value = 1;
         } else {
-          value = parseInt(match[1]);
+          // Find the group that captured the number
+          for (let i = 1; i <= 4; i++) {
+            if (match[i] && !isNaN(parseInt(match[i]))) {
+              value = parseInt(match[i]);
+              break;
+            }
+          }
         }
 
         stats.push({
@@ -1691,26 +1713,26 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
   const searchPatterns = {
     'ias': /(\+?\d+)%\s+(Increased Attack Speed)/i,
     'edmg': /(\+?\d+)%\s+(Enhanced Damage)/i,
-    'fcr': /(\+?\d+)%\s+(Faster Cast Rate)/i,
-    'fhr': /(\+?\d+)%\s+(Faster Hit Recovery)/i,
-    'frw': /(\+?\d+)%\s+(Faster Run\/Walk)/i,
-    'edef': /(\+?\d+)%\s+(Enhanced Defense)/i,
-    'fbr': /(\+?\d+)%\s+(Faster Block Rate)/i,
-    'block': /(\+?\d+)%\s+(Increased Chance of Blocking)/i,
-    'life': /(\+?\d+)\s+(?:to\s+)?Life/i,
-    'mana': /(\+?\d+)\s+(?:to\s+)?Mana/i,
-    'str': /(\+?\d+)\s+(?:to\s+)?Strength/i,
-    'dex': /(\+?\d+)\s+(?:to\s+)?Dexterity/i,
-    'ar': /(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)/i,
-    'allskills': /(\+?\d+)\s+to\s+All\s+Skills/i,
-    'allres': /All\s+Resistances\s+\+(\d+)/i,
-    'allmaxres': /(\+?\d+)%\s+to\s+All\s+Maximum\s+Resistances/i,
+    'fcr': /(?:(\+?\d+)%\s+(Faster Cast Rate)|(Faster Cast Rate)\s+\+(\d+)%)/i,
+    'fhr': /(?:(\+?\d+)%\s+(Faster Hit Recovery)|(Faster Hit Recovery)\s+\+(\d+)%)/i,
+    'frw': /(?:(\+?\d+)%\s+(Faster Run\/Walk)|(Faster Run\/Walk)\s+\+(\d+)%)/i,
+    'edef': /(?:(\+?\d+)%\s+(Enhanced Defense)|(Enhanced Defense)\s+\+(\d+)%)/i,
+    'fbr': /(?:(\+?\d+)%\s+(Faster Block Rate)|(Faster Block Rate)\s+\+(\d+)%)/i,
+    'block': /(?:(\+?\d+)%\s+(Increased Chance of Blocking)|(Increased Chance of Blocking)\s+\+(\d+)%)/i,
+    'life': /(?:(\+?\d+)\s+(?:to\s+)?Life|(?:Life)\s+\+(\d+))/i,
+    'mana': /(?:(\+?\d+)\s+(?:to\s+)?Mana|(?:Mana)\s+\+(\d+))/i,
+    'str': /(?:(\+?\d+)\s+(?:to\s+)?Strength|(?:Strength)\s+\+(\d+))/i,
+    'dex': /(?:(\+?\d+)\s+(?:to\s+)?Dexterity|(?:Dexterity)\s+\+(\d+))/i,
+    'ar': /(?:(\+?\d+)\s+(?:to\s+)?(?:Attack Rating)|(?:Attack Rating)\s+\+(\d+))/i,
+    'allskills': /(?:(\+?\d+)\s+to\s+All\s+Skills|(?:All\s+Skills)\s+\+(\d+))/i,
+    'allres': /(?:All\s+Resistances\s+\+(\d+)|(\+?\d+)\s+to\s+All\s+Resistances)/i,
+    'allmaxres': /(?:(\+?\d+)%\s+to\s+All\s+Maximum\s+Resistances|(?:All\s+Maximum\s+Resistances)\s+\+(\d+)%)/i,
     'cbf': /Cannot\s+Be\s+Frozen/i,
-    'pdr': /Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
-    'mdr': /Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)/i,
-    'cb': /(\+?\d+)%\s+(Chance of Crushing Blow)/i,
-    'magicfind': /(\+?\d+)%\s+(Better Chance of Getting Magic Items)/i,
-    'goldfind': /(\+?\d+)%\s+(Extra Gold from Monsters)/i,
+    'pdr': /(?:Physical\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)|(\d+)\s+Physical\s+Damage\s+Taken\s+Reduced)/i,
+    'mdr': /(?:Magic\s+Damage\s+Taken\s+Reduced\s+by\s+(\d+)|(\d+)\s+Magic\s+Damage\s+Taken\s+Reduced)/i,
+    'cb': /(?:(\+?\d+)%\s+(Chance of Crushing Blow)|(Chance of Crushing Blow)\s+\+(\d+)%)/i,
+    'magicfind': /(?:(\+?\d+)%\s+(Better Chance of Getting Magic Items)|(Better Chance of Getting Magic Items)\s+\+(\d+)%)/i,
+    'goldfind': /(?:(\+?\d+)%\s+(Extra Gold from Monsters)|(Extra Gold from Monsters)\s+\+(\d+)%)/i,
 
   };
 
@@ -1730,12 +1752,21 @@ function replaceExistingStatWithCorruption(description, corruptionStat) {
 
   const match = description.match(searchPattern);
   if (match) {
-    const originalValue = parseInt(match[1]);
+    // Find the group that captured the original number
+    let originalValue = 0;
+    let valueMatchStr = "";
+    for (let i = 1; i <= 4; i++) {
+      if (match[i] && !isNaN(parseInt(match[i]))) {
+        originalValue = parseInt(match[i]);
+        valueMatchStr = match[i];
+        break;
+      }
+    }
+
     const newValue = originalValue + corruptionStat.value;
 
     // Replace the old value with new value
-    // The sign is already in the pattern, so we just replace the number
-    const newStatText = match[0].replace(match[1], newValue.toString());
+    const newStatText = match[0].replace(valueMatchStr, newValue.toString());
     const redStatText = `<span class="corruption-enhanced-stat">${newStatText}</span>`;
 
     const newDescription = description.replace(match[0], redStatText);
@@ -1888,7 +1919,7 @@ window.applySocketCorruption = function (dropdownId, socketCount) {
 
   // Add corruption text to item description
   const originalDescription = window.originalItemDescriptions[itemName];
-  const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruptionText}</span><br>`;
+  const enhancedDescription = originalDescription + `<span class="corruption-enhanced-stat">${corruptionText}</span><br><span class="corrupted-text" style="color: #ff6b6b; font-weight: bold;">Corrupted</span>`;
   item.description = enhancedDescription;
 
   // Trigger item display update
