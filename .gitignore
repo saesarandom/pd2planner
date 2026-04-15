@@ -4,3 +4,5 @@ node_modules/
 cloudflare-worker/worker.js
 cloudflare-worker/node_modules/
 cloudflare-worker/.wrangler/
+# Aegis — local architecture DB (not source code)
+.aegis/

@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "nreki": {
+      "command": "npx",
+      "args": ["-y", "@ruso-0/nreki"],
+      "env": {}
+    },
+    "aegis": {
+      "command": "npx",
+      "args": ["-y", "@fuwasegu/aegis", "--surface", "agent", "--project-root", "c:/pd2planner"],
+      "env": {}
+    },
+    "aegis-admin": {
+      "command": "npx",
+      "args": ["-y", "@fuwasegu/aegis", "--surface", "admin", "--project-root", "c:/pd2planner"],
+      "env": {}
+    }
+  }
+}
